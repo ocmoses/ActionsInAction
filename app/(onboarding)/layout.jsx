@@ -7,7 +7,7 @@ function Layout({ children }) {
     <div className="grid grid-cols-4 w-screen">
       <div className="flex flex-col col-span-4 md:col-span-3 min-h-screen relative flex-1 px-4 md:px-6 ">
         <Navbar type="onboarding" />
-        <div className="flex w-full h-full justify-center items-center">
+        <div className="flex w-full md:w-1/2 mx-auto h-full justify-center items-center">
           {children}
         </div>
       </div>

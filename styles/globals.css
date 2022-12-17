@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'font/mtn/stylesheet.css';
+@import './w3.css';
+@import './w3-mtn-theme.css';
+
+@layer base {
+  html {
+    @apply bg-black;
+  }
+  body {
+    font-family: 'mtn_regular' !important;
+    @apply m-0 p-0;
+  }
+  /* blockquote,
+  dl,
+  dd,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  figure,
+  p {
+    @apply font-mtn;
+  } */
+  -z-1 {
+    z-index: -1 !important;
+  }
+  -z-2 {
+    z-index: -2 !important;
+  }
+  .border-1 {
+    border-width: 1px !important;
+  }
+}

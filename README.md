@@ -2,7 +2,7 @@
 # MTN Digital Partner Portal 
 
 ## Technology: 
-# Next.js + Tailwind
+# Next.js 13 (App directory) + Tailwind
 
 This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.2)](https://tailwindcss.com/blog/tailwindcss-v3-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
 

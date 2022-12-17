@@ -9,9 +9,11 @@ import Link from 'next/link'
 function LandingPage() {
   return (
     <main className="px-4 md:px-8 m-0 w-full relative">
-      <Navbar type="dashboard" />
+      <div className="relative z-50">
+        <Navbar type="dashboard" />
+      </div>
       <div className="hero-box h-full overflow-hidden">
-        <div className="container mt-20 mx-auto font-mtn max-w-[1400px]">
+        <div className="container mt-20 mx-auto font-mtn max-w-[1400px] relative z-10">
           <div className="w-full md:w-3/4 xl:w-1/2">
             <h3 className="text-mtn text-xl md:text-3xl">
               MTN Digital Partner Portal
@@ -46,7 +48,7 @@ function LandingPage() {
             <div className="mt-20">{/* <TrustBrands /> */}</div>
           </div>
         </div>
-        <div className="-z-1">
+        <div className=" z-0">
           <HeroBanner />
         </div>
       </div>

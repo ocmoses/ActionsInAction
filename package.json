@@ -8,10 +8,12 @@
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "@tailwindcss/forms": "^0.5.3",
+    "daisyui": "^2.45.0",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sharp": "^0.31.2"
+    "sharp": "^0.31.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "18.11.3",

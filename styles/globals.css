@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 @import 'font/mtn/stylesheet.css';
-@import './w3.css';
-@import './w3-mtn-theme.css';
+/* @import './w3.css'; */
+/* @import './w3-mtn-theme.css'; */
 
 @layer base {
   html {
@@ -13,6 +13,7 @@
     font-family: 'mtn_regular' !important;
     @apply m-0 p-0;
     @apply bg-black;
+    @apply min-h-screen;
   }
   /* blockquote,
   dl,

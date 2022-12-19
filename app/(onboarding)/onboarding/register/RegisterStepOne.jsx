@@ -6,12 +6,24 @@ import { useOnboardingContext } from '../../../../utils/OnboardingContext'
 import { ArrowRightCircle } from '../../../components/HeroIcons'
 
 function RegisterStepOne() {
-  const [data, setSetData] = useState({})
-  const { updatePartnerInfo } = useOnboardingContext()
+  // Local form state
+  const { partnerInfo, updatePartnerInfo } = useOnboardingContext()
+  const [data, setData] = useState(partnerInfo)
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log('Submitted')
+    console.log(data)
     updatePartnerInfo(data)
   }
+  const handleFormChange = (e) => {
+    setData((initialData) => ({
+      ...initialData,
+      [e.target.id]: e.target.value
+    }))
+    console.log('handleFormChange')
+    console.log(data)
+  }
+  console.log('Here')
   return (
     <div className="w3-animate-opacity pt-24 pb-20">
       <form onSubmit={handleSubmit}>
@@ -30,86 +42,99 @@ function RegisterStepOne() {
           it'll only take a few minutes
         </p>
         <div className="grid grid-cols-2 gap-4">
-          <div class="relative z-0 mb-6 w-full group p-2 bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+          <div className="relative z-0 mb-6 w-full group p-2 bg-gray-900/80 border-1 border-gray-800 rounded-xl">
             <input
               type="text"
               id="firstName"
-              class="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
+              value={data.firstName}
+              className="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
               placeholder=" "
+              onChange={handleFormChange}
+              autoComplete="new-password"
             />
             <label
               htmlFor="firstName"
-              class="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
+              className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
             >
               First name
             </label>
           </div>
-          <div class="relative z-0 mb-6 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+          <div className="relative z-0 mb-6 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
             <input
               type="text"
               id="lastName"
-              class="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
+              value={data.lastName}
+              className="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
               placeholder=" "
+              onChange={handleFormChange}
+              autoComplete="new-password"
             />
             <label
               htmlFor="lastName"
-              class="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
+              className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
             >
               Last name
             </label>
           </div>
         </div>
-        <div class="relative z-0 mb-12 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+        <div className="relative z-0 mb-12 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
           <input
             type="text"
             id="email"
-            class="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
+            value={data.email}
+            className="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
             placeholder=" "
+            onChange={handleFormChange}
+            autoComplete="new-password"
           />
           <label
             htmlFor="email"
-            class="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
+            className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
           >
             Email address
           </label>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <div class="relative z-0 mb-2 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+          <div className="relative z-0 mb-2 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
             <input
               type="password"
               id="password"
+              value={data.password}
               autoComplete="new-password"
-              class="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
+              className="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
               placeholder=" "
+              onChange={handleFormChange}
             />
             <label
               htmlFor="password"
-              class="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
+              className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
             >
               Password
             </label>
           </div>
 
-          <div class="relative z-0 mb-2 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+          <div className="relative z-0 mb-2 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
             <input
               type="text"
               id="repassword"
+              value={data.repassword}
               autoComplete="new-password"
-              class="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
+              className="block px-4 pb-2.5 pt-4 w-full text-xl text-gray-200 bg-transparent rounded-lg border-0 appearance-none dark:text-white dark:border-gray-300 dark:focus:border-gray-100 focus:outline-none focus:ring-1 focus:ring-mtn focus:border-gray-300 peer"
               placeholder=" "
+              onChange={handleFormChange}
             />
             <label
               htmlFor="repassword"
-              class="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
+              className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
             >
               Retype password
             </label>
           </div>
         </div>
-        <div class=" font-mtn-extralight text-white/70 text-start mb-12 p-2">
+        <div className=" font-mtn-extralight text-white/70 text-start mb-12 p-2">
           Must include at least 8 characters, an uppercase letter, and a number
         </div>
-        <div class="font-mtn-extralight text-white/70 text-start mb-12 p-2">
+        <div className="font-mtn-extralight text-white/70 text-start mb-12 p-2">
           By clicking "Start Application" I agree to MTN's{' '}
           <a
             href="#"
@@ -134,7 +159,10 @@ function RegisterStepOne() {
           </a>
           .
         </div>
-        <button className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2">
+        <button
+          type="submit"
+          className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+        >
           Start registration <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
         </button>
       </form>

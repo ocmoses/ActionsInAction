@@ -6,11 +6,17 @@ import { OnboardingContext } from './OnboardingContext'
 const OnboardingContextProvider = ({ children }) => {
   const [partnerInfo, setPartnerInfo] = useState({})
   const updatePartnerInfo = (partner) => {
+    console.log('updatePartnerInfo')
+    console.log('partner')
+    console.log(partner)
+    setPartnerInfo((oldState) => ({ ...oldState, ...partner }))
+    console.log('partnerInfo')
     console.log(partnerInfo)
-    setPartnerInfo([...partnerInfo, ...partner])
+    registerPartner(partnerInfo)
+    console.log('Call reg')
   }
   const registerPartner = (partnerInfo) => {
-    partner.id = uuid()
+    console.log('registerPartner')
     console.log(partnerInfo)
   }
   return (

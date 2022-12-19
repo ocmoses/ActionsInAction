@@ -20,9 +20,9 @@ function ChooseRegistration() {
 
       <Link
         href="/onboarding/register"
-        class="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
+        className="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
       >
-        <div class="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-mtn to-mtn/10 hover:bg-mtn/70  transition-none sm:transition-color ease-in-out duration-700 relative">
+        <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-mtn to-mtn/10 hover:bg-mtn/70  transition-none sm:transition-color ease-in-out duration-700 relative">
           <div className="translate-y-0 sm:translate-y-6 group-hover:translate-y-0 transition-none sm:transition ease-in-out duration-700">
             <h1 className="text-lg sm:text-2xl font-mtn-bold w-[65%]">
               New Partner
@@ -42,8 +42,8 @@ function ChooseRegistration() {
           />
         </div>
       </Link>
-      <Link href="/onboarding/login" class="flex flex-col gap-8 group p-2">
-        <div class="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-600 to-mtn/10 hover:bg-black/70  transition-none sm:transition-color ease-in-out duration-700 relative">
+      <Link href="/onboarding/login" className="flex flex-col gap-8 group p-2">
+        <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-600 to-mtn/10 hover:bg-black/70  transition-none sm:transition-color ease-in-out duration-700 relative">
           <div className="translate-y-0 sm:translate-y-6 group-hover:translate-y-0 transition-none sm:transition ease-in-out duration-700">
             <h1 className="text-lg sm:text-2xl text-white font-mtn-bold w-[65%]">
               Existing Partner

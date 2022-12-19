@@ -23,7 +23,7 @@ function LandingPage() {
               <br />
               our priority!
             </p>
-            <p className="mt-6 md:mt-10 text-gray-200 text-opacity-4 w-full">
+            <div className="mt-6 md:mt-10 text-gray-200 text-opacity-4 w-full">
               <span className="text-2xl md:text-4xl font-mtn-bold">
                 Connection to customers made easier
               </span>
@@ -31,7 +31,7 @@ function LandingPage() {
                 Our program offers various types of partnership designed to fit
                 your business model.
               </p>
-            </p>
+            </div>
 
             <div className="flex flex-col md:flex-row gap-4 mt-8">
               <Link

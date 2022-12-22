@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import OnboardingContextProvider from '../../utils/RegistrationContextProvider'
+import { OnboardingContextProvider } from '../../hooks/useOnboardingContext'
 import Navbar from '../components/Navbar'
 function Layout({ children }) {
   return (
@@ -11,7 +11,6 @@ function Layout({ children }) {
           <OnboardingContextProvider>{children}</OnboardingContextProvider>
         </div>
       </div>
-
       <div className="relative min-h-screen hidden md:flex">
         <Image
           className="h-full object-cover"

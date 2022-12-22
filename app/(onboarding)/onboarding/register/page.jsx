@@ -2,8 +2,8 @@
 import RegisterStepOne from './RegisterStepOne'
 import RegisterStepTwo from './RegisterStepTwo'
 import { useOnboardingContext } from '../../../../hooks/useOnboardingContext'
-import RequestSuccess from '../../../components/requestSuccess'
-import RequestError from '../../../components/requestError'
+import RequestSuccess from '../../../components/RequestSuccess'
+import RequestError from '../../../components/RequestError'
 function Register() {
   const { form, forms, requestError, requestSuccess, processing } =
     useOnboardingContext()

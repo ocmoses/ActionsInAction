@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import 'font/mtn/stylesheet.css';
-/* @import './w3.css'; */
+@import './w3.css';
 /* @import './w3-mtn-theme.css'; */
 
 @layer base {

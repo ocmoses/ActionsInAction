@@ -40,13 +40,13 @@ export const CountrySelector = React.forwardRef<
       <div className="mt-1 relative">
         <button
           type="button"
-          className="bg-transparent relative border-0  px-4 pb-2.5 pt-4 w-full text-left cursor-default focus:outline-none focus:ring-1 focus:ring-mtn focus:border-mtn text-gray-400 text-xl sm:text-lg"
+          className="flex items-center gap-2 bg-transparent relative border-0  px-4 pb-2.5 pt-4 w-full text-left cursor-default focus:outline-none focus:ring-1 focus:ring-mtn focus:border-mtn text-white text-xl"
           aria-haspopup="listbox"
           aria-expanded="true"
           aria-labelledby="listbox-label"
           onClick={props.onToggle}
         >
-          <span className="truncate flex items-center">
+          <span className=" flex items-center">
             <img
               alt={`${props.selectedValue.value}`}
               src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${props.selectedValue.value}.svg`}
@@ -85,12 +85,12 @@ export const CountrySelector = React.forwardRef<
               aria-activedescendant="listbox-option-3"
             >
               <div className="sticky top-0 z-10 bg-gray-400">
-                <li className=" text-gray-900 cursor-default select-none relative py-2 px-3">
+                <li className=" text-gray-900 cursor-default select-none relative py-0">
                   <input
                     type="search"
                     name="search"
                     autoComplete={'off'}
-                    className="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-none"
                     placeholder={'Search a country'}
                     onChange={(e) => setQuery(e.target.value)}
                   />

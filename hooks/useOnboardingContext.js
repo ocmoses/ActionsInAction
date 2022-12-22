@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createContext } from 'react'
 import { useContext } from 'react'
 import axios from 'axios'
+import { Util } from '../utils/utility'
 
 const OnboardingContext = createContext()
 
@@ -53,27 +54,32 @@ export function OnboardingContextProvider({ children }) {
     email: '',
     country: 'NG',
     countrycode: '234',
-    telephone: '08120820076',
-    password: '**********',
-    password_confirmed: '**********',
+    telephone: '',
+    password: '',
+    password_confirmed: '',
     company_name: '',
     company_role: ''
   })
   const [form, setForm] = useState('userinfo')
-  const registerPartner = (frm) => {
-    console.log(form)
-    console.log(partnerInfo)
+  const [requestError, setRequestError] = useState([])
+  const [processing, setProcessing] = useState(false)
+  const registerPartner = async (frm) => {
     const regUrl =
       'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register'
+    const callbackurl =
+      'https://digital-partner-portal-tau.vercel.app/onboarding/login'
     switch (frm) {
       case 'userinfo':
         setForm('companyinfo')
         break
       case 'companyinfo':
-        const callbackurl =
-          'https://digital-partner-portal-tau.vercel.app/onboarding/login'
-        axios(regUrl, {
+        setProcessing(true)
+
+        const response = await axios(regUrl, {
           method: 'POST',
+          headers: {
+            apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+          },
           data: {
             first_name: partnerInfo.first_name,
             last_name: partnerInfo.last_name,
@@ -88,18 +94,51 @@ export function OnboardingContextProvider({ children }) {
             callbackurl: callbackurl
           }
         })
-          .then((response) => response.text())
-          .then((result) => console.log(result))
-          .catch((error) => console.log('error', error))
+          .catch(({ message, response }) => {
+            const {
+              data: { data, success }
+            } = response
+            if (!Util.isEmpty(data)) {
+              for (const error in data) {
+                if (data[error].length > 0) {
+                  data[error].map((err) =>
+                    setRequestError((oldState) => [...oldState, err])
+                  )
+                }
+              }
+            }
+          })
+          .finally(() => setProcessing(false))
+        const {
+          data: { data, success }
+        } = response
+        if (success) console.log('Success')
         break
     }
   }
-
+  let timeout = null
+  useEffect(() => {
+    if (requestError.length > 0) {
+      clearTimeout(timeout)
+      timeout = setTimeout(
+        () =>
+          setRequestError((oldState) => {
+            oldState.shift()
+            return [...oldState]
+          }),
+        10000
+      )
+    }
+  }, [requestError])
   return (
     <OnboardingContext.Provider
       value={{
         forms,
         form,
+        requestError,
+        setRequestError,
+        processing,
+        setProcessing,
         setForm,
         roles,
         partnerInfo,

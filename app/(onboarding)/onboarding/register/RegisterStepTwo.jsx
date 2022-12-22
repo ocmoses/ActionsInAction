@@ -1,16 +1,25 @@
 'use client'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useOnboardingContext } from '../../../../hooks/useOnboardingContext'
 import {
+  ArrowLeftCircle,
   ArrowRightCircle,
   ExclamationCircle
 } from '../../../components/HeroIcons'
 
 function RegisterStepOne({ form, title, subtitle, required }) {
   // Local form state
-  const { roles, partnerInfo, setPartnerInfo, registerPartner } =
-    useOnboardingContext()
+  const {
+    roles,
+    setForm,
+    partnerInfo,
+    setPartnerInfo,
+    registerPartner,
+    setRequestError,
+    processing
+  } = useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
   const [errors, setErrors] = useState({})
 
@@ -26,19 +35,16 @@ function RegisterStepOne({ form, title, subtitle, required }) {
         if (errors[field]) errorFound = true
       })
       if (errorFound) {
-        console.log('errorFound')
-        setErrors((oldState) => ({ ...oldState, submit: true }))
+        setRequestError((oldState) => [
+          ...oldState,
+          'Please provide required information to proceed'
+        ])
         return
-      } else {
-        console.log('No errorFound')
-        setErrors((oldState) => ({ ...oldState, submit: false }))
       }
     }
     registerPartner('companyinfo')
   }
   const handleFormChange = (e) => {
-    console.log(e.target.id)
-    console.log(e.target.value)
     setData((initialData) => ({
       ...initialData,
       [e.target.id]: e.target.value
@@ -57,14 +63,27 @@ function RegisterStepOne({ form, title, subtitle, required }) {
   }, [data])
 
   return (
-    <div className="w3-animate-opacity pt-24 pb-20">
+    <div className="relative w3-animate-opacity pt-24 pb-20">
       <form onSubmit={handleSubmit}>
+        <div className="flex justify-end z-10">
+          <div
+            data-tip="Go back"
+            className="tooltip text-mtn-400 cursor-pointer hover:text-mtn-600 rounded-full"
+            onClick={() => setForm('userinfo')}
+          >
+            <ArrowLeftCircle iconClass="w-8 h-8" />
+          </div>
+        </div>
         <h1 className="flex items-center gap-4 pb-3 font-mtn-extrabold  text-white text-5xl">
           {title}
         </h1>
-        <p className="font-hairline font-mtn-extralight flex-wrap text-[18px] mb-6 text-white/70">
+        <p className="font-hairline font-mtn-extralight flex-wrap text-[18px] mb-3 text-white/70">
           {subtitle}
         </p>
+        <div className="flex gap-2 mb-6 items-center">
+          <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
+          <span className="text-gray-500">Required fields</span>
+        </div>
         {errors.submit && (
           <div className="flex gap-3 mb-4 items-center">
             <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
@@ -73,6 +92,7 @@ function RegisterStepOne({ form, title, subtitle, required }) {
             </span>
           </div>
         )}
+
         <div className="relative z-0 mt-6 mb-6 w-full group p-2 bg-gray-900/80 border-1 border-gray-800 rounded-xl">
           <input
             type="text"
@@ -131,12 +151,23 @@ function RegisterStepOne({ form, title, subtitle, required }) {
           legally authorised to enter into this agreement on the company’'
           behalf.
         </div>
-        <button
-          type="submit"
-          className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
-        >
-          Continue <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
-        </button>
+
+        {processing ? (
+          <button
+            type="button"
+            className="rounded-full flex justify-between items-center text-black bg-gray-500 text-xl p-0"
+            disabled
+          >
+            <ArrowRightCircle iconClass="w-16 h-16 animate-spin" />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+          >
+            Continue <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
+          </button>
+        )}
       </form>
     </div>
   )

@@ -195,7 +195,6 @@ export function OnboardingContextProvider({ children }) {
             }
           }
         } else {
-          console.log(message)
           setRequestError((oldState) => [...oldState, message])
         }
       })

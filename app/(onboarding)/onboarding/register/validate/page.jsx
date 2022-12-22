@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import { useOnboardingContext } from '../../../../../hooks/useOnboardingContext'
 import MailOpened from '~/assets/icons/mail-opened.svg'
-import RequestSuccess from '../../../../components/requestSuccess'
-import RequestError from '../../../../components/requestError'
+import RequestSuccess from '../../../../components/RequestSuccess'
+import RequestError from '../../../../components/RequestError'
 import { Util } from '../../../../../utils/utility'
 
 function Register() {

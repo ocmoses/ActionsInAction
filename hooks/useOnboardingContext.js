@@ -4,10 +4,12 @@ import { createContext } from 'react'
 import { useContext } from 'react'
 import axios from 'axios'
 import { Util } from '../utils/utility'
+import { useRouter } from 'next/navigation'
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
+  const router = useRouter()
   const forms = {
     userinfo: {
       form: 'userinfo',
@@ -62,12 +64,13 @@ export function OnboardingContextProvider({ children }) {
   })
   const [form, setForm] = useState('userinfo')
   const [requestError, setRequestError] = useState([])
+  const [requestSuccess, setRequestSuccess] = useState('')
   const [processing, setProcessing] = useState(false)
   const registerPartner = async (frm) => {
-    const regUrl =
+    const apiUrl =
       'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register'
     const callbackurl =
-      'https://digital-partner-portal-tau.vercel.app/onboarding/login'
+      'https://digital-partner-portal-tau.vercel.app/onboarding/update'
     switch (frm) {
       case 'userinfo':
         setForm('companyinfo')
@@ -75,7 +78,7 @@ export function OnboardingContextProvider({ children }) {
       case 'companyinfo':
         setProcessing(true)
 
-        const response = await axios(regUrl, {
+        const response = await axios(apiUrl, {
           method: 'POST',
           headers: {
             apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
@@ -95,32 +98,57 @@ export function OnboardingContextProvider({ children }) {
           }
         })
           .catch(({ message, response }) => {
-            const {
-              data: { data, success }
-            } = response
-            if (!Util.isEmpty(data)) {
-              for (const error in data) {
-                if (data[error].length > 0) {
-                  data[error].map((err) =>
-                    setRequestError((oldState) => [...oldState, err])
-                  )
+            if (response) {
+              const {
+                data: { data, success }
+              } = response
+
+              if (
+                typeof data === 'object' &&
+                data !== null &&
+                !Util.isEmpty(data)
+              ) {
+                for (const error in data) {
+                  if (
+                    data[error].constructor === Array &&
+                    data[error].length > 0
+                  ) {
+                    data[error].map((err) =>
+                      setRequestError((oldState) => [...oldState, err])
+                    )
+                  } else {
+                    setRequestError((oldState) => [
+                      ...oldState,
+                      data?.message ??
+                        'An error occured. Please reach out to us if issue persists'
+                    ])
+                  }
                 }
+              } else {
+                setRequestError((oldState) => [...oldState, message])
               }
+            } else {
+              setRequestError((oldState) => [...oldState, message])
             }
           })
           .finally(() => setProcessing(false))
-        const {
-          data: { data, success }
-        } = response
-        if (success) console.log('Success')
+        if (response) {
+          const {
+            data: { data, success }
+          } = response
+          if (success) {
+            router.replace('/onboarding/register/validate')
+            setRequestSuccess('Registration was successful.')
+          }
+        }
         break
     }
   }
-  let timeout = null
+  let errorTimeout = null
   useEffect(() => {
     if (requestError.length > 0) {
-      clearTimeout(timeout)
-      timeout = setTimeout(
+      clearTimeout(errorTimeout)
+      errorTimeout = setTimeout(
         () =>
           setRequestError((oldState) => {
             oldState.shift()
@@ -130,12 +158,65 @@ export function OnboardingContextProvider({ children }) {
       )
     }
   }, [requestError])
+  let successTimeout = null
+  useEffect(() => {
+    if (requestSuccess.length > 0) {
+      clearTimeout(successTimeout)
+      successTimeout = setTimeout(() => setRequestSuccess(''), 10000)
+    }
+  }, [requestSuccess])
+  const resendEmail = async (email) => {
+    const apiUrl =
+      'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link'
+
+    setProcessing(true)
+
+    const response = await axios(apiUrl, {
+      method: 'POST',
+      headers: {
+        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+      },
+      data: {
+        email: email
+      }
+    })
+      .catch(({ message, response }) => {
+        if (response) {
+          const {
+            data: { data }
+          } = response
+          if (!Util.isEmpty(data)) {
+            for (const error in data) {
+              if (data[error].length > 0) {
+                data[error].map((err) =>
+                  setRequestError((oldState) => [...oldState, err])
+                )
+              }
+            }
+          }
+        } else {
+          console.log(message)
+          setRequestError((oldState) => [...oldState, message])
+        }
+      })
+      .finally(() => setProcessing(false))
+    if (response) {
+      const {
+        data: { success }
+      } = response
+      if (success)
+        setRequestSuccess(
+          'Email was sent successfully. Please checnk your email'
+        )
+    }
+  }
   return (
     <OnboardingContext.Provider
       value={{
         forms,
         form,
         requestError,
+        requestSuccess,
         setRequestError,
         processing,
         setProcessing,
@@ -143,7 +224,8 @@ export function OnboardingContextProvider({ children }) {
         roles,
         partnerInfo,
         setPartnerInfo,
-        registerPartner
+        registerPartner,
+        resendEmail
       }}
     >
       {children}

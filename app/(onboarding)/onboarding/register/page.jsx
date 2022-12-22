@@ -2,10 +2,11 @@
 import RegisterStepOne from './RegisterStepOne'
 import RegisterStepTwo from './RegisterStepTwo'
 import { useOnboardingContext } from '../../../../hooks/useOnboardingContext'
-import { ExclamationCircle } from '../../../components/HeroIcons'
-
+import RequestSuccess from '../../../components/requestSuccess'
+import RequestError from '../../../components/requestError'
 function Register() {
-  const { form, forms, requestError, processing } = useOnboardingContext()
+  const { form, forms, requestError, requestSuccess, processing } =
+    useOnboardingContext()
   return (
     <>
       <div className="relative mx-auto w3-animate-opacity">
@@ -15,22 +16,8 @@ function Register() {
         {form === 'userinfo' && <RegisterStepOne {...forms.userinfo} />}
         {form === 'companyinfo' && <RegisterStepTwo {...forms.companyinfo} />}
       </div>
-
-      {requestError.length > 0 && (
-        <div className=" toast toast-end z-50 w3-animate-right">
-          {requestError.map((error) => (
-            <div
-              key={error}
-              className="alert alert-error rounded-md py-2 px-4 text-white text-md bg-red-500"
-            >
-              <div className="flex gap-3 items-center">
-                <ExclamationCircle iconClass="w-6 h-6 text-white" />
-                <span>{error}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <RequestSuccess success={requestSuccess} />
+      <RequestError errors={requestError} />
     </>
   )
 }

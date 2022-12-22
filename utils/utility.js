@@ -14,5 +14,16 @@ export const Util = {
   isEmpty: (obj) => {
     if (typeof obj === 'undefined') return true
     return Object.keys(obj).length === 0
+  },
+  obscureEmail: (email) => {
+    var splitEmail = email.split('@')
+    var domain = splitEmail[1]
+    var name = splitEmail[0]
+    const ln = Math.floor(name.length / 3)
+    let ast = ''
+    for (let i = 0; i < name.length - ln; i++) {
+      ast += '*'
+    }
+    return name.substring(0, ln).concat(ast).concat('@').concat(domain)
   }
 }

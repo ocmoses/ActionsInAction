@@ -18,7 +18,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'American Samoa',
-    code: '1 - 684',
+    code: '1-684',
     value: 'AS'
   },
   {
@@ -33,7 +33,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Anguilla',
-    code: '1 - 264',
+    code: '1-264',
     value: 'AI'
   },
   {
@@ -43,7 +43,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Antigua and Barbuda',
-    code: '1 - 268',
+    code: '1-268',
     value: 'AG'
   },
   {
@@ -78,7 +78,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Bahamas',
-    code: '1 - 242',
+    code: '1-242',
     value: 'BS'
   },
   {
@@ -93,7 +93,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Barbados',
-    code: '1 - 246',
+    code: '1-246',
     value: 'BB'
   },
   {
@@ -118,7 +118,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Bermuda',
-    code: '1 - 441',
+    code: '1-441',
     value: 'BM'
   },
   {
@@ -153,7 +153,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'British Virgin Islands',
-    code: '1 - 284',
+    code: '1-284',
     value: 'VG'
   },
   {
@@ -167,8 +167,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'BG'
   },
   {
-    title: 'Burkina',
-    code: 'Faso226',
+    title: 'Burkina Faso',
+    code: '226',
     value: 'BF'
   },
   {
@@ -197,13 +197,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'CA'
   },
   {
-    title: 'Cape',
-    code: 'Verde238',
+    title: 'Cape Verde',
+    code: '238',
     value: 'CV'
   },
   {
-    title: 'Cayman',
-    code: 'Islands1 - 345',
+    title: 'Cayman Islands',
+    code: '1-345',
     value: 'KY'
   },
   {
@@ -227,13 +227,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'CN'
   },
   {
-    title: 'Christmas',
-    code: 'Island61',
+    title: 'Christmas Island',
+    code: '61',
     value: 'CX'
   },
   {
-    title: 'Cocos',
-    code: 'Islands61',
+    title: 'Cocos Islands',
+    code: '61',
     value: 'CC'
   },
   {
@@ -257,13 +257,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'CD'
   },
   {
-    title: 'Cook',
-    code: 'Islands682',
+    title: 'Cook Islands',
+    code: '682',
     value: 'CK'
   },
   {
-    title: 'Costa',
-    code: 'Rica506',
+    title: 'Costa Rica',
+    code: '506',
     value: 'CR'
   },
   {
@@ -287,8 +287,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'CY'
   },
   {
-    title: 'Czech',
-    code: 'Republic420',
+    title: 'Czech Republic',
+    code: '420',
     value: 'CZ'
   },
   {
@@ -303,7 +303,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Dominica',
-    code: '1 - 767',
+    code: '1-767',
     value: 'DM'
   },
   {
@@ -312,8 +312,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'DO'
   },
   {
-    title: 'East',
-    code: 'Timor670',
+    title: 'East Timor',
+    code: '670',
     value: 'TL'
   },
   {
@@ -327,13 +327,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'EG'
   },
   {
-    title: 'El',
-    code: 'Salvador503',
+    title: 'El Salvador',
+    code: '503',
     value: 'SV'
   },
   {
-    title: 'Equatorial',
-    code: 'Guinea240',
+    title: 'Equatorial Guinea',
+    code: '240',
     value: 'GQ'
   },
   {
@@ -352,13 +352,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'ET'
   },
   {
-    title: 'Falkland',
-    code: 'Islands500',
+    title: 'Falkland Islands',
+    code: '500',
     value: 'FK'
   },
   {
-    title: 'Faroe',
-    code: 'Islands298',
+    title: 'Faroe Islands',
+    code: '298',
     value: 'FO'
   },
   {
@@ -377,8 +377,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'FR'
   },
   {
-    title: 'French',
-    code: 'Polynesia689',
+    title: 'French Polynesia',
+    code: '689',
     value: 'PF'
   },
   {
@@ -423,12 +423,12 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Grenada',
-    code: '1 - 473',
+    code: '1-473',
     value: 'GD'
   },
   {
     title: 'Guam',
-    code: '1 - 671',
+    code: '1-671',
     value: 'GU'
   },
   {
@@ -447,8 +447,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'GN'
   },
   {
-    title: 'Guinea',
-    code: '-Bissau245',
+    title: 'Guinea-Bissau',
+    code: '245',
     value: 'GW'
   },
   {
@@ -467,8 +467,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'HN'
   },
   {
-    title: 'Hong',
-    code: 'Kong852',
+    title: 'Hong Kong',
+    code: '852',
     value: 'HK'
   },
   {
@@ -522,13 +522,13 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'IT'
   },
   {
-    title: 'Ivory',
-    code: 'Coast225',
+    title: 'Ivory Coast',
+    code: '225',
     value: 'CI'
   },
   {
     title: 'Jamaica',
-    code: '1 - 876',
+    code: '1-876',
     value: 'JM'
   },
   {
@@ -662,8 +662,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'MT'
   },
   {
-    title: 'Marshall',
-    code: 'Islands692',
+    title: 'Marshall Islands',
+    code: '692',
     value: 'MH'
   },
   {
@@ -713,7 +713,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Montserrat',
-    code: '1 - 664',
+    code: '1-664',
     value: 'MS'
   },
   {
@@ -747,18 +747,18 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'NL'
   },
   {
-    title: 'Netherlands',
-    code: 'Antilles599',
+    title: 'Netherlands Antilles',
+    code: '599',
     value: 'AN'
   },
   {
-    title: 'New',
-    code: 'Caledonia687',
+    title: 'New Caledonia',
+    code: '687',
     value: 'NC'
   },
   {
-    title: 'New',
-    code: 'Zealand64',
+    title: 'New Zealand',
+    code: '64',
     value: 'NZ'
   },
   {
@@ -783,12 +783,12 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Northern Mariana Islands',
-    code: '1 - 670',
+    code: '1-670',
     value: 'MP'
   },
   {
-    title: 'North',
-    code: 'Korea850',
+    title: 'North Korea',
+    code: '850',
     value: 'KP'
   },
   {
@@ -887,8 +887,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'RW'
   },
   {
-    title: 'Saint',
-    code: 'Barthelemy590',
+    title: 'Saint Barthelemy',
+    code: '590',
     value: 'BL'
   },
   {
@@ -897,8 +897,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'WS'
   },
   {
-    title: 'San',
-    code: 'Marino378',
+    title: 'San Marino',
+    code: '378',
     value: 'SM'
   },
   {
@@ -907,8 +907,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'ST'
   },
   {
-    title: 'Saudi',
-    code: 'Arabia966',
+    title: 'Saudi Arabia',
+    code: '966',
     value: 'SA'
   },
   {
@@ -927,8 +927,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'SC'
   },
   {
-    title: 'Sierra',
-    code: 'Leone232',
+    title: 'Sierra Leone',
+    code: '232',
     value: 'SL'
   },
   {
@@ -937,8 +937,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'SG'
   },
   {
-    title: 'Sint',
-    code: 'Maarten1 - 721',
+    title: 'Sint Maarten',
+    code: '1-721',
     value: 'SX'
   },
   {
@@ -952,8 +952,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'SI'
   },
   {
-    title: 'Solomon',
-    code: 'Islands677',
+    title: 'Solomon Islands',
+    code: '677',
     value: 'SB'
   },
   {
@@ -962,18 +962,18 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'SO'
   },
   {
-    title: 'South',
-    code: 'Africa27',
+    title: 'South Africa',
+    code: '27',
     value: 'ZA'
   },
   {
-    title: 'South',
-    code: 'Korea82',
+    title: 'South Korea',
+    code: '82',
     value: 'KR'
   },
   {
-    title: 'South',
-    code: 'Sudan211',
+    title: 'South Sudan',
+    code: '211',
     value: 'SS'
   },
   {
@@ -982,28 +982,28 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'ES'
   },
   {
-    title: 'Sri',
-    code: 'Lanka94',
+    title: 'Sri Lanka',
+    code: '94',
     value: 'LK'
   },
   {
-    title: 'Saint',
-    code: 'Helena290',
+    title: 'Saint Helena',
+    code: '290',
     value: 'SH'
   },
   {
     title: 'Saint Kitts and Nevis',
-    code: '1 - 869',
+    code: '1-869',
     value: 'KN'
   },
   {
-    title: 'Saint',
-    code: 'Lucia1 - 758',
+    title: 'Saint Lucia',
+    code: '1-758',
     value: 'LC'
   },
   {
-    title: 'Saint',
-    code: 'Martin590',
+    title: 'Saint Martin',
+    code: '590',
     value: 'MF'
   },
   {
@@ -1013,7 +1013,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Saint Vincent and the Grenadines',
-    code: '1 - 784',
+    code: '1-784',
     value: 'VC'
   },
   {
@@ -1088,7 +1088,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Trinidad and Tobago',
-    code: '1 - 868',
+    code: '1-868',
     value: 'TT'
   },
   {
@@ -1108,7 +1108,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'Turks and Caicos Islands',
-    code: '1 - 649',
+    code: '1-649',
     value: 'TC'
   },
   {
@@ -1127,8 +1127,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'UG'
   },
   {
-    title: 'United',
-    code: 'Kingdom44',
+    title: 'United Kingdom',
+    code: '44',
     value: 'GB'
   },
   {
@@ -1142,8 +1142,8 @@ export const COUNTRIES: SelectMenuOption[] = [
     value: 'UY'
   },
   {
-    title: 'United',
-    code: 'States1',
+    title: 'United States',
+    code: '1',
     value: 'US'
   },
   {
@@ -1173,7 +1173,7 @@ export const COUNTRIES: SelectMenuOption[] = [
   },
   {
     title: 'U.S. Virgin Islands',
-    code: '1 - 340',
+    code: '1-340',
     value: 'VI'
   },
   {

@@ -11,7 +11,7 @@ import { COUNTRIES } from '../../../components/countrycode/countries'
 
 function RegisterStepOne({ form, title, subtitle, required }) {
   // Local form state
-  const { partnerInfo, setPartnerInfo, registerPartner } =
+  const { partnerInfo, setPartnerInfo, registerPartner, setRequestError } =
     useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
   const [errors, setErrors] = useState({})
@@ -28,19 +28,17 @@ function RegisterStepOne({ form, title, subtitle, required }) {
         if (errors[field]) errorFound = true
       })
       if (errorFound) {
-        console.log('errorFound')
-        setErrors((oldState) => ({ ...oldState, submit: true }))
+        // setErrors((oldState) => ({ ...oldState, submit: true }))
+        setRequestError((oldState) => [
+          ...oldState,
+          'Please provide required information to proceed'
+        ])
         return
-      } else {
-        console.log('No errorFound')
-        setErrors((oldState) => ({ ...oldState, submit: false }))
       }
     }
     registerPartner('userinfo')
   }
   const handleFormChange = (e) => {
-    console.log(e.target.id)
-    console.log(e.target.value)
     setData((initialData) => ({
       ...initialData,
       [e.target.id]: e.target.value
@@ -50,7 +48,6 @@ function RegisterStepOne({ form, title, subtitle, required }) {
     setCountry(val)
     setCountrycode(() => {
       const country = COUNTRIES.find((option) => option.value === val)
-      console.log(country)
       return country.code
     })
   }
@@ -92,9 +89,13 @@ function RegisterStepOne({ form, title, subtitle, required }) {
             className="h-auto animate-bounce"
           />
         </h1>
-        <p className="font-hairline font-mtn-extralight flex-wrap text-[18px] mb-6 text-white/70">
+        <p className="font-hairline font-mtn-extralight flex-wrap text-[18px] mb-3 text-white/70">
           {subtitle}
         </p>
+        <div className="flex gap-2 mb-6 items-center">
+          <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
+          <span className="text-gray-500">Required fields</span>
+        </div>
         {errors.submit && (
           <div className="flex gap-3 mb-4 items-center">
             <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
@@ -142,7 +143,7 @@ function RegisterStepOne({ form, title, subtitle, required }) {
             >
               Last name
             </label>
-            {errors.first_name && (
+            {errors.last_name && (
               <div className="absolute right-0 top-[-4px] z-10">
                 <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
               </div>
@@ -235,7 +236,7 @@ function RegisterStepOne({ form, title, subtitle, required }) {
 
           <div className="relative z-0 mb-2 w-full group p-2  bg-gray-900/80 border-1 border-gray-800 rounded-xl">
             <input
-              type="text"
+              type="password"
               id="password_confirmed"
               value={data.password_confirmed}
               autoComplete="new-password"
@@ -247,7 +248,7 @@ function RegisterStepOne({ form, title, subtitle, required }) {
               htmlFor="password_confirmed"
               className="absolute text-lg text-gray-500 dark:text-gray-700 duration-300 transform -translate-y-4 scale-130 top-1 z-10 origin-[0] bg-grey-700 dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-gray-500 peer-focus:dark:text-gray-700 peer-placeholder-shown:scale-140 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-0 peer-focus:scale-130 peer-focus:-translate-y-5 left-1"
             >
-              Retype password
+              <span className="truncate">Retype password</span>
             </label>
             {errors.password_confirmed && (
               <div className="absolute right-0 top-[-4px] z-10">

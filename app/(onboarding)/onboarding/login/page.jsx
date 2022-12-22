@@ -34,7 +34,7 @@ function Login() {
             Partner ID
           </label>
         </div>
-        <div className="relative z-0 mb-2 w-full group p-2 bg-gray-900/80 border-1 border-gray-800 rounded-xl">
+        <div className="relative z-0 mb-6 w-full group p-2 bg-gray-900/80 border-1 border-gray-800 rounded-xl">
           <input
             type="text"
             id="password"
@@ -50,7 +50,7 @@ function Login() {
         </div>
         <Link
           href="#"
-          className="flex font-mtn-extralight  text-white hover:text-mtn-400 border-b-1 border-b-mtn text-start mb-12 p-2"
+          className="inline-flex font-mtn-extralight  text-white hover:text-mtn-400 border-b-1 border-b-mtn text-start mb-12 px-0 pb-1"
         >
           Forgot your password?
         </Link>

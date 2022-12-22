@@ -92,7 +92,7 @@ function RegisterStepOne({ form, title, subtitle, required }) {
         <p className="font-hairline font-mtn-extralight flex-wrap text-[18px] mb-3 text-white/70">
           {subtitle}
         </p>
-        <div className="flex gap-2 mb-6 items-center">
+        <div className="flex gap-2 mb-12 items-center">
           <ExclamationCircle iconClass="w-4 h-4 text-red-500" />
           <span className="text-gray-500">Required fields</span>
         </div>

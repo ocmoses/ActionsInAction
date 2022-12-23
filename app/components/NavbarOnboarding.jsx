@@ -20,26 +20,24 @@ function NavbarOnboarding() {
           />
         </Link>
         <div className="flex justify-end">
-          {currentPath === 'onboarding' || currentPath === 'validate' ? (
-            <div className="text-white flex items-center mr-0 md:mr-3"></div>
-          ) : currentPath === 'login' ? (
-            <div className="text-white flex items-center mr-0 md:mr-3">
+          {currentPath === 'login' ? (
+            <div className="text-gray-400 text-md flex items-center gap-6 mr-0 md:mr-3">
               <p className="hidden sm:inline-flex">Don't have an account?</p>
               <Link
-                href="/onboarding"
-                className="text-white px-4 py-1 ml-4 rounded-full border-2 border-dotted border-mtn hover:border-white transition ease-in-out duration-500 hover:scale-[110%]"
+                href="/onboarding/register/userinfo"
+                className="text-white text-md hover:underline"
               >
                 Become a partner
               </Link>
             </div>
           ) : (
-            <div className="text-white flex items-center mr-0 md:mr-3">
-              <p className="hidden sm:inline-flex">Don't have an account?</p>
+            <div className="text-gray-400 text-md flex items-center gap-6 mr-0 md:mr-3">
+              <p className="hidden sm:inline-flex">Already have an account?</p>
               <Link
-                href="/onboarding"
-                className="text-white px-4 py-1 ml-4 rounded-full border-2 border-dotted border-mtn hover:border-white transition ease-in-out duration-500 hover:scale-[110%]"
+                href="/onboarding/login"
+                className="text-white text-md hover:underline"
               >
-                Become a partner
+                Login
               </Link>
             </div>
           )}

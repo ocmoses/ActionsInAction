@@ -1,12 +1,11 @@
 'use client'
 import Image from 'next/image'
-import { useOnboardingContext } from '../../../../../hooks/useOnboardingContext'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import MailOpened from '~/assets/icons/mail-opened.svg'
-import RequestSuccess from '../../../../components/RequestSuccess'
-import RequestError from '../../../../components/RequestError'
-import { Util } from '../../../../../utils/utility'
+import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
+import { Util } from '@/utils/utility'
 
-function Register() {
+function Validate() {
   const { requestError, partnerInfo, requestSuccess, processing, resendEmail } =
     useOnboardingContext()
   const email = partnerInfo.email
@@ -52,4 +51,4 @@ function Register() {
   )
 }
 
-export default Register
+export default Validate

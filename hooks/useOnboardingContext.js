@@ -15,6 +15,7 @@ export function OnboardingContextProvider({ children }) {
       form: 'userinfo',
       title: 'Get started',
       subtitle: "it'll only take a few minutes",
+      hand: '👋',
       required: [
         'first_name',
         'last_name',
@@ -30,6 +31,14 @@ export function OnboardingContextProvider({ children }) {
       form: 'companyinfo',
       title: 'Your company and role',
       subtitle: "it'll only take a few minutes",
+      hand: '',
+      required: ['company_name', 'company_role']
+    },
+    category: {
+      form: 'category',
+      title: 'Choose a service category',
+      subtitle: 'You’ll be able to add more later',
+      hand: '',
       required: ['company_name', 'company_role']
     }
   }
@@ -51,6 +60,18 @@ export function OnboardingContextProvider({ children }) {
     }
   ]
   const [partnerInfo, setPartnerInfo] = useState({
+    // partnerid: '',
+    // first_name: 'Prince',
+    // last_name: 'Morpheus',
+    // email: 'bodegbolu3@gmail.com',
+    // country: 'NG',
+    // countrycode: '234',
+    // telephone: '08120820076',
+    // password: 'Password!1234567',
+    // password_confirmed: 'Password!1234567',
+    // company_name: 'Hostnaija.com',
+    // company_role: ''
+    partnerid: '',
     first_name: '',
     last_name: '',
     email: '',
@@ -73,11 +94,13 @@ export function OnboardingContextProvider({ children }) {
       'https://digital-partner-portal-tau.vercel.app/onboarding/update'
     switch (frm) {
       case 'userinfo':
+        setProcessing(true)
         setForm('companyinfo')
+        router.push('/onboarding/register/companyinfo')
         break
+
       case 'companyinfo':
         setProcessing(true)
-
         const response = await axios(apiUrl, {
           method: 'POST',
           headers: {
@@ -96,42 +119,42 @@ export function OnboardingContextProvider({ children }) {
             company_role: partnerInfo.company_role,
             callbackurl: callbackurl
           }
-        })
-          .catch(({ message, response }) => {
-            if (response) {
-              const {
-                data: { data, success }
-              } = response
+        }).catch(({ message, response }) => {
+          if (response) {
+            const {
+              data: { data, success }
+            } = response
 
-              if (
-                typeof data === 'object' &&
-                data !== null &&
-                !Util.isEmpty(data)
-              ) {
-                for (const error in data) {
-                  if (
-                    data[error].constructor === Array &&
-                    data[error].length > 0
-                  ) {
-                    data[error].map((err) =>
-                      setRequestError((oldState) => [...oldState, err])
-                    )
-                  } else {
-                    setRequestError((oldState) => [
-                      ...oldState,
-                      data?.message ??
-                        'An error occured. Please reach out to us if issue persists'
-                    ])
-                  }
+            if (
+              typeof data === 'object' &&
+              data !== null &&
+              !Util.isEmpty(data)
+            ) {
+              for (const error in data) {
+                if (
+                  data[error].constructor === Array &&
+                  data[error].length > 0
+                ) {
+                  data[error].map((err) => {
+                    console.log('err', err)
+                    setRequestError((oldState) => [...oldState, err])
+                  })
+                } else {
+                  setRequestError((oldState) => [
+                    ...oldState,
+                    data?.message ??
+                      'An error occured. Please reach out to us if issue persists'
+                  ])
                 }
-              } else {
-                setRequestError((oldState) => [...oldState, message])
               }
             } else {
               setRequestError((oldState) => [...oldState, message])
             }
-          })
-          .finally(() => setProcessing(false))
+          } else {
+            setRequestError((oldState) => [...oldState, message])
+          }
+          setProcessing(false)
+        })
         if (response) {
           const {
             data: { data, success }
@@ -139,10 +162,16 @@ export function OnboardingContextProvider({ children }) {
           if (success) {
             router.replace('/onboarding/register/validate')
             setRequestSuccess('Registration was successful.')
+          } else {
+            setProcessing(false)
+            setRequestError((oldState) => [...oldState, 'Something went wrong'])
           }
         }
         break
     }
+  }
+  const getPartner = (partnerid) => {
+    setPartnerInfo((oldState) => ({ ...oldState, partnerid }))
   }
   let errorTimeout = null
   useEffect(() => {
@@ -158,6 +187,7 @@ export function OnboardingContextProvider({ children }) {
       )
     }
   }, [requestError])
+
   let successTimeout = null
   useEffect(() => {
     if (requestSuccess.length > 0) {
@@ -165,6 +195,7 @@ export function OnboardingContextProvider({ children }) {
       successTimeout = setTimeout(() => setRequestSuccess(''), 10000)
     }
   }, [requestSuccess])
+
   const resendEmail = async (email) => {
     const apiUrl =
       'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link'
@@ -199,6 +230,7 @@ export function OnboardingContextProvider({ children }) {
         }
       })
       .finally(() => setProcessing(false))
+
     if (response) {
       const {
         data: { success }
@@ -224,6 +256,7 @@ export function OnboardingContextProvider({ children }) {
         partnerInfo,
         setPartnerInfo,
         registerPartner,
+        getPartner,
         resendEmail
       }}
     >

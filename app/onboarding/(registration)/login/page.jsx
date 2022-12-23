@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRightCircle } from '../../../components/HeroIcons'
+import { ArrowRightCircle } from '@/app/components/HeroIcons'
 
 function Login() {
   return (

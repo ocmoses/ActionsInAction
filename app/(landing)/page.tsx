@@ -1,9 +1,6 @@
-import Image from 'next/image'
-import Navbar from '../components/Navbar'
-import ButtonSolid from '../components/client/ButtonSolid'
-import { ArrowRightCircle } from '../components/HeroIcons'
+import Navbar from '@/app/components/Navbar'
+import { ArrowRightCircle } from '@/app/components/HeroIcons'
 import HeroBanner from './HeroBanner'
-import TrustBrands from './TrustBrands'
 import Link from 'next/link'
 
 function LandingPage() {
@@ -35,7 +32,7 @@ function LandingPage() {
 
             <div className="flex flex-col md:flex-row gap-4 mt-8">
               <Link
-                href="/onboarding"
+                href="/onboarding/partner"
                 className="rounded-full flex justify-between items-center bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl pl-6 pr-3 py-2"
               >
                 <span className="flex-1">Become Partner</span>

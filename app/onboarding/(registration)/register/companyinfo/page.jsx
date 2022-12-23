@@ -1,0 +1,117 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import SelectInput from '@/app/components/form/SelectInput'
+import TextInput from '@/app/components/form/TextInput'
+import { ArrowRightCircle } from '@/app/components/HeroIcons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
+
+function RegisterStepCompanyInfo() {
+  const {
+    forms,
+    roles,
+    partnerInfo,
+    setPartnerInfo,
+    registerPartner,
+    setRequestError,
+    requestError,
+    requestSuccess,
+    processing,
+    setProcessing
+  } = useOnboardingContext()
+  const [data, setData] = useState(partnerInfo)
+  const [errors, setErrors] = useState({})
+  const { title, subtitle, hand, required } = forms['userinfo']
+
+  useEffect(() => {
+    if (partnerInfo) setData(partnerInfo)
+    setProcessing(false)
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    let errorFound = false
+    if (required) {
+      required.map((field) => {
+        if (errors[field]) errorFound = true
+      })
+      if (errorFound) {
+        setRequestError((oldState) => [
+          ...oldState,
+          'Please provide required information to proceed'
+        ])
+        return
+      }
+    }
+    registerPartner('companyinfo')
+  }
+  const handleFormChange = (e) => {
+    setData((initialData) => ({
+      ...initialData,
+      [e.target.id]: e.target.value
+    }))
+  }
+
+  useEffect(() => {
+    if (required) {
+      required.map((field) => {
+        if (data[field] === '')
+          setErrors((oldState) => ({ ...oldState, [field]: true }))
+        else setErrors((oldState) => ({ ...oldState, [field]: false }))
+      })
+    }
+    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
+  }, [data])
+
+  return (
+    <>
+      <div className="relative w3-animate-opacity pt-24 pb-20">
+        <form onSubmit={handleSubmit}>
+          <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+          <TextInput
+            id="company_name"
+            label="Company name"
+            value={data.company_name}
+            onChange={handleFormChange}
+          />
+          <SelectInput
+            id="company_role"
+            label="Company role"
+            value={data.company_role}
+            onChange={handleFormChange}
+          >
+            {roles.map((role) => (
+              <option key={role.slug} value={role.slug}>
+                {role.title}
+              </option>
+            ))}
+          </SelectInput>
+          <div className="font-mtn-extralight text-[#999999] text-start mb-8 p-2">
+            By clicking on the continue button below, I acknowledge that I'm
+            legally authorised to enter into this agreement on the company’'
+            behalf.
+          </div>
+
+          {processing ? (
+            <button className="rounded-full flex justify-between items-center text-black bg-gray-600 hover:bg-white transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2">
+              Continue{' '}
+              <ArrowRightCircle iconClass="w-6 h-6 ml-4 animate-spin" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+            >
+              Continue <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
+            </button>
+          )}
+        </form>
+      </div>
+      <RequestSuccess success={requestSuccess} />
+      <RequestError errors={requestError} />
+    </>
+  )
+}
+
+export default RegisterStepCompanyInfo

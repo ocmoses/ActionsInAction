@@ -6,29 +6,28 @@
 /* @import './w3-mtn-theme.css'; */
 
 @layer base {
-  html {
-    @apply bg-black;
-  }
   body {
     font-family: 'mtn_regular' !important;
     @apply m-0 p-0;
-    @apply bg-black;
+    @apply bg-[#030303];
     @apply min-h-screen;
   }
-  /* blockquote,
-  dl,
-  dd,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  hr,
-  figure,
-  p {
-    @apply font-mtn;
-  } */
+  .mtn-h1 {
+    font-family: 'MTN Brighter Sans';
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 40px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
+  .mtn-h1-subtitle {
+    font-family: 'MTN Brighter Sans';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
   -z-1 {
     z-index: -1 !important;
   }

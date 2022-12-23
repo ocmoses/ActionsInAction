@@ -25,7 +25,7 @@ function Navbar({ type }) {
           </div>
           <div className="flex">
             <Link
-              href="/onboarding"
+              href="/onboarding/register"
               className="rounded-full bg-mtn hidden lg:inline-flex hover:bg-mtn-duration-500 transition ease-in-out 5000 text-md md:text-lg lg:text-xl mr-2 px-6 py-1 lg:mr-4 lg:px-12 lg:py-3"
             >
               Register
@@ -55,7 +55,7 @@ function Navbar({ type }) {
               <div className="text-white flex items-center mr-0 md:mr-3">
                 <p className="hidden sm:inline-flex">Don't have an account?</p>
                 <Link
-                  href="/onboarding"
+                  href="/onboarding/register"
                   className="text-white px-4 py-1 ml-4 rounded-full border-2 border-dotted border-mtn hover:border-white transition ease-in-out duration-500 hover:scale-[110%]"
                 >
                   Become a partner

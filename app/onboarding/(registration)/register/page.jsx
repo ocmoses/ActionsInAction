@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRightCircle } from '../../components/HeroIcons'
+import { ArrowRightCircle } from '@/app/components/HeroIcons'
 
 function Onboading() {
   return (
@@ -12,7 +12,7 @@ function Onboading() {
         How would you like to join our platform?
       </p>
       <Link
-        href="/onboarding/register"
+        href="/onboarding/register/userinfo"
         className="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
       >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-mtn to-mtn/10 hover:bg-mtn/70  transition-none sm:transition-color ease-in-out duration-700 relative">

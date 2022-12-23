@@ -8,7 +8,7 @@ function NavbarOnboarding() {
   const currentPath = segments?.reverse()[0]
   return (
     <header>
-      <div className="container px-0 pt-3 pb-4 md:pt-3 md:pb-4 flex justify-between items-center gap-6 md:gap-10 lg:gap-16 w-full mx-auto border-b-zinc-500 border-b-2 max-w-[1400px] z-10">
+      <div className="container px-0 pt-3 pb-4 md:pt-3 md:pb-4 flex justify-between items-center gap-6 md:gap-10 lg:gap-16 w-full mx-auto border-b-[#333333] border-b-1 max-w-[1400px] z-10">
         <Link href="/">
           <Image
             priority

@@ -32,7 +32,7 @@ function LandingPage() {
 
             <div className="flex flex-col md:flex-row gap-4 mt-8">
               <Link
-                href="/onboarding/partner"
+                href="/onboarding/register"
                 className="rounded-full flex justify-between items-center bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl pl-6 pr-3 py-2"
               >
                 <span className="flex-1">Become Partner</span>

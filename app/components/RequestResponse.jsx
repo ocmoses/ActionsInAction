@@ -1,20 +1,49 @@
-import { ExclamationCircle } from './HeroIcons'
+import { CheckedCircle, ExclamationCircle } from './HeroIcons'
+import { motion } from 'framer-motion'
 
+const toastVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      yoyo: 6
+    }
+  }
+}
+{
+  /* <div className="toast toast-end">
+  <div className="alert alert-info">
+    <div>
+      <span>New mail arrived.</span>
+    </div>
+  </div>
+</div> */
+}
 export function RequestError({ errors }) {
   return (
     <>
       {errors.length > 0 && (
-        <div className=" toast toast-end z-50 absolute w3-animate-right">
+        <div className="toast toast-end z-20 absolute">
+          {/* <div className="h-fit absolute bottom-1 right-1 z-20"> */}
           {errors.map((error) => (
-            <div
-              key={error}
-              className="alert alert-error rounded-md py-2 px-4 text-white text-md bg-red-500"
+            <motion.div
+              key={error.key}
+              className="alert rounded-md py-2 pl-3 pr-5 text-white text-md bg-red-500"
+              // className="max-w-sm h-fit rounded-md py-2 pl-3 pr-5 text-white text-md bg-red-500"
+              variants={toastVariants}
+              initial="hidden"
+              animate="visible"
             >
               <div className="flex gap-3 items-center">
-                <ExclamationCircle iconClass="w-6 h-6 text-white" />
-                <span>{error}</span>
+                <ExclamationCircle iconClass="w-12 h-12 text-white" />
+                <span>{error.message}</span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
@@ -26,13 +55,18 @@ export function RequestSuccess({ success }) {
   return (
     <>
       {success !== '' && (
-        <div className=" toast toast-end z-50 absolute w3-animate-right">
-          <div className="alert alert-success rounded-md py-2 px-4 text-white text-md bg-green-700">
+        <div className="h-fit absolute bottom-1 right-1 z-50">
+          <motion.div
+            className="rounded-md max-w-sm h-fit py-2 pl-3 pr-5 text-white text-md bg-green-700"
+            variants={toastVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <div className="flex gap-3 items-center">
-              <ExclamationCircle iconClass="w-6 h-6 text-white" />
+              <CheckedCircle iconClass="w-12 h-12 text-white" />
               <span>{success}</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </>

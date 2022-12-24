@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { createContext } from 'react'
 import { useContext } from 'react'
 import axios from 'axios'
-import { Util } from '../utils/utility'
+import { Util } from '@/utils/utility'
 import { useRouter } from 'next/navigation'
+import { v4 as uuidv4 } from 'uuid'
 
 const OnboardingContext = createContext()
 
@@ -16,30 +17,30 @@ export function OnboardingContextProvider({ children }) {
       title: 'Get started',
       subtitle: "it'll only take a few minutes",
       hand: '👋',
-      required: [
-        'first_name',
-        'last_name',
-        'email',
-        'country',
-        'countrycode',
-        'telephone',
-        'password',
-        'password_confirmed'
-      ]
+      required: {
+        first_name: 'First name',
+        last_name: 'Last name',
+        email: 'Email',
+        country: 'Country',
+        countrycode: 'Country code',
+        telephone: 'Telephone',
+        password: 'Password',
+        password_confirmed: 'Repeat password'
+      }
     },
     companyinfo: {
       form: 'companyinfo',
       title: 'Your company and role',
       subtitle: "it'll only take a few minutes",
       hand: '',
-      required: ['company_name', 'company_role']
+      required: { company_name: 'Company name', company_role: 'Company role' }
     },
     category: {
       form: 'category',
       title: 'Choose a service category',
       subtitle: 'You’ll be able to add more later',
       hand: '',
-      required: ['company_name', 'company_role']
+      required: {}
     }
   }
   const roles = [
@@ -61,25 +62,26 @@ export function OnboardingContextProvider({ children }) {
   ]
   const [partnerInfo, setPartnerInfo] = useState({
     // partnerid: '',
-    // first_name: 'Prince',
-    // last_name: 'Morpheus',
-    // email: 'bodegbolu3@gmail.com',
-    // country: 'NG',
-    // countrycode: '234',
-    // telephone: '08120820076',
-    // password: 'Password!1234567',
-    // password_confirmed: 'Password!1234567',
-    // company_name: 'Hostnaija.com',
-    // company_role: ''
-    partnerid: '',
-    first_name: '',
-    last_name: '',
-    email: '',
+    first_name: 'Prince',
+    last_name: 'Morpheus',
+    email: 'bodegbolu5@gmail.com',
     country: 'NG',
     countrycode: '234',
-    telephone: '',
-    password: '',
-    password_confirmed: '',
+    telephone: '08120820076',
+    password: 'Password!1234567',
+    password_confirmed: 'Password!1234567',
+    // company_name: 'Hostnaija.com',
+    // company_role: ''
+
+    partnerid: '',
+    // first_name: '',
+    // last_name: '',
+    // email: '',
+    // country: 'NG',
+    // countrycode: '234',
+    // telephone: '',
+    // password: '',
+    // password_confirmed: '',
     company_name: '',
     company_role: ''
   })
@@ -173,20 +175,46 @@ export function OnboardingContextProvider({ children }) {
   const getPartner = (partnerid) => {
     setPartnerInfo((oldState) => ({ ...oldState, partnerid }))
   }
-  let errorTimeout = null
-  useEffect(() => {
-    if (requestError.length > 0) {
-      clearTimeout(errorTimeout)
-      errorTimeout = setTimeout(
-        () =>
-          setRequestError((oldState) => {
-            oldState.shift()
-            return [...oldState]
-          }),
-        10000
-      )
-    }
-  }, [requestError])
+  const ClearErrors = () => {
+    setRequestError([])
+  }
+  let errorTimeout = {}
+  const SetError = (message) => {
+    const uuid = uuidv4()
+    const timeStamp = Date.now().toString()
+    const rand = Math.floor(Math.random() * 1000000)
+    const key = `${uuid}-${timeStamp}-${rand}`
+    setRequestError((oldState) => [...oldState, { key, message }])
+    errorTimeout[key] = setTimeout(
+      (key) => {
+        setRequestError((oldState) => {
+          if (oldState.length > 0) {
+            const newState = oldState.filter((err) => err.key !== key)
+            clearTimeout(errorTimeout[key])
+            return newState
+          }
+          return []
+        })
+      },
+      8000,
+      key
+    )
+  }
+
+  // useEffect(() => {
+  //   errorTimeout = setTimeout(
+  //     () =>
+  //       setRequestError((oldState) => {
+  //         if (oldState.length > 0) {
+  //           oldState.shift()
+  //         } else {
+  //           clearTimeout(errorTimeout)
+  //         }
+  //         return [...oldState]
+  //       }),
+  //     5000
+  //   )
+  // }, [requestError])
 
   let successTimeout = null
   useEffect(() => {
@@ -248,7 +276,10 @@ export function OnboardingContextProvider({ children }) {
         form,
         requestError,
         requestSuccess,
+        SetError,
+        ClearErrors,
         setRequestError,
+        setRequestSuccess,
         processing,
         setProcessing,
         setForm,

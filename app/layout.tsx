@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import { OnboardingContextProvider } from '@/hooks/useOnboardingContext'
 
 export default function RootLayout({
   children
@@ -8,7 +9,9 @@ export default function RootLayout({
   return (
     <html>
       <head />
-      <body>{children}</body>
+      <body>
+        <OnboardingContextProvider>{children}</OnboardingContextProvider>
+      </body>
     </html>
   )
 }

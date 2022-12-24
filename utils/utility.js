@@ -25,5 +25,10 @@ export const Util = {
       ast += '*'
     }
     return name.substring(0, ln).concat(ast).concat('@').concat(domain)
+  },
+  validateEmail: (email) => {
+    return email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    )
   }
 }

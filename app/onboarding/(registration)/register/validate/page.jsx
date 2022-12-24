@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import MailOpened from '~/assets/icons/mail-opened.svg'
-import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
+// import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
 import { Util } from '@/utils/utility'
 
 function Validate() {
@@ -45,8 +45,8 @@ function Validate() {
           </div>
         )}
       </div>
-      <RequestSuccess success={requestSuccess} />
-      <RequestError errors={requestError} />
+      {/* <RequestSuccess success={requestSuccess} />
+      <RequestError errors={requestError} /> */}
     </>
   )
 }

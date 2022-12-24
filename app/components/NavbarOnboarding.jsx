@@ -24,7 +24,7 @@ function NavbarOnboarding() {
             <div className="text-gray-400 text-md flex items-center gap-6 mr-0 md:mr-3">
               <p className="hidden sm:inline-flex">Don't have an account?</p>
               <Link
-                href="/onboarding/register/userinfo"
+                href="/onboarding/register"
                 className="text-white text-md hover:underline"
               >
                 Become a partner

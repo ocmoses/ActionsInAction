@@ -5,7 +5,7 @@ import SelectInput from '@/app/components/form/SelectInput'
 import TextInput from '@/app/components/form/TextInput'
 import { ArrowRightCircle } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
+import { Util } from '@/utils/utility'
 
 function RegisterStepCompanyInfo() {
   const {
@@ -14,15 +14,14 @@ function RegisterStepCompanyInfo() {
     partnerInfo,
     setPartnerInfo,
     registerPartner,
-    setRequestError,
-    requestError,
-    requestSuccess,
+    SetError,
+    ClearErrors,
     processing,
     setProcessing
   } = useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
   const [errors, setErrors] = useState({})
-  const { title, subtitle, hand, required } = forms['userinfo']
+  const { title, subtitle, hand, required } = forms['companyinfo']
 
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
@@ -31,17 +30,14 @@ function RegisterStepCompanyInfo() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    let errorFound = false
-    if (required) {
-      required.map((field) => {
-        if (errors[field]) errorFound = true
-      })
-      if (errorFound) {
-        setRequestError((oldState) => [
-          ...oldState,
-          'Please provide required information to proceed'
-        ])
-        return
+    ClearErrors()
+    if (!Util.isEmpty(required)) {
+      for (const field in required) {
+        console.log(field, data[field])
+        if (!!!data[field]) {
+          SetError(`${required[field]} is required`)
+          return
+        }
       }
     }
     registerPartner('companyinfo')
@@ -54,13 +50,6 @@ function RegisterStepCompanyInfo() {
   }
 
   useEffect(() => {
-    if (required) {
-      required.map((field) => {
-        if (data[field] === '')
-          setErrors((oldState) => ({ ...oldState, [field]: true }))
-        else setErrors((oldState) => ({ ...oldState, [field]: false }))
-      })
-    }
     setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }, [data])
 
@@ -108,8 +97,6 @@ function RegisterStepCompanyInfo() {
           )}
         </form>
       </div>
-      <RequestSuccess success={requestSuccess} />
-      <RequestError errors={requestError} />
     </>
   )
 }

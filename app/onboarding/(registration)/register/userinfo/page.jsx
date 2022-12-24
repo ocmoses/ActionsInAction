@@ -6,16 +6,15 @@ import { CountrySelector } from '@/app/components/countrycode/selector'
 import { COUNTRIES } from '@/app/components/countrycode/countries'
 import TextInput from '@/app/components/form/TextInput'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util, validateEmail } from '@/utils/utility'
+import { Util } from '@/utils/utility'
 
 function RegisterStepUserInfo() {
   const {
     forms,
     partnerInfo,
+    registerPartner,
     processing,
     setProcessing,
-    setPartnerInfo,
-    registerPartner,
     SetError,
     ClearErrors
   } = useOnboardingContext()
@@ -50,11 +49,11 @@ function RegisterStepUserInfo() {
       SetError('Your email address seems to be invalid')
       return
     }
-    registerPartner('userinfo')
+    registerPartner('userinfo', data)
   }
   const handleFormChange = (e) => {
-    setData((initialData) => ({
-      ...initialData,
+    setData((prevState) => ({
+      ...prevState,
       [e.target.id]: e.target.value
     }))
   }
@@ -71,16 +70,12 @@ function RegisterStepUserInfo() {
   const [countrycode, setCountrycode] = useState(partnerInfo.countrycode)
 
   useEffect(() => {
-    setData((initialData) => ({
-      ...initialData,
+    setData((prevState) => ({
+      ...prevState,
       country: country,
       countrycode: countrycode
     }))
   }, [country, countrycode])
-
-  useEffect(() => {
-    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
-  }, [data])
 
   return (
     <div className="w3-animate-opacity pt-24 pb-20">

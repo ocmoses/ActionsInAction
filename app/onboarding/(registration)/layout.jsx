@@ -11,9 +11,7 @@ function Layout({ children }) {
     <div className="grid grid-cols-4 w-screen">
       <div className="relative flex flex-1 flex-col col-span-4 md:col-span-3 min-h-screen px-4 md:px-6 ">
         <NavbarOnboarding />
-        <div className="flex w-full relative md:w-1/2 mx-auto h-full justify-center items-center">
-          {children}
-        </div>
+        <div className="layout-center">{children}</div>
         <RequestSuccess success={requestSuccess} />
         <RequestError errors={requestError} />
       </div>

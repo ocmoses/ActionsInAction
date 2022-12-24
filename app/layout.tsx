@@ -1,5 +1,7 @@
 import '../styles/globals.css'
 import { OnboardingContextProvider } from '@/hooks/useOnboardingContext'
+import { AppContextProvider } from '@/hooks/useAppContext'
+import ResponsiveLabel from '../utils/ResponsiveLabel'
 
 export default function RootLayout({
   children
@@ -10,7 +12,10 @@ export default function RootLayout({
     <html>
       <head />
       <body>
-        <OnboardingContextProvider>{children}</OnboardingContextProvider>
+        <ResponsiveLabel />
+        <AppContextProvider>
+          <OnboardingContextProvider>{children}</OnboardingContextProvider>
+        </AppContextProvider>
       </body>
     </html>
   )

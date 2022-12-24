@@ -1,8 +1,8 @@
 function RegisterStepHeader({ title, subtitle, hand }) {
   return (
-    <div className="mb-12">
+    <div className="mb-12 w-full">
       {title && (
-        <h1 className="flex items-center gap-4 mtn-h1  text-white text-3xl md:text-4xl  lg:text-5xl">
+        <h1 className="flex justify-start items-center gap-4 mtn-h1 text-white text-[24px] md:text-[28px]  lg:text-[36px]">
           <span>{title}</span>
           {hand && <span className="animate-bounce">{hand}</span>}
         </h1>

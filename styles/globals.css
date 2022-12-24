@@ -12,6 +12,10 @@
     @apply bg-[#030303];
     @apply min-h-screen;
   }
+  .layout-center {
+    @apply block md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-center;
+  }
+
   .mtn-h1 {
     font-family: 'MTN Brighter Sans';
     font-size: 36px;

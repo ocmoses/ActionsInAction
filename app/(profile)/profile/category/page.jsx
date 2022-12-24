@@ -1,36 +1,17 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@//hooks/useOnboardingContext'
-import SelectInput from '@/app/components/form/SelectInput'
-import TextInput from '@/app/components/form/TextInput'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import { ArrowRightCircle } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
 import { Util } from '@/utils/utility'
+import SelectInput from '@/app/components/form/SelectInput'
+import TextInput from '@/app/components/form/TextInput'
 
 function RegisterStepCategory() {
-  const {
-    forms,
-    roles,
-    partnerInfo,
-    setPartnerInfo,
-    registerPartner,
-    SetError,
-    requestError,
-    requestSuccess,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { forms, partnerInfo, registerPartner, SetError, processing } =
+    useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
-  const [errors, setErrors] = useState({})
   const { title, subtitle, hand, required } = forms['category']
-
-  useEffect(() => {
-    if (!partnerInfo.partnerid) console.log('Invalid session')
-    else console.log(partnerInfo.partnerid)
-    if (partnerInfo) setData(partnerInfo)
-    setProcessing(false)
-  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -44,18 +25,14 @@ function RegisterStepCategory() {
       }
       if (errorFound) return
     }
-    registerPartner('companyinfo')
+    registerPartner('category', data)
   }
   const handleFormChange = (e) => {
-    setData((initialData) => ({
-      ...initialData,
+    setData((prevState) => ({
+      ...prevState,
       [e.target.id]: e.target.value
     }))
   }
-
-  useEffect(() => {
-    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
-  }, [data])
 
   return (
     <>
@@ -101,8 +78,6 @@ function RegisterStepCategory() {
           )}
         </form>
       </div>
-      <RequestSuccess success={requestSuccess} />
-      <RequestError errors={requestError} />
     </>
   )
 }

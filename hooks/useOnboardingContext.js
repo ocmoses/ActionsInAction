@@ -1,65 +1,17 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { createContext } from 'react'
-import { useContext } from 'react'
-import axios from 'axios'
-import { Util } from '@/utils/utility'
+import { useEffect, useState, createContext, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios'
+import { forms, roles } from '@/app/modules/constants'
+import { register_partner, getPartner } from '@/app/modules/partners'
+import { Util } from '@/utils/utility'
+// import { useAppContext } from '@/hooks/useAppContext'
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
   const router = useRouter()
-  const forms = {
-    userinfo: {
-      form: 'userinfo',
-      title: 'Get started',
-      subtitle: "it'll only take a few minutes",
-      hand: '👋',
-      required: {
-        first_name: 'First name',
-        last_name: 'Last name',
-        email: 'Email',
-        country: 'Country',
-        countrycode: 'Country code',
-        telephone: 'Telephone',
-        password: 'Password',
-        password_confirmed: 'Repeat password'
-      }
-    },
-    companyinfo: {
-      form: 'companyinfo',
-      title: 'Your company and role',
-      subtitle: "it'll only take a few minutes",
-      hand: '',
-      required: { company_name: 'Company name', company_role: 'Company role' }
-    },
-    category: {
-      form: 'category',
-      title: 'Choose a service category',
-      subtitle: 'You’ll be able to add more later',
-      hand: '',
-      required: {}
-    }
-  }
-  const roles = [
-    {
-      slug: '',
-      title: '-',
-      priviledges: []
-    },
-    {
-      slug: 'superadmin',
-      title: 'Super Admin',
-      priviledges: []
-    },
-    {
-      slug: 'admin',
-      title: 'Admin',
-      priviledges: []
-    }
-  ]
   const [partnerInfo, setPartnerInfo] = useState({
     // partnerid: '',
     // first_name: 'Prince',
@@ -89,11 +41,12 @@ export function OnboardingContextProvider({ children }) {
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState('')
   const [processing, setProcessing] = useState(false)
-  const registerPartner = async (frm) => {
+  const registerPartner = async (frm, data) => {
     const apiUrl =
       'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register'
     const callbackurl =
-      'https://digital-partner-portal-tau.vercel.app/onboarding/update'
+      'https://digital-partner-portal-tau.vercel.app/profile/validate'
+
     switch (frm) {
       case 'userinfo':
         setProcessing(true)
@@ -103,77 +56,109 @@ export function OnboardingContextProvider({ children }) {
 
       case 'companyinfo':
         setProcessing(true)
-        const response = await axios(apiUrl, {
-          method: 'POST',
-          headers: {
-            apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
-          },
-          data: {
-            first_name: partnerInfo.first_name,
-            last_name: partnerInfo.last_name,
-            email: partnerInfo.email,
-            country: partnerInfo.country,
-            countrycode: partnerInfo.countrycode,
-            telephone: partnerInfo.telephone,
-            password: partnerInfo.password,
-            password_confirmed: partnerInfo.password_confirmed,
-            company_name: partnerInfo.company_name,
-            company_role: partnerInfo.company_role,
-            callbackurl: callbackurl
-          }
-        }).catch(({ message, response }) => {
-          if (response) {
-            const {
-              data: { data, success }
-            } = response
-
-            if (
-              typeof data === 'object' &&
-              data !== null &&
-              !Util.isEmpty(data)
-            ) {
-              for (const error in data) {
-                if (
-                  data[error].constructor === Array &&
-                  data[error].length > 0
-                ) {
-                  data[error].map((err) => {
-                    console.log('err', err)
-                    setRequestError((oldState) => [...oldState, err])
-                  })
-                } else {
-                  setRequestError((oldState) => [
-                    ...oldState,
-                    data?.message ??
-                      'An error occured. Please reach out to us if issue persists'
-                  ])
-                }
-              }
-            } else {
-              setRequestError((oldState) => [...oldState, message])
-            }
-          } else {
-            setRequestError((oldState) => [...oldState, message])
-          }
-          setProcessing(false)
+        const {
+          success,
+          data: result,
+          errors
+        } = await register_partner({
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email: data.email,
+          country: data.country,
+          countrycode: data.countrycode,
+          telephone: data.telephone,
+          password: data.password,
+          password_confirmed: data.password_confirmed,
+          company_name: data.company_name,
+          company_role: data.company_role,
+          callbackurl: callbackurl
         })
-        if (response) {
-          const {
-            data: { data, success }
-          } = response
-          if (success) {
-            router.replace('/onboarding/register/validate')
-            setRequestSuccess('Registration was successful.')
-          } else {
-            setProcessing(false)
-            setRequestError((oldState) => [...oldState, 'Something went wrong'])
+
+        if (success) {
+          console.log(result)
+          router.replace('/onboarding/register/validate')
+          setRequestSuccess('Registration was successful.')
+        } else {
+          setProcessing(false)
+          if (errors.length > 0) {
+            errors.map((err) => {
+              SetError(err)
+            })
           }
         }
+
+        // const response = await axios(apiUrl, {
+        //   method: 'POST',
+        //   headers: {
+        //     apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+        //   },
+        //   data: {
+        //     first_name: data.first_name,
+        //     last_name: data.last_name,
+        //     email: data.email,
+        //     country: data.country,
+        //     countrycode: data.countrycode,
+        //     telephone: data.telephone,
+        //     password: data.password,
+        //     password_confirmed: data.password_confirmed,
+        //     company_name: data.company_name,
+        //     company_role: data.company_role,
+        //     callbackurl: callbackurl
+        //   }
+        // }).catch(({ message, response }) => {
+        //   if (response) {
+        //     const {
+        //       data: { data, success }
+        //     } = response
+
+        //     if (
+        //       typeof data === 'object' &&
+        //       data !== null &&
+        //       !Util.isEmpty(data)
+        //     ) {
+        //       for (const error in data) {
+        //         if (
+        //           data[error].constructor === Array &&
+        //           data[error].length > 0
+        //         ) {
+        //           data[error].map((err) => {
+        //             console.log('err', err)
+        //             setRequestError((oldState) => [...oldState, err])
+        //           })
+        //         } else {
+        //           setRequestError((oldState) => [
+        //             ...oldState,
+        //             data?.message ??
+        //               'An error occured. Please reach out to us if issue persists'
+        //           ])
+        //         }
+        //       }
+        //     } else {
+        //       setRequestError((oldState) => [...oldState, message])
+        //     }
+        //   } else {
+        //     setRequestError((oldState) => [...oldState, message])
+        //   }
+        //   setProcessing(false)
+        // })
+        // if (response) {
+        //   const {
+        //     data: { data, success }
+        //   } = response
+        //   if (success) {
+        //     router.replace('/onboarding/register/validate')
+        //     setRequestSuccess('Registration was successful.')
+        //   } else {
+        //     setProcessing(false)
+        //     setRequestError((oldState) => [...oldState, 'Something went wrong'])
+        //   }
+        // }
         break
     }
   }
-  const getPartner = (partnerid) => {
-    setPartnerInfo((oldState) => ({ ...oldState, partnerid }))
+
+  const setPartner = (data) => {
+    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }
   const ClearErrors = () => {
     setRequestError([])
@@ -200,22 +185,6 @@ export function OnboardingContextProvider({ children }) {
       key
     )
   }
-
-  // useEffect(() => {
-  //   errorTimeout = setTimeout(
-  //     () =>
-  //       setRequestError((oldState) => {
-  //         if (oldState.length > 0) {
-  //           oldState.shift()
-  //         } else {
-  //           clearTimeout(errorTimeout)
-  //         }
-  //         return [...oldState]
-  //       }),
-  //     5000
-  //   )
-  // }, [requestError])
-
   let successTimeout = null
   useEffect(() => {
     if (requestSuccess.length > 0) {
@@ -285,7 +254,7 @@ export function OnboardingContextProvider({ children }) {
         setForm,
         roles,
         partnerInfo,
-        setPartnerInfo,
+        setPartner,
         registerPartner,
         getPartner,
         resendEmail

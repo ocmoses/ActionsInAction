@@ -12,7 +12,6 @@ function RegisterStepCompanyInfo() {
     forms,
     roles,
     partnerInfo,
-    setPartnerInfo,
     registerPartner,
     SetError,
     ClearErrors,
@@ -20,27 +19,20 @@ function RegisterStepCompanyInfo() {
     setProcessing
   } = useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
-  const [errors, setErrors] = useState({})
   const { title, subtitle, hand, required } = forms['companyinfo']
-
-  useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setProcessing(false)
-  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     ClearErrors()
     if (!Util.isEmpty(required)) {
       for (const field in required) {
-        console.log(field, data[field])
         if (!!!data[field]) {
           SetError(`${required[field]} is required`)
           return
         }
       }
     }
-    registerPartner('companyinfo')
+    registerPartner('companyinfo', data)
   }
   const handleFormChange = (e) => {
     setData((initialData) => ({
@@ -48,10 +40,9 @@ function RegisterStepCompanyInfo() {
       [e.target.id]: e.target.value
     }))
   }
-
   useEffect(() => {
-    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
-  }, [data])
+    setProcessing(false)
+  }, [])
 
   return (
     <>

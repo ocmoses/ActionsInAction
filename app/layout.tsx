@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import { OnboardingContextProvider } from '@/hooks/useOnboardingContext'
 import { AppContextProvider } from '@/hooks/useAppContext'
-import ResponsiveLabel from '../utils/ResponsiveLabel'
+import ResponsiveLabel from './components/ResponsiveLabel'
 
 export default function RootLayout({
   children

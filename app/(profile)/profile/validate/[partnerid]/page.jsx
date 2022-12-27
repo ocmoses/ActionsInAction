@@ -4,14 +4,34 @@ import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
 import { useEffect } from 'react'
 import { ArrowRightCircle } from '@/app/components/HeroIcons'
 import { useRouter } from 'next/navigation'
+import Head from 'next/head'
 
 function Validate({ params: { partnerid } }) {
-  const { getPartner, partnerInfo, requestSuccess, requestError, processing } =
-    useOnboardingContext()
+  const {
+    getPartner,
+    setPartner,
+    partnerInfo,
+    requestSuccess,
+    requestError,
+    processing
+  } = useOnboardingContext()
 
   const router = useRouter()
   useEffect(() => {
-    getPartner(partnerid)
+    // getPartner(partnerid)
+    setPartner({
+      partnerid: '1025',
+      first_name: 'Prince',
+      last_name: 'Morpheus',
+      email: 'bodegbolu5@gmail.com',
+      country: 'NG',
+      countrycode: '234',
+      telephone: '08120820076',
+      password: 'Password!1234567',
+      password_confirmed: 'Password!1234567',
+      company_name: 'MTN Nigeria',
+      company_role: ''
+    })
   }, [partnerid])
 
   const continueRegistration = () => {
@@ -19,6 +39,9 @@ function Validate({ params: { partnerid } }) {
   }
   return (
     <>
+      <Head>
+        <title>Partner validation</title>
+      </Head>
       <div className="relative w3-animate-opacity pt-24 pb-20">
         {processing && (
           <div className="absolute z-50 top-0 right-0 bottom-0 left-0 bg-transparent"></div>

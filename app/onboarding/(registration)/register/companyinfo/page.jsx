@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import SelectInput from '@/app/components/form/SelectInput'
 import TextInput from '@/app/components/form/TextInput'
-import { ArrowRightCircle } from '@/app/components/HeroIcons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
 
 function RegisterStepCompanyInfo() {
   const {
@@ -13,40 +14,40 @@ function RegisterStepCompanyInfo() {
     roles,
     partnerInfo,
     registerPartner,
-    SetError,
-    ClearErrors,
     processing,
     setProcessing
   } = useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
   const { title, subtitle, hand, required } = forms['companyinfo']
+  const [{ errors, setErrors, setError, removeError, clearErrors }] =
+    useErrors(data)
 
+  useEffect(() => {
+    setProcessing(false)
+  }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
-    ClearErrors()
+    clearErrors()
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
-          SetError(`${required[field]} is required`)
-          return
+          setError(field, `${required[field]} is required`)
         }
       }
+      if (!Util.isEmpty(errors)) return
     }
     registerPartner('companyinfo', data)
   }
   const handleFormChange = (e) => {
-    setData((initialData) => ({
-      ...initialData,
+    removeError(e.target.id)
+    setData((prevState) => ({
+      ...prevState,
       [e.target.id]: e.target.value
     }))
   }
-  useEffect(() => {
-    setProcessing(false)
-  }, [])
-
   return (
     <>
-      <div className="relative w3-animate-opacity pt-24 pb-20">
+      <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
         <form onSubmit={handleSubmit}>
           <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
           <TextInput
@@ -54,12 +55,14 @@ function RegisterStepCompanyInfo() {
             label="Company name"
             value={data.company_name}
             onChange={handleFormChange}
+            errors={errors}
           />
           <SelectInput
             id="company_role"
             label="Company role"
             value={data.company_role}
             onChange={handleFormChange}
+            errors={errors}
           >
             {roles.map((role) => (
               <option key={role.slug} value={role.slug}>
@@ -74,10 +77,7 @@ function RegisterStepCompanyInfo() {
           </div>
 
           {processing ? (
-            <button className="rounded-full flex justify-between items-center text-black bg-gray-600 hover:bg-white transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2">
-              Continue{' '}
-              <ArrowRightCircle iconClass="w-6 h-6 ml-4 animate-spin" />
-            </button>
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
             <button
               type="submit"

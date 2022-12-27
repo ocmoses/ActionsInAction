@@ -15,32 +15,22 @@ const toastVariants = {
     }
   }
 }
-{
-  /* <div className="toast toast-end">
-  <div className="alert alert-info">
-    <div>
-      <span>New mail arrived.</span>
-    </div>
-  </div>
-</div> */
-}
+
 export function RequestError({ errors }) {
   return (
     <>
       {errors.length > 0 && (
         <div className="toast toast-end z-20 absolute">
-          {/* <div className="h-fit absolute bottom-1 right-1 z-20"> */}
           {errors.map((error) => (
             <motion.div
               key={error.key}
-              className="alert rounded-md py-2 pl-3 pr-5 text-white text-md bg-red-500"
-              // className="max-w-sm h-fit rounded-md py-2 pl-3 pr-5 text-white text-md bg-red-500"
+              className="min-w-[320px] rounded-md py-2 pl-3 pr-5 text-white text-md bg-red-500"
               variants={toastVariants}
               initial="hidden"
               animate="visible"
             >
               <div className="flex gap-3 items-center">
-                <ExclamationCircle iconClass="w-12 h-12 text-white" />
+                <ExclamationCircle iconClass="w-10 h-10 text-white" />
                 <span>{error.message}</span>
               </div>
             </motion.div>
@@ -55,15 +45,15 @@ export function RequestSuccess({ success }) {
   return (
     <>
       {success !== '' && (
-        <div className="h-fit absolute bottom-1 right-1 z-50">
+        <div className="toast toast-end z-20 absolute">
           <motion.div
-            className="rounded-md max-w-sm h-fit py-2 pl-3 pr-5 text-white text-md bg-green-700"
+            className="min-w-[320px] rounded-md py-2 pl-3 pr-5 text-white text-md bg-green-500"
             variants={toastVariants}
             initial="hidden"
             animate="visible"
           >
             <div className="flex gap-3 items-center">
-              <CheckedCircle iconClass="w-12 h-12 text-white" />
+              <CheckedCircle iconClass="w-10 h-10 text-white" />
               <span>{success}</span>
             </div>
           </motion.div>

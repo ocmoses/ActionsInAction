@@ -9,9 +9,11 @@ function Layout({ children }) {
   const { requestError, requestSuccess } = useOnboardingContext()
   return (
     <div className="grid grid-cols-4 w-screen">
-      <div className="relative flex flex-1 flex-col col-span-4 md:col-span-3 min-h-screen px-4 md:px-6 ">
-        <NavbarOnboarding />
-        <div className="layout-center">{children}</div>
+      <div className="flex flex-col col-span-4 md:col-span-3 overflow-x-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] h-screen max-h-screen relative flex-1 px-4 md:px-6 ">
+        <div className="mb-16">
+          <NavbarOnboarding />
+        </div>
+        <div className="layout-center h-full mt-24">{children}</div>
         <RequestSuccess success={requestSuccess} />
         <RequestError errors={requestError} />
       </div>

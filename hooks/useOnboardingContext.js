@@ -50,6 +50,7 @@ export function OnboardingContextProvider({ children }) {
     switch (frm) {
       case 'userinfo':
         setProcessing(true)
+        setPartner(data)
         setForm('companyinfo')
         router.push('/onboarding/register/companyinfo')
         break
@@ -76,8 +77,9 @@ export function OnboardingContextProvider({ children }) {
 
         if (success) {
           console.log(result)
+          setPartner(data)
           router.replace('/onboarding/register/validate')
-          setRequestSuccess('Registration was successful.')
+          // setRequestSuccess('Registration was successful.')
         } else {
           setProcessing(false)
           if (errors.length > 0) {
@@ -86,73 +88,12 @@ export function OnboardingContextProvider({ children }) {
             })
           }
         }
-
-        // const response = await axios(apiUrl, {
-        //   method: 'POST',
-        //   headers: {
-        //     apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
-        //   },
-        //   data: {
-        //     first_name: data.first_name,
-        //     last_name: data.last_name,
-        //     email: data.email,
-        //     country: data.country,
-        //     countrycode: data.countrycode,
-        //     telephone: data.telephone,
-        //     password: data.password,
-        //     password_confirmed: data.password_confirmed,
-        //     company_name: data.company_name,
-        //     company_role: data.company_role,
-        //     callbackurl: callbackurl
-        //   }
-        // }).catch(({ message, response }) => {
-        //   if (response) {
-        //     const {
-        //       data: { data, success }
-        //     } = response
-
-        //     if (
-        //       typeof data === 'object' &&
-        //       data !== null &&
-        //       !Util.isEmpty(data)
-        //     ) {
-        //       for (const error in data) {
-        //         if (
-        //           data[error].constructor === Array &&
-        //           data[error].length > 0
-        //         ) {
-        //           data[error].map((err) => {
-        //             console.log('err', err)
-        //             setRequestError((oldState) => [...oldState, err])
-        //           })
-        //         } else {
-        //           setRequestError((oldState) => [
-        //             ...oldState,
-        //             data?.message ??
-        //               'An error occured. Please reach out to us if issue persists'
-        //           ])
-        //         }
-        //       }
-        //     } else {
-        //       setRequestError((oldState) => [...oldState, message])
-        //     }
-        //   } else {
-        //     setRequestError((oldState) => [...oldState, message])
-        //   }
-        //   setProcessing(false)
-        // })
-        // if (response) {
-        //   const {
-        //     data: { data, success }
-        //   } = response
-        //   if (success) {
-        //     router.replace('/onboarding/register/validate')
-        //     setRequestSuccess('Registration was successful.')
-        //   } else {
-        //     setProcessing(false)
-        //     setRequestError((oldState) => [...oldState, 'Something went wrong'])
-        //   }
-        // }
+        break
+      case 'category':
+        setProcessing(true)
+        setPartner(data)
+        setForm('companyinformation')
+        router.push('/profile/companyinfo')
         break
     }
   }
@@ -165,25 +106,37 @@ export function OnboardingContextProvider({ children }) {
   }
   let errorTimeout = {}
   const SetError = (message) => {
-    const uuid = uuidv4()
-    const timeStamp = Date.now().toString()
-    const rand = Math.floor(Math.random() * 1000000)
-    const key = `${uuid}-${timeStamp}-${rand}`
-    setRequestError((oldState) => [...oldState, { key, message }])
-    errorTimeout[key] = setTimeout(
-      (key) => {
-        setRequestError((oldState) => {
-          if (oldState.length > 0) {
-            const newState = oldState.filter((err) => err.key !== key)
-            clearTimeout(errorTimeout[key])
-            return newState
-          }
-          return []
+    if (typeof message === 'string') {
+      const uuid = uuidv4()
+      const timeStamp = Date.now().toString()
+      const rand = Math.floor(Math.random() * 1000000)
+      const key = `${uuid}-${timeStamp}-${rand}`
+      setRequestError((oldState) => {
+        let duplicate = false
+        oldState.map((os) => {
+          if (os.message === message) duplicate = true
         })
-      },
-      8000,
-      key
-    )
+        return duplicate ? oldState : [...oldState, { key, message }]
+      })
+      errorTimeout[key] = setTimeout(
+        (key) => {
+          setRequestError((oldState) => {
+            if (oldState.length > 0) {
+              const newState = oldState.filter((err) => err.key !== key)
+              clearTimeout(errorTimeout[key])
+              return newState
+            }
+            return []
+          })
+        },
+        8000,
+        key
+      )
+    } else if (message.constructor === Array && message.length > 0) {
+      message.map((err) => {
+        SetError(err)
+      })
+    }
   }
   let successTimeout = null
   useEffect(() => {

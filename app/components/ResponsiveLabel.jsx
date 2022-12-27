@@ -1,5 +1,3 @@
-import React from 'react'
-
 function ResponsiveLabel() {
   return (
     <div className="bg-yellow-300 p-2 inline-flex absolute top-10 right-0 z-50">

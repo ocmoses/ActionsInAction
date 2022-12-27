@@ -1,19 +1,27 @@
-import React from 'react'
-
-function TextInput({ id, label, value, onChange, type, border, bg, margin }) {
+function TextInput({
+  id,
+  label,
+  value,
+  onChange,
+  type,
+  border,
+  bg,
+  margin,
+  errors
+}) {
   return (
-    <>
+    <div className={margin ? margin + ' ' : 'mb-6 '}>
       <div
         className={
           (border ? border + ' ' : 'border-1 ') +
           (bg ? bg + ' ' : 'bg-[#212121] ') +
-          (margin ? margin + ' ' : 'mb-6 ') +
           'relative px-3 py-3 pb-2 z-0  w-full group  border-[#333333] rounded-[10px]'
         }
       >
         <input
           type={type ? type : 'text'}
           id={id}
+          name={id}
           value={value}
           className="block px-3 py-3 pb-2 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-0  peer"
           placeholder={label}
@@ -32,7 +40,10 @@ function TextInput({ id, label, value, onChange, type, border, bg, margin }) {
           {label}
         </label>
       </div>
-    </>
+      {errors && typeof errors[id] !== 'undefined' && (
+        <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
+      )}
+    </div>
   )
 }
 

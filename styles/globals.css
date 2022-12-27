@@ -13,7 +13,7 @@
     @apply min-h-screen;
   }
   .layout-center {
-    @apply block md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-center;
+    @apply block md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-start;
   }
 
   .mtn-h1 {
@@ -22,7 +22,6 @@
     font-weight: 700;
     line-height: 40px;
     letter-spacing: 0em;
-    text-align: center;
   }
   .mtn-h1-subtitle {
     font-family: 'MTN Brighter Sans';
@@ -30,7 +29,6 @@
     font-weight: 400;
     line-height: 24px;
     letter-spacing: 0em;
-    text-align: center;
   }
   -z-1 {
     z-index: -1 !important;

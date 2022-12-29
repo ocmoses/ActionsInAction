@@ -147,11 +147,12 @@ export function CirclePreloader({ fill, width, height }) {
     </svg>
   )
 }
-export function TailSpinPreloader({ fill, width, height }) {
+export function TailSpinPreloader({ fill, width, height, iconClass }) {
   return (
     <svg
       width={width ?? 135}
       height={height ?? 135}
+      className={iconClass}
       viewBox="0 0 38 38"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -207,5 +208,22 @@ export function UnCheckedInactiveIcon({ width, height, iconClass }) {
       className={iconClass}
       alt=""
     />
+  )
+}
+export function FileUploadIcon({ width, height, iconClass }) {
+  return (
+    <svg
+      width={width ?? 24}
+      height={height ?? 31}
+      className={iconClass}
+      viewBox="0 0 24 31"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22.6953 5.44302L18.5426 1.60403C17.7898 0.888915 16.7988 0.5 15.7574 0.5H4.10248C1.84419 0.5 0 2.34419 0 4.60248V26.5073C0 28.7655 1.84419 30.6098 4.10248 30.6098H19.8975C22.1557 30.6098 24 28.7655 24 26.5073V8.45395C24 7.31233 23.5233 6.22085 22.6953 5.44302ZM7.9038 10.8126C11.2955 7.42085 11.1778 7.52178 11.3037 7.43775C11.5044 7.29977 11.7553 7.2245 11.9937 7.2245H12.0063C12.3325 7.2245 12.6461 7.36248 12.8845 7.58837C14.192 8.90095 16.2277 10.9445 16.0962 10.8126C16.5854 11.3019 16.5854 12.0922 16.0962 12.5816C15.6069 13.0709 14.8165 13.0709 14.3272 12.5816L13.2609 11.5151V15.9438C13.2609 16.6464 12.6963 17.1984 12.0063 17.1984C11.3037 17.1984 10.7517 16.6464 10.7517 15.9438V11.5151L9.67279 12.5941C9.20333 13.0636 8.40283 13.0931 7.9038 12.5941C7.4145 12.1048 7.4145 11.3019 7.9038 10.8126ZM16.8615 23.8853H7.13853C6.44853 23.8853 5.88395 23.3207 5.88395 22.6307C5.88395 21.9406 6.44853 21.3761 7.13853 21.3761H16.8615C17.5515 21.3761 18.116 21.9406 18.116 22.6307C18.116 23.3207 17.5515 23.8853 16.8615 23.8853Z"
+        fill="#888888"
+      />
+    </svg>
   )
 }

@@ -92,8 +92,27 @@ export function OnboardingContextProvider({ children }) {
       case 'category':
         setProcessing(true)
         setPartner(data)
-        setForm('companyinformation')
-        router.push('/profile/companyinfo')
+        setForm('companydetail')
+        router.push('/profile/companydetail')
+        break
+
+      case 'companydetail':
+        setProcessing(true)
+        setPartner(data)
+        setForm('compliance')
+        router.push('/profile/compliance')
+        break
+      case 'compliance':
+        setProcessing(true)
+        setPartner(data)
+        setForm('ncclicense')
+        router.push('/profile/ncclicense')
+        break
+      case 'ncclicense':
+        setProcessing(true)
+        setPartner(data)
+        setForm('ncclicense')
+        router.push('/profile/ncclicense')
         break
     }
   }

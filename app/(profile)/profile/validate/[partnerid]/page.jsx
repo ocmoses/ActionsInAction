@@ -2,7 +2,7 @@
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
 import { useEffect } from 'react'
-import { ArrowRightCircle } from '@/app/components/HeroIcons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/HeroIcons'
 import { useRouter } from 'next/navigation'
 import Head from 'next/head'
 
@@ -44,7 +44,12 @@ function Validate({ params: { partnerid } }) {
       </Head>
       <div className="relative w3-animate-opacity pt-24 pb-20">
         {processing && (
-          <div className="absolute z-50 top-0 right-0 bottom-0 left-0 bg-transparent"></div>
+          <TailSpinPreloader
+            width={40}
+            iconClass="mt-6"
+            height={40}
+            fill="#efb703"
+          />
         )}
 
         <div className="flex justify-center mb-[84px]">
@@ -59,7 +64,7 @@ function Validate({ params: { partnerid } }) {
           Y'ello {partnerInfo.first_name}{' '}
           <span className="animate-bounce">👋</span>
         </h1>
-        <div className="mb-16 p-2 mtn-h1-subtitle text-[#999999]">
+        <div className="mb-16 text-center w-full p-2 mtn-h1-subtitle text-[#999999]">
           Please complete your application to get started
         </div>
         <div className="flex justify-center">

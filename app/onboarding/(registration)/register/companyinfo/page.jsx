@@ -19,8 +19,7 @@ function RegisterStepCompanyInfo() {
   } = useOnboardingContext()
   const [data, setData] = useState(partnerInfo)
   const { title, subtitle, hand, required } = forms['companyinfo']
-  const [{ errors, setErrors, setError, removeError, clearErrors }] =
-    useErrors(data)
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
     setProcessing(false)

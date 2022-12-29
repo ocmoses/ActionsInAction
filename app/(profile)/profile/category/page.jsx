@@ -11,7 +11,6 @@ import {
   ExclamationTriangle
 } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
 import Image from 'next/image'
 import useFetch from '@/hooks/useFatch'
 // import SelectCategoryForm from '../../../components/form/SelectCategoryForm'

@@ -71,8 +71,10 @@ const useFetch = (initialUrl, options) => {
               errors.push(data)
             }
           }
+        } else {
+          errors.push('Something went wrong')
+          console.log('No response returned')
         }
-        s
       } catch (e) {
         console.log('e => ', e)
       }

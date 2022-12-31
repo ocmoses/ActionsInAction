@@ -157,10 +157,8 @@ function RegisterStepUserInfo() {
         <div
           className=" text-white/70 text-start mb-12 p-2"
           style={{
-            fontFamily: 'MTN Brighter Sans',
             fontStyle: 'normal',
             fontWeight: 400,
-            // fontSize: '12px',
             lineHeight: '16px'
           }}
         >

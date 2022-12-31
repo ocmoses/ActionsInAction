@@ -16,7 +16,7 @@ function NavbarOnboarding() {
             width={80}
             height={40}
             alt="MTN Nigeria Logo"
-            className=" text-white min-w-[80px] hover:text-mtn-300 hover:scale-[110%] transition-transform ease-in-out duration-500 cursor-pointer"
+            className=" text-white min-w-[80px] h-auto hover:text-mtn-300 hover:scale-[110%] transition-transform ease-in-out duration-500 cursor-pointer"
           />
         </Link>
         <div className="flex justify-end">

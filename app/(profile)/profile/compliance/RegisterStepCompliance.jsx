@@ -1,17 +1,19 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import SelectInput from '@/app/components/form/SelectInput'
+
 import TextInput from '@/app/components/form/TextInput'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
-import { COUNTRIES } from '../../../modules/countries'
+
 import {
   ArrowRightCircle,
   TailSpinPreloader,
   ExclamationTriangle
 } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import FileInput from '@/app/components/form/FileInput'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
 
 function RegisterStepCompliancePage() {
   useEffect(() => {
@@ -56,7 +58,7 @@ function RegisterStepCompliancePage() {
   }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
-      <form onSubmit={handleSubmit}>
+      <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput
           id="rc_no"
@@ -66,13 +68,35 @@ function RegisterStepCompliancePage() {
           errors={errors}
         />
         <TextInput
-          id="tin"
+          id="tin_no"
           label="Tax identification number"
-          value={data.company_address}
+          value={data.tin_no}
           onChange={handleFormChange}
           errors={errors}
         />
-
+        <FileInputWrapper>
+          <FileInput
+            id="tin_doc"
+            label="TIN Document"
+            value={data.tin_doc}
+            onChange={handleFormChange}
+            errors={errors}
+          />
+          <FileInput
+            id="memart_doc"
+            label="Memart certificate"
+            value={data.memart_doc}
+            onChange={handleFormChange}
+            errors={errors}
+          />
+          <FileInput
+            id="cac_doc"
+            label="CAC Registration Certificate"
+            value={data.cac_doc}
+            onChange={handleFormChange}
+            errors={errors}
+          />
+        </FileInputWrapper>
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (

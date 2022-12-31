@@ -2,7 +2,7 @@
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
 import { useEffect } from 'react'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/HeroIcons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { useRouter } from 'next/navigation'
 import Head from 'next/head'
 
@@ -19,19 +19,19 @@ function Validate({ params: { partnerid } }) {
   const router = useRouter()
   useEffect(() => {
     // getPartner(partnerid)
-    setPartner({
-      partnerid: '1025',
-      first_name: 'Prince',
-      last_name: 'Morpheus',
-      email: 'bodegbolu5@gmail.com',
-      country: 'NG',
-      countrycode: '234',
-      telephone: '08120820076',
-      password: 'Password!1234567',
-      password_confirmed: 'Password!1234567',
-      company_name: 'MTN Nigeria',
-      company_role: ''
-    })
+    // setPartner({
+    //   partnerid: '1025',
+    //   first_name: 'Prince',
+    //   last_name: 'Morpheus',
+    //   email: 'bodegbolu5@gmail.com',
+    //   country: 'NG',
+    //   countrycode: '234',
+    //   telephone: '08120820076',
+    //   password: 'Password!1234567',
+    //   password_confirmed: 'Password!1234567',
+    //   company_name: 'MTN Nigeria',
+    //   company_role: ''
+    // })
   }, [partnerid])
 
   const continueRegistration = () => {

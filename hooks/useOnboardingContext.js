@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, createContext, useContext } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import { forms, partnerFields, roles } from '@/app/modules/constants'
@@ -12,8 +12,11 @@ const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
   const router = useRouter()
+  const segments = useSelectedLayoutSegments()
+  const currentPath = segments?.reverse()[0]
+  // console.log('currentPath', currentPath)
   const [partnerInfo, setPartnerInfo] = useState(partnerFields)
-  const [form, setForm] = useState('userinfo')
+  const [form, setForm] = useState(null)
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState('')
   const [processing, setProcessing] = useState(false)
@@ -27,85 +30,106 @@ export function OnboardingContextProvider({ children }) {
       case 'userinfo':
         setProcessing(true)
         setPartner(data)
-        setForm('companyinfo')
         router.push('/onboarding/register/companyinfo')
         break
 
       case 'companyinfo':
         setProcessing(true)
-        const {
-          success,
-          data: result,
-          errors
-        } = await register_partner({
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email: data.email,
-          country: data.country,
-          countrycode: data.countrycode,
-          telephone: data.telephone,
-          password: data.password,
-          password_confirmed: data.password_confirmed,
-          company_name: data.company_name,
-          company_role: data.company_role,
-          callbackurl: callbackurl
-        })
+        setPartner(data)
+        router.replace('/onboarding/register/validate')
+        // const {
+        //   success,
+        //   data: result,
+        //   errors
+        // } = await register_partner({
+        //   first_name: data.first_name,
+        //   last_name: data.last_name,
+        //   email: data.email,
+        //   country: data.country,
+        //   countrycode: data.countrycode,
+        //   telephone: data.telephone,
+        //   password: data.password,
+        //   password_confirmed: data.password_confirmed,
+        //   company_name: data.company_name,
+        //   company_role: data.company_role,
+        //   callbackurl: callbackurl
+        // })
 
-        if (success) {
-          console.log(result)
-          setPartner(data)
-          router.replace('/onboarding/register/validate')
-          // setRequestSuccess('Registration was successful.')
-        } else {
-          setProcessing(false)
-          if (errors.length > 0) {
-            errors.map((err) => {
-              SetError(err)
-            })
-          }
-        }
+        // if (success) {
+        //   console.log(result)
+        //   setPartner(data)
+        //   router.replace('/onboarding/register/validate')
+        //   // setRequestSuccess('Registration was successful.')
+        // } else {
+        //   setProcessing(false)
+        //   if (errors.length > 0) {
+        //     errors.map((err) => {
+        //       SetError(err)
+        //     })
+        //   }
+        // }
         break
       case 'category':
         setProcessing(true)
         setPartner(data)
-        setForm('companydetail')
         router.push('/profile/companydetail')
         break
 
       case 'companydetail':
         setProcessing(true)
         setPartner(data)
-        setForm('compliance')
         router.push('/profile/compliance')
         break
       case 'compliance':
         setProcessing(true)
         setPartner(data)
-        setForm('ncclicense')
         router.push('/profile/ncclicense')
         break
       case 'ncclicense':
         setProcessing(true)
         setPartner(data)
-        setForm('nlrclicense')
         router.push('/profile/nlrclicense')
         break
 
       case 'nlrclicense':
         setProcessing(true)
         setPartner(data)
-        setForm('shortcode')
         router.push('/profile/shortcode')
         break
       case 'shortcode':
         setProcessing(true)
         setPartner(data)
-        setForm('indemnity')
         router.push('/profile/indemnity')
         break
     }
   }
-
+  const loginPartner = (data) => {
+    setProcessing(true)
+    setTimeout(() => {
+      setProcessing(false)
+    }, 3000)
+    // const {
+    //   success,
+    //   data: result,
+    //   errors
+    // } = await register_partner({
+    //   first_name: data.first_name,
+    //   last_name: data.last_name,
+    // })
+    // if (success) {
+    //   console.log(result)
+    //   setPartner(data)
+    //   router.replace('/onboarding/register/validate')
+    //   // setRequestSuccess('Registration was successful.')
+    // } else {
+    //   setProcessing(false)
+    //   if (errors.length > 0) {
+    //     errors.map((err) => {
+    //       SetError(err)
+    //     })
+    //   }
+    // }
+  }
   const setPartner = (data) => {
     setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }
@@ -217,6 +241,7 @@ export function OnboardingContextProvider({ children }) {
         partnerInfo,
         setPartner,
         registerPartner,
+        loginPartner,
         getPartner,
         resendEmail
       }}

@@ -4,7 +4,7 @@ import {
   CheckedIcon,
   UnCheckedHoverIcon,
   UnCheckedInactiveIcon
-} from '@/app/components/HeroIcons'
+} from '@/app/components/Icons'
 
 const fetchData = async (url, options) => {
   const errors = []

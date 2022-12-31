@@ -12,7 +12,7 @@ export default function RootLayout({
     <html>
       <head />
       <body>
-        <ResponsiveLabel />
+        {process.env.NODE_ENV === 'development' && <ResponsiveLabel />}
         <AppContextProvider>
           <OnboardingContextProvider>{children}</OnboardingContextProvider>
         </AppContextProvider>

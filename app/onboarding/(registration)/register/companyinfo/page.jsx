@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import SelectInput from '@/app/components/form/SelectInput'
 import TextInput from '@/app/components/form/TextInput'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/HeroIcons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
@@ -11,17 +11,20 @@ import useErrors from '@/hooks/useErrors'
 function RegisterStepCompanyInfo() {
   const {
     forms,
+    setForm,
     roles,
     partnerInfo,
     registerPartner,
     processing,
     setProcessing
   } = useOnboardingContext()
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({})
   const { title, subtitle, hand, required } = forms['companyinfo']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
+    if (partnerInfo) setData(partnerInfo)
+    setForm('companyinfo')
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -80,7 +83,7 @@ function RegisterStepCompanyInfo() {
           ) : (
             <button
               type="submit"
-              className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+              className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
             >
               Continue <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
             </button>

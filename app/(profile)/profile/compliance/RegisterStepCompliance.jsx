@@ -10,19 +10,15 @@ import {
   ArrowRightCircle,
   TailSpinPreloader,
   ExclamationTriangle
-} from '@/app/components/HeroIcons'
+} from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import FileInput from '@/app/components/form/FileInput'
 import FileInputWrapper from '@/app/components/form/FileInputWrapper'
 
 function RegisterStepCompliancePage() {
-  useEffect(() => {
-    // getPartner(partnerid)
-    setProcessing(false)
-  }, [])
-
   const {
     forms,
+    setForm,
     partnerInfo,
     setPartner,
     registerPartner,
@@ -30,9 +26,14 @@ function RegisterStepCompliancePage() {
     setProcessing
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({})
   const { title, subtitle, hand, required } = forms['compliance']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  useEffect(() => {
+    if (partnerInfo) setData(partnerInfo)
+    setForm('compliance')
+    setProcessing(false)
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -102,7 +103,7 @@ function RegisterStepCompliancePage() {
         ) : (
           <button
             type="submit"
-            className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+            className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
           >
             Next <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
           </button>

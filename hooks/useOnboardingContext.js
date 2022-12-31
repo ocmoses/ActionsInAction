@@ -3,7 +3,7 @@ import { useEffect, useState, createContext, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
-import { forms, roles } from '@/app/modules/constants'
+import { forms, partnerFields, roles } from '@/app/modules/constants'
 import { register_partner, getPartner } from '@/app/modules/partners'
 import { Util } from '@/utils/utility'
 // import { useAppContext } from '@/hooks/useAppContext'
@@ -12,31 +12,7 @@ const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
   const router = useRouter()
-  const [partnerInfo, setPartnerInfo] = useState({
-    // partnerid: '',
-    // first_name: 'Prince',
-    // last_name: 'Morpheus',
-    // email: 'bodegbolu5@gmail.com',
-    // country: 'NG',
-    // countrycode: '234',
-    // telephone: '08120820076',
-    // password: 'Password!1234567',
-    // password_confirmed: 'Password!1234567',
-    // company_name: 'Hostnaija.com',
-    // company_role: ''
-
-    partnerid: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    country: 'NG',
-    countrycode: '234',
-    telephone: '',
-    password: '',
-    password_confirmed: '',
-    company_name: '',
-    company_role: ''
-  })
+  const [partnerInfo, setPartnerInfo] = useState(partnerFields)
   const [form, setForm] = useState('userinfo')
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState('')
@@ -111,8 +87,21 @@ export function OnboardingContextProvider({ children }) {
       case 'ncclicense':
         setProcessing(true)
         setPartner(data)
-        setForm('ncclicense')
-        router.push('/profile/ncclicense')
+        setForm('nlrclicense')
+        router.push('/profile/nlrclicense')
+        break
+
+      case 'nlrclicense':
+        setProcessing(true)
+        setPartner(data)
+        setForm('shortcode')
+        router.push('/profile/shortcode')
+        break
+      case 'shortcode':
+        setProcessing(true)
+        setPartner(data)
+        setForm('indemnity')
+        router.push('/profile/indemnity')
         break
     }
   }

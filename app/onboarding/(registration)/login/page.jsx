@@ -21,7 +21,6 @@ function Login() {
         <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
           <span
             style={{
-              fontFamily: 'MTN Brighter Sans',
               fontStyle: 'normal',
               fontWeight: 700,
               fontSize: '36px',
@@ -42,7 +41,6 @@ function Login() {
         <p
           className="font-hairline flex-wrap mb-16"
           style={{
-            fontFamily: 'MTN Brighter Sans',
             fontStyle: 'normal',
             fontWeight: 400,
             fontSize: '16px',
@@ -71,7 +69,6 @@ function Login() {
           href="#"
           className="inline-flex font-mtn-extralight  text-white text-start mb-12 px-0 pb-1"
           style={{
-            fontFamily: 'MTN Brighter Sans',
             fontStyle: 'normal',
             fontWeight: 400,
             fontSize: '14px',

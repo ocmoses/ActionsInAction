@@ -51,7 +51,7 @@ function RegisterStepCompanyDetailPage() {
   }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
-      <form onSubmit={handleSubmit}>
+      <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput
           id="company_name"
@@ -81,7 +81,7 @@ function RegisterStepCompanyDetailPage() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 items-center mb-6 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
+        <div className="grid grid-cols-2 gap-6 justify-start w-full">
           <div className="relative ">
             <TextInput
               id="company_city"
@@ -89,9 +89,6 @@ function RegisterStepCompanyDetailPage() {
               value={data.company_city}
               onChange={handleFormChange}
               errors={errors}
-              border="border-0"
-              bg="bg-transparent"
-              margin="mb-0"
             />
           </div>
           <div className="relative ">
@@ -101,9 +98,6 @@ function RegisterStepCompanyDetailPage() {
               value={data.company_state}
               onChange={handleFormChange}
               errors={errors}
-              border="border-0"
-              bg="bg-transparent"
-              margin="mb-0"
             >
               <option></option>
             </SelectInput>

@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import TextInput from '@/app/components/form/TextInput'
 import FileInput from '@/app/components/form/FileInput'
+import DatePicker from '@/app/components/form/DatePicker'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 import {
@@ -12,7 +14,7 @@ import {
 } from '@/app/components/HeroIcons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 
-function RegisterStepCompliancePage() {
+function RegisterStepNcclicense() {
   useEffect(() => {
     // getPartner(partnerid)
     setProcessing(false)
@@ -28,17 +30,23 @@ function RegisterStepCompliancePage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()
+    let error = false
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
+          error = true
           setError(field, `${required[field]} is required`)
         }
       }
-      if (!Util.isEmpty(errors)) return
+      console.log('error', error)
+      console.log('data', data)
+
+      if (error) return
     }
     registerPartner('ncclicense', data)
   }
   const handleFormChange = (e) => {
+    console.log('e.target.id', e.target.id)
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
@@ -47,42 +55,44 @@ function RegisterStepCompliancePage() {
   }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
-      <form onSubmit={handleSubmit}>
+      <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput
-          id="vas_license"
+          id="vas_license_id"
           label="VAS License ID"
-          value={data.vas_license}
+          value={data.vas_license_id}
           onChange={handleFormChange}
           errors={errors}
         />
         <div className="grid grid-cols-2 gap-6 items-center w-full">
-          <div className="relative ">
-            <TextInput
-              id="issue_date"
+          <div className="">
+            <DatePicker
+              id="ncc_issue_date"
               label="Issue date"
-              value={data.issue_date}
-              onChange={handleFormChange}
+              value={data.ncc_issue_date}
+              onChange={() => {}}
               errors={errors}
             />
           </div>
-          <div className="relative ">
-            <TextInput
-              id="expiry_date"
+          <div className="">
+            <DatePicker
+              id="ncc_expiry_date"
               label="Expiry date"
-              value={data.expiry_date}
-              onChange={handleFormChange}
+              value={data.ncc_expiry_date}
+              onChange={() => {}}
               errors={errors}
             />
           </div>
         </div>
-        <FileInput
-          id="issue_date"
-          label="Issue date"
-          value={data.issue_date}
-          onChange={handleFormChange}
-          errors={errors}
-        />
+        <FileInputWrapper>
+          <FileInput
+            id="ncc_doc"
+            label="NCC VAS License"
+            value={data.ncc_doc}
+            onChange={handleFormChange}
+            errors={errors}
+          />
+        </FileInputWrapper>
 
         {processing ? (
           <TailSpinPreloader
@@ -104,4 +114,4 @@ function RegisterStepCompliancePage() {
   )
 }
 
-export default RegisterStepCompliancePage
+export default RegisterStepNcclicense

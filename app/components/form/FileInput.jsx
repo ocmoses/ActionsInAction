@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { FileUploadIcon } from '../HeroIcons'
+
+import { FileUploadIcon, InfoIcon } from '../HeroIcons'
 function FileInput({ id, label, onChange, border, bg, margin, errors }) {
   const [file, setFile] = useState(null)
   const [message, setMessage] = useState('')
+  const [startDate, setStartDate] = useState(new Date())
+
   const handleFile = (e) => {
     setMessage('')
     let file = e.target.files[0]
@@ -28,23 +31,33 @@ function FileInput({ id, label, onChange, border, bg, margin, errors }) {
         }
       >
         <div
-          className={`(border ? border + ' ' : 'border-1 border-dashed ') py-[24px] px-[16px] w-full rounded-[11px] bg-[#030303] border-[#333333] py-[24px] px-[16px]`}
+          className={`(border ? border + ' ' : 'border-1 border-dashed ') w-full rounded-[11px] bg-[#030303] border-[#333333] py-[24px] px-[16px]`}
         >
-          <div className={`flex gap-2 w-full relative`}>
+          <div
+            className={`group cursor-pointer flex gap-2 justify-between w-full relative`}
+          >
             <input
               type="file"
               onChange={handleFile}
               className="h-full w-full opacity-0 z-10 absolute"
-              multiple="multiple"
+              // multiple="multiple"
               name="files"
             />
-            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-              <FileUploadIcon />
+            <div className="flex flex-start gap-3">
+              <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                <FileUploadIcon />
+              </div>
+              <div className="flex flex-col">
+                <p className="text-white font-mtn-bold">{label}</p>
+                <p className="text-[#999999]">Drag and drop or a choose file</p>
+                <p className="text-[#999999]">PDF, JPG, PNG (5mb max)</p>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <p className="text-white font-mtn-bold">{label}</p>
-              <p className="text-[#999999]">Drag and drop or a choose file</p>
-              <p className="text-[#999999]">PDF, JPG, PNG (5mb max)</p>
+            <div className="flex flex-col gap-4 justify-between items-end">
+              <InfoIcon width={16} height={16} iconClass="" />
+              <div className="rounded-full border-1 border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-white">
+                Choose file
+              </div>
             </div>
           </div>
         </div>

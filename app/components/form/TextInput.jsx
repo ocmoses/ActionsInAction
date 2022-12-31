@@ -28,7 +28,6 @@ function TextInput({
           autoComplete="new-password"
           onChange={onChange}
           style={{
-            fontFamily: 'MTN Brighter Sans',
             fontStyle: 'normal',
             fontWeight: 400
           }}

@@ -25,6 +25,7 @@ function Layout({ children }) {
         <Image
           className="h-full object-cover"
           src="/assets/pic/onboarding.png"
+          priority
           alt=""
           width={872}
           height={1221}

@@ -1,4 +1,4 @@
-import { CheckedCircle, ExclamationCircle } from './HeroIcons'
+import { CheckedCircle, ExclamationCircle } from './Icons'
 import { motion } from 'framer-motion'
 
 const toastVariants = {

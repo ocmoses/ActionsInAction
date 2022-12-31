@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { FileUploadIcon, InfoIcon } from '../HeroIcons'
+import { FileUploadIcon, InfoIcon } from '../Icons'
 function FileInput({ id, label, onChange, border, bg, margin, errors }) {
   const [file, setFile] = useState(null)
   const [message, setMessage] = useState('')

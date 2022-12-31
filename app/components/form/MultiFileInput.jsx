@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileUploadIcon } from '../HeroIcons'
+import { FileUploadIcon } from '../Icons'
 function MultiFileInput({ id, label, onChange, border, bg, margin, errors }) {
   const [files, setFile] = useState([])
   const [message, setMessage] = useState('')

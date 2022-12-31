@@ -9,18 +9,30 @@ import {
   UnCheckedInactiveIcon,
   TailSpinPreloader,
   ExclamationTriangle
-} from '@/app/components/HeroIcons'
+} from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Image from 'next/image'
 
 function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
-  const { forms, partnerInfo, registerPartner, SetError, processing } =
-    useOnboardingContext()
+  const {
+    forms,
+    setForm,
+    partnerInfo,
+    registerPartner,
+    SetError,
+    processing,
+    setProcessing
+  } = useOnboardingContext()
 
   const [selectedCategory, setSelectedCategory] = useState([])
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({})
   const [openedTabs, setOpenedTabs] = useState([])
   const { title, subtitle, hand, required } = forms['category']
+  useEffect(() => {
+    if (partnerInfo) setData(partnerInfo)
+    setForm('category')
+    setProcessing(false)
+  }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     if (selectedCategory.length === 0)

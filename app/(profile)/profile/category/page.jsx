@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import RegisterStepCategory from './RegisterStepCategory'
-import { TailSpinPreloader } from '@/app/components/HeroIcons'
+import { TailSpinPreloader } from '@/app/components/Icons'
 import { fetchData } from '@/app/modules/fetchData'
 const fetchCatgories = async () => {
   const nextedCategories = {}
@@ -55,15 +55,11 @@ const fetchCatgories = async () => {
 async function RegisterStepCategoryPage() {
   const { success, errors, categories, subcategories, nextedCategories } =
     await fetchCatgories()
-  console.log('categories', categories)
-  console.log('subcategories', subcategories)
-  console.log('nextedCategories', nextedCategories)
   return (
     <Suspense fallback={<TailSpinPreloader />}>
       <RegisterStepCategory
         catErrors={errors}
         categories={categories}
-        // subcategories={subcategories}
         nextedCategories={nextedCategories}
       />
     </Suspense>

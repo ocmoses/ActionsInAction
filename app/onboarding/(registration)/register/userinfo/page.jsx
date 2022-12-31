@@ -1,7 +1,7 @@
 'use client'
 import { createRef, useEffect, useState } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/HeroIcons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { CountrySelector } from '@/app/components/countrycode/selector'
 import { COUNTRIES } from '@/app/components/countrycode/countries'
 import TextInput from '@/app/components/form/TextInput'
@@ -10,16 +10,22 @@ import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 
 function RegisterStepUserInfo() {
-  const { forms, partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
-  const [data, setData] = useState(partnerInfo)
+  const {
+    forms,
+    setForm,
+    partnerInfo,
+    registerPartner,
+    processing,
+    setProcessing
+  } = useOnboardingContext()
+  const [data, setData] = useState({})
   const { title, subtitle, hand, required } = forms['userinfo']
-  // const [errors, setErrors] = useState({})
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
+    setForm('compliance')
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -191,7 +197,7 @@ function RegisterStepUserInfo() {
         ) : (
           <button
             type="submit"
-            className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+            className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
           >
             Start registration <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
           </button>

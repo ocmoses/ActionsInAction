@@ -1,3 +1,13 @@
+import {
+  AccountInfo,
+  CompanyDetail,
+  Compliance,
+  Indemnity,
+  NccLicense,
+  Shortcode,
+  Review,
+  StepBadge
+} from '@/app/components/Icons'
 export const partnerFields = {
   partnerid: '',
   first_name: '',
@@ -196,6 +206,40 @@ export const forms = {
       // nlrc_expiry_date: 'Expiry date'
       // nlrc_doc: 'NLRC Document'
     }
+  }
+}
+export const profileMenu = [
+  'companydetail',
+  'compliance',
+  'ncclicense',
+  'nlrclicense',
+  'shortcode',
+  'indemnity'
+]
+export const profileMenuIcons = {
+  companydetail: {
+    component: <CompanyDetail />,
+    title: 'Company Info'
+  },
+  compliance: {
+    compliance: <Compliance />,
+    title: 'Compliance'
+  },
+  ncclicense: {
+    component: <NccLicense />,
+    title: 'NCC Licence'
+  },
+  nlrclicense: {
+    component: <NccLicense />,
+    title: 'NLRC Licence'
+  },
+  shortcode: {
+    component: <Shortcode />,
+    title: 'Shortcode'
+  },
+  indemnity: {
+    component: <Indemnity />,
+    title: 'Indemnity'
   }
 }
 export const roles = [

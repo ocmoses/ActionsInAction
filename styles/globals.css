@@ -13,7 +13,7 @@
     @apply min-h-screen;
   }
   .layout-center {
-    @apply block md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-start;
+    @apply flex md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-start;
   }
 
   .mtn-h1 {

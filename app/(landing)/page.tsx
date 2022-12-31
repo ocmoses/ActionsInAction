@@ -1,5 +1,5 @@
 import Navbar from '@/app/components/Navbar'
-import { ArrowRightCircle } from '@/app/components/HeroIcons'
+import { ArrowRightCircle } from '@/app/components/Icons'
 import HeroBanner from './HeroBanner'
 import Link from 'next/link'
 

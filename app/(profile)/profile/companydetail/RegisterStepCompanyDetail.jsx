@@ -10,22 +10,27 @@ import {
   ArrowRightCircle,
   TailSpinPreloader,
   ExclamationTriangle
-} from '@/app/components/HeroIcons'
+} from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 
 function RegisterStepCompanyDetailPage() {
-  useEffect(() => {
-    // getPartner(partnerid)
-    setProcessing(false)
-  }, [])
-
-  const { forms, partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const {
+    forms,
+    setForm,
+    partnerInfo,
+    registerPartner,
+    processing,
+    setProcessing
+  } = useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms['companydetail']
   const [data, setData] = useState(partnerInfo)
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-
+  useEffect(() => {
+    if (partnerInfo) setData(partnerInfo)
+    setForm('companydetail')
+    setProcessing(false)
+  }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()
@@ -115,7 +120,7 @@ function RegisterStepCompanyDetailPage() {
         ) : (
           <button
             type="submit"
-            className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+            className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
           >
             Next <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
           </button>

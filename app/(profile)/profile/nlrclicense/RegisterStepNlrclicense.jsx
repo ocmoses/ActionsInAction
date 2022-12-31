@@ -7,11 +7,7 @@ import DatePicker from '@/app/components/form/DatePicker'
 import FileInputWrapper from '@/app/components/form/FileInputWrapper'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
-import {
-  ArrowRightCircle,
-  TailSpinPreloader,
-  ExclamationTriangle
-} from '@/app/components/Icons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 
 function RegisterStepNlrcLicense() {

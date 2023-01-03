@@ -8,6 +8,8 @@ import {
   Review,
   StepBadge
 } from '@/app/components/Icons'
+
+export const apiURL = 'https://amazonpartner.com.ng/amazon/public/api'
 export const partnerFields = {
   partnerid: '',
   first_name: '',

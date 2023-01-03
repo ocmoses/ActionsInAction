@@ -20,7 +20,7 @@ function RegisterStepNlrcLicense() {
     setProcessing
   } = useOnboardingContext()
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState(partnerInfo)
   const { title, subtitle, hand, required } = forms['nlrclicense']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {

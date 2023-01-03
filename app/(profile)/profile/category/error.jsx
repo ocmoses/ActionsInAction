@@ -8,14 +8,8 @@ import { useEffect } from 'react'
 export default function Error({ error, reset }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error)
+    console.error('Error logo: ', error)
   }, [error])
 
-  return (
-    <div className="text-white">
-      {JSON.stringify(error)}
-      {/* <p>Something went wrong!</p>
-      <button onClick={() => reset()}>Reset</button> */}
-    </div>
-  )
+  return <div className="text-white">{JSON.stringify(error)}</div>
 }

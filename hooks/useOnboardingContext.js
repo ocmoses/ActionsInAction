@@ -1,4 +1,5 @@
 'use client'
+// import { signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useState, createContext, useContext } from 'react'
 import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
@@ -11,6 +12,8 @@ import { Util } from '@/utils/utility'
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
+  // const { data: session } = useSession()
+  // console.log('session', session)
   const router = useRouter()
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -103,33 +106,7 @@ export function OnboardingContextProvider({ children }) {
         break
     }
   }
-  const loginPartner = (data) => {
-    setProcessing(true)
-    setTimeout(() => {
-      setProcessing(false)
-    }, 3000)
-    // const {
-    //   success,
-    //   data: result,
-    //   errors
-    // } = await register_partner({
-    //   first_name: data.first_name,
-    //   last_name: data.last_name,
-    // })
-    // if (success) {
-    //   console.log(result)
-    //   setPartner(data)
-    //   router.replace('/onboarding/register/validate')
-    //   // setRequestSuccess('Registration was successful.')
-    // } else {
-    //   setProcessing(false)
-    //   if (errors.length > 0) {
-    //     errors.map((err) => {
-    //       SetError(err)
-    //     })
-    //   }
-    // }
-  }
+
   const setPartner = (data) => {
     setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }
@@ -241,7 +218,6 @@ export function OnboardingContextProvider({ children }) {
         partnerInfo,
         setPartner,
         registerPartner,
-        loginPartner,
         getPartner,
         resendEmail
       }}

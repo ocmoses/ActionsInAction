@@ -1,3 +1,6 @@
+'use client'
+import { useState } from 'react'
+import { EyeOpenIcon, EyeCloseIcon } from '../Icons'
 function TextInput({
   id,
   label,
@@ -9,6 +12,11 @@ function TextInput({
   margin,
   errors
 }) {
+  const [Type, setType] = useState(type ?? 'text')
+
+  const TogglePassword = () => {
+    setType((oldState) => (oldState === 'text' ? 'password' : 'text'))
+  }
   return (
     <div className={margin ? margin + ' ' : 'mb-6 '}>
       <div
@@ -19,7 +27,7 @@ function TextInput({
         }
       >
         <input
-          type={type ? type : 'text'}
+          type={Type}
           id={id}
           name={id}
           value={value}
@@ -38,7 +46,20 @@ function TextInput({
         >
           {label}
         </label>
+        {type && type.toLowerCase() === 'password' && (
+          <div
+            onClick={TogglePassword}
+            className="flex justify-center items-center cursor-pointer absolute top-0 right-0 bottom-0 text-white/50 mr-4"
+          >
+            {Type === 'password' ? (
+              <EyeCloseIcon iconClass="w-[24px] h-[20px]" />
+            ) : (
+              <EyeOpenIcon iconClass="w-[24px] h-[20px]" />
+            )}
+          </div>
+        )}
       </div>
+
       {errors && typeof errors[id] !== 'undefined' && (
         <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
       )}

@@ -18,7 +18,7 @@ function RegisterStepUserInfo() {
     processing,
     setProcessing
   } = useOnboardingContext()
-  const [data, setData] = useState({})
+  const [data, setData] = useState(partnerInfo)
   const { title, subtitle, hand, required } = forms['userinfo']
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)

@@ -44,9 +44,6 @@ function RegisterStepNcclicense() {
           setError(field, `${required[field]} is required`)
         }
       }
-      console.log('error', error)
-      console.log('data', data)
-
       if (error) return
     }
     registerPartner('ncclicense', data)

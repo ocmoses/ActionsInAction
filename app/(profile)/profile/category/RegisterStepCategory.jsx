@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import { useState, useEffect } from 'react'
+// import { useSession } from 'next-auth/react'
 import {
   ArrowRightCircle,
   ArrowDownCircle,
@@ -14,6 +15,7 @@ import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Image from 'next/image'
 
 function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
+  // const session = useSession()
   const {
     forms,
     setForm,
@@ -25,11 +27,10 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
   } = useOnboardingContext()
 
   const [selectedCategory, setSelectedCategory] = useState([])
-  const [data, setData] = useState({})
   const [openedTabs, setOpenedTabs] = useState([])
   const { title, subtitle, hand, required } = forms['category']
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
+    if (partnerInfo) setSelectedCategory(partnerInfo.category_id ?? [])
     setForm('category')
     setProcessing(false)
   }, [])
@@ -37,9 +38,10 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
     e.preventDefault()
     if (selectedCategory.length === 0)
       SetError(`You must select at least one category`)
-    else registerPartner('category', data)
+    else registerPartner('category', selectedCategory)
   }
   const selectCategory = (c) => {
+    console.log(c)
     if (hasSubcategory(c)) handleToggleTabs(c)
     else toggleChecked(c)
   }
@@ -72,7 +74,9 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
                   An Error was encountered while fetching categories
                 </h4>
                 {catErrors?.map((error) => (
-                  <div className="mb-2 text-white ">{error}</div>
+                  <div key={error} className="mb-2 text-white ">
+                    {error}
+                  </div>
                 ))}
               </div>
             </div>
@@ -146,6 +150,7 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
                   >
                     {nextedCategories[c.id].map((sub) => (
                       <div
+                        key={sub.id}
                         onClick={() => selectCategory(sub.id)}
                         className="group/subcategory flex gap-2 items-between bg-[#111111] p-[16px]"
                       >

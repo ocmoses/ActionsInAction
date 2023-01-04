@@ -1,8 +1,8 @@
-import CredentialsProvider from 'next-auth/providers/credentials'
 import NextAuth from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { apiURL } from '@/app/modules/constants'
 
-export default NextAuth({
+const options = {
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -21,14 +21,11 @@ export default NextAuth({
         const { partnerid, password } = credentials
         console.log('partnerid', partnerid)
         console.log('password', password)
-        const res = await fetch(
-          `https://amazonpartner.com.ng/amazon/public/api/v1/auth/login`,
-          {
-            method: 'POST',
-            body: JSON.stringify({ partnerid, password }),
-            headers: { 'Content-Type': 'application/json' }
-          }
-        )
+        const res = await fetch(`${apiURL}/v1/auth/login`, {
+          method: 'POST',
+          body: JSON.stringify({ partnerid, password }),
+          headers: { 'Content-Type': 'application/json' }
+        })
         const result = await res.json()
         console.log('credentials', credentials)
         console.log('res', res)
@@ -57,4 +54,6 @@ export default NextAuth({
   pages: {
     signIn: '/onboarding/login'
   }
-})
+}
+
+export default (req, res) => NextAuth(req, res, options)

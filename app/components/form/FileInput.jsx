@@ -55,11 +55,16 @@ function FileInput({ id, label, onChange, border, bg, margin, errors }) {
             </div>
             <div className="flex flex-col gap-4 justify-between items-end">
               <InfoIcon width={16} height={16} iconClass="" />
-              <div className="rounded-full border-1 border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-white">
+              <div className="rounded-full border-1 border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-2 text-sm text-white">
                 Choose file
               </div>
             </div>
           </div>
+          {/* <div className="flex justify-end mt-3">
+            <div className="rounded-full border-1 border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-2 text-sm text-white">
+              Choose file
+            </div>
+          </div> */}
         </div>
         {file && (
           <div

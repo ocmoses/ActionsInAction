@@ -1,6 +1,4 @@
 'use client'
-import { signIn, useSession } from 'next-auth/react'
-import { apiURL } from '@/app/modules/constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import TextInput from '@/app/components/form/TextInput'
@@ -8,34 +6,20 @@ import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import useErrors from '@/hooks/useErrors'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 function Login() {
-  const { processing, setProcessing, SetError } = useOnboardingContext()
-  const [data, setData] = useState({ partnerid: '', password: '' })
+  const { processing, setProcessing, LoginUser } = useOnboardingContext()
+  const [data, setData] = useState({
+    partnerid: '', //'234691599',
+    password: '' //'Todoo45@222'
+  })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  const router = useRouter()
   useEffect(() => {
     setProcessing(false)
   }, [])
-  const Login = async (data) => {
-    setProcessing(true)
-    const result = await signIn('credentials', {
-      partnerid: data.partnerid,
-      password: data.password,
-      redirect: false,
-      callbackUrl: '/'
-    })
-    setProcessing(false)
-    console.log('data', data)
-    console.log('result', result)
-    if (!result) {
-      SetError('Something went wrong')
-      return
-    }
-    if (!result?.ok) {
-      if (result.error) SetError(result.error)
-      else return SetError('Something went wrong')
-    }
-  }
 
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -55,10 +39,11 @@ function Login() {
       setError('password', `Please enter your password`)
       return
     }
-    await Login(data)
-    const session = useSession()
-    console.log('session', useSession)
+    const result = await LoginUser(data, '/', false)
+    if (result?.error) setError('login', result.error)
   }
+  // const session = useSession()
+  // console.log('session', session)
   return (
     <form method="POST" onSubmit={handleLogin}>
       <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
@@ -94,6 +79,11 @@ function Login() {
         >
           Welcome back! please enter your great details
         </p>
+        <div className="mb-6">
+          {errors && typeof errors['login'] !== 'undefined' && (
+            <div className="text-sm text-red-600 mt-2">{errors['login']}</div>
+          )}
+        </div>
         <TextInput
           id="partnerid"
           label="Partner ID"
@@ -112,7 +102,7 @@ function Login() {
 
         <Link
           href="#"
-          className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1"
+          className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
           style={{
             fontStyle: 'normal',
             fontWeight: 400,
@@ -128,7 +118,7 @@ function Login() {
         ) : (
           <button
             type="submit"
-            className="rounded-full mt-6 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
+            className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
           >
             Continue <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
           </button>

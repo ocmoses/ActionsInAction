@@ -39,9 +39,6 @@ function Validate({ params: { partnerid } }) {
   }
   return (
     <>
-      <Head>
-        <title>Partner validation</title>
-      </Head>
       <div className="relative w3-animate-opacity pt-24 pb-20">
         {processing && (
           <TailSpinPreloader

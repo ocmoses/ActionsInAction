@@ -20,7 +20,7 @@ export function RequestError({ errors }) {
   return (
     <>
       {errors.length > 0 && (
-        <div className="toast toast-end z-20 absolute">
+        <div className="toast toast-end z-20 fixed">
           {errors.map((error) => (
             <motion.div
               key={error.key}
@@ -45,7 +45,7 @@ export function RequestSuccess({ success }) {
   return (
     <>
       {success !== '' && (
-        <div className="toast toast-end z-20 absolute">
+        <div className="toast toast-end z-20 fixed">
           <motion.div
             className="min-w-[320px] rounded-md py-2 pl-3 pr-5 text-white text-md bg-green-500"
             variants={toastVariants}

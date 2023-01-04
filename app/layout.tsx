@@ -1,25 +1,17 @@
-'use client'
 import '../styles/globals.css'
-import { SessionProvider } from 'next-auth/react'
-import { OnboardingContextProvider } from '@/hooks/useOnboardingContext'
-import { AppContextProvider } from '@/hooks/useAppContext'
+import Providers from './Providers'
 import ResponsiveLabel from './components/ResponsiveLabel'
-
+import { ReactNode } from 'react'
 interface IProps {
-  children: React.ReactNode
-  session: any
+  children: ReactNode
 }
-export default function RootLayout({ children, session }: IProps) {
+export default function RootLayout({ children }: IProps) {
   return (
-    <html>
+    <html lang="en">
       <head />
       <body>
         {process.env.NODE_ENV === 'development' && <ResponsiveLabel />}
-        <SessionProvider session={session}>
-          <AppContextProvider>
-            <OnboardingContextProvider>{children}</OnboardingContextProvider>
-          </AppContextProvider>
-        </SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

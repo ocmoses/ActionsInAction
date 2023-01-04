@@ -30,13 +30,15 @@ function RegisterStepCompanyInfo() {
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()
+    let error = false
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
+          error = true
           setError(field, `${required[field]} is required`)
         }
       }
-      if (!Util.isEmpty(errors)) return
+      if (error) return
     }
     registerPartner('companyinfo', data)
   }

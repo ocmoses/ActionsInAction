@@ -1,19 +1,18 @@
 'use client'
-// import { signIn, signOut, useSession } from 'next-auth/react'
 import { useEffect, useState, createContext, useContext } from 'react'
 import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
-import { forms, partnerFields, roles } from '@/app/modules/constants'
-import { register_partner, getPartner } from '@/app/modules/partners'
+import { apiURL, forms, partnerFields, roles } from '@/app/modules/constants'
+import { fetchData } from '@/app/modules/fetchData'
+import { getPartner } from '@/app/modules/partners'
 import { Util } from '@/utils/utility'
+import { signIn } from 'next-auth/react'
 // import { useAppContext } from '@/hooks/useAppContext'
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
-  // const { data: session } = useSession()
-  // console.log('session', session)
   const router = useRouter()
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -23,57 +22,75 @@ export function OnboardingContextProvider({ children }) {
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState('')
   const [processing, setProcessing] = useState(false)
-  const registerPartner = async (frm, data) => {
-    const apiUrl =
-      'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register'
-    const callbackurl =
-      'https://digital-partner-portal-tau.vercel.app/profile/validate'
+  const LoginUser = async (data, redirect = '/', replace = true) => {
+    setProcessing(true)
+    const result = await signIn('credentials', {
+      partnerid: data.partnerid,
+      password: data.password,
+      redirect: replace,
+      callbackUrl: redirect
+    })
 
+    if (!result) {
+      setProcessing(false)
+      return SetError('Something went wrong')
+    }
+    if (!result?.ok) {
+      setProcessing(false)
+      if (result.error) SetError(result.error)
+      else return SetError('Something went wrong')
+    }
+    // if (replace) router.replace(redirect)
+    // else router.push(redirect)
+    console.log('Signin', { data, redirect, replace, result })
+    return result
+  }
+  const registerPartner = async (frm, data) => {
     switch (frm) {
       case 'userinfo':
         setProcessing(true)
         setPartner(data)
-        router.push('/onboarding/register/companyinfo')
+
+        // const { success, errors, user } = await fetchData(
+        //   `${apiURL}/v1/auth/register/userinfo`,
+        //   {
+        //     method: 'POST',
+        //     cache: 'no-store',
+        //     body: JSON.stringify({
+        //       first_name: data.first_name,
+        //       last_name: data.last_name,
+        //       email: data.email,
+        //       countrycode: data.countrycode,
+        //       country: data.country,
+        //       telephone: data.telephone,
+        //       password: data.password,
+        //       password_confirmed: data.password_confirmed
+        //     })
+        //   }
+        // )
+        // setProcessing(false)
+        // console.log('userinfo', { success, errors, user })
+        // if (errors) {
+        //   SetError(errors)
+        // }
+        LoginUser(
+          {
+            partnerid: '234691599',
+            password: 'Todoo45@222'
+          },
+          '/onboarding/register/companyinfo',
+          false
+        )
+        // router.replace('/onboarding/register/companyinfo')
         break
 
       case 'companyinfo':
         setProcessing(true)
         setPartner(data)
         router.replace('/onboarding/register/validate')
-        // const {
-        //   success,
-        //   data: result,
-        //   errors
-        // } = await register_partner({
-        //   first_name: data.first_name,
-        //   last_name: data.last_name,
-        //   email: data.email,
-        //   country: data.country,
-        //   countrycode: data.countrycode,
-        //   telephone: data.telephone,
-        //   password: data.password,
-        //   password_confirmed: data.password_confirmed,
-        //   company_name: data.company_name,
-        //   company_role: data.company_role,
-        //   callbackurl: callbackurl
-        // })
-
-        // if (success) {
-        //   console.log(result)
-        //   setPartner(data)
-        //   router.replace('/onboarding/register/validate')
-        //   // setRequestSuccess('Registration was successful.')
-        // } else {
-        //   setProcessing(false)
-        //   if (errors.length > 0) {
-        //     errors.map((err) => {
-        //       SetError(err)
-        //     })
-        //   }
-        // }
         break
       case 'category':
-        setProcessing(true)
+        setProcessing(false)
         setPartner(data)
         router.push('/profile/companydetail')
         break
@@ -103,6 +120,24 @@ export function OnboardingContextProvider({ children }) {
         setProcessing(true)
         setPartner(data)
         router.push('/profile/indemnity')
+        break
+
+      // Existing partner flows
+      case 'partnerwelcome':
+        setProcessing(true)
+        router.push('/onboarding/register/validate?path=pwd')
+        break
+      case 'setpassword':
+        setProcessing(true)
+        router.push('/profile/update/welcome?path=companyinfo')
+        break
+      case 'confirmcompanyinfo':
+        setProcessing(true)
+        router.push('/profile/update/contactperson')
+        break
+      case 'contactperson':
+        setProcessing(true)
+        router.push('/profile/update/contactperson')
         break
     }
   }
@@ -219,7 +254,8 @@ export function OnboardingContextProvider({ children }) {
         setPartner,
         registerPartner,
         getPartner,
-        resendEmail
+        resendEmail,
+        LoginUser
       }}
     >
       {children}

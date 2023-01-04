@@ -18,26 +18,45 @@ function RegisterStepUserInfo() {
     processing,
     setProcessing
   } = useOnboardingContext()
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    countrycode: '',
+    telephone: '',
+    password: '',
+    password_confirmed: ''
+  })
   const { title, subtitle, hand, required } = forms['userinfo']
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('compliance')
+    if (partnerInfo)
+      setData({
+        first_name: partnerInfo.first_name ?? '',
+        last_name: partnerInfo.last_name ?? '',
+        email: partnerInfo.email ?? '',
+        countrycode: partnerInfo.countrycode ?? '',
+        telephone: partnerInfo.telephone ?? '',
+        password: '',
+        password_confirmed: ''
+      })
+    setForm('userinfo')
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()
+    let error = false
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
+          error = true
           setError(field, `${required[field]} is required`)
         }
       }
-      if (!Util.isEmpty(errors)) return
+      if (error) return
     }
     if (data['password'].length < 8) {
       setError('password', 'Your password must be at least, 8 characters')
@@ -61,7 +80,6 @@ function RegisterStepUserInfo() {
     }))
   }
   const handleCountryChange = (val) => {
-    removeError(e.target.id)
     setCountry(val)
     setCountrycode(() => {
       const country = COUNTRIES.find((option) => option.value === val)
@@ -85,6 +103,7 @@ function RegisterStepUserInfo() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+
         <div className="grid grid-cols-2 gap-4">
           <TextInput
             id="first_name"
@@ -108,8 +127,8 @@ function RegisterStepUserInfo() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-3 items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
-          <div className="relative ">
+        <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
+          <div className=" ">
             <CountrySelector
               id={'countries'}
               ref={myRef}
@@ -122,7 +141,7 @@ function RegisterStepUserInfo() {
               errors={errors}
             />
           </div>
-          <div className="relative col-span-2 flex-1 ">
+          <div className=" flex-1 ">
             <TextInput
               id="telephone"
               label="Telephone"

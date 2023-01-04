@@ -6,20 +6,21 @@ import {
   NccLicense,
   Shortcode,
   Review,
-  StepBadge
+  StepBadge,
+  ContactPerson
 } from '@/app/components/Icons'
 
 export const apiURL = 'https://amazonpartner.com.ng/amazon/public/api'
 export const partnerFields = {
   partnerid: '',
-  first_name: '',
-  last_name: '',
-  email: '',
+  first_name: '', // 'Prince',
+  last_name: '', // 'Morpheus',
+  email: '', // 'princemorpheus@gmail.com',
   country: 'NG',
   countrycode: '234',
-  telephone: '',
-  password: '',
-  password_confirmed: '',
+  telephone: '', // '08120820076',
+  password: '', // 'Password12345!',
+  password_confirmed: '', // 'Password12345!',
   company_name: '',
   company_role: '',
   category_id: '',
@@ -208,6 +209,74 @@ export const forms = {
       // nlrc_expiry_date: 'Expiry date'
       // nlrc_doc: 'NLRC Document'
     }
+  },
+  partnerwelcome: {
+    form: 'partnerwelcome',
+    title: 'Welcome back',
+    subtitle: "We'll send a confirmation email to your liked email address",
+    hand: '👋',
+    fields: {
+      partnerid: 'Partner ID or email'
+    },
+    required: {
+      partnerid: 'Partner ID or email'
+    }
+  },
+  setpassword: {
+    form: 'setpassword',
+    title: 'Setup your password',
+    subtitle: '',
+    hand: '',
+    fields: {
+      password: 'Password',
+      password_confirmed: 'Repeat password'
+    },
+    required: {
+      password: 'Password',
+      password_confirmed: 'Repeat password'
+    }
+  },
+  confirmcompanyinfo: {
+    form: 'confirmcompanyinfo',
+    title: 'Confirm your company information',
+    subtitle: '',
+    hand: '',
+    fields: {
+      company_name: 'Company name',
+      country: 'Country',
+      company_address: 'Company address',
+      company_city: 'Company city',
+      company_state: 'Company state',
+      company_postcode: 'Company postcode'
+    },
+    required: {
+      company_name: 'Company name',
+      country: 'Country',
+      company_address: 'Company address',
+      company_city: 'Company city',
+      // company_state: 'Company state',
+      company_postcode: 'Company postcode'
+    }
+  },
+  contactperson: {
+    form: 'contactperson',
+    title: 'Contact person',
+    subtitle: '',
+    hand: '',
+    fields: {
+      first_name: 'First name',
+      last_name: 'Last name',
+      email: 'Email',
+      countrycode: 'Country code',
+      telephone: 'Telephone'
+    },
+    required: {
+      first_name: 'First name',
+      last_name: 'Last name',
+      email: 'Email',
+      countrycode: 'Country code',
+      telephone: 'Telephone'
+    }
   }
 }
 export const profileMenu = [
@@ -218,11 +287,13 @@ export const profileMenu = [
   'shortcode',
   'indemnity'
 ]
+export const updateMenu = ['confirmcompanyinfo', 'contactperson']
 export const profileMenuIcons = {
   companydetail: {
     component: <CompanyDetail />,
     title: 'Company Info'
   },
+
   compliance: {
     compliance: <Compliance />,
     title: 'Compliance'
@@ -242,6 +313,15 @@ export const profileMenuIcons = {
   indemnity: {
     component: <Indemnity />,
     title: 'Indemnity'
+  },
+  // Update menu
+  confirmcompanyinfo: {
+    component: <CompanyDetail />,
+    title: 'Company Info'
+  },
+  contactperson: {
+    component: <ContactPerson />,
+    title: 'Contact Person'
   }
 }
 export const roles = [

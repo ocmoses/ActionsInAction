@@ -40,23 +40,25 @@ export const CountrySelector = React.forwardRef<
       <div className="relative">
         <button
           type="button"
-          className="flex items-center gap-2 bg-transparent relative border-0  px-4 pb-2.5 pt-3 w-full text-left cursor-default focus:outline-none  focus:ring-0 text-white text-xl"
+          className="flex items-center gap-4 bg-transparent relative border-0  px-4 pb-2.5 pt-3 w-full text-left cursor-pointer focus:outline-none  focus:ring-0 text-white text-xl"
           aria-haspopup="listbox"
           aria-expanded="true"
           aria-labelledby="listbox-label"
           onClick={props.onToggle}
         >
-          <span className=" flex items-center">
+          <span className=" flex items-center pr-2">
             <img
-              alt={`${props.selectedValue.value}`}
-              src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${props.selectedValue.value}.svg`}
+              alt={`${props.selectedValue?.value ?? 'NG'}`}
+              src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${
+                props.selectedValue?.value ?? 'NG'
+              }.svg`}
               className={'inline mr-2 h-4 rounded-sm'}
             />
-            {props.selectedValue.code}
+            {/* {props.selectedValue.code} */}
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <svg
-              className="h-5 w-5 text-gray-400"
+              className="h-4 w-4 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -64,7 +66,7 @@ export const CountrySelector = React.forwardRef<
             >
               <path
                 fillRule="evenodd"
-                d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z"
                 clipRule="evenodd"
               />
             </svg>
@@ -78,7 +80,7 @@ export const CountrySelector = React.forwardRef<
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.1 }}
-              className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-80 rounded-md text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              className="absolute z-10 mt-1 min-w-[100px] bg-white shadow-lg max-h-80 rounded-md text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               tabIndex={-1}
               role="listbox"
               aria-labelledby="listbox-label"
@@ -100,7 +102,7 @@ export const CountrySelector = React.forwardRef<
 
               <div
                 className={
-                  'max-h-64 scrollbar scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-600 scrollbar-thumb-rounded scrollbar-thin overflow-y-scroll'
+                  'max-h-64 w-full scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-600 scrollbar-thumb-rounded scrollbar-thin overflow-y-scroll'
                 }
               >
                 {COUNTRIES.filter((country) =>

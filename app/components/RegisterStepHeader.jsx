@@ -1,4 +1,8 @@
+'use client'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import { RequestSuccess, RequestError } from '@/app/components/ResponseMessage'
 function RegisterStepHeader({ title, subtitle, hand }) {
+  const { requestError } = useOnboardingContext()
   return (
     <div className="mb-12 w-full">
       {title && (
@@ -12,6 +16,7 @@ function RegisterStepHeader({ title, subtitle, hand }) {
           {subtitle}
         </p>
       )}
+      {requestError && <RequestError errors={requestError} />}
     </div>
   )
 }

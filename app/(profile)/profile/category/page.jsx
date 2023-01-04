@@ -2,16 +2,17 @@ import { Suspense } from 'react'
 import RegisterStepCategory from './RegisterStepCategory'
 import { TailSpinPreloader } from '@/app/components/Icons'
 import { fetchData } from '@/app/modules/fetchData'
+import { apiURL } from '@/app/modules/constants'
+
 const fetchCatgories = async () => {
   const nextedCategories = {}
   const {
     success: catSuccess,
     errors: catErrors,
     data: categories
-  } = await fetchData(
-    'https://amazonpartner.com.ng/amazon/public/api/v1/categories',
-    { cache: 'no-store' }
-  )
+  } = await fetchData(`${apiURL}/v1/categories`, {
+    next: { revalidate: 86400 }
+  })
   if (!catSuccess)
     return {
       success: catSuccess,
@@ -19,44 +20,32 @@ const fetchCatgories = async () => {
       data: categories,
       nextedCategories
     }
-  const {
-    success: subcatSuccess,
-    errors: subcatErrors,
-    data: subcategories
-  } = await fetchData(
-    'https://amazonpartner.com.ng/amazon/public/api/v1/categories/sub-categories',
-    { cache: 'no-store' }
-  )
-  if (!subcatSuccess)
-    return {
-      success: subcatSuccess,
-      errors: subcatErrors,
-      data: subcategories,
-      nextedCategories
+  const Categories = []
+  const Subcategories = []
+  categories.map((cat) => {
+    if (!cat.parent_id) {
+      Categories.push(cat)
+    } else {
+      if (typeof nextedCategories[cat.parent_id] === 'undefined')
+        nextedCategories[cat.parent_id] = []
+      nextedCategories[cat.parent_id].push(cat)
     }
+  })
 
-  if (subcategories) {
-    subcategories.map((s) => {
-      s.id = 'sub-' + s.id
-      if (typeof nextedCategories[s.cid] === 'undefined')
-        nextedCategories[s.cid] = []
-      nextedCategories[s.cid].push(s)
-    })
-  }
   return {
     success: true,
     errors: [],
-    categories,
-    subcategories,
+    categories: Categories,
     nextedCategories
   }
 }
 
 async function RegisterStepCategoryPage() {
-  const { success, errors, categories, subcategories, nextedCategories } =
+  const { success, errors, categories, nextedCategories } =
     await fetchCatgories()
+
   return (
-    <Suspense fallback={<TailSpinPreloader />}>
+    <Suspense fallback={<TailSpinPreloader width={24} height={24} />}>
       <RegisterStepCategory
         catErrors={errors}
         categories={categories}

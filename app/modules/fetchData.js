@@ -11,38 +11,35 @@ export const fetchData = async (url, opt) => {
     headers: { ...defaultHeaders, ...Opts?.headers }
   }
   const options = { ...defaultOptions, ...Opts }
-  console.log('options', options)
   try {
     const response = await fetch(url, options).catch((e) => {
-      errors.push('We could not reach the server. Please check your connection')
-      console.log('e.message', e.message)
+      console.log('e', e)
     })
+    console.log('response', { url, response })
     if (!response?.ok) {
-      errMsg += 'Failed to fetch data: '
-      console.log('Failed to fetch data')
-      // throw new Error('Failed to fetch data')
+      errMsg += 'Error! '
     }
-    if (response?.ok) {
-      const { data, success } = await response.json()
-      if (response.status >= 200 && response.status < 300) {
+    if (response) {
+      const { data, success } = await response?.json()
+      if (response?.ok) {
         if (success) {
-          console.log('data', data)
           return { success, errors: [], data }
         } else {
-          errors.push('Something went wrong. No data was returned')
-          console.log('No data returned')
+          errors.push('Sorry! Something went wrong. No data was returned')
         }
-      } else if (response.status === 404) {
-        errors.push(errMsg + 'An error 404 was encountered. Please contact us')
-        console.log('Error 404')
-      } else {
-        console.log('Other errors')
-        errors.push(errMsg + response.statusText)
+      } else if (data?.message) {
+        errors.push(errMsg + data?.message)
       }
+    } else {
+      errors.push(
+        'Sorry! We could not reach the server. Please check your connection and reload this page'
+      )
     }
   } catch (e) {
-    console.log('e => ', e)
-    loadDefaultErrorComponents.push(errMsg + 'Something went wrong')
+    errors.push(
+      'Sorry! We could not reach the server. Please check your connection. ' +
+        e.toString()
+    )
   }
   return { success: false, errors, data: null }
 }

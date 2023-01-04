@@ -1,3 +1,7 @@
-export default function page() {
-  return <div>Contact page</div>
+import ContactPerson from './ContactPerson'
+
+function ContactPersonPage() {
+  return <ContactPerson />
 }
+
+export default ContactPersonPage

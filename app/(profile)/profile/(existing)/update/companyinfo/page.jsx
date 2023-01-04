@@ -1,3 +1,7 @@
-export default function page() {
-  return <div>page</div>
+import CompanyInfo from './CompanyInfo'
+
+function CompanyInfoPage() {
+  return <CompanyInfo />
 }
+
+export default CompanyInfoPage

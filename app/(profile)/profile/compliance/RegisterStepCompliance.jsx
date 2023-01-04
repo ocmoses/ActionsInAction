@@ -6,11 +6,7 @@ import TextInput from '@/app/components/form/TextInput'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 
-import {
-  ArrowRightCircle,
-  TailSpinPreloader,
-  ExclamationTriangle
-} from '@/app/components/Icons'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import FileInput from '@/app/components/form/FileInput'
 import FileInputWrapper from '@/app/components/form/FileInputWrapper'

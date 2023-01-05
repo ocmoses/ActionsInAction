@@ -1,17 +1,17 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+"use client"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 
-import TextInput from '@/app/components/form/TextInput'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
+import TextInput from "@/app/components/form/TextInput"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
 
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import FileInput from '@/app/components/form/FileInput'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import FileInput from "@/app/components/form/FileInput"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 
-function RegisterStepCompliancePage() {
+function Compliance() {
   const {
     forms,
     setForm,
@@ -19,15 +19,28 @@ function RegisterStepCompliancePage() {
     setPartner,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['compliance']
+  const [data, setData] = useState({
+    rc_no: "",
+    tin_no: "",
+    tin_doc: "",
+    memart_doc: "",
+    cac_doc: "",
+  })
+  const { title, subtitle, hand, required } = forms["compliance"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('compliance')
+    if (partnerInfo)
+      setData({
+        rc_no: partnerInfo.rc_no ?? "",
+        tin_no: partnerInfo.tin_no ?? "",
+        tin_doc: partnerInfo.tin_doc ?? "",
+        memart_doc: partnerInfo.memart_doc ?? "",
+        cac_doc: partnerInfo.cac_doc ?? "",
+      })
+    setForm("compliance")
     setProcessing(false)
   }, [])
 
@@ -44,13 +57,13 @@ function RegisterStepCompliancePage() {
       }
       if (error) return
     }
-    registerPartner('compliance', data)
+    registerPartner("compliance", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -109,4 +122,4 @@ function RegisterStepCompliancePage() {
   )
 }
 
-export default RegisterStepCompliancePage
+export default Compliance

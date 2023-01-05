@@ -1,7 +1,7 @@
-import RegisterStepCompliance from './RegisterStepCompliance'
+import Compliance from "./Compliance"
 
-function RegisterStepCompliancePage() {
-  return <RegisterStepCompliance />
+function CompliancePage() {
+  return <Compliance />
 }
 
-export default RegisterStepCompliancePage
+export default CompliancePage

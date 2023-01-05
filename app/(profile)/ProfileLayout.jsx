@@ -1,12 +1,12 @@
-'use client'
-import Image from 'next/image'
-import NavbarProfile from '@/app/components/NavbarProfile'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+"use client"
+import Image from "next/image"
+import NavbarProfile from "@/app/components/NavbarProfile"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 // import { useEffect } from 'react'
-import { profileMenu } from '@/app/modules/constants'
-import { updateMenu } from '@/app/modules/constants'
-import ProfileTabItem from '@/app/components/ProfileTabItem'
-import UserAvartar from '@/app/components/UserAvartar'
+import { profileMenu } from "@/app/modules/constants"
+import { updateMenu } from "@/app/modules/constants"
+import ProfileTabItem from "@/app/components/ProfileTabItem"
+import UserAvartar from "@/app/components/UserAvartar"
 
 function Layout({ children }) {
   const { form, partnerInfo, requestError, requestSuccess } =
@@ -17,11 +17,11 @@ function Layout({ children }) {
   // }, [])
   return (
     <div className="grid grid-cols-5 w-screen">
-      <div className="flex flex-col col-span-5 md:col-span-4 overflow-x-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] h-screen max-h-screen relative flex-1 px-4 md:px-6 ">
+      <div className="flex flex-col col-span-5 md:col-span-4 overflow-x-auto scrollbar scrollbar-thumb-[#212121] scrollbar-track-[#383838] h-screen max-h-screen relative flex-1 px-4 md:px-6 ">
         <div className="mb-16">
           <NavbarProfile />
         </div>
-        <div className="layout-center h-full mt-24">
+        <div className="layout-center h-full mt-12">
           <div className="flex gap-[24px]">
             <div className="hidden sm:flex mr-[83px]">
               {form && profileMenu.includes(form) && (

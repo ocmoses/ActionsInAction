@@ -1,24 +1,24 @@
-import { Suspense } from 'react'
-import RegisterStepCategory from './RegisterStepCategory'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import { fetchData } from '@/app/modules/fetchData'
-import { apiURL } from '@/app/modules/constants'
+import { Suspense } from "react"
+import Category from "./Category"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { fetchData } from "@/app/modules/fetchData"
+import { apiURL } from "@/app/modules/constants"
 
 const fetchCatgories = async () => {
   const nextedCategories = {}
   const {
     success: catSuccess,
     errors: catErrors,
-    data: categories
+    data: categories,
   } = await fetchData(`${apiURL}/v1/categories`, {
-    next: { revalidate: 86400 }
+    next: { revalidate: 86400 },
   })
   if (!catSuccess)
     return {
       success: catSuccess,
       errors: catErrors,
       data: categories,
-      nextedCategories
+      nextedCategories,
     }
   const Categories = []
   const Subcategories = []
@@ -26,7 +26,7 @@ const fetchCatgories = async () => {
     if (!cat.parent_id) {
       Categories.push(cat)
     } else {
-      if (typeof nextedCategories[cat.parent_id] === 'undefined')
+      if (typeof nextedCategories[cat.parent_id] === "undefined")
         nextedCategories[cat.parent_id] = []
       nextedCategories[cat.parent_id].push(cat)
     }
@@ -36,17 +36,17 @@ const fetchCatgories = async () => {
     success: true,
     errors: [],
     categories: Categories,
-    nextedCategories
+    nextedCategories,
   }
 }
 
-async function RegisterStepCategoryPage() {
+async function CategoryPage() {
   const { success, errors, categories, nextedCategories } =
     await fetchCatgories()
 
   return (
     <Suspense fallback={<TailSpinPreloader width={24} height={24} />}>
-      <RegisterStepCategory
+      <Category
         catErrors={errors}
         categories={categories}
         nextedCategories={nextedCategories}
@@ -55,4 +55,4 @@ async function RegisterStepCategoryPage() {
   )
 }
 
-export default RegisterStepCategoryPage
+export default CategoryPage

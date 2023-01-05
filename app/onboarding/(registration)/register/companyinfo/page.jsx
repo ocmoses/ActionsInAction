@@ -1,12 +1,13 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import SelectInput from '@/app/components/form/SelectInput'
-import TextInput from '@/app/components/form/TextInput'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
+"use client"
+import { useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
+import TextInput from "@/app/components/form/TextInput"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
 
 function RegisterStepCompanyInfo() {
   const {
@@ -16,15 +17,22 @@ function RegisterStepCompanyInfo() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
-  const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['companyinfo']
+  const [data, setData] = useState({
+    company_name: "",
+    company_role: "",
+  })
+  const { title, subtitle, hand, required } = forms["companyinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('companyinfo')
+    if (partnerInfo)
+      setData({
+        company_name: "",
+        company_role: "",
+      })
+    setForm("companyinfo")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -40,13 +48,13 @@ function RegisterStepCompanyInfo() {
       }
       if (error) return
     }
-    registerPartner('companyinfo', data)
+    registerPartner("companyinfo", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -68,10 +76,13 @@ function RegisterStepCompanyInfo() {
             onChange={handleFormChange}
             errors={errors}
           >
+            <SelectInputOption value="" label="" />
             {roles.map((role) => (
-              <option key={role.slug} value={role.slug}>
-                {role.title}
-              </option>
+              <SelectInputOption
+                key={role.slug}
+                value={role.slug}
+                label={role.title}
+              />
             ))}
           </SelectInput>
           <div className="font-mtn-extralight text-[#999999] text-start mb-8 p-2">

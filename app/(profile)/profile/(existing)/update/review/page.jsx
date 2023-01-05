@@ -1,3 +1,7 @@
-export default function page() {
-  return <div>page</div>
+import Review from "./Review"
+
+function ReviewPage() {
+  return <Review />
 }
+
+export default ReviewPage

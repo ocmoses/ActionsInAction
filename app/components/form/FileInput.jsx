@@ -1,21 +1,21 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { FileUploadIcon, InfoIcon } from '../Icons'
+import { FileUploadIcon, InfoIcon } from "../Icons"
 function FileInput({ id, label, onChange, border, bg, margin, errors }) {
   const [file, setFile] = useState(null)
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState("")
   const [startDate, setStartDate] = useState(new Date())
 
   const handleFile = (e) => {
-    setMessage('')
+    setMessage("")
     let file = e.target.files[0]
     console.log(file)
-    const fileType = file['type']
-    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png']
+    const fileType = file["type"]
+    const validImageTypes = ["image/gif", "image/jpeg", "image/png"]
     if (validImageTypes.includes(fileType)) {
       setFile(file)
     } else {
-      setMessage('Only images accepted')
+      setMessage("Only images accepted")
     }
   }
   const removeImage = () => {
@@ -23,11 +23,11 @@ function FileInput({ id, label, onChange, border, bg, margin, errors }) {
   }
 
   return (
-    <div className={margin ? margin + ' ' : 'mb-0 '}>
+    <div className={margin ? margin + " " : "mb-0 "}>
       <div
         className={
-          (bg ? bg + ' ' : 'bg-[#212121] ') +
-          'relative p-[8px] z-0 w-full group rounded-[10px]'
+          (bg ? bg + " " : "bg-[#212121] ") +
+          "relative p-[8px] z-0 w-full group rounded-[10px]"
         }
       >
         <div
@@ -55,7 +55,7 @@ function FileInput({ id, label, onChange, border, bg, margin, errors }) {
             </div>
             <div className="flex flex-col gap-4 justify-between items-end">
               <InfoIcon width={16} height={16} iconClass="" />
-              <div className="rounded-full border-1 border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-2 text-sm text-white">
+              <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
                 Choose file
               </div>
             </div>
@@ -91,7 +91,7 @@ function FileInput({ id, label, onChange, border, bg, margin, errors }) {
           </div>
         )}
       </div>
-      {errors && typeof errors[id] !== 'undefined' && (
+      {errors && typeof errors[id] !== "undefined" && (
         <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
       )}
       {message && <div className="text-sm text-red-600 mt-2">{message}</div>}

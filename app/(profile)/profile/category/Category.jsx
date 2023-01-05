@@ -1,7 +1,6 @@
-'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { useState, useEffect } from 'react'
-// import { useSession } from 'next-auth/react'
+"use client"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { useState, useEffect } from "react"
 import {
   ArrowRightCircle,
   ArrowDownCircle,
@@ -9,13 +8,12 @@ import {
   UnCheckedHoverIcon,
   UnCheckedInactiveIcon,
   TailSpinPreloader,
-  ExclamationTriangle
-} from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import Image from 'next/image'
+  ExclamationTriangle,
+} from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import Image from "next/image"
 
-function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
-  // const session = useSession()
+function Category({ categories, catErrors, nextedCategories }) {
   const {
     forms,
     setForm,
@@ -23,29 +21,29 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
     registerPartner,
     SetError,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
 
   const [selectedCategory, setSelectedCategory] = useState([])
   const [openedTabs, setOpenedTabs] = useState([])
-  const { title, subtitle, hand, required } = forms['category']
+  const { title, subtitle, hand, required } = forms["category"]
   useEffect(() => {
     if (partnerInfo) setSelectedCategory(partnerInfo.category_id ?? [])
-    setForm('category')
+    setForm("category")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     if (selectedCategory.length === 0)
       SetError(`You must select at least one category`)
-    else registerPartner('category', selectedCategory)
+    else registerPartner("category", selectedCategory)
   }
   const selectCategory = (c) => {
     console.log(c)
     if (hasSubcategory(c)) handleToggleTabs(c)
     else toggleChecked(c)
   }
-  const hasSubcategory = (c) => typeof nextedCategories[c] !== 'undefined'
+  const hasSubcategory = (c) => typeof nextedCategories[c] !== "undefined"
   const toggleChecked = (c) => {
     setSelectedCategory((prevState) =>
       selectedCategory.includes(c)
@@ -89,8 +87,8 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
               key={c.id}
               className={`group/category mb-6 cursor-pointer rounded-lg ${
                 openedTabs.includes(c.id) || selectedCategory.includes(c.id)
-                  ? 'bg-[#212121]'
-                  : 'bg-[#111111] hover:bg-[#212121]'
+                  ? "bg-[#212121]"
+                  : "bg-[#111111] hover:bg-[#212121]"
               }  py-[16px] px-[24px] w-full max-w-[607px]`}
             >
               <div className="flex flex-col gap-4 justify-start items-start">
@@ -100,7 +98,7 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
                 >
                   <div className="flex justify-center items-center min-w-[49px] h-[49px] bg-[rgba(255, 255, 255, 0.1)] group-hover/category:bg-[#030303] rounded-full">
                     <Image
-                      src={'/assets/icons/gift.svg'}
+                      src={"/assets/icons/gift.svg"}
                       width={20.1}
                       height={20.1}
                       alt=""
@@ -120,8 +118,8 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
                       <ArrowDownCircle
                         iconClass={`w-10 h-10 ${
                           openedTabs.includes(c.id)
-                            ? 'text-[#FFCB03]'
-                            : 'text-[#333333] group-hover/category:text-[#FFCB03]'
+                            ? "text-[#FFCB03]"
+                            : "text-[#333333] group-hover/category:text-[#FFCB03]"
                         } `}
                       />
                     ) : selectedCategory.includes(c.id) ? (
@@ -145,7 +143,7 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
                 {nextedCategories && nextedCategories[c.id]?.length > 0 && (
                   <div
                     className={`${
-                      openedTabs.includes(c.id) ? 'grid' : 'hidden'
+                      openedTabs.includes(c.id) ? "grid" : "hidden"
                     } grid-cols-1 sm:grid-cols-2 gap-5 transform ease-in-out duration-1000`}
                   >
                     {nextedCategories[c.id].map((sub) => (
@@ -209,4 +207,4 @@ function RegisterStepCategory({ categories, catErrors, nextedCategories }) {
   )
 }
 
-export default RegisterStepCategory
+export default Category

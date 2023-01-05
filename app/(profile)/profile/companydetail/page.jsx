@@ -1,7 +1,7 @@
-import RegisterStepCompanyDetail from './RegisterStepCompanyDetail'
+import CompanyDetail from "./CompanyDetail"
 
-function RegisterStepCompanyDetailPage() {
-  return <RegisterStepCompanyDetail />
+function CompanyDetailPage() {
+  return <CompanyDetail />
 }
 
-export default RegisterStepCompanyDetailPage
+export default CompanyDetailPage

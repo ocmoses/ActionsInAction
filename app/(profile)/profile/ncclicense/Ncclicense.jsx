@@ -1,35 +1,42 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import FileInput from '@/app/components/form/FileInput'
-import DatePicker from '@/app/components/form/DatePicker'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import {
-  ArrowRightCircle,
-  TailSpinPreloader,
-  ExclamationTriangle
-} from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+"use client"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import TextInput from "@/app/components/form/TextInput"
+import FileInput from "@/app/components/form/FileInput"
+import DatePicker from "@/app/components/form/DatePicker"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 
-function RegisterStepNcclicense() {
+function Ncclicense() {
   const {
     forms,
     setForm,
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['ncclicense']
+  const [data, setData] = useState({
+    vas_license_id: "",
+    ncc_issue_date: "",
+    ncc_expiry_date: "",
+    ncc_doc: "",
+  })
+  const { title, subtitle, hand, required } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('ncclicense')
+    if (partnerInfo)
+      setData({
+        vas_license_id: partnerInfo.vas_license_id ?? "",
+        ncc_issue_date: partnerInfo.ncc_issue_date ?? "",
+        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? "",
+        ncc_doc: partnerInfo.ncc_doc ?? "",
+      })
+    setForm("ncclicense")
     setProcessing(false)
   }, [])
 
@@ -46,14 +53,14 @@ function RegisterStepNcclicense() {
       }
       if (error) return
     }
-    registerPartner('ncclicense', data)
+    registerPartner("ncclicense", data)
   }
   const handleFormChange = (e) => {
-    console.log('e.target.id', e.target.id)
+    console.log("e.target.id", e.target.id)
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -117,4 +124,4 @@ function RegisterStepNcclicense() {
   )
 }
 
-export default RegisterStepNcclicense
+export default Ncclicense

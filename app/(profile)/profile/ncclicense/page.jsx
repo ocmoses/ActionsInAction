@@ -1,7 +1,7 @@
-import RegisterStepNcclicense from './RegisterStepNcclicense'
+import Ncclicense from "./Ncclicense"
 
-function RegisterStepNcclicensePage() {
-  return <RegisterStepNcclicense />
+function NcclicensePage() {
+  return <Ncclicense />
 }
 
-export default RegisterStepNcclicensePage
+export default NcclicensePage

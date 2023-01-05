@@ -1,13 +1,13 @@
-'use client'
-import { useEffect, useState, createContext, useContext } from 'react'
-import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
-import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
-import { apiURL, forms, partnerFields, roles } from '@/app/modules/constants'
-import { fetchData } from '@/app/modules/fetchData'
-import { getPartner } from '@/app/modules/partners'
-import { Util } from '@/utils/utility'
-import { signIn } from 'next-auth/react'
+"use client"
+import { useEffect, useState, createContext, useContext } from "react"
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"
+import { v4 as uuidv4 } from "uuid"
+import axios from "axios"
+import { apiURL, forms, partnerFields, roles } from "@/app/modules/constants"
+import { fetchData } from "@/app/modules/fetchData"
+import { getPartner } from "@/app/modules/partners"
+import { Util } from "@/utils/utility"
+import { signIn } from "next-auth/react"
 // import { useAppContext } from '@/hooks/useAppContext'
 
 const OnboardingContext = createContext()
@@ -20,34 +20,34 @@ export function OnboardingContextProvider({ children }) {
   const [partnerInfo, setPartnerInfo] = useState(partnerFields)
   const [form, setForm] = useState(null)
   const [requestError, setRequestError] = useState([])
-  const [requestSuccess, setRequestSuccess] = useState('')
+  const [requestSuccess, setRequestSuccess] = useState("")
   const [processing, setProcessing] = useState(false)
-  const LoginUser = async (data, redirect = '/', replace = true) => {
+  const LoginUser = async (data, redirect = "/", replace = true) => {
     setProcessing(true)
-    const result = await signIn('credentials', {
+    const result = await signIn("credentials", {
       partnerid: data.partnerid,
       password: data.password,
       redirect: replace,
-      callbackUrl: redirect
+      callbackUrl: redirect,
     })
 
     if (!result) {
       setProcessing(false)
-      return SetError('Something went wrong')
+      return SetError("Something went wrong")
     }
     if (!result?.ok) {
       setProcessing(false)
       if (result.error) SetError(result.error)
-      else return SetError('Something went wrong')
+      else return SetError("Something went wrong")
     }
     // if (replace) router.replace(redirect)
     // else router.push(redirect)
-    console.log('Signin', { data, redirect, replace, result })
+    console.log("Signin", { data, redirect, replace, result })
     return result
   }
   const registerPartner = async (frm, data) => {
     switch (frm) {
-      case 'userinfo':
+      case "userinfo":
         setProcessing(true)
         setPartner(data)
 
@@ -73,71 +73,78 @@ export function OnboardingContextProvider({ children }) {
         // if (errors) {
         //   SetError(errors)
         // }
-        LoginUser(
-          {
-            partnerid: '234691599',
-            password: 'Todoo45@222'
-          },
-          '/onboarding/register/companyinfo',
-          false
-        )
-        // router.replace('/onboarding/register/companyinfo')
+        // LoginUser(
+        //   {
+        //     partnerid: '234691599',
+        //     password: 'Todoo45@222'
+        //   },
+        //   '/onboarding/register/companyinfo',
+        //   false
+        // )
+        router.push("/onboarding/register/companyinfo")
         break
 
-      case 'companyinfo':
+      case "companyinfo":
         setProcessing(true)
         setPartner(data)
-        router.replace('/onboarding/register/validate')
+        router.replace("/onboarding/register/validate")
         break
-      case 'category':
+      case "category":
         setProcessing(false)
         setPartner(data)
-        router.push('/profile/companydetail')
+        router.push("/profile/companydetail")
         break
-
-      case 'companydetail':
+      case "companydetail":
         setProcessing(true)
         setPartner(data)
-        router.push('/profile/compliance')
+        router.push("/profile/compliance")
         break
-      case 'compliance':
+      case "compliance":
         setProcessing(true)
         setPartner(data)
-        router.push('/profile/ncclicense')
+        router.push("/profile/ncclicense")
         break
-      case 'ncclicense':
+      case "ncclicense":
         setProcessing(true)
         setPartner(data)
-        router.push('/profile/nlrclicense')
+        router.push("/profile/nlrclicense")
         break
-
-      case 'nlrclicense':
+      case "nlrclicense":
         setProcessing(true)
         setPartner(data)
-        router.push('/profile/shortcode')
+        router.push("/profile/shortcode")
         break
-      case 'shortcode':
+      case "shortcode":
         setProcessing(true)
         setPartner(data)
-        router.push('/profile/indemnity')
+        router.push("/profile/indemnity")
         break
-
+      case "indemnity":
+        setProcessing(true)
+        setPartner(data)
+        router.push("/profile/accountinfo")
+        break
+      case "accountinfo":
+        setProcessing(true)
+        setPartner(data)
+        router.push("/profile/review")
+        break
       // Existing partner flows
-      case 'partnerwelcome':
+      case "partnerwelcome":
         setProcessing(true)
-        router.push('/onboarding/register/validate?path=pwd')
+        router.push("/onboarding/register/validate?path=pwd")
         break
-      case 'setpassword':
+      case "setpassword":
         setProcessing(true)
-        router.push('/profile/update/welcome?path=companyinfo')
+        router.push("/profile/update/welcome?path=companyinfo")
         break
-      case 'confirmcompanyinfo':
+      case "confirmcompanyinfo":
         setProcessing(true)
-        router.push('/profile/update/contactperson')
+        router.push("/profile/update/contactperson")
         break
-      case 'contactperson':
+      case "contactperson":
         setProcessing(true)
-        router.push('/profile/update/contactperson')
+        router.push("/profile/update/updatereview")
         break
     }
   }
@@ -150,7 +157,7 @@ export function OnboardingContextProvider({ children }) {
   }
   let errorTimeout = {}
   const SetError = (message) => {
-    if (typeof message === 'string') {
+    if (typeof message === "string") {
       const uuid = uuidv4()
       const timeStamp = Date.now().toString()
       const rand = Math.floor(Math.random() * 1000000)
@@ -186,29 +193,29 @@ export function OnboardingContextProvider({ children }) {
   useEffect(() => {
     if (requestSuccess.length > 0) {
       clearTimeout(successTimeout)
-      successTimeout = setTimeout(() => setRequestSuccess(''), 10000)
+      successTimeout = setTimeout(() => setRequestSuccess(""), 10000)
     }
   }, [requestSuccess])
 
   const resendEmail = async (email) => {
     const apiUrl =
-      'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link'
+      "https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link"
 
     setProcessing(true)
 
     const response = await axios(apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+        apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
       },
       data: {
-        email: email
-      }
+        email: email,
+      },
     })
       .catch(({ message, response }) => {
         if (response) {
           const {
-            data: { data }
+            data: { data },
           } = response
           if (!Util.isEmpty(data)) {
             for (const error in data) {
@@ -227,11 +234,11 @@ export function OnboardingContextProvider({ children }) {
 
     if (response) {
       const {
-        data: { success }
+        data: { success },
       } = response
       if (success)
         setRequestSuccess(
-          'Email was sent successfully. Please checnk your email'
+          "Email was sent successfully. Please checnk your email"
         )
     }
   }
@@ -255,7 +262,7 @@ export function OnboardingContextProvider({ children }) {
         registerPartner,
         getPartner,
         resendEmail,
-        LoginUser
+        LoginUser,
       }}
     >
       {children}

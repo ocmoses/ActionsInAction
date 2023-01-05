@@ -1,7 +1,7 @@
-import RegisterStepShortcode from './RegisterStepShortcode'
+import Shortcode from "./Shortcode"
 
-function RegisterStepShortcodePage() {
-  return <RegisterStepShortcode />
+function ShortcodePage() {
+  return <Shortcode />
 }
 
-export default RegisterStepShortcodePage
+export default ShortcodePage

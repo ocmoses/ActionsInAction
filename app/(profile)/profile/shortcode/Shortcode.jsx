@@ -1,35 +1,50 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import FileInput from '@/app/components/form/FileInput'
-import DatePicker from '@/app/components/form/DatePicker'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import {
-  ArrowRightCircle,
-  TailSpinPreloader,
-  ExclamationTriangle
-} from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+"use client"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import TextInput from "@/app/components/form/TextInput"
+import FileInput from "@/app/components/form/FileInput"
+import DatePicker from "@/app/components/form/DatePicker"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 
-function RegisterStepShortcode() {
+function Shortcode() {
   const {
     forms,
     setForm,
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['shortcode']
+  const [data, setData] = useState({
+    shortcode: "",
+    shortcode_issue_date: "",
+    shortcode_expiry_date: "",
+    shortcode_price_issue_date: "",
+    shortcode_price_expiry_date: "",
+    shortcode_doc: "",
+    shortcode_approval_doc: "",
+  })
+  const { title, subtitle, hand, required } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('shortcode')
+    if (partnerInfo)
+      setData({
+        shortcode: partnerInfo.shortcode ?? "",
+        shortcode_issue_date: partnerInfo.shortcode_issue_date ?? "",
+        shortcode_expiry_date: partnerInfo.shortcode_expiry_date ?? "",
+        shortcode_price_issue_date:
+          partnerInfo.shortcode_price_issue_date ?? "",
+        shortcode_price_expiry_date:
+          partnerInfo.shortcode_price_expiry_date ?? "",
+        shortcode_doc: partnerInfo.shortcode_doc ?? "",
+        shortcode_approval_doc: partnerInfo.shortcode_approval_doc ?? "",
+      })
+    setForm("shortcode")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -45,13 +60,13 @@ function RegisterStepShortcode() {
       }
       if (error) return
     }
-    registerPartner('shortcode', data)
+    registerPartner("shortcode", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -142,4 +157,4 @@ function RegisterStepShortcode() {
   )
 }
 
-export default RegisterStepShortcode
+export default Shortcode

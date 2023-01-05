@@ -1,31 +1,42 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import FileInput from '@/app/components/form/FileInput'
-import DatePicker from '@/app/components/form/DatePicker'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+"use client"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import TextInput from "@/app/components/form/TextInput"
+import FileInput from "@/app/components/form/FileInput"
+import DatePicker from "@/app/components/form/DatePicker"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 
-function RegisterStepNlrcLicense() {
+function Indemnity() {
   const {
     forms,
     setForm,
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['nlrclicense']
+  const [data, setData] = useState({
+    indemnity_no: "",
+    indemnity_issue_date: "",
+    indemnity_expiry_date: "",
+    indemnity_doc: "",
+  })
+  const { title, subtitle, hand, required } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
-    setForm('nlrclicense')
+    if (partnerInfo)
+      setData({
+        indemnity_no: partnerInfo.indemnity_no ?? "",
+        indemnity_issue_date: partnerInfo.indemnity_issue_date ?? "",
+        indemnity_expiry_date: partnerInfo.indemnity_expiry_date ?? "",
+        indemnity_doc: partnerInfo.indemnity_doc ?? "",
+      })
+    setForm("indemnity")
     setProcessing(false)
   }, [])
 
@@ -42,13 +53,13 @@ function RegisterStepNlrcLicense() {
       }
       if (error) return
     }
-    registerPartner('nlrclicense', data)
+    registerPartner("indemnity", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
 
@@ -57,27 +68,27 @@ function RegisterStepNlrcLicense() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput
-          id="nlrc_license_id"
-          label="NLRC License ID"
-          value={data.nlrc_license_id}
+          id="indemnity_no"
+          label="Professional indemnity insurance number"
+          value={data.indemnity_no}
           onChange={handleFormChange}
           errors={errors}
         />
         <div className="grid grid-cols-2 gap-6 items-center w-full">
           <div className="">
             <DatePicker
-              id="nlrc_issue_date"
+              id="indemnity_issue_date"
               label="Issue date"
-              value={data.nlrc_issue_date}
+              value={data.indemnity_issue_date}
               onChange={handleFormChange}
               errors={errors}
             />
           </div>
           <div className="">
             <DatePicker
-              id="nlrc_expiry_date"
+              id="indemnity_expiry_date"
               label="Expiry date"
-              value={data.nlrc_expiry_date}
+              value={data.indemnity_expiry_date}
               onChange={handleFormChange}
               errors={errors}
             />
@@ -85,9 +96,9 @@ function RegisterStepNlrcLicense() {
         </div>
         <FileInputWrapper>
           <FileInput
-            id="nlrc_doc"
-            label="NLRC Document"
-            value={data.nlrc_doc}
+            id="indemnity_doc"
+            label="Professional indemnity insurance Document"
+            value={data.indemnity_doc}
             onChange={handleFormChange}
             errors={errors}
           />
@@ -113,4 +124,4 @@ function RegisterStepNlrcLicense() {
   )
 }
 
-export default RegisterStepNlrcLicense
+export default Indemnity

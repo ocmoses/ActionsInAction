@@ -1,13 +1,13 @@
-'use client'
-import { createRef, useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import { CountrySelector } from '@/app/components/countrycode/selector'
-import { COUNTRIES } from '@/app/components/countrycode/countries'
-import TextInput from '@/app/components/form/TextInput'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
+"use client"
+import { createRef, useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import { CountrySelector } from "@/app/components/countrycode/selector"
+import { COUNTRIES } from "@/app/components/countrycode/countries"
+import TextInput from "@/app/components/form/TextInput"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
 
 function RegisterStepUserInfo() {
   const {
@@ -16,38 +16,39 @@ function RegisterStepUserInfo() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing
+    setProcessing,
   } = useOnboardingContext()
   const [data, setData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    countrycode: '',
-    telephone: '',
-    password: '',
-    password_confirmed: ''
+    first_name: "",
+    last_name: "",
+    email: "",
+    countrycode: "NG",
+    telephone: "",
+    password: "",
+    password_confirmed: "",
   })
-  const { title, subtitle, hand, required } = forms['userinfo']
+  const { title, subtitle, hand, required } = forms["userinfo"]
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
     if (partnerInfo)
       setData({
-        first_name: partnerInfo.first_name ?? '',
-        last_name: partnerInfo.last_name ?? '',
-        email: partnerInfo.email ?? '',
-        countrycode: partnerInfo.countrycode ?? '',
-        telephone: partnerInfo.telephone ?? '',
-        password: '',
-        password_confirmed: ''
+        first_name: partnerInfo.first_name ?? "",
+        last_name: partnerInfo.last_name ?? "",
+        email: partnerInfo.email ?? "",
+        countrycode: partnerInfo.countrycode ?? "NG",
+        telephone: partnerInfo.telephone ?? "",
+        password: "",
+        password_confirmed: "",
       })
-    setForm('userinfo')
+    setForm("userinfo")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()
+    console.log({ data })
     let error = false
     if (!Util.isEmpty(required)) {
       for (const field in required) {
@@ -58,25 +59,25 @@ function RegisterStepUserInfo() {
       }
       if (error) return
     }
-    if (data['password'].length < 8) {
-      setError('password', 'Your password must be at least, 8 characters')
+    if (data["password"].length < 8) {
+      setError("password", "Your password must be at least, 8 characters")
       return
     }
-    if (data['password'] !== data['password_confirmed']) {
-      setError('password_confirmed', 'Password did not match')
+    if (data["password"] !== data["password_confirmed"]) {
+      setError("password_confirmed", "Password did not match")
       return
     }
-    if (!Util.validateEmail(data['email'])) {
-      setError('email', 'Your email address is not valid')
+    if (!Util.validateEmail(data["email"])) {
+      setError("email", "Your email address is not valid")
       return
     }
-    registerPartner('userinfo', data)
+    registerPartner("userinfo", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   const handleCountryChange = (val) => {
@@ -88,14 +89,16 @@ function RegisterStepUserInfo() {
   }
   const myRef = createRef()
   const [isOpen, setIsOpen] = useState(false)
-  const [country, setCountry] = useState(partnerInfo.country)
-  const [countrycode, setCountrycode] = useState(partnerInfo.countrycode)
+  const [country, setCountry] = useState(partnerInfo.country ?? "NG")
+  const [countrycode, setCountrycode] = useState(
+    partnerInfo.countrycode ?? "234"
+  )
 
   useEffect(() => {
     setData((prevState) => ({
       ...prevState,
       country: country,
-      countrycode: countrycode
+      countrycode: countrycode,
     }))
   }, [country, countrycode])
 
@@ -130,7 +133,7 @@ function RegisterStepUserInfo() {
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector
-              id={'countries'}
+              id={"countries"}
               ref={myRef}
               open={isOpen}
               onToggle={() => setIsOpen(!isOpen)}
@@ -154,9 +157,9 @@ function RegisterStepUserInfo() {
           </div>
         </div>
         <div className="mb-6">
-          {errors && typeof errors['telephone'] !== 'undefined' && (
+          {errors && typeof errors["telephone"] !== "undefined" && (
             <div className="text-sm text-red-600 mt-2">
-              {errors['telephone']}
+              {errors["telephone"]}
             </div>
           )}
         </div>
@@ -182,12 +185,12 @@ function RegisterStepUserInfo() {
         <div
           className=" text-white/70 text-start mb-12 p-2"
           style={{
-            fontStyle: 'normal',
+            fontStyle: "normal",
             fontWeight: 400,
-            lineHeight: '16px'
+            lineHeight: "16px",
           }}
         >
-          By clicking "Start Application" I agree to MTN's{' '}
+          By clicking "Start Application" I agree to MTN's{" "}
           <a
             href="#"
             className=" text-white hover:text-white border-b-1 border-b-white"
@@ -200,9 +203,9 @@ function RegisterStepUserInfo() {
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"
           >
             Privacy Policy
-          </a>{' '}
+          </a>{" "}
           and to receive electronic communication about my accounts and services
-          per Mtn's{' '}
+          per Mtn's{" "}
           <a
             href="#"
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"

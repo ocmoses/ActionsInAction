@@ -1,0 +1,21 @@
+"use client"
+import ReviewBox from "./ReviewBox"
+import { useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+
+export default function Review() {
+  const { forms, setForm, setProcessing } = useOnboardingContext()
+  const { title, subtitle, hand } = forms["review"]
+  useEffect(() => {
+    setForm("review")
+    setProcessing(false)
+  }, [])
+
+  return (
+    <>
+      <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+      <ReviewBox />
+    </>
+  )
+}

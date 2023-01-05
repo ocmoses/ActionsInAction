@@ -1,10 +1,10 @@
-'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { RequestSuccess, RequestError } from '@/app/components/RequestResponse'
-import { useEffect } from 'react'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import { useRouter } from 'next/navigation'
-import Head from 'next/head'
+"use client"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { RequestSuccess, RequestError } from "@/app/components/RequestResponse"
+import { useEffect } from "react"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import { useRouter } from "next/navigation"
+import Head from "next/head"
 
 function Validate({ params: { partnerid } }) {
   const {
@@ -13,29 +13,16 @@ function Validate({ params: { partnerid } }) {
     partnerInfo,
     requestSuccess,
     requestError,
-    processing
+    processing,
   } = useOnboardingContext()
 
   const router = useRouter()
   useEffect(() => {
-    // getPartner(partnerid)
-    // setPartner({
-    //   partnerid: '1025',
-    //   first_name: 'Prince',
-    //   last_name: 'Morpheus',
-    //   email: 'bodegbolu5@gmail.com',
-    //   country: 'NG',
-    //   countrycode: '234',
-    //   telephone: '08120820076',
-    //   password: 'Password!1234567',
-    //   password_confirmed: 'Password!1234567',
-    //   company_name: 'MTN Nigeria',
-    //   company_role: ''
-    // })
+    // GET PARTNER DETAIL
   }, [partnerid])
 
   const continueRegistration = () => {
-    router.replace('/profile/category')
+    router.replace("/profile/category")
   }
   return (
     <>
@@ -52,13 +39,13 @@ function Validate({ params: { partnerid } }) {
         <div className="flex justify-center mb-[84px]">
           <div
             className="radial-progress text-2xl  text-mtn bg-[#333333] border-4 border-[#333]"
-            style={{ '--value': 20, '--size': '99px', '--thickness': '12px' }}
+            style={{ "--value": 20, "--size": "99px", "--thickness": "12px" }}
           >
             0%
           </div>
         </div>
         <h1 className="flex justify-center gap-3 mtn-h1 text-white">
-          Y'ello {partnerInfo.first_name}{' '}
+          Y'ello {partnerInfo.first_name}{" "}
           <span className="animate-bounce">👋</span>
         </h1>
         <div className="mb-16 text-center w-full p-2 mtn-h1-subtitle text-[#999999]">

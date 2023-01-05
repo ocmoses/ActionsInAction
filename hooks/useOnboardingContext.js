@@ -144,7 +144,7 @@ export function OnboardingContextProvider({ children }) {
         break
       case "contactperson":
         setProcessing(true)
-        router.push("/profile/update/updatereview")
+        router.push("/profile/update/review")
         break
     }
   }

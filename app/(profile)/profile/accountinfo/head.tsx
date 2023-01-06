@@ -1,4 +1,4 @@
-import DefaultHead from '@/app/DefaultHead'
+import DefaultHead from "@/app/DefaultHead"
 export default function Head() {
-  return <DefaultHead title="MLRC License" />
+  return <DefaultHead title="Account info" />
 }

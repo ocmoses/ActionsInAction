@@ -70,7 +70,7 @@ function Shortcode() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
+    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput

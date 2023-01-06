@@ -1,7 +1,5 @@
 import Review from "./Review"
 
-function ReviewPage() {
+export default function ReviewPage() {
   return <Review />
 }
-
-export default ReviewPage

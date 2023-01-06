@@ -31,7 +31,7 @@ function SelectInput({
             fontWeight: 400,
           }}
           aria-label=".form-select-lg"
-          defaultValue={value}
+          value={value}
         >
           {children}
         </select>
@@ -39,7 +39,7 @@ function SelectInput({
           htmlFor={id}
           className="absolute z-10 text-lg top-0 left-6 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
         >
-          {label}
+          {label} {value}
         </label>
       </div>
       {errors && typeof errors[id] !== "undefined" && (

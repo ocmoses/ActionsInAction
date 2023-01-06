@@ -1,5 +1,5 @@
 "use client"
-import ReviewBox from "./ReviewBox"
+import UpdateReviewBox from "@/app/components/review/UpdateReviewBox"
 import { useEffect } from "react"
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
@@ -14,8 +14,13 @@ export default function Review() {
 
   return (
     <>
-      <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
-      <ReviewBox />
+      <RegisterStepHeader
+        title={title}
+        subtitle={subtitle}
+        hand={hand}
+        align="center"
+      />
+      <UpdateReviewBox />
     </>
   )
 }

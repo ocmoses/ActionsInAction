@@ -9,11 +9,10 @@ import ProfileTabItem from "@/app/components/ProfileTabItem"
 import UserAvartar from "@/app/components/UserAvartar"
 
 function Layout({ children }) {
-  const { form, partnerInfo, requestError, requestSuccess } =
-    useOnboardingContext()
+  const { form } = useOnboardingContext()
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
-  console.log("currentPath", currentPath)
+  // console.log("currentPath", currentPath)
   return (
     <div
       className={`grid ${

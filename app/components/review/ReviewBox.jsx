@@ -3,7 +3,13 @@ import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import Link from "next/link"
 import ReviewTitle from "./ReviewTitle"
 export default function ReviewBox() {
-  const { partnerInfo } = useOnboardingContext()
+  const {
+    COUNTRIES,
+    STATES,
+    partnerInfo,
+    categories: categoryData,
+  } = useOnboardingContext()
+  const { allcategories } = categoryData
   return (
     <>
       {/* Company info */}
@@ -26,7 +32,13 @@ export default function ReviewBox() {
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Company type</div>
-                  <div className="text-white text-[14px]">Aggregator</div>
+                  <div className="text-white text-[14px]">
+                    {partnerInfo.category_id.length > 0 &&
+                      allcategories &&
+                      partnerInfo.category_id.map((cid) => (
+                        <div key={cid}>{allcategories[cid]?.category_name}</div>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -36,14 +48,15 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
                   <div className="text-[#999999] text-[12px]">Country</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.country}
+                    {partnerInfo.country &&
+                      COUNTRIES.find((c) => c.value === partnerInfo.country)
+                        ?.title}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Address</div>
                   <div className="text-white text-[14px]">
-                    {" "}
                     {partnerInfo.company_address}
                   </div>
                 </div>
@@ -62,7 +75,12 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">State</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.company_state}
+                    {partnerInfo.company_state &&
+                      STATES.find(
+                        (c) =>
+                          c.country_code === partnerInfo.country &&
+                          c.state_code === partnerInfo.company_state
+                      )?.state_name}
                   </div>
                 </div>
               </div>

@@ -6,14 +6,14 @@ import SelectInputOption from "@/app/components/form/SelectInputOption"
 import TextInput from "@/app/components/form/TextInput"
 import { Util } from "@/utils/utility"
 import useErrors from "@/hooks/useErrors"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
 import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 
 function CompanyDetail() {
   const {
     forms,
+    COUNTRIES,
+    STATES,
     setForm,
     partnerInfo,
     registerPartner,

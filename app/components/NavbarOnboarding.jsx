@@ -1,8 +1,8 @@
-'use client'
-import Image from 'next/image'
-import Link from 'next/link'
-import NavLinks from './NavLinks'
-import { useSelectedLayoutSegments } from 'next/navigation'
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import NavLinks from "./NavLinks"
+import { useSelectedLayoutSegments } from "next/navigation"
 function NavbarOnboarding() {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -14,13 +14,13 @@ function NavbarOnboarding() {
             priority
             src="/assets/pic/mtn-logo.svg"
             width={80}
-            height={40}
+            height={39}
             alt="MTN Nigeria Logo"
             className=" text-white min-w-[80px] h-auto hover:text-mtn-300 hover:scale-[110%] transition-transform ease-in-out duration-500 cursor-pointer"
           />
         </Link>
         <div className="flex justify-end">
-          {currentPath === 'login' ? (
+          {currentPath === "login" ? (
             <div className="text-gray-400 text-md flex items-center gap-6 mr-0 md:mr-3">
               <p className="hidden sm:inline-flex">Don't have an account?</p>
               <Link

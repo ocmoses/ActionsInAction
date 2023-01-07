@@ -1,15 +1,15 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import TextInput from '@/app/components/form/TextInput'
+import FileInput from '@/app/components/form/FileInput'
+import DatePicker from '@/app/components/form/DatePicker'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
 
 function NlrcLicense() {
   const {
@@ -18,26 +18,26 @@ function NlrcLicense() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    nlrc_license_id: "",
-    nlrc_issue_date: "",
-    nlrc_expiry_date: "",
-    nlrc_doc: "",
+    nlrc_license_id: '',
+    nlrc_issue_date: '',
+    nlrc_expiry_date: '',
+    nlrc_doc: ''
   })
-  const { title, subtitle, hand, required } = forms["nlrclicense"]
+  const { title, subtitle, hand, required } = forms['nlrclicense']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        nlrc_license_id: partnerInfo.nlrc_license_id ?? "",
-        nlrc_issue_date: partnerInfo.nlrc_issue_date ?? "",
-        nlrc_expiry_date: partnerInfo.nlrc_expiry_date ?? "",
-        nlrc_doc: partnerInfo.nlrc_doc ?? "",
+        nlrc_license_id: partnerInfo.nlrc_license_id ?? '',
+        nlrc_issue_date: partnerInfo.nlrc_issue_date ?? '',
+        nlrc_expiry_date: partnerInfo.nlrc_expiry_date ?? '',
+        nlrc_doc: partnerInfo.nlrc_doc ?? ''
       })
-    setForm("nlrclicense")
+    setForm('nlrclicense')
     setProcessing(false)
   }, [])
 
@@ -54,16 +54,22 @@ function NlrcLicense() {
       }
       if (error) return
     }
-    registerPartner("nlrclicense", data)
+    registerPartner('nlrclicense', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
-
+  const handleDateChange = (e) => {
+    removeError(e.target.id)
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value
+    }))
+  }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
@@ -75,13 +81,13 @@ function NlrcLicense() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
             <DatePicker
               id="nlrc_issue_date"
               label="Issue date"
               value={data.nlrc_issue_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
@@ -90,7 +96,7 @@ function NlrcLicense() {
               id="nlrc_expiry_date"
               label="Expiry date"
               value={data.nlrc_expiry_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>

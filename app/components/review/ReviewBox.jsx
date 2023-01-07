@@ -1,11 +1,13 @@
 import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import { outputDate } from '@/app/modules/constants'
 import Link from 'next/link'
 import ReviewTitle from './ReviewTitle'
 export default function ReviewBox() {
   const {
     COUNTRIES,
     STATES,
+    BANKS,
     partnerInfo,
     categories: categoryData
   } = useOnboardingContext()
@@ -24,14 +26,18 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Company name</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Company name
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_name}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Company type</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Company type
+                  </div>
                   <div className="flex justify-between gap-3">
                     <div className="text-white text-[14px]">
                       {partnerInfo.category_id.length > 0 &&
@@ -71,7 +77,9 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Country</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Country
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.country &&
                       COUNTRIES.find((c) => c.value === partnerInfo.country)
@@ -80,7 +88,9 @@ export default function ReviewBox() {
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Address</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Address
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_address}
                   </div>
@@ -91,14 +101,18 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">City</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    City
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_city}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">State</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    State
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_state &&
                       STATES.find(
@@ -114,14 +128,16 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Postal codes</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Postal codes
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_postcode}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]"></div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden"></div>
                   <div className="text-white text-[14px]"></div>
                 </div>
               </div>
@@ -138,14 +154,16 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">RC. number</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    RC. number
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.rc_no}{' '}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Tax identification number
                   </div>
                   <div className="text-white text-[14px]">
@@ -158,7 +176,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     CAC registration cert.
                   </div>
                   <div className="text-white text-[14px]">
@@ -170,7 +188,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     MEMART certificate
                   </div>
                   <div className="text-white text-[14px]">
@@ -182,7 +200,9 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">TIN document</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    TIN document
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.tin_doc}
                   </div>
@@ -201,11 +221,11 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     VAS License ID
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.vas_license_id}{' '}
+                    {partnerInfo.vas_license_id}
                   </div>
                 </div>
               </div>
@@ -213,16 +233,20 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Issuing date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Issuing date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.ncc_issue_date}{' '}
+                    {outputDate(partnerInfo.ncc_issue_date)}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Expiry date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Expiry date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.ncc_expiry_date}{' '}
+                    {outputDate(partnerInfo.ncc_expiry_date)}
                   </div>
                 </div>
               </div>
@@ -230,7 +254,9 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">VAS document</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    VAS document
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.ncc_doc}
                   </div>
@@ -248,7 +274,7 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     NLRC License number
                   </div>
                   <div className="text-white text-[14px]">
@@ -260,16 +286,20 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Issuing date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Issuing date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_issue_date}{' '}
+                    {outputDate(partnerInfo.nlrc_issue_date)}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Expiry date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Expiry date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_expiry_date}{' '}
+                    {outputDate(partnerInfo.nlrc_expiry_date)}
                   </div>
                 </div>
               </div>
@@ -277,7 +307,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     NLRC document
                   </div>
                   <div className="text-white text-[14px]">
@@ -298,7 +328,9 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">Shortcode</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Shortcode
+                  </div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.shortcode}{' '}
                   </div>
@@ -308,20 +340,20 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Shortcode Issuing date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_issue_date}{' '}
+                    {outputDate(partnerInfo.shortcode_issue_date)}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Shortcode Expiry date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_expiry_date}{' '}
+                    {outputDate(partnerInfo.shortcode_expiry_date)}
                   </div>
                 </div>
               </div>
@@ -329,20 +361,20 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     NCC pricing approval Issuing date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_pricing_issue_date}{' '}
+                    {outputDate(partnerInfo.shortcode_price_issue_date)}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     NCC pricing approval Expiry date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_pricing_expiry_date}{' '}
+                    {outputDate(partnerInfo.shortcode_price_expiry_date)}
                   </div>
                 </div>
               </div>
@@ -350,7 +382,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Shortcode document
                   </div>
                   <div className="text-white text-[14px]">
@@ -362,7 +394,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     NCC pricing approval document
                   </div>
                   <div className="text-white text-[14px]">
@@ -385,7 +417,7 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Indemnity issue number
                   </div>
                   <div className="text-white text-[14px]">
@@ -397,16 +429,20 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">Issuing date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Issuing date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_issue_date}{' '}
+                    {outputDate(partnerInfo.indemnity_issue_date)}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Expiry date</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Expiry date
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_expiry_date}{' '}
+                    {outputDate(partnerInfo.indemnity_expiry_date)}
                   </div>
                 </div>
               </div>
@@ -414,7 +450,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Indemnity insurance document
                   </div>
                   <div className="text-white text-[14px]">
@@ -434,7 +470,7 @@ export default function ReviewBox() {
             <div className="pb-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Bank account name
                   </div>
                   <div className="text-white text-[14px]">
@@ -446,7 +482,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Account number
                   </div>
                   <div className="text-white text-[14px]">
@@ -455,9 +491,13 @@ export default function ReviewBox() {
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
-                  <div className="text-[#999999] text-[12px]">Bank name</div>
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    Bank name
+                  </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.bank}{' '}
+                    {partnerInfo.bank &&
+                      BANKS.find((bank) => bank.code === partnerInfo.bank)
+                        ?.name}
                   </div>
                 </div>
               </div>
@@ -465,7 +505,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Audited account 1
                   </div>
                   <div className="text-white text-[14px]">
@@ -477,7 +517,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Audited account 2
                   </div>
                   <div className="text-white text-[14px]">
@@ -489,7 +529,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="grid">
                 <div className="">
-                  <div className="text-[#999999] text-[12px]">
+                  <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
                     Audited account 3
                   </div>
                   <div className="text-white text-[14px]">

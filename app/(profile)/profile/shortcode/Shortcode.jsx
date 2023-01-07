@@ -1,15 +1,15 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import TextInput from '@/app/components/form/TextInput'
+import FileInput from '@/app/components/form/FileInput'
+import DatePicker from '@/app/components/form/DatePicker'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
 
 function Shortcode() {
   const {
@@ -18,34 +18,34 @@ function Shortcode() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    shortcode: "",
-    shortcode_issue_date: "",
-    shortcode_expiry_date: "",
-    shortcode_price_issue_date: "",
-    shortcode_price_expiry_date: "",
-    shortcode_doc: "",
-    shortcode_approval_doc: "",
+    shortcode: '',
+    shortcode_issue_date: '',
+    shortcode_expiry_date: '',
+    shortcode_price_issue_date: '',
+    shortcode_price_expiry_date: '',
+    shortcode_doc: '',
+    shortcode_approval_doc: ''
   })
-  const { title, subtitle, hand, required } = forms["shortcode"]
+  const { title, subtitle, hand, required } = forms['shortcode']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        shortcode: partnerInfo.shortcode ?? "",
-        shortcode_issue_date: partnerInfo.shortcode_issue_date ?? "",
-        shortcode_expiry_date: partnerInfo.shortcode_expiry_date ?? "",
+        shortcode: partnerInfo.shortcode ?? '',
+        shortcode_issue_date: partnerInfo.shortcode_issue_date ?? '',
+        shortcode_expiry_date: partnerInfo.shortcode_expiry_date ?? '',
         shortcode_price_issue_date:
-          partnerInfo.shortcode_price_issue_date ?? "",
+          partnerInfo.shortcode_price_issue_date ?? '',
         shortcode_price_expiry_date:
-          partnerInfo.shortcode_price_expiry_date ?? "",
-        shortcode_doc: partnerInfo.shortcode_doc ?? "",
-        shortcode_approval_doc: partnerInfo.shortcode_approval_doc ?? "",
+          partnerInfo.shortcode_price_expiry_date ?? '',
+        shortcode_doc: partnerInfo.shortcode_doc ?? '',
+        shortcode_approval_doc: partnerInfo.shortcode_approval_doc ?? ''
       })
-    setForm("shortcode")
+    setForm('shortcode')
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -61,13 +61,20 @@ function Shortcode() {
       }
       if (error) return
     }
-    registerPartner("shortcode", data)
+    registerPartner('shortcode', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
+    }))
+  }
+  const handleDateChange = (e) => {
+    removeError(e.target.id)
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value
     }))
   }
   return (
@@ -81,13 +88,13 @@ function Shortcode() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
             <DatePicker
               id="shortcode_issue_date"
               label="Issue date"
               value={data.shortcode_issue_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
@@ -96,18 +103,18 @@ function Shortcode() {
               id="shortcode_expiry_date"
               label="Expiry date"
               value={data.shortcode_expiry_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
             <DatePicker
               id="shortcode_price_issue_date"
               label="Princing Issue date"
               value={data.shortcode_price_issue_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
@@ -116,7 +123,7 @@ function Shortcode() {
               id="shortcode_price_expiry_date"
               label="Pricing Expiry date"
               value={data.shortcode_price_expiry_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>

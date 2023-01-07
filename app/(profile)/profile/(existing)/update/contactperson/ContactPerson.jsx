@@ -82,7 +82,7 @@ function ContactPerson() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[520px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <TextInput
             id="first_name"
             label="First name"

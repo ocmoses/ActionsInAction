@@ -1,31 +1,31 @@
-"use client"
-import { useEffect, useState } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import TextInput from "@/app/components/form/TextInput"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
+'use client'
+import { useEffect, useState } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import TextInput from '@/app/components/form/TextInput'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
 
-function ExistingPartner() {
+export default function PartnerWelcome() {
   const {
     forms,
     setForm,
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms["partnerwelcome"]
+  const { title, subtitle, hand, required } = forms['partnerwelcome']
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
-    setForm("partnerwelcome")
+    setForm('partnerwelcome')
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -41,13 +41,13 @@ function ExistingPartner() {
       }
       if (error) return
     }
-    registerPartner("partnerwelcome", data)
+    registerPartner('partnerwelcome', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
 
@@ -71,5 +71,3 @@ function ExistingPartner() {
     </div>
   )
 }
-
-export default ExistingPartner

@@ -10,6 +10,7 @@ import { Util } from '@/utils/utility'
 import { signIn } from 'next-auth/react'
 import { COUNTRIES } from '@/app/modules/countries'
 import { STATES } from '@/app/modules/states'
+import { BANKS } from '@/app/modules/banks'
 
 const OnboardingContext = createContext()
 
@@ -353,6 +354,7 @@ export function OnboardingContextProvider({ children }) {
         form,
         COUNTRIES,
         STATES,
+        BANKS,
         requestError,
         requestSuccess,
         SetError,

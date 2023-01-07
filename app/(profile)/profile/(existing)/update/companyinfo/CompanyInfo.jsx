@@ -1,13 +1,13 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "../../../../../components/form/SelectInputOption"
-import TextInput from "@/app/components/form/TextInput"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import SelectInput from '@/app/components/form/SelectInput'
+import SelectInputOption from '../../../../../components/form/SelectInputOption'
+import TextInput from '@/app/components/form/TextInput'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 
 function CompanyInfo() {
   const {
@@ -18,30 +18,30 @@ function CompanyInfo() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
-  const { title, subtitle, hand, required } = forms["confirmcompanyinfo"]
+  const { title, subtitle, hand, required } = forms['confirmcompanyinfo']
   const [data, setData] = useState({
-    company_name: "",
-    country: "",
-    company_address: "",
-    company_city: "",
-    company_state: "",
-    company_postcode: "",
+    company_name: '',
+    country: '',
+    company_address: '',
+    company_city: '',
+    company_state: '',
+    company_postcode: ''
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        company_name: partnerInfo.company_name ?? "",
-        country: partnerInfo.country ?? "",
-        company_address: partnerInfo.company_address ?? "",
-        company_city: partnerInfo.company_city ?? "",
-        company_state: partnerInfo.company_state ?? "",
-        company_postcode: partnerInfo.company_postcode ?? "",
+        company_name: partnerInfo.company_name ?? '',
+        country: partnerInfo.country ?? '',
+        company_address: partnerInfo.company_address ?? '',
+        company_city: partnerInfo.company_city ?? '',
+        company_state: partnerInfo.company_state ?? '',
+        company_postcode: partnerInfo.company_postcode ?? ''
       })
-    setForm("confirmcompanyinfo")
+    setForm('confirmcompanyinfo')
     setProcessing(false)
   }, [])
   const [states, setStates] = useState([])
@@ -66,13 +66,13 @@ function CompanyInfo() {
       if (error) return
     }
 
-    registerPartner("confirmcompanyinfo", data)
+    registerPartner('confirmcompanyinfo', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
   return (
@@ -105,7 +105,7 @@ function CompanyInfo() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 justify-start w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="relative ">
             <TextInput
               id="company_city"

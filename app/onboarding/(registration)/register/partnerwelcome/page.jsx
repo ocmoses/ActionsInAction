@@ -1,5 +1,5 @@
-import ExistingPartner from './ExistingPartner'
+import PartnerWelcome from './PartnerWelcome'
 
-export default function ExistingPartnerPage() {
-  return <ExistingPartner />
+export default function PartnerWelcomePage() {
+  return <PartnerWelcome />
 }

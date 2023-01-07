@@ -189,10 +189,12 @@ export function OnboardingContextProvider({ children }) {
         break
       case "confirmcompanyinfo":
         setProcessing(true)
+        setPartner(data)
         router.push("/profile/update/contactperson")
         break
       case "contactperson":
         setProcessing(true)
+        setPartner(data)
         router.push("/profile/update/review")
         break
     }

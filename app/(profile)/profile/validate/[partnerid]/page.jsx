@@ -1,29 +1,13 @@
 "use client"
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { RequestSuccess, RequestError } from "@/app/components/RequestResponse"
-import { useEffect } from "react"
 import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
-import Head from "next/head"
+import Button from "@/app/components/form/Button"
 
 function Validate({ params: { partnerid } }) {
-  const {
-    getPartner,
-    setPartner,
-    partnerInfo,
-    requestSuccess,
-    requestError,
-    processing,
-  } = useOnboardingContext()
+  const { partnerInfo, processing } = useOnboardingContext()
 
   const router = useRouter()
-  useEffect(() => {
-    // GET PARTNER DETAIL
-  }, [partnerid])
-
-  const continueRegistration = () => {
-    router.replace("/profile/category")
-  }
   return (
     <>
       <div className="flex items-center w3-animate-opacity pb-20 w-full h-full max-w-[492px]">
@@ -53,12 +37,12 @@ function Validate({ params: { partnerid } }) {
             Please complete your application to get started
           </div>
           <div className="flex justify-center">
-            <button
-              onClick={continueRegistration}
-              className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
-            >
-              Get started <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
-            </button>
+            <div className="mt-6">
+              <Button
+                onClick={() => router.replace("/profile/category")}
+                label="Get stated"
+              />
+            </div>
           </div>
         </div>
       </div>

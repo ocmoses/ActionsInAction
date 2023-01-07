@@ -6,17 +6,17 @@ import TextInput from "@/app/components/form/TextInput"
 import { Util } from "@/utils/utility"
 import useErrors from "@/hooks/useErrors"
 
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import { TailSpinPreloader } from "@/app/components/Icons"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import FileInput from "@/app/components/form/FileInput"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import Button from "@/app/components/form/Button"
 
 function Compliance() {
   const {
     forms,
     setForm,
     partnerInfo,
-    setPartner,
     registerPartner,
     processing,
     setProcessing,
@@ -107,16 +107,13 @@ function Compliance() {
             errors={errors}
           />
         </FileInputWrapper>
-        {processing ? (
-          <TailSpinPreloader width={40} height={40} fill="#efb703" />
-        ) : (
-          <button
-            type="submit"
-            className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
-          >
-            Next <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
-          </button>
-        )}
+        <div className="mt-6">
+          {processing ? (
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
+          ) : (
+            <Button label="Next" />
+          )}
+        </div>
       </form>
     </div>
   )

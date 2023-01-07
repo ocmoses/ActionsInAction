@@ -2,7 +2,6 @@
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import { useState, useEffect } from "react"
 import {
-  ArrowRightCircle,
   ArrowDownCircle,
   CheckedIcon,
   UnCheckedHoverIcon,
@@ -11,6 +10,7 @@ import {
 } from "@/app/components/Icons"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import Image from "next/image"
+import Button from "@/app/components/form/Button"
 
 function Category() {
   const {
@@ -19,6 +19,7 @@ function Category() {
     partnerInfo,
     registerPartner,
     SetError,
+    fetching,
     processing,
     setProcessing,
     categories: categoryData,
@@ -26,6 +27,7 @@ function Category() {
   const { errors: catErrors, categories, nextedCategories } = categoryData
 
   const [selectedCategory, setSelectedCategory] = useState([])
+  const [categoryID, setCategoryID] = useState([])
   const [openedTabs, setOpenedTabs] = useState([])
   const { title, subtitle, hand, required } = forms["category"]
   useEffect(() => {
@@ -33,16 +35,19 @@ function Category() {
     setForm("category")
     setProcessing(false)
   }, [])
+  useEffect(() => {
+    const data = []
+    selectedCategory.map((s) => {
+      if (nextedCategories && !nextedCategories[s]) data.push(s)
+      setCategoryID(data)
+    })
+  }, [selectedCategory])
   const handleSubmit = (e) => {
     e.preventDefault()
     if (selectedCategory.length === 0)
       return SetError(`You must select at least one category`)
-    const data = []
-    selectedCategory.map((s) => {
-      if (!nextedCategories[s]) data.push(s)
-    })
-    console.log({ data })
-    registerPartner("category", data)
+    setProcessing(true)
+    registerPartner("category", categoryID)
   }
   const selectCategory = (c) => {
     console.log(c)
@@ -68,6 +73,10 @@ function Category() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+
+        {fetching.category && (
+          <TailSpinPreloader width={36} height={36} fill="#efb703" />
+        )}
         {catErrors?.length > 0 && (
           <div className="flex">
             <div className="mb-6">
@@ -83,7 +92,6 @@ function Category() {
           </div>
         )}
 
-        {/* <> */}
         {categories?.map((c) => (
           <div
             key={c.id}
@@ -189,21 +197,15 @@ function Category() {
             </div>
           </div>
         ))}
-        {selectedCategory?.length > 0 && (
-          <>
+        {categoryID?.length > 0 && (
+          <div className="mt-6">
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : (
-              <button
-                type="submit"
-                className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2 w3-animate-opacity"
-              >
-                Continue <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
-              </button>
+              <Button label="Continue" />
             )}
-          </>
+          </div>
         )}
-        {/* </> */}
       </form>
     </div>
   )

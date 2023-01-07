@@ -22,9 +22,19 @@ export function OnboardingContextProvider({ children }) {
   const [form, setForm] = useState(null)
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState("")
+
+  const [fetching, setFetching] = useState({})
   const [processing, setProcessing] = useState(false)
   const [categories, setCategories] = useState({})
+  const setIsFetching = (key, status) => {
+    setFetching((oldState) => {
+      if (status === true) return { ...oldState, [key]: true }
+      delete oldState[key]
+      return oldState
+    })
+  }
   const fetchCatgories = async () => {
+    setIsFetching("category", true)
     const nextedCategories = {}
     const {
       success,
@@ -44,7 +54,6 @@ export function OnboardingContextProvider({ children }) {
     const Categories = []
     const allCategories = {}
     categories.map((cat) => {
-      // if (typeof allCategories[cat.id] === "undefined")
       allCategories[cat.id] = cat
       if (!cat.parent_id) {
         Categories.push(cat)
@@ -54,11 +63,6 @@ export function OnboardingContextProvider({ children }) {
         nextedCategories[cat.parent_id].push(cat)
       }
     })
-    // if(allCategories.length > 0){
-    //   allCategories.map((cat)=>{
-
-    //   })
-    // }
     setCategories({
       success: true,
       errors: [],
@@ -66,6 +70,7 @@ export function OnboardingContextProvider({ children }) {
       allcategories: allCategories,
       nextedCategories,
     })
+    setIsFetching("category", false)
   }
   useEffect(() => {
     fetchCatgories()
@@ -306,6 +311,8 @@ export function OnboardingContextProvider({ children }) {
         ClearErrors,
         setRequestError,
         setRequestSuccess,
+        fetching,
+        setIsFetching,
         processing,
         setProcessing,
         setForm,

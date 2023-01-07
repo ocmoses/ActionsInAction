@@ -1,7 +1,8 @@
 "use client"
 import { createRef, useEffect, useState } from "react"
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import Button from "@/app/components/form/Button"
 import { CountrySelector } from "@/app/components/countrycode/selector"
 import { COUNTRIES } from "@/app/components/countrycode/countries"
 import TextInput from "@/app/components/form/TextInput"
@@ -103,11 +104,11 @@ function RegisterStepUserInfo() {
   }, [country, countrycode])
 
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
+    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <TextInput
             id="first_name"
             label="First name"
@@ -217,12 +218,7 @@ function RegisterStepUserInfo() {
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (
-          <button
-            type="submit"
-            className="rounded-full mt-12 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-2"
-          >
-            Start registration <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
-          </button>
+          <Button label="Start registration" />
         )}
       </form>
     </div>

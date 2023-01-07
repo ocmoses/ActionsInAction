@@ -1,8 +1,8 @@
 import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import Image from 'next/image'
-import Link from 'next/link'
 import ReviewTitle from './ReviewTitle'
+import Button from '@/app/components/form/Button'
 export default function UpdateReviewBox() {
   const {
     COUNTRIES,
@@ -180,12 +180,7 @@ export default function UpdateReviewBox() {
         provided are accurate and truthful.
       </div>
       <div className="mt-3 pb-12 flex justify-center items-start w-full">
-        <Link
-          href=""
-          className="rounded-full flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl mr-4 pl-6 pr-3 py-3"
-        >
-          Finish setup <ArrowRightCircle iconClass="w-6 h-6 ml-4" />
-        </Link>
+        <Button href="/profile/complete/update" label="Submit application" />
       </div>
     </>
   )

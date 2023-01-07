@@ -1,15 +1,15 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import TextInput from '@/app/components/form/TextInput'
+import FileInput from '@/app/components/form/FileInput'
+import DatePicker from '@/app/components/form/DatePicker'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
 
 function Ncclicense() {
   const {
@@ -18,26 +18,26 @@ function Ncclicense() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    vas_license_id: "",
-    ncc_issue_date: "",
-    ncc_expiry_date: "",
-    ncc_doc: "",
+    vas_license_id: '',
+    ncc_issue_date: '',
+    ncc_expiry_date: '',
+    ncc_doc: ''
   })
-  const { title, subtitle, hand, required } = forms["ncclicense"]
+  const { title, subtitle, hand, required } = forms['ncclicense']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        vas_license_id: partnerInfo.vas_license_id ?? "",
-        ncc_issue_date: partnerInfo.ncc_issue_date ?? "",
-        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? "",
-        ncc_doc: partnerInfo.ncc_doc ?? "",
+        vas_license_id: partnerInfo.vas_license_id ?? '',
+        ncc_issue_date: partnerInfo.ncc_issue_date ?? '',
+        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? '',
+        ncc_doc: partnerInfo.ncc_doc ?? ''
       })
-    setForm("ncclicense")
+    setForm('ncclicense')
     setProcessing(false)
   }, [])
 
@@ -54,14 +54,20 @@ function Ncclicense() {
       }
       if (error) return
     }
-    registerPartner("ncclicense", data)
+    registerPartner('ncclicense', data)
   }
   const handleFormChange = (e) => {
-    console.log("e.target.id", e.target.id)
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
+    }))
+  }
+  const handleDateChange = (e) => {
+    removeError(e.target.id)
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value
     }))
   }
   return (
@@ -75,13 +81,13 @@ function Ncclicense() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
             <DatePicker
               id="ncc_issue_date"
               label="Issue date"
               value={data.ncc_issue_date}
-              onChange={() => {}}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
@@ -90,7 +96,7 @@ function Ncclicense() {
               id="ncc_expiry_date"
               label="Expiry date"
               value={data.ncc_expiry_date}
-              onChange={() => {}}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>

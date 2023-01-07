@@ -1,14 +1,14 @@
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import Image from "next/image"
-import Link from "next/link"
-import ReviewTitle from "./ReviewTitle"
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import Image from 'next/image'
+import Link from 'next/link'
+import ReviewTitle from './ReviewTitle'
 export default function UpdateReviewBox() {
   const {
     COUNTRIES,
     STATES,
     partnerInfo,
-    categories: categoryData,
+    categories: categoryData
   } = useOnboardingContext()
   const { allcategories } = categoryData
   return (
@@ -90,7 +90,7 @@ export default function UpdateReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">City</div>
+                  <div className="text-[#999999] text-[12px]">Postal code</div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_postcode}
                   </div>

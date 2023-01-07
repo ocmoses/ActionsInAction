@@ -1,15 +1,15 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import TextInput from '@/app/components/form/TextInput'
+import FileInput from '@/app/components/form/FileInput'
+import DatePicker from '@/app/components/form/DatePicker'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
 
 function Indemnity() {
   const {
@@ -18,26 +18,26 @@ function Indemnity() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    indemnity_no: "",
-    indemnity_issue_date: "",
-    indemnity_expiry_date: "",
-    indemnity_doc: "",
+    indemnity_no: '',
+    indemnity_issue_date: '',
+    indemnity_expiry_date: '',
+    indemnity_doc: ''
   })
-  const { title, subtitle, hand, required } = forms["indemnity"]
+  const { title, subtitle, hand, required } = forms['indemnity']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        indemnity_no: partnerInfo.indemnity_no ?? "",
-        indemnity_issue_date: partnerInfo.indemnity_issue_date ?? "",
-        indemnity_expiry_date: partnerInfo.indemnity_expiry_date ?? "",
-        indemnity_doc: partnerInfo.indemnity_doc ?? "",
+        indemnity_no: partnerInfo.indemnity_no ?? '',
+        indemnity_issue_date: partnerInfo.indemnity_issue_date ?? '',
+        indemnity_expiry_date: partnerInfo.indemnity_expiry_date ?? '',
+        indemnity_doc: partnerInfo.indemnity_doc ?? ''
       })
-    setForm("indemnity")
+    setForm('indemnity')
     setProcessing(false)
   }, [])
 
@@ -54,16 +54,22 @@ function Indemnity() {
       }
       if (error) return
     }
-    registerPartner("indemnity", data)
+    registerPartner('indemnity', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
-
+  const handleDateChange = (e) => {
+    removeError(e.target.id)
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value
+    }))
+  }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
@@ -75,13 +81,13 @@ function Indemnity() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
             <DatePicker
               id="indemnity_issue_date"
               label="Issue date"
               value={data.indemnity_issue_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>
@@ -90,7 +96,7 @@ function Indemnity() {
               id="indemnity_expiry_date"
               label="Expiry date"
               value={data.indemnity_expiry_date}
-              onChange={handleFormChange}
+              onChange={handleDateChange}
               errors={errors}
             />
           </div>

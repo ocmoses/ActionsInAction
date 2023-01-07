@@ -1,14 +1,14 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
-import TextInput from "@/app/components/form/TextInput"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import SelectInput from '@/app/components/form/SelectInput'
+import SelectInputOption from '@/app/components/form/SelectInputOption'
+import TextInput from '@/app/components/form/TextInput'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
 
 function CompanyDetail() {
   const {
@@ -19,30 +19,30 @@ function CompanyDetail() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
-  const { title, subtitle, hand, required } = forms["companydetail"]
+  const { title, subtitle, hand, required } = forms['companydetail']
   const [data, setData] = useState({
-    company_name: "",
-    country: "",
-    company_address: "",
-    company_city: "",
-    company_state: "",
-    company_postcode: "",
+    company_name: '',
+    country: '',
+    company_address: '',
+    company_city: '',
+    company_state: '',
+    company_postcode: ''
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        company_name: partnerInfo.company_name ?? "",
-        country: partnerInfo.country ?? "",
-        company_address: partnerInfo.company_address ?? "",
-        company_city: partnerInfo.company_city ?? "",
-        company_state: partnerInfo.company_state ?? "",
-        company_postcode: partnerInfo.company_postcode ?? "",
+        company_name: partnerInfo.company_name ?? '',
+        country: partnerInfo.country ?? '',
+        company_address: partnerInfo.company_address ?? '',
+        company_city: partnerInfo.company_city ?? '',
+        company_state: partnerInfo.company_state ?? '',
+        company_postcode: partnerInfo.company_postcode ?? ''
       })
-    setForm("companydetail")
+    setForm('companydetail')
     setProcessing(false)
   }, [])
   const [states, setStates] = useState([])
@@ -67,13 +67,13 @@ function CompanyDetail() {
       if (error) return
     }
 
-    registerPartner("companydetail", data)
+    registerPartner('companydetail', data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
   return (
@@ -106,7 +106,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           errors={errors}
         />
-        <div className="grid grid-cols-2 gap-6 justify-start w-full">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="relative ">
             <TextInput
               id="company_city"

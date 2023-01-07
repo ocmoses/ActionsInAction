@@ -1,16 +1,16 @@
-"use client"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+'use client'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
+import Button from '@/app/components/form/Button'
 
 function Validate() {
   const { processing, setProcessing, setForm } = useOnboardingContext()
   const searchParams = useSearchParams()
-  const path = searchParams.get("path")
+  const path = searchParams.get('path')
   useEffect(() => {
-    setForm("")
+    setForm('')
     setProcessing(false)
   }, [])
   return (
@@ -28,7 +28,7 @@ function Validate() {
         <div className="flex justify-center mb-[84px]">
           <div
             className="radial-progress text-2xl  text-mtn bg-[#333333] border-4 border-[#333]"
-            style={{ "--value": 20, "--size": "99px", "--thickness": "12px" }}
+            style={{ '--value': 20, '--size': '99px', '--thickness': '12px' }}
           >
             0%
           </div>
@@ -43,7 +43,7 @@ function Validate() {
         <div className="flex justify-center mt-6">
           <Button
             href={`${
-              path ? "/profile/update/companyinfo/" : "/profile/category"
+              path ? '/profile/update/companyinfo/' : '/profile/category'
             }`}
             label=" Get started"
           />

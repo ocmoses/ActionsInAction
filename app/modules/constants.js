@@ -187,7 +187,7 @@ export const partnerFields =
         // ncclicense
         vas_license_id: '9876532',
         ncc_issue_date: '2019-06-02',
-        ncc_expiry_date: '2025-06-01',
+        ncc_expiry_date: '', //'2025-06-01',
         ncc_doc: '',
 
         // nlrclicense
@@ -309,14 +309,14 @@ export const forms = {
     hand: '',
     fields: {
       vas_license_id: 'VAS License ID',
-      vas_issue_date: 'Issuing date',
-      vas_expiry_date: 'Expiry date',
-      vas_doc: 'NCC VAS License'
+      ncc_issue_date: 'Issuing date',
+      ncc_expiry_date: 'Expiry date',
+      ncc_doc: 'NCC VAS License'
     },
     required: {
-      vas_license_id: 'VAS License ID'
-      // vas_issue_date: 'Issuing date',
-      // vas_expiry_date: 'Expiry date'
+      vas_license_id: 'VAS License ID',
+      ncc_issue_date: 'Issuing date',
+      ncc_expiry_date: 'Expiry date'
       // vas_doc: 'NCC VAS License'
     }
   },
@@ -332,9 +332,9 @@ export const forms = {
       nlrc_doc: 'NLRC Document'
     },
     required: {
-      nlrc_license_id: 'NLRC License ID'
-      // nlrc_issue_date: 'Issuing date',
-      // nlrc_expiry_date: 'Expiry date'
+      nlrc_license_id: 'NLRC License ID',
+      nlrc_issue_date: 'Issuing date',
+      nlrc_expiry_date: 'Expiry date'
       // nlrc_doc: 'NLRC Document'
     }
   },
@@ -353,11 +353,11 @@ export const forms = {
       shortcode_approval_doc: 'NCC Pricing approval'
     },
     required: {
-      shortcode: 'Short code'
-      // shortcode_issue_date: 'Issue date',
-      // shortcode_expiry_date: 'Expiry date',
-      // shortcode_price_issue_date: 'Princing Issue date',
-      // shortcode_price_expiry_date: 'Pricing Expiry date',
+      shortcode: 'Short code',
+      shortcode_issue_date: 'Issue date',
+      shortcode_expiry_date: 'Expiry date',
+      shortcode_price_issue_date: 'Princing Issue date',
+      shortcode_price_expiry_date: 'Pricing Expiry date'
       // shortcode_doc: 'Short code document',
       // shortcode_approval_doc: 'NCC Pricing approval'
     }
@@ -374,9 +374,9 @@ export const forms = {
       indemnity_doc: 'Professional indemnity insurance Document'
     },
     required: {
-      indemnity_no: 'Professional indemnity insurance number'
-      // indemnity_issue_date: 'Issuing date',
-      // indemnity_expiry_date: 'Expiry date'
+      indemnity_no: 'Professional indemnity insurance number',
+      indemnity_issue_date: 'Issuing date',
+      indemnity_expiry_date: 'Expiry date'
       // indemnity_doc: 'Professional indemnity insurance Document'
     }
   },
@@ -518,9 +518,9 @@ const fieldNames = {
   },
   ncclicense: {
     vas_license_id: 'VAS License ID',
-    vas_issue_date: 'Issuing date',
-    vas_expiry_date: 'Expiry date',
-    vas_doc: 'NCC VAS License'
+    ncc_issue_date: 'Issuing date',
+    ncc_expiry_date: 'Expiry date',
+    ncc_doc: 'NCC VAS License'
   },
   nlrclicense: {
     nlrc_license_id: 'NLRC License ID',
@@ -632,3 +632,22 @@ export const roles = [
     priviledges: []
   }
 ]
+export function outputDate(date) {
+  if (!date) return ''
+  var d = new Date(date)
+
+  return d.toLocaleDateString('en-NG')
+}
+export function inputDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  return (
+    d.getFullYear() +
+    '-' +
+    ('0' + (d.getMonth() + 1)).slice(-2) +
+    '-' +
+    ('0' + d.getDate()).slice(-2)
+  )
+
+  // 16-05-2015 09:50
+}

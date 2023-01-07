@@ -154,6 +154,7 @@ export default function UpdateReviewBox() {
                       {partnerInfo.country && (
                         <Image
                           src={`/assets/flags/${partnerInfo.country.toLowerCase()}.svg`}
+                          alt={partnerInfo.country}
                           width={36}
                           height={36}
                           priority

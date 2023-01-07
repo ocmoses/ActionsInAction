@@ -1,11 +1,11 @@
-import Navbar from '@/app/components/Navbar'
-import { ArrowRightCircle } from '@/app/components/Icons'
-import HeroBanner from './HeroBanner'
-import Link from 'next/link'
+import Navbar from "@/app/components/Navbar"
+import { ArrowRightCircle } from "@/app/components/Icons"
+import HeroBanner from "./HeroBanner"
+import Link from "next/link"
 
 function LandingPage() {
   return (
-    <main className="px-4 md:px-8 m-0 w-full relative">
+    <main className="px-8 m-0 w-full relative">
       <div className="relative z-50">
         <Navbar type="dashboard" />
       </div>

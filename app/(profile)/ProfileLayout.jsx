@@ -49,9 +49,7 @@ function Layout({ children }) {
           </div>
           {/* End Steps menu */}
           <div className="flex">
-            <div className="flex gap-[24px]">
-              <div>{children}</div>
-            </div>
+            <div className="flex gap-[24px]x">{children}</div>
           </div>
         </div>
       </div>

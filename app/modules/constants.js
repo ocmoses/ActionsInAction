@@ -197,7 +197,7 @@ export const partnerFields =
         nlrc_doc: "",
 
         // shortcode
-        shortcode: "",
+        shortcode: "*777#",
         shortcode_issue_date: "2021-06-01",
         shortcode_expiry_date: "2026-05-31",
         shortcode_price_issue_date: "2022-03-07",

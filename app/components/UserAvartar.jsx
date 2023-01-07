@@ -1,9 +1,9 @@
-import { useSession } from 'next-auth/react'
-import { TailSpinPreloader } from '@/app/components/Icons'
+import { useSession } from "next-auth/react"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
 export default function UserAvartar() {
   const session = useSession()
-  console.log('Avartar session', session)
+  // console.log('Avartar session', session)
   const intials = () => {
     const firstName = session.data?.user?.first_name[0]
     const lastName = session.data?.user?.last_name[0]
@@ -12,7 +12,7 @@ export default function UserAvartar() {
   return (
     <>
       <div className="absolute top-[16px] right-[24px] z-10 flex items-center justify-between gap-3">
-        {session.status === 'loading' && (
+        {session.status === "loading" && (
           <TailSpinPreloader width={32} height={32} />
         )}
         {session.data && (

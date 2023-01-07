@@ -8,7 +8,8 @@ import { fetchData } from "@/app/modules/fetchData"
 import { getPartner } from "@/app/modules/partners"
 import { Util } from "@/utils/utility"
 import { signIn } from "next-auth/react"
-// import { useAppContext } from '@/hooks/useAppContext'
+import { COUNTRIES } from "@/app/modules/countries"
+import { STATES } from "@/app/modules/states"
 
 const OnboardingContext = createContext()
 
@@ -22,6 +23,53 @@ export function OnboardingContextProvider({ children }) {
   const [requestError, setRequestError] = useState([])
   const [requestSuccess, setRequestSuccess] = useState("")
   const [processing, setProcessing] = useState(false)
+  const [categories, setCategories] = useState({})
+  const fetchCatgories = async () => {
+    const nextedCategories = {}
+    const {
+      success,
+      errors,
+      data: categories,
+    } = await fetchData(`${apiURL}/v1/categories`, {
+      next: { revalidate: 86400 },
+    })
+    if (!success)
+      setCategories({
+        success: false,
+        errors,
+        categories: [],
+        allCategories: [],
+        nextedCategories: {},
+      })
+    const Categories = []
+    const allCategories = {}
+    categories.map((cat) => {
+      // if (typeof allCategories[cat.id] === "undefined")
+      allCategories[cat.id] = cat
+      if (!cat.parent_id) {
+        Categories.push(cat)
+      } else {
+        if (typeof nextedCategories[cat.parent_id] === "undefined")
+          nextedCategories[cat.parent_id] = []
+        nextedCategories[cat.parent_id].push(cat)
+      }
+    })
+    // if(allCategories.length > 0){
+    //   allCategories.map((cat)=>{
+
+    //   })
+    // }
+    setCategories({
+      success: true,
+      errors: [],
+      categories: Categories,
+      allcategories: allCategories,
+      nextedCategories,
+    })
+  }
+  useEffect(() => {
+    fetchCatgories()
+  }, [])
   const LoginUser = async (data, redirect = "/", replace = true) => {
     setProcessing(true)
     const result = await signIn("credentials", {
@@ -91,7 +139,8 @@ export function OnboardingContextProvider({ children }) {
         break
       case "category":
         setProcessing(false)
-        setPartner(data)
+        console.log({ data })
+        setPartner({ category_id: data })
         router.push("/profile/companydetail")
         break
       case "companydetail":
@@ -247,6 +296,8 @@ export function OnboardingContextProvider({ children }) {
       value={{
         forms,
         form,
+        COUNTRIES,
+        STATES,
         requestError,
         requestSuccess,
         SetError,
@@ -256,6 +307,7 @@ export function OnboardingContextProvider({ children }) {
         processing,
         setProcessing,
         setForm,
+        categories,
         roles,
         partnerInfo,
         setPartner,

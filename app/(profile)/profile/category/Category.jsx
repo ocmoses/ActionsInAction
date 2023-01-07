@@ -8,12 +8,11 @@ import {
   UnCheckedHoverIcon,
   UnCheckedInactiveIcon,
   TailSpinPreloader,
-  ExclamationTriangle,
 } from "@/app/components/Icons"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import Image from "next/image"
 
-function Category({ categories, catErrors, nextedCategories }) {
+function Category() {
   const {
     forms,
     setForm,
@@ -22,7 +21,9 @@ function Category({ categories, catErrors, nextedCategories }) {
     SetError,
     processing,
     setProcessing,
+    categories: categoryData,
   } = useOnboardingContext()
+  const { errors: catErrors, categories, nextedCategories } = categoryData
 
   const [selectedCategory, setSelectedCategory] = useState([])
   const [openedTabs, setOpenedTabs] = useState([])
@@ -35,8 +36,13 @@ function Category({ categories, catErrors, nextedCategories }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (selectedCategory.length === 0)
-      SetError(`You must select at least one category`)
-    else registerPartner("category", selectedCategory)
+      return SetError(`You must select at least one category`)
+    const data = []
+    selectedCategory.map((s) => {
+      if (!nextedCategories[s]) data.push(s)
+    })
+    console.log({ data })
+    registerPartner("category", data)
   }
   const selectCategory = (c) => {
     console.log(c)

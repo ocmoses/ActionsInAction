@@ -1,7 +1,8 @@
-import { COUNTRIES } from './countries'
-import { SelectMenuOption } from './types/index'
-import { AnimatePresence, motion } from 'framer-motion'
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import { COUNTRIES } from "./countries"
+import { SelectMenuOption } from "./types/index"
+import { AnimatePresence, motion } from "framer-motion"
+import React, { MutableRefObject, useEffect, useState } from "react"
+import Image from "next/image"
 
 export const CountrySelector = React.forwardRef<
   HTMLDivElement,
@@ -23,17 +24,17 @@ export const CountrySelector = React.forwardRef<
         props.open
       ) {
         props.onToggle()
-        setQuery('')
+        setQuery("")
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [ref])
 
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("")
 
   return (
     <div ref={ref}>
@@ -48,11 +49,11 @@ export const CountrySelector = React.forwardRef<
         >
           <span className=" flex items-center pr-2">
             <img
-              alt={`${props.selectedValue?.value ?? 'NG'}`}
+              alt={`${props.selectedValue?.value ?? "NG"}`}
               src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${
-                props.selectedValue?.value ?? 'NG'
+                props.selectedValue?.value ?? "NG"
               }.svg`}
-              className={'inline mr-2 h-4 rounded-sm'}
+              className={"inline mr-2 h-4 rounded-sm"}
             />
             {/* {props.selectedValue.code} */}
           </span>
@@ -91,9 +92,9 @@ export const CountrySelector = React.forwardRef<
                   <input
                     type="search"
                     name="search"
-                    autoComplete={'off'}
+                    autoComplete={"off"}
                     className="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-none"
-                    placeholder={'Search a country'}
+                    placeholder={"Search a country"}
                     onChange={(e) => setQuery(e.target.value)}
                   />
                 </li>
@@ -102,7 +103,7 @@ export const CountrySelector = React.forwardRef<
 
               <div
                 className={
-                  'max-h-64 w-full scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-600 scrollbar-thumb-rounded scrollbar-thin overflow-y-scroll'
+                  "max-h-64 w-full scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-600 scrollbar-thumb-rounded scrollbar-thin overflow-y-scroll"
                 }
               >
                 {COUNTRIES.filter((country) =>
@@ -123,15 +124,20 @@ export const CountrySelector = React.forwardRef<
                         role="option"
                         onClick={() => {
                           props.onChange(value.value)
-                          setQuery('')
+                          setQuery("")
                           props.onToggle()
                         }}
                       >
-                        <img
-                          alt={`${value.value}`}
-                          src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${value.value}.svg`}
-                          className={'inline mr-2 h-4 rounded-sm'}
-                        />
+                        {value?.value && (
+                          <Image
+                            alt={`${value.value}`}
+                            src={`/assets/flags/${value.value.toLowerCase()}.svg`}
+                            className={"inline mr-2 h-4 rounded-sm h-auto"}
+                            width={24}
+                            height={15}
+                            priority
+                          />
+                        )}
 
                         <span className="font-normal truncate">
                           {value.title}

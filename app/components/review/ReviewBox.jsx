@@ -1,13 +1,13 @@
-import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import Link from "next/link"
-import ReviewTitle from "./ReviewTitle"
+import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import Link from 'next/link'
+import ReviewTitle from './ReviewTitle'
 export default function ReviewBox() {
   const {
     COUNTRIES,
     STATES,
     partnerInfo,
-    categories: categoryData,
+    categories: categoryData
   } = useOnboardingContext()
   const { allcategories } = categoryData
   return (
@@ -114,7 +114,7 @@ export default function ReviewBox() {
             <div className="py-3">
               <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
-                  <div className="text-[#999999] text-[12px]">City</div>
+                  <div className="text-[#999999] text-[12px]">Postal codes</div>
                   <div className="text-white text-[14px]">
                     {partnerInfo.company_postcode}
                   </div>
@@ -140,7 +140,7 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
                   <div className="text-[#999999] text-[12px]">RC. number</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.rc_no}{" "}
+                    {partnerInfo.rc_no}{' '}
                   </div>
                 </div>
 
@@ -149,7 +149,7 @@ export default function ReviewBox() {
                     Tax identification number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.tin_no}{" "}
+                    {partnerInfo.tin_no}{' '}
                   </div>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function ReviewBox() {
                     VAS License ID
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.vas_license_id}{" "}
+                    {partnerInfo.vas_license_id}{' '}
                   </div>
                 </div>
               </div>
@@ -215,14 +215,14 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
                   <div className="text-[#999999] text-[12px]">Issuing date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.ncc_issue_date}{" "}
+                    {partnerInfo.ncc_issue_date}{' '}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Expiry date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.ncc_expiry_date}{" "}
+                    {partnerInfo.ncc_expiry_date}{' '}
                   </div>
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function ReviewBox() {
                     NLRC License number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_license_id}{" "}
+                    {partnerInfo.nlrc_license_id}{' '}
                   </div>
                 </div>
               </div>
@@ -262,14 +262,14 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
                   <div className="text-[#999999] text-[12px]">Issuing date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_issue_date}{" "}
+                    {partnerInfo.nlrc_issue_date}{' '}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Expiry date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_expiry_date}{" "}
+                    {partnerInfo.nlrc_expiry_date}{' '}
                   </div>
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function ReviewBox() {
                 <div className="">
                   <div className="text-[#999999] text-[12px]">Shortcode</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode}{" "}
+                    {partnerInfo.shortcode}{' '}
                   </div>
                 </div>
               </div>
@@ -312,7 +312,7 @@ export default function ReviewBox() {
                     Shortcode Issuing date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_issue_date}{" "}
+                    {partnerInfo.shortcode_issue_date}{' '}
                   </div>
                 </div>
 
@@ -321,7 +321,7 @@ export default function ReviewBox() {
                     Shortcode Expiry date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_expiry_date}{" "}
+                    {partnerInfo.shortcode_expiry_date}{' '}
                   </div>
                 </div>
               </div>
@@ -333,7 +333,7 @@ export default function ReviewBox() {
                     NCC pricing approval Issuing date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_pricing_issue_date}{" "}
+                    {partnerInfo.shortcode_pricing_issue_date}{' '}
                   </div>
                 </div>
 
@@ -342,7 +342,7 @@ export default function ReviewBox() {
                     NCC pricing approval Expiry date
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode_pricing_expiry_date}{" "}
+                    {partnerInfo.shortcode_pricing_expiry_date}{' '}
                   </div>
                 </div>
               </div>
@@ -389,7 +389,7 @@ export default function ReviewBox() {
                     Indemnity issue number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_no}{" "}
+                    {partnerInfo.indemnity_no}{' '}
                   </div>
                 </div>
               </div>
@@ -399,14 +399,14 @@ export default function ReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-2">
                   <div className="text-[#999999] text-[12px]">Issuing date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_issue_date}{" "}
+                    {partnerInfo.indemnity_issue_date}{' '}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Expiry date</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_expiry_date}{" "}
+                    {partnerInfo.indemnity_expiry_date}{' '}
                   </div>
                 </div>
               </div>
@@ -438,7 +438,7 @@ export default function ReviewBox() {
                     Bank account name
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.account_name}{" "}
+                    {partnerInfo.account_name}{' '}
                   </div>
                 </div>
               </div>
@@ -450,14 +450,14 @@ export default function ReviewBox() {
                     Account number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.account_no}{" "}
+                    {partnerInfo.account_no}{' '}
                   </div>
                 </div>
 
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Bank name</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.bank}{" "}
+                    {partnerInfo.bank}{' '}
                   </div>
                 </div>
               </div>

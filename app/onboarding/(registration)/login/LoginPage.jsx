@@ -1,20 +1,19 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import TextInput from "@/app/components/form/TextInput"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import Button from "@/app/components/form/Button"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import useErrors from "@/hooks/useErrors"
-import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+'use client'
+import Image from 'next/image'
+import Link from 'next/link'
+import TextInput from '@/app/components/form/TextInput'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import Button from '@/app/components/form/Button'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import useErrors from '@/hooks/useErrors'
+import { useRouter } from 'next/navigation'
 
 function Login() {
   const { processing, setProcessing, LoginUser } = useOnboardingContext()
   const [data, setData] = useState({
-    partnerid: "", //'234691599',
-    password: "", //'Todoo45@222'
+    partnerid: process.env.NODE_ENV === 'production' ? '' : '234477941',
+    password: process.env.NODE_ENV === 'production' ? '' : 'Todoo45@222'
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()
@@ -26,35 +25,49 @@ function Login() {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
     if (!data.partnerid) {
-      setError("partnerid", `Please enter your Partner ID`)
-      return
+      return setError('partnerid', `Please enter your Partner ID`)
     }
     if (!data.password) {
-      setError("password", `Please enter your password`)
-      return
+      return setError('password', `Please enter your password`)
     }
-    const result = await LoginUser(data, "/", false)
-    if (result?.error) setError("login", result.error)
+    const result = await LoginUser(data, false)
+    if (result.error) return setError('login', result.error)
+
+    const url = {
+      userinfo: `/onboarding/register/userinfo`,
+      companyinfo: `/onboarding/register/companyinfo`,
+      category: `/profile/category`,
+      companydetail: `/profile/companydetail`,
+      compliance: `/profile/compliance`,
+      ncclicense: `/profile/ncclicense`,
+      nlrclicense: `/profile/nlrclicense`,
+      shortcode: `/profile/shortcode`,
+      indemnity: `/profile/indemnity`,
+      accountinfo: `/profile/accountinfo`,
+      dashboard: `/dashboard`
+    }
+    router.replace(`${url[result.nextstage]}`)
+    // setProcessing(false)
+    return
   }
-  // const session = useSession()
-  // console.log('session', session)
+
   return (
     <form method="POST" onSubmit={handleLogin}>
-      <div className="w3-animate-opacity pb-20 w-full max-w-[607px]">
+      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[607px]">
         <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
           <span
             style={{
-              fontStyle: "normal",
+              fontStyle: 'normal',
               fontWeight: 700,
-              fontSize: "36px",
-              lineHeight: "40px",
+              fontSize: '36px',
+              lineHeight: '40px'
             }}
           >
             Y’ello
@@ -71,18 +84,18 @@ function Login() {
         <p
           className="font-hairline flex-wrap mb-16"
           style={{
-            fontStyle: "normal",
+            fontStyle: 'normal',
             fontWeight: 400,
-            fontSize: "16px",
-            lineHeight: "24px",
-            color: "#999999",
+            fontSize: '16px',
+            lineHeight: '24px',
+            color: '#999999'
           }}
         >
           Welcome back! please enter your great details
         </p>
         <div className="mb-6">
-          {errors && typeof errors["login"] !== "undefined" && (
-            <div className="text-sm text-red-600 mt-2">{errors["login"]}</div>
+          {errors && typeof errors['login'] !== 'undefined' && (
+            <div className="text-sm text-red-600 mt-2">{errors['login']}</div>
           )}
         </div>
         <TextInput
@@ -105,11 +118,11 @@ function Login() {
           href="#"
           className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
           style={{
-            fontStyle: "normal",
+            fontStyle: 'normal',
             fontWeight: 400,
-            fontSize: "14px",
-            lineHeight: "20px",
-            textDecorationLine: "underline",
+            fontSize: '14px',
+            lineHeight: '20px',
+            textDecorationLine: 'underline'
           }}
         >
           Forgot your password?

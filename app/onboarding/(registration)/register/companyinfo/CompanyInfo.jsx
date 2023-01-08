@@ -60,7 +60,7 @@ export default function CompanyInfo() {
   }
   return (
     <>
-      <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+      <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <form onSubmit={handleSubmit}>
           <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
           <TextInput

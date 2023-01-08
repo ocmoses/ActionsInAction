@@ -1,9 +1,42 @@
 import { Util } from '@/utils/utility'
 import axios from 'axios'
+import { fetchData } from './fetchData'
+import { apiURL } from './constants'
 
 export const getPartner = async (partnerid) => {
-  const response = await fetch(api)
-  return response.json()
+  const result = await fetchData(
+    `${apiURL}/v1/auth/partner-info/${partnerid}`,
+    {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    }
+  )
+  return result
+}
+export const checkRegStatus = async (partner) => {
+  const { percent_complete, profile_stage, user } = partner.data
+  const stages = [
+    'userinfo',
+    'companyinfo',
+    'category',
+    'companydetail',
+    'compliance',
+    'ncclicense',
+    'nlrclicense',
+    'shortcode',
+    'indemnity',
+    'accountinfo'
+  ]
+  let nextstage = null
+  stages.map((stage) => {
+    if (
+      !nextstage &&
+      (!profile_stage[stage] || profile_stage[stage] === 'false')
+    )
+      nextstage = stage
+  })
+  if (!nextstage) nextstage = 'dashboard'
+  return { percent_complete, profile_stage, nextstage }
 }
 export const register_partner = async (data) => {
   const errors = []

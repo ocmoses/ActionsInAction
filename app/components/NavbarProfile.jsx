@@ -1,7 +1,8 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import { useSelectedLayoutSegments } from "next/navigation"
+'use client'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useSelectedLayoutSegments } from 'next/navigation'
+import UserPercentComplete from '@/app/components/UserPercentComplete'
 function NavbarProfile() {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -19,13 +20,7 @@ function NavbarProfile() {
           />
         </Link>
         <div className="flex justify-end">
-          <div className="text-white flex items-center gap-3 mr-0 md:mr-3">
-            <div
-              className="radial-progress text-2xl  text-mtn bg-[#333333] border-2 border-[#333]"
-              style={{ "--value": 2, "--size": "20px", "--thickness": "4px" }}
-            ></div>{" "}
-            <span>0% completed</span>
-          </div>
+          <UserPercentComplete />
         </div>
       </div>
     </header>

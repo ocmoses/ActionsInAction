@@ -8,10 +8,8 @@ export default function Session({ children }) {
   const { setPartnerInfo } = useOnboardingContext()
   useEffect(() => {
     if (session.status === 'authenticated') {
-      console.log(session.data.user)
       setPartnerInfo((oldState) => ({ ...oldState, ...session.data.user }))
     }
   }, [session.status])
-  //   console.log({ session })
   return <>{children}</>
 }

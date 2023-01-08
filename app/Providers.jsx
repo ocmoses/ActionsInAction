@@ -6,7 +6,7 @@ import Session from './Session'
 
 export default function Providers({ children }) {
   return (
-    <SessionProvider>
+    <SessionProvider refetchOnWindowFocus={true}>
       <AppContextProvider>
         <OnboardingContextProvider>
           <Session>{children}</Session>

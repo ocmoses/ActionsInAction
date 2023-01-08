@@ -122,7 +122,6 @@ export function OnboardingContextProvider({ children }) {
       redirect: redirect,
       callbackUrl: callbackUrl
     })
-    console.log('Login:', result)
     if (!result) {
       setProcessing(false)
       return { error: 'Something went wrong' }

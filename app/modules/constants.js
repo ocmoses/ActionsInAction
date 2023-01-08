@@ -12,73 +12,74 @@ import {
 
 export const apiURL = 'https://amazonpartner.com.ng/amazon/public/api'
 // export const partnerFields = {
-//   partnerid: "",
+//   partnerid: '',
 
 //   // userinfo
-//   first_name: "",
-//   last_name: "",
-//   email: "",
-//   countrycode: "234",
-//   telephone: "",
-//   password: "",
-//   password_confirmed: "",
+//   first_name: '',
+//   last_name: '',
+//   email: '',
+//   countrycode: '234',
+//   telephone: '',
+//   password: '',
+//   password_confirmed: '',
 
 //   //  companyinfo
-//   company_name: "",
-//   company_role: "",
+//   company_name: '',
+//   company_role: '',
 
 //   // category
 //   category_id: [],
 
 //   // companyinfo
-//   company_name: "",
-//   country: "NG",
-//   company_address: "",
-//   company_city: "",
-//   company_state: "",
-//   company_postcode: "",
+//   company_name: '',
+//   country: 'NG',
+//   company_address: '',
+//   company_city: '',
+//   company_state: '',
+//   company_postcode: '',
 
 //   // compliance
-//   rc_no: "",
-//   tin_no: "",
-//   tin_doc: "",
-//   memart_doc: "",
-//   cac_doc: "",
+//   rc_no: '',
+//   tin_no: '',
+//   tin_doc: '',
+//   memart_doc: '',
+//   cac_doc: '',
 
 //   // ncclicense
-//   vas_license_id: "",
-//   ncc_issue_date: "",
-//   ncc_expiry_date: "",
-//   ncc_doc: "",
+//   vas_license_id: '',
+//   ncc_issue_date: '',
+//   ncc_expiry_date: '',
+//   ncc_doc: '',
 
 //   // nlrclicense
-//   nlrc_license_id: "",
-//   nlrc_issue_date: "",
-//   nlrc_expiry_date: "",
-//   nlrc_doc: "",
+//   nlrc_license_id: '',
+//   nlrc_issue_date: '',
+//   nlrc_expiry_date: '',
+//   nlrc_doc: '',
 
 //   // shortcode
-//   shortcode: "",
-//   shortcode_issue_date: "",
-//   shortcode_expiry_date: "",
-//   shortcode_price_issue_date: "",
-//   shortcode_price_expiry_date: "",
-//   shortcode_doc: "",
-//   shortcode_approval_doc: "",
+//   shortcode: '',
+//   shortcode_issue_date: '',
+//   shortcode_expiry_date: '',
+//   shortcode_price_issue_date: '',
+//   shortcode_price_expiry_date: '',
+//   shortcode_doc: '',
+//   shortcode_approval_doc: '',
 
 //   // indemnity
-//   indemnity_no: "",
-//   indemnity_issue_date: "",
-//   indemnity_expiry_date: "",
-//   indemnity_doc: "",
+//   indemnity_no: '',
+//   indemnity_issue_date: '',
+//   indemnity_expiry_date: '',
+//   indemnity_doc: '',
 
 //   // accountinfo
-//   account_name: "",
-//   account_no: "",
-//   bank: "",
-//   audited_account_1: "",
-//   audited_account_2: "",
-//   audited_account_3: "",
+//   account_name: '',
+//   account_no: '',
+//   bank: '',
+//   audited_account_1: '',
+//   audited_account_2: '',
+//   audited_account_3: '',
+//   progress: {}
 // }
 export const partnerFields =
   process.env.NODE_ENV === 'production'
@@ -149,10 +150,11 @@ export const partnerFields =
         bank: '',
         audited_account_1: '',
         audited_account_2: '',
-        audited_account_3: ''
+        audited_account_3: '',
+        progress: {}
       }
     : {
-        partnerid: '12345678',
+        partnerid: '234477941',
 
         // userinfo
         first_name: 'Prince',
@@ -160,9 +162,8 @@ export const partnerFields =
         email: 'olabode.gbolu@mtn.com',
         countrycode: '234',
         telephone: '07062026073',
-        password: '',
-        password_confirmed: '',
-
+        password: 'Todoo45@222',
+        password_confirmed: 'Todoo45@222',
         //  companyinfo
         company_name: 'MTN Nigeria',
         company_role: 'admin',
@@ -217,7 +218,8 @@ export const partnerFields =
         bank: '214',
         audited_account_1: '',
         audited_account_2: '',
-        audited_account_3: ''
+        audited_account_3: '',
+        progress: {}
       }
 export const forms = {
   userinfo: {

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import { apiURL, forms, partnerFields, roles } from '@/app/modules/constants'
 import { fetchData } from '@/app/modules/fetchData'
-import { getPartner } from '@/app/modules/partners'
+import { checkRegStatus, getPartner } from '@/app/modules/partners'
 import { Util } from '@/utils/utility'
 import { signIn } from 'next-auth/react'
 import { COUNTRIES } from '@/app/modules/countries'
@@ -77,7 +77,7 @@ export function OnboardingContextProvider({ children }) {
     const nextedCategories = {}
     const {
       success,
-      errors,
+      error,
       data: categories
     } = await fetchData(`${apiURL}/v1/categories`, {
       next: { revalidate: 86400 }
@@ -85,7 +85,7 @@ export function OnboardingContextProvider({ children }) {
     if (!success)
       setCategories({
         success: false,
-        errors,
+        error,
         categories: [],
         allCategories: [],
         nextedCategories: {}
@@ -104,7 +104,7 @@ export function OnboardingContextProvider({ children }) {
     })
     setCategories({
       success: true,
-      errors: [],
+      error: null,
       categories: Categories,
       allcategories: allCategories,
       nextedCategories
@@ -114,28 +114,32 @@ export function OnboardingContextProvider({ children }) {
   useEffect(() => {
     fetchCatgories()
   }, [])
-  const LoginUser = async (data, redirect = '/', replace = true) => {
+  const LoginUser = async (data, redirect = false, callbackUrl = '/') => {
     setProcessing(true)
     const result = await signIn('credentials', {
       partnerid: data.partnerid,
       password: data.password,
-      redirect: replace,
-      callbackUrl: redirect
+      redirect: redirect,
+      callbackUrl: callbackUrl
     })
-
+    console.log('Login:', result)
     if (!result) {
       setProcessing(false)
-      return SetError('Something went wrong')
+      return { error: 'Something went wrong' }
     }
     if (!result?.ok) {
       setProcessing(false)
-      if (result.error) SetError(result.error)
-      else return SetError('Something went wrong')
+      if (result.error) return result
+      else return { error: 'Something went wrong' }
     }
-    // if (replace) router.replace(redirect)
-    // else router.push(redirect)
-    console.log('Signin', { data, redirect, replace, result })
-    return result
+    //CHECK USER STATUS
+    const partner = await getPartner(data.partnerid)
+    if (partner.error) return partner
+    if (partner.data) {
+      const partner_status = await checkRegStatus(partner)
+      return { success: true, ...partner_status }
+    }
+    return { error: 'Something went wrong' }
   }
   const registerPartner = async (frm, data) => {
     switch (frm) {
@@ -180,7 +184,7 @@ export function OnboardingContextProvider({ children }) {
         setProcessing(true)
         setPartner(data)
         setUpdateStatus('review', 'companyinfo', true)
-        router.replace('/onboarding/register/validate')
+        router.push('/onboarding/register/validate')
         break
       case 'category':
         setProcessing(false)
@@ -369,6 +373,7 @@ export function OnboardingContextProvider({ children }) {
         categories,
         roles,
         partnerInfo,
+        setPartnerInfo,
         setPartner,
         registerPartner,
         getPartner,

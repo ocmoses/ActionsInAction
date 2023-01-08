@@ -1,11 +1,11 @@
-"use client"
-import Image from "next/image"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import MailOpened from "~/assets/icons/mail-opened.svg"
-import { Util } from "@/utils/utility"
-import Link from "next/link"
-import { useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+'use client'
+import Image from 'next/image'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import MailOpened from '~/assets/icons/mail-opened.svg'
+import { Util } from '@/utils/utility'
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function Validate() {
   const { setForm, partnerInfo, processing, setProcessing, resendEmail } =
@@ -17,11 +17,11 @@ export default function Validate() {
 
   const searchParams = useSearchParams()
 
-  const path = searchParams.get("path")
+  const path = searchParams.get('path')
 
   return (
     <>
-      <div className="w3-animate-opacity pb-20 w-full max-w-[520px]">
+      <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         {processing && (
           <div className="absolute z-50 top-0 right-0 bottom-0 left-0 bg-transparent"></div>
         )}
@@ -42,15 +42,15 @@ export default function Validate() {
 
         {partnerInfo.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
-            A confirmation email has been sent to{" "}
+            A confirmation email has been sent to{' '}
             {Util.obscureEmail(partnerInfo.email)}. <br />
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {partnerInfo.email !== "" && (
+        {partnerInfo.email !== '' && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
-            Didn't receive our email?{" "}
+            Didn't receive our email?{' '}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
               onClick={() => resendEmail(partnerInfo.email)}
@@ -63,7 +63,7 @@ export default function Validate() {
 
       <Link
         href={`${
-          path ? "/profile/update/setpassword/" : "/profile/validate/PARTNER-ID"
+          path ? '/profile/update/setpassword/' : '/profile/validate/PARTNER-ID'
         }`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >

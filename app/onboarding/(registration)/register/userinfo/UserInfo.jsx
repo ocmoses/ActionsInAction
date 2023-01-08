@@ -45,7 +45,7 @@ function UserInfo() {
       })
     setForm('userinfo')
     setProcessing(false)
-  }, [])
+  }, [partnerInfo])
   const handleSubmit = (e) => {
     e.preventDefault()
     clearErrors()

@@ -59,7 +59,7 @@ function SetPassword() {
   }
 
   return (
-    <div className="w3-animate-opacity flex justify-center items-center  pb-20 w-full max-w-[400px]">
+    <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <TextInput

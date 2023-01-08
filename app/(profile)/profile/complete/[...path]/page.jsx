@@ -39,7 +39,7 @@ export default function Complete({ params: { path } }) {
           This will take 5-10 business days.
         </div>
         <div className="mt-3 pb-12 flex justify-center items-start w-full">
-          <Button href="" label="Explore the portal " />
+          <Button href="/dashboard" label="Explore the portal " />
         </div>
       </div>
     </>

@@ -2,12 +2,15 @@
 import { SessionProvider } from 'next-auth/react'
 import { OnboardingContextProvider } from '@/hooks/useOnboardingContext'
 import { AppContextProvider } from '@/hooks/useAppContext'
+import Session from './Session'
 
 export default function Providers({ children }) {
   return (
     <SessionProvider>
       <AppContextProvider>
-        <OnboardingContextProvider>{children}</OnboardingContextProvider>
+        <OnboardingContextProvider>
+          <Session>{children}</Session>
+        </OnboardingContextProvider>
       </AppContextProvider>
     </SessionProvider>
   )

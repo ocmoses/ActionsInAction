@@ -14,47 +14,46 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         const { partnerid, password } = credentials as any
-        const res = await fetch(
-          `${apiURL}/v1/auth/login`,
-          {
-            method: 'POST',
-            body: JSON.stringify({ partnerid, password }),
-            headers: { 'Content-Type': 'application/json' }
-          }
-        )
-        const user = await res.json()
-        if (res.ok && user) {
-          if (user.success) {
-            // const user = result.user
-            // user.regStatus = result.profile_status
-            // user.regPercent = result.percent_complete
-            console.log('user.user', user.user)
-            return user.user
+        const res = await fetch(`${apiURL}/v1/auth/login`, {
+          method: 'POST',
+          body: JSON.stringify({ partnerid, password }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        const result = await res?.json()
+        if (res.ok && result) {
+          if (result.success) {
+            const user = {
+              ...result.data.user,
+              progress: {
+                status: result.data.profile_status,
+                percent: result.data.percent_complete,
+                stages: { ...result.data.profile_stage }
+              }
+            }
+            return user
           } else {
-            throw new Error('Sorry! An error was encountered during authenotication')
+            throw new Error(
+              'Sorry! An error was encountered during authenotication'
+            )
           }
         }
-        throw new Error(user.data.message)
-      },
-     
+        throw new Error(result.data.message)
+      }
     })
   ],
-  secret:process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt'
   },
   callbacks: {
     async session({ session, user, token }) {
-      console.log('session token', token)
       session.user = token
       return session
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-        console.log('jwt token', token)
-        delete token.user
-        token = {...token, ...user}
-        console.log('jwt token', token)
-     return token
+      delete token.user
+      token = { ...token, ...user }
+      return token
     }
   },
   pages: {

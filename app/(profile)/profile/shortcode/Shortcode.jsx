@@ -10,6 +10,7 @@ import useErrors from '@/hooks/useErrors'
 import { TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Button from '@/app/components/form/Button'
+import FormErrors from '@/app/components/FormErrors'
 
 function Shortcode() {
   const {
@@ -48,7 +49,7 @@ function Shortcode() {
     setForm('shortcode')
     setProcessing(false)
   }, [])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -61,7 +62,10 @@ function Shortcode() {
       }
       if (error) return
     }
-    registerPartner('shortcode', data)
+    const result = await registerPartner('shortcode', data)
+    if (result) {
+      if (result?.error) setError('global', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -81,6 +85,9 @@ function Shortcode() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors['global']} />}
+        </div>
         <TextInput
           id="shortcode"
           label="Short code"

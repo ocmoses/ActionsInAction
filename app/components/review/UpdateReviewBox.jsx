@@ -34,7 +34,8 @@ export default function UpdateReviewBox() {
                 <div className="mb-2 sm:mb-0 sm:col-span-3">
                   <div className="text-[#999999] text-[12px]">Company type</div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.category_id.length > 0 &&
+                    {typeof partnerInfo.category_id !== 'string' &&
+                      partnerInfo.category_id?.length > 0 &&
                       allcategories &&
                       partnerInfo.category_id.map((cid) => (
                         <div key={cid}>{allcategories[cid]?.category_name}</div>

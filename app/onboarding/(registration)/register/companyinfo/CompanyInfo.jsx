@@ -5,6 +5,7 @@ import SelectInput from '@/app/components/form/SelectInput'
 import SelectInputOption from '@/app/components/form/SelectInputOption'
 import TextInput from '@/app/components/form/TextInput'
 import { TailSpinPreloader } from '@/app/components/Icons'
+import FormErrors from '@/app/components/FormErrors'
 import Button from '@/app/components/form/Button'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import { Util } from '@/utils/utility'
@@ -36,7 +37,7 @@ export default function CompanyInfo() {
     setForm('companyinfo')
     setProcessing(false)
   }, [])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -49,7 +50,10 @@ export default function CompanyInfo() {
       }
       if (error) return
     }
-    registerPartner('companyinfo', data)
+    const result = await registerPartner('companyinfo', data)
+    if (result) {
+      if (result?.error) setError('login', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -63,6 +67,9 @@ export default function CompanyInfo() {
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <form onSubmit={handleSubmit}>
           <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+          <div className="mb-6">
+            {errors && <FormErrors error={errors['login']} />}
+          </div>
           <TextInput
             id="company_name"
             label="Company name"

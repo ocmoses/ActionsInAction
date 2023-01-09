@@ -7,7 +7,8 @@ import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Button from '@/app/components/form/Button'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
-
+import FormErrors from '@/app/components/FormErrors'
+import { signOut, useSession } from 'next-auth/react'
 export default function PartnerWelcome() {
   const {
     forms,
@@ -23,12 +24,21 @@ export default function PartnerWelcome() {
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
+  const session = useSession()
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
     setForm('partnerwelcome')
     setProcessing(false)
+    if (session.status !== 'loading' && session.status === 'authenticated') {
+      signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
+    }
   }, [])
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (session.status !== 'loading' && session.status === 'authenticated') {
+      signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
+    }
+  }, [session.status])
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -41,7 +51,10 @@ export default function PartnerWelcome() {
       }
       if (error) return
     }
-    registerPartner('partnerwelcome', data)
+    const result = await registerPartner('partnerwelcome', data, setError)
+    if (result) {
+      if (result?.error) setError('login', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -55,6 +68,9 @@ export default function PartnerWelcome() {
     <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors['login']} />}
+        </div>
         <TextInput
           id="partnerid"
           label="Enter partner ID or Email"

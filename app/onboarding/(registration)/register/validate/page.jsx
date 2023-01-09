@@ -63,7 +63,9 @@ export default function Validate() {
 
       <Link
         href={`${
-          path ? '/profile/update/setpassword/' : '/profile/validate/PARTNER-ID'
+          path
+            ? '/profile/update/setpassword/'
+            : `/onboarding/validate/${partnerInfo.partnerid}`
         }`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >

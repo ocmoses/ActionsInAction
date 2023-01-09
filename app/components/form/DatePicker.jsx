@@ -3,6 +3,7 @@ import { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { inputDate } from '@/app/modules/constants'
+import FormErrors from '@/app/components/FormErrors'
 
 function FileInput({ id, label, value, onChange, border, bg, margin, errors }) {
   const [startDate, setStartDate] = useState()
@@ -54,9 +55,7 @@ function FileInput({ id, label, value, onChange, border, bg, margin, errors }) {
           </svg>
         </div>
       </div>
-      {errors && id && typeof errors[id] !== 'undefined' && (
-        <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
-      )}
+      {errors && <FormErrors error={errors[id]} />}
     </div>
   )
 }

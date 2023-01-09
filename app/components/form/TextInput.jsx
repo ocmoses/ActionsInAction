@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { EyeOpenIcon, EyeCloseIcon } from '../Icons'
+import FormErrors from '@/app/components/FormErrors'
 function TextInput({
   id,
   label,
@@ -59,10 +60,7 @@ function TextInput({
           </div>
         )}
       </div>
-
-      {errors && typeof errors[id] !== 'undefined' && (
-        <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
-      )}
+      {errors && <FormErrors error={errors[id]} />}
     </div>
   )
 }

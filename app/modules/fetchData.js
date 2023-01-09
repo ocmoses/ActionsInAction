@@ -11,7 +11,6 @@ export const fetchData = async (url, opt) => {
   const options = { ...defaultOptions, ...Opts }
   try {
     const result = await fetch(url, options)
-    // console.log('result', { url, result })
     if (result) {
       const { data, success } = await result?.json()
       if (result?.ok) {

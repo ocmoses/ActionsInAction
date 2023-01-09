@@ -38,6 +38,8 @@ function NlrcLicense() {
         nlrc_expiry_date: partnerInfo.nlrc_expiry_date ?? '',
         nlrc_doc: partnerInfo.nlrc_doc ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('nlrclicense')
     setProcessing(false)
   }, [])

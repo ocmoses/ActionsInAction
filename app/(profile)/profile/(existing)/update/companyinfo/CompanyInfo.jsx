@@ -41,6 +41,8 @@ function CompanyInfo() {
         company_state: partnerInfo.company_state ?? '',
         company_postcode: partnerInfo.company_postcode ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('confirmcompanyinfo')
     setProcessing(false)
   }, [])

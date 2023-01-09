@@ -25,9 +25,7 @@ function ContactPerson() {
     last_name: '',
     email: '',
     countrycode: '',
-    telephone: '',
-    password: '',
-    password_confirmed: ''
+    telephone: ''
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
@@ -37,10 +35,10 @@ function ContactPerson() {
         last_name: partnerInfo.last_name ?? '',
         email: partnerInfo.email ?? '',
         countrycode: partnerInfo.countrycode ?? '',
-        telephone: partnerInfo.telephone ?? '',
-        password: '',
-        password_confirmed: ''
+        telephone: partnerInfo.telephone ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('contactperson')
     setProcessing(false)
   }, [])

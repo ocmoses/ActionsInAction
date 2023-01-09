@@ -11,10 +11,12 @@ import { signIn } from 'next-auth/react'
 import { COUNTRIES } from '@/app/modules/countries'
 import { STATES } from '@/app/modules/states'
 import { BANKS } from '@/app/modules/banks'
+import { signOut, useSession } from 'next-auth/react'
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
+  const session = useSession()
   const router = useRouter()
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -72,6 +74,9 @@ export function OnboardingContextProvider({ children }) {
       return oldState
     })
   }
+  //
+  // onboarding/register/validate
+  // onboarding/validate/234577726  // registration callback url
   const fetchCatgories = async () => {
     setIsFetching('category', true)
     const nextedCategories = {}
@@ -117,10 +122,12 @@ export function OnboardingContextProvider({ children }) {
   const updatePercentComplete = (data) => {
     const percent = data.percent_complete
     const stages = { ...data.profile_stage }
-    setPartnerInfo((oldState) => ({
-      ...oldState,
-      progress: { ...oldState.progress, percent, stages }
-    }))
+    if (percent) {
+      setPartnerInfo((oldState) => ({
+        ...oldState,
+        progress: { ...oldState.progress, percent, stages }
+      }))
+    }
   }
   const LoginUser = async (data, redirect = false, callbackUrl = '/') => {
     setProcessing(true)
@@ -149,6 +156,7 @@ export function OnboardingContextProvider({ children }) {
     return { error: 'Something went wrong' }
   }
   const registerPartner = async (frm, userdata) => {
+    console.log({ session })
     switch (frm) {
       case 'userinfo':
         setProcessing(true)
@@ -459,24 +467,90 @@ export function OnboardingContextProvider({ children }) {
           }
           setPartner(user)
         }
+        setPartner(userdata)
         updatePercentComplete(partnerwelcome)
         setUpdateStatus('review', 'partnerwelcome', true)
         router.push('/onboarding/register/partnerwelcome/validate')
         break
       case 'setpassword':
         setProcessing(true)
+        const {
+          success: setpasswordSuccess,
+          error: setpasswordError,
+          data: setpassword
+        } = await fetchData(`${apiURL}/v1/existing-partner/setup-password`, {
+          method: 'PUT',
+          cache: 'no-store',
+          body: JSON.stringify({
+            partnerid: partnerInfo.partnerid,
+            password: userdata.password,
+            password_confirmed: userdata.password_confirmed
+          })
+        })
+        if (setpasswordError) {
+          setProcessing(false)
+          return { success: false, error: setpasswordError, data: null }
+        }
+        // setPartner(userdata)
+        updatePercentComplete(setpassword)
         setUpdateStatus('updatereview', 'setpassword', true)
         router.push('/profile/update/welcome?path=companyinfo')
         break
       case 'confirmcompanyinfo':
         setProcessing(true)
+        const {
+          success: confirmcompanyinfoSuccess,
+          error: confirmcompanyinfoError,
+          data: confirmcompanyinfo
+        } = await fetchData(
+          `${apiURL}/v1/existing-partner/confirm-companyinfo`,
+          {
+            method: 'PUT',
+            cache: 'no-store',
+            body: JSON.stringify({
+              partnerid: partnerInfo.partnerid,
+              company_name: userdata.company_name ?? '',
+              country: userdata.country ?? '',
+              company_address: userdata.company_address ?? '',
+              company_city: userdata.company_city ?? '',
+              company_state: userdata.company_state ?? '',
+              company_postcode: userdata.company_postcode ?? ''
+            })
+          }
+        )
+        if (confirmcompanyinfoError) {
+          setProcessing(false)
+          return { success: false, error: confirmcompanyinfoError, data: null }
+        }
         setPartner(userdata)
+        updatePercentComplete(confirmcompanyinfo)
         setUpdateStatus('updatereview', 'confirmcompanyinfo', true)
         router.push('/profile/update/contactperson')
         break
       case 'contactperson':
         setProcessing(true)
+        const {
+          success: contactpersonSuccess,
+          error: contactpersonError,
+          data: contactperson
+        } = await fetchData(`${apiURL}/v1/existing-partner/contact-person`, {
+          method: 'PUT',
+          cache: 'no-store',
+          body: JSON.stringify({
+            partnerid: partnerInfo.partnerid,
+            first_name: userdata.first_name ?? '',
+            last_name: userdata.last_name ?? '',
+            email: userdata.email ?? '',
+            countrycode: userdata.countrycode ?? '',
+            telephone: userdata.telephone ?? ''
+          })
+        })
+        if (contactpersonError) {
+          setProcessing(false)
+          return { success: false, error: contactpersonError, data: null }
+        }
         setPartner(userdata)
+        updatePercentComplete(contactperson)
         setUpdateStatus('updatereview', 'contactperson', true)
         router.push('/profile/update/review')
         break

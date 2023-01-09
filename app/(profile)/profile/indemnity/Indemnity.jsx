@@ -38,6 +38,8 @@ function Indemnity() {
         indemnity_expiry_date: partnerInfo.indemnity_expiry_date ?? '',
         indemnity_doc: partnerInfo.indemnity_doc ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('indemnity')
     setProcessing(false)
   }, [])

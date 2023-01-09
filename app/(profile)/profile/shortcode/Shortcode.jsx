@@ -46,6 +46,8 @@ function Shortcode() {
         shortcode_doc: partnerInfo.shortcode_doc ?? '',
         shortcode_approval_doc: partnerInfo.shortcode_approval_doc ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('shortcode')
     setProcessing(false)
   }, [])

@@ -34,6 +34,8 @@ export default function CompanyInfo() {
         company_name: '',
         company_role: ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('companyinfo')
     setProcessing(false)
   }, [])

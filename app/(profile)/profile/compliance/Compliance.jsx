@@ -41,6 +41,8 @@ function Compliance() {
         memart_doc: partnerInfo.memart_doc ?? '',
         cac_doc: partnerInfo.cac_doc ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('compliance')
     setProcessing(false)
   }, [])

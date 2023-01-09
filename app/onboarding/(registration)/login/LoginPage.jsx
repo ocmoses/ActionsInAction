@@ -9,7 +9,7 @@ import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import useErrors from '@/hooks/useErrors'
 import { useRouter } from 'next/navigation'
 import FormErrors from '@/app/components/FormErrors'
-import { signOut, useSession } from 'next-auth/react'
+import { getSession, useSession } from 'next-auth/react'
 
 function Login() {
   const { processing, setProcessing, LoginUser } = useOnboardingContext()
@@ -19,15 +19,23 @@ function Login() {
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()
+  const [session, setSession] = useState(null)
+
   useEffect(() => {
     setProcessing(false)
   }, [])
-  const session = useSession()
+
   useEffect(() => {
-    if (session.status !== 'loading' && session.status === 'authenticated') {
-      router.push('/')
+    const getSess = async () => {
+      const Sess = await getSession()
+      setSession(Sess)
+      if (Sess?.user) {
+        router.push('/')
+      }
     }
-  }, [session.status])
+    getSess()
+  }, [])
+
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
@@ -102,9 +110,10 @@ function Login() {
         <div className="mb-6">
           {errors && <FormErrors error={errors['login']} />}
         </div>
-        {session.status === 'loading' ? (
-          <TailSpinPreloader width={80} height={80} fill="#efb703" />
-        ) : (
+        {session?.user && (
+          <TailSpinPreloader width={120} height={120} fill="#efb703" />
+        )}
+        {!session?.user && (
           <>
             <TextInput
               id="partnerid"

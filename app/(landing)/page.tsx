@@ -43,6 +43,15 @@ function LandingPage() {
                   <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
                 </Link>
               )}
+              {session.status === 'authenticated' && (
+                <Link
+                  href="/onboarding/register/companyinfo"
+                  className="rounded-full flex justify-between items-center bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl pl-6 pr-3 py-2"
+                >
+                  <span className="flex-1">Continue Registration</span>
+                  <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
+                </Link>
+              )}
               <button className="rounded-full bg-black/50 text-white border-2 border-mtn hover:border-mtn-300 transition ease-in-out 5000 text-xl px-10 py-2">
                 Discover Program
               </button>

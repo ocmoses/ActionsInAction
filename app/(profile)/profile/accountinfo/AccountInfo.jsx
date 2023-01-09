@@ -45,10 +45,11 @@ function AccountInfo() {
         audited_account_2: partnerInfo.audited_account_2 ?? '',
         audited_account_3: partnerInfo.audited_account_3 ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('accountinfo')
     setProcessing(false)
   }, [])
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()

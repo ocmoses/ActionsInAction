@@ -6,6 +6,7 @@ import TextInput from '@/app/components/form/TextInput'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
+import FormErrors from '@/app/components/FormErrors'
 
 function SetPassword() {
   const {
@@ -17,17 +18,16 @@ function SetPassword() {
     setProcessing
   } = useOnboardingContext()
 
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({ password: '', password_confirmed: '' })
   const { title, subtitle, hand, required } = forms['setpassword']
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
     setForm('setpassword')
     setProcessing(false)
   }, [])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -48,7 +48,10 @@ function SetPassword() {
         return
       }
     }
-    registerPartner('setpassword', data)
+    const result = await registerPartner('setpassword', data)
+    if (result) {
+      if (result?.error) setError('global', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -62,6 +65,9 @@ function SetPassword() {
     <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors['global']} />}
+        </div>
         <TextInput
           id="password"
           label="Enter your password"

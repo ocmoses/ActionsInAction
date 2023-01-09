@@ -7,9 +7,9 @@ import { profileMenu } from '@/app/modules/constants'
 import { updateMenu } from '@/app/modules/constants'
 import ProfileTabItem from '@/app/components/ProfileTabItem'
 import UserAvartar from '@/app/components/UserAvartar'
-import { useSession } from 'next-auth/react'
+import { useSession, getSession } from 'next-auth/react'
 import { TailSpinPreloader } from '@/app/components/Icons'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Layout({ children }) {
   const { form } = useOnboardingContext()
@@ -17,23 +17,33 @@ export default function Layout({ children }) {
   const currentPath = segments?.reverse()[0]
   // console.log("currentPath", currentPath)
 
-  const session = useSession()
+  // const session = useSession()
   const router = useRouter()
-
+  const [session, setSession] = useState(null)
+  // useEffect(() => {
+  //   if (session.status !== 'loading' && session.status !== 'authenticated') {
+  //     router.push('/onboarding/login')
+  //   }
+  // }, [session.status])
   useEffect(() => {
-    if (session.status !== 'loading' && session.status !== 'authenticated') {
-      router.push('/onboarding/login')
+    const getSess = async () => {
+      const Sess = await getSession()
+      setSession(Sess)
+      if (!Sess?.user) {
+        router.push('/onboarding/login')
+      }
     }
-  }, [session.status])
+    getSess()
+  }, [])
   return (
     <>
-      {session.status === 'loading' && (
+      {!session?.user && (
         <div className="flex justify-center items-center h-screen">
           <TailSpinPreloader width={120} height={120} fill="#efb703" />
         </div>
       )}
 
-      {session.status === 'authenticated' && (
+      {session?.user && (
         <div
           className={`grid ${
             currentPath === 'review' ? 'grid-cols-6' : 'grid-cols-5'

@@ -9,14 +9,10 @@ import { useEffect } from 'react'
 
 export default function RegisterValidation({ pid }) {
   const { partnerInfo, processing } = useOnboardingContext()
-  //   console.log({ error })
 
   const router = useRouter()
   const partnerid = pid && pid[0] !== 'undefined' ? pid[0] : null
   const path = pid && pid[1] !== 'undefined' ? pid[1] : null
-
-  console.log({ partnerid })
-  console.log({ path })
 
   useEffect(() => {
     const getPartnerInfo = async (partnerid) => {

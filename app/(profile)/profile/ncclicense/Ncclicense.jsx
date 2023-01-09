@@ -38,6 +38,8 @@ function Ncclicense() {
         ncc_expiry_date: partnerInfo.ncc_expiry_date ?? '',
         ncc_doc: partnerInfo.ncc_doc ?? ''
       })
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('ncclicense')
     setProcessing(false)
   }, [])

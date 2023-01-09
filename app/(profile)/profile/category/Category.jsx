@@ -34,6 +34,8 @@ function Category() {
   const { title, subtitle, hand, required } = forms['category']
   useEffect(() => {
     if (partnerInfo) setSelectedCategory(partnerInfo.category_id ?? [])
+  }, [partnerInfo])
+  useEffect(() => {
     setForm('category')
     setProcessing(false)
   }, [])

@@ -52,11 +52,11 @@ function UserInfo() {
     setProcessing(false)
     setNavigate(false)
   }, [partnerInfo])
-  useEffect(() => {
-    if (session.status !== 'loading' && session.status === 'authenticated') {
-      signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
-    }
-  }, [session.status])
+  // useEffect(() => {
+  //   if (session.status !== 'loading' && session.status === 'authenticated') {
+  //     signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
+  //   }
+  // }, [session.status])
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()

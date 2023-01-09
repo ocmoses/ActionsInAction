@@ -1,13 +1,40 @@
 'use client'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
+import { TailSpinPreloader } from '@/app/components/Icons'
 import { useRouter } from 'next/navigation'
 import Button from '@/app/components/form/Button'
+import { signIn } from 'next-auth/react'
+import { getPartner } from '@/app/modules/partners'
+import { useEffect } from 'react'
 
-function Validate({ params: { partnerid } }) {
+export default function RegisterValidation({ pid }) {
   const { partnerInfo, processing } = useOnboardingContext()
+  //   console.log({ error })
 
   const router = useRouter()
+  const partnerid = pid && pid[0] !== 'undefined' ? pid[0] : null
+  const path = pid && pid[1] !== 'undefined' ? pid[1] : null
+
+  console.log({ partnerid })
+  console.log({ path })
+
+  useEffect(() => {
+    const getPartnerInfo = async (partnerid) => {
+      // const result = await getPartner(partnerid)
+      if (!partnerid) return { data: null, error: null }
+      const result = await signIn('credentials', {
+        loginID: partnerid,
+        partnerid: partnerid,
+        password: 'password',
+        redirect: false,
+        callbackUrl: '/'
+      })
+      console.log(result)
+      return result
+    }
+    getPartnerInfo(partnerid)
+  }, [partnerid])
+
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -39,7 +66,11 @@ function Validate({ params: { partnerid } }) {
           <div className="flex justify-center">
             <div className="mt-6">
               <Button
-                onClick={() => router.replace('/profile/category')}
+                onClick={() =>
+                  path === 'mtn'
+                    ? router.replace('/onboarding/setpassword')
+                    : router.replace('/profile/category')
+                }
                 label="Get stated"
               />
             </div>
@@ -49,5 +80,3 @@ function Validate({ params: { partnerid } }) {
     </>
   )
 }
-
-export default Validate

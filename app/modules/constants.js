@@ -11,216 +11,216 @@ import {
 } from '@/app/components/Icons'
 
 export const apiURL = 'https://amazonpartner.com.ng/amazon/public/api'
-// export const partnerFields = {
-//   partnerid: '',
+export const partnerFields = {
+  partnerid: '',
 
-//   // userinfo
-//   first_name: '',
-//   last_name: '',
-//   email: '',
-//   countrycode: '234',
-//   telephone: '',
-//   password: '',
-//   password_confirmed: '',
+  // userinfo
+  first_name: '',
+  last_name: '',
+  email: '',
+  countrycode: '234',
+  telephone: '',
+  password: '',
+  password_confirmed: '',
 
-//   //  companyinfo
-//   company_name: '',
-//   company_role: '',
+  //  companyinfo
+  company_name: '',
+  company_role: '',
 
-//   // category
-//   category_id: [],
+  // category
+  category_id: [],
 
-//   // companyinfo
-//   company_name: '',
-//   country: 'NG',
-//   company_address: '',
-//   company_city: '',
-//   company_state: '',
-//   company_postcode: '',
+  // companyinfo
+  company_name: '',
+  country: 'NG',
+  company_address: '',
+  company_city: '',
+  company_state: '',
+  company_postcode: '',
 
-//   // compliance
-//   rc_no: '',
-//   tin_no: '',
-//   tin_doc: '',
-//   memart_doc: '',
-//   cac_doc: '',
+  // compliance
+  rc_no: '',
+  tin_no: '',
+  tin_doc: '',
+  memart_doc: '',
+  cac_doc: '',
 
-//   // ncclicense
-//   vas_license_id: '',
-//   ncc_issue_date: '',
-//   ncc_expiry_date: '',
-//   ncc_doc: '',
+  // ncclicense
+  vas_license_id: '',
+  ncc_issue_date: '',
+  ncc_expiry_date: '',
+  ncc_doc: '',
 
-//   // nlrclicense
-//   nlrc_license_id: '',
-//   nlrc_issue_date: '',
-//   nlrc_expiry_date: '',
-//   nlrc_doc: '',
+  // nlrclicense
+  nlrc_license_id: '',
+  nlrc_issue_date: '',
+  nlrc_expiry_date: '',
+  nlrc_doc: '',
 
-//   // shortcode
-//   shortcode: '',
-//   shortcode_issue_date: '',
-//   shortcode_expiry_date: '',
-//   shortcode_price_issue_date: '',
-//   shortcode_price_expiry_date: '',
-//   shortcode_doc: '',
-//   shortcode_approval_doc: '',
+  // shortcode
+  shortcode: '',
+  shortcode_issue_date: '',
+  shortcode_expiry_date: '',
+  shortcode_price_issue_date: '',
+  shortcode_price_expiry_date: '',
+  shortcode_doc: '',
+  shortcode_approval_doc: '',
 
-//   // indemnity
-//   indemnity_no: '',
-//   indemnity_issue_date: '',
-//   indemnity_expiry_date: '',
-//   indemnity_doc: '',
+  // indemnity
+  indemnity_no: '',
+  indemnity_issue_date: '',
+  indemnity_expiry_date: '',
+  indemnity_doc: '',
 
-//   // accountinfo
-//   account_name: '',
-//   account_no: '',
-//   bank: '',
-//   audited_account_1: '',
-//   audited_account_2: '',
-//   audited_account_3: '',
-//   progress: {}
-// }
-export const partnerFields =
-  process.env.NODE_ENV === 'production'
-    ? {
-        partnerid: '',
+  // accountinfo
+  account_name: '',
+  account_no: '',
+  bank: '',
+  audited_account_1: '',
+  audited_account_2: '',
+  audited_account_3: '',
+  progress: {}
+}
+// export const partnerFields =
+//   process.env.NODE_ENV === 'production'
+//     ? {
+//         partnerid: '',
 
-        // userinfo
-        first_name: '',
-        last_name: '',
-        email: '',
-        countrycode: '234',
-        telephone: '',
-        password: '',
-        password_confirmed: '',
+//         // userinfo
+//         first_name: '',
+//         last_name: '',
+//         email: '',
+//         countrycode: '234',
+//         telephone: '',
+//         password: '',
+//         password_confirmed: '',
 
-        //  companyinfo
-        company_name: '',
-        company_role: '',
+//         //  companyinfo
+//         company_name: '',
+//         company_role: '',
 
-        // category
-        category_id: [],
+//         // category
+//         category_id: [],
 
-        // companyinfo
-        company_name: '',
-        country: 'NG',
-        company_address: '',
-        company_city: '',
-        company_state: '',
-        company_postcode: '',
+//         // companyinfo
+//         company_name: '',
+//         country: 'NG',
+//         company_address: '',
+//         company_city: '',
+//         company_state: '',
+//         company_postcode: '',
 
-        // compliance
-        rc_no: '',
-        tin_no: '',
-        tin_doc: '',
-        memart_doc: '',
-        cac_doc: '',
+//         // compliance
+//         rc_no: '',
+//         tin_no: '',
+//         tin_doc: '',
+//         memart_doc: '',
+//         cac_doc: '',
 
-        // ncclicense
-        vas_license_id: '',
-        ncc_issue_date: '',
-        ncc_expiry_date: '',
-        ncc_doc: '',
+//         // ncclicense
+//         vas_license_id: '',
+//         ncc_issue_date: '',
+//         ncc_expiry_date: '',
+//         ncc_doc: '',
 
-        // nlrclicense
-        nlrc_license_id: '',
-        nlrc_issue_date: '',
-        nlrc_expiry_date: '',
-        nlrc_doc: '',
+//         // nlrclicense
+//         nlrc_license_id: '',
+//         nlrc_issue_date: '',
+//         nlrc_expiry_date: '',
+//         nlrc_doc: '',
 
-        // shortcode
-        shortcode: '',
-        shortcode_issue_date: '',
-        shortcode_expiry_date: '',
-        shortcode_price_issue_date: '',
-        shortcode_price_expiry_date: '',
-        shortcode_doc: '',
-        shortcode_approval_doc: '',
+//         // shortcode
+//         shortcode: '',
+//         shortcode_issue_date: '',
+//         shortcode_expiry_date: '',
+//         shortcode_price_issue_date: '',
+//         shortcode_price_expiry_date: '',
+//         shortcode_doc: '',
+//         shortcode_approval_doc: '',
 
-        // indemnity
-        indemnity_no: '',
-        indemnity_issue_date: '',
-        indemnity_expiry_date: '',
-        indemnity_doc: '',
+//         // indemnity
+//         indemnity_no: '',
+//         indemnity_issue_date: '',
+//         indemnity_expiry_date: '',
+//         indemnity_doc: '',
 
-        // accountinfo
-        account_name: '',
-        account_no: '',
-        bank: '',
-        audited_account_1: '',
-        audited_account_2: '',
-        audited_account_3: '',
-        progress: {}
-      }
-    : {
-        partnerid: '234477941',
+//         // accountinfo
+//         account_name: '',
+//         account_no: '',
+//         bank: '',
+//         audited_account_1: '',
+//         audited_account_2: '',
+//         audited_account_3: '',
+//         progress: {}
+//       }
+//     : {
+//         partnerid: '234477941',
 
-        // userinfo
-        first_name: 'Prince',
-        last_name: 'Morpheus',
-        email: 'olabode.gbolu@mtn.com',
-        countrycode: '234',
-        telephone: '07062026073',
-        password: 'Todoo45@222',
-        password_confirmed: 'Todoo45@222',
-        //  companyinfo
-        company_name: 'MTN Nigeria',
-        company_role: 'admin',
+//         // userinfo
+//         first_name: 'Prince',
+//         last_name: 'Morpheus',
+//         email: 'olabode.gbolu@mtn.com',
+//         countrycode: '234',
+//         telephone: '07062026073',
+//         password: 'Todoo45@222',
+//         password_confirmed: 'Todoo45@222',
+//         //  companyinfo
+//         company_name: 'MTN Nigeria',
+//         company_role: 'admin',
 
-        // category
-        category_id: [1],
+//         // category
+//         category_id: [1],
 
-        // companyinfo
-        country: 'NG',
-        company_address: '1, Alh Sule Maito Street, Benson',
-        company_city: 'Ikorodu',
-        company_state: '05',
-        company_postcode: '23401',
+//         // companyinfo
+//         country: 'NG',
+//         company_address: '1, Alh Sule Maito Street, Benson',
+//         company_city: 'Ikorodu',
+//         company_state: '05',
+//         company_postcode: '23401',
 
-        // compliance
-        rc_no: '123456',
-        tin_no: '2345432',
-        tin_doc: '',
-        memart_doc: '',
-        cac_doc: '',
+//         // compliance
+//         rc_no: '123456',
+//         tin_no: '2345432',
+//         tin_doc: '',
+//         memart_doc: '',
+//         cac_doc: '',
 
-        // ncclicense
-        vas_license_id: '9876532',
-        ncc_issue_date: '2019-06-02',
-        ncc_expiry_date: '', //'2025-06-01',
-        ncc_doc: '',
+//         // ncclicense
+//         vas_license_id: '9876532',
+//         ncc_issue_date: '2019-06-02',
+//         ncc_expiry_date: '', //'2025-06-01',
+//         ncc_doc: '',
 
-        // nlrclicense
-        nlrc_license_id: '65478934',
-        nlrc_issue_date: '2020-04-07',
-        nlrc_expiry_date: '2025-04-06',
-        nlrc_doc: '',
+//         // nlrclicense
+//         nlrc_license_id: '65478934',
+//         nlrc_issue_date: '2020-04-07',
+//         nlrc_expiry_date: '2025-04-06',
+//         nlrc_doc: '',
 
-        // shortcode
-        shortcode: '*777#',
-        shortcode_issue_date: '2021-06-01',
-        shortcode_expiry_date: '2026-05-31',
-        shortcode_price_issue_date: '2022-03-07',
-        shortcode_price_expiry_date: '2024-03-06',
-        shortcode_doc: '',
-        shortcode_approval_doc: '',
+//         // shortcode
+//         shortcode: '*777#',
+//         shortcode_issue_date: '2021-06-01',
+//         shortcode_expiry_date: '2026-05-31',
+//         shortcode_price_issue_date: '2022-03-07',
+//         shortcode_price_expiry_date: '2024-03-06',
+//         shortcode_doc: '',
+//         shortcode_approval_doc: '',
 
-        // indemnity
-        indemnity_no: 'AD7RE-WU209',
-        indemnity_issue_date: '2018-12-19',
-        indemnity_expiry_date: '2023-12-18',
-        indemnity_doc: '',
+//         // indemnity
+//         indemnity_no: 'AD7RE-WU209',
+//         indemnity_issue_date: '2018-12-19',
+//         indemnity_expiry_date: '2023-12-18',
+//         indemnity_doc: '',
 
-        // accountinfo
-        account_name: 'PRINCE MORPHEUS',
-        account_no: '2345678901',
-        bank: '214',
-        audited_account_1: '',
-        audited_account_2: '',
-        audited_account_3: '',
-        progress: {}
-      }
+//         // accountinfo
+//         account_name: 'PRINCE MORPHEUS',
+//         account_no: '2345678901',
+//         bank: '214',
+//         audited_account_1: '',
+//         audited_account_2: '',
+//         audited_account_3: '',
+//         progress: {}
+//       }
 export const forms = {
   userinfo: {
     form: 'userinfo',

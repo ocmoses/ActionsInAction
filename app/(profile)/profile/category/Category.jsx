@@ -11,6 +11,8 @@ import {
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Image from 'next/image'
 import Button from '@/app/components/form/Button'
+import FormErrors from '@/app/components/FormErrors'
+import useErrors from '@/hooks/useErrors'
 
 function Category() {
   const {
@@ -18,13 +20,13 @@ function Category() {
     setForm,
     partnerInfo,
     registerPartner,
-    SetError,
     fetching,
     processing,
     setProcessing,
     categories: categoryData
   } = useOnboardingContext()
   const { error: catError, categories, nextedCategories } = categoryData
+  const [error, setError] = useState(null)
 
   const [selectedCategory, setSelectedCategory] = useState([])
   const [categoryID, setCategoryID] = useState([])
@@ -37,17 +39,21 @@ function Category() {
   }, [])
   useEffect(() => {
     const data = []
-    selectedCategory.map((s) => {
+    selectedCategory?.map((s) => {
       if (nextedCategories && !nextedCategories[s]) data.push(s)
       setCategoryID(data)
     })
   }, [selectedCategory])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setError(null)
     if (selectedCategory.length === 0)
-      return SetError(`You must select at least one category`)
+      return setError(`You must select at least one category`)
     setProcessing(true)
-    registerPartner('category', categoryID)
+    const result = await registerPartner('category', categoryID)
+    if (result) {
+      if (result?.error) setError(result.error)
+    }
   }
   const selectCategory = (c) => {
     if (hasSubcategory(c)) handleToggleTabs(c)
@@ -72,7 +78,7 @@ function Category() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
-
+        <div className="mb-6">{error && <FormErrors error={error} />}</div>
         {fetching.category && (
           <TailSpinPreloader width={36} height={36} fill="#efb703" />
         )}

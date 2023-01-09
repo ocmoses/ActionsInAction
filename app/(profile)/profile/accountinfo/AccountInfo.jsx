@@ -1,18 +1,19 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
+import TextInput from '@/app/components/form/TextInput'
+import FileInput from '@/app/components/form/FileInput'
+import SelectInput from '@/app/components/form/SelectInput'
+import SelectInputOption from '@/app/components/form/SelectInputOption'
 
-import { BANKS } from "@/app/modules/banks"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+import { BANKS } from '@/app/modules/banks'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import Button from '@/app/components/form/Button'
+import FormErrors from '@/app/components/FormErrors'
 
 function AccountInfo() {
   const {
@@ -21,34 +22,34 @@ function AccountInfo() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    account_name: "",
-    account_no: "",
-    bank: "",
-    audited_account_1: "",
-    audited_account_2: "",
-    audited_account_3: "",
+    account_name: '',
+    account_no: '',
+    bank: '',
+    audited_account_1: '',
+    audited_account_2: '',
+    audited_account_3: ''
   })
-  const { title, subtitle, hand, required } = forms["accountinfo"]
+  const { title, subtitle, hand, required } = forms['accountinfo']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        account_name: partnerInfo.account_name ?? "",
-        account_no: partnerInfo.account_no ?? "",
-        bank: partnerInfo.bank ?? "",
-        audited_account_1: partnerInfo.audited_account_1 ?? "",
-        audited_account_2: partnerInfo.audited_account_2 ?? "",
-        audited_account_3: partnerInfo.audited_account_3 ?? "",
+        account_name: partnerInfo.account_name ?? '',
+        account_no: partnerInfo.account_no ?? '',
+        bank: partnerInfo.bank ?? '',
+        audited_account_1: partnerInfo.audited_account_1 ?? '',
+        audited_account_2: partnerInfo.audited_account_2 ?? '',
+        audited_account_3: partnerInfo.audited_account_3 ?? ''
       })
-    setForm("accountinfo")
+    setForm('accountinfo')
     setProcessing(false)
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -61,13 +62,16 @@ function AccountInfo() {
       }
       if (error) return
     }
-    registerPartner("accountinfo", data)
+    const result = await registerPartner('accountinfo', data)
+    if (result) {
+      if (result?.error) setError('global', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
 
@@ -75,6 +79,9 @@ function AccountInfo() {
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors['global']} />}
+        </div>
         <TextInput
           id="account_name"
           label="Account name"

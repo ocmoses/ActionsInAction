@@ -8,11 +8,13 @@ import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import useErrors from '@/hooks/useErrors'
 import { useRouter } from 'next/navigation'
+import FormErrors from '@/app/components/FormErrors'
+import { signOut, useSession } from 'next-auth/react'
 
 function Login() {
   const { processing, setProcessing, LoginUser } = useOnboardingContext()
   const [data, setData] = useState({
-    partnerid: process.env.NODE_ENV === 'production' ? '' : '234477941',
+    partnerid: process.env.NODE_ENV === 'production' ? '' : '234218728',
     password: process.env.NODE_ENV === 'production' ? '' : 'Todoo45@222'
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
@@ -20,7 +22,12 @@ function Login() {
   useEffect(() => {
     setProcessing(false)
   }, [])
-
+  const session = useSession()
+  useEffect(() => {
+    if (session.status !== 'loading' && session.status === 'authenticated') {
+      router.push('/')
+    }
+  }, [session.status])
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
@@ -54,7 +61,6 @@ function Login() {
       dashboard: `/dashboard`
     }
     router.replace(`${url[result.nextstage]}`)
-    // setProcessing(false)
     return
   }
 
@@ -94,43 +100,47 @@ function Login() {
           Welcome back! please enter your great details
         </p>
         <div className="mb-6">
-          {errors && typeof errors['login'] !== 'undefined' && (
-            <div className="text-sm text-red-600 mt-2">{errors['login']}</div>
-          )}
+          {errors && <FormErrors error={errors['login']} />}
         </div>
-        <TextInput
-          id="partnerid"
-          label="Partner ID"
-          value={data.partnerid}
-          onChange={handleFormChange}
-          errors={errors}
-        />
-        <TextInput
-          id="password"
-          label="Password"
-          type="Password"
-          value={data.password}
-          onChange={handleFormChange}
-          errors={errors}
-        />
-
-        <Link
-          href="#"
-          className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
-          style={{
-            fontStyle: 'normal',
-            fontWeight: 400,
-            fontSize: '14px',
-            lineHeight: '20px',
-            textDecorationLine: 'underline'
-          }}
-        >
-          Forgot your password?
-        </Link>
-        {processing ? (
-          <TailSpinPreloader width={40} height={40} fill="#efb703" />
+        {session.status === 'loading' ? (
+          <TailSpinPreloader width={80} height={80} fill="#efb703" />
         ) : (
-          <Button label="Continue" />
+          <>
+            <TextInput
+              id="partnerid"
+              label="Partner ID"
+              value={data.partnerid}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+            <TextInput
+              id="password"
+              label="Password"
+              type="Password"
+              value={data.password}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+
+            <Link
+              href="#"
+              className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+              style={{
+                fontStyle: 'normal',
+                fontWeight: 400,
+                fontSize: '14px',
+                lineHeight: '20px',
+                textDecorationLine: 'underline'
+              }}
+            >
+              Forgot your password?
+            </Link>
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <Button label="Continue" />
+            )}
+          </>
         )}
       </div>
     </form>

@@ -1,16 +1,17 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+'use client'
+import { useState, useEffect } from 'react'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 
-import TextInput from "@/app/components/form/TextInput"
-import { Util } from "@/utils/utility"
-import useErrors from "@/hooks/useErrors"
+import TextInput from '@/app/components/form/TextInput'
+import { Util } from '@/utils/utility'
+import useErrors from '@/hooks/useErrors'
 
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import FileInput from "@/app/components/form/FileInput"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import Button from "@/app/components/form/Button"
+import { TailSpinPreloader } from '@/app/components/Icons'
+import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import FileInput from '@/app/components/form/FileInput'
+import FileInputWrapper from '@/app/components/form/FileInputWrapper'
+import Button from '@/app/components/form/Button'
+import FormErrors from '@/app/components/FormErrors'
 
 function Compliance() {
   const {
@@ -19,32 +20,32 @@ function Compliance() {
     partnerInfo,
     registerPartner,
     processing,
-    setProcessing,
+    setProcessing
   } = useOnboardingContext()
 
   const [data, setData] = useState({
-    rc_no: "",
-    tin_no: "",
-    tin_doc: "",
-    memart_doc: "",
-    cac_doc: "",
+    rc_no: '',
+    tin_no: '',
+    tin_doc: '',
+    memart_doc: '',
+    cac_doc: ''
   })
-  const { title, subtitle, hand, required } = forms["compliance"]
+  const { title, subtitle, hand, required } = forms['compliance']
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        rc_no: partnerInfo.rc_no ?? "",
-        tin_no: partnerInfo.tin_no ?? "",
-        tin_doc: partnerInfo.tin_doc ?? "",
-        memart_doc: partnerInfo.memart_doc ?? "",
-        cac_doc: partnerInfo.cac_doc ?? "",
+        rc_no: partnerInfo.rc_no ?? '',
+        tin_no: partnerInfo.tin_no ?? '',
+        tin_doc: partnerInfo.tin_doc ?? '',
+        memart_doc: partnerInfo.memart_doc ?? '',
+        cac_doc: partnerInfo.cac_doc ?? ''
       })
-    setForm("compliance")
+    setForm('compliance')
     setProcessing(false)
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -57,19 +58,25 @@ function Compliance() {
       }
       if (error) return
     }
-    registerPartner("compliance", data)
+    const result = await registerPartner('compliance', data)
+    if (result) {
+      if (result?.error) setError('global', result.error)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value
     }))
   }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors['global']} />}
+        </div>
         <TextInput
           id="rc_no"
           label="RC Number"

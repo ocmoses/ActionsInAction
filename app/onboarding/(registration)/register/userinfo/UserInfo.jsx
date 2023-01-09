@@ -84,7 +84,7 @@ function UserInfo() {
     }
     const result = await registerPartner('userinfo', data, setError)
     if (result) {
-      if (result?.error) setError('login', result.error)
+      if (result?.error) return setError('login', result.error)
     }
     setNavigate(true)
   }

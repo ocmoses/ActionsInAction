@@ -31,8 +31,8 @@ export default function CompanyInfo() {
   useEffect(() => {
     if (partnerInfo)
       setData({
-        company_name: '',
-        company_role: ''
+        company_name: partnerInfo.company_name ?? '',
+        company_role: partnerInfo.company_role ?? ''
       })
   }, [partnerInfo])
   useEffect(() => {

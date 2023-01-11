@@ -146,10 +146,14 @@ export function OnboardingContextProvider({ children }) {
       if (result.error) return result
       else return { error: 'Something went wrong' }
     }
+
     //CHECK USER STATUS
     const partner = await getPartner(data.partnerid)
+
     if (partner.error) return partner
     if (partner.data) {
+      setPartner(partner.data.user)
+      console.log(partner.data.user)
       const partner_status = await checkRegStatus(partner)
       return { success: true, ...partner_status }
     }
@@ -541,6 +545,7 @@ export function OnboardingContextProvider({ children }) {
             first_name: userdata.first_name ?? '',
             last_name: userdata.last_name ?? '',
             email: userdata.email ?? '',
+            country: partnerInfo.country ?? '',
             countrycode: userdata.countrycode ?? '',
             telephone: userdata.telephone ?? ''
           })

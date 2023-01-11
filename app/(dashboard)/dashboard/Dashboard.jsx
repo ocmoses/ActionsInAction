@@ -7,7 +7,7 @@ import { profileMenu } from '@/app/modules/constants'
 import { updateMenu } from '@/app/modules/constants'
 import ProfileTabItem from '@/app/components/ProfileTabItem'
 import UserAvartar from '@/app/components/UserAvartar'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
 import { TailSpinPreloader } from '@/app/components/Icons'
 
 export default function Layout({ children }) {
@@ -15,17 +15,15 @@ export default function Layout({ children }) {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
   // console.log("currentPath", currentPath)
-
-  const { loading, status } = useSession()
+  // const { loading, status } = useSession()
   return (
     <>
-      {loading && (
+      {/* {loading && (
         <div className="flex justify-center items-center h-screen">
           <TailSpinPreloader width={72} height={72} fill="#efb703" />
         </div>
-      )}
+      )} */}
 
-      {/* {status === 'authenticated' && ( */}
       <div className="flex flex-col h-screen w-screen bg-[#212121]">
         <div className="mb-0  w-full">
           <NavbarProfile />
@@ -38,7 +36,6 @@ export default function Layout({ children }) {
           </div>
         </div>
       </div>
-      {/* )} */}
     </>
   )
 }

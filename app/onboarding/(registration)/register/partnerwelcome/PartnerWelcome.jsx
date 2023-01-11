@@ -8,7 +8,7 @@ import Button from '@/app/components/form/Button'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 import FormErrors from '@/app/components/FormErrors'
-import { signOut, useSession } from 'next-auth/react'
+// import { signOut, useSession } from 'next-auth/react'
 export default function PartnerWelcome() {
   const {
     forms,
@@ -24,20 +24,20 @@ export default function PartnerWelcome() {
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
-  const session = useSession()
+  // const session = useSession()
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
     setForm('partnerwelcome')
     setProcessing(false)
-    if (session.status !== 'loading' && session.status === 'authenticated') {
-      signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
-    }
+    // if (session.status !== 'loading' && session.status === 'authenticated') {
+    //   signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
+    // }
   }, [])
-  useEffect(() => {
-    if (session.status !== 'loading' && session.status === 'authenticated') {
-      signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
-    }
-  }, [session.status])
+  // useEffect(() => {
+  //   if (session.status !== 'loading' && session.status === 'authenticated') {
+  //     signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
+  //   }
+  // }, [session.status])
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()

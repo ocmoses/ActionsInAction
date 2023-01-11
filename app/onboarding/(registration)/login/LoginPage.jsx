@@ -9,32 +9,33 @@ import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import useErrors from '@/hooks/useErrors'
 import { useRouter } from 'next/navigation'
 import FormErrors from '@/app/components/FormErrors'
-import { getSession, useSession } from 'next-auth/react'
+// import { getSession, useSession } from 'next-auth/react'
 
 function Login() {
-  const { processing, setProcessing, LoginUser } = useOnboardingContext()
+  const { processing, setProcessing, LoginUser, LoginPartner } =
+    useOnboardingContext()
   const [data, setData] = useState({
     partnerid: process.env.NODE_ENV === 'production' ? '' : '234218728',
     password: process.env.NODE_ENV === 'production' ? '' : 'Password1234%'
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()
-  const [session, setSession] = useState(null)
+  // const [session, setSession] = useState(null)
 
   useEffect(() => {
     setProcessing(false)
   }, [])
 
-  useEffect(() => {
-    const getSess = async () => {
-      const Sess = await getSession()
-      setSession(Sess)
-      if (Sess?.user) {
-        router.push('/')
-      }
-    }
-    getSess()
-  }, [])
+  // useEffect(() => {
+  //   const getSess = async () => {
+  //     const Sess = await getSession()
+  //     setSession(Sess)
+  //     if (Sess?.user) {
+  //       router.push('/')
+  //     }
+  //   }
+  //   getSess()
+  // }, [])
 
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -52,9 +53,9 @@ function Login() {
     if (!data.password) {
       return setError('password', `Please enter your password`)
     }
-    const result = await LoginUser(data, false)
+    const result = await LoginPartner(data, false)
     if (result.error) return setError('login', result.error)
-
+    console.log(result)
     const url = {
       userinfo: `/onboarding/register/userinfo`,
       companyinfo: `/onboarding/register/companyinfo`,
@@ -69,6 +70,7 @@ function Login() {
       dashboard: `/dashboard`
     }
     router.replace(`${url[result.nextstage]}`)
+    setProcessing(true)
     return
   }
 
@@ -110,47 +112,45 @@ function Login() {
         <div className="mb-6">
           {errors && <FormErrors error={errors['login']} />}
         </div>
-        {session?.user && (
+        {/* {session?.user && (
           <TailSpinPreloader width={120} height={120} fill="#efb703" />
-        )}
-        {!session?.user && (
-          <>
-            <TextInput
-              id="partnerid"
-              label="Partner ID"
-              value={data.partnerid}
-              onChange={handleFormChange}
-              errors={errors}
-            />
-            <TextInput
-              id="password"
-              label="Password"
-              type="Password"
-              value={data.password}
-              onChange={handleFormChange}
-              errors={errors}
-            />
+        )} */}
+        <>
+          <TextInput
+            id="partnerid"
+            label="Partner ID"
+            value={data.partnerid}
+            onChange={handleFormChange}
+            errors={errors}
+          />
+          <TextInput
+            id="password"
+            label="Password"
+            type="Password"
+            value={data.password}
+            onChange={handleFormChange}
+            errors={errors}
+          />
 
-            <Link
-              href="#"
-              className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
-              style={{
-                fontStyle: 'normal',
-                fontWeight: 400,
-                fontSize: '14px',
-                lineHeight: '20px',
-                textDecorationLine: 'underline'
-              }}
-            >
-              Forgot your password?
-            </Link>
-            {processing ? (
-              <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
-              <Button label="Continue" />
-            )}
-          </>
-        )}
+          <Link
+            href="#"
+            className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+            style={{
+              fontStyle: 'normal',
+              fontWeight: 400,
+              fontSize: '14px',
+              lineHeight: '20px',
+              textDecorationLine: 'underline'
+            }}
+          >
+            Forgot your password?
+          </Link>
+          {processing ? (
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
+          ) : (
+            <Button label="Continue" />
+          )}
+        </>
       </div>
     </form>
   )

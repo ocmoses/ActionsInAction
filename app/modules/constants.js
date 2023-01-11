@@ -408,7 +408,7 @@ export const forms = {
   partnerwelcome: {
     form: 'partnerwelcome',
     title: 'Welcome back',
-    subtitle: "We'll send a confirmation email to your liked email address",
+    subtitle: "We'll send a confirmation email to your linked email address",
     hand: '👋',
     fields: {
       partnerid: 'Partner ID or email'

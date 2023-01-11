@@ -25,6 +25,7 @@ function ContactPerson() {
     last_name: '',
     email: '',
     countrycode: '',
+    country: '',
     telephone: ''
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
@@ -35,6 +36,7 @@ function ContactPerson() {
         last_name: partnerInfo.last_name ?? '',
         email: partnerInfo.email ?? '',
         countrycode: partnerInfo.countrycode ?? '',
+        country: partnerInfo.country ?? '',
         telephone: partnerInfo.telephone ?? ''
       })
   }, [partnerInfo])

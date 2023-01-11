@@ -15,7 +15,7 @@ function Login() {
   const { processing, setProcessing, LoginUser } = useOnboardingContext()
   const [data, setData] = useState({
     partnerid: process.env.NODE_ENV === 'production' ? '' : '234218728',
-    password: process.env.NODE_ENV === 'production' ? '' : 'Todoo45@222'
+    password: process.env.NODE_ENV === 'production' ? '' : 'Password1234%'
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()

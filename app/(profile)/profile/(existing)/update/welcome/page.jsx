@@ -5,10 +5,12 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import Button from '@/app/components/form/Button'
 
-function Validate() {
+export default function Welcome() {
   const { processing, setProcessing, setForm } = useOnboardingContext()
   const searchParams = useSearchParams()
   const path = searchParams.get('path')
+  console.log('Welcome page')
+  console.log({ path })
   useEffect(() => {
     setForm('')
     setProcessing(false)
@@ -52,5 +54,3 @@ function Validate() {
     </>
   )
 }
-
-export default Validate

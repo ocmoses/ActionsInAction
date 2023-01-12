@@ -1,14 +1,12 @@
-"use client"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { RequestSuccess, RequestError } from "@/app/components/ResponseMessage"
+'use client'
+import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 export default function RegisterStepHeader({ title, subtitle, hand, align }) {
-  const { requestError } = useOnboardingContext()
   return (
     <div className="mb-12 w-full">
       {title && (
         <h1
           className={`flex justify-${
-            align ?? "start"
+            align ?? 'start'
           } font-mtn-light items-center gap-4 mtn-h1 text-white text-[24px] md:text-[28px]  lg:text-[36px]`}
         >
           <span>{title}</span>
@@ -20,7 +18,6 @@ export default function RegisterStepHeader({ title, subtitle, hand, align }) {
           {subtitle}
         </p>
       )}
-      {requestError && <RequestError errors={requestError} />}
     </div>
   )
 }

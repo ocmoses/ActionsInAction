@@ -56,16 +56,6 @@ function UserInfo() {
     setProcessing(false)
     setNavigate(false)
   })
-  useEffect(() => {
-    const getSess = async () => {
-      const Sess = await getSession()
-      setSession(Sess)
-      if (Sess?.user) {
-        router.push('/')
-      }
-    }
-    getSess()
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

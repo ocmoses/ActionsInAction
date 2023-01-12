@@ -28,8 +28,6 @@ export function OnboardingContextProvider({ children }) {
   // console.log('currentPath', currentPath)
   const [partnerInfo, setPartnerInfo] = useState(partnerFields)
   const [form, setForm] = useState(null)
-  const [requestError, setRequestError] = useState([])
-  const [requestSuccess, setRequestSuccess] = useState('')
   const [fetching, setFetching] = useState({})
   const [processing, setProcessing] = useState(false)
   const [categories, setCategories] = useState({})
@@ -131,59 +129,32 @@ export function OnboardingContextProvider({ children }) {
       }))
     }
   }
-  const LoginUser = async (data, redirect = false, callbackUrl = '/') => {
-    setProcessing(true)
-    const result = await signIn('credentials', {
-      partnerid: data.partnerid,
-      password: data.password,
-      redirect: redirect,
-      callbackUrl: callbackUrl
-    })
-    if (!result) {
-      setProcessing(false)
-      return { error: 'Something went wrong' }
-    }
-    if (!result?.ok) {
-      setProcessing(false)
-      if (result.error) return result
-      else return { error: 'Something went wrong' }
-    }
-
-    //CHECK USER STATUS
-    const partner = await getPartner(data.partnerid)
-
-    if (partner.error) return partner
-    if (partner.data) {
-      setPartner(partner.data.user)
-      console.log(partner.data.user)
-      const partner_status = await checkRegStatus(partner)
-      return { success: true, ...partner_status }
-    }
-    return { error: 'Something went wrong' }
-  }
   const LoginPartner = async (data, redirect = false, callbackUrl = '/') => {
     setProcessing(true)
     const result = await login({
       partnerid: data.partnerid,
       password: data.password
     })
-    if (!result) {
-      setProcessing(false)
-      return { error: 'Something went wrong' }
-    }
-    const { success, error, data: user } = result
-    if (!success) {
-      setProcessing(false)
-      if (error) return { error: error }
-      else return { error: 'Something went wrong' }
-    }
+    console.log({ session })
+    console.log({ result })
+    return result
+    // if (!result) {
+    //   setProcessing(false)
+    //   return { error: 'Something went wrong' }
+    // }
+    // const { success, error, data: user } = result
+    // if (!success) {
+    //   setProcessing(false)
+    //   if (error) return { error: error }
+    //   else return { error: 'Something went wrong' }
+    // }
 
-    if (user) {
-      setPartner(user)
-      const partner_status = await checkRegStatus(user)
-      return { success: true, ...partner_status }
-    }
-    return { error: 'Something went wrong' }
+    // if (user) {
+    //   setPartner(user)
+    //   const partner_status = await checkRegStatus(user)
+    //   return { success: true, ...partner_status }
+    // }
+    // return { error: 'Something went wrong' }
   }
   const registerPartner = async (frm, userdata) => {
     return partnerRegistration(frm, userdata, partnerInfo, setProcessing)
@@ -191,50 +162,6 @@ export function OnboardingContextProvider({ children }) {
   const setPartner = (data) => {
     setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }
-  const ClearErrors = () => {
-    setRequestError([])
-  }
-  let errorTimeout = {}
-  const SetError = (message) => {
-    if (typeof message === 'string') {
-      const uuid = uuidv4()
-      const timeStamp = Date.now().toString()
-      const rand = Math.floor(Math.random() * 1000000)
-      const key = `${uuid}-${timeStamp}-${rand}`
-      setRequestError((oldState) => {
-        let duplicate = false
-        oldState.map((os) => {
-          if (os.message === message) duplicate = true
-        })
-        return duplicate ? oldState : [...oldState, { key, message }]
-      })
-      errorTimeout[key] = setTimeout(
-        (key) => {
-          setRequestError((oldState) => {
-            if (oldState.length > 0) {
-              const newState = oldState.filter((err) => err.key !== key)
-              clearTimeout(errorTimeout[key])
-              return newState
-            }
-            return []
-          })
-        },
-        8000,
-        key
-      )
-    } else if (message.constructor === Array && message.length > 0) {
-      message.map((err) => {
-        SetError(err)
-      })
-    }
-  }
-  let successTimeout = null
-  useEffect(() => {
-    if (requestSuccess.length > 0) {
-      clearTimeout(successTimeout)
-      successTimeout = setTimeout(() => setRequestSuccess(''), 10000)
-    }
-  }, [requestSuccess])
   const resendEmail = async (email) => {
     const apiUrl =
       'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link'
@@ -258,14 +185,12 @@ export function OnboardingContextProvider({ children }) {
           if (!Util.isEmpty(data)) {
             for (const error in data) {
               if (data[error].length > 0) {
-                data[error].map((err) =>
-                  setRequestError((oldState) => [...oldState, err])
-                )
+                data[error].map((err) => alert(err))
               }
             }
           }
         } else {
-          setRequestError((oldState) => [...oldState, message])
+          alert(message)
         }
       })
       .finally(() => setProcessing(false))
@@ -275,9 +200,7 @@ export function OnboardingContextProvider({ children }) {
         data: { success }
       } = response
       if (success)
-        setRequestSuccess(
-          'Email was sent successfully. Please checnk your email'
-        )
+        alert('Email was sent successfully. Please checnk your email')
     }
   }
   return (
@@ -288,12 +211,6 @@ export function OnboardingContextProvider({ children }) {
         COUNTRIES,
         STATES,
         BANKS,
-        requestError,
-        requestSuccess,
-        SetError,
-        ClearErrors,
-        setRequestError,
-        setRequestSuccess,
         fetching,
         setIsFetching,
         processing,
@@ -307,7 +224,7 @@ export function OnboardingContextProvider({ children }) {
         registerPartner,
         getPartner,
         resendEmail,
-        LoginUser,
+        // LoginUser,
         LoginPartner,
         reviewStatus,
         reviewUpdateStatus,

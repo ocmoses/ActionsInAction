@@ -1,6 +1,6 @@
 import { useState } from 'react'
 const useErrors = (data) => {
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState()
   const setError = (key, message) => {
     setErrors((oldState) => ({
       ...oldState,

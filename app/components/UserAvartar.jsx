@@ -43,14 +43,14 @@ export default function UserAvartar() {
               />
             </svg>
           </div>
-          <div className="text-right w-[120px]">
+          {/* <div className="text-right w-[120px]">
             <span
               onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
               className="cursor-pointer"
             >
               Logout
             </span>
-          </div>
+          </div> */}
         </div>
         {/* )} */}
       </div>

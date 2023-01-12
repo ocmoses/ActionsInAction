@@ -1,10 +1,32 @@
 import useErrors from '@/hooks/useErrors'
 import Axios from '@/app/modules/axios'
 import { useState } from 'react'
+import {
+  checkRegStatus,
+  getPartner,
+  partnerRegistration
+} from '@/app/modules/partners'
+const key = '82f2ceed4c503896c8a291e560bd4325'
+const iv = 'sinasinasisinaaa'
 const useLocalSession = () => {
-  const [{ errors: error, setError, removeError, clearErrors }] = useErrors({})
+  const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [loading, setLoading] = useState(false)
   const [session, setSession] = useState({})
+
+  const Decrypt = (data) => {
+    const decrypted = CryptoJS.AES.decrypt(data, CryptoJS.enc.Utf8.parse(key), {
+      iv: CryptoJS.enc.Utf8.parse(iv),
+      mode: CryptoJS.mode.CBC
+    })
+    return CryptoJS.enc.Utf8.stringify(decrypted).toString()
+  }
+  const Encrypt = (data) => {
+    const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
+      iv: CryptoJS.enc.Utf8.parse(iv),
+      mode: CryptoJS.mode.CBC
+    })
+    return encrypted.toString()
+  }
   const login = async (logindata) => {
     clearErrors()
     setLoading(true)
@@ -21,15 +43,7 @@ const useLocalSession = () => {
           'Authorization'
         ] = `Bearer ${data.authorisation.token}`
 
-        const encrypted = CryptoJS.AES.encrypt(
-          data.authorisation.token,
-          CryptoJS.enc.Utf8.parse(key),
-          {
-            iv: CryptoJS.enc.Utf8.parse(iv),
-            mode: CryptoJS.mode.CBC
-          }
-        )
-        const token = encrypted.toString()
+        const token = Encrypt(data.authorisation.token)
         localStorage.setItem('_sess', token)
         localStorage.setItem('_ttl', data.authorisation.ttl)
       }
@@ -41,9 +55,14 @@ const useLocalSession = () => {
           stages: { ...data.profile_stage }
         }
       }
-      setLoading(false)
-      setSession(user)
-      return { success, error, data: user }
+      if (user) {
+        const partner_status = await checkRegStatus(user)
+        setLoading(false)
+        // setPartner(user)
+        updateSession(user)
+        return { success: true, error: null, ...partner_status }
+      }
+      return { error: 'Something went wrong' }
     } else {
       setError(data.message)
       setLoading(true)
@@ -60,11 +79,44 @@ const useLocalSession = () => {
     }
     return { success: true, error: null, data: null }
   }
+  const getUser = async (userid) => {
+    const result = await fetchData(`${apiURL}/v1/auth/partner-info/${userid}`, {
+      cache: 'no-store',
+      next: { revalidate: 0 }
+    })
+    return result
+  }
+  const checkUser = async () => {
+    const _token = localStorage.getItem('_sess') ?? null
+    const ttl = localStorage.getItem('_ttl') ?? null
+    if (token) {
+      const token = Decrypt(_token)
+      Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      const user = await getUser()
+      if (user) {
+        setLoading(false)
+      } else {
+        LogoutUser()
+      }
+    }
+  }
   const updateSession = async (newSession) => {
     setLoading(true)
     setSession((oldSession) => ({ ...oldSession, ...newSession }))
   }
 
-  return { loading, error, login, logout, session, setSession, updateSession }
+  return {
+    loading,
+    errors,
+    login,
+    logout,
+    Decrypt,
+    Encrypt,
+    getUser,
+    checkUser,
+    session,
+    setSession,
+    updateSession
+  }
 }
 export default useLocalSession

@@ -6,9 +6,10 @@ import {
   getPartner,
   partnerRegistration
 } from '@/app/modules/partners'
-const key = '82f2ceed4c503896c8a291e560bd4325'
-const iv = 'sinasinasisinaaa'
+
 const useLocalSession = () => {
+  const key = '82f2ceed4c503896c8a291e560bd4325'
+  const iv = 'sinasinasisinaaa'
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [loading, setLoading] = useState(false)
   const [session, setSession] = useState({})

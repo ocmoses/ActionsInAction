@@ -1,14 +1,23 @@
-'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import Image from 'next/image'
-import { useEffect } from 'react'
-import Button from '@/app/components/form/Button'
+"use client"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import Image from "next/image"
+import { useEffect } from "react"
+import Button from "@/app/components/form/Button"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 export default function Complete({ params: { path } }) {
-  const { setProcessing, setForm } = useOnboardingContext()
-  const current = path ? path[0] : 'application'
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+
+  const { setProcessing } = useOnboardingContext()
+  const current = path ? path[0] : "application"
   useEffect(() => {
-    setForm('')
+    setForm("")
     setProcessing(false)
   }, [])
 
@@ -17,7 +26,7 @@ export default function Complete({ params: { path } }) {
       <div className="flex flex-col items-center justify-center pt-[15vh] w-full w3-animate-opacity pb-20  max-w-[492px]">
         <div className="flex justify-center mb-[84px]">
           <Image
-            src={'/assets/icons/flag.svg'}
+            src={"/assets/icons/flag.svg"}
             alt="Thank you"
             width={72}
             height={72}
@@ -27,11 +36,11 @@ export default function Complete({ params: { path } }) {
         <h1
           className="flex justify-center gap-3 mtn-h1 text-center text-white"
           style={{
-            fontSize: '36px',
-            lineHeight: '40px'
+            fontSize: "36px",
+            lineHeight: "40px",
           }}
         >
-          Thank's for {current.includes('update') ? 'confirming' : 'providing'}{' '}
+          Thank's for {current.includes("update") ? "confirming" : "providing"}{" "}
           your information
         </h1>
         <div className="mb-16 text-center w-full p-2 mtn-h1-subtitle text-[#999999] max-w-[480px]">

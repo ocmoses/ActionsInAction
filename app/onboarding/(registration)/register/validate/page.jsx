@@ -1,14 +1,22 @@
-'use client'
-import Image from 'next/image'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import MailOpened from '~/assets/icons/mail-opened.svg'
-import { Util } from '@/utils/utility'
-import Link from 'next/link'
-import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+"use client"
+import Image from "next/image"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import MailOpened from "~/assets/icons/mail-opened.svg"
+import { Util } from "@/utils/utility"
+import Link from "next/link"
+import { useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 export default function Validate() {
-  const { setForm, partnerInfo, processing, setProcessing, resendEmail } =
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, processing, setProcessing, resendEmail } =
     useOnboardingContext()
   useEffect(() => {
     setForm(null)
@@ -17,7 +25,7 @@ export default function Validate() {
 
   const searchParams = useSearchParams()
 
-  const path = searchParams.get('path')
+  const path = searchParams.get("path")
 
   return (
     <>
@@ -42,15 +50,15 @@ export default function Validate() {
 
         {partnerInfo.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
-            A confirmation email has been sent to{' '}
+            A confirmation email has been sent to{" "}
             {Util.obscureEmail(partnerInfo.email)}. <br />
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {partnerInfo.email !== '' && (
+        {partnerInfo.email !== "" && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
-            Didn't receive our email?{' '}
+            Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
               onClick={() => resendEmail(partnerInfo.email)}
@@ -64,7 +72,7 @@ export default function Validate() {
       <Link
         href={`${
           path
-            ? '/profile/update/setpassword/'
+            ? "/profile/update/setpassword/"
             : `/onboarding/validate/${partnerInfo.partnerid}`
         }`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"

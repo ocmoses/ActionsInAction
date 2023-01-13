@@ -1,42 +1,44 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import SelectInput from '@/app/components/form/SelectInput'
-import SelectInputOption from '@/app/components/form/SelectInputOption'
-import TextInput from '@/app/components/form/TextInput'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import FormErrors from '@/app/components/FormErrors'
-import Button from '@/app/components/form/Button'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
+"use client"
+import { useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
+import TextInput from "@/app/components/form/TextInput"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import FormErrors from "@/app/components/FormErrors"
+import Button from "@/app/components/form/Button"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { forms, roles } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 export default function CompanyInfo() {
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
   const {
-    forms,
-    setForm,
-    roles,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
   const [data, setData] = useState({
-    company_name: '',
-    company_role: ''
+    company_name: "",
+    company_role: "",
   })
-  const { title, subtitle, hand, required } = forms['companyinfo']
+  const { title, subtitle, hand, required } = forms["companyinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
     if (partnerInfo)
       setData({
-        company_name: partnerInfo.company_name ?? '',
-        company_role: partnerInfo.company_role ?? ''
+        company_name: partnerInfo.company_name ?? "",
+        company_role: partnerInfo.company_role ?? "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('companyinfo')
+    setForm("companyinfo")
     setProcessing(false)
   }, [])
   const handleSubmit = async (e) => {
@@ -52,16 +54,16 @@ export default function CompanyInfo() {
       }
       if (error) return
     }
-    const result = await registerPartner('companyinfo', data)
+    const result = await registerPartner("companyinfo", data)
     if (result) {
-      if (result?.error) setError('login', result.error)
+      if (result?.error) setError("login", result.error)
     }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -70,7 +72,7 @@ export default function CompanyInfo() {
         <form onSubmit={handleSubmit}>
           <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
           <div className="mb-6">
-            {errors && <FormErrors error={errors['login']} />}
+            {errors && <FormErrors error={errors["login"]} />}
           </div>
           <TextInput
             id="company_name"

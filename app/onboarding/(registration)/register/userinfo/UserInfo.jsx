@@ -1,38 +1,41 @@
-'use client'
-import { createRef, useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import FormErrors from '@/app/components/FormErrors'
+"use client"
+import { createRef, useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import FormErrors from "@/app/components/FormErrors"
 // import { getSession, useSession } from 'next-auth/react'
-import Button from '@/app/components/form/Button'
-import { CountrySelector } from '@/app/components/countrycode/selector'
-import { COUNTRIES } from '@/app/components/countrycode/countries'
-import TextInput from '@/app/components/form/TextInput'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { useRouter } from 'next/navigation'
+import Button from "@/app/components/form/Button"
+import { CountrySelector } from "@/app/components/countrycode/selector"
+import { COUNTRIES } from "@/app/components/countrycode/countries"
+import TextInput from "@/app/components/form/TextInput"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { useRouter } from "next/navigation"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function UserInfo() {
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
   const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
   const [data, setData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    countrycode: '234',
-    country: 'NG',
-    telephone: '',
-    password: '',
-    password_confirmed: ''
+    first_name: "",
+    last_name: "",
+    email: "",
+    countrycode: "234",
+    country: "NG",
+    telephone: "",
+    password: "",
+    password_confirmed: "",
   })
-  const { title, subtitle, hand, required } = forms['userinfo']
+  const { title, subtitle, hand, required } = forms["userinfo"]
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
   const [navigate, setNavigate] = useState(false)
@@ -41,18 +44,18 @@ function UserInfo() {
   useEffect(() => {
     if (partnerInfo)
       setData({
-        first_name: partnerInfo.first_name ?? '',
-        last_name: partnerInfo.last_name ?? '',
-        email: partnerInfo.email ?? '',
-        countrycode: partnerInfo.countrycode ?? '234',
-        country: partnerInfo.country ?? 'NG',
-        telephone: partnerInfo.telephone ?? '',
-        password: '',
-        password_confirmed: ''
+        first_name: partnerInfo.first_name ?? "",
+        last_name: partnerInfo.last_name ?? "",
+        email: partnerInfo.email ?? "",
+        countrycode: partnerInfo.countrycode ?? "234",
+        country: partnerInfo.country ?? "NG",
+        telephone: partnerInfo.telephone ?? "",
+        password: "",
+        password_confirmed: "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('userinfo')
+    setForm("userinfo")
     setProcessing(false)
     setNavigate(false)
   })
@@ -70,21 +73,21 @@ function UserInfo() {
       }
       if (error) return
     }
-    if (data['password'].length < 8) {
-      setError('password', 'Your password must be at least, 8 characters')
+    if (data["password"].length < 8) {
+      setError("password", "Your password must be at least, 8 characters")
       return
     }
-    if (data['password'] !== data['password_confirmed']) {
-      setError('password_confirmed', 'Password did not match')
+    if (data["password"] !== data["password_confirmed"]) {
+      setError("password_confirmed", "Password did not match")
       return
     }
-    if (!Util.validateEmail(data['email'])) {
-      setError('email', 'Your email address is not valid')
+    if (!Util.validateEmail(data["email"])) {
+      setError("email", "Your email address is not valid")
       return
     }
-    const result = await registerPartner('userinfo', data, setError)
+    const result = await registerPartner("userinfo", data, setError)
     if (result) {
-      if (result?.error) return setError('login', result.error)
+      if (result?.error) return setError("login", result.error)
     }
     setNavigate(true)
   }
@@ -92,7 +95,7 @@ function UserInfo() {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   const handleCountryChange = (val) => {
@@ -104,16 +107,16 @@ function UserInfo() {
   }
   const myRef = createRef()
   const [isOpen, setIsOpen] = useState(false)
-  const [country, setCountry] = useState(partnerInfo.country ?? 'NG')
+  const [country, setCountry] = useState(partnerInfo.country ?? "NG")
   const [countrycode, setCountrycode] = useState(
-    partnerInfo.countrycode ?? '234'
+    partnerInfo.countrycode ?? "234"
   )
 
   useEffect(() => {
     setData((prevState) => ({
       ...prevState,
       country: country,
-      countrycode: countrycode
+      countrycode: countrycode,
     }))
   }, [country, countrycode])
 
@@ -122,7 +125,7 @@ function UserInfo() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors['login']} />}
+          {errors && <FormErrors error={errors["login"]} />}
         </div>
         {/* {session?.user && (
           <TailSpinPreloader width={120} height={120} fill="#efb703" />
@@ -157,7 +160,7 @@ function UserInfo() {
             <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
               <div className=" ">
                 <CountrySelector
-                  id={'countries'}
+                  id={"countries"}
                   ref={myRef}
                   open={isOpen}
                   onToggle={() => setIsOpen(!isOpen)}
@@ -181,7 +184,7 @@ function UserInfo() {
               </div>
             </div>
             <div className="mb-6">
-              {errors && <FormErrors error={errors['telephone']} />}
+              {errors && <FormErrors error={errors["telephone"]} />}
             </div>
             <TextInput
               id="password"
@@ -206,12 +209,12 @@ function UserInfo() {
             <div
               className=" text-white/70 text-start mb-12 p-2"
               style={{
-                fontStyle: 'normal',
+                fontStyle: "normal",
                 fontWeight: 400,
-                lineHeight: '16px'
+                lineHeight: "16px",
               }}
             >
-              By clicking "Start Application" I agree to MTN's{' '}
+              By clicking "Start Application" I agree to MTN's{" "}
               <a
                 href="#"
                 className=" text-white hover:text-white border-b-1 border-b-white"
@@ -224,9 +227,9 @@ function UserInfo() {
                 className=" text-white hover:text-white border-b-1 border-b- border-b-white"
               >
                 Privacy Policy
-              </a>{' '}
+              </a>{" "}
               and to receive electronic communication about my accounts and
-              services per Mtn's{' '}
+              services per Mtn's{" "}
               <a
                 href="#"
                 className=" text-white hover:text-white border-b-1 border-b- border-b-white"

@@ -1,29 +1,37 @@
-'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { useState, useEffect } from 'react'
+"use client"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import Image from "next/image"
+import Button from "@/app/components/form/Button"
+import FormErrors from "@/app/components/FormErrors"
+import useErrors from "@/hooks/useErrors"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { useState, useEffect } from "react"
 import {
   ArrowDownCircle,
   CheckedIcon,
   UnCheckedHoverIcon,
   UnCheckedInactiveIcon,
-  TailSpinPreloader
-} from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import Image from 'next/image'
-import Button from '@/app/components/form/Button'
-import FormErrors from '@/app/components/FormErrors'
-import useErrors from '@/hooks/useErrors'
-import { forms } from '@/app/modules/constants'
+  TailSpinPreloader,
+} from "@/app/components/Icons"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function Category() {
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
   const {
-    setForm,
+    users: user,
+    forms: { form },
+  } = state
+
+  const {
     partnerInfo,
     registerPartner,
     fetching,
     processing,
     setProcessing,
-    categories: categoryData
+    categories: categoryData,
   } = useOnboardingContext()
   const { error: catError, categories, nextedCategories } = categoryData
   const [error, setError] = useState(null)
@@ -31,12 +39,12 @@ function Category() {
   const [selectedCategory, setSelectedCategory] = useState([])
   const [categoryID, setCategoryID] = useState([])
   const [openedTabs, setOpenedTabs] = useState([])
-  const { title, subtitle, hand, required } = forms['category']
+  const { title, subtitle, hand, required } = forms["category"]
   useEffect(() => {
     if (partnerInfo) setSelectedCategory(partnerInfo.category_id ?? [])
   }, [partnerInfo])
   useEffect(() => {
-    setForm('category')
+    setForm("category")
     setProcessing(false)
   }, [])
   useEffect(() => {
@@ -52,7 +60,7 @@ function Category() {
     if (selectedCategory.length === 0)
       return setError(`You must select at least one category`)
     setProcessing(true)
-    const result = await registerPartner('category', categoryID)
+    const result = await registerPartner("category", categoryID)
     if (result) {
       if (result?.error) setError(result.error)
     }
@@ -61,7 +69,7 @@ function Category() {
     if (hasSubcategory(c)) handleToggleTabs(c)
     else toggleChecked(c)
   }
-  const hasSubcategory = (c) => typeof nextedCategories[c] !== 'undefined'
+  const hasSubcategory = (c) => typeof nextedCategories[c] !== "undefined"
   const toggleChecked = (c) => {
     setSelectedCategory((prevState) =>
       selectedCategory.includes(c)
@@ -100,8 +108,8 @@ function Category() {
             key={c.id}
             className={`group/category mb-6 cursor-pointer rounded-lg ${
               openedTabs.includes(c.id) || selectedCategory.includes(c.id)
-                ? 'bg-[#212121]'
-                : 'bg-[#111111] hover:bg-[#212121]'
+                ? "bg-[#212121]"
+                : "bg-[#111111] hover:bg-[#212121]"
             }  py-[16px] px-[24px] w-full max-w-[607px]`}
           >
             <div className="flex flex-col gap-4 justify-start items-start">
@@ -111,7 +119,7 @@ function Category() {
               >
                 <div className="flex justify-center items-center min-w-[49px] h-[49px] bg-[rgba(255, 255, 255, 0.1)] group-hover/category:bg-[#030303] rounded-full">
                   <Image
-                    src={'/assets/icons/gift.svg'}
+                    src={"/assets/icons/gift.svg"}
                     width={20.1}
                     height={20.1}
                     alt=""
@@ -131,8 +139,8 @@ function Category() {
                     <ArrowDownCircle
                       iconClass={`w-10 h-10 ${
                         openedTabs.includes(c.id)
-                          ? 'text-[#FFCB03]'
-                          : 'text-[#333333] group-hover/category:text-[#FFCB03]'
+                          ? "text-[#FFCB03]"
+                          : "text-[#333333] group-hover/category:text-[#FFCB03]"
                       } `}
                     />
                   ) : selectedCategory.includes(c.id) ? (
@@ -156,7 +164,7 @@ function Category() {
               {nextedCategories && nextedCategories[c.id]?.length > 0 && (
                 <div
                   className={`${
-                    openedTabs.includes(c.id) ? 'grid' : 'hidden'
+                    openedTabs.includes(c.id) ? "grid" : "hidden"
                   } grid-cols-1 sm:grid-cols-2 gap-5 transform ease-in-out duration-1000`}
                 >
                   {nextedCategories[c.id].map((sub) => (

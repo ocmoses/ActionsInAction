@@ -1,41 +1,49 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import FileInput from '@/app/components/form/FileInput'
-import DatePicker from '@/app/components/form/DatePicker'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import Button from '@/app/components/form/Button'
-import FormErrors from '@/app/components/FormErrors'
-import { forms } from '@/app/modules/constants'
+"use client"
+import TextInput from "@/app/components/form/TextInput"
+import FileInput from "@/app/components/form/FileInput"
+import DatePicker from "@/app/components/form/DatePicker"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import useErrors from "@/hooks/useErrors"
+import Button from "@/app/components/form/Button"
+import FormErrors from "@/app/components/FormErrors"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { Util } from "@/utils/utility"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function Ncclicense() {
-  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
     useOnboardingContext()
 
   const [data, setData] = useState({
-    vas_license_id: '',
-    ncc_issue_date: '',
-    ncc_expiry_date: '',
-    ncc_doc: ''
+    vas_license_id: "",
+    ncc_issue_date: "",
+    ncc_expiry_date: "",
+    ncc_doc: "",
   })
-  const { title, subtitle, hand, required } = forms['ncclicense']
+  const { title, subtitle, hand, required } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        vas_license_id: partnerInfo.vas_license_id ?? '',
-        ncc_issue_date: partnerInfo.ncc_issue_date ?? '',
-        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? '',
-        ncc_doc: partnerInfo.ncc_doc ?? ''
+        vas_license_id: partnerInfo.vas_license_id ?? "",
+        ncc_issue_date: partnerInfo.ncc_issue_date ?? "",
+        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? "",
+        ncc_doc: partnerInfo.ncc_doc ?? "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('ncclicense')
+    setForm("ncclicense")
     setProcessing(false)
   }, [])
 
@@ -52,23 +60,23 @@ function Ncclicense() {
       }
       if (error) return
     }
-    const result = await registerPartner('ncclicense', data)
+    const result = await registerPartner("ncclicense", data)
     if (result) {
-      if (result?.error) setError('global', result.error)
+      if (result?.error) setError("global", result.error)
     }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   const handleDateChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (
@@ -76,7 +84,7 @@ function Ncclicense() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors['global']} />}
+          {errors && <FormErrors error={errors["global"]} />}
         </div>
         <TextInput
           id="vas_license_id"

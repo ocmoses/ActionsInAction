@@ -1,30 +1,33 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import TextInput from '@/app/components/form/TextInput'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import FormErrors from '@/app/components/FormErrors'
+"use client"
+import { useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import TextInput from "@/app/components/form/TextInput"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function SetPassword() {
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
   const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
-  const [data, setData] = useState({ password: '', password_confirmed: '' })
-  const { title, subtitle, hand, required } = forms['setpassword']
+  const [data, setData] = useState({ password: "", password_confirmed: "" })
+  const { title, subtitle, hand, required } = forms["setpassword"]
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
-    setForm('setpassword')
+    setForm("setpassword")
     setProcessing(false)
   }, [])
   const handleSubmit = async (e) => {
@@ -39,25 +42,25 @@ function SetPassword() {
         }
       }
       if (error) return
-      if (data['password'].length < 8) {
-        setError('password', 'Your password must be at least, 8 characters')
+      if (data["password"].length < 8) {
+        setError("password", "Your password must be at least, 8 characters")
         return
       }
-      if (data['password'] !== data['password_confirmed']) {
-        setError('password_confirmed', 'Password did not match')
+      if (data["password"] !== data["password_confirmed"]) {
+        setError("password_confirmed", "Password did not match")
         return
       }
     }
-    const result = await registerPartner('setpassword', data)
+    const result = await registerPartner("setpassword", data)
     if (result) {
-      if (result?.error) setError('global', result.error)
+      if (result?.error) setError("global", result.error)
     }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
 
@@ -66,7 +69,7 @@ function SetPassword() {
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors['global']} />}
+          {errors && <FormErrors error={errors["global"]} />}
         </div>
         <TextInput
           id="password"

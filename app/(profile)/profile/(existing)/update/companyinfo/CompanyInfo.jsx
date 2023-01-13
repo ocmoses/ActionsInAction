@@ -1,44 +1,52 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import SelectInput from '@/app/components/form/SelectInput'
-import SelectInputOption from '@/app/components/form/SelectInputOption'
-import TextInput from '@/app/components/form/TextInput'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { COUNTRIES } from '@/app/modules/countries'
-import { STATES } from '@/app/modules/states'
-import { forms } from '@/app/modules/constants'
+"use client"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
+import TextInput from "@/app/components/form/TextInput"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { COUNTRIES } from "@/app/modules/countries"
+import { STATES } from "@/app/modules/states"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function CompanyInfo() {
-  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
     useOnboardingContext()
 
-  const { title, subtitle, hand, required } = forms['confirmcompanyinfo']
+  const { title, subtitle, hand, required } = forms["confirmcompanyinfo"]
   const [data, setData] = useState({
-    company_name: '',
-    country: '',
-    company_address: '',
-    company_city: '',
-    company_state: '',
-    company_postcode: ''
+    company_name: "",
+    country: "",
+    company_address: "",
+    company_city: "",
+    company_state: "",
+    company_postcode: "",
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        company_name: partnerInfo.company_name ?? '',
-        country: partnerInfo.country ?? '',
-        company_address: partnerInfo.company_address ?? '',
-        company_city: partnerInfo.company_city ?? '',
-        company_state: partnerInfo.company_state ?? '',
-        company_postcode: partnerInfo.company_postcode ?? ''
+        company_name: partnerInfo.company_name ?? "",
+        country: partnerInfo.country ?? "",
+        company_address: partnerInfo.company_address ?? "",
+        company_city: partnerInfo.company_city ?? "",
+        company_state: partnerInfo.company_state ?? "",
+        company_postcode: partnerInfo.company_postcode ?? "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('confirmcompanyinfo')
+    setForm("confirmcompanyinfo")
     setProcessing(false)
   }, [])
   const [states, setStates] = useState([])
@@ -63,13 +71,13 @@ function CompanyInfo() {
       if (error) return
     }
 
-    registerPartner('confirmcompanyinfo', data)
+    registerPartner("confirmcompanyinfo", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   return (

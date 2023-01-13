@@ -1,42 +1,50 @@
-'use client'
-import { createRef, useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import { CountrySelector } from '@/app/components/countrycode/selector'
-import { COUNTRIES } from '@/app/components/countrycode/countries'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { forms } from '@/app/modules/constants'
+"use client"
+import { createRef, useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import TextInput from "@/app/components/form/TextInput"
+import { CountrySelector } from "@/app/components/countrycode/selector"
+import { COUNTRIES } from "@/app/components/countrycode/countries"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function ContactPerson() {
-  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
     useOnboardingContext()
 
-  const { title, subtitle, hand, required } = forms['contactperson']
+  const { title, subtitle, hand, required } = forms["contactperson"]
   const [data, setData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    countrycode: '',
-    country: '',
-    telephone: ''
+    first_name: "",
+    last_name: "",
+    email: "",
+    countrycode: "",
+    country: "",
+    telephone: "",
   })
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        first_name: partnerInfo.first_name ?? '',
-        last_name: partnerInfo.last_name ?? '',
-        email: partnerInfo.email ?? '',
-        countrycode: partnerInfo.countrycode ?? '',
-        country: partnerInfo.country ?? '',
-        telephone: partnerInfo.telephone ?? ''
+        first_name: partnerInfo.first_name ?? "",
+        last_name: partnerInfo.last_name ?? "",
+        email: partnerInfo.email ?? "",
+        countrycode: partnerInfo.countrycode ?? "",
+        country: partnerInfo.country ?? "",
+        telephone: partnerInfo.telephone ?? "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('contactperson')
+    setForm("contactperson")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -53,13 +61,13 @@ function ContactPerson() {
       if (error) return
     }
 
-    registerPartner('contactperson', data)
+    registerPartner("contactperson", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
   const handleCountryChange = (val) => {
@@ -103,7 +111,7 @@ function ContactPerson() {
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector
-              id={'countries'}
+              id={"countries"}
               ref={myRef}
               open={isOpen}
               onToggle={() => setIsOpen(!isOpen)}
@@ -127,9 +135,9 @@ function ContactPerson() {
           </div>
         </div>
         <div className="mb-6">
-          {errors && typeof errors['telephone'] !== 'undefined' && (
+          {errors && typeof errors["telephone"] !== "undefined" && (
             <div className="text-sm text-red-600 mt-2">
-              {errors['telephone']}
+              {errors["telephone"]}
             </div>
           )}
         </div>

@@ -8,16 +8,11 @@ import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import { forms } from '@/app/modules/constants'
 
 function ContactPerson() {
-  const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms['contactperson']
   const [data, setData] = useState({

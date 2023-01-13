@@ -1,6 +1,4 @@
 import LoginPage from './LoginPage'
-function Login() {
+export default function Login() {
   return <LoginPage />
 }
-
-export default Login

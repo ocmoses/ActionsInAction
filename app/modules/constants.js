@@ -634,22 +634,3 @@ export const roles = [
     priviledges: []
   }
 ]
-export function outputDate(date) {
-  if (!date) return ''
-  var d = new Date(date)
-
-  return d.toLocaleDateString('en-NG')
-}
-export function inputDate(date) {
-  if (!date) return ''
-  const d = new Date(date)
-  return (
-    d.getFullYear() +
-    '-' +
-    ('0' + (d.getMonth() + 1)).slice(-2) +
-    '-' +
-    ('0' + d.getDate()).slice(-2)
-  )
-
-  // 16-05-2015 09:50
-}

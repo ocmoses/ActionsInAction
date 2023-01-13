@@ -11,16 +11,11 @@ import { TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Button from '@/app/components/form/Button'
 import FormErrors from '@/app/components/FormErrors'
+import { forms } from '@/app/modules/constants'
 
 function Indemnity() {
-  const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const [data, setData] = useState({
     indemnity_no: '',

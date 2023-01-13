@@ -1,6 +1,6 @@
 import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { outputDate } from '@/app/modules/constants'
+import { outputDate } from '@/app/modules/utilities'
 import ReviewTitle from './ReviewTitle'
 import Button from '@/app/components/form/Button'
 import Link from 'next/link'

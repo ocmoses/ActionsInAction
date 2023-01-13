@@ -13,10 +13,10 @@ import Image from 'next/image'
 import Button from '@/app/components/form/Button'
 import FormErrors from '@/app/components/FormErrors'
 import useErrors from '@/hooks/useErrors'
+import { forms } from '@/app/modules/constants'
 
 function Category() {
   const {
-    forms,
     setForm,
     partnerInfo,
     registerPartner,

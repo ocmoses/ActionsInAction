@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { inputDate } from '@/app/modules/constants'
+import { inputDate } from '@/app/modules/utilities'
 import FormErrors from '@/app/components/FormErrors'
 
 function FileInput({ id, label, value, onChange, border, bg, margin, errors }) {

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRightCircle } from '@/app/components/Icons'
 
-function Onboading() {
+export default function Register() {
   return (
     <div className="mx-auto w3-animate-opacity">
       <h1 className="flex items-center font-mtn-extrabold mb-6  text-white text-4xl">
@@ -62,5 +62,3 @@ function Onboading() {
     </div>
   )
 }
-
-export default Onboading

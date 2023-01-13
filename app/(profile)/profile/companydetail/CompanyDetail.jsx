@@ -10,18 +10,13 @@ import { TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Button from '@/app/components/form/Button'
 import FormErrors from '@/app/components/FormErrors'
+import { COUNTRIES } from '@/app/modules/countries'
+import { STATES } from '@/app/modules/states'
+import { forms } from '@/app/modules/constants'
 
 function CompanyDetail() {
-  const {
-    forms,
-    COUNTRIES,
-    STATES,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms['companydetail']
   const [data, setData] = useState({

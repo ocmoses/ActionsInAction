@@ -6,28 +6,13 @@ import {
   getPartner,
   partnerRegistration
 } from '@/app/modules/partners'
+import { Encrypt, Decrypt } from '@/app/modules/utilities'
 
 const useLocalSession = () => {
-  const key = '82f2ceed4c503896c8a291e560bd4325'
-  const iv = 'sinasinasisinaaa'
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [loading, setLoading] = useState(false)
   const [session, setSession] = useState({})
 
-  const Decrypt = (data) => {
-    const decrypted = CryptoJS.AES.decrypt(data, CryptoJS.enc.Utf8.parse(key), {
-      iv: CryptoJS.enc.Utf8.parse(iv),
-      mode: CryptoJS.mode.CBC
-    })
-    return CryptoJS.enc.Utf8.stringify(decrypted).toString()
-  }
-  const Encrypt = (data) => {
-    const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
-      iv: CryptoJS.enc.Utf8.parse(iv),
-      mode: CryptoJS.mode.CBC
-    })
-    return encrypted.toString()
-  }
   const login = async (logindata) => {
     clearErrors()
     setLoading(true)

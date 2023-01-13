@@ -6,16 +6,11 @@ import TextInput from '@/app/components/form/TextInput'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
+import { forms } from '@/app/modules/constants'
 
 function SetPassword() {
-  const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const [data, setData] = useState(partnerInfo)
   const { title, subtitle, hand, required } = forms['setpassword']

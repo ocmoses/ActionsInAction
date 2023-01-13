@@ -2,24 +2,19 @@
 import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import SelectInput from '@/app/components/form/SelectInput'
-import SelectInputOption from '../../../../../components/form/SelectInputOption'
+import SelectInputOption from '@/app/components/form/SelectInputOption'
 import TextInput from '@/app/components/form/TextInput'
 import { Util } from '@/utils/utility'
 import useErrors from '@/hooks/useErrors'
 import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
+import { COUNTRIES } from '@/app/modules/countries'
+import { STATES } from '@/app/modules/states'
+import { forms } from '@/app/modules/constants'
 
 function CompanyInfo() {
-  const {
-    forms,
-    COUNTRIES,
-    STATES,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms['confirmcompanyinfo']
   const [data, setData] = useState({

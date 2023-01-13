@@ -1,26 +1,21 @@
 'use client'
-import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import TextInput from '@/app/components/form/TextInput'
 import FileInput from '@/app/components/form/FileInput'
 import DatePicker from '@/app/components/form/DatePicker'
 import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { TailSpinPreloader } from '@/app/components/Icons'
 import RegisterStepHeader from '@/app/components/RegisterStepHeader'
 import Button from '@/app/components/form/Button'
+import useErrors from '@/hooks/useErrors'
 import FormErrors from '@/app/components/FormErrors'
+import { useState, useEffect } from 'react'
+import { Util } from '@/utils/utility'
+import { TailSpinPreloader } from '@/app/components/Icons'
+import { forms } from '@/app/modules/constants'
 
 function NlrcLicense() {
-  const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const [data, setData] = useState({
     nlrc_license_id: '',

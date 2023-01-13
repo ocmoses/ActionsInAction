@@ -2,40 +2,30 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import TextInput from '@/app/components/form/TextInput'
-import { TailSpinPreloader } from '@/app/components/Icons'
 import Button from '@/app/components/form/Button'
+import useErrors from '@/hooks/useErrors'
+import FormErrors from '@/app/components/FormErrors'
+import crypto from 'crypto-js'
+import { TailSpinPreloader } from '@/app/components/Icons'
 import { useState, useEffect } from 'react'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import useErrors from '@/hooks/useErrors'
 import { useRouter } from 'next/navigation'
-import FormErrors from '@/app/components/FormErrors'
-// import { getSession, useSession } from 'next-auth/react'
+import { proxyFetch, DecryptObject } from '@/app/modules/utilities'
 
 function Login() {
   const { processing, setProcessing, LoginUser, LoginPartner } =
     useOnboardingContext()
   const [data, setData] = useState({
-    partnerid: process.env.NODE_ENV === 'production' ? '' : '234218728',
-    password: process.env.NODE_ENV === 'production' ? '' : 'Password1234%'
+    partnerid: process.env.NODE_ENV === 'production' ? '' : '234378414',
+    password: process.env.NODE_ENV === 'production' ? '' : 'Todoo45@222'
   })
+
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()
-  // const [session, setSession] = useState(null)
 
   useEffect(() => {
     setProcessing(false)
   }, [])
-
-  // useEffect(() => {
-  //   const getSess = async () => {
-  //     const Sess = await getSession()
-  //     setSession(Sess)
-  //     if (Sess?.user) {
-  //       router.push('/')
-  //     }
-  //   }
-  //   getSess()
-  // }, [])
 
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -47,30 +37,45 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
+
     if (!data.partnerid) {
       return setError('partnerid', `Please enter your Partner ID`)
     }
     if (!data.password) {
       return setError('password', `Please enter your password`)
     }
-    const result = await LoginPartner(data, false)
-    if (result.error) return setError('login', result.error)
-    console.log(result)
-    const url = {
-      userinfo: `/onboarding/register/userinfo`,
-      companyinfo: `/onboarding/register/companyinfo`,
-      category: `/profile/category`,
-      companydetail: `/profile/companydetail`,
-      compliance: `/profile/compliance`,
-      ncclicense: `/profile/ncclicense`,
-      nlrclicense: `/profile/nlrclicense`,
-      shortcode: `/profile/shortcode`,
-      indemnity: `/profile/indemnity`,
-      accountinfo: `/profile/accountinfo`,
-      dashboard: `/dashboard`
-    }
-    router.replace(`${url[result.nextstage]}`)
     setProcessing(true)
+    const response = await fetch('/api/users/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        partnerid: data.partnerid,
+        password: data.password
+      })
+    })
+    const { success, error, data: user } = await response.json()
+    setProcessing(false)
+
+    if (!success) return setError('global', error)
+
+    // const result = await LoginPartner(data, false)
+    // if (result.error) return setError('login', result.error)
+    // console.log(result)
+
+    // const url = {
+    //   userinfo: `/onboarding/register/userinfo`,
+    //   companyinfo: `/onboarding/register/companyinfo`,
+    //   category: `/profile/category`,
+    //   companydetail: `/profile/companydetail`,
+    //   compliance: `/profile/compliance`,
+    //   ncclicense: `/profile/ncclicense`,
+    //   nlrclicense: `/profile/nlrclicense`,
+    //   shortcode: `/profile/shortcode`,
+    //   indemnity: `/profile/indemnity`,
+    //   accountinfo: `/profile/accountinfo`,
+    //   dashboard: `/dashboard`
+    // }
+    // router.replace(`${url[result.nextstage]}`)
+    // setProcessing(false)
     return
   }
 
@@ -110,7 +115,7 @@ function Login() {
           Welcome back! please enter your great details
         </p>
         <div className="mb-6">
-          {errors && <FormErrors error={errors['login']} />}
+          {errors && <FormErrors error={errors['global']} />}
         </div>
         {/* {session?.user && (
           <TailSpinPreloader width={120} height={120} fill="#efb703" />

@@ -12,16 +12,11 @@ import FileInput from '@/app/components/form/FileInput'
 import FileInputWrapper from '@/app/components/form/FileInputWrapper'
 import Button from '@/app/components/form/Button'
 import FormErrors from '@/app/components/FormErrors'
+import { forms } from '@/app/modules/constants'
 
 function Compliance() {
-  const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const [data, setData] = useState({
     rc_no: '',

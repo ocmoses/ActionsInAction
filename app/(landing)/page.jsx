@@ -1,10 +1,13 @@
 'use client'
 import Navbar from '@/app/components/Navbar'
-import { ArrowRightCircle } from '@/app/components/Icons'
-import HeroBanner from './HeroBanner'
 import Link from 'next/link'
-
+import HeroBanner from './HeroBanner'
+import { ArrowRightCircle } from '@/app/components/Icons'
+import { useStoreState } from 'easy-peasy'
 function LandingPage() {
+  const state = useStoreState((state) => state)
+  const { user } = state.users
+  console.log({ user })
   return (
     <main className="px-8 m-0 w-full relative">
       <div className="relative z-50">

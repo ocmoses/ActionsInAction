@@ -1,9 +1,10 @@
-'use client'
-import Navbar from '@/app/components/Navbar'
-import Link from 'next/link'
-import HeroBanner from './HeroBanner'
-import { ArrowRightCircle } from '@/app/components/Icons'
-import { useStoreState } from 'easy-peasy'
+"use client"
+import Navbar from "@/app/components/Navbar"
+import Link from "next/link"
+import HeroBanner from "./HeroBanner"
+import { ArrowRightCircle } from "@/app/components/Icons"
+import { useStoreState } from "easy-peasy"
+
 function LandingPage() {
   const state = useStoreState((state) => state)
   const { user } = state.users

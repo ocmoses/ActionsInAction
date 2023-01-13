@@ -1,48 +1,56 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import TextInput from '@/app/components/form/TextInput'
-import FileInput from '@/app/components/form/FileInput'
-import SelectInput from '@/app/components/form/SelectInput'
-import SelectInputOption from '@/app/components/form/SelectInputOption'
-
-import { BANKS } from '@/app/modules/banks'
-import FileInputWrapper from '@/app/components/form/FileInputWrapper'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import Button from '@/app/components/form/Button'
-import FormErrors from '@/app/components/FormErrors'
-import { forms } from '@/app/modules/constants'
+"use client"
+import TextInput from "@/app/components/form/TextInput"
+import FileInput from "@/app/components/form/FileInput"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
+import FileInputWrapper from "@/app/components/form/FileInputWrapper"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import Button from "@/app/components/form/Button"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
+import { useState, useEffect } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { BANKS } from "@/app/modules/banks"
+import { Util } from "@/utils/utility"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { forms } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
 
 function AccountInfo() {
-  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
+  const {
+    users: user,
+    forms: { form },
+  } = state
+
+  const { partnerInfo, registerPartner, processing, setProcessing } =
     useOnboardingContext()
 
   const [data, setData] = useState({
-    account_name: '',
-    account_no: '',
-    bank: '',
-    audited_account_1: '',
-    audited_account_2: '',
-    audited_account_3: ''
+    account_name: "",
+    account_no: "",
+    bank: "",
+    audited_account_1: "",
+    audited_account_2: "",
+    audited_account_3: "",
   })
-  const { title, subtitle, hand, required } = forms['accountinfo']
+  const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
       setData({
-        account_name: partnerInfo.account_name ?? '',
-        account_no: partnerInfo.account_no ?? '',
-        bank: partnerInfo.bank ?? '',
-        audited_account_1: partnerInfo.audited_account_1 ?? '',
-        audited_account_2: partnerInfo.audited_account_2 ?? '',
-        audited_account_3: partnerInfo.audited_account_3 ?? ''
+        account_name: partnerInfo.account_name ?? "",
+        account_no: partnerInfo.account_no ?? "",
+        bank: partnerInfo.bank ?? "",
+        audited_account_1: partnerInfo.audited_account_1 ?? "",
+        audited_account_2: partnerInfo.audited_account_2 ?? "",
+        audited_account_3: partnerInfo.audited_account_3 ?? "",
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm('accountinfo')
+    setForm("accountinfo")
     setProcessing(false)
   }, [])
   const handleSubmit = async (e) => {
@@ -58,16 +66,16 @@ function AccountInfo() {
       }
       if (error) return
     }
-    const result = await registerPartner('accountinfo', data)
+    const result = await registerPartner("accountinfo", data)
     if (result) {
-      if (result?.error) setError('global', result.error)
+      if (result?.error) setError("global", result.error)
     }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
 
@@ -76,7 +84,7 @@ function AccountInfo() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors['global']} />}
+          {errors && <FormErrors error={errors["global"]} />}
         </div>
         <TextInput
           id="account_name"

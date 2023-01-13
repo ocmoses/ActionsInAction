@@ -1,33 +1,36 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import TextInput from '@/app/components/form/TextInput'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import Button from '@/app/components/form/Button'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import FormErrors from '@/app/components/FormErrors'
-// import { signOut, useSession } from 'next-auth/react'
+"use client"
+import { useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import TextInput from "@/app/components/form/TextInput"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import Button from "@/app/components/form/Button"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
+import { forms, roles } from "@/app/modules/constants"
+import { useStoreState, useStoreActions } from "easy-peasy"
+
 export default function PartnerWelcome() {
+  const actions = useStoreActions((action) => action)
+  const state = useStoreState((state) => state)
+  const { setForm } = actions.forms
   const {
-    forms,
-    setForm,
-    partnerInfo,
-    registerPartner,
-    processing,
-    setProcessing
-  } = useOnboardingContext()
+    users: user,
+    forms: { form },
+  } = state
+  const { partnerInfo, registerPartner, processing, setProcessing } =
+    useOnboardingContext()
 
   const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['partnerwelcome']
+  const { title, subtitle, hand, required } = forms["partnerwelcome"]
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   // const session = useSession()
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
-    setForm('partnerwelcome')
+    setForm("partnerwelcome")
     setProcessing(false)
     // if (session.status !== 'loading' && session.status === 'authenticated') {
     //   signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
@@ -51,16 +54,16 @@ export default function PartnerWelcome() {
       }
       if (error) return
     }
-    const result = await registerPartner('partnerwelcome', data, setError)
+    const result = await registerPartner("partnerwelcome", data, setError)
     if (result) {
-      if (result?.error) setError('login', result.error)
+      if (result?.error) setError("login", result.error)
     }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
 
@@ -69,7 +72,7 @@ export default function PartnerWelcome() {
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors['login']} />}
+          {errors && <FormErrors error={errors["login"]} />}
         </div>
         <TextInput
           id="partnerid"

@@ -1,21 +1,21 @@
-'use client'
-import { useEffect, useState, createContext, useContext } from 'react'
-import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
-import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
-import { apiURL, forms, partnerFields, roles } from '@/app/modules/constants'
-import { fetchData } from '@/app/modules/fetchData'
+"use client"
+import { useEffect, useState, createContext, useContext } from "react"
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"
+import { v4 as uuidv4 } from "uuid"
+import axios from "axios"
+import { apiURL, forms, partnerFields, roles } from "@/app/modules/constants"
+import { fetchData } from "@/app/modules/fetchData"
 import {
   checkRegStatus,
   getPartner,
-  partnerRegistration
-} from '@/app/modules/partners'
-import { Util } from '@/utils/utility'
-import { signIn } from 'next-auth/react'
-import { COUNTRIES } from '@/app/modules/countries'
-import { STATES } from '@/app/modules/states'
-import { BANKS } from '@/app/modules/banks'
-import useLocalSession from '@/hooks/useLocalSession'
+  partnerRegistration,
+} from "@/app/modules/partners"
+import { Util } from "@/utils/utility"
+import { signIn } from "next-auth/react"
+import { COUNTRIES } from "@/app/modules/countries"
+import { STATES } from "@/app/modules/states"
+import { BANKS } from "@/app/modules/banks"
+import useLocalSession from "@/hooks/useLocalSession"
 
 const OnboardingContext = createContext()
 
@@ -27,7 +27,6 @@ export function OnboardingContextProvider({ children }) {
   const currentPath = segments?.reverse()[0]
   // console.log('currentPath', currentPath)
   const [partnerInfo, setPartnerInfo] = useState(partnerFields)
-  const [form, setForm] = useState(null)
   const [fetching, setFetching] = useState({})
   const [processing, setProcessing] = useState(false)
   const [categories, setCategories] = useState({})
@@ -39,30 +38,30 @@ export function OnboardingContextProvider({ children }) {
     shortcode: false,
     indemnity: false,
     accountinfo: false,
-    review: false
+    review: false,
   })
   const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
     confirmcompanyinfo: false,
     contactperson: false,
-    updatereview: false
+    updatereview: false,
   })
   const setUpdateStatus = (type, key, status) => {
-    if (type === 'review') {
-      if (reviewStatus[key] !== 'undefined')
+    if (type === "review") {
+      if (reviewStatus[key] !== "undefined")
         setReviewStatus((oldState) => ({
           ...oldState,
-          [key]: status
+          [key]: status,
         }))
     } else {
-      if (reviewUpdateStatus[key] !== 'undefined')
+      if (reviewUpdateStatus[key] !== "undefined")
         setReviewUpdateStatus((oldState) => ({
           ...oldState,
-          [key]: status
+          [key]: status,
         }))
     }
   }
   const checkUpdateStatus = (type, key) => {
-    if (type === 'review') {
+    if (type === "review") {
       if (reviewStatus[key]) return true
       return false
     } else {
@@ -78,14 +77,14 @@ export function OnboardingContextProvider({ children }) {
     })
   }
   const fetchCatgories = async () => {
-    setIsFetching('category', true)
+    setIsFetching("category", true)
     const nextedCategories = {}
     const {
       success,
       error,
-      data: categories
+      data: categories,
     } = await fetchData(`${apiURL}/v1/categories`, {
-      next: { revalidate: 86400 }
+      next: { revalidate: 86400 },
     })
     if (!success)
       setCategories({
@@ -93,7 +92,7 @@ export function OnboardingContextProvider({ children }) {
         error,
         categories: [],
         allCategories: [],
-        nextedCategories: {}
+        nextedCategories: {},
       })
     const Categories = []
     const allCategories = {}
@@ -102,7 +101,7 @@ export function OnboardingContextProvider({ children }) {
       if (!cat.parent_id) {
         Categories.push(cat)
       } else {
-        if (typeof nextedCategories[cat.parent_id] === 'undefined')
+        if (typeof nextedCategories[cat.parent_id] === "undefined")
           nextedCategories[cat.parent_id] = []
         nextedCategories[cat.parent_id].push(cat)
       }
@@ -112,9 +111,9 @@ export function OnboardingContextProvider({ children }) {
       error: null,
       categories: Categories,
       allcategories: allCategories,
-      nextedCategories
+      nextedCategories,
     })
-    setIsFetching('category', false)
+    setIsFetching("category", false)
   }
   useEffect(() => {
     fetchCatgories()
@@ -125,15 +124,15 @@ export function OnboardingContextProvider({ children }) {
     if (percent) {
       setPartnerInfo((oldState) => ({
         ...oldState,
-        progress: { ...oldState.progress, percent, stages }
+        progress: { ...oldState.progress, percent, stages },
       }))
     }
   }
-  const LoginPartner = async (data, redirect = false, callbackUrl = '/') => {
+  const LoginPartner = async (data, redirect = false, callbackUrl = "/") => {
     setProcessing(true)
     const result = await login({
       partnerid: data.partnerid,
-      password: data.password
+      password: data.password,
     })
     console.log({ session })
     console.log({ result })
@@ -164,23 +163,23 @@ export function OnboardingContextProvider({ children }) {
   }
   const resendEmail = async (email) => {
     const apiUrl =
-      'https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link'
+      "https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link"
 
     setProcessing(true)
 
     const response = await axios(apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+        apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
       },
       data: {
-        email: email
-      }
+        email: email,
+      },
     })
       .catch(({ message, response }) => {
         if (response) {
           const {
-            data: { data }
+            data: { data },
           } = response
           if (!Util.isEmpty(data)) {
             for (const error in data) {
@@ -197,17 +196,15 @@ export function OnboardingContextProvider({ children }) {
 
     if (response) {
       const {
-        data: { success }
+        data: { success },
       } = response
       if (success)
-        alert('Email was sent successfully. Please checnk your email')
+        alert("Email was sent successfully. Please checnk your email")
     }
   }
   return (
     <OnboardingContext.Provider
       value={{
-        forms,
-        form,
         COUNTRIES,
         STATES,
         BANKS,
@@ -215,7 +212,6 @@ export function OnboardingContextProvider({ children }) {
         setIsFetching,
         processing,
         setProcessing,
-        setForm,
         categories,
         roles,
         partnerInfo,
@@ -228,7 +224,7 @@ export function OnboardingContextProvider({ children }) {
         LoginPartner,
         reviewStatus,
         reviewUpdateStatus,
-        checkUpdateStatus
+        checkUpdateStatus,
       }}
     >
       {children}

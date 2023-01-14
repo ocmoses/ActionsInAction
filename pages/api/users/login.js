@@ -1,6 +1,6 @@
 import { apiURL } from '@/app/modules/constants'
 import { setCookie } from 'cookies-next'
-import { Encrypt, EncryptObject } from '@/app/modules/utilities'
+import { Encrypt, userData } from '@/app/modules/utilities'
 
 export default async function handler(req, res) {
   try {
@@ -21,34 +21,46 @@ export default async function handler(req, res) {
     const result = await response.json()
     if (response?.ok) {
       const { data, success } = result
-      const status = data.profile_status
-      const percent = data.percent_complete
-      const stages = data.profile_stage
-
-      delete data.profile_status
-      delete data.percent_complete
-      delete data.profile_stage
-
-      const userData = {
-        ...data,
-        progress: {
-          status,
-          percent,
-          stages
-        }
-      }
+      const User = userData(data)
+      console.log(data)
+      const authToken = data?.login_token?.access_token
+      const maxAge = data?.login_token?.expires_in
+      if (!data?.login_token?.access_token)
+        return res
+          .status(200)
+          .json({ success, error: 'Invalid request', data: User })
       // SET COOKIES
-      const authToken = 'princemorpheusproductions'
-      setCookie('auth-token', Encrypt(authToken), {
+      const encryptedAuthToken = Encrypt(authToken)
+      const encryptedPartnerid = Encrypt(`${User.partnerid}`)
+      const encryptedUserId = Encrypt(`${User.id}`)
+      setCookie('auth-token', encryptedAuthToken, {
         req,
         res,
-        maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+        maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
         httpOnly: true,
         signed: true,
         path: '/',
         sameSite: 'strict'
       })
-      res.status(200).json({ success, error: null, data: userData })
+      setCookie('partnerid', encryptedPartnerid, {
+        req,
+        res,
+        maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+        httpOnly: true,
+        signed: true,
+        path: '/',
+        sameSite: 'strict'
+      })
+      setCookie('user_id', encryptedUserId, {
+        req,
+        res,
+        maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+        httpOnly: true,
+        signed: true,
+        path: '/',
+        sameSite: 'strict'
+      })
+      res.status(200).json({ success, error: null, data: User })
       return
     } else {
       if (result?.data) {

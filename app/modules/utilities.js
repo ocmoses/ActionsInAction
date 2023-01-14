@@ -68,7 +68,25 @@ export async function proxyFetch(url, options) {
   const { success, error, data } = await response.json()
   return { success, error, data }
 }
-
+export function userData(data) {
+  const status = data.profile_status ?? null
+  const percent = data.percent_complete ?? null
+  const stages = data.profile_stage ?? {}
+  const user = { ...data?.user }
+  delete data.profile_status
+  delete data.percent_complete
+  delete data.profile_stage
+  delete data.user
+  return {
+    ...user,
+    ...data,
+    progress: {
+      status,
+      percent,
+      stages
+    }
+  }
+}
 export const isArray = (data) => {
   return Array.isArray(data)
 }

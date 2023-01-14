@@ -1,15 +1,9 @@
 'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { useSession } from 'next-auth/react'
-import { useEffect } from 'react'
+import { useStoreActions } from 'easy-peasy'
 
-export default function Session({ children }) {
-  const session = useSession()
-  const { setPartnerInfo } = useOnboardingContext()
-  useEffect(() => {
-    if (session.status === 'authenticated') {
-      setPartnerInfo((oldState) => ({ ...oldState, ...session.data.user }))
-    }
-  }, [session.status])
+export default function Session({ children, serverSession }) {
+  const actions = useStoreActions((action) => action.users)
+  if (serverSession?.user) actions.updateUser(serverSession?.user)
+
   return <>{children}</>
 }

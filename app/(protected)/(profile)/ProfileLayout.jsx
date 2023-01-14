@@ -1,12 +1,12 @@
 'use client'
 import Image from 'next/image'
 import NavbarProfile from '@/app/components/NavbarProfile'
+import ProfileTabItem from '@/app/components/ProfileTabItem'
+import UserAvartar from '@/app/components/UserAvartar'
 import { useOnboardingContext } from '@/hooks/useOnboardingContext'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import { profileMenu } from '@/app/modules/constants'
 import { updateMenu } from '@/app/modules/constants'
-import ProfileTabItem from '@/app/components/ProfileTabItem'
-import UserAvartar from '@/app/components/UserAvartar'
 
 export default function Layout({ children }) {
   const { form } = useOnboardingContext()

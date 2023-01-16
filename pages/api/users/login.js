@@ -21,11 +21,13 @@ export default async function handler(req, res) {
     const result = await response.json()
     if (response?.ok) {
       const { data, success } = result
-      const User = userData(data)
-      console.log(data)
+      console.log('login_token', result.data.login_token)
       const authToken = data?.login_token?.access_token
       const maxAge = data?.login_token?.expires_in
-      if (!data?.login_token?.access_token)
+
+      const User = userData(data)
+      console.log('data', data)
+      if (!authToken)
         return res
           .status(200)
           .json({ success, error: 'Invalid request', data: User })

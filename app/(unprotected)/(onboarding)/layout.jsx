@@ -15,26 +15,9 @@ function Layout({ children }) {
 
   // const session = useSession()
   const router = useRouter()
-
   const exclude = ['companyinfo']
-  // useEffect(() => {
-  //   if (
-  //     exclude.includes(currentPath) &&
-  //     session.status !== 'loading' &&
-  //     session.status !== 'authenticated'
-  //   ) {
-  //     router.push('/onboarding/login')
-  //   }
-  // }, [session.status])
-  // console.log(currentPath)
   return (
     <>
-      {/* {session.status === 'loading' && (
-        <div className="flex justify-center items-center h-screen">
-          <TailSpinPreloader width={120} height={120} fill="#efb703" />
-        </div>
-      )} */}
-
       <div className="grid grid-cols-4 w-screen">
         <div className="flex flex-col justify-start col-span-4 md:col-span-3 overflow-x-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] scrollbar-w-[10px] h-screen max-h-screen relative flex-1 px-4 md:px-6 ">
           <div className="mb-16">

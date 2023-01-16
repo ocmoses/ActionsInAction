@@ -77,6 +77,7 @@ export function userData(data) {
   delete data.percent_complete
   delete data.profile_stage
   delete data.user
+  delete data.login_token
   return {
     ...user,
     ...data,

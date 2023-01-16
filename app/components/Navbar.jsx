@@ -51,7 +51,7 @@ function Navbar({ type }) {
               Register
             </Link>
             <Link
-              href="/onboarding/login"
+              href="/login"
               className="rounded-full text-white border-[1px] border-mtn hover:border-mtn-300 transition ease-in-out 5000 text-md md:text-lg lg:text-xl mr-2 px-6 py-1 lg:mr-4 lg:px-12 lg:py-3"
             >
               Login
@@ -123,7 +123,7 @@ function Navbar({ type }) {
                   Already have an account?
                 </p>
                 <Link
-                  href="/onboarding/login"
+                  href="/login"
                   className="text-white px-4 py-1 ml-4 rounded-full border-2 border-dotted border-mtn hover:border-white transition ease-in-out duration-500 hover:scale-[110%]"
                 >
                   Login

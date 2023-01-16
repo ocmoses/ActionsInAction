@@ -14,9 +14,9 @@ export const getPartner = async (partnerid) => {
   return result
 }
 export const checkRegStatus = async (partner) => {
-  const { percent, stages } = partner.progress
-  console.log(partner.progress)
-  const Stage = [
+  const { percent, stages, status } = partner.progress
+  if (status != 'Not completed') return { percent, nextstage: 'dashboard' }
+  const Stages = [
     'userinfo',
     'companyinfo',
     'category',
@@ -28,20 +28,23 @@ export const checkRegStatus = async (partner) => {
     'indemnity',
     'accountinfo'
   ]
-
+  const Pages = {
+    userinfo: '/onboarding/userinfo',
+    companyinfo: '/profile/companyinfo',
+    category: '/profile/category',
+    companydetail: '/profile/companydetail',
+    compliance: '/profile/compliance',
+    ncclicense: '/profile/ncclicense',
+    nlrclicense: '/profile/nlrclicense',
+    shortcode: '/profile/shortcode',
+    indemnity: '/profile/indemnity',
+    accountinfo: '/profile/accountinfo'
+  }
   let nextstage = null
-  Stage.map((stage) => {
-    if (
-      !nextstage &&
-      (stages[stage] == 'false' ||
-        stages[stage] === 'false' ||
-        stages[stage] === false)
-    ) {
-      nextstage = stage
-    }
+  Stages.map((stage) => {
+    if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
   })
-  console.log({ nextstage })
-  if (!nextstage) nextstage = 'dashboard'
+  if (!nextstage) nextstage = '/dashboard'
   return { percent, nextstage }
 }
 export const register_partner = async (data) => {

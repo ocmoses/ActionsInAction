@@ -15,18 +15,11 @@ import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 function AccountInfo() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, form, setForm } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
 
   const [data, setData] = useState({
     account_name: "",

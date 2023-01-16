@@ -1,25 +1,26 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import TextInput from '@/app/components/form/TextInput'
-import RegisterStepHeader from '@/app/components/RegisterStepHeader'
-import { Util } from '@/utils/utility'
-import useErrors from '@/hooks/useErrors'
-import { forms } from '@/app/modules/constants'
+"use client"
+import { useEffect, useState } from "react"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import TextInput from "@/app/components/form/TextInput"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import { Util } from "@/utils/utility"
+import useErrors from "@/hooks/useErrors"
+import { forms } from "@/app/modules/constants"
+import useProcessing from "@/hooks/useProcessing"
 
 function SetPassword() {
-  const { setForm, partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
 
   const [data, setData] = useState(partnerInfo)
-  const { title, subtitle, hand, required } = forms['setpassword']
+  const { title, subtitle, hand, required } = forms["setpassword"]
   const [{ errors, setErrors, setError, removeError, clearErrors }] =
     useErrors(data)
 
   useEffect(() => {
     if (partnerInfo) setData(partnerInfo)
-    setForm('setpassword')
+    setForm("setpassword")
     setProcessing(false)
   }, [])
   const handleSubmit = (e) => {
@@ -34,22 +35,22 @@ function SetPassword() {
         }
       }
       if (error) return
-      if (data['password'].length < 8) {
-        setError('password', 'Your password must be at least, 8 characters')
+      if (data["password"].length < 8) {
+        setError("password", "Your password must be at least, 8 characters")
         return
       }
-      if (data['password'] !== data['password_confirmed']) {
-        setError('password_confirmed', 'Password did not match')
+      if (data["password"] !== data["password_confirmed"]) {
+        setError("password_confirmed", "Password did not match")
         return
       }
     }
-    registerPartner('setpassword', data)
+    registerPartner("setpassword", data)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     }))
   }
 

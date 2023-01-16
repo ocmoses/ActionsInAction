@@ -3,18 +3,10 @@ import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import Image from "next/image"
 import { useEffect } from "react"
 import Button from "@/app/components/form/Button"
-import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function Complete({ params: { path } }) {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-
-  const { setProcessing } = useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
   const current = path ? path[0] : "application"
   useEffect(() => {
     setForm("")

@@ -10,17 +10,11 @@ import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 function ContactPerson() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm, form } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms["contactperson"]
   const [data, setData] = useState({

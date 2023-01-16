@@ -14,17 +14,10 @@ import useErrors from "@/hooks/useErrors"
 import { useRouter } from "next/navigation"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
-
+import useProcessing from "@/hooks/useProcessing"
 function UserInfo() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const { partnerInfo, registerPartnerx } = useOnboardingContext()
   const [data, setData] = useState({
     first_name: "",
     last_name: "",

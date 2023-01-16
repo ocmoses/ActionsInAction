@@ -1,29 +1,12 @@
-import { useState } from 'react'
+"use client"
+import { useState } from "react"
+import { useStoreActions, useStoreState } from "easy-peasy"
 const useErrors = (data) => {
-  const [errors, setErrors] = useState()
-  const setError = (key, message) => {
-    setErrors((oldState) => ({
-      ...oldState,
-      [key]: message
-    }))
-  }
-  const removeError = (field) => {
-    for (const f in errors) {
-      if (f === field) {
-        if (data[field] !== '') {
-          setErrors((oldState) => {
-            delete oldState[field]
-            return oldState
-          })
-        }
-      }
-    }
-  }
-  const clearErrors = () => setErrors({})
-  return [
-    { errors, setErrors, setError, removeError, clearErrors },
-    clearErrors
-  ]
+  const { setError, removeError, clearErrors } = useStoreActions(
+    (action) => action.app
+  )
+  const errors = useStoreState((state) => state.app.errors)
+  return [{ errors, setError, removeError, clearErrors }]
 }
 
 export default useErrors

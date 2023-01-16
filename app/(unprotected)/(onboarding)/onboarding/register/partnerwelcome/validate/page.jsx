@@ -7,18 +7,11 @@ import Link from "next/link"
 import { useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function Validate() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-
-  const { partnerInfo, processing, setProcessing, resendEmail } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const { partnerInfo, resendEmail } = useOnboardingContext()
   useEffect(() => {
     setForm(null)
     setProcessing(false)

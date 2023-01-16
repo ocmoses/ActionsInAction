@@ -15,22 +15,15 @@ import {
 } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 function Category() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
+  const { processing, setProcessing, setForm, form } = useProcessing()
 
   const {
     partnerInfo,
     registerPartner,
     fetching,
-    processing,
-    setProcessing,
     categories: categoryData,
   } = useOnboardingContext()
   const { error: catError, categories, nextedCategories } = categoryData

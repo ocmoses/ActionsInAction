@@ -11,19 +11,11 @@ import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
 
+import useProcessing from "@/hooks/useProcessing"
 function CompanyInfo() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
-
+  const { processing, setProcessing, form, setForm } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
   const { title, subtitle, hand, required } = forms["confirmcompanyinfo"]
   const [data, setData] = useState({
     company_name: "",

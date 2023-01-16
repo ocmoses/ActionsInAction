@@ -14,18 +14,11 @@ import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 function CompanyDetail() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm, form } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({

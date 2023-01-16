@@ -5,17 +5,11 @@ import { useEffect } from "react"
 import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function Review() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
+  const { setProcessing, setForm } = useProcessing()
 
-  const { setProcessing } = useOnboardingContext()
   const { title, subtitle, hand } = forms["review"]
   useEffect(() => {
     setForm("review")

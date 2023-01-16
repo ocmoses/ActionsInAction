@@ -12,17 +12,11 @@ import { Util } from "@/utils/utility"
 import useErrors from "@/hooks/useErrors"
 import { forms, roles } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function CompanyInfo() {
-  const actions = useStoreActions((action) => action)
-  const state = useStoreState((state) => state)
-  const { setForm } = actions.forms
-  const {
-    users: user,
-    forms: { form },
-  } = state
-  const { partnerInfo, registerPartner, processing, setProcessing } =
-    useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const { partnerInfo, registerPartner } = useOnboardingContext()
   const [data, setData] = useState({
     company_name: "",
     company_role: "",

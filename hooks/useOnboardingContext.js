@@ -15,13 +15,10 @@ import { signIn } from "next-auth/react"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { BANKS } from "@/app/modules/banks"
-import useLocalSession from "@/hooks/useLocalSession"
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
-  const { loading, error, login, logout, session, updateSession } =
-    useLocalSession()
   const router = useRouter()
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
@@ -128,33 +125,7 @@ export function OnboardingContextProvider({ children }) {
       }))
     }
   }
-  const LoginPartner = async (data, redirect = false, callbackUrl = "/") => {
-    setProcessing(true)
-    const result = await login({
-      partnerid: data.partnerid,
-      password: data.password,
-    })
-    console.log({ session })
-    console.log({ result })
-    return result
-    // if (!result) {
-    //   setProcessing(false)
-    //   return { error: 'Something went wrong' }
-    // }
-    // const { success, error, data: user } = result
-    // if (!success) {
-    //   setProcessing(false)
-    //   if (error) return { error: error }
-    //   else return { error: 'Something went wrong' }
-    // }
 
-    // if (user) {
-    //   setPartner(user)
-    //   const partner_status = await checkRegStatus(user)
-    //   return { success: true, ...partner_status }
-    // }
-    // return { error: 'Something went wrong' }
-  }
   const registerPartner = async (frm, userdata) => {
     return partnerRegistration(frm, userdata, partnerInfo, setProcessing)
   }
@@ -211,7 +182,6 @@ export function OnboardingContextProvider({ children }) {
         fetching,
         setIsFetching,
         processing,
-        setProcessing,
         categories,
         roles,
         partnerInfo,
@@ -220,7 +190,6 @@ export function OnboardingContextProvider({ children }) {
         registerPartner,
         getPartner,
         resendEmail,
-        // LoginUser,
         LoginPartner,
         reviewStatus,
         reviewUpdateStatus,

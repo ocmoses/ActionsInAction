@@ -1,18 +1,19 @@
-'use client'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import { useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
-import Button from '@/app/components/form/Button'
+"use client"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { useSearchParams } from "next/navigation"
+import { useEffect } from "react"
+import Button from "@/app/components/form/Button"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function Welcome() {
-  const { processing, setProcessing, setForm } = useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
   const searchParams = useSearchParams()
-  const path = searchParams.get('path')
-  console.log('Welcome page')
+  const path = searchParams.get("path")
+  console.log("Welcome page")
   console.log({ path })
   useEffect(() => {
-    setForm('')
+    setForm("")
     setProcessing(false)
   }, [])
   return (
@@ -30,7 +31,7 @@ export default function Welcome() {
         <div className="flex justify-center mb-[84px]">
           <div
             className="radial-progress text-2xl  text-mtn bg-[#333333] border-4 border-[#333]"
-            style={{ '--value': 20, '--size': '99px', '--thickness': '12px' }}
+            style={{ "--value": 20, "--size": "99px", "--thickness": "12px" }}
           >
             0%
           </div>
@@ -45,7 +46,7 @@ export default function Welcome() {
         <div className="flex justify-center mt-6">
           <Button
             href={`${
-              path ? '/profile/update/companyinfo/' : '/profile/category'
+              path ? "/profile/update/companyinfo/" : "/profile/category"
             }`}
             label=" Get started"
           />

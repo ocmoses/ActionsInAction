@@ -1,9 +1,10 @@
-import { createStore } from 'easy-peasy'
-import users from './models/users'
-import forms from './models/forms'
+import { createStore } from "easy-peasy"
+
+import app from "./models/app"
+import users from "./models/users"
 
 const model = {
+  app,
   users,
-  forms
 }
 export default createStore(model)

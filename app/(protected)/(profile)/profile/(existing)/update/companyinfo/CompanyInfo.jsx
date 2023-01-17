@@ -14,7 +14,8 @@ import { forms } from "@/app/modules/constants"
 
 import useProcessing from "@/hooks/useProcessing"
 function CompanyInfo() {
-  const { processing, setProcessing, form, setForm } = useProcessing()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const { partnerInfo, registerPartner } = useOnboardingContext()
   const { title, subtitle, hand, required } = forms["confirmcompanyinfo"]
   const [data, setData] = useState({
@@ -25,7 +26,7 @@ function CompanyInfo() {
     company_state: "",
     company_postcode: "",
   })
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+
   useEffect(() => {
     if (partnerInfo)
       setData({

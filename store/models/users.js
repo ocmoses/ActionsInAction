@@ -1,7 +1,18 @@
-import { action, computed, thunk } from 'easy-peasy'
+import { action, computed, thunk } from "easy-peasy"
 const users = {
   users: [],
-  user: {},
+  user: {
+    id: "",
+    uuid: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    country: "",
+    countrycode: "",
+    telephone: "",
+    updated_at: "",
+    created_at: "",
+  },
   isLoggedIn: computed((state) => state.user.id != null),
   fullname: computed((state) => {
     return state.user.id != null
@@ -9,7 +20,7 @@ const users = {
       : null
   }),
   session: computed((state) => {
-    const status = state.user.id != null ? 'authenticated' : 'unauthenticated'
+    const status = state.user.id != null ? "authenticated" : "unauthenticated"
     const user = state.user.id != null ? state.user : null
     return { status, user }
   }),
@@ -31,6 +42,6 @@ const users = {
     } catch (error) {
       console.log(error)
     }
-  })
+  }),
 }
 export default users

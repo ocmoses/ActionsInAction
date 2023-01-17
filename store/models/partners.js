@@ -6,13 +6,13 @@ const partners = {
     partnerid: "",
 
     // userinfo
-    first_name: "",
-    last_name: "",
-    email: "",
+    first_name: "Olabode",
+    last_name: "Gbolu",
+    email: "princemorpheus@gmail.com",
     countrycode: "234",
-    telephone: "",
-    password: "",
-    password_confirmed: "",
+    telephone: "08090956548",
+    password: "Password12345%",
+    password_confirmed: "Password12345%",
 
     //  companyinfo
     company_name: "",
@@ -71,7 +71,7 @@ const partners = {
     audited_account_2: "",
     audited_account_3: "",
   },
-  isLoggedIn: computed((state) => state.partner.id != null),
+
   setPartner: action((state, partner) => {
     state.partner = partner
   }),
@@ -84,21 +84,6 @@ const partners = {
       p.uuid !== partner.uuid
     })
     state.partners = [...Partners, partner]
-  }),
-  getPartner: thunk(async (actions, partnerid) => {
-    try {
-      const result = await proxyFetch(
-        `${apiURL}/v1/auth/partner-info/${partnerid}`,
-        {
-          // cache: "no-store",
-          next: { revalidate: 0 },
-        }
-      )
-      const { success, error, data } = result
-      if (success) return data
-    } catch (error) {
-      console.log(error)
-    }
   }),
 }
 export default partners

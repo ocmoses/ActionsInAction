@@ -1,12 +1,12 @@
-'use client'
-import Image from 'next/image'
-import React from 'react'
-import NavbarOnboarding from '@/app/components/NavbarOnboarding'
-import UserAvartar from '@/app/components/UserAvartar'
-import { useRouter, useSelectedLayoutSegments } from 'next/navigation'
+"use client"
+import Image from "next/image"
+import React from "react"
+import NavbarOnboarding from "@/app/components/NavbarOnboarding"
+import UserAvartar from "@/app/components/UserAvartar"
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 // import { useSession } from 'next-auth/react'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import { useEffect } from 'react'
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { useEffect } from "react"
 
 function Layout({ children }) {
   const segments = useSelectedLayoutSegments()
@@ -15,11 +15,14 @@ function Layout({ children }) {
 
   // const session = useSession()
   const router = useRouter()
-  const exclude = ['companyinfo']
+  const exclude = ["companyinfo"]
   return (
     <>
       <div className="grid grid-cols-4 w-screen">
-        <div className="flex flex-col justify-start col-span-4 md:col-span-3 overflow-x-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] scrollbar-w-[10px] h-screen max-h-screen relative flex-1 px-4 md:px-6 ">
+        <div
+          id="contentBody"
+          className="flex flex-col justify-start col-span-4 md:col-span-3 overflow-x-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] scrollbar-w-[10px] h-screen max-h-screen relative flex-1 px-4 md:px-6 "
+        >
           <div className="mb-16">
             <NavbarOnboarding />
           </div>

@@ -1,4 +1,5 @@
-import CryptoJS from 'crypto-js'
+import CryptoJS from "crypto-js"
+import { apiURL } from "@/app/modules/constants"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -6,7 +7,7 @@ export const Decrypt = (data) => {
     CryptoJS.enc.Utf8.parse(`${process.env.ENCRYPTKEY}`),
     {
       iv: CryptoJS.enc.Utf8.parse(`${process.env.ENCRYPTIV}`),
-      mode: CryptoJS.mode.CBC
+      mode: CryptoJS.mode.CBC,
     }
   )
   return CryptoJS.enc.Utf8.stringify(decrypted).toString()
@@ -17,7 +18,7 @@ export const Encrypt = (data) => {
     CryptoJS.enc.Utf8.parse(`${process.env.ENCRYPTKEY}`),
     {
       iv: CryptoJS.enc.Utf8.parse(`${process.env.ENCRYPTIV}`),
-      mode: CryptoJS.mode.CBC
+      mode: CryptoJS.mode.CBC,
     }
   )
   return encrypted.toString()
@@ -41,32 +42,36 @@ export function DecryptObject(data) {
   return newObj
 }
 export function outputDate(date) {
-  if (!date) return ''
+  if (!date) return ""
   var d = new Date(date)
 
-  return d.toLocaleDateString('en-NG')
+  return d.toLocaleDateString("en-NG")
 }
 export function inputDate(date) {
-  if (!date) return ''
+  if (!date) return ""
   const d = new Date(date)
   return (
     d.getFullYear() +
-    '-' +
-    ('0' + (d.getMonth() + 1)).slice(-2) +
-    '-' +
-    ('0' + d.getDate()).slice(-2)
+    "-" +
+    ("0" + (d.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + d.getDate()).slice(-2)
   )
 }
 export async function proxyFetch(url, options) {
-  const response = await fetch('/api/fetch', {
-    method: 'POST',
-    body: JSON.stringify({
-      url, // '/v1/categories',
-      options //: { method: 'GET' }
+  try {
+    const response = await fetch("/api/fetch", {
+      method: "POST",
+      body: JSON.stringify({
+        url, // '/v1/categories',
+        options, //: { method: 'GET' }
+      }),
     })
-  })
-  const { success, error, data } = await response.json()
-  return { success, error, data }
+    const { success, error, data } = await response.json()
+    return { success, error, data }
+  } catch (err) {
+    return { success: null, error: err.message, data: null }
+  }
 }
 export function userData(data) {
   const status = data.profile_status ?? null
@@ -84,22 +89,29 @@ export function userData(data) {
     progress: {
       status,
       percent,
-      stages
-    }
+      stages,
+    },
   }
 }
 export const isArray = (data) => {
   return Array.isArray(data)
 }
 export const isObject = (data) => {
-  return typeof data === 'object' && data !== null && !Array.isArray(data)
+  return typeof data === "object" && data !== null && !Array.isArray(data)
 }
 export const isString = (data) => {
-  return typeof data === 'string'
+  return typeof data === "string"
 }
 export const isNumber = (data) => {
-  return typeof data === 'number'
+  return typeof data === "number"
 }
 export const isBoolean = (data) => {
-  return typeof data === 'boolean'
+  return typeof data === "boolean"
+}
+export const scrollToTop = () => {
+  var contentBody = document.getElementById("contentBody")
+  contentBody.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  })
 }

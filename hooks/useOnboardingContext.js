@@ -190,7 +190,6 @@ export function OnboardingContextProvider({ children }) {
         registerPartner,
         getPartner,
         resendEmail,
-        LoginPartner,
         reviewStatus,
         reviewUpdateStatus,
         checkUpdateStatus,

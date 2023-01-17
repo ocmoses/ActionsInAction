@@ -7,23 +7,25 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect, use } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import { useRouter } from "next/navigation"
-import { useStoreActions, useStoreState } from "easy-peasy"
 import usePartner from "@/hooks/usePartners"
+import useUsers from "@/hooks/useUsers"
 import useProcessing from "@/hooks/useProcessing"
 
 function Login({ params }) {
   const { checkRegStatus } = usePartner()
-  const { processing, setProcessing } = useProcessing()
-
+  const { updateUser } = useUsers()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const [{ errors, setError, removeError, clearErrors }] = useErrors({})
+  useEffect(() => {
+    setForm("login")
+    setProcessing(false)
+  }, [])
   const [data, setData] = useState({
     partnerid: process.env.NODE_ENV === "production" ? "" : "234779836",
     password: process.env.NODE_ENV === "production" ? "" : "Todoo45@222",
   })
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   const router = useRouter()
-  const updateUser = useStoreActions((action) => action.users.updateUser)
 
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -54,10 +56,10 @@ function Login({ params }) {
 
     if (!success) {
       setProcessing(false)
-      return setError({ global: error })
+      return setError("login", error)
     }
     updateUser(user)
-    const { nextstage, percent } = await checkRegStatus(user)
+    const { nextstage } = await checkRegStatus(user)
 
     // REDIRECT
     const redirect =
@@ -101,11 +103,8 @@ function Login({ params }) {
           Welcome back! please enter your great details
         </p>
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["login"]} />}
         </div>
-        {/* {session?.user && (
-          <TailSpinPreloader width={120} height={120} fill="#efb703" />
-        )} */}
         <>
           <TextInput
             id="partnerid"

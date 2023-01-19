@@ -69,18 +69,19 @@ function UserInfo() {
       }
       if (error) return
     }
-    if (data["password"].length < 8) {
-      setError({ password: "Your password must be at least, 8 characters" })
-      return
-    }
-    if (data["password"] !== data["password_confirmed"]) {
-      setError({ password_confirmed: "Password did not match" })
-      return
-    }
     if (!Util.validateEmail(data["email"])) {
       setError({ email: "Your email address is not valid" })
       return
     }
+    if (data["password"].length < 8) {
+      setError({ password: "Your password must be at least, 8 characters" })
+      return
+    }
+    // if (data["password"] !== data["password_confirmed"]) {
+    //   setError({ password_confirmed: "Password did not match" })
+    //   return
+    // }
+
     const result = await registerPartner("userinfo", data)
     if (result) {
       scrollToTop()
@@ -121,13 +122,6 @@ function UserInfo() {
         <div className="mb-6">
           {errors && <FormErrors error={errors["userinfo"]} />}
         </div>
-        <TextInput
-          id="company_name"
-          label="Company name"
-          value={data.company_name}
-          onChange={handleFormChange}
-          errors={errors}
-        />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <TextInput
             id="first_name"
@@ -144,21 +138,14 @@ function UserInfo() {
             errors={errors}
           />
         </div>
-        <SelectInput
-          id="designation"
-          label="Designation"
-          value={data.designation}
+
+        <TextInput
+          id="company_name"
+          label="Company"
+          value={data.company_name}
           onChange={handleFormChange}
           errors={errors}
-        >
-          {roles.map((role) => (
-            <SelectInputOption
-              key={role.slug}
-              value={role.slug}
-              label={role.title}
-            />
-          ))}
-        </SelectInput>
+        />
         <TextInput
           id="email"
           label="Email"
@@ -195,10 +182,26 @@ function UserInfo() {
         <div className="mb-6">
           {errors && <FormErrors error={errors["telephone"]} />}
         </div>
+
+        <SelectInput
+          id="designation"
+          label="Designation"
+          value={data.designation}
+          onChange={handleFormChange}
+          errors={errors}
+        >
+          {roles.map((role) => (
+            <SelectInputOption
+              key={role.slug}
+              value={role.slug}
+              label={role.title}
+            />
+          ))}
+        </SelectInput>
         <TextInput
           id="password"
           type="password"
-          label="Password"
+          label="Choose a password"
           value={data.password}
           onChange={handleFormChange}
           errors={errors}
@@ -206,14 +209,14 @@ function UserInfo() {
         <div className=" font-mtn-extralight text-white/70 text-start -mt-6 mb-6 p-2">
           Must include at least 8 characters, an uppercase letter, and a number
         </div>
-        <TextInput
+        {/* <TextInput
           id="password_confirmed"
           type="password"
           label="Repeat your password"
           value={data.password_confirmed}
           onChange={handleFormChange}
           errors={errors}
-        />
+        /> */}
         <div
           className=" text-white/70 text-start mb-12 p-2"
           style={{

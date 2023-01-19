@@ -1,5 +1,4 @@
 import { action, computed, thunk } from "easy-peasy"
-import { proxyFetch } from "@/app/modules/utilities"
 const partners = {
   partners: [],
   partner: {
@@ -14,15 +13,13 @@ const partners = {
     password: "Password12345%",
     password_confirmed: "Password12345%",
 
-    //  companyinfo
-    company_name: "",
-    company_role: "",
-
     // category
     category_id: [],
 
     // companyinfo
     company_name: "",
+    company_role: "",
+    designation: "",
     country: "NG",
     company_address: "",
     company_city: "",

@@ -1,10 +1,10 @@
 import useProcessing from "@/hooks/useProcessing"
+import useErrors from "@/hooks/useErrors"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import useErrors from "@/hooks/useErrors"
 import { proxyFetch } from "@/app/modules/utilities"
 
 const usePartners = () => {
@@ -16,9 +16,9 @@ const usePartners = () => {
     (state) => state.partners.partner,
     (prev, next) => prev.uuid === next.uuid
   )
-  const { setPartner, updatePartner } = useStoreActions(
-    (action) => action.partners
-  )
+  const actions = useStoreActions((action) => action)
+  const { setPartner, updatePartner } = actions.partners
+  const { setUser, updateUser } = actions.users
 
   const getPartner = async (partnerid) => {
     const result = await proxyFetch(
@@ -77,12 +77,14 @@ const usePartners = () => {
             body: JSON.stringify({
               first_name: userdata.first_name,
               last_name: userdata.last_name,
+              company_name: userdata.company_name,
               email: userdata.email,
               countrycode: userdata.countrycode,
               country: userdata.country,
               telephone: userdata.telephone,
+              designation: userdata.designation,
               password: userdata.password,
-              password_confirmed: userdata.password_confirmed,
+              password_confirmed: userdata.password,
             }),
           }
         )
@@ -90,23 +92,22 @@ const usePartners = () => {
           setProcessing(false)
           return { success, error, data }
         }
-        console.log({ data })
-        // const result = await LoginUser(
-        //   {
-        //     partnerid: data.user.partnerid,
-        //     password: userdata.password,
-        //   },
-        //   false,
-        //   "/onboarding/register/companyinfo"
-        // )
-
-        // if (result.success) {
         updatePartner(data.user)
+        updateUser({
+          id: data.user.id,
+          uuid: data.user.uuid,
+          first_name: data.user.first_name,
+          last_name: data.user.last_name,
+          company_name: data.user.company_name,
+          email: data.user.email,
+          country: data.user.country,
+          countrycode: data.user.countrycode,
+          telephone: data.user.telephone,
+          designation: data.user.designation,
+        })
         setUpdateStatus("review", "userinfo", true)
-        // router.push("/onboarding/register/companyinfo")
         router.push("/onboarding/register/validate")
         return
-        // }
         break
       case "companyinfo":
         setProcessing(true)

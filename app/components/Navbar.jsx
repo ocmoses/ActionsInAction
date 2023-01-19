@@ -1,17 +1,19 @@
-'use client'
-import Image from 'next/image'
-import Link from 'next/link'
-import NavLinks from './NavLinks'
-import { TailSpinPreloader } from '@/app/components/Icons'
-import { useSelectedLayoutSegments } from 'next/navigation'
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import NavLinks from "./NavLinks"
+import Button from "@/app/components/form/Button"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { useSelectedLayoutSegments } from "next/navigation"
+
 function Navbar({ type }) {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
   // const session = useSession()
   return (
     <header>
-      {type === 'dashboard' ? (
-        <div className="container px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center max-w-[1400px] z-10">
+      {type === "dashboard" ? (
+        <div className="container px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center max-w-[1220px]  z-10">
           <div className="flex gap-6 md:gap-10 items-center">
             <Link href="/">
               <Image
@@ -43,23 +45,18 @@ function Navbar({ type }) {
             </div>
           )} */}
           {/* {session.status === 'unauthenticated' && ( */}
-          <div className="flex">
-            <Link
-              href="/onboarding/register"
-              className="rounded-full bg-mtn hidden lg:inline-flex hover:bg-mtn-duration-500 transition ease-in-out 5000 text-md md:text-lg lg:text-xl mr-2 px-6 py-1 lg:mr-4 lg:px-12 lg:py-3"
-            >
-              Register
-            </Link>
+          <div className="flex gap-3">
+            <Button href="/onboarding/register" label="Register" />
             <Link
               href="/login"
-              className="rounded-full text-white border-[1px] border-mtn hover:border-mtn-300 transition ease-in-out 5000 text-md md:text-lg lg:text-xl mr-2 px-6 py-1 lg:mr-4 lg:px-12 lg:py-3"
+              className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
             >
               Login
             </Link>
           </div>
           {/* )} */}
         </div>
-      ) : type === 'user-dashboard' ? (
+      ) : type === "user-dashboard" ? (
         <div className="container px-0 pt-0 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center max-w-[1400px] z-10">
           <div className="flex gap-6 md:gap-10 items-center">
             <Link href="/">
@@ -107,7 +104,7 @@ function Navbar({ type }) {
           )} */}
           {/* {session.status !== 'unauthenticated' && ( */}
           <div className="flex justify-end">
-            {currentPath === 'login' ? (
+            {currentPath === "login" ? (
               <div className="text-white flex items-center mr-0 md:mr-3">
                 <p className="hidden sm:inline-flex">Don't have an account?</p>
                 <Link

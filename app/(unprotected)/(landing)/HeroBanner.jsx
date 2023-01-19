@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from "next/image"
 
 function MainHeader() {
   return (
@@ -8,8 +8,8 @@ function MainHeader() {
         src="/assets/pic/hero.png"
         alt=""
         priority
-        width={3538}
-        height={2749}
+        width={1465}
+        height={1086}
       />
     </div>
   )

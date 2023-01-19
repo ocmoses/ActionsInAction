@@ -93,16 +93,18 @@ export function OnboardingContextProvider({ children }) {
       })
     const Categories = []
     const allCategories = {}
-    categories.map((cat) => {
-      allCategories[cat.id] = cat
-      if (!cat.parent_id) {
-        Categories.push(cat)
-      } else {
-        if (typeof nextedCategories[cat.parent_id] === "undefined")
-          nextedCategories[cat.parent_id] = []
-        nextedCategories[cat.parent_id].push(cat)
-      }
-    })
+
+    categories.length > 0 &&
+      categories.map((cat) => {
+        allCategories[cat.id] = cat
+        if (!cat.parent_id) {
+          Categories.push(cat)
+        } else {
+          if (typeof nextedCategories[cat.parent_id] === "undefined")
+            nextedCategories[cat.parent_id] = []
+          nextedCategories[cat.parent_id].push(cat)
+        }
+      })
     setCategories({
       success: true,
       error: null,

@@ -7,10 +7,9 @@ import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
 import { useEffect } from "react"
-import { useSearchParams } from "next/navigation"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
-export default function Validate() {
+export default function Validate({ params: { resource } }) {
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
@@ -19,11 +18,16 @@ export default function Validate() {
     setProcessing(false)
     clearErrors()
   }, [])
-
-  const searchParams = useSearchParams()
-
-  const path = searchParams.get("path")
-
+  let url = `/onboarding/validate/${partner.partnerid}/setpassword/`
+  const path = resource && resource[0] ? resource[0] : "userinfo"
+  switch (path) {
+    case "userinfo":
+      url = `/onboarding/validate/${partner.partnerid}/userinfo/`
+      break
+    case "setpassword":
+      url = `/onboarding/validate/${partner.partnerid}/setpassword/`
+      break
+  }
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -71,16 +75,15 @@ export default function Validate() {
           </div>
         )}
       </div>
-
+      {/** 
+       //? https//......com/onboarding/validate/{partnerid}/category // for new partner onboarding
+        //! https//......com/onboarding/validate/{partnerid}/profile //? for existing partner onboarding 
+      */}
       <Link
-        href={`${
-          path
-            ? "/profile/update/setpassword/"
-            : `/onboarding/validate/${partner.partnerid}`
-        }`}
+        href={`${url}`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
-        [Fake email validation. Continue to next screen]
+        [[DEV TOOL. Continue to next screen]]
       </Link>
     </>
   )

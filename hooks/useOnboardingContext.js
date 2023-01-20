@@ -94,7 +94,7 @@ export function OnboardingContextProvider({ children }) {
     const Categories = []
     const allCategories = {}
 
-    categories.length > 0 &&
+    categories?.length > 0 &&
       categories.map((cat) => {
         allCategories[cat.id] = cat
         if (!cat.parent_id) {

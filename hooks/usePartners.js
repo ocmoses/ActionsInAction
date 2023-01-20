@@ -20,14 +20,11 @@ const usePartners = () => {
   const { setPartner, updatePartner } = actions.partners
   const { setUser, updateUser } = actions.users
 
-  const getPartner = async (partnerid) => {
-    const result = await proxyFetch(
-      `${apiURL}/v1/auth/partner-info/${partnerid}`,
-      {
-        // cache: "no-store",
-        next: { revalidate: 0 },
-      }
-    )
+  const getPartner = async (uuid) => {
+    const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
+      // cache: "no-store",
+      next: { revalidate: 0 },
+    })
     const { success, error, data } = result
     return { success, error, data }
   }
@@ -106,7 +103,7 @@ const usePartners = () => {
           designation: data.user.designation,
         })
         setUpdateStatus("review", "userinfo", true)
-        router.push("/onboarding/register/validate")
+        router.push("/onboarding/verify/userinfo")
         return
         break
       case "companyinfo":

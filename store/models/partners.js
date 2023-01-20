@@ -2,6 +2,7 @@ import { action, computed, thunk } from "easy-peasy"
 const partners = {
   partners: [],
   partner: {
+    uuid: "",
     partnerid: "",
 
     // userinfo

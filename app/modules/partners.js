@@ -141,30 +141,30 @@ export const partnerRegistration = async (
         return
       }
       break
-    case "companyinfo":
-      setProcessing(true)
-      const {
-        success: cIsuccess,
-        error: cIerror,
-        data: companyinfo,
-      } = await fetchData(`${apiURL}/v1/auth/register/companyinfo`, {
-        method: "PUT",
-        cache: "no-store",
-        body: JSON.stringify({
-          partnerid: partnerInfo.partnerid,
-          company_name: userdata.company_name,
-          company_role: userdata.company_role,
-        }),
-      })
-      if (cIerror) {
-        setProcessing(false)
-        return { success: false, error: cIerror, data: null }
-      }
-      setPartner(userdata)
-      updatePercentComplete(companyinfo)
-      setUpdateStatus("review", "companyinfo", true)
-      router.push("/onboarding/register/validate")
-      break
+    // case "companyinfo":
+    //   setProcessing(true)
+    //   const {
+    //     success: cIsuccess,
+    //     error: cIerror,
+    //     data: companyinfo,
+    //   } = await fetchData(`${apiURL}/v1/auth/register/companyinfo`, {
+    //     method: "PUT",
+    //     cache: "no-store",
+    //     body: JSON.stringify({
+    //       partnerid: partnerInfo.partnerid,
+    //       company_name: userdata.company_name,
+    //       company_role: userdata.company_role,
+    //     }),
+    //   })
+    //   if (cIerror) {
+    //     setProcessing(false)
+    //     return { success: false, error: cIerror, data: null }
+    //   }
+    //   setPartner(userdata)
+    //   updatePercentComplete(companyinfo)
+    //   setUpdateStatus("review", "companyinfo", true)
+    //   router.push("/onboarding/register/validate")
+    //   break
     case "category":
       setProcessing(true)
       const {

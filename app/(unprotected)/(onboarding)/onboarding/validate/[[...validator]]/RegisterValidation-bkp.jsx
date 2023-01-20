@@ -19,7 +19,7 @@ export default function RegisterValidation({ partnerquery, path }) {
     setForm(null)
     if (partnerquery.error) setError({ validate: partnerquery.error })
     else setPartner(partnerquery.data.user)
-  }, [])
+  }, [partnerquery])
   console.log(partner)
   return (
     <>

@@ -16,7 +16,8 @@ import { forms, roles } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
 
-function UserInfo() {
+function UserInfo({ designations }) {
+  console.log(designations)
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, registerPartner } = usePartners()
   const { title, subtitle, hand, required } = forms["userinfo"]
@@ -55,6 +56,9 @@ function UserInfo() {
     setProcessing(false)
     clearErrors()
   }, [])
+  useEffect(() => {
+    if (designations.error) setError({ userinfo: designations.error })
+  }, [designations])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -190,13 +194,15 @@ function UserInfo() {
           onChange={handleFormChange}
           errors={errors}
         >
-          {roles.map((role) => (
-            <SelectInputOption
-              key={role.slug}
-              value={role.slug}
-              label={role.title}
-            />
-          ))}
+          <SelectInputOption value="" label="" />
+          {designations?.data?.length > 0 &&
+            designations.data.map((role) => (
+              <SelectInputOption
+                key={role.uuid}
+                value={role.uuid}
+                label={role.company_role}
+              />
+            ))}
         </SelectInput>
         <TextInput
           id="password"

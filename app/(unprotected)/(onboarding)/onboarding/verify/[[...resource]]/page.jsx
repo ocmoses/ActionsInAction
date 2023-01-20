@@ -5,27 +5,29 @@ import MailOpened from "~/assets/icons/mail-opened.svg"
 import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import useUsers from "@/hooks/useUsers"
 import useErrors from "@/hooks/useErrors"
 import { useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
 export default function Validate({ params: { resource } }) {
   const { processing, setProcessing, setForm } = useProcessing()
-  const { partner, resendEmail } = usePartners()
+  const { user } = useUsers()
+  const { resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
   useEffect(() => {
     setForm(null)
     setProcessing(false)
     clearErrors()
   }, [])
-  let url = `/onboarding/validate/${partner.partnerid}/setpassword/`
+  let url = `/onboarding/validate/${user.uuid}/setpassword/`
   const path = resource && resource[0] ? resource[0] : "userinfo"
   switch (path) {
     case "userinfo":
-      url = `/onboarding/validate/${partner.partnerid}/userinfo/`
+      url = `/onboarding/validate/${user.uuid}/userinfo/`
       break
     case "setpassword":
-      url = `/onboarding/validate/${partner.partnerid}/setpassword/`
+      url = `/onboarding/validate/${user.uuid}/setpassword/`
       break
   }
   return (
@@ -55,20 +57,20 @@ export default function Validate({ params: { resource } }) {
             {success && <FormErrors success={success} align="center" />}
           </>
         </div>
-        {partner.email && (
+        {user.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
             A confirmation email has been sent to your email <br />
-            {/* {Util.obscureEmail(partner.email)}. <br /> */}
+            {/* {Util.obscureEmail(user.email)}. <br /> */}
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {partner.email !== "" && (
+        {user.email !== "" && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(partner.email)}
+              onClick={() => resendEmail(user.email)}
             >
               Resend email
             </span>
@@ -76,8 +78,8 @@ export default function Validate({ params: { resource } }) {
         )}
       </div>
       {/** 
-       //? https//......com/onboarding/validate/{partnerid}/category // for new partner onboarding
-        //! https//......com/onboarding/validate/{partnerid}/profile //? for existing partner onboarding 
+       //? https//......com/onboarding/validate/{uuid}/category // for new user onboarding
+        //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
       */}
       <Link
         href={`${url}`}

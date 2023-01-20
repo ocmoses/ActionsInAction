@@ -6,6 +6,7 @@ import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { proxyFetch } from "@/app/modules/utilities"
+import { userData } from "@/app/modules/utilities"
 
 const usePartners = () => {
   const router = useRouter()
@@ -18,7 +19,7 @@ const usePartners = () => {
   )
   const actions = useStoreActions((action) => action)
   const { setPartner, updatePartner } = actions.partners
-  const { setUser, updateUser } = actions.users
+  const { setUser } = actions.users
 
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
@@ -89,19 +90,9 @@ const usePartners = () => {
           setProcessing(false)
           return { success, error, data }
         }
-        updatePartner(data.user)
-        updateUser({
-          id: data.user.id,
-          uuid: data.user.uuid,
-          first_name: data.user.first_name,
-          last_name: data.user.last_name,
-          company_name: data.user.company_name,
-          email: data.user.email,
-          country: data.user.country,
-          countrycode: data.user.countrycode,
-          telephone: data.user.telephone,
-          designation: data.user.designation,
-        })
+        const User = userData(data)
+        setPartner(User.partner)
+        setUser(User.user)
         setUpdateStatus("review", "userinfo", true)
         router.push("/onboarding/verify/userinfo")
         return

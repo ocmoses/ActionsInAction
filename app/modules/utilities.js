@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js"
-import { apiURL } from "@/app/modules/constants"
+import { setCookie } from "cookies-next"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -76,21 +76,26 @@ export async function proxyFetch(url, options) {
 export function userData(data) {
   const status = data.profile_status ?? null
   const percent = data.percent_complete ?? null
-  const stages = data.profile_stage ?? {}
+  const stages = { ...data.profile_stage } ?? {}
   const user = { ...data?.user }
-  delete data.profile_status
-  delete data.percent_complete
-  delete data.profile_stage
-  delete data.user
-  delete data.login_token
-  return {
-    ...user,
-    ...data,
+  const partner = {
+    ...data?.partner,
     progress: {
       status,
       percent,
       stages,
     },
+  }
+  delete data.profile_status
+  delete data.percent_complete
+  delete data.profile_stage
+  delete data.user
+  delete data.partner
+  delete data.login_token
+  return {
+    user,
+    partner,
+    ...data,
   }
 }
 export const isArray = (data) => {
@@ -114,4 +119,45 @@ export const scrollToTop = () => {
     top: 0,
     behavior: "smooth",
   })
+}
+export const createHttpOnlyCookie = (data, req, res) => {
+  const authToken = data?.login_token?.access_token
+  const maxAge = data?.login_token?.expires_in
+
+  const User = userData(data)
+  // console.log("userData User", User)
+  if (authToken) {
+    // SET COOKIES
+    const encryptedAuthToken = Encrypt(authToken)
+    const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
+    const encryptedUserId = Encrypt(`${User.user.uuid}`)
+    setCookie("auth-token", encryptedAuthToken, {
+      req,
+      res,
+      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      sameSite: "strict",
+    })
+    setCookie("partnerid", encryptedPartnerid, {
+      req,
+      res,
+      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      sameSite: "strict",
+    })
+    setCookie("user_id", encryptedUserId, {
+      req,
+      res,
+      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      sameSite: "strict",
+    })
+  }
+  return { User, authToken }
 }

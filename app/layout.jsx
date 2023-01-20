@@ -17,41 +17,37 @@ const getServerSession = async () => {
   const user_id = nextCookies.has("user_id")
     ? nextCookies.get("user_id")?.value
     : null
-  if (partnerid) {
+  if (user_id) {
     // GET USER INFO
-    const partnerID = Decrypt(partnerid)
     const authToken = Decrypt(token)
     try {
-      const response = await fetch(
-        `${apiURL}/v1/auth/partner-info/${partnerID}`,
-        {
-          headers: {
-            apikey: `${process.env.APIKEY}`,
-            "Content-Type": "application/json",
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      )
+      const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
+        headers: {
+          apikey: `${process.env.APIKEY}`,
+          "Content-Type": "application/json",
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       const { success, data } = await response.json()
       if (response?.ok) {
         const User = userData(data)
-        console.log(User)
+        // console.log(User)
         return { success, error: null, data: User }
       } else {
         if (data) {
-          return { success, error: data.message, data: {} }
+          return { success: false, error: data.message, data: null }
         } else {
           return {
             success: false,
             error: `${response.status} ${response.statusText}`,
-            data: {},
+            data: null,
           }
         }
       }
     } catch (error) {
-      return { success: false, error: error.message, data: {} }
+      return { success: false, error: error.message, data: null }
     }
   }
 }
@@ -59,7 +55,7 @@ export default async function RootLayout({ children }) {
   const result = await getServerSession()
   const serverSession = {
     status: result?.data ? "authenticated" : "unauthenticated",
-    user: result?.data ?? null,
+    User: result?.data ?? null,
   }
   return (
     <html lang="en">

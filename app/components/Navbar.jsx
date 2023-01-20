@@ -3,13 +3,14 @@ import Image from "next/image"
 import Link from "next/link"
 import NavLinks from "./NavLinks"
 import Button from "@/app/components/form/Button"
-import { TailSpinPreloader } from "@/app/components/Icons"
+import useUsers from "@/hooks/useUsers"
 import { useSelectedLayoutSegments } from "next/navigation"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
 function Navbar({ type }) {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
-  // const session = useSession()
+  const { session } = useUsers()
   return (
     <header>
       {type === "dashboard" ? (
@@ -27,34 +28,34 @@ function Navbar({ type }) {
             </Link>
             <NavLinks />
           </div>
-          {/* {session.status === 'loading' && (
+          {!session?.status && (
             <div className="flex justify-end">
               <TailSpinPreloader width={28} height={28} fill="#efb703" />
             </div>
-          )} */}
-          {/* {session.status === 'authenticated' && (
+          )}
+          {session.status === "authenticated" && (
             <div className="flex justify-end">
               <div className="text-white flex items-center mr-0 md:mr-3">
                 <div
-                  className="text-white cursor-pointer px-4 py-1 ml-4 rounded-full border-2 border-dotted border-mtn hover:border-white transition ease-in-out duration-500 hover:scale-[110%]"
-                  onClick={signOut}
+                  className="text-white text-sm cursor-pointer transition ease-in-out duration-500 hover:scale-[120%]"
+                  onClick={() => {}}
                 >
                   Logout
                 </div>
               </div>
             </div>
-          )} */}
-          {/* {session.status === 'unauthenticated' && ( */}
-          <div className="flex gap-3">
-            <Button href="/onboarding/register" label="Register" />
-            <Link
-              href="/login"
-              className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
-            >
-              Login
-            </Link>
-          </div>
-          {/* )} */}
+          )}
+          {session.status === "unauthenticated" && (
+            <div className="flex gap-3">
+              <Button href="/onboarding/register" label="Register" />
+              <Link
+                href="/login"
+                className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
+              >
+                Login
+              </Link>
+            </div>
+          )}
         </div>
       ) : type === "user-dashboard" ? (
         <div className="container px-0 pt-0 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center max-w-[1400px] z-10">

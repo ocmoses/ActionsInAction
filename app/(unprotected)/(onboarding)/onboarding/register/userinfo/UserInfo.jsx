@@ -8,6 +8,7 @@ import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import useUsers from "@/hooks/useUsers"
 import { createRef, useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { CountrySelector } from "@/app/components/countrycode/selector"
@@ -17,9 +18,9 @@ import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
 
 function UserInfo({ designations }) {
-  console.log(designations)
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, registerPartner } = usePartners()
+  const { user } = useUsers()
   const { title, subtitle, hand, required } = forms["userinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
 
@@ -39,16 +40,16 @@ function UserInfo({ designations }) {
   useEffect(() => {
     if (partner)
       setData({
-        first_name: partner.first_name ?? "",
-        last_name: partner.last_name ?? "",
-        email: partner.email ?? "",
+        first_name: user.first_name ?? "",
+        last_name: user.last_name ?? "",
+        email: user.email ?? "",
         company_name: partner.company_name ?? "",
         designation: partner.designation ?? "",
-        countrycode: partner.countrycode ?? "234",
-        country: partner.country ?? "NG",
-        telephone: partner.telephone ?? "",
-        password: partner.password ?? "",
-        password_confirmed: partner.password_confirmed ?? "",
+        countrycode: user.countrycode ?? "234",
+        country: user.country ?? "NG",
+        telephone: user.telephone ?? "",
+        password: user.password ?? "",
+        password_confirmed: user.password_confirmed ?? "",
       })
   }, [partner])
   useEffect(() => {
@@ -58,6 +59,7 @@ function UserInfo({ designations }) {
   }, [])
   useEffect(() => {
     if (designations.error) setError({ userinfo: designations.error })
+    else clearErrors()
   }, [designations])
 
   const handleSubmit = async (e) => {
@@ -81,10 +83,6 @@ function UserInfo({ designations }) {
       setError({ password: "Your password must be at least, 8 characters" })
       return
     }
-    // if (data["password"] !== data["password_confirmed"]) {
-    //   setError({ password_confirmed: "Password did not match" })
-    //   return
-    // }
 
     const result = await registerPartner("userinfo", data)
     if (result) {

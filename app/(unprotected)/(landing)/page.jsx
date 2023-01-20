@@ -1,24 +1,26 @@
 "use client"
 import Navbar from "@/app/components/Navbar"
-import Link from "next/link"
-import HeroBanner from "./HeroBanner"
+import Button from "@/app/components/form/Button"
 import { ArrowRightCircle } from "@/app/components/Icons"
 import Image from "next/image"
+import useUsers from "@/hooks/useUsers"
 
 function LandingPage() {
+  const { session } = useUsers()
+  console.log({ session })
   return (
     <>
-      <main className="px-0 m-0 pb-2xl w-full relative overflow-hidden">
+      <main className="px-8 xl:px-0 m-0 pb-2xl w-full relative overflow-hidden">
         <div className="relative z-50">
           <Navbar type="dashboard" />
         </div>
-        <div className="hero-box w-screen h-full">
+        <div className="hero-box w-full h-full">
           <div className=" mt-20 mx-auto font-mtn max-w-[1220px] relative z-10">
             <div className="w-full md:w-3/4 xl:w-1/2">
               <h3 className="text-mtn text-xl md:text-3xl">
                 MTN Digital Partner Portal
               </h3>
-              <p className="text-white text-5xl  md:text-8xl font-mtn-extrabold">
+              <p className="text-white text-5xl  md:text-6xl lg:text-8xl font-mtn-extrabold">
                 Your business,
                 <br />
                 our priority!
@@ -31,37 +33,25 @@ function LandingPage() {
                 </p>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4 mt-8">
-                {/* {session.status === 'unauthenticated' && ( */}
-                <Link
-                  href="/onboarding/register"
-                  className="rounded-full flex justify-between items-center bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl pl-6 pr-3 py-2"
-                >
-                  <span className="flex-1">Become Partner</span>
-                  <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
-                </Link>
+              <div className="flex flex-col sm:flex-row w-full gap-4 mt-8">
+                {/* {session.status === "unauthenticated" && ( */}
+                <Button href="/onboarding/register" label="Become Partner" />
                 {/* )} */}
-                {/* {session.status === 'authenticated' && (
-                <Link
-                  href="/onboarding/register/companyinfo"
-                  className="rounded-full flex justify-between items-center bg-mtn hover:bg-mtn-400 transition ease-in-out 5000 text-xl pl-6 pr-3 py-2"
-                >
-                  <span className="flex-1">Continue Registration</span>
-                  <ArrowRightCircle iconClass="w-12 h-12 ml-4" />
-                </Link>
-              )} */}
-                <button className="rounded-full bg-black/50 text-white border-2 border-mtn hover:border-mtn-300 transition ease-in-out 5000 text-xl px-10 py-2">
-                  Discover Program
-                </button>
+                <Button
+                  href="/onboarding/register"
+                  label="Discover Program"
+                  outline={1}
+                  noicon={1}
+                />
               </div>
             </div>
 
-            <div className="mt-20 mb-20">
+            <div className="mt-10 mb-10 md:mt-20 md:mb-20">
               {/* <TrustBrands /> */}
-              <p className="block text-2xl text-white mb-[64px]">
-                Businesses who trusted us:
+              <p className="block text-md md:text-2xl text-white/60 mb-4 md:mb-10">
+                Businesses who trust us:
               </p>
-              <div className="flex justify-between items-center w-full">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-4 md:flex justify-between items-center w-full">
                 <Image
                   src="/assets/brand/jumia.svg"
                   width={122.67}

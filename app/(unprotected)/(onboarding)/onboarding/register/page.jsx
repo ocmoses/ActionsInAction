@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowRightCircle } from '@/app/components/Icons'
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowRightCircle } from "@/app/components/Icons"
 
 export default function Register() {
   return (
-    <div className="mx-auto w3-animate-opacity">
+    <div className="mx-auto w3-animate-opacity pb-20">
       <h1 className="flex items-center font-mtn-extrabold mb-6  text-white text-4xl">
         <span className="mr-3">Choose your registration type</span>
       </h1>
@@ -28,8 +28,8 @@ export default function Register() {
           <Image
             priority
             src="/assets/icons/partner-guy.svg"
-            width={175}
-            height={130}
+            width={161}
+            height={129}
             alt="MTN Nigeria Logo"
             className="absolute bottom-0 w-[110px] md:w-[175px] h-auto right-0 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />
@@ -52,8 +52,8 @@ export default function Register() {
           <Image
             priority
             src="/assets/icons/partner-existing.png"
-            width={175}
-            height={130}
+            width={140}
+            height={132}
             alt="MTN Nigeria Logo"
             className="absolute -bottom-8 w-[110px] md:w-[175px] h-auto -right-8 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />

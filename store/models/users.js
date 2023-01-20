@@ -6,12 +6,8 @@ const users = {
     uuid: "",
     first_name: "",
     last_name: "",
-    company_name: "",
     email: "",
-    country: "",
-    countrycode: "",
     telephone: "",
-    designation: "",
     updated_at: "",
     created_at: "",
   },
@@ -22,9 +18,12 @@ const users = {
       : null
   }),
   session: computed((state) => {
-    const status = state.user.id != null ? "authenticated" : "unauthenticated"
-    const user = state.user.id != null ? state.user : null
+    const status = state.user.uuid ? "authenticated" : "unauthenticated"
+    const user = state.user.id ? state.user : null
     return { status, user }
+  }),
+  setUser: action((state, user) => {
+    state.user = user
   }),
   updateUser: action((state, user) => {
     state.user = { ...state.user, ...user }

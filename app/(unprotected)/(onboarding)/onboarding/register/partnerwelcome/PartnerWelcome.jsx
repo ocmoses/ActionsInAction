@@ -1,56 +1,46 @@
 "use client"
-import { useEffect, useState } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { TailSpinPreloader } from "@/app/components/Icons"
+import usePartners from "@/hooks/usePartners"
 import TextInput from "@/app/components/form/TextInput"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import Button from "@/app/components/form/Button"
-import { Util } from "@/utils/utility"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { forms, roles } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
 import useProcessing from "@/hooks/useProcessing"
+import { useEffect, useState } from "react"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { Util } from "@/utils/utility"
+import { forms } from "@/app/modules/constants"
 
 export default function PartnerWelcome() {
   const { processing, setProcessing, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { registerPartner } = usePartners()
 
-  const [data, setData] = useState(partnerInfo)
+  const [data, setData] = useState({ partnerid: "" })
   const { title, subtitle, hand, required } = forms["partnerwelcome"]
-  const [{ errors, setErrors, setError, removeError, clearErrors }] =
-    useErrors(data)
+  const [{ errors, setError, removeError, clearErrors }] = useErrors()
 
-  // const session = useSession()
   useEffect(() => {
-    if (partnerInfo) setData(partnerInfo)
     setForm("partnerwelcome")
     setProcessing(false)
-    // if (session.status !== 'loading' && session.status === 'authenticated') {
-    //   signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
-    // }
+    clearErrors()
   }, [])
-  // useEffect(() => {
-  //   if (session.status !== 'loading' && session.status === 'authenticated') {
-  //     signOut({ redirect: true, callbackUrl: '/onboarding/register/userinfo' })
-  //   }
-  // }, [session.status])
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
+    console.log({ data })
     if (!Util.isEmpty(required)) {
       for (const field in required) {
-        if (!!!data[field]) {
+        if (!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
     }
-    const result = await registerPartner("partnerwelcome", data, setError)
+    const result = await registerPartner("partnerwelcome", data)
     if (result) {
-      if (result?.error) setError("login", result.error)
+      if (result?.error) return setError({ partnerwelcome: result.error })
     }
   }
   const handleFormChange = (e) => {
@@ -66,11 +56,11 @@ export default function PartnerWelcome() {
       <form method="POST" onSubmit={handleSubmit} className="">
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["login"]} />}
+          {errors && <FormErrors error={errors["partnerwelcome"]} />}
         </div>
         <TextInput
           id="partnerid"
-          label="Enter partner ID or Email"
+          label="Enter your login email"
           value={data.partnerid}
           onChange={handleFormChange}
           errors={errors}

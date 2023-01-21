@@ -3,6 +3,7 @@ const app = {
   errors: {},
   success: null,
   processing: false,
+  loading: {},
   setError: action((state, errorObject) => {
     state.errors = { ...state.errors, ...errorObject }
   }),
@@ -18,6 +19,12 @@ const app = {
   }),
   setProcessing: action((state, status) => {
     state.processing = status
+  }),
+  startLoading: action((state, key) => {
+    state.loading[key] = true
+  }),
+  endLoading: action((state, key) => {
+    if (state.loading[key]) delete state.loading[key]
   }),
   form: null,
   setForm: action((state, form) => {

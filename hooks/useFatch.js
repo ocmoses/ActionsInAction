@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Util } from '@/utils/utility'
+import { useEffect, useState } from "react"
+import { Util } from "@/utils/utility"
 
 const useFetch = (initialUrl, options) => {
-  const [url, setUrl] = useState(initialUrl || '')
+  const [url, setUrl] = useState(initialUrl || "")
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState(null)
@@ -14,37 +14,33 @@ const useFetch = (initialUrl, options) => {
       const errors = []
       let status = false
       const headers = {
-        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU',
-        'content-type': 'application/json',
-        ...(options?.headers ?? {})
+        apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
+        "content-type": "application/json",
+        ...(options?.headers ?? {}),
       }
       try {
         const response = await fetch(url, {
-          method: options?.method ?? 'GET',
+          method: options?.method ?? "GET",
           headers: headers,
-          redirect: 'follow'
+          redirect: "follow",
         }).catch((e) => {
           errors.push(
-            'We could not reach the server. Please check your connection'
+            "We could not reach the server. Please check your connection"
           )
-          console.log(e.message)
         })
         if (response) {
           const { data, success } = await response.json()
           if (response.status >= 200 && response.status < 300) {
             if (success) {
-              console.log('data', data)
               setData(data)
             } else {
-              errors.push('Something went wrong')
-              console.log('No data returned')
+              errors.push("Something went wrong")
             }
           } else if (response.status === 404) {
-            errors.push('An error 404 was encountered. Please contact us')
-            console.log('Error 404')
+            errors.push("An error 404 was encountered. Please contact us")
           } else {
             if (
-              typeof data === 'object' &&
+              typeof data === "object" &&
               data !== null &&
               !Util.isEmpty(data)
             ) {
@@ -59,25 +55,22 @@ const useFetch = (initialUrl, options) => {
                 } else {
                   errors.push(
                     data?.message ??
-                      'An error occured. Please reach out to us if issue persists'
+                      "An error occured. Please reach out to us if issue persists"
                   )
                 }
               }
             } else if (
-              typeof data === 'string' &&
+              typeof data === "string" &&
               data !== null &&
-              data !== ''
+              data !== ""
             ) {
               errors.push(data)
             }
           }
         } else {
-          errors.push('Something went wrong')
-          console.log('No response returned')
+          errors.push("Something went wrong")
         }
-      } catch (e) {
-        console.log('e => ', e)
-      }
+      } catch (e) {}
       setLoading(false)
       setErrors(errors)
     }

@@ -31,9 +31,9 @@ export default async function handler(req, res) {
       res.status(200).json({ success, error: null, data: User })
       return
     } else {
-      if (response?.data) {
-        const { data, success } = response
-        res.status(200).json({ success, error: data.message, data: null })
+      if (response?.error) {
+        const { error, success } = response
+        res.status(200).json({ success, error: error, data: null })
         return
       } else {
         res.status(200).json({

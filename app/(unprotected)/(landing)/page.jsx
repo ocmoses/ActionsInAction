@@ -1,18 +1,17 @@
 "use client"
 import Navbar from "@/app/components/Navbar"
 import Button from "@/app/components/form/Button"
-import { ArrowRightCircle } from "@/app/components/Icons"
 import Image from "next/image"
 import useUsers from "@/hooks/useUsers"
 
 function LandingPage() {
   const { session } = useUsers()
-  console.log({ session })
+  // console.log({ session })
   return (
     <>
       <main className="px-8 xl:px-0 m-0 pb-2xl w-full relative overflow-hidden">
         <div className="relative z-50">
-          <Navbar type="dashboard" />
+          <Navbar />
         </div>
         <div className="hero-box w-full h-full">
           <div className=" mt-20 mx-auto font-mtn max-w-[1220px] relative z-10">

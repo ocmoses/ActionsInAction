@@ -1,5 +1,6 @@
 import { action, computed, thunk } from "easy-peasy"
 const partners = {
+  partnerID: null,
   partners: [],
   partner: {
     uuid: "",
@@ -75,6 +76,9 @@ const partners = {
   }),
   setPartners: action((state, partners) => {
     state.partners = partners
+  }),
+  setPartnerID: action((state, partnerID) => {
+    state.partnerID = partnerID
   }),
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }

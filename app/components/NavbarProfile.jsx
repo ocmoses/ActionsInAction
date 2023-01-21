@@ -1,8 +1,9 @@
-'use client'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useSelectedLayoutSegments } from 'next/navigation'
-import UserPercentComplete from '@/app/components/UserPercentComplete'
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import { useSelectedLayoutSegments } from "next/navigation"
+import UserPercentComplete from "@/app/components/UserPercentComplete"
+
 function NavbarProfile() {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]

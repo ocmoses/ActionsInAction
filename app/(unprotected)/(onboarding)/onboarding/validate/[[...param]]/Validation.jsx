@@ -3,7 +3,6 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
-import Button from "@/app/components/form/Button"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -17,6 +16,7 @@ export default function RegisterValidation({ param }) {
   const router = useRouter()
 
   const [userQuery, setUserQuery] = useState(null)
+  const [cookkie, setCookkie] = useState(false)
   useEffect(() => {
     setForm(null)
     clearErrors()
@@ -29,15 +29,16 @@ export default function RegisterValidation({ param }) {
       setUserQuery(result)
     }
     const path = param && param[1] ? param[1] : "userinfo"
-    if (!userQuery?.data) getPartner(param[0])
+    if (!userQuery?.data && !cookkie) {
+      getPartner(param[0])
+      setCookkie(true)
+    }
     if (userQuery?.error) {
       setError({ validate: userQuery.error })
     } else {
       if (userQuery?.data) {
         updateUser(userQuery.data.user)
         setPartner(userQuery.data.partner)
-        console.log({ userQuery })
-        console.log({ path })
         switch (path) {
           case "userinfo":
             router.replace("/dashboard")
@@ -60,20 +61,20 @@ export default function RegisterValidation({ param }) {
           )}
           {!errors.validate && user?.uuid && (
             <>
-              {partner.progress?.percent && (
+              {/* {partner?.progress?.percent && (
                 <div className="flex justify-center mb-12">
                   <div
                     className="radial-progress text-2xl  text-mtn bg-[#333333] border-4 border-[#333]"
                     style={{
-                      "--value": partner.progress?.percent,
+                      "--value": partner?.progress?.percent,
                       "--size": "99px",
                       "--thickness": "12px",
                     }}
                   >
-                    {partner.progress?.percent}%
+                    {partner?.progress?.percent}%
                   </div>
                 </div>
-              )}
+              )} */}
               <h1 className="flex justify-center gap-3 mtn-h1 text-white">
                 Y'ello {user.first_name}{" "}
                 <span className="animate-bounce">👋</span>

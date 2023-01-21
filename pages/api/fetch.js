@@ -1,26 +1,10 @@
 import { apiURL } from "@/app/modules/constants"
 import { getCookie } from "cookies-next"
-import { cookies } from "next/headers"
+// import { cookies } from "next/headers"
 import { Decrypt } from "@/app/modules/utilities"
 
 const fetchPlus = async (url, options = {}, retries, req, res) => {
-  const nextCookies = cookies()
-  const token = nextCookies.has("auth-token")
-    ? nextCookies.get("auth-token")?.value
-    : null
-  const partnerid = nextCookies.has("partnerid")
-    ? nextCookies.get("partnerid")?.value
-    : null
-  const user_id = nextCookies.has("user_id")
-    ? nextCookies.get("user_id")?.value
-    : null
-  console.log({ token })
-  console.log({ partnerid })
-  console.log({ user_id })
   const authToken = getCookie("auth-token", { req, res })
-  console.log("Decrypt")
-  console.log(authToken)
-  console.log(authToken ? Decrypt(authToken) : "Noting to decrypt")
   const Opts = options ?? {}
   const decrypted = authToken ? Decrypt(authToken) : null
   const defaultHeaders = {
@@ -36,14 +20,14 @@ const fetchPlus = async (url, options = {}, retries, req, res) => {
   }
   const Options = { ...defaultOptions, ...Opts }
   try {
-    const response = await fetch(`${apiURL}${url}`, Options)
+    const response = await fetch(`${url}`, Options)
     const { success, data } = await response.json()
     if (response?.ok) {
       res.status(200).json({ success, error: null, data })
       return
     } else {
       if (data) {
-        res.status(200).json({ success, error: data.message, data: null })
+        res.status(200).json({ success, error: data.error, data: null })
         return
       } else {
         if (retries > 0) return fetchPlus(url, options, retries - 1, req, res)

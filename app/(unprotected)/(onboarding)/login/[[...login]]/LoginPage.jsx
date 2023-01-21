@@ -8,13 +8,13 @@ import FormErrors from "@/app/components/FormErrors"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
-import usePartner from "@/hooks/usePartners"
+import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
 import useProcessing from "@/hooks/useProcessing"
 
 function Login({ params }) {
-  const { checkRegStatus } = usePartner()
-  const { updateUser } = useUsers()
+  const { setPartner, setPartners, partnerID } = usePartners()
+  const { setUser } = useUsers()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   useEffect(() => {
@@ -22,7 +22,7 @@ function Login({ params }) {
     setProcessing(false)
   }, [])
   const [data, setData] = useState({
-    partnerid: process.env.NODE_ENV === "production" ? "" : "234779836",
+    email: process.env.NODE_ENV === "production" ? "" : "test@gmail.com",
     password: process.env.NODE_ENV === "production" ? "" : "Todoo45@222",
   })
   const router = useRouter()
@@ -37,8 +37,8 @@ function Login({ params }) {
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
-    if (!data.partnerid) {
-      return setError({ partnerid: `Please enter your Partner ID` })
+    if (!data.email) {
+      return setError({ email: `Please enter your Partner ID` })
     }
     if (!data.password) {
       return setError({ password: `Please enter your password` })
@@ -48,22 +48,29 @@ function Login({ params }) {
     const response = await fetch("/api/users/login", {
       method: "POST",
       body: JSON.stringify({
-        partnerid: data.partnerid,
+        email: data.email,
         password: data.password,
       }),
     })
-    const { success, error, data: user } = await response.json()
-
+    const result = await response.json()
+    const { success, error, data: User } = result
     if (!success) {
       setProcessing(false)
-      return setError("login", error)
+      return setError({ login: error })
     }
-    updateUser(user)
-    const { nextstage } = await checkRegStatus(user)
 
+    if (User.user) setUser(User.user)
+    if (User.partners) setPartners(User.partners)
+    if (User.partner) setPartner(User.partner)
+    if (partnerID) {
+      User.partner = User.partners.find((p) => p.uuid === partnerID)
+      setPartner(User.partner)
+    }
+    // console.log({ partnerID })
+    // const { nextstage } = await checkRegStatus(user)
+    // console.log({ User })
     // REDIRECT
-    const redirect =
-      params && nextstage === "/dashboard" ? `/${params.join("/")}` : nextstage
+    const redirect = params ? `/${params.join("/")}` : "/dashboard"
     router.replace(redirect)
   }
 
@@ -107,9 +114,9 @@ function Login({ params }) {
         </div>
         <>
           <TextInput
-            id="partnerid"
-            label="Partner ID"
-            value={data.partnerid}
+            id="email"
+            label="Email address"
+            value={data.email}
             onChange={handleFormChange}
             errors={errors}
           />
@@ -123,7 +130,7 @@ function Login({ params }) {
           />
 
           <Link
-            href="#"
+            href="/onboarding/register/partnerwelcome"
             className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
             style={{
               fontStyle: "normal",
@@ -133,7 +140,7 @@ function Login({ params }) {
               textDecorationLine: "underline",
             }}
           >
-            Forgot your password?
+            Reset your password?
           </Link>
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />

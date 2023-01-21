@@ -13,7 +13,6 @@ const getDesignations = async () => {
     })
     const { success, data } = await response.json()
     if (response?.ok) {
-      console.log(data)
       return { success, error: null, data }
     } else {
       if (data) {

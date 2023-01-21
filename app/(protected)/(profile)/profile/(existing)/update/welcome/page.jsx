@@ -10,8 +10,7 @@ export default function Welcome() {
   const { processing, setProcessing, setForm } = useProcessing()
   const searchParams = useSearchParams()
   const path = searchParams.get("path")
-  console.log("Welcome page")
-  console.log({ path })
+
   useEffect(() => {
     setForm("")
     setProcessing(false)

@@ -15,23 +15,37 @@ const usePartners = () => {
 
   const partner = useStoreState(
     (state) => state.partners.partner,
-    (prev, next) => prev.uuid === next.uuid
+    (prev, next) => prev === next
+  )
+  const partnerID = useStoreState(
+    (state) => state.partners.partnerID,
+    (prev, next) => prev === next
+  )
+  const partners = useStoreState(
+    (state) => state.partners.partners,
+    (prev, next) => prev === next
+  )
+  const user = useStoreState(
+    (state) => state.users.user,
+    (prev, next) => prev === next
   )
   const actions = useStoreActions((action) => action)
-  const { setPartner, updatePartner } = actions.partners
+  const { setPartner, setPartners, updatePartner, setPartnerID } =
+    actions.partners
   const { setUser } = actions.users
 
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
-      // cache: "no-store",
+      cache: "no-store",
       next: { revalidate: 0 },
     })
     const { success, error, data } = result
     return { success, error, data }
   }
   const checkRegStatus = async (partner) => {
+    if (!partner?.progress) return null
     const { percent, stages, status } = partner.progress
-    if (status != "Not completed") return { percent, nextstage: "dashboard" }
+    if (!(percent < 100)) return { percent, nextstage: "dashboard" }
     const Stages = [
       "userinfo",
       "companyinfo",
@@ -355,22 +369,9 @@ const usePartners = () => {
           return { success: false, error: partnerwelcomeError, data: null }
         }
 
-        const partner = await getPartner(userdata.partnerid)
-        if (partner.error) return partner
-        if (partner.data) {
-          const user = {
-            ...partner.data.user,
-            progress: {
-              percent: partner.data.percent_complete,
-              stages: { ...partner.data.profile_stage },
-            },
-          }
-          updatePartner(user)
-        }
-        updatePartner(userdata)
-        updatePercentComplete(partnerwelcome)
+        setUser(partnerwelcome.user)
         setUpdateStatus("review", "partnerwelcome", true)
-        router.push("/onboarding/register/partnerwelcome/validate")
+        router.push(`/onboarding/verify/setpassword`)
         break
       case "setpassword":
         setProcessing(true)
@@ -378,11 +379,11 @@ const usePartners = () => {
           success: setpasswordSuccess,
           error: setpasswordError,
           data: setpassword,
-        } = await fetchData(`${apiURL}/v1/existing-partner/setup-password`, {
+        } = await fetchData(`${apiURL}/v1/auth/reset-password/new-password`, {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            user_uuid: user.uuid,
             password: userdata.password,
             password_confirmed: userdata.password_confirmed,
           }),
@@ -392,9 +393,8 @@ const usePartners = () => {
           return { success: false, error: setpasswordError, data: null }
         }
         // updatePartner(userdata)
-        updatePercentComplete(setpassword)
         setUpdateStatus("updatereview", "setpassword", true)
-        router.push("/profile/update/welcome?path=companyinfo")
+        router.push("/dashboard")
         break
       case "confirmcompanyinfo":
         setProcessing(true)
@@ -505,7 +505,11 @@ const usePartners = () => {
   }
   return {
     partner,
+    partnerID,
+    partners,
     setPartner,
+    setPartners,
+    setPartnerID,
     getPartner,
     updatePartner,
     registerPartner,

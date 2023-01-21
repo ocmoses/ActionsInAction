@@ -73,30 +73,11 @@ export async function proxyFetch(url, options) {
     return { success: null, error: err.message, data: null }
   }
 }
-export function userData(data) {
-  const status = data.profile_status ?? null
-  const percent = data.percent_complete ?? null
-  const stages = { ...data.profile_stage } ?? {}
-  const user = { ...data?.user }
-  const partner = {
-    ...data?.partner,
-    progress: {
-      status,
-      percent,
-      stages,
-    },
-  }
-  delete data.profile_status
-  delete data.percent_complete
-  delete data.profile_stage
-  delete data.user
-  delete data.partner
-  delete data.login_token
-  return {
-    user,
-    partner,
-    ...data,
-  }
+export async function logout() {
+  const response = await fetch("/api/users/logout")
+  await response.json()
+  // console.log({ response })
+  return { success: true }
 }
 export const isArray = (data) => {
   return Array.isArray(data)
@@ -120,16 +101,71 @@ export const scrollToTop = () => {
     behavior: "smooth",
   })
 }
-export const createHttpOnlyCookie = (data, req, res) => {
+export function userData(data, partnerID) {
+  const partner_id = partnerID ? Decrypt(partnerID) : null
+  const user = { ...data?.user }
+  const partners = []
+  if (data && data.partner) {
+    data.partner.progress = {
+      percent: data.percent_complete,
+      stage: { ...data.profile_stage },
+    }
+  } else {
+    const stages = [...data.profile_stage] ?? []
+
+    if (data?.partners.length > 0) {
+      data.partners.map((p) => {
+        const stage = stages.find((s) => s.partner_uuid === p.uuid)
+        if (stage) {
+          const percent = stage.percentage
+          delete stage.id
+          delete stage.uuid
+          delete stage.user_uuid
+          delete stage.partner_uuid
+          delete stage.percentage
+          delete stage.created_at
+          delete stage.updated_at
+          p.progress = {
+            percent,
+            stage,
+          }
+        } else {
+          p.progress = null
+        }
+        partners.push(p)
+      })
+    }
+  }
+
+  const partner = partner_id
+    ? partners.find((p) => p.uuid === partner_id)
+    : {
+        ...data?.partner,
+      }
+  delete data.profile_status
+  delete data.percent_complete
+  delete data.profile_stage
+  delete data.user
+  delete data.partner
+  delete data.partners
+  delete data.login_token
+  return {
+    user,
+    partner,
+    partners,
+    ...data,
+  }
+}
+export const createHttpOnlyCookie = (data, req, res, partnerID) => {
   const authToken = data?.login_token?.access_token
   const maxAge = data?.login_token?.expires_in
 
-  const User = userData(data)
+  const User = userData(data, partnerID)
   // console.log("userData User", User)
   if (authToken) {
     // SET COOKIES
     const encryptedAuthToken = Encrypt(authToken)
-    const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
+
     const encryptedUserId = Encrypt(`${User.user.uuid}`)
     setCookie("auth-token", encryptedAuthToken, {
       req,
@@ -140,15 +176,7 @@ export const createHttpOnlyCookie = (data, req, res) => {
       path: "/",
       sameSite: "strict",
     })
-    setCookie("partnerid", encryptedPartnerid, {
-      req,
-      res,
-      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
-      httpOnly: true,
-      signed: true,
-      path: "/",
-      sameSite: "strict",
-    })
+
     setCookie("user_id", encryptedUserId, {
       req,
       res,
@@ -158,6 +186,18 @@ export const createHttpOnlyCookie = (data, req, res) => {
       path: "/",
       sameSite: "strict",
     })
+    if (User.partner.uuid) {
+      const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
+      setCookie("partnerid", encryptedPartnerid, {
+        req,
+        res,
+        maxAge: maxAge ?? 60 * 60 * 24 * 365, // would expire after 15 minutes
+        httpOnly: true,
+        signed: true,
+        path: "/",
+        sameSite: "strict",
+      })
+    }
   }
   return { User, authToken }
 }

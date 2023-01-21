@@ -1,8 +1,8 @@
-import "../styles/globals.css"
-import Providers from "./Providers"
-import Session from "./Session"
-import ResponsiveLabel from "./components/ResponsiveLabel"
-import { userData, Decrypt } from "./modules/utilities"
+import "@/styles/globals.css"
+import Providers from "@/app/Providers"
+import Session from "@/app/Session"
+import ResponsiveLabel from "@/app/components/ResponsiveLabel"
+import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
 
@@ -19,7 +19,8 @@ const getServerSession = async () => {
     : null
   if (user_id) {
     // GET USER INFO
-    const authToken = Decrypt(token)
+    const authToken = token ? Decrypt(token) : null
+    const partnerID = partnerid ? Decrypt(partnerid) : null
     try {
       const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
         headers: {
@@ -31,13 +32,17 @@ const getServerSession = async () => {
         },
       })
       const { success, data } = await response.json()
+
       if (response?.ok) {
         const User = userData(data)
-        // console.log(User)
+        if (partnerID && User.partners?.length > 0) {
+          User.partnerID = partnerID
+          User.partner = User.partners.find((p) => p.uuid === partnerID)
+        }
         return { success, error: null, data: User }
       } else {
         if (data) {
-          return { success: false, error: data.message, data: null }
+          return { success: false, error: data.error, data: null }
         } else {
           return {
             success: false,

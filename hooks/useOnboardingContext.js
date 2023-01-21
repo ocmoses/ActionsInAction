@@ -2,7 +2,6 @@
 import { useEffect, useState, createContext, useContext } from "react"
 import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 import { v4 as uuidv4 } from "uuid"
-import axios from "axios"
 import { apiURL, forms, partnerFields, roles } from "@/app/modules/constants"
 import { fetchData } from "@/app/modules/fetchData"
 import {
@@ -134,68 +133,28 @@ export function OnboardingContextProvider({ children }) {
   const setPartner = (data) => {
     setPartnerInfo((oldState) => ({ ...oldState, ...data }))
   }
-  const resendEmail = async (email) => {
-    const apiUrl =
-      "https://amazonpartner.com.ng/amazon/public/api/v1/auth/register/resend-confirm-email-link"
-
-    setProcessing(true)
-
-    const response = await axios(apiUrl, {
-      method: "POST",
-      headers: {
-        apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
-      },
-      data: {
-        email: email,
-      },
-    })
-      .catch(({ message, response }) => {
-        if (response) {
-          const {
-            data: { data },
-          } = response
-          if (!Util.isEmpty(data)) {
-            for (const error in data) {
-              if (data[error].length > 0) {
-                data[error].map((err) => alert(err))
-              }
-            }
-          }
-        } else {
-          alert(message)
-        }
-      })
-      .finally(() => setProcessing(false))
-
-    if (response) {
-      const {
-        data: { success },
-      } = response
-      if (success)
-        alert("Email was sent successfully. Please checnk your email")
-    }
-  }
   return (
     <OnboardingContext.Provider
-      value={{
-        COUNTRIES,
-        STATES,
-        BANKS,
-        fetching,
-        setIsFetching,
-        processing,
-        categories,
-        roles,
-        partnerInfo,
-        setPartnerInfo,
-        setPartner,
-        registerPartner,
-        getPartner,
-        resendEmail,
-        reviewStatus,
-        reviewUpdateStatus,
-        checkUpdateStatus,
-      }}
+      value={
+        {
+          // COUNTRIES,
+          // STATES,
+          // BANKS,
+          // fetching,
+          // setIsFetching,
+          // processing,
+          // categories,
+          // roles,
+          // partnerInfo,
+          // setPartnerInfo,
+          // setPartner,
+          // registerPartner,
+          // getPartner,
+          // reviewStatus,
+          // reviewUpdateStatus,
+          // checkUpdateStatus,
+        }
+      }
     >
       {children}
     </OnboardingContext.Provider>

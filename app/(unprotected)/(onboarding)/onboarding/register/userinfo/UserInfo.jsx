@@ -13,7 +13,7 @@ import { createRef, useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { CountrySelector } from "@/app/components/countrycode/selector"
 import { COUNTRIES } from "@/app/components/countrycode/countries"
-import { forms, roles } from "@/app/modules/constants"
+import { forms } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
 
@@ -40,16 +40,16 @@ function UserInfo({ designations }) {
   useEffect(() => {
     if (partner)
       setData({
-        first_name: user.first_name ?? "",
-        last_name: user.last_name ?? "",
-        email: user.email ?? "",
-        company_name: partner.company_name ?? "",
-        designation: partner.designation ?? "",
-        countrycode: user.countrycode ?? "234",
-        country: user.country ?? "NG",
-        telephone: user.telephone ?? "",
-        password: user.password ?? "",
-        password_confirmed: user.password_confirmed ?? "",
+        first_name: user?.first_name ?? "",
+        last_name: user?.last_name ?? "",
+        email: user?.email ?? "",
+        company_name: partner?.company_name ?? "",
+        designation: partner?.designation ?? "",
+        countrycode: user?.countrycode ?? "234",
+        country: user?.country ?? "NG",
+        telephone: user?.telephone ?? "",
+        password: user?.password ?? "",
+        password_confirmed: user?.password_confirmed ?? "",
       })
   }, [partner])
   useEffect(() => {
@@ -106,8 +106,8 @@ function UserInfo({ designations }) {
   }
   const myRef = createRef()
   const [isOpen, setIsOpen] = useState(false)
-  const [country, setCountry] = useState(partner.country ?? "NG")
-  const [countrycode, setCountrycode] = useState(partner.countrycode ?? "234")
+  const [country, setCountry] = useState(partner?.country ?? "NG")
+  const [countrycode, setCountrycode] = useState(partner?.countrycode ?? "234")
 
   useEffect(() => {
     setData((prevState) => ({

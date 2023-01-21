@@ -1,6 +1,3 @@
-import { apiURL } from "@/app/modules/constants"
-import Axios from "@/app/modules/axios"
-
 export default async function handler(req, res) {
   try {
     if (req.method === "POST") {

@@ -8,7 +8,7 @@ RUN pwd
 RUN ls -latr
 RUN apt-get update && apt-get install nginx -y
 RUN apt install vim -y && apt install net-tools && apt install telnet
-COPY default /etc/nginx/sites-enabled
+COPY default /etc/nginx/conf.d
 RUN /etc/init.d/nginx reload
 RUN service nginx restart
 # Nginx

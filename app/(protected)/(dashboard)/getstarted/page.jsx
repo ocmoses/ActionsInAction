@@ -1,5 +1,6 @@
 "use client"
 import SideDrawer from "@/app/components/SideDrawer"
+import SideBar from "./SideBar"
 import { useState } from "react"
 
 function TrustBrands() {
@@ -13,6 +14,7 @@ function TrustBrands() {
       >
         open
       </button>
+      <SideBar />
       <SideDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
         <h1>Hello world</h1>
         <h1>Hello world</h1>

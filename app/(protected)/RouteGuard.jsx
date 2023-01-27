@@ -10,9 +10,6 @@ export default function AppGuard({ children }) {
   const { partner, partners } = usePartners()
   const router = useRouter()
   useEffect(() => {
-    // console.log({ session })
-    // console.log({ partner })
-    // console.log({ partners })
     if (session && session?.status === "unauthenticated") {
       const currentUrl = window.location.pathname
       router.push(`/login${currentUrl}`)

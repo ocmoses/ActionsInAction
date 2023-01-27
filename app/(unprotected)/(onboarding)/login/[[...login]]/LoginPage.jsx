@@ -5,12 +5,14 @@ import TextInput from "@/app/components/form/TextInput"
 import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
 import useProcessing from "@/hooks/useProcessing"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { useState, useEffect, use } from "react"
+import { useRouter } from "next/navigation"
+import { NextEndPoints } from "@/app/modules/endpoints"
+import { PageRoutes } from "@/app/modules/menu"
 
 function Login({ params }) {
   const { setPartner, setPartners, partnerID } = usePartners()
@@ -38,14 +40,14 @@ function Login({ params }) {
     e.preventDefault()
     clearErrors()
     if (!data.email) {
-      return setError({ email: `Please enter your Partner ID` })
+      return setError({ email: `Please enter your email address` })
     }
     if (!data.password) {
       return setError({ password: `Please enter your password` })
     }
 
     setProcessing(true)
-    const response = await fetch("/api/users/login", {
+    const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({
         email: data.email,
@@ -66,11 +68,8 @@ function Login({ params }) {
       User.partner = User.partners.find((p) => p.uuid === partnerID)
       setPartner(User.partner)
     }
-    // console.log({ partnerID })
-    // const { nextstage } = await checkRegStatus(user)
-    // console.log({ User })
     // REDIRECT
-    const redirect = params ? `/${params.join("/")}` : "/dashboard"
+    const redirect = params ? `/${params.join("/")}` : PageRoutes.dashboard
     router.replace(redirect)
   }
 
@@ -130,7 +129,7 @@ function Login({ params }) {
           />
 
           <Link
-            href="/onboarding/register/partnerwelcome"
+            href={PageRoutes.passwordreset}
             className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
             style={{
               fontStyle: "normal",

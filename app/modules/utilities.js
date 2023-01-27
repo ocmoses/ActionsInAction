@@ -67,6 +67,7 @@ export async function proxyFetch(url, options) {
         options, //: { method: 'GET' }
       }),
     })
+    console.log({ response })
     const { success, error, data } = await response.json()
     return { success, error, data }
   } catch (err) {

@@ -1,37 +1,49 @@
-const partner = [
+export const PartnerMenu = [
+  {
+    label: "Get started",
+    icon: "",
+    route: "",
+  },
   {
     label: "Home",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Services",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Payment",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Users",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Reports",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Audit log",
     icon: "",
-    href: "",
+    route: "",
   },
   {
     label: "Settings",
     icon: "",
-    href: "",
+    route: "",
   },
 ]
+
+export const PageRoutes = {
+  partnerwelcome: "/onboarding/register/partnerwelcome",
+  passwordreset: "/onboarding/register/resetpassword",
+  registerUserinfo: "/onboarding/register/userinfo",
+  dashboard: "/dashboard",
+}

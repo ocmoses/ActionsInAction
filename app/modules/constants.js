@@ -9,6 +9,10 @@ import {
   ContactPerson,
 } from "@/app/components/Icons"
 
+export const EmailType = {
+  EXISTING: "existing",
+  NEW: "new",
+}
 export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
 export const partnerFields = {
   partnerid: "",

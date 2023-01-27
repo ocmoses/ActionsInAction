@@ -54,7 +54,14 @@ export default function PartnerWelcome() {
   return (
     <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
       <form method="POST" onSubmit={handleSubmit} className="">
-        <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <RegisterStepHeader
+          title={title}
+          titleClassName="font-mtn-bold font-bold mb-2"
+          subtitle={subtitle}
+          subtitleClassName="font-hairline font-mtn-extralight flex-wrap text-[14px] text-white/70"
+          hand={hand}
+          className="mb-6"
+        />
         <div className="mb-6">
           {errors && <FormErrors error={errors["partnerwelcome"]} />}
         </div>
@@ -64,7 +71,11 @@ export default function PartnerWelcome() {
           value={data.partnerid}
           onChange={handleFormChange}
           errors={errors}
+          margin="mb-2"
         />
+        <p className="text-[#999999] text-md mb-6">
+          This is a 10-digit number that identifies you as a partner
+        </p>
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (

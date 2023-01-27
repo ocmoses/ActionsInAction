@@ -42,8 +42,10 @@ export const PartnerMenu = [
 ]
 
 export const PageRoutes = {
+  login: "/login",
   partnerwelcome: "/onboarding/register/partnerwelcome",
   passwordreset: "/onboarding/register/resetpassword",
+  setpassword: "/onboarding/setpassword",
   registerUserinfo: "/onboarding/register/userinfo",
   dashboard: "/dashboard",
 }

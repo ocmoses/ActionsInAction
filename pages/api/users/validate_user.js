@@ -10,8 +10,8 @@ export default async function handler(req, res) {
         .json({ success: false, data: { message: "Invalid request method" } })
       return
     }
-    const user_uuid = JSON.parse(req.body)
-    const response = await fetchData(
+    const user_uuid = req.body.user_uuid
+    const response = await fetch(
       `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${user_uuid}`,
       {
         cache: "no-store",
@@ -19,13 +19,20 @@ export default async function handler(req, res) {
       }
     )
     if (response) {
-      const { data, success } = response
-      const { User, authToken } = createHttpOnlyCookie(data, req, res)
-      if (!authToken)
-        return res
-          .status(200)
-          .json({ success, data: { user: User, message: "Invalid request" } })
-      return res.status(200).json({ success, data: User })
+      const { data, success } = await response.json()
+      if (success) {
+        const { User, authToken } = createHttpOnlyCookie(data, req, res)
+        if (!authToken)
+          return res.status(200).json({
+            success: false,
+            data: {
+              message: "Invalid requiest. Unable to proceed.",
+            },
+          })
+        return res.status(200).json({ success, data: User })
+      }
+
+      return res.status(200).json({ success, data })
     } else {
       return res.status(200).json({
         success: false,

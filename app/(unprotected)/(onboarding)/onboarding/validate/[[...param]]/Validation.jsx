@@ -7,17 +7,16 @@ import RemoteEndpoints, {
   NextEndPoints,
   EndPointHeaders,
 } from "@/app/modules/endpoints"
+import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function RegisterValidation({ params }) {
-  console.log({ params })
-
   const [{ errors, setError, clearErrors }] = useErrors()
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, setPartner } = usePartners()
-  const { user, updateUser } = useUsers()
+  const { processed, setProcessed } = useUsers(false)
 
   const router = useRouter()
 
@@ -26,112 +25,71 @@ export default function RegisterValidation({ params }) {
   useEffect(() => {
     setForm(null)
     clearErrors()
-    // const getPartner = async (user_uuid) => {
-    //   const response = await fetch("/api/users/validate_user", {
-    //     method: "POST",
-    //     body: JSON.stringify(user_uuid),
-    //   })
-    //   const result = await response.json()
-    //   setUserQuery(result)
-    // }
-    // const path = param && param[1] ? param[1] : "new"
-    // if (!userQuery?.data && !cookkie) {
-    //   getPartner(param[0])
-    //   setCookkie(true)
-    // }
-    // if (userQuery?.error) {
-    //   setError({ validate: userQuery.error })
-    // } else {
-    //   if (userQuery?.data) {
-    //     updateUser(userQuery.data.user)
-    //     setPartner(userQuery.data.partner)
-    //     switch (path) {
-    //       case "userinfo":
-    //         router.replace("/dashboard")
-    //         break
-    //       case "setpassword":
-    //         router.replace("/onboarding/setpassword")
-    //         break
-    //     }
-    //   }
-    // }
 
     const ValidateEmailAndUser = async () => {
       setProcessing(true)
       try {
         let url = ""
         switch (params.type) {
-          case "new":
-            url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
-            break
           case "existing":
           case "reset":
+            url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+            break
+          case "new":
             url = NextEndPoints.VALIDATE_USER
             break
         }
         const response = await fetch(url, {
           method: "POST",
-          headers: { ...EndPointHeaders },
+          headers: {
+            ...EndPointHeaders,
+            apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+          },
           cache: "no-store",
           body: JSON.stringify({ user_uuid: params.user_uuid }),
         })
 
         const { success, data } = await response?.json()
-        console.log({ data })
+        console.log(data)
         if (data) {
-          console.log("user_uuid", params.user_uuid)
           if (success) {
             console.log({ success })
+            clearErrors()
+            switch (params.type) {
+              case "existing":
+              case "reset":
+                url = `${PageRoutes.setpassword}/${params.type}`
+                break
+              case "new":
+                url = PageRoutes.dashboard
+                break
+            }
+            setProcessed(true)
+            console.log("redirect", url)
+            return router.push(url)
             // return { success, data: params.user_uuid, type, error: null }
           } else {
             setError({ validate: data.messsage })
           }
+        } else {
+          setError({ validate: "Something went wrong" })
         }
-        // setError({ validate: "Something went wrong" })
       } catch (err) {
         setError({ validate: JSON.stringify(err) })
       }
       setProcessing(false)
     }
 
-    ValidateEmailAndUser()
+    if (!processed) ValidateEmailAndUser()
   }, [params])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {!errors.validate && !user?.uuid && (
+          {processing && (
             <div className="flex h-full w-full justify-center items-center">
-              <TailSpinPreloader width={80} height={80} fill="#efb703" />
+              <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
-          )}
-          {!errors.validate && user?.uuid && (
-            <>
-              {/* {partner?.progress?.percent && (
-                <div className="flex justify-center mb-12">
-                  <div
-                    className="radial-progress text-2xl  text-mtn bg-[#333333] border-4 border-[#333]"
-                    style={{
-                      "--value": partner?.progress?.percent,
-                      "--size": "99px",
-                      "--thickness": "12px",
-                    }}
-                  >
-                    {partner?.progress?.percent}%
-                  </div>
-                </div>
-              )} */}
-              <h1 className="flex justify-center gap-3 mtn-h1 text-white">
-                Y'ello {user.first_name}{" "}
-                <span className="animate-bounce">👋</span>
-              </h1>
-              <div className="mb-4 text-center w-full p-2 mtn-h1-subtitle text-[#999999]">
-                Please complete your application to get started
-              </div>
-              <div className="flex justify-center">
-                <TailSpinPreloader width={40} height={40} fill="#efb703" />
-              </div>
-            </>
           )}
           {errors.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
@@ -150,7 +108,15 @@ export default function RegisterValidation({ params }) {
                 />
               </svg>
 
-              {errors.validate}
+              <p>{errors.validate}</p>
+              <div className="font-mtn-extralight flex gap-5 justify-center text-white/70 mb-16 p-2">
+                <span
+                  className="cursor-pointer text-lg text-white hover:text-gray-300"
+                  onClick={() => router.push(PageRoutes.login)}
+                >
+                  Login
+                </span>
+              </div>
             </div>
           )}
         </div>

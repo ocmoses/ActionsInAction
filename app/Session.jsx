@@ -2,7 +2,6 @@
 import { useStoreActions } from "easy-peasy"
 
 export default function Session({ children, serverSession }) {
-  // console.log("serverSession?.User", serverSession?.User)
   const actions = useStoreActions((action) => action)
   if (serverSession?.status === "authenticated") {
     if (serverSession?.User?.user)

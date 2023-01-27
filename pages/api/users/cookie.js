@@ -1,4 +1,4 @@
-import { apiURL } from "@/app/modules/constants"
+import EndPoints from "@/app/modules/endpoints"
 import { fetchData } from "@/app/modules/fetchData"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
 
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     }
     const user_uuid = JSON.parse(req.body)
     const response = await fetchData(
-      `${apiURL}/v1/auth/partner-info/validate/${user_uuid}`,
+      `${EndPoints.GET_USER_INFO_VALIDATED}/${user_uuid}`,
       {
         cache: "no-store",
         headers: {

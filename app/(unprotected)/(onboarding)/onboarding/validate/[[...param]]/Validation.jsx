@@ -3,11 +3,17 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
+import RemoteEndpoints, {
+  NextEndPoints,
+  EndPointHeaders,
+} from "@/app/modules/endpoints"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function RegisterValidation({ param }) {
+export default function RegisterValidation({ params }) {
+  console.log({ params })
+
   const [{ errors, setError, clearErrors }] = useErrors()
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, setPartner } = usePartners()
@@ -20,36 +26,76 @@ export default function RegisterValidation({ param }) {
   useEffect(() => {
     setForm(null)
     clearErrors()
-    const getPartner = async (user_uuid) => {
-      const response = await fetch("/api/users/cookie", {
-        method: "POST",
-        body: JSON.stringify(user_uuid),
-      })
-      const result = await response.json()
-      setUserQuery(result)
-    }
-    const path = param && param[1] ? param[1] : "userinfo"
-    if (!userQuery?.data && !cookkie) {
-      getPartner(param[0])
-      setCookkie(true)
-    }
-    if (userQuery?.error) {
-      setError({ validate: userQuery.error })
-    } else {
-      if (userQuery?.data) {
-        updateUser(userQuery.data.user)
-        setPartner(userQuery.data.partner)
-        switch (path) {
-          case "userinfo":
-            router.replace("/dashboard")
+    // const getPartner = async (user_uuid) => {
+    //   const response = await fetch("/api/users/validate_user", {
+    //     method: "POST",
+    //     body: JSON.stringify(user_uuid),
+    //   })
+    //   const result = await response.json()
+    //   setUserQuery(result)
+    // }
+    // const path = param && param[1] ? param[1] : "new"
+    // if (!userQuery?.data && !cookkie) {
+    //   getPartner(param[0])
+    //   setCookkie(true)
+    // }
+    // if (userQuery?.error) {
+    //   setError({ validate: userQuery.error })
+    // } else {
+    //   if (userQuery?.data) {
+    //     updateUser(userQuery.data.user)
+    //     setPartner(userQuery.data.partner)
+    //     switch (path) {
+    //       case "userinfo":
+    //         router.replace("/dashboard")
+    //         break
+    //       case "setpassword":
+    //         router.replace("/onboarding/setpassword")
+    //         break
+    //     }
+    //   }
+    // }
+
+    const ValidateEmailAndUser = async () => {
+      setProcessing(true)
+      try {
+        let url = ""
+        switch (params.type) {
+          case "new":
+            url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
             break
-          case "setpassword":
-            router.replace("/onboarding/setpassword")
+          case "existing":
+          case "reset":
+            url = NextEndPoints.VALIDATE_USER
             break
         }
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { ...EndPointHeaders },
+          cache: "no-store",
+          body: JSON.stringify({ user_uuid: params.user_uuid }),
+        })
+
+        const { success, data } = await response?.json()
+        console.log({ data })
+        if (data) {
+          console.log("user_uuid", params.user_uuid)
+          if (success) {
+            console.log({ success })
+            // return { success, data: params.user_uuid, type, error: null }
+          } else {
+            setError({ validate: data.messsage })
+          }
+        }
+        // setError({ validate: "Something went wrong" })
+      } catch (err) {
+        setError({ validate: JSON.stringify(err) })
       }
+      setProcessing(false)
     }
-  }, [param, userQuery])
+
+    ValidateEmailAndUser()
+  }, [params])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

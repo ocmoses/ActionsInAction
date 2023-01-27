@@ -11,11 +11,14 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { Util } from "@/utils/utility"
 import { forms } from "@/app/modules/constants"
 
-export default function PartnerWelcome() {
+export default function PartnerWelcome({ resource }) {
   const { processing, setProcessing, setForm } = useProcessing()
   const { registerPartner } = usePartners()
 
-  const [data, setData] = useState({ partnerid: "" })
+  const [data, setData] = useState({
+    partnerid: "",
+    email_type: "",
+  })
   const { title, subtitle, hand, required } = forms["partnerwelcome"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors()
 
@@ -24,11 +27,17 @@ export default function PartnerWelcome() {
     setProcessing(false)
     clearErrors()
   }, [])
+  useEffect(() => {
+    setData((oldState) => ({
+      ...oldState,
+      email_type:
+        resource && resource[0] === "resetpassword" ? "reset" : "existing",
+    }))
+  }, [resource])
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
-    console.log({ data })
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!data[field]) {

@@ -7,7 +7,7 @@ import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
 import useErrors from "@/hooks/useErrors"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
 export default function Validate({ params: { resource } }) {
@@ -15,21 +15,16 @@ export default function Validate({ params: { resource } }) {
   const { user } = useUsers()
   const { resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
+  const [type, setType] = useState("")
   useEffect(() => {
     setForm(null)
     setProcessing(false)
     clearErrors()
   }, [])
-  let url = `/onboarding/validate/${user.uuid}/setpassword/`
-  const path = resource && resource[0] ? resource[0] : "userinfo"
-  switch (path) {
-    case "userinfo":
-      url = `/onboarding/validate/${user.uuid}/userinfo/`
-      break
-    case "setpassword":
-      url = `/onboarding/validate/${user.uuid}/setpassword/`
-      break
-  }
+  useEffect(() => {
+    setType(resource && resource[0] ? resource[0] : "new")
+  }, [resource])
+
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -53,7 +48,7 @@ export default function Validate({ params: { resource } }) {
             </div>
           )}
           <>
-            {errors && <FormErrors error={errors["validate"]} align="center" />}
+            {errors && <FormErrors error={errors["verify"]} align="center" />}
             {success && <FormErrors success={success} align="center" />}
           </>
         </div>
@@ -70,7 +65,7 @@ export default function Validate({ params: { resource } }) {
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(user.email)}
+              onClick={() => resendEmail(user.email, type)}
             >
               Resend email
             </span>
@@ -82,7 +77,7 @@ export default function Validate({ params: { resource } }) {
         //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
       */}
       <Link
-        href={`${url}`}
+        href={`/onboarding/validate/${user.uuid}/${type}/`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
         [[DEV TOOL. Continue to next screen]]

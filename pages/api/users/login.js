@@ -1,4 +1,4 @@
-import { apiURL } from "@/app/modules/constants"
+import EndPoints from "@/app/modules/endpoints"
 import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
 
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       return
     }
     const body = JSON.parse(req.body)
-    const response = await fetch(`${apiURL}/v1/auth/login`, {
+    const response = await fetch(EndPoints.LOGIN, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

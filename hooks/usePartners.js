@@ -1,5 +1,6 @@
 import useProcessing from "@/hooks/useProcessing"
 import useErrors from "@/hooks/useErrors"
+import RemoteEndpoints from "@/app/modules/endpoints"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
@@ -79,10 +80,58 @@ const usePartners = () => {
   }
   const registerPartner = async (frm, userdata) => {
     switch (frm) {
+      // Existing partner flows
+      case "partnerwelcome":
+        setProcessing(true)
+        const {
+          success: partnerwelcomeSuccess,
+          error: partnerwelcomeError,
+          data: partnerwelcome,
+        } = await fetchData(RemoteEndpoints.WELCOMEBACK, {
+          method: "POST",
+          cache: "no-store",
+          body: JSON.stringify({
+            partnerid: userdata.partnerid,
+            email_type: userdata.email_type,
+          }),
+        })
+        if (partnerwelcomeError) {
+          setProcessing(false)
+          return { success: false, error: partnerwelcomeError, data: null }
+        }
+
+        setUser(partnerwelcome.user)
+        setPartners(partnerwelcome.partners)
+        setUpdateStatus("review", "partnerwelcome", true)
+        router.push(`/onboarding/verify/${userdata.email_type}`)
+        break
+      case "setpassword":
+        setProcessing(true)
+        const {
+          success: setpasswordSuccess,
+          error: setpasswordError,
+          data: setpassword,
+        } = await fetchData(RemoteEndpoints.RESETPASSWORD, {
+          method: "PUT",
+          cache: "no-store",
+          body: JSON.stringify({
+            user_uuid: user.uuid,
+            password: userdata.password,
+            password_confirmed: userdata.password_confirmed,
+          }),
+        })
+        if (setpasswordError) {
+          setProcessing(false)
+          return { success: false, error: setpasswordError, data: null }
+        }
+        // updatePartner(userdata)
+        setUpdateStatus("updatereview", "setpassword", true)
+        router.push("/dashboard")
+        break
       case "userinfo":
         setProcessing(true)
         const { success, error, data } = await fetchData(
-          `${apiURL}/v1/auth/register/userinfo`,
+          RemoteEndpoints.USERINFO,
           {
             method: "POST",
             cache: "no-store",
@@ -108,7 +157,7 @@ const usePartners = () => {
         setPartner(User.partner)
         setUser(User.user)
         setUpdateStatus("review", "userinfo", true)
-        router.push("/onboarding/verify/userinfo")
+        router.push("/onboarding/verify/new")
         return
         break
       case "companyinfo":
@@ -350,52 +399,7 @@ const usePartners = () => {
         setUpdateStatus("review", "accountinfo", true)
         router.push("/profile/review")
         break
-      // Existing partner flows
-      case "partnerwelcome":
-        setProcessing(true)
-        const {
-          success: partnerwelcomeSuccess,
-          error: partnerwelcomeError,
-          data: partnerwelcome,
-        } = await fetchData(`${apiURL}/v1/existing-partner/welcome-back`, {
-          method: "POST",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: userdata.partnerid,
-          }),
-        })
-        if (partnerwelcomeError) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcomeError, data: null }
-        }
 
-        setUser(partnerwelcome.user)
-        setUpdateStatus("review", "partnerwelcome", true)
-        router.push(`/onboarding/verify/setpassword`)
-        break
-      case "setpassword":
-        setProcessing(true)
-        const {
-          success: setpasswordSuccess,
-          error: setpasswordError,
-          data: setpassword,
-        } = await fetchData(`${apiURL}/v1/auth/reset-password/new-password`, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            user_uuid: user.uuid,
-            password: userdata.password,
-            password_confirmed: userdata.password_confirmed,
-          }),
-        })
-        if (setpasswordError) {
-          setProcessing(false)
-          return { success: false, error: setpasswordError, data: null }
-        }
-        // updatePartner(userdata)
-        setUpdateStatus("updatereview", "setpassword", true)
-        router.push("/dashboard")
-        break
       case "confirmcompanyinfo":
         setProcessing(true)
         const {
@@ -487,21 +491,34 @@ const usePartners = () => {
         }))
     }
   }
-  const resendEmail = async (email) => {
+  const resendEmail = async (email, email_type) => {
     setProcessing(true)
-    const { error } = await proxyFetch(
-      `${apiURL}/v1/auth/register/resend-confirm-email-link`,
+    // const { error } = await proxyFetch(
+    //   RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
+    //   {
+    //     cache: "no-store",
+    //     next: { revalidate: 0 },
+    //   }
+    // )
+
+    // const { error: resendEmailError } = await proxyFetch(
+    const { error: resendEmailError } = await fetchData(
+      RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
       {
+        method: "POST",
         cache: "no-store",
-        next: { revalidate: 0 },
+        body: JSON.stringify({
+          email,
+          email_type,
+        }),
       }
     )
-    if (error) {
-      setError({ validate: error })
-    } else {
-      setSuccess("Email sent successfully")
-    }
     setProcessing(false)
+    if (resendEmailError) {
+      return setError({ verify: resendEmailError })
+    }
+
+    setSuccess("Email sent successfully")
   }
   return {
     partner,

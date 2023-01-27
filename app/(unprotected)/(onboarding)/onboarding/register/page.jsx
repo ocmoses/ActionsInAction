@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRightCircle } from "@/app/components/Icons"
+import { PageRoutes } from "@/app/modules/menu"
 
 export default function Register() {
   return (
@@ -12,7 +13,7 @@ export default function Register() {
         How would you like to join our platform?
       </p>
       <Link
-        href="/onboarding/register/userinfo"
+        href={PageRoutes.registerUserinfo}
         className="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
       >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-mtn to-mtn/10 hover:bg-mtn/70  transition-none sm:transition-color ease-in-out duration-700 relative">
@@ -36,7 +37,7 @@ export default function Register() {
         </div>
       </Link>
       <Link
-        href="/onboarding/register/partnerwelcome"
+        href={PageRoutes.partnerwelcome}
         className="flex flex-col gap-8 group p-2"
       >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-600 to-mtn/10 hover:bg-black/70  transition-none sm:transition-color ease-in-out duration-700 relative">

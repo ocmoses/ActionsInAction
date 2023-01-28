@@ -1,7 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "font/mtn/stylesheet.css";
+@import "./font/mtn/stylesheet.css";
+@import "iconsax-css/style.css";
 @import "./w3.css";
 /* @import './w3-mtn-theme.css'; */
 

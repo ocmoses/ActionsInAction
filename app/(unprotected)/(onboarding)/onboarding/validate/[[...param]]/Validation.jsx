@@ -1,4 +1,6 @@
 "use client"
+// import "client-only"
+
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -15,73 +17,68 @@ import { useEffect, useState } from "react"
 export default function RegisterValidation({ params }) {
   const [{ errors, setError, clearErrors }] = useErrors()
   const { processing, setProcessing, setForm } = useProcessing()
-  const { partner, setPartner } = usePartners()
-  const { processed, setProcessed } = useUsers(false)
+  const [processed, setProcessed] = useState(false)
 
   const router = useRouter()
+  const ValidateEmailAndUser = async () => {
+    setProcessed(true)
+    setProcessing(true)
+    try {
+      let url = ""
+      switch (params.type) {
+        case "existing":
+        case "reset":
+          url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+          break
+        case "new":
+          url = NextEndPoints.VALIDATE_USER
+          break
+      }
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          ...EndPointHeaders,
+          apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+        },
+        cache: "no-store",
+        body: JSON.stringify({ user_uuid: params.user_uuid }),
+      })
 
-  const [userQuery, setUserQuery] = useState(null)
-  const [cookkie, setCookkie] = useState(false)
-  useEffect(() => {
-    setForm(null)
-    clearErrors()
-
-    const ValidateEmailAndUser = async () => {
-      setProcessing(true)
-      try {
-        let url = ""
+      const { success, data } = await response?.json()
+      if (success) {
+        console.log({ processed })
+        console.log({ data })
+        console.log(params.type)
+        console.log({ success })
+        clearErrors()
         switch (params.type) {
           case "existing":
           case "reset":
-            url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+            url = `${PageRoutes.setpassword}/${params.type}`
             break
           case "new":
-            url = NextEndPoints.VALIDATE_USER
+            url = PageRoutes.dashboard
             break
         }
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            ...EndPointHeaders,
-            apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-          },
-          cache: "no-store",
-          body: JSON.stringify({ user_uuid: params.user_uuid }),
-        })
 
-        const { success, data } = await response?.json()
-        console.log(data)
-        if (data) {
-          if (success) {
-            console.log({ success })
-            clearErrors()
-            switch (params.type) {
-              case "existing":
-              case "reset":
-                url = `${PageRoutes.setpassword}/${params.type}`
-                break
-              case "new":
-                url = PageRoutes.dashboard
-                break
-            }
-            setProcessed(true)
-            console.log("redirect", url)
-            return router.push(url)
-            // return { success, data: params.user_uuid, type, error: null }
-          } else {
-            setError({ validate: data.messsage })
-          }
-        } else {
-          setError({ validate: "Something went wrong" })
-        }
-      } catch (err) {
-        setError({ validate: JSON.stringify(err) })
+        return router.push(url)
+      } else {
+        setError({ validate: data.messsage ?? "Something went wrong" })
       }
-      setProcessing(false)
+    } catch (err) {
+      setError({ validate: JSON.stringify(err) })
     }
 
-    if (!processed) ValidateEmailAndUser()
-  }, [params])
+    setProcessing(false)
+  }
+  useEffect(() => {
+    setForm(null)
+    setProcessed(false)
+    clearErrors()
+    if (!processed) {
+      ValidateEmailAndUser()
+    }
+  }, [])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -91,7 +88,7 @@ export default function RegisterValidation({ params }) {
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {errors.validate && (
+          {!processing && processed && errors.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

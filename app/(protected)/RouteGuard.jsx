@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import useUsers from "@/hooks/useUsers"
 import usePartners from "@/hooks/usePartners"
 
-export default function AppGuard({ children }) {
+export default function RouteGuard({ children }) {
   const { session } = useUsers()
   const { partner, partners } = usePartners()
   const router = useRouter()

@@ -10,7 +10,7 @@ export default function Sidebar() {
         } flex flex-col h-screen p-3 bg-gray-800 shadow duration-300`}
       >
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <button onClick={() => setOpen(!open)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ export default function Sidebar() {
                 />
               </svg>
             </button>
-          </div>
+          </div> */}
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center py-4">
               <button

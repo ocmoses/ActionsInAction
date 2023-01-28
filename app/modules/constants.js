@@ -14,6 +14,7 @@ export const EmailType = {
   NEW: "new",
 }
 export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
+// export const apiURL = "http://10.1.29.77/api"
 export const partnerFields = {
   partnerid: "",
 
@@ -292,11 +293,11 @@ export const forms = {
     hand: "",
     fields: {
       password: "Password",
-      password_confirmed: "Repeat password",
+      // password_confirmed: "Repeat password",
     },
     required: {
       password: "Password",
-      password_confirmed: "Repeat password",
+      // password_confirmed: "Repeat password",
     },
   },
   confirmcompanyinfo: {

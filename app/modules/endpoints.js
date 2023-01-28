@@ -19,5 +19,6 @@ const RemoteEndpoints = {
   RESETPASSWORD: `${apiURL}/v1/auth/reset-password/new-password`,
   RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v1/auth/register/resend-email-confirmation-link`,
   CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v1/auth/check-email-verification-link`,
+  CATEGORIES: `${apiURL}/v1/categories`,
 }
 export default RemoteEndpoints

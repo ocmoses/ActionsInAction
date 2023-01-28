@@ -117,7 +117,7 @@ const usePartners = () => {
           body: JSON.stringify({
             user_uuid: user.uuid,
             password: userdata.password,
-            password_confirmed: userdata.password_confirmed,
+            password_confirmed: userdata.password,
           }),
         })
         if (setpasswordError) {

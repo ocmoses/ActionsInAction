@@ -67,7 +67,6 @@ export async function proxyFetch(url, options) {
         options, //: { method: 'GET' }
       }),
     })
-    console.log({ response })
     const { success, error, data } = await response.json()
     return { success, error, data }
   } catch (err) {
@@ -77,7 +76,6 @@ export async function proxyFetch(url, options) {
 export async function logout() {
   const response = await fetch("/api/users/logout")
   await response.json()
-  // console.log({ response })
   return { success: true }
 }
 export const isArray = (data) => {
@@ -162,7 +160,6 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
   const maxAge = data?.login_token?.expires_in
 
   const User = userData(data, partnerID)
-  // console.log("userData User", User)
   if (authToken) {
     // SET COOKIES
     const encryptedAuthToken = Encrypt(authToken)
@@ -201,4 +198,9 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
     }
   }
   return { User, authToken }
+}
+export const getPath = (segments) => {
+  if (!segments) return null
+  const segment = segments.filter((seg) => !seg.includes("("))
+  return segment.reverse().join("/")
 }

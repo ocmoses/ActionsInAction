@@ -39,10 +39,10 @@ function SetPassword() {
         setError({ password: "Your password must be at least, 8 characters" })
         return
       }
-      if (data["password"] !== data["password_confirmed"]) {
-        setError({ password_confirmed: "Password did not match" })
-        return
-      }
+      // if (data["password"] !== data["password_confirmed"]) {
+      //   setError({ password_confirmed: "Password did not match" })
+      //   return
+      // }
     }
     const result = await registerPartner("setpassword", data)
     if (result) {
@@ -74,16 +74,17 @@ function SetPassword() {
           margin="mb-1"
         />
         <div className="mb-6 text-[#999999]">
-          Must include at least 8 characters, an uppercase letter, and a number
+          Must be at least 8 characters, includes uppercase and lowercase
+          letter, a number and a special character
         </div>
-        <TextInput
+        {/* <TextInput
           id="password_confirmed"
           label="Repeat your password"
           type="password"
           value={data.password_confirmed}
           onChange={handleFormChange}
           errors={errors}
-        />
+        /> */}
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (

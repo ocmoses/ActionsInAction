@@ -2,12 +2,12 @@ export const PartnerMenu = [
   {
     label: "Get started",
     icon: "",
-    route: "",
+    route: "/dashboard/getstarted",
   },
   {
     label: "Home",
     icon: "",
-    route: "",
+    route: "/dashboard",
   },
   {
     label: "Services",

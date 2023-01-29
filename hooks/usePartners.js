@@ -18,10 +18,6 @@ const usePartners = () => {
     (state) => state.partners.partner,
     (prev, next) => prev === next
   )
-  const partnerID = useStoreState(
-    (state) => state.partners.partnerID,
-    (prev, next) => prev === next
-  )
   const partners = useStoreState(
     (state) => state.partners.partners,
     (prev, next) => prev === next
@@ -31,9 +27,13 @@ const usePartners = () => {
     (prev, next) => prev === next
   )
   const actions = useStoreActions((action) => action)
+
+  const { setUser } = actions.users
+  const partnerStates = useStoreState((state) => state.partners)
+  const partnerActions = actions.partners
+
   const { setPartner, setPartners, updatePartner, setPartnerID } =
     actions.partners
-  const { setUser } = actions.users
 
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
@@ -112,7 +112,6 @@ const usePartners = () => {
 
         setUser(partnerwelcome.user)
         setPartners(partnerwelcome.partners)
-        setUpdateStatus("review", "partnerwelcome", true)
         router.push(`/onboarding/verify/${userdata.email_type}`)
         break
       case "setpassword":
@@ -135,7 +134,6 @@ const usePartners = () => {
           return { success: false, error: setpasswordError, data: null }
         }
         // updatePartner(userdata)
-        setUpdateStatus("updatereview", "setpassword", true)
         router.push("/dashboard")
         break
       case "userinfo":
@@ -166,83 +164,33 @@ const usePartners = () => {
         const User = userData(data)
         setPartner(User.partner)
         setUser(User.user)
-        setUpdateStatus("review", "userinfo", true)
         router.push("/onboarding/verify/new")
-        return
-        break
-      case "companyinfo":
-        setProcessing(true)
-        const { error: companyinfoError, data: companyinfo } = await fetchData(
-          `${apiURL}/v1/auth/register/companyinfo`,
-          {
-            method: "PUT",
-            cache: "no-store",
-            body: JSON.stringify({
-              partnerid: partner.partnerid,
-              company_name: userdata.company_name,
-              company_role: userdata.company_role,
-            }),
-          }
-        )
-        if (companyinfoError) {
-          setProcessing(false)
-          return { success: false, error: companyinfoError, data: null }
-        }
-        updatePartner(userdata)
-        updatePercentComplete(companyinfo)
-        setUpdateStatus("review", "companyinfo", true)
-        router.push("/onboarding/register/validate")
-        break
-      case "category":
-        setProcessing(true)
-        const {
-          success: catSuccess,
-          error: catError,
-          data: category,
-        } = await fetchData(`${apiURL}/v1/auth/register/category`, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: partner.partnerid,
-            category_id: userdata,
-          }),
-        })
-        if (catError) {
-          setProcessing(false)
-          return { success: false, error: catError, data: null }
-        }
-        updatePartner({ category_id: userdata })
-        updatePercentComplete(category)
-        setUpdateStatus("review", "category", true)
-        router.push("/profile/companydetail")
         break
       case "companydetail":
         setProcessing(true)
-        const {
-          success: companydetailSuccess,
-          error: companydetailError,
-          data: companydetail,
-        } = await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: partner.partnerid,
-            company_name: userdata.company_name,
-            country: userdata.country,
-            company_address: userdata.company_address,
-            company_city: userdata.company_city,
-            company_state: userdata.company_state,
-            company_postcode: userdata.company_postcode,
-          }),
-        })
+        return { success: true, error: null, data: userdata }
+        const { error: companydetailError, data: companydetail } =
+          await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
+            method: "PUT",
+            cache: "no-store",
+            body: JSON.stringify({
+              user_uuid: user.uuid,
+              company_name: userdata.company_name,
+              country: userdata.country,
+              company_address: userdata.company_address,
+              company_city: userdata.company_city,
+              company_state: userdata.company_state,
+              company_postcode: userdata.company_postcode,
+            }),
+          })
         if (companydetailError) {
           setProcessing(false)
           return { success: false, error: companydetailError, data: null }
         }
-        updatePartner(userdata)
-        updatePercentComplete(companydetail)
+        updatePartner(companydetail)
+        updatePercentComplete(userdata) //!Change  => companydetail
         setUpdateStatus("review", "companydetail", true)
-        router.push("/profile/compliance")
+        return { success: true, error: null, data: companydetail }
         break
       case "compliance":
         setProcessing(true)
@@ -410,6 +358,53 @@ const usePartners = () => {
         router.push("/profile/review")
         break
 
+      case "companyinfo":
+        setProcessing(true)
+        const { error: companyinfoError, data: companyinfo } = await fetchData(
+          `${apiURL}/v1/auth/register/companyinfo`,
+          {
+            method: "PUT",
+            cache: "no-store",
+            body: JSON.stringify({
+              partnerid: partner.partnerid,
+              company_name: userdata.company_name,
+              company_role: userdata.company_role,
+            }),
+          }
+        )
+        if (companyinfoError) {
+          setProcessing(false)
+          return { success: false, error: companyinfoError, data: null }
+        }
+        updatePartner(userdata)
+        updatePercentComplete(companyinfo)
+        setUpdateStatus("review", "companyinfo", true)
+        router.push("/onboarding/register/validate")
+        break
+      case "category":
+        setProcessing(true)
+        const {
+          success: catSuccess,
+          error: catError,
+          data: category,
+        } = await fetchData(`${apiURL}/v1/auth/register/category`, {
+          method: "PUT",
+          cache: "no-store",
+          body: JSON.stringify({
+            partnerid: partner.partnerid,
+            category_id: userdata,
+          }),
+        })
+        if (catError) {
+          setProcessing(false)
+          return { success: false, error: catError, data: null }
+        }
+        updatePartner({ category_id: userdata })
+        updatePercentComplete(category)
+        setUpdateStatus("review", "category", true)
+        router.push("/profile/companydetail")
+        break
+
       case "confirmcompanyinfo":
         setProcessing(true)
         const {
@@ -503,15 +498,7 @@ const usePartners = () => {
   }
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
-    // const { error } = await proxyFetch(
-    //   RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
-    //   {
-    //     cache: "no-store",
-    //     next: { revalidate: 0 },
-    //   }
-    // )
 
-    // const { error: resendEmailError } = await proxyFetch(
     const { error: resendEmailError } = await fetchData(
       RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
       {
@@ -530,13 +517,10 @@ const usePartners = () => {
 
     setSuccess("Email sent successfully")
   }
+
   return {
-    partner,
-    partnerID,
-    partners,
-    setPartner,
-    setPartners,
-    setPartnerID,
+    ...partnerStates,
+    ...partnerActions,
     getPartner,
     updatePartner,
     registerPartner,

@@ -1,4 +1,4 @@
-import { createStore } from "easy-peasy"
+import { createStore, persist } from "easy-peasy"
 
 import app from "./models/app"
 import users from "./models/users"
@@ -9,4 +9,5 @@ const model = {
   users,
   partners,
 }
-export default createStore(model)
+const store = createStore(persist(model))
+export default store

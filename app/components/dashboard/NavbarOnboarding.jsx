@@ -26,9 +26,9 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
           </span>
         </div>
         <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
-          <apan className="text-[#999999] group-hover:!text-white">
+          <span className="text-[#999999] group-hover:!text-white">
             Partner category:
-          </apan>
+          </span>
           <span className="font-bold">Vas Added Service</span>
         </div>
       </div>

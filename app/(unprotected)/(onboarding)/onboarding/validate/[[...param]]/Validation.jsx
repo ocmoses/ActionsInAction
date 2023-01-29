@@ -21,7 +21,6 @@ export default function RegisterValidation({ params }) {
 
   const router = useRouter()
   const ValidateEmailAndUser = async () => {
-    setProcessed(true)
     setProcessing(true)
     try {
       let url = ""
@@ -45,12 +44,13 @@ export default function RegisterValidation({ params }) {
       })
 
       const { success, data } = await response?.json()
+
+      console.log({ processed })
+      console.log({ data })
+      console.log(params.type)
+      console.log({ success })
+
       if (success) {
-        console.log({ processed })
-        console.log({ data })
-        console.log(params.type)
-        console.log({ success })
-        clearErrors()
         switch (params.type) {
           case "existing":
           case "reset":
@@ -60,16 +60,19 @@ export default function RegisterValidation({ params }) {
             url = PageRoutes.getstarted
             break
         }
-
+        clearErrors()
+        setProcessed(false)
         return router.push(url)
       } else {
-        setError({ validate: data.messsage ?? "Something went wrong" })
+        setProcessing(false)
+        setProcessed(true)
+        setError({ validate: data.message ?? "Something went wrong" })
       }
     } catch (err) {
+      setProcessing(false)
+      setProcessed(true)
       setError({ validate: JSON.stringify(err) })
     }
-
-    setProcessing(false)
   }
   useEffect(() => {
     setForm(null)
@@ -79,6 +82,7 @@ export default function RegisterValidation({ params }) {
       ValidateEmailAndUser()
     }
   }, [])
+  console.log({ errors })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

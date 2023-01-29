@@ -12,7 +12,7 @@ export default function CategoryDetail({ category }) {
     optional: [],
     allForms: [],
   })
-  const { setForm } = useProcessing()
+  const { setFormSteps, moveToNextForm } = useProcessing()
 
   useEffect(() => {
     const required = []
@@ -35,6 +35,8 @@ export default function CategoryDetail({ category }) {
 
   const getStarted = () => {
     console.log({ validation })
+    setFormSteps(validation)
+    moveToNextForm()
     // set form
     // setForm
     // set isOnboarding

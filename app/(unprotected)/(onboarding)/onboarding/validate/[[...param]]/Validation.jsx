@@ -57,7 +57,7 @@ export default function RegisterValidation({ params }) {
             url = `${PageRoutes.setpassword}/${params.type}`
             break
           case "new":
-            url = PageRoutes.dashboard
+            url = PageRoutes.getstarted
             break
         }
 

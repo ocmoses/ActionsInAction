@@ -20,11 +20,11 @@
 
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
-    /* background: #f7f4ed; */
+    background: #212121;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    /* background: #e0cbcb; */
+    background: #111111;
     border-radius: 100vh;
     border: 0px solid #f6f7ed;
     cursor: pointer !important;

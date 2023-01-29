@@ -16,7 +16,7 @@ const partners = {
     password_confirmed: "Password12345%",
 
     // category
-    category_id: [],
+    category_id: "",
 
     // companyinfo
     company_name: "",

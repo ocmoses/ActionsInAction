@@ -1,23 +1,47 @@
 "use client"
 import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
 import CategoryCard from "@/app/components/dashboard/CategoryCard"
+import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
+import OnboardingLayout from "./OnboardingLayout"
+
+import useUsers from "@/hooks/useUsers"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
+import useProcessing from "@/hooks/useProcessing"
 
 export default function GetStarted({ data }) {
+  const {
+    session: { user },
+  } = useUsers()
   const [isOpen, setIsOpen] = useState(false)
   const [categories, setCategories] = useState([])
-  const [tempCat, setTempCat] = useState(null)
+  const [tmpCat, setTmpCat] = useState(null)
+  const [isOnboarding, setIsOnboarding] = useState(true)
+  const { setForm } = useProcessing()
 
   useEffect(() => {
     const { success, data: categories } = data
     setCategories(categories)
+    setForm("companydetail")
   }, [])
-
   return (
     <>
+      {isOnboarding && (
+        <>
+          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">
+            <OnboardingLayout
+              isOnboarding={isOnboarding}
+              setIsOnboarding={setIsOnboarding}
+            />
+          </div>
+        </>
+      )}
       <div className="max-w-[807px]  mx-auto px-20 pt-[72px]">
-        <h2 className="text-4xl font-bold text-white">Hello Morpheus</h2>
+        {user?.first_name && (
+          <h2 className="text-4xl font-bold text-white">
+            Hello, {user.first_name}
+          </h2>
+        )}
         <p className="text-[#999999]">
           Choose a partner category that best suits your service
         </p>
@@ -30,19 +54,14 @@ export default function GetStarted({ data }) {
                 category={category}
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
-                tempCat={tempCat}
-                setTempCat={setTempCat}
+                tmpCat={tmpCat}
+                setTmpCat={setTmpCat}
               />
             ))}
         </div>
       </div>
       <CategorySideDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
-        {tempCat && (
-          <>
-            <h1>{tempCat.category_name}</h1>
-            <h1>{tempCat.short_description}</h1>
-          </>
-        )}
+        {tmpCat && <CategoryDetail category={tmpCat} />}
       </CategorySideDrawer>
     </>
   )

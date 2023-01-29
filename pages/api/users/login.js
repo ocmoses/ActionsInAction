@@ -1,4 +1,4 @@
-import EndPoints from "@/app/modules/endpoints"
+import RemoteEndPoints from "@/app/modules/endpoints"
 import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
 
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       return
     }
     const body = JSON.parse(req.body)
-    const response = await fetch(EndPoints.LOGIN, {
+    const response = await fetch(RemoteEndPoints.LOGIN, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -19,6 +19,7 @@ export default async function handler(req, res) {
       body: JSON.stringify(body),
     })
     const result = await response.json()
+    console.log(result)
     if (result?.success) {
       const { data, success } = result
       const partnerID = getCookie("partnerid", { req, res })
@@ -48,7 +49,11 @@ export default async function handler(req, res) {
       }
     }
   } catch (error) {
-    res.status(200).json({ success: false, error: error.message })
-    return
+    console.log({ error })
+    return res.status(200).json({
+      success: false,
+      error:
+        "Something went wrong. You may need to check your internet connection",
+    })
   }
 }

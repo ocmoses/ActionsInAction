@@ -10,12 +10,13 @@ import useErrors from "@/hooks/useErrors"
 import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
-export default function Validate({ params: { resource } }) {
+export default function Validate({ params }) {
   const { processing, setProcessing, setForm } = useProcessing()
   const { user } = useUsers()
   const { resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
   const [type, setType] = useState("")
+  const { resource } = params
   useEffect(() => {
     setForm(null)
     setProcessing(false)

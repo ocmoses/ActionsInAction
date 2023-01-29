@@ -1,12 +1,12 @@
 import {
-  AccountInfo,
-  CompanyDetail,
-  Compliance,
-  Indemnity,
-  NccLicense,
-  Shortcode,
-  Review,
-  ContactPerson,
+  AccountInfoIcon,
+  CompanyDetailIcon,
+  ComplianceIcon,
+  IndemnityIcon,
+  NccLicenseIcon,
+  ShortcodeIcon,
+  ReviewIcon,
+  ContactPersonIcon,
 } from "@/app/components/Icons"
 
 export const EmailType = {
@@ -90,6 +90,7 @@ export const forms = {
   userinfo: {
     form: "userinfo",
     title: "Get started",
+    label: "User profile",
     subtitle: "it'll only take a few minutes",
     hand: "👋",
     fields: {
@@ -118,6 +119,7 @@ export const forms = {
   companyinfo: {
     form: "companyinfo",
     title: "Your company and role",
+    label: "Company information",
     subtitle: "it'll only take a few minutes",
     hand: "",
     fields: { company_name: "Company name", company_role: "Company role" },
@@ -126,6 +128,7 @@ export const forms = {
   category: {
     form: "category",
     title: "Choose a service category",
+    label: "Service category",
     subtitle: "You'll be able to add more later",
     hand: "",
     fields: { category_id: "Category ID" },
@@ -133,7 +136,8 @@ export const forms = {
   },
   companydetail: {
     form: "companydetail",
-    title: "Provide your company information",
+    title: "Tell us a bit more about your organisation",
+    label: "Company information",
     subtitle: "",
     hand: "",
     fields: {
@@ -156,6 +160,7 @@ export const forms = {
   compliance: {
     form: "compliance",
     title: "Provide your company's compliance details",
+    label: "Company compliance detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -176,6 +181,7 @@ export const forms = {
   ncclicense: {
     form: "ncclicense",
     title: "Provide your company's NCC license details",
+    label: "NCC license detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -194,6 +200,7 @@ export const forms = {
   nlrclicense: {
     form: "nlrclicense",
     title: "Provide your company's NLRC license details",
+    label: "NLRC license detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -212,6 +219,7 @@ export const forms = {
   shortcode: {
     form: "shortcode",
     title: "Provide your company's short code details",
+    label: "Shortcode detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -236,6 +244,7 @@ export const forms = {
   indemnity: {
     form: "indemnity",
     title: "Provide your company's indemnity insurance",
+    label: "Indemnity insurance information",
     subtitle: "",
     hand: "",
     fields: {
@@ -254,6 +263,7 @@ export const forms = {
   accountinfo: {
     form: "accountinfo",
     title: "Provide your company’s audited accounts",
+    label: "Company's audited accounts detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -277,6 +287,7 @@ export const forms = {
   partnerwelcome: {
     form: "partnerwelcome",
     title: "Enter your email or partner ID",
+    label: "Sevices",
     subtitle: "We'll send a confirmation email to your liked email address",
     hand: "👋",
     fields: {
@@ -440,49 +451,49 @@ export const updateMenu = [
 ]
 export const profileMenuIcons = {
   companydetail: {
-    component: <CompanyDetail />,
+    component: <CompanyDetailIcon />,
     title: "Company Info",
   },
 
   compliance: {
-    compliance: <Compliance />,
+    compliance: <ComplianceIcon />,
     title: "Compliance",
   },
   ncclicense: {
-    component: <NccLicense />,
+    component: <NccLicenseIcon />,
     title: "NCC Licence",
   },
   nlrclicense: {
-    component: <NccLicense />,
+    component: <NccLicenseIcon />,
     title: "NLRC Licence",
   },
   shortcode: {
-    component: <Shortcode />,
+    component: <ShortcodeIcon />,
     title: "Shortcode",
   },
   indemnity: {
-    component: <Indemnity />,
+    component: <IndemnityIcon />,
     title: "Indemnity",
   },
   accountinfo: {
-    component: <AccountInfo />,
+    component: <AccountInfoIcon />,
     title: "Account Info",
   },
   // Update menu
   confirmcompanyinfo: {
-    component: <CompanyDetail />,
+    component: <CompanyDetailIcon />,
     title: "Company Info",
   },
   contactperson: {
-    component: <ContactPerson />,
+    component: <ContactPersonIcon />,
     title: "Contact Person",
   },
   review: {
-    component: <Review />,
+    component: <ReviewIcon />,
     title: "Review & Submit",
   },
   updatereview: {
-    component: <Review />,
+    component: <ReviewIcon />,
     title: "Review & Submit",
   },
 }

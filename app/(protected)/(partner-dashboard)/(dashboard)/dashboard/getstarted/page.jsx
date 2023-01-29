@@ -2,7 +2,6 @@ import RemoteEndpoints, { EndPointHeaders } from "@/app/modules/endpoints"
 import GetStarted from "./GetStarted"
 
 export const getCategories = async () => {
-  console.log("RemoteEndpoints.categories", RemoteEndpoints.CATEGORIES)
   const response = await fetch(RemoteEndpoints.CATEGORIES, {
     method: "GET",
     headers: {

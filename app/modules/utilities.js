@@ -107,14 +107,18 @@ export function userData(data, partnerID) {
   if (data && data.partner) {
     data.partner.progress = {
       percent: data.percent_complete,
-      stage: { ...data.profile_stage },
+      stage: data.profile_stage ? { ...data.profile_stage } : null,
     }
   } else {
-    const stages = [...data.profile_stage] ?? []
+    const stages = data.profile_stage ? { ...data.profile_stage } : null
 
     if (data?.partners.length > 0) {
       data.partners.map((p) => {
-        const stage = stages.find((s) => s.partner_uuid === p.uuid)
+        console.log({ stages })
+        // const stage = stages
+        //   ? stages?.find((s) => s.partner_uuid === p.uuid)
+        //   : null
+        const stage = null
         if (stage) {
           const percent = stage.percentage
           delete stage.id
@@ -157,8 +161,8 @@ export function userData(data, partnerID) {
 }
 export const createHttpOnlyCookie = (data, req, res, partnerID) => {
   const authToken = data?.login_token?.access_token
-  const maxAge = data?.login_token?.expires_in
-
+  // const maxAge = data?.login_token?.expires_in
+  const maxAge = 60 * 60 * 24
   const User = userData(data, partnerID)
   if (authToken) {
     // SET COOKIES
@@ -168,7 +172,7 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
     setCookie("auth-token", encryptedAuthToken, {
       req,
       res,
-      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+      maxAge: maxAge ?? 60 * 60 * 24, // would expire after 15 minutes
       httpOnly: true,
       signed: true,
       path: "/",
@@ -178,7 +182,7 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
     setCookie("user_id", encryptedUserId, {
       req,
       res,
-      maxAge: maxAge ?? 60 * 30, // would expire after 15 minutes
+      maxAge: maxAge ?? 60 * 60 * 24, // would expire after 15 minutes
       httpOnly: true,
       signed: true,
       path: "/",

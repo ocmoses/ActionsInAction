@@ -17,6 +17,7 @@ const getServerSession = async () => {
   const user_id = nextCookies.has("user_id")
     ? nextCookies.get("user_id")?.value
     : null
+
   if (user_id) {
     // GET USER INFO
     const authToken = token ? Decrypt(token) : null
@@ -32,7 +33,6 @@ const getServerSession = async () => {
         },
       })
       const { success, data } = await response.json()
-
       if (response?.ok) {
         const User = userData(data)
         if (partnerID && User.partners?.length > 0) {
@@ -66,6 +66,7 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <head />
       <body>
+        <div id="portals" className="relative"></div>
         {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
         <Providers>
           <Session serverSession={serverSession}>{children}</Session>

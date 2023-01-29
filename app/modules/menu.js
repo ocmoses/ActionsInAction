@@ -48,4 +48,6 @@ export const PageRoutes = {
   setpassword: "/onboarding/setpassword",
   registerUserinfo: "/onboarding/register/userinfo",
   dashboard: "/dashboard",
+  getstarted: "/dashboard/getstarted",
+  companyinfo: "/dashboard/getstarted/onboarding/companyinfo",
 }

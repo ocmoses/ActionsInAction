@@ -13,8 +13,8 @@ const useLogout = () => {
     startLoading("logout")
     await logout()
     setUser(null)
-    setPartners(null)
     setPartner(null)
+    setPartners(null)
     setPartnerID(null)
     endLoading("logout")
   }

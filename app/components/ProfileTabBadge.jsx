@@ -1,11 +1,11 @@
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { StepBadge } from './Icons'
+import usePartners from "@/hooks/usePartners"
+import { StepBadgeIcon } from "./Icons"
 export default function ProfileTabBadge({ type, name }) {
-  const { checkUpdateStatus } = useOnboardingContext()
+  const { checkUpdateStatus } = usePartners()
   return (
-    <StepBadge
+    <StepBadgeIcon
       iconClass="absolute right-[-4px] bottom-[-4px]"
-      fill={checkUpdateStatus(type, name) ? '#FFCB03' : '#666666'}
+      fill={checkUpdateStatus(type, name) ? "#FFCB03" : "#999999"}
     />
   )
 }

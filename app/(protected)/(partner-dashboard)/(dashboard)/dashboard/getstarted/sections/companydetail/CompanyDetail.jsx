@@ -6,19 +6,20 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import Button from "@/app/components/form/Button"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import usePartners from "@/hooks/usePartners"
+import useProcessing from "@/hooks/useProcessing"
+
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
-import useProcessing from "@/hooks/useProcessing"
 
 function CompanyDetail() {
-  const { processing, setProcessing, setForm, form } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm } = useProcessing()
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
+  const { partner, registerPartner } = usePartners()
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
@@ -29,18 +30,17 @@ function CompanyDetail() {
     company_state: "",
     company_postcode: "",
   })
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (partner)
       setData({
-        company_name: partnerInfo.company_name ?? "",
-        country: partnerInfo.country ?? "",
-        company_address: partnerInfo.company_address ?? "",
-        company_city: partnerInfo.company_city ?? "",
-        company_state: partnerInfo.company_state ?? "",
-        company_postcode: partnerInfo.company_postcode ?? "",
+        company_name: partner.company_name ?? "",
+        country: partner.country ?? "",
+        company_address: partner.company_address ?? "",
+        company_city: partner.company_city ?? "",
+        company_state: partner.company_state ?? "",
+        company_postcode: partner.company_postcode ?? "",
       })
-  }, [partnerInfo])
+  }, [partner])
   useEffect(() => {
     setForm("companydetail")
     setProcessing(false)
@@ -61,7 +61,7 @@ function CompanyDetail() {
       for (const field in required) {
         if (!!!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
@@ -69,7 +69,7 @@ function CompanyDetail() {
 
     const result = await registerPartner("companydetail", data)
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) setError("companydetail", result.error)
     }
   }
   const handleFormChange = (e) => {
@@ -80,11 +80,11 @@ function CompanyDetail() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["companydetail"]} />}
         </div>
         <TextInput
           id="company_name"

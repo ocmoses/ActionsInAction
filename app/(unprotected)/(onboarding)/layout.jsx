@@ -3,19 +3,11 @@ import Image from "next/image"
 import React from "react"
 import NavbarOnboarding from "@/app/components/NavbarOnboarding"
 import UserAvartar from "@/app/components/UserAvartar"
-import { useRouter, useSelectedLayoutSegments } from "next/navigation"
-// import { useSession } from 'next-auth/react'
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useEffect } from "react"
+import { useSelectedLayoutSegments } from "next/navigation"
 
-function Layout({ children }) {
+export default function Layout({ children }) {
   const segments = useSelectedLayoutSegments()
   const currentPath = segments?.reverse()[0]
-  // console.log("currentPath", currentPath)
-
-  // const session = useSession()
-  const router = useRouter()
-  const exclude = ["companyinfo"]
   return (
     <>
       <div className="grid grid-cols-4 w-screen">
@@ -43,5 +35,3 @@ function Layout({ children }) {
     </>
   )
 }
-
-export default Layout

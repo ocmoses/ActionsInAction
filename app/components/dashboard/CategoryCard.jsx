@@ -4,24 +4,20 @@ export default function CategoryCard({
   category,
   isOpen,
   setIsOpen,
-  tempCat,
-  setTempCat,
+  tmpCat,
+  setTmpCat,
 }) {
   const selectCategory = (cat) => {
-    if (tempCat) {
-      console.log(1)
-      if (tempCat.uuid === cat.uuid) {
-        console.log(2)
-        setTempCat(null)
+    if (tmpCat) {
+      if (tmpCat.uuid === cat.uuid) {
+        setTmpCat(null)
         setIsOpen(false)
       } else {
-        console.log(3)
-        setTempCat(cat)
+        setTmpCat(cat)
         setIsOpen(true)
       }
     } else {
-      console.log(4)
-      setTempCat(cat)
+      setTmpCat(cat)
       setIsOpen(true)
     }
   }

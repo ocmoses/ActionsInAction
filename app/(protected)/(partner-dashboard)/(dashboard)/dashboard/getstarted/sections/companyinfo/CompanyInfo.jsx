@@ -1,22 +1,24 @@
 "use client"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import usePartners from "@/hooks/usePartners"
+import TextInput from "@/app/components/form/TextInput"
 import SelectInput from "@/app/components/form/SelectInput"
 import SelectInputOption from "@/app/components/form/SelectInputOption"
-import TextInput from "@/app/components/form/TextInput"
-import { Util } from "@/utils/utility"
+import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
+import useProcessing from "@/hooks/useProcessing"
+import { Util } from "@/utils/utility"
 import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
 
-import useProcessing from "@/hooks/useProcessing"
 function CompanyInfo() {
   const { processing, setProcessing, setForm } = useProcessing()
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
+  const { partner, registerPartner } = usePartners()
   const { title, subtitle, hand, required } = forms["confirmcompanyinfo"]
   const [data, setData] = useState({
     company_name: "",
@@ -28,17 +30,18 @@ function CompanyInfo() {
   })
 
   useEffect(() => {
-    if (partnerInfo)
+    if (partner)
       setData({
-        company_name: partnerInfo.company_name ?? "",
-        country: partnerInfo.country ?? "",
-        company_address: partnerInfo.company_address ?? "",
-        company_city: partnerInfo.company_city ?? "",
-        company_state: partnerInfo.company_state ?? "",
-        company_postcode: partnerInfo.company_postcode ?? "",
+        company_name: partner.company_name ?? "",
+        country: partner.country ?? "",
+        company_address: partner.company_address ?? "",
+        company_city: partner.company_city ?? "",
+        company_state: partner.company_state ?? "",
+        company_postcode: partner.company_postcode ?? "",
       })
-  }, [partnerInfo])
+  }, [partner])
   useEffect(() => {
+    clearErrors()
     setForm("confirmcompanyinfo")
     setProcessing(false)
   }, [])
@@ -50,7 +53,7 @@ function CompanyInfo() {
         : []
     )
   }, [data.country])
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
     let error = false
@@ -58,13 +61,15 @@ function CompanyInfo() {
       for (const field in required) {
         if (!!!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
     }
-
-    registerPartner("confirmcompanyinfo", data)
+    const result = await registerPartner("confirmcompanyinfo", data)
+    if (result) {
+      if (result?.error) return setError({ confirmcompanyinfo: result.error })
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -74,9 +79,12 @@ function CompanyInfo() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[520px]">
+    <div className="w3-animate-opacity mx-auto py-10 w-full max-w-[480px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <div className="mb-6">
+          {errors && <FormErrors error={errors["confirmcompanyinfo"]} />}
+        </div>
         <TextInput
           id="company_name"
           label="Company name"

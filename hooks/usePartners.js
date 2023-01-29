@@ -43,6 +43,16 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
+
+  const checkUpdateStatus = (type, key) => {
+    if (type === "review") {
+      if (reviewStatus[key]) return true
+      return false
+    } else {
+      if (reviewUpdateStatus[key]) return true
+      return false
+    }
+  }
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null
     const { percent, stages, status } = partner.progress
@@ -532,6 +542,7 @@ const usePartners = () => {
     registerPartner,
     checkRegStatus,
     setUpdateStatus,
+    checkUpdateStatus,
     resendEmail,
   }
 }

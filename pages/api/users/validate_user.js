@@ -19,7 +19,9 @@ export default async function handler(req, res) {
       }
     )
     if (response) {
-      const { data, success } = await response.json()
+      const result = await response.json()
+      console.log({ result })
+      const { data, success } = result
       if (success) {
         const { User, authToken } = createHttpOnlyCookie(data, req, res)
         if (!authToken)
@@ -40,6 +42,7 @@ export default async function handler(req, res) {
       })
     }
   } catch (error) {
+    console.log({ error })
     return res
       .status(200)
       .json({ success: false, data: { message: error.message } })

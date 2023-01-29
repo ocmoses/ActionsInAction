@@ -71,6 +71,7 @@ function CompanyDetail() {
     if (result) {
       if (result?.error) setError("companydetail", result.error)
     }
+    moveToNext("companydetail")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

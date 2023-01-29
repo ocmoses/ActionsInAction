@@ -29,10 +29,27 @@ const app = {
 
   // FORMS
   form: null,
+  formSteps: {},
+  nextForm: "",
   setForm: action((state, form) => {
     state.form = form
   }),
-
+  setFormSteps: action((state, steps) => {
+    console.log({ steps })
+    state.formSteps = steps
+  }),
+  moveToNextForm: action((state, current) => {
+    const forms = ["companydetail", "compliance", "ncclincense"]
+    if (!current) {
+      state.nextForm = "companydetail"
+      return state.nextForm
+    }
+    state.partner = { ...state.partner, ...partner }
+    const Partners = state.partners.filter((p) => {
+      p.uuid !== partner.uuid
+    })
+    state.partners = [...Partners, partner]
+  }),
   // ONBOARDING
   service: {
     uuid: "",

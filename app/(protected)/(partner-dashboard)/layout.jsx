@@ -12,7 +12,7 @@ function Layout({ children }) {
 
   return (
     // <ErrorBoundary fallback={<Error />}>
-    <div className="flex flex-col h-screen overflow-y-hidden w-screen pb-[50px] bg-[#030303]">
+    <div className="flex flex-col h-screen w-screen pb-[50px] bg-[#030303]">
       <NavbarDashboard open={open} setOpen={setOpen} />
       <div className="flex h-full">
         <div

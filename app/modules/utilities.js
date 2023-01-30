@@ -118,8 +118,8 @@ export const Util = {
     )
   },
 }
-export const scrollToTop = () => {
-  var contentBody = document.getElementById("contentBody")
+export const scrollToTop = (id) => {
+  var contentBody = document.getElementById(id ?? "contentBody")
   contentBody.scrollTo({
     top: 0,
     behavior: "smooth",

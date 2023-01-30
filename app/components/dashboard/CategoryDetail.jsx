@@ -9,15 +9,20 @@ import { CircleOkCheckmarkIcon } from "@/app/components/Icons"
 import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
-export default function CategoryDetail({ category, setIsOnboarding }) {
+export default function CategoryDetail({
+  category,
+  setIsOnboarding,
+  setIsOpen,
+}) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, registerPartner } = usePartners()
+  const { partner, registerPartner, setCategory } = usePartners()
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
   })
   const {
+    form,
     processing,
     setProcessing,
     setFormSteps,
@@ -26,7 +31,6 @@ export default function CategoryDetail({ category, setIsOnboarding }) {
   } = useProcessing()
 
   useEffect(() => {
-    setProcessing(false)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
@@ -44,74 +48,96 @@ export default function CategoryDetail({ category, setIsOnboarding }) {
       }
     }
     setValidation({ required, optional, allForms })
-  }, [])
+    setProcessing(false)
+  }, [category])
 
-  const selectCategory = async (uuid) => {
+  const selectCategory = async (category) => {
     clearErrors()
-    setProcessing(true)
-    const result = await registerPartner("category", { category_uuid: uuid })
+    const result = await registerPartner("category", {
+      category_uuid: category.uuid,
+    })
     if (result) {
       console.log({ result })
       setProcessing(false)
-      if (result?.error) setError({ category: result.error })
-    } else {
+      if (result?.error) {
+        setError({ category: result.error })
+        return
+      }
+
       setFormSteps(validation)
-      setActiveCategory(uuid)
+      setActiveCategory(category.uuid)
+      setCategory(category)
       moveToNextForm("category")
       setIsOnboarding(true)
+      setIsOpen(false)
+      console.log({ form })
+      return
     }
+    setError({ category: "Something went wrong" })
   }
 
   return (
-    <div className="py-[56px] px-[40px]">
-      <div className="flex flex-col justify-start items-start gap-8 ">
-        <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
-          {category.icon && (
-            <Image src={category.icon} alt="" width={24} height={24} />
+    <div className="pt-[56px] pb-3 px-[40px] h-full">
+      <div className="flex flex-col h-full justify-between ">
+        <div className="flex flex-col flex-1 gap-8 justify-start items-start mb-auto">
+          <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
+            {category.icon && (
+              <Image
+                src={category.icon}
+                alt=""
+                width={24}
+                height={24}
+                className="text-[#FFCB03]"
+              />
+            )}
+          </div>
+          {errors["category"] && (
+            <div className="mb-6">
+              <FormErrors error={errors["category"]} />
+            </div>
+          )}
+          <div className="">
+            <h1 className="text-white text-xl font-bold">
+              {category.category_name}
+            </h1>
+            <p className="text-md text-[#999999]">
+              {category.short_description}
+            </p>
+          </div>
+          <div className="">
+            <h3 className="text-white text-lg font-bold">Get started</h3>
+            <p className="text-md text-[#999999]">
+              For regulatory compliance, we’ll require the following
+              informations from our VAS providers.
+            </p>
+          </div>
+          <div className="">
+            <ul className="flex flex-col gap-4">
+              {validation.required.length > 0 &&
+                validation.required.map((required) => (
+                  <li
+                    key={required}
+                    className="flex justify-start items-center gap-4"
+                  >
+                    <div className="flex justify-center items-center p-1 rounded-full bg-white/10">
+                      <CircleOkCheckmarkIcon iconClass="text-[#FFCB03] w-4 h-4" />
+                    </div>
+                    <span className="text-white font-bold">{required}</span>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+        <div className="">
+          {processing ? (
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
+          ) : (
+            <Button
+              onClick={() => selectCategory(category)}
+              label="Get started"
+            />
           )}
         </div>
-        {errors["category"] && (
-          <div className="mb-6">
-            <FormErrors error={errors["category"]} />
-          </div>
-        )}
-        <div className="">
-          <h1 className="text-white text-xl font-bold">
-            {category.category_name}
-          </h1>
-          <p className="text-md text-[#999999]">{category.short_description}</p>
-        </div>
-        <div className="">
-          <h3 className="text-white text-lg font-bold">Get started</h3>
-          <p className="text-md text-[#999999]">
-            For regulatory compliance, we’ll require the following informations
-            from our VAS providers.
-          </p>
-        </div>
-        <div className="">
-          <ul className="flex flex-col gap-4">
-            {validation.required.length > 0 &&
-              validation.required.map((required) => (
-                <li
-                  key={required}
-                  className="flex justify-start items-center gap-4"
-                >
-                  <div className="flex justify-center items-center p-1 rounded-full bg-white/10">
-                    <CircleOkCheckmarkIcon iconClass="text-[#FFCB03] w-4 h-4" />
-                  </div>
-                  <span className="text-white font-bold">{required}</span>
-                </li>
-              ))}
-          </ul>
-        </div>
-        {processing ? (
-          <TailSpinPreloader width={40} height={40} fill="#efb703" />
-        ) : (
-          <Button
-            onClick={() => selectCategory(category.uuid)}
-            label="Get started"
-          />
-        )}
       </div>
     </div>
   )

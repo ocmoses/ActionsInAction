@@ -1,16 +1,7 @@
 import { action, computed, thunk } from "easy-peasy"
 const users = {
-  users: [],
-  user: {
-    id: "",
-    uuid: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    telephone: "",
-    updated_at: "",
-    created_at: "",
-  },
+  users: null,
+  user: null,
   isLoggedIn: computed((state) => state.user?.id != null),
   fullname: computed((state) => {
     return state.user?.id != null

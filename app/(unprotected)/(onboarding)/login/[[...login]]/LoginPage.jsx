@@ -16,7 +16,8 @@ import { PageRoutes } from "@/app/modules/menu"
 import { clearPersistStore } from "@/store"
 
 function Login({ params }) {
-  const { setPartner, setPartners, partnerID } = usePartners()
+  const { setPartner, setPartners, setPartnerID, setPartnerCategories } =
+    usePartners()
   const { setUser } = useUsers()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
@@ -47,7 +48,6 @@ function Login({ params }) {
     if (!data.password) {
       return setError({ password: `Please enter your password` })
     }
-
     setProcessing(true)
     await clearPersistStore()
     const response = await fetch(NextEndPoints.LOGIN, {
@@ -66,10 +66,10 @@ function Login({ params }) {
 
     if (User.user) setUser(User.user)
     if (User.partners) setPartners(User.partners)
-    if (User.partner) setPartner(User.partner)
-    if (partnerID) {
-      User.partner = User.partners.find((p) => p.uuid === partnerID)
+    if (User.partner) {
       setPartner(User.partner)
+      setPartnerID(User.partner.uuid)
+      setPartnerCategories(User.partner.categories)
     }
     // REDIRECT
     const redirect = params ? `/${params.join("/")}` : PageRoutes.dashboard

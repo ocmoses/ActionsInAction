@@ -186,7 +186,7 @@ const usePartners = () => {
           return { success: false, error: categoryError, data: null }
         }
         setCategory(categoryData.category)
-        updatePartner(categoryData.partner)
+        setPartner(categoryData.partner)
         // updatePercentComplete(category)
         setUpdateStatus("review", "category", true)
         return { success: true, error: null, data: categoryData }

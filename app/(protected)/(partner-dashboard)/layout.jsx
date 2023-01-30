@@ -18,13 +18,13 @@ function Layout({ children }) {
         <div
           className={` ${
             open ? "w-[250px]" : "w-[100px] "
-          } flex h-full py-[36px] px-4 duration-300 border-r border-r-white/20 bg-[#111111] overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] scrollbar-w-[6px]`}
+          } flex h-full py-[36px] px-4 duration-300 border-r border-r-white/20 bg-[#111111] overflow-x-hidden scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]`}
         >
           <div className="flex-1">
             <MenuBar open={open} />
           </div>
         </div>
-        <div className="mx-auto flex-1 relative overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] scrollbar-w-[6px]">
+        <div className="mx-auto flex-1 relative overflow-x-hidden scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
           {children}
         </div>
       </div>

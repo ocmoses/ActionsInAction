@@ -24,7 +24,7 @@ export default function Validate({ params }) {
     clearErrors()
   }, [])
   useEffect(() => {
-    setType(resource && resource[0] ? resource[0] : "new")
+    setType(resource && resource[1] ? resource[1] : "new")
   }, [resource])
 
   return (

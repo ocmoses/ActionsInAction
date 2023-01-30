@@ -1,9 +1,9 @@
-import { ArrowRightCircle, TailSpinPreloader } from '@/app/components/Icons'
-import { useOnboardingContext } from '@/hooks/useOnboardingContext'
-import { outputDate } from '@/app/modules/utilities'
-import ReviewTitle from './ReviewTitle'
-import Button from '@/app/components/form/Button'
-import Link from 'next/link'
+import { ArrowRightCircle, TailSpinPreloader } from "@/app/components/Icons"
+import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import { outputDate } from "@/app/modules/utilities"
+import ReviewTitle from "./ReviewTitle"
+import Button from "@/app/components/form/Button"
+import Link from "next/link"
 
 export default function ReviewBox() {
   const {
@@ -11,7 +11,7 @@ export default function ReviewBox() {
     STATES,
     BANKS,
     partnerInfo,
-    categories: categoryData
+    categories: categoryData,
   } = useOnboardingContext()
   const { allcategories } = categoryData
   return (
@@ -42,7 +42,7 @@ export default function ReviewBox() {
                   </div>
                   <div className="flex justify-between gap-3">
                     <div className="text-white text-[14px]">
-                      {typeof partnerInfo.category_id !== 'string' &&
+                      {typeof partnerInfo.category_id !== "string" &&
                         partnerInfo.category_id?.length > 0 &&
                         allcategories &&
                         partnerInfo.category_id.map((cid) => (
@@ -51,7 +51,7 @@ export default function ReviewBox() {
                           </div>
                         ))}
                     </div>
-                    {typeof partnerInfo.category_id !== 'string' &&
+                    {typeof partnerInfo.category_id !== "string" &&
                       partnerInfo.category_id?.length > 0 &&
                       allcategories && (
                         <Link
@@ -163,7 +163,7 @@ export default function ReviewBox() {
                     RC. number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.rc_no}{' '}
+                    {partnerInfo.rc_no}{" "}
                   </div>
                 </div>
 
@@ -172,7 +172,7 @@ export default function ReviewBox() {
                     Tax identification number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.tin_no}{' '}
+                    {partnerInfo.tin_no}{" "}
                   </div>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function ReviewBox() {
                     NLRC License number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.nlrc_license_id}{' '}
+                    {partnerInfo.nlrc_license_id}{" "}
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@ export default function ReviewBox() {
                     Shortcode
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.shortcode}{' '}
+                    {partnerInfo.shortcode}{" "}
                   </div>
                 </div>
               </div>
@@ -426,7 +426,7 @@ export default function ReviewBox() {
                     Indemnity issue number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.indemnity_no}{' '}
+                    {partnerInfo.indemnity_no}{" "}
                   </div>
                 </div>
               </div>
@@ -470,7 +470,7 @@ export default function ReviewBox() {
       {/* Account info */}
       <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
         <div className="md:grid md:grid-cols-4 gap-12">
-          <ReviewTitle title="Audited accounts" href="/profile/accountinfo" />
+          <ReviewTitle title="Audited accounts" href="/profile/financial" />
           <div className="md:col-span-3 divide-y divide-slate-400/25">
             <div className="pb-3">
               <div className="grid">
@@ -479,7 +479,7 @@ export default function ReviewBox() {
                     Bank account name
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.account_name}{' '}
+                    {partnerInfo.account_name}{" "}
                   </div>
                 </div>
               </div>
@@ -491,7 +491,7 @@ export default function ReviewBox() {
                     Account number
                   </div>
                   <div className="text-white text-[14px]">
-                    {partnerInfo.account_no}{' '}
+                    {partnerInfo.account_no}{" "}
                   </div>
                 </div>
 

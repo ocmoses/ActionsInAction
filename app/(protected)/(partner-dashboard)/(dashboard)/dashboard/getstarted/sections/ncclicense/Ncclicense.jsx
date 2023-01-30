@@ -7,16 +7,16 @@ import useErrors from "@/hooks/useErrors"
 import Button from "@/app/components/form/Button"
 import FormErrors from "@/app/components/FormErrors"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import usePartners from "@/hooks/usePartners"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
 import useProcessing from "@/hooks/useProcessing"
 
 function Ncclicense() {
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { partner, category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
     vas_license_id: "",
@@ -27,14 +27,14 @@ function Ncclicense() {
   const { title, subtitle, hand, required } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (partner?.category)
       setData({
-        vas_license_id: partnerInfo.vas_license_id ?? "",
-        ncc_issue_date: partnerInfo.ncc_issue_date ?? "",
-        ncc_expiry_date: partnerInfo.ncc_expiry_date ?? "",
-        ncc_doc: partnerInfo.ncc_doc ?? "",
+        vas_license_id: partner?.category?.vas_license_id ?? "",
+        ncc_issue_date: partner?.category?.ncc_issue_date ?? "",
+        ncc_expiry_date: partner?.category?.ncc_expiry_date ?? "",
+        ncc_doc: partner?.category?.ncc_doc ?? "",
       })
-  }, [partnerInfo])
+  }, [partner?.category])
   useEffect(() => {
     setForm("ncclicense")
     setProcessing(false)
@@ -53,10 +53,13 @@ function Ncclicense() {
       }
       if (error) return
     }
+
     const result = await registerPartner("ncclicense", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ ncclicense: result.error })
     }
+    moveToNextForm("ncclicense")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -77,7 +80,7 @@ function Ncclicense() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["ncclicense"]} />}
         </div>
         <TextInput
           id="vas_license_id"

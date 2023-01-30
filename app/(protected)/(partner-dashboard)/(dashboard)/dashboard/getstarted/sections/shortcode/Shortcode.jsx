@@ -8,16 +8,15 @@ import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import usePartners from "@/hooks/usePartners"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
 import useProcessing from "@/hooks/useProcessing"
 
 function Shortcode() {
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { partner, registerPartner } = usePartners()
 
   const [data, setData] = useState({
     shortcode: "",
@@ -31,19 +30,19 @@ function Shortcode() {
   const { title, subtitle, hand, required } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (partner?.category)
       setData({
-        shortcode: partnerInfo.shortcode ?? "",
-        shortcode_issue_date: partnerInfo.shortcode_issue_date ?? "",
-        shortcode_expiry_date: partnerInfo.shortcode_expiry_date ?? "",
+        shortcode: partner?.category?.shortcode ?? "",
+        shortcode_issue_date: partner?.category?.shortcode_issue_date ?? "",
+        shortcode_expiry_date: partner?.category?.shortcode_expiry_date ?? "",
         shortcode_price_issue_date:
-          partnerInfo.shortcode_price_issue_date ?? "",
+          partner?.category?.shortcode_price_issue_date ?? "",
         shortcode_price_expiry_date:
-          partnerInfo.shortcode_price_expiry_date ?? "",
-        shortcode_doc: partnerInfo.shortcode_doc ?? "",
-        shortcode_approval_doc: partnerInfo.shortcode_approval_doc ?? "",
+          partner?.category?.shortcode_price_expiry_date ?? "",
+        shortcode_doc: partner?.category?.shortcode_doc ?? "",
+        shortcode_approval_doc: partner?.category?.shortcode_approval_doc ?? "",
       })
-  }, [partnerInfo])
+  }, [partner?.category])
   useEffect(() => {
     setForm("shortcode")
     setProcessing(false)
@@ -62,9 +61,11 @@ function Shortcode() {
       if (error) return
     }
     const result = await registerPartner("shortcode", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ shortcode: result.error })
     }
+    moveToNextForm("shortcode")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -85,7 +86,7 @@ function Shortcode() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["shortcode"]} />}
         </div>
         <TextInput
           id="shortcode"

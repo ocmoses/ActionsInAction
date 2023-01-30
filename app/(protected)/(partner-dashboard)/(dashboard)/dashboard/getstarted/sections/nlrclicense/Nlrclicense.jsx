@@ -11,13 +11,12 @@ import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
 
 function NlrcLicense() {
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { partner, registerPartner } = usePartners()
 
   const [data, setData] = useState({
     nlrc_license_id: "",
@@ -28,14 +27,14 @@ function NlrcLicense() {
   const { title, subtitle, hand, required } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (partner?.category)
       setData({
-        nlrc_license_id: partnerInfo.nlrc_license_id ?? "",
-        nlrc_issue_date: partnerInfo.nlrc_issue_date ?? "",
-        nlrc_expiry_date: partnerInfo.nlrc_expiry_date ?? "",
-        nlrc_doc: partnerInfo.nlrc_doc ?? "",
+        nlrc_license_id: partner?.category?.nlrc_license_id ?? "",
+        nlrc_issue_date: partner?.category?.nlrc_issue_date ?? "",
+        nlrc_expiry_date: partner?.category?.nlrc_expiry_date ?? "",
+        nlrc_doc: partner?.category?.nlrc_doc ?? "",
       })
-  }, [partnerInfo])
+  }, [partner?.category])
   useEffect(() => {
     setForm("nlrclicense")
     setProcessing(false)
@@ -55,9 +54,11 @@ function NlrcLicense() {
       if (error) return
     }
     const result = await registerPartner("nlrclicense", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ nlrclicense: result.error })
     }
+    moveToNextForm("nlrclicense")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -78,7 +79,7 @@ function NlrcLicense() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["nlrclicense"]} />}
         </div>
         <TextInput
           id="nlrc_license_id"

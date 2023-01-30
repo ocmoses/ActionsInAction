@@ -39,7 +39,7 @@ const app = {
     "nlrclicense",
     "shortcode",
     "indemnity",
-    "accountinfo",
+    "financial",
   ],
   formValidation: [],
   activeCategory: null,

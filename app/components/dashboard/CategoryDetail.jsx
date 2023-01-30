@@ -39,43 +39,21 @@ export default function CategoryDetail({
     setActiveCategory,
   } = useProcessing()
 
-  useEffect(() => {
-    completeOnboarding(category)
-    // const required = []
-    // const optional = []
-    // const allForms = { required: [], optional: [], all: [] }
-    // if (category.validation) {
-    //   for (const validate in category.validation) {
-    //     if (category.validation[validate] === "r") {
-    //       required.push(forms[validate].label)
-    //       allForms.required.push(validate)
-    //       allForms.all.push(validate)
-    //     } else if (category.validation[validate] === "o") {
-    //       optional.push(forms[validate].label)
-    //       allForms.optional.push(validate)
-    //       allForms.all.push(validate)
-    //     }
-    //   }
-    // }
-    // setValidation({ required, optional, allForms })
-    // setProcessing(false)
-  }, [category])
-
   const selectCategory = async (category) => {
+    console.log({ category })
     clearErrors()
     const result = await registerPartner("category", {
       category_uuid: category.uuid,
     })
+
     if (result) {
-      console.log({ result })
       setProcessing(false)
       if (result?.error) {
         return setError({ category: result.error })
       }
-
+      completeOnboarding(category)
       setFormSteps(validation)
       setActiveCategory(category.uuid)
-      setCategory(category)
       moveToNextForm("category")
       setIsOnboarding(true)
       setIsOpen(false)

@@ -1,3 +1,4 @@
+import "server-only"
 import Validation from "./Validation"
 import RemoteEndpoints, {
   NextEndPoints,
@@ -7,6 +8,7 @@ import { PageRoutes } from "@/app/modules/menu"
 let processed = false
 const ValidateEmailUser = async (payload) => {
   if (processed) return
+  console.log(EndPointHeaders)
   try {
     let url = ""
     let response = null
@@ -19,6 +21,7 @@ const ValidateEmailUser = async (payload) => {
             ...EndPointHeaders,
           },
           cache: "no-store",
+          next: { revalidate: 0 },
           body: JSON.stringify({ user_uuid: payload.user_uuid }),
         })
         break
@@ -27,6 +30,7 @@ const ValidateEmailUser = async (payload) => {
           `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`,
           {
             cache: "no-store",
+            next: { revalidate: 0 },
             headers: { ...EndPointHeaders },
           }
         )
@@ -81,12 +85,10 @@ const ValidateEmailUser = async (payload) => {
   }
 }
 export default async function ValidationPage({ params: { param } }) {
-  console.log({ param })
   const user_uuid = param && param[0] ? param[0] : null
   const type = param && param[1] ? param[1] : null
   const Params = { user_uuid, type }
-  console.log({ Params })
-  const result = await ValidateEmailUser(Params)
-  console.log({ result })
-  return <Validation params={result} />
+  // const result = await ValidateEmailUser(Params)
+  // console.log({ result })
+  return <Validation params={Params} />
 }

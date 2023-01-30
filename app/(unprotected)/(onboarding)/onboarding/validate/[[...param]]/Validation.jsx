@@ -1,5 +1,5 @@
 "use client"
-// import "client-only"
+import "client-only"
 
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
@@ -18,6 +18,8 @@ export default function RegisterValidation({ params }) {
   const [{ errors, setError, clearErrors }] = useErrors()
   const { processing, setProcessing, setForm } = useProcessing()
   const [validateError, setValidateErrors] = useState(false)
+  const [processed, setProcessed] = useState(false)
+  const [count, setCount] = useState(0)
 
   const router = useRouter()
   useEffect(() => {
@@ -32,69 +34,102 @@ export default function RegisterValidation({ params }) {
       setError({ validate: params.error })
     }
   }, [params])
-  // const ValidateEmailAndUser = async () => {
-  //   setProcessing(true)
-  //   try {
-  //     let url = ""
-  //     switch (params.type) {
-  //       case "existing":
-  //       case "reset":
-  //         url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
-  //         break
-  //       case "new":
-  //         url = NextEndPoints.VALIDATE_USER
-  //         break
-  //     }
-  //     const response = await fetch(url, {
-  //       method: "POST",
-  //       headers: {
-  //         ...EndPointHeaders,
-  //         apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-  //       },
-  //       cache: "no-store",
-  //       body: JSON.stringify({ user_uuid: params.user_uuid }),
-  //     })
+  const ValidateEmailAndUser = async () => {
+    setProcessing(true)
+    try {
+      let url = ""
+      let response = null
+      switch (params.type) {
+        case "existing":
+        case "reset":
+          // url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+          response = await fetch(
+            RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
+            {
+              method: "POST",
+              headers: {
+                // ...EndPointHeaders,
+                apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+              },
+              cache: "no-store",
+              next: { revalidate: 0 },
+              body: JSON.stringify({ user_uuid: payload.user_uuid }),
+            }
+          )
+          break
+        case "new":
+          // url = NextEndPoints.VALIDATE_USER
+          // url =  `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`
+          response = await fetch(
+            `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`,
+            {
+              cache: "no-store",
+              next: { revalidate: 0 },
+              headers: {
+                // ...EndPointHeaders
+                apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+              },
+            }
+          )
+          break
+      }
+      // const response = await fetch(url, {
+      //   method: "POST",
+      //   headers: {
+      //     // ...EndPointHeaders,
+      //     apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+      //   },
+      //   cache: "no-store",
+      //   body: JSON.stringify({ user_uuid: params.user_uuid }),
+      // })
+      const results = await response?.json()
+      const { success, data } = results
+      if (results) {
+        console.log({ processed })
+        console.log({ data })
+        console.log(params.type)
+        console.log({ success })
 
-  //     const { success, data } = await response?.json()
-
-  //     console.log({ processed })
-  //     console.log({ data })
-  //     console.log(params.type)
-  //     console.log({ success })
-
-  //     if (success) {
-  //       switch (params.type) {
-  //         case "existing":
-  //         case "reset":
-  //           url = `${PageRoutes.setpassword}/${params.type}`
-  //           break
-  //         case "new":
-  //           url = PageRoutes.getstarted
-  //           break
-  //       }
-  //       clearErrors()
-  //       setProcessed(false)
-  //       return router.push(url)
-  //     } else {
-  //       setProcessing(false)
-  //       setProcessed(true)
-  //       setError({ validate: data.message ?? "Something went wrong" })
-  //     }
-  //   } catch (err) {
-  //     setProcessing(false)
-  //     setProcessed(true)
-  //     setError({ validate: JSON.stringify(err) })
-  //   }
-  // }
-  // useEffect(() => {
-  //   setForm(null)
-  //   setProcessed(false)
-  //   clearErrors()
-  //   if (!processed) {
-  //     ValidateEmailAndUser()
-  //   }
-  // }, [])
-  // console.log({ errors })
+        if (success) {
+          switch (params.type) {
+            case "existing":
+            case "reset":
+              url = `${PageRoutes.setpassword}/${params.type}`
+              break
+            case "new":
+              url = PageRoutes.getstarted
+              break
+          }
+          clearErrors()
+          setProcessed(false)
+          return router.push(url)
+        } else {
+          setProcessing(false)
+          setProcessed(true)
+          setError({ validate: data.message ?? "Something went wrong" })
+        }
+      } else {
+        setProcessing(false)
+        setProcessed(true)
+        setError({ validate: "Something went wrong" })
+      }
+    } catch (err) {
+      setProcessing(false)
+      setProcessed(true)
+      setError({ validate: JSON.stringify(err) })
+    }
+  }
+  useEffect(() => {
+    setForm(null)
+    setProcessed(false)
+    clearErrors()
+    if (!processed && count < 1) {
+      console.log({ count })
+      setCount((oc) => oc++)
+      ValidateEmailAndUser()
+    }
+  }, [])
+  console.log({ errors })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

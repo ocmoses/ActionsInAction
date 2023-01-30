@@ -5,17 +5,18 @@ import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import TextInput from "@/app/components/form/TextInput"
 import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
+import usePartners from "@/hooks/usePartners"
+
 import FormErrors from "@/app/components/FormErrors"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
 import useProcessing from "@/hooks/useProcessing"
 
 function Compliance() {
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { partner, category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
     rc_no: "",
@@ -27,15 +28,15 @@ function Compliance() {
   const { title, subtitle, hand, required } = forms["compliance"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (partner?.category)
       setData({
-        rc_no: partnerInfo.rc_no ?? "",
-        tin_no: partnerInfo.tin_no ?? "",
-        tin_doc: partnerInfo.tin_doc ?? "",
-        memart_doc: partnerInfo.memart_doc ?? "",
-        cac_doc: partnerInfo.cac_doc ?? "",
+        rc_no: partner?.category?.rc_no ?? "",
+        tin_no: partner?.category?.tin_no ?? "",
+        tin_doc: partner?.category?.tin_doc ?? "",
+        memart_doc: partner?.category?.memart_doc ?? "",
+        cac_doc: partner?.category?.cac_doc ?? "",
       })
-  }, [partnerInfo])
+  }, [partner?.category])
   useEffect(() => {
     setForm("compliance")
     setProcessing(false)
@@ -55,9 +56,11 @@ function Compliance() {
       if (error) return
     }
     const result = await registerPartner("compliance", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ compliance: result.error })
     }
+    moveToNextForm("compliance")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -67,11 +70,11 @@ function Compliance() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div className="w3-animate-opacity pb-20 w-full max-w-[550px]">
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["compliance"]} />}
         </div>
         <TextInput
           id="rc_no"

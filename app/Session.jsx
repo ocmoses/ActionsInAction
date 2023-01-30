@@ -4,7 +4,7 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { useEffect, useState } from "react"
 import { Util, isObject } from "@/app/modules/utilities"
 
-export default function Session({ children, serverSession }) {
+export default function Session({ children, serverSession, categories }) {
   const isRehydrated = useStoreRehydrated()
   const actions = useStoreActions((action) => action)
   // console.log({ serverSession })
@@ -34,6 +34,9 @@ export default function Session({ children, serverSession }) {
 
         if (serverSession?.User?.partnerID)
           actions.partners.setPartnerID(serverSession?.User?.partnerID)
+
+        actions.partners.setCategories(categories.data)
+        if (categories.error) actions.apps.setError(categories.error)
       }
     }
   }, [isRehydrated])

@@ -48,11 +48,10 @@ const usePartners = () => {
   })
 
   const completeOnboarding = (category) => {
+    setCategory(category)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
-    console.log({ category })
-    console.log({ forms })
     if (category?.validation) {
       for (const validate in category.validation) {
         if (category?.validation[validate] === "r") {
@@ -102,7 +101,7 @@ const usePartners = () => {
       "nlrclicense",
       "shortcode",
       "indemnity",
-      "accountinfo",
+      "financial",
     ]
     const Pages = {
       userinfo: "/onboarding/userinfo",
@@ -114,7 +113,7 @@ const usePartners = () => {
       nlrclicense: "/profile/nlrclicense",
       shortcode: "/profile/shortcode",
       indemnity: "/profile/indemnity",
-      accountinfo: "/profile/accountinfo",
+      financial: "/profile/financial",
     }
     let nextstage = null
     Stages.map((stage) => {
@@ -128,18 +127,15 @@ const usePartners = () => {
       // Existing partner flows
       case "partnerwelcome":
         setProcessing(true)
-        const {
-          success: partnerwelcomeSuccess,
-          error: partnerwelcomeError,
-          data: partnerwelcome,
-        } = await fetchData(RemoteEndpoints.WELCOMEBACK, {
-          method: "POST",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: userdata.partnerid,
-            email_type: userdata.email_type,
-          }),
-        })
+        const { error: partnerwelcomeError, data: partnerwelcome } =
+          await fetchData(RemoteEndpoints.WELCOMEBACK, {
+            method: "POST",
+            cache: "no-store",
+            body: JSON.stringify({
+              partnerid: userdata.partnerid,
+              email_type: userdata.email_type,
+            }),
+          })
         if (partnerwelcomeError) {
           setProcessing(false)
           return { success: false, error: partnerwelcomeError, data: null }
@@ -147,7 +143,9 @@ const usePartners = () => {
 
         setUser(partnerwelcome.user)
         setPartners(partnerwelcome.partners)
-        router.push(`/onboarding/verify/${userdata.email_type}`)
+        router.push(
+          `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
+        )
         break
       case "setpassword":
         setProcessing(true)
@@ -222,15 +220,14 @@ const usePartners = () => {
         }
         setCategory(categoryData.category)
         setPartner(categoryData.partner)
-        // updatePercentComplete(category)
         setUpdateStatus("review", "category", true)
         return { success: true, error: null, data: categoryData }
         break
       case "companydetail":
         setProcessing(true)
-        const categories = partnerActions.categories
-        console.log({ categories })
-        return console.log({ category })
+        const categories = partnerStates.categories
+        // console.log({ categories })
+        // return console.log({ category })
         // return { success: true, error: null, data: userdata }
         const { error: companydetailError, data: companydetail } =
           await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
@@ -238,7 +235,7 @@ const usePartners = () => {
             cache: "no-store",
             body: JSON.stringify({
               partner_uuid: partner.uuid,
-              category_uuid: category.uuid,
+              category_uuid: category.category_uuid,
               company_name: userdata.company_name,
               country: userdata.country,
               company_address: userdata.company_address,
@@ -251,10 +248,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: companydetailError, data: null }
         }
-        updatePartner(companydetail)
-        // updatePercentComplete(userdata) //!Change  => companydetail
+        updatePartner(companydetail.partner)
         setUpdateStatus("review", "companydetail", true)
-        return { success: true, error: null, data: companydetail }
         break
       case "compliance":
         setProcessing(true)
@@ -266,7 +261,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            user_uuid: user.uuid,
+            partner_uuid: partner.uuid,
             rc_no: userdata.rc_no ?? "",
             tin_no: userdata.tin_no ?? "",
             tin_doc: userdata.tin_doc ?? "",
@@ -274,14 +270,12 @@ const usePartners = () => {
             cac_doc: userdata.cac_doc ?? "",
           }),
         })
-        if (complianceError) {
-          setProcessing(false)
-          return { success: false, error: complianceError, data: null }
-        }
+        // if (complianceError) {
+        //   setProcessing(false)
+        //   return { success: false, error: complianceError, data: null }
+        // }
         updatePartner(userdata)
-        updatePercentComplete(compliance)
         setUpdateStatus("review", "compliance", true)
-        router.push("/profile/ncclicense")
         break
       case "ncclicense":
         setProcessing(true)
@@ -301,14 +295,12 @@ const usePartners = () => {
           }),
         })
 
-        if (ncclicenseError) {
-          setProcessing(false)
-          return { success: false, error: ncclicenseError, data: null }
-        }
+        // if (ncclicenseError) {
+        //   setProcessing(false)
+        //   return { success: false, error: ncclicenseError, data: null }
+        // }
         updatePartner(userdata)
-        updatePercentComplete(ncclicense)
         setUpdateStatus("review", "ncclicense", true)
-        router.push("/profile/nlrclicense")
         break
       case "nlrclicense":
         setProcessing(true)
@@ -327,14 +319,12 @@ const usePartners = () => {
             nlrc_doc: userdata.nlrc_doc ?? "",
           }),
         })
-        if (nlrclicenseError) {
-          setProcessing(false)
-          return { success: false, error: nlrclicenseError, data: null }
-        }
+        // if (nlrclicenseError) {
+        //   setProcessing(false)
+        //   return { success: false, error: nlrclicenseError, data: null }
+        // }
         updatePartner(userdata)
-        updatePercentComplete(nlrclicense)
         setUpdateStatus("review", "nlrclicense", true)
-        router.push("/profile/shortcode")
         break
       case "shortcode":
         setProcessing(true)
@@ -358,14 +348,12 @@ const usePartners = () => {
             shortcode_approval_doc: userdata.shortcode_approval_doc ?? "",
           }),
         })
-        if (shortcodeError) {
-          setProcessing(false)
-          return { success: false, error: shortcodeError, data: null }
-        }
+        // if (shortcodeError) {
+        //   setProcessing(false)
+        //   return { success: false, error: shortcodeError, data: null }
+        // }
         updatePartner(userdata)
-        updatePercentComplete(shortcode)
         setUpdateStatus("review", "shortcode", true)
-        router.push("/profile/indemnity")
         break
       case "indemnity":
         setProcessing(true)
@@ -384,22 +372,20 @@ const usePartners = () => {
             indemnity_doc: userdata.indemnity_doc ?? "",
           }),
         })
-        if (indemnityError) {
-          setProcessing(false)
-          return { success: false, error: indemnityError, data: null }
-        }
+        // if (indemnityError) {
+        //   setProcessing(false)
+        //   return { success: false, error: indemnityError, data: null }
+        // }
         updatePartner(userdata)
-        updatePercentComplete(indemnity)
         setUpdateStatus("review", "indemnity", true)
-        router.push("/profile/accountinfo")
         break
-      case "accountinfo":
+      case "financial":
         setProcessing(true)
         const {
-          success: accountinfoSuccess,
-          error: accountinfoError,
-          data: accountinfo,
-        } = await fetchData(`${apiURL}/v1/auth/register/accountinfo`, {
+          success: financialSuccess,
+          error: financialError,
+          data: financial,
+        } = await fetchData(`${apiURL}/v1/auth/register/financial`, {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
@@ -412,13 +398,13 @@ const usePartners = () => {
             audited_account_3: userdata.audited_account_3 ?? "",
           }),
         })
-        if (accountinfoError) {
+        if (financialError) {
           setProcessing(false)
-          return { success: false, error: accountinfoError, data: null }
+          return { success: false, error: financialError, data: null }
         }
         updatePartner(userdata)
-        updatePercentComplete(accountinfo)
-        setUpdateStatus("review", "accountinfo", true)
+        updatePercentComplete(financial)
+        setUpdateStatus("review", "financial", true)
         router.push("/profile/review")
         break
 
@@ -514,7 +500,7 @@ const usePartners = () => {
     nlrclicense: false,
     shortcode: false,
     indemnity: false,
-    accountinfo: false,
+    financial: false,
     review: false,
   })
   const [reviewUpdateStatus, setReviewUpdateStatus] = useState({

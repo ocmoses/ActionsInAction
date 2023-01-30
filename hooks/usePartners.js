@@ -225,6 +225,8 @@ const usePartners = () => {
         break
       case "companydetail":
         setProcessing(true)
+         const categories = partnerActions.categories
+         console.log({ categories })
         return console.log({ category })
         // return { success: true, error: null, data: userdata }
         const { error: companydetailError, data: companydetail } =

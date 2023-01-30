@@ -17,82 +17,94 @@ import { useEffect, useState } from "react"
 export default function RegisterValidation({ params }) {
   const [{ errors, setError, clearErrors }] = useErrors()
   const { processing, setProcessing, setForm } = useProcessing()
-  const [processed, setProcessed] = useState(false)
+  const [validateError, setValidateErrors] = useState(false)
 
   const router = useRouter()
-  const ValidateEmailAndUser = async () => {
-    setProcessing(true)
-    try {
-      let url = ""
-      switch (params.type) {
-        case "existing":
-        case "reset":
-          url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
-          break
-        case "new":
-          url = NextEndPoints.VALIDATE_USER
-          break
-      }
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          ...EndPointHeaders,
-          apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-        },
-        cache: "no-store",
-        body: JSON.stringify({ user_uuid: params.user_uuid }),
-      })
-
-      const { success, data } = await response?.json()
-
-      console.log({ processed })
-      console.log({ data })
-      console.log(params.type)
-      console.log({ success })
-
-      if (success) {
-        switch (params.type) {
-          case "existing":
-          case "reset":
-            url = `${PageRoutes.setpassword}/${params.type}`
-            break
-          case "new":
-            url = PageRoutes.getstarted
-            break
-        }
-        clearErrors()
-        setProcessed(false)
-        return router.push(url)
-      } else {
-        setProcessing(false)
-        setProcessed(true)
-        setError({ validate: data.message ?? "Something went wrong" })
-      }
-    } catch (err) {
-      setProcessing(false)
-      setProcessed(true)
-      setError({ validate: JSON.stringify(err) })
-    }
-  }
   useEffect(() => {
-    setForm(null)
-    setProcessed(false)
-    clearErrors()
-    if (!processed) {
-      ValidateEmailAndUser()
-    }
+    setValidateErrors(false)
   }, [])
-  console.log({ errors })
+  useEffect(() => {
+    if (params.success) {
+      router.push(params.data)
+      setValidateErrors(false)
+    } else {
+      setValidateErrors(true)
+      setError({ validate: params.error })
+    }
+  }, [params])
+  // const ValidateEmailAndUser = async () => {
+  //   setProcessing(true)
+  //   try {
+  //     let url = ""
+  //     switch (params.type) {
+  //       case "existing":
+  //       case "reset":
+  //         url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+  //         break
+  //       case "new":
+  //         url = NextEndPoints.VALIDATE_USER
+  //         break
+  //     }
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: {
+  //         ...EndPointHeaders,
+  //         apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+  //       },
+  //       cache: "no-store",
+  //       body: JSON.stringify({ user_uuid: params.user_uuid }),
+  //     })
+
+  //     const { success, data } = await response?.json()
+
+  //     console.log({ processed })
+  //     console.log({ data })
+  //     console.log(params.type)
+  //     console.log({ success })
+
+  //     if (success) {
+  //       switch (params.type) {
+  //         case "existing":
+  //         case "reset":
+  //           url = `${PageRoutes.setpassword}/${params.type}`
+  //           break
+  //         case "new":
+  //           url = PageRoutes.getstarted
+  //           break
+  //       }
+  //       clearErrors()
+  //       setProcessed(false)
+  //       return router.push(url)
+  //     } else {
+  //       setProcessing(false)
+  //       setProcessed(true)
+  //       setError({ validate: data.message ?? "Something went wrong" })
+  //     }
+  //   } catch (err) {
+  //     setProcessing(false)
+  //     setProcessed(true)
+  //     setError({ validate: JSON.stringify(err) })
+  //   }
+  // }
+  // useEffect(() => {
+  //   setForm(null)
+  //   setProcessed(false)
+  //   clearErrors()
+  //   if (!processed) {
+  //     ValidateEmailAndUser()
+  //   }
+  // }, [])
+  // console.log({ errors })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {processing && (
+          {!validateError && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {!processing && processed && errors.validate && (
+          {validateError && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -51,21 +51,21 @@ const app = {
     state.form = form
   }),
   setFormSteps: action((state, validation) => {
-    state.formSteps = validation.allForms.all
+    state.formSteps = validation?.allForms?.all
     state.formValidation = {
-      required: validation.required,
-      optional: validation.optional,
+      required: validation?.required,
+      optional: validation?.optional,
     }
   }),
   moveToNextForm: action((state, current) => {
     if (!current) {
       state.form = null
     } else {
-      const index = state.allforms.indexOf(current)
-      if (index === state.allforms.length - 1) {
+      const index = state.allforms?.indexOf(current)
+      if (index === state.allforms?.length - 1) {
         state.form = "review"
       } else {
-        state.form = state.allforms[index + 1]
+        state.form = state.allforms?.length ? state.allforms[index + 1] : null
       }
     }
   }),

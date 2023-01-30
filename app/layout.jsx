@@ -6,6 +6,21 @@ import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
 
+// export const getCategories = async () => {
+//   const response = await fetch(RemoteEndpoints.CATEGORIES, {
+//     method: "GET",
+//     headers: {
+//       ...EndPointHeaders,
+//       apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
+//     },
+//     redirect: "follow",
+//     next: { revalidate: 60 * 60 * 24 },
+//   }).catch((error) => {
+//     console.log("error", error)
+//   })
+//   return await response?.json()
+// }
+
 const getServerSession = async () => {
   const nextCookies = cookies()
   const token = nextCookies.has("auth-token")
@@ -57,6 +72,7 @@ const getServerSession = async () => {
   }
 }
 export default async function RootLayout({ children }) {
+  // getCategories
   const result = await getServerSession()
   const serverSession = {
     status: result?.data ? "authenticated" : "unauthenticated",

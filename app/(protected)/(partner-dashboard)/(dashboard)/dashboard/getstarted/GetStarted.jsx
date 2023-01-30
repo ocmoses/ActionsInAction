@@ -9,7 +9,7 @@ import OnboardingLayout from "./OnboardingLayout"
 import useUsers from "@/hooks/useUsers"
 import { useState, useEffect, useRef } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { Util, scrollToTop } from "@/app/modules/utilities"
+import { Util } from "@/app/modules/utilities"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -78,8 +78,8 @@ export default function GetStarted({ data }) {
         })
       }
     }
+    if (partnerCat?.length) setShowProgress(true)
 
-    setShowProgress(true)
     const newCatArray = categoriesData.filter(
       (category) => !partnerActiveCat.includes(category.uuid)
     )
@@ -94,18 +94,6 @@ export default function GetStarted({ data }) {
   }
   const MainBox = useRef()
   const CategoryBox = useRef()
-  useEffect(() => {
-    showProgress &&
-      MainBox.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
-    !showProgress &&
-      CategoryBox.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
-  }, [showProgress])
 
   const [continuedCategory, setContinuedCategory] = useState(null)
   useEffect(() => {
@@ -208,50 +196,52 @@ export default function GetStarted({ data }) {
           </div>
         )}
 
-        <div
-          ref={CategoryBox}
-          onClick={toggleProgress}
-          className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
-        >
-          {showProgress && (
-            <>
-              <span className="text-[#999999]">Explore other categories</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6 text-[#FFCB03]"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                />
-              </svg>
-            </>
-          )}
-          {!showProgress && (
-            <>
-              <span className="text-[#999999]">Show less categories</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6 text-[#FFCB03]"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                />
-              </svg>
-            </>
-          )}
-        </div>
+        {partnerCategories?.length && (
+          <div
+            ref={CategoryBox}
+            onClick={toggleProgress}
+            className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
+          >
+            {showProgress && (
+              <>
+                <span className="text-[#999999]">Explore other categories</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-[#FFCB03]"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                  />
+                </svg>
+              </>
+            )}
+            {!showProgress && (
+              <>
+                <span className="text-[#999999]">Show less categories</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-[#FFCB03]"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                  />
+                </svg>
+              </>
+            )}
+          </div>
+        )}
         {!showProgress && (
           <div className="grid lg:grid-cols-2 gap-[24px] my-16 w3-animate-opacity">
             {partnerActiveCategories &&

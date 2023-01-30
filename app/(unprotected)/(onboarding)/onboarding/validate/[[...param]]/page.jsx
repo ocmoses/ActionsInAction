@@ -3,30 +3,38 @@ import RemoteEndpoints, {
   NextEndPoints,
   EndPointHeaders,
 } from "@/app/modules/endpoints"
+import { PageRoutes } from "@/app/modules/menu"
 
 const ValidateEmailAndUser = async (params) => {
   try {
     let url = ""
+    let response = null
     switch (params.type) {
       case "existing":
       case "reset":
-        url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
+        response = await fetch(RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK, {
+          method: "POST",
+          headers: {
+            ...EndPointHeaders,
+          },
+          cache: "no-store",
+          body: JSON.stringify({ user_uuid: params.user_uuid }),
+        })
         break
       case "new":
-        url = NextEndPoints.VALIDATE_USER
+        response = await fetch(
+          `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${params.user_uuid}`,
+          {
+            cache: "no-store",
+            headers: { ...EndPointHeaders },
+          }
+        )
         break
     }
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        ...EndPointHeaders,
-        apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-      },
-      cache: "no-store",
-      body: JSON.stringify({ user_uuid: params.user_uuid }),
-    })
 
-    const { success, data } = await response?.json()
+    const results = await response?.json()
+    console.log({ results })
+    const { success, data } = results
     console.log({ data })
     console.log({ success })
 
@@ -49,6 +57,7 @@ const ValidateEmailAndUser = async (params) => {
       }
     }
   } catch (err) {
+    console.log({ err })
     return { success: false, error: JSON.stringify(err), data: null }
   }
 }
@@ -57,5 +66,6 @@ export default async function ValidationPage({ params: { param } }) {
   const type = param && param[1] ? param[1] : null
   const Params = { user_uuid, type }
   const result = await ValidateEmailAndUser(Params)
+  console.log({ result })
   return <Validation params={result} />
 }

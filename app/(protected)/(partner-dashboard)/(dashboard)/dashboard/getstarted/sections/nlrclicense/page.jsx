@@ -1,4 +1,4 @@
-import NlrcLicense from "./NlrcLicense"
+import NlrcLicense from "./Nlrclicense"
 
 function NlrcLicensePage() {
   return <NlrcLicense />

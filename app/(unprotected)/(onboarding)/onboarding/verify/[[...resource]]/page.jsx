@@ -17,6 +17,7 @@ export default function Validate({ params }) {
   const [{ errors, success, clearErrors }] = useErrors({})
   const [type, setType] = useState("")
   const { resource } = params
+  console.log({ resource })
   useEffect(() => {
     setForm(null)
     setProcessing(false)

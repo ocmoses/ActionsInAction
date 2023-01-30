@@ -33,7 +33,7 @@ export function OnboardingContextProvider({ children }) {
     nlrclicense: false,
     shortcode: false,
     indemnity: false,
-    accountinfo: false,
+    financial: false,
     review: false,
   })
   const [reviewUpdateStatus, setReviewUpdateStatus] = useState({

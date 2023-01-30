@@ -293,7 +293,7 @@ export function InfoIcon({ width, height, iconClass }: Props) {
     </svg>
   )
 }
-export function AccountInfoIcon({ width, height, fill, iconClass }: Props) {
+export function FinancialIcon({ width, height, fill, iconClass }: Props) {
   return (
     <svg
       width={width ?? 24}

@@ -54,9 +54,11 @@ function Indemnity() {
       if (error) return
     }
     const result = await registerPartner("indemnity", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ indemnity: result.error })
     }
+    moveToNextForm("indemnity")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -77,7 +79,7 @@ function Indemnity() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["indemnity"]} />}
         </div>
         <TextInput
           id="indemnity_no"

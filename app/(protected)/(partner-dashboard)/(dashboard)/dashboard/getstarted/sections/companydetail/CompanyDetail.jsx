@@ -17,9 +17,9 @@ import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
 
 function CompanyDetail() {
-  const { processing, setProcessing, setForm } = useProcessing()
+  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { partner, registerPartner } = usePartners()
+  const { partner, category, registerPartner } = usePartners()
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
@@ -31,16 +31,16 @@ function CompanyDetail() {
     company_postcode: "",
   })
   useEffect(() => {
-    if (partner)
+    if (partner?.category)
       setData({
-        company_name: partner.company_name ?? "",
-        country: partner.country ?? "NG",
-        company_address: partner.company_address ?? "",
-        company_city: partner.company_city ?? "",
-        company_state: partner.company_state ?? "",
-        company_postcode: partner.company_postcode ?? "",
+        company_name: partner?.category?.company_name ?? "",
+        country: partner?.category?.country ?? "NG",
+        company_address: partner?.category?.company_address ?? "",
+        company_city: partner?.category?.company_city ?? "",
+        company_state: partner?.category?.company_state ?? "",
+        company_postcode: partner?.category?.company_postcode ?? "",
       })
-  }, [partner])
+  }, [partner?.category])
   useEffect(() => {
     setForm("companydetail")
     setProcessing(false)
@@ -72,11 +72,7 @@ function CompanyDetail() {
     if (result) {
       if (result?.error) return setError({ companydetail: result.error })
     }
-    // setActiveCategory(category.uuid)
-    // setCategory(category)
-    // moveToNextForm("category")
-    // setIsOnboarding(true)
-    // setIsOpen(false)
+    moveToNextForm("companydetail")
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

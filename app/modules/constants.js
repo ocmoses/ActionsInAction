@@ -1,5 +1,5 @@
 import {
-  AccountInfoIcon,
+  FinancialIcon,
   CompanyDetailIcon,
   ComplianceIcon,
   IndemnityIcon,
@@ -76,7 +76,7 @@ export const partnerFields = {
   indemnity_expiry_date: "",
   indemnity_doc: "",
 
-  // accountinfo
+  // financial
   account_name: "",
   account_no: "",
   bank: "",
@@ -260,8 +260,8 @@ export const forms = {
       // indemnity_doc: 'Professional indemnity insurance Document'
     },
   },
-  accountinfo: {
-    form: "accountinfo",
+  financial: {
+    form: "financial",
     title: "Provide your company’s audited accounts",
     label: "Company's audited accounts detail",
     subtitle: "",
@@ -425,7 +425,7 @@ const fieldNames = {
     indemnity_expiry_date: "Expiry date",
     indemnity_doc: "Professional indemnity insurance Document",
   },
-  accountinfo: {
+  financial: {
     account_name: "Account name",
     account_no: "Account number",
     bank: "Bank",
@@ -441,7 +441,7 @@ export const profileMenu = [
   "nlrclicense",
   "shortcode",
   "indemnity",
-  "accountinfo",
+  "financial",
   "review",
 ]
 export const updateMenu = [
@@ -475,8 +475,8 @@ export const profileMenuIcons = {
     component: <IndemnityIcon />,
     title: "Indemnity",
   },
-  accountinfo: {
-    component: <AccountInfoIcon />,
+  financial: {
+    component: <FinancialIcon />,
     title: "Account Info",
   },
   // Update menu

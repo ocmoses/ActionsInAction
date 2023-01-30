@@ -1,5 +1,5 @@
 import {
-  AccountInfoIcon,
+  FinancialIcon,
   CompanyDetailIcon,
   ComplianceIcon,
   IndemnityIcon,
@@ -128,9 +128,9 @@ function ProfileTabItem({ menu, form }) {
             <Badge type="review" name={"indemnity"} />
           </div>
         )}
-        {menu === "accountinfo" && (
+        {menu === "financial" && (
           <div className="text-white relative">
-            <AccountInfoIcon
+            <FinancialIcon
               fill={menu === form ? "#ffffff" : "#999999"}
               iconClass={
                 menu === form
@@ -139,7 +139,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"accountinfo"} />
+            <Badge type="review" name={"financial"} />
           </div>
         )}
         {menu === "review" && (

@@ -21,7 +21,7 @@ export default function GetStarted({ data }) {
     session: { user },
   } = useUsers()
   const {
-    categrories,
+    categories,
     partner,
     setCategories,
     validation,
@@ -40,20 +40,22 @@ export default function GetStarted({ data }) {
   const { setForm, form, setFormSteps, moveToNextForm, setActiveCategory } =
     useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
+  // useEffect(() => {
+  //   if (data) {
+  //     if (data?.success) {
+  //       const { data: categories_data } = data
+  //       setCategoriesData(categories_data)
+  //       setCategories(categories_data)
+  //     } else {
+  //       setError({ getStaerted: data.message })
+  //     }
+  //   } else {
+  //     setError({ getStaerted: "Something went wrong" })
+  //   }
+  // }, [data])
   useEffect(() => {
-    if (data) {
-      if (data?.success) {
-        const { data: categories_data } = data
-        setCategoriesData(categories_data)
-        setCategories(categories_data)
-      } else {
-        setError({ getStaerted: data.message })
-      }
-    } else {
-      setError({ getStaerted: "Something went wrong" })
-    }
-  }, [data])
-
+    setCategoriesData(categories)
+  }, [categories])
   useEffect(() => {
     setForm(null)
     setShowProgress(false)
@@ -78,7 +80,7 @@ export default function GetStarted({ data }) {
         })
       }
     }
-    if (partnerCat?.length) setShowProgress(true)
+    // if (partnerCat?.length) setShowProgress(true)
 
     const newCatArray = categoriesData.filter(
       (category) => !partnerActiveCat.includes(category.uuid)
@@ -95,26 +97,20 @@ export default function GetStarted({ data }) {
   const MainBox = useRef()
   const CategoryBox = useRef()
 
-  const [continuedCategory, setContinuedCategory] = useState(null)
-  useEffect(() => {
-    if (continuedCategory) {
-      console.log({ continuedCategory })
-      completeOnboarding(continuedCategory)
+  const setContinuedCategory = (category, frm) => {
+    if (category) {
+      completeOnboarding(category)
       setFormSteps(validation)
-      setActiveCategory(continuedCategory.uuid)
-      setCategory(continuedCategory)
+      setActiveCategory(category.category_uuid)
       moveToNextForm("category")
       setIsOnboarding(true)
       setIsOpen(false)
     }
-  }, [continuedCategory])
+  }
   const contunueRegistration = (category_uuid) => {
-    console.log("category_uuid", category_uuid)
-    console.log(partner.categories)
     const category = partner?.categories?.find(
       (cat) => cat.category_uuid === category_uuid
     )
-    console.log({ category })
     if (category) setContinuedCategory(category)
   }
   return (
@@ -125,6 +121,7 @@ export default function GetStarted({ data }) {
             <OnboardingLayout
               isOnboarding={isOnboarding}
               setIsOnboarding={setIsOnboarding}
+              setContinuedCategory={setContinuedCategory}
             />
           </div>
         </>

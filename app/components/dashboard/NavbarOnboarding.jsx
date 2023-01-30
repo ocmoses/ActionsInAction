@@ -1,8 +1,23 @@
 "use client"
+import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import useApp from "@/hooks/useApp"
+import { useEffect, useState } from "react"
 
 export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
-  const { activeCategory } = usePartners()
+  const { activeCategory } = useProcessing()
+  const { categories } = usePartners()
+  const { setActiveCategory } = useApp()
+  const [Category, setCategoryData] = useState(null)
+  useEffect(() => {
+    if (categories?.length) {
+      const categoryData = categories.find((cat) => cat.uuid === activeCategory)
+      setCategoryData(categoryData)
+    }
+    // return () => {
+    //   setActiveCategory(null)
+    // }
+  }, [activeCategory])
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
@@ -27,12 +42,12 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
             </svg>
           </span>
         </div>
-        {activeCategory?.category_name && (
+        {Category?.category_name && (
           <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
             <span className="text-[#999999] group-hover:!text-white">
               Partner category:
             </span>
-            <span className="font-bold">{activeCategory?.category_name}</span>
+            <span className="font-bold">{Category?.category_name}</span>
           </div>
         )}
       </div>

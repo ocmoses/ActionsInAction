@@ -5,21 +5,21 @@ import ResponsiveLabel from "@/app/components/ResponsiveLabel"
 import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
+import RemoteEndpoints, { EndPointHeaders } from "@/app/modules/endpoints"
 
-// export const getCategories = async () => {
-//   const response = await fetch(RemoteEndpoints.CATEGORIES, {
-//     method: "GET",
-//     headers: {
-//       ...EndPointHeaders,
-//       apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-//     },
-//     redirect: "follow",
-//     next: { revalidate: 60 * 60 * 24 },
-//   }).catch((error) => {
-//     console.log("error", error)
-//   })
-//   return await response?.json()
-// }
+const getCategories = async () => {
+  const response = await fetch(RemoteEndpoints.CATEGORIES, {
+    method: "GET",
+    headers: {
+      apikey: `${process.env.APIKEY}`,
+    },
+    redirect: "follow",
+    next: { revalidate: 60 * 60 * 24 },
+  }).catch((error) => {
+    console.log("error", error)
+  })
+  return await response?.json()
+}
 
 const getServerSession = async () => {
   const nextCookies = cookies()
@@ -72,8 +72,30 @@ const getServerSession = async () => {
   }
 }
 export default async function RootLayout({ children }) {
-  // getCategories
-  const result = await getServerSession()
+  //
+  // const categories = await getCategories()
+  // const result = await getServerSession()
+
+  const resultGetServerSession = getServerSession()
+  const resultGetCategories = getCategories()
+
+  // Wait for the promises to resolve
+  const [result, categoriesData] = await Promise.all([
+    getServerSession,
+    getCategories,
+  ])
+  const categories = { data: null, error: null }
+
+  if (categoriesData) {
+    if (categoriesData?.success) {
+      categories.data = categoriesData.data
+    } else {
+      categories.error = categoriesData.message
+    }
+  } else {
+    categories.error = "Error fetching categories"
+  }
+
   const serverSession = {
     status: result?.data ? "authenticated" : "unauthenticated",
     User: result?.data ?? null,
@@ -85,7 +107,9 @@ export default async function RootLayout({ children }) {
         <div id="portals" className="relative"></div>
         {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
         <Providers>
-          <Session serverSession={serverSession}>{children}</Session>
+          <Session serverSession={serverSession} categories={categories}>
+            {children}
+          </Session>
         </Providers>
       </body>
     </html>

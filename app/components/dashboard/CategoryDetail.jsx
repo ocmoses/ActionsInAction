@@ -15,12 +15,21 @@ export default function CategoryDetail({
   setIsOpen,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, registerPartner, setCategory } = usePartners()
-  const [validation, setValidation] = useState({
-    required: [],
-    optional: [],
-    allForms: [],
-  })
+  const {
+    partner,
+    registerPartner,
+    setCategory,
+    validation,
+    setValidation,
+    completeOnboarding,
+  } = usePartners()
+
+  // const [validation, setValidation] = useState({
+  //   required: [],
+  //   optional: [],
+  //   allForms: [],
+  // })
+
   const {
     form,
     processing,
@@ -31,24 +40,25 @@ export default function CategoryDetail({
   } = useProcessing()
 
   useEffect(() => {
-    const required = []
-    const optional = []
-    const allForms = { required: [], optional: [], all: [] }
-    if (category.validation) {
-      for (const validate in category.validation) {
-        if (category.validation[validate] === "r") {
-          required.push(forms[validate].label)
-          allForms.required.push(validate)
-          allForms.all.push(validate)
-        } else if (category.validation[validate] === "o") {
-          optional.push(forms[validate].label)
-          allForms.optional.push(validate)
-          allForms.all.push(validate)
-        }
-      }
-    }
-    setValidation({ required, optional, allForms })
-    setProcessing(false)
+    completeOnboarding(category)
+    // const required = []
+    // const optional = []
+    // const allForms = { required: [], optional: [], all: [] }
+    // if (category.validation) {
+    //   for (const validate in category.validation) {
+    //     if (category.validation[validate] === "r") {
+    //       required.push(forms[validate].label)
+    //       allForms.required.push(validate)
+    //       allForms.all.push(validate)
+    //     } else if (category.validation[validate] === "o") {
+    //       optional.push(forms[validate].label)
+    //       allForms.optional.push(validate)
+    //       allForms.all.push(validate)
+    //     }
+    //   }
+    // }
+    // setValidation({ required, optional, allForms })
+    // setProcessing(false)
   }, [category])
 
   const selectCategory = async (category) => {
@@ -60,8 +70,7 @@ export default function CategoryDetail({
       console.log({ result })
       setProcessing(false)
       if (result?.error) {
-        setError({ category: result.error })
-        return
+        return setError({ category: result.error })
       }
 
       setFormSteps(validation)
@@ -70,7 +79,6 @@ export default function CategoryDetail({
       moveToNextForm("category")
       setIsOnboarding(true)
       setIsOpen(false)
-      console.log({ form })
       return
     }
     setError({ category: "Something went wrong" })

@@ -11,7 +11,7 @@ import { userData } from "@/app/modules/utilities"
 
 const usePartners = () => {
   const router = useRouter()
-  const { setProcessing } = useProcessing()
+  const { forms, setProcessing } = useProcessing()
   const [{ setError, setSuccess }] = useErrors({})
 
   const partner = useStoreState(
@@ -22,10 +22,15 @@ const usePartners = () => {
     (state) => state.partners.partners,
     (prev, next) => prev === next
   )
+  const category = useStoreState(
+    (state) => state.partners.category,
+    (prev, next) => prev === next
+  )
   const user = useStoreState(
     (state) => state.users.user,
     (prev, next) => prev === next
   )
+
   const actions = useStoreActions((action) => action)
 
   const { setUser } = actions.users
@@ -34,6 +39,33 @@ const usePartners = () => {
 
   const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
     actions.partners
+
+  const [validation, setValidation] = useState({
+    required: [],
+    optional: [],
+    allForms: [],
+  })
+
+  const completeOnboarding = (category) => {
+    const required = []
+    const optional = []
+    const allForms = { required: [], optional: [], all: [] }
+    if (category.validation) {
+      for (const validate in category.validation) {
+        if (category.validation[validate] === "r") {
+          required.push(forms[validate].label)
+          allForms.required.push(validate)
+          allForms.all.push(validate)
+        } else if (category.validation[validate] === "o") {
+          optional.push(forms[validate].label)
+          allForms.optional.push(validate)
+          allForms.all.push(validate)
+        }
+      }
+    }
+    setValidation({ required, optional, allForms })
+    setProcessing(false)
+  }
 
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
@@ -193,13 +225,15 @@ const usePartners = () => {
         break
       case "companydetail":
         setProcessing(true)
+        return console.log({ category })
         // return { success: true, error: null, data: userdata }
         const { error: companydetailError, data: companydetail } =
           await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
             method: "PUT",
             cache: "no-store",
             body: JSON.stringify({
-              user_uuid: user.uuid,
+              partner_uuid: partner.uuid,
+              category_uuid: category.uuid,
               company_name: userdata.company_name,
               country: userdata.country,
               company_address: userdata.company_address,
@@ -530,6 +564,9 @@ const usePartners = () => {
     setUpdateStatus,
     checkUpdateStatus,
     resendEmail,
+    validation,
+    setValidation,
+    completeOnboarding,
   }
 }
 export default usePartners

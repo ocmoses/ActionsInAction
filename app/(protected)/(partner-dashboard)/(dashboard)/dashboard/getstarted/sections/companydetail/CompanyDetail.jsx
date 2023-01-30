@@ -68,10 +68,15 @@ function CompanyDetail() {
     }
 
     const result = await registerPartner("companydetail", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError({ companydetail: result.error })
+      if (result?.error) return setError({ companydetail: result.error })
     }
-    moveToNext("companydetail")
+    // setActiveCategory(category.uuid)
+    // setCategory(category)
+    // moveToNextForm("category")
+    // setIsOnboarding(true)
+    // setIsOpen(false)
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

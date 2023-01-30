@@ -3,7 +3,6 @@ import usePartners from "@/hooks/usePartners"
 
 export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
   const { activeCategory } = usePartners()
-  console.log({ activeCategory })
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
@@ -32,11 +31,14 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
           <span className="text-[#999999] group-hover:!text-white">
             Partner category:
           </span>
-          <span className="font-bold">Vas Added Service</span>
+          <span className="font-bold">{activeCategory.category_name}</span>
         </div>
       </div>
       <div className="flex justify-end text-white px-3">
-        <span className="flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer">
+        <span
+          onClick={() => setIsOnboarding(false)}
+          className="flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"
+        >
           Save and exit
         </span>
       </div>

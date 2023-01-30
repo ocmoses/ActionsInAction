@@ -24,7 +24,7 @@ function CompanyDetail() {
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
     company_name: "",
-    country: "",
+    country: "NG",
     company_address: "",
     company_city: "",
     company_state: "",
@@ -34,7 +34,7 @@ function CompanyDetail() {
     if (partner)
       setData({
         company_name: partner.company_name ?? "",
-        country: partner.country ?? "",
+        country: partner.country ?? "NG",
         company_address: partner.company_address ?? "",
         company_city: partner.company_city ?? "",
         company_state: partner.company_state ?? "",

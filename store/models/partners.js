@@ -5,6 +5,7 @@ const partners = {
   partner: null,
   category: null,
   categories: null,
+  partnerCategories: null,
 
   setPartner: action((state, partner) => {
     state.partner = partner
@@ -25,8 +26,11 @@ const partners = {
   setCategory: action((state, category) => {
     state.category = category
   }),
-  setCategories: action((state, partners) => {
-    state.partners = partners
+  setCategories: action((state, categories) => {
+    state.categories = categories
+  }),
+  setPartnerCategories: action((state, categories) => {
+    state.partnerCategories = categories
   }),
   activeCategory: computed((state) => {
     if (!state.category || !state.categories) return null

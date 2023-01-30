@@ -27,12 +27,14 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
             </svg>
           </span>
         </div>
-        <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
-          <span className="text-[#999999] group-hover:!text-white">
-            Partner category:
-          </span>
-          <span className="font-bold">{activeCategory.category_name}</span>
-        </div>
+        {activeCategory?.category_name && (
+          <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
+            <span className="text-[#999999] group-hover:!text-white">
+              Partner category:
+            </span>
+            <span className="font-bold">{activeCategory?.category_name}</span>
+          </div>
+        )}
       </div>
       <div className="flex justify-end text-white px-3">
         <span

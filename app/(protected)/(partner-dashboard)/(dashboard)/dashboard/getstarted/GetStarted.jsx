@@ -20,7 +20,15 @@ export default function GetStarted({ data }) {
   const {
     session: { user },
   } = useUsers()
-  const { categrories, partner, setCategories } = usePartners()
+  const {
+    categrories,
+    partner,
+    setCategories,
+    validation,
+    setCategory,
+    completeOnboarding,
+  } = usePartners()
+
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -29,7 +37,8 @@ export default function GetStarted({ data }) {
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
-  const { setForm } = useProcessing()
+  const { setForm, form, setFormSteps, moveToNextForm, setActiveCategory } =
+    useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   useEffect(() => {
     if (data) {
@@ -98,6 +107,28 @@ export default function GetStarted({ data }) {
       })
   }, [showProgress])
 
+  const [continuedCategory, setContinuedCategory] = useState(null)
+  useEffect(() => {
+    if (continuedCategory) {
+      console.log({ continuedCategory })
+      completeOnboarding(continuedCategory)
+      setFormSteps(validation)
+      setActiveCategory(continuedCategory.uuid)
+      setCategory(continuedCategory)
+      moveToNextForm("category")
+      setIsOnboarding(true)
+      setIsOpen(false)
+    }
+  }, [continuedCategory])
+  const contunueRegistration = (category_uuid) => {
+    console.log("category_uuid", category_uuid)
+    console.log(partner.categories)
+    const category = partner?.categories?.find(
+      (cat) => cat.category_uuid === category_uuid
+    )
+    console.log({ category })
+    if (category) setContinuedCategory(category)
+  }
   return (
     <>
       {isOnboarding && (
@@ -153,13 +184,18 @@ export default function GetStarted({ data }) {
                 <div className="flex gap-6 justify-end items-center">
                   {progress.percentage < 100 ? (
                     <Button
-                      // onClick={() => selectCategory(category.uuid)}
+                      onClick={() =>
+                        contunueRegistration(progress.category_uuid)
+                      }
                       label="Finish up"
                       noicon="yes"
                       textsizecss="text-[13px] md:text-sm"
                     />
                   ) : (
                     <Button
+                      onClick={() =>
+                        contunueRegistration(progress.category_uuid)
+                      }
                       label="Detail"
                       outline="yes"
                       noicon="yes"

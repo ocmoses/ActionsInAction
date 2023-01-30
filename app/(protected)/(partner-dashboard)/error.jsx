@@ -13,7 +13,7 @@ export default function Error({ error, reset }) {
   }, [error])
 
   return (
-    <div className="flex mx-auto justify-center items-center flex-col gap-5 text-white">
+    <div className="flex mx-auto py-20 justify-center items-center flex-col gap-5 text-white">
       <p className="text-2xl font-mtn">Oops! Something went wrong!</p>
       <button onClick={() => reset()}>Reset</button>
     </div>

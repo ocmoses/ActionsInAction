@@ -8,21 +8,24 @@ import useUsers from "@/hooks/useUsers"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
+import usePartners from "@/hooks/usePartners"
 
 export default function GetStarted({ data }) {
   const {
     session: { user },
   } = useUsers()
+  const { setCategories } = usePartners()
   const [isOpen, setIsOpen] = useState(false)
-  const [categories, setCategories] = useState([])
+  const [categories, setCategoriesData] = useState([])
   const [tmpCat, setTmpCat] = useState(null)
-  const [isOnboarding, setIsOnboarding] = useState(true)
-  const { setForm } = useProcessing()
+  const [isOnboarding, setIsOnboarding] = useState(false)
+  const { setForm, form, formSteps, moveToNextForm } = useProcessing()
 
   useEffect(() => {
     const { success, data: categories } = data
+    setCategoriesData(categories)
     setCategories(categories)
-    setForm("companydetail")
+    setForm(null)
   }, [])
   return (
     <>
@@ -61,7 +64,9 @@ export default function GetStarted({ data }) {
         </div>
       </div>
       <CategorySideDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
-        {tmpCat && <CategoryDetail category={tmpCat} />}
+        {tmpCat && (
+          <CategoryDetail category={tmpCat} setIsOnboarding={setIsOnboarding} />
+        )}
       </CategorySideDrawer>
     </>
   )

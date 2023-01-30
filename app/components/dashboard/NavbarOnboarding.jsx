@@ -1,6 +1,9 @@
 "use client"
+import usePartners from "@/hooks/usePartners"
 
 export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
+  const { activeCategory } = usePartners()
+  console.log({ activeCategory })
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div

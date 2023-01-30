@@ -1,45 +1,65 @@
 import Image from "next/image"
+import Button from "@/app/components/form/Button"
+import useProcessing from "@/hooks/useProcessing"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
+import usePartners from "@/hooks/usePartners"
 import { forms } from "@/app/modules/constants"
 import { CircleOkCheckmarkIcon } from "@/app/components/Icons"
 import { useEffect, useState } from "react"
-import Button from "@/app/components/form/Button"
-import { useRouter } from "next/navigation"
-import useProcessing from "@/hooks/useProcessing"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
-export default function CategoryDetail({ category }) {
+export default function CategoryDetail({ category, setIsOnboarding }) {
+  const [{ errors, setError, clearErrors }] = useErrors(null)
+  const { partner, registerPartner } = usePartners()
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
   })
-  const { setFormSteps, moveToNextForm } = useProcessing()
+  const {
+    processing,
+    setProcessing,
+    setFormSteps,
+    moveToNextForm,
+    setActiveCategory,
+  } = useProcessing()
 
   useEffect(() => {
+    setProcessing(false)
     const required = []
     const optional = []
-    const allForms = []
+    const allForms = { required: [], optional: [], all: [] }
     if (category.validation) {
       for (const validate in category.validation) {
-        console.log(forms[validate].label)
         if (category.validation[validate] === "r") {
           required.push(forms[validate].label)
-          allForms.push(forms[validate])
+          allForms.required.push(validate)
+          allForms.all.push(validate)
         } else if (category.validation[validate] === "o") {
           optional.push(forms[validate].label)
-          allForms.push(forms[validate])
+          allForms.optional.push(validate)
+          allForms.all.push(validate)
         }
       }
     }
     setValidation({ required, optional, allForms })
   }, [])
 
-  const getStarted = () => {
-    console.log({ validation })
-    setFormSteps(validation)
-    moveToNextForm()
-    // set form
-    // setForm
-    // set isOnboarding
+  const selectCategory = async (uuid) => {
+    clearErrors()
+    setProcessing(true)
+    const result = await registerPartner("category", { category_uuid: uuid })
+    if (result) {
+      console.log({ result })
+      setProcessing(false)
+      if (result?.error) setError({ category: result.error })
+    } else {
+      setFormSteps(validation)
+      setActiveCategory(uuid)
+      moveToNextForm("category")
+      setIsOnboarding(true)
+    }
   }
 
   return (
@@ -50,6 +70,11 @@ export default function CategoryDetail({ category }) {
             <Image src={category.icon} alt="" width={24} height={24} />
           )}
         </div>
+        {errors["category"] && (
+          <div className="mb-6">
+            <FormErrors error={errors["category"]} />
+          </div>
+        )}
         <div className="">
           <h1 className="text-white text-xl font-bold">
             {category.category_name}
@@ -79,8 +104,14 @@ export default function CategoryDetail({ category }) {
               ))}
           </ul>
         </div>
-
-        <Button onClick={getStarted} label="Get started" />
+        {processing ? (
+          <TailSpinPreloader width={40} height={40} fill="#efb703" />
+        ) : (
+          <Button
+            onClick={() => selectCategory(category.uuid)}
+            label="Get started"
+          />
+        )}
       </div>
     </div>
   )

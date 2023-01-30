@@ -1,7 +1,7 @@
-import AccountInfo from "./AccountInfo"
+import Financial from "./Financial"
 
-function AccountInfoPage() {
-  return <AccountInfo />
+function FinancialPage() {
+  return <Financial />
 }
 
-export default AccountInfoPage
+export default FinancialPage

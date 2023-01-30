@@ -8,10 +8,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { proxyFetch } from "@/app/modules/utilities"
 import { userData } from "@/app/modules/utilities"
+import { forms } from "@/app/modules/constants"
 
 const usePartners = () => {
   const router = useRouter()
-  const { forms, setProcessing } = useProcessing()
+  const { setProcessing } = useProcessing()
   const [{ setError, setSuccess }] = useErrors({})
 
   const partner = useStoreState(
@@ -50,13 +51,15 @@ const usePartners = () => {
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
-    if (category.validation) {
+    console.log({ category })
+    console.log({ forms })
+    if (category?.validation) {
       for (const validate in category.validation) {
-        if (category.validation[validate] === "r") {
+        if (category?.validation[validate] === "r") {
           required.push(forms[validate].label)
           allForms.required.push(validate)
           allForms.all.push(validate)
-        } else if (category.validation[validate] === "o") {
+        } else if (category?.validation[validate] === "o") {
           optional.push(forms[validate].label)
           allForms.optional.push(validate)
           allForms.all.push(validate)
@@ -225,8 +228,8 @@ const usePartners = () => {
         break
       case "companydetail":
         setProcessing(true)
-         const categories = partnerActions.categories
-         console.log({ categories })
+        const categories = partnerActions.categories
+        console.log({ categories })
         return console.log({ category })
         // return { success: true, error: null, data: userdata }
         const { error: companydetailError, data: companydetail } =

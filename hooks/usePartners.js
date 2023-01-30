@@ -32,7 +32,7 @@ const usePartners = () => {
   const partnerStates = useStoreState((state) => state.partners)
   const partnerActions = actions.partners
 
-  const { setPartner, setPartners, updatePartner, setPartnerID } =
+  const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
     actions.partners
 
   const getPartner = async (uuid) => {
@@ -163,12 +163,37 @@ const usePartners = () => {
         }
         const User = userData(data)
         setPartner(User.partner)
+        setPartnerID(User.partner.uuid)
         setUser(User.user)
-        router.push("/onboarding/verify/new")
+        router.push(`/onboarding/verify/${User.user.uuid}/new`)
+        break
+      case "category":
+        setProcessing(true)
+        const { error: categoryError, data: categoryData } = await fetchData(
+          `${apiURL}/v1/auth/register/category`,
+          {
+            method: "POST",
+            cache: "no-store",
+            body: JSON.stringify({
+              partner_uuid: partner.uuid,
+              category_uuid: userdata.category_uuid,
+              user_uuid: user.uuid,
+            }),
+          }
+        )
+        if (categoryError) {
+          setProcessing(false)
+          return { success: false, error: categoryError, data: null }
+        }
+        setCategory(categoryData.category)
+        updatePartner(categoryData.partner)
+        // updatePercentComplete(category)
+        setUpdateStatus("review", "category", true)
+        return { success: true, error: null, data: categoryData }
         break
       case "companydetail":
         setProcessing(true)
-        return { success: true, error: null, data: userdata }
+        // return { success: true, error: null, data: userdata }
         const { error: companydetailError, data: companydetail } =
           await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
             method: "PUT",
@@ -188,7 +213,7 @@ const usePartners = () => {
           return { success: false, error: companydetailError, data: null }
         }
         updatePartner(companydetail)
-        updatePercentComplete(userdata) //!Change  => companydetail
+        // updatePercentComplete(userdata) //!Change  => companydetail
         setUpdateStatus("review", "companydetail", true)
         return { success: true, error: null, data: companydetail }
         break
@@ -380,29 +405,6 @@ const usePartners = () => {
         updatePercentComplete(companyinfo)
         setUpdateStatus("review", "companyinfo", true)
         router.push("/onboarding/register/validate")
-        break
-      case "category":
-        setProcessing(true)
-        const {
-          success: catSuccess,
-          error: catError,
-          data: category,
-        } = await fetchData(`${apiURL}/v1/auth/register/category`, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: partner.partnerid,
-            category_id: userdata,
-          }),
-        })
-        if (catError) {
-          setProcessing(false)
-          return { success: false, error: catError, data: null }
-        }
-        updatePartner({ category_id: userdata })
-        updatePercentComplete(category)
-        setUpdateStatus("review", "category", true)
-        router.push("/profile/companydetail")
         break
 
       case "confirmcompanyinfo":

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import useErrors from "@/hooks/useErrors"
 
 export default function CategoryCard({
   category,
@@ -7,7 +8,9 @@ export default function CategoryCard({
   tmpCat,
   setTmpCat,
 }) {
+  const [{ clearErrors }] = useErrors(null)
   const selectCategory = (cat) => {
+    clearErrors()
     if (tmpCat) {
       if (tmpCat.uuid === cat.uuid) {
         setTmpCat(null)

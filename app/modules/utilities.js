@@ -93,6 +93,31 @@ export const isNumber = (data) => {
 export const isBoolean = (data) => {
   return typeof data === "boolean"
 }
+export const Util = {
+  get_time: (date) => {
+    return new Date(date).toLocaleTimeString()
+  },
+  isEmpty: (obj) => {
+    if (typeof obj === "undefined") return true
+    return Object.keys(obj).length === 0
+  },
+  obscureEmail: (email) => {
+    var splitEmail = email.split("@")
+    var domain = splitEmail[1]
+    var name = splitEmail[0]
+    const ln = Math.floor(name.length / 3)
+    let ast = ""
+    for (let i = 0; i < name.length - ln; i++) {
+      ast += "*"
+    }
+    return name.substring(0, ln).concat(ast).concat("@").concat(domain)
+  },
+  validateEmail: (email) => {
+    return email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    )
+  },
+}
 export const scrollToTop = () => {
   var contentBody = document.getElementById("contentBody")
   contentBody.scrollTo({
@@ -101,61 +126,21 @@ export const scrollToTop = () => {
   })
 }
 export function userData(data, partnerID) {
-  const partner_id = partnerID ? Decrypt(partnerID) : null
-  const user = { ...data?.user }
-  const partners = []
-  if (data && data.partner) {
-    data.partner.progress = {
-      percent: data.percent_complete,
-      stage: data.profile_stage ? { ...data.profile_stage } : null,
-    }
-  } else {
-    const stages = data.profile_stage ? { ...data.profile_stage } : null
-
-    if (data?.partners.length > 0) {
-      data.partners.map((p) => {
-        console.log({ stages })
-        // const stage = stages
-        //   ? stages?.find((s) => s.partner_uuid === p.uuid)
-        //   : null
-        const stage = null
-        if (stage) {
-          const percent = stage.percentage
-          delete stage.id
-          delete stage.uuid
-          delete stage.user_uuid
-          delete stage.partner_uuid
-          delete stage.percentage
-          delete stage.created_at
-          delete stage.updated_at
-          p.progress = {
-            percent,
-            stage,
-          }
-        } else {
-          p.progress = null
-        }
-        partners.push(p)
-      })
+  if (!data?.partner && data?.partners?.length > 0) {
+    if (partnerID) {
+      const Partner = data.partners.find((p) => p.uuid === partnerID)
+      if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
+    } else {
+      data.partner = { ...data.partners[0] }
     }
   }
-
-  const partner = partner_id
-    ? partners.find((p) => p.uuid === partner_id)
-    : {
-        ...data?.partner,
-      }
-  delete data.profile_status
-  delete data.percent_complete
-  delete data.profile_stage
-  delete data.user
-  delete data.partner
-  delete data.partners
+  // delete data.profile_status
+  // delete data.percent_complete
+  // delete data.profile_stage
   delete data.login_token
   return {
-    user,
-    partner,
-    partners,
+    // partners,
+    partnerID,
     ...data,
   }
 }
@@ -164,6 +149,7 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
   // const maxAge = data?.login_token?.expires_in
   const maxAge = 60 * 60 * 24
   const User = userData(data, partnerID)
+  console.log({ User })
   if (authToken) {
     // SET COOKIES
     const encryptedAuthToken = Encrypt(authToken)
@@ -188,18 +174,18 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
       path: "/",
       sameSite: "strict",
     })
-    if (User.partner.uuid) {
-      const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
-      setCookie("partnerid", encryptedPartnerid, {
-        req,
-        res,
-        maxAge: maxAge ?? 60 * 60 * 24 * 365, // would expire after 15 minutes
-        httpOnly: true,
-        signed: true,
-        path: "/",
-        sameSite: "strict",
-      })
-    }
+    // if (User.partner.uuid) {
+    //   const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
+    //   setCookie("partnerid", encryptedPartnerid, {
+    //     req,
+    //     res,
+    //     maxAge: maxAge ?? 60 * 60 * 24 * 365, // would expire after 15 minutes
+    //     httpOnly: true,
+    //     signed: true,
+    //     path: "/",
+    //     sameSite: "strict",
+    //   })
+    // }
   }
   return { User, authToken }
 }

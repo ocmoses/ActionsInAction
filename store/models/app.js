@@ -29,26 +29,45 @@ const app = {
 
   // FORMS
   form: null,
-  formSteps: {},
-  nextForm: "",
+  formSteps: null,
+  allforms: [
+    "userinfo",
+    "category",
+    "companydetail",
+    "compliance",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ],
+  formValidation: [],
+  activeCategory: null,
+
+  setActiveCategory: action((state, uuid) => {
+    state.activeCategory = uuid
+  }),
   setForm: action((state, form) => {
     state.form = form
   }),
-  setFormSteps: action((state, steps) => {
-    console.log({ steps })
-    state.formSteps = steps
+  setFormSteps: action((state, validation) => {
+    state.formSteps = validation.allForms.all
+    state.formValidation = {
+      required: validation.required,
+      optional: validation.optional,
+    }
   }),
   moveToNextForm: action((state, current) => {
-    const forms = ["companydetail", "compliance", "ncclincense"]
     if (!current) {
-      state.nextForm = "companydetail"
-      return state.nextForm
+      state.form = null
+    } else {
+      const index = state.allforms.indexOf(current)
+      if (index === state.allforms.length - 1) {
+        state.form = "review"
+      } else {
+        state.form = state.allforms[index + 1]
+      }
     }
-    state.partner = { ...state.partner, ...partner }
-    const Partners = state.partners.filter((p) => {
-      p.uuid !== partner.uuid
-    })
-    state.partners = [...Partners, partner]
   }),
   // ONBOARDING
   service: {

@@ -69,7 +69,7 @@ function CompanyDetail() {
 
     const result = await registerPartner("companydetail", data)
     if (result) {
-      if (result?.error) setError("companydetail", result.error)
+      if (result?.error) setError({ companydetail: result.error })
     }
     moveToNext("companydetail")
   }

@@ -10,4 +10,11 @@ const model = {
   partners,
 }
 const store = createStore(persist(model))
+
+export const clearPersistStore = () => {
+  store.persist.clear().then(() => {
+    console.log("Persisted state has been removed")
+  })
+}
+
 export default store

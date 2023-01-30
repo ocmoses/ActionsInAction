@@ -13,6 +13,7 @@ import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
+import { clearPersistStore } from "@/store"
 
 function Login({ params }) {
   const { setPartner, setPartners, partnerID } = usePartners()
@@ -20,8 +21,9 @@ function Login({ params }) {
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   useEffect(() => {
-    setForm("login")
+    setForm(null)
     setProcessing(false)
+    clearErrors()
   }, [])
   const [data, setData] = useState({
     email: process.env.NODE_ENV === "production" ? "" : "test@gmail.com",
@@ -47,6 +49,7 @@ function Login({ params }) {
     }
 
     setProcessing(true)
+    await clearPersistStore()
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({

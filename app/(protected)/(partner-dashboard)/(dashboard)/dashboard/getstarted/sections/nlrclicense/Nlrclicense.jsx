@@ -19,9 +19,11 @@ import { scrollToTop } from "@/app/modules/utilities"
 function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, registerPartner } = usePartners()
+  const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
+    partner_uuid: "",
+    category_uuid: "",
     nlrc_license_id: "",
     nlrc_issue_date: "",
     nlrc_expiry_date: "",
@@ -30,14 +32,16 @@ function NlrcLicense() {
   const { title, subtitle, hand, required } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partner?.category)
+    if (category)
       setData({
-        nlrc_license_id: partner?.category?.nlrc_license_id ?? "",
-        nlrc_issue_date: partner?.category?.nlrc_issue_date ?? "",
-        nlrc_expiry_date: partner?.category?.nlrc_expiry_date ?? "",
-        nlrc_doc: partner?.category?.nlrc_doc ?? "",
+        partner_uuid: category?.partner_uuid,
+        category_uuid: category?.category_uuid,
+        nlrc_license_id: category?.nlrc_license_id ?? "",
+        nlrc_issue_date: category?.nlrc_issue_date ?? "",
+        nlrc_expiry_date: category?.nlrc_expiry_date ?? "",
+        nlrc_doc: category?.nlrc_doc ?? "",
       })
-  }, [partner?.category])
+  }, [category])
   useEffect(() => {
     setForm("nlrclicense")
     setProcessing(false)

@@ -35,8 +35,8 @@ export default function MenuBar({ open }) {
               </svg>
 
               {open && (
-                <span className="text-gray-100 transition-transform ease-in-out duration-500">
-                  {menu.label}
+                <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
+                  {menu.label} box
                 </span>
               )}
             </Link>

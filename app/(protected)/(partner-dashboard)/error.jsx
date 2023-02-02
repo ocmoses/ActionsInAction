@@ -7,7 +7,7 @@ import { useEffect } from "react"
 export default function Error({ error, reset }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.log(error.toString())
+    console.error(error)
   }, [error])
 
   return (
@@ -16,6 +16,7 @@ export default function Error({ error, reset }) {
       <div className="text-red-500 px-0 my-4 max-w-[480px] break-words">
         An error was encountered while processing your request. We are sorry for
         this. The error have been logged and will be fixed in no time
+        {/* <div className="mt-3">{error.toString()}</div> */}
       </div>
       <button onClick={() => reset()}>Reset</button>
     </div>

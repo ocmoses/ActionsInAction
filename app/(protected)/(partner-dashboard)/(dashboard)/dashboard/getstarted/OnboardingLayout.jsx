@@ -7,6 +7,8 @@ import Compliance from "./sections/compliance/Compliance"
 import Ncclicense from "./sections/ncclicense/Ncclicense"
 import Nlrclicense from "./sections/nlrclicense/Nlrclicense"
 import Indemnity from "./sections/indemnity/Indemnity"
+import Accountinfo from "./sections/accountinfo/Accountinfo"
+
 import Shortcode from "./sections/shortcode/Shortcode"
 import { profileMenu } from "@/app/modules/constants"
 import { updateMenu } from "@/app/modules/constants"
@@ -57,9 +59,9 @@ export default function OnboardingLayout({
               {form === "nlrclicense" && <Nlrclicense />}
               {form === "indemnity" && <Indemnity />}
               {form === "shortcode" && <Shortcode />}
+              {form === "accountinfo" && <Accountinfo />}
             </div>
           </div>
-          {/* <div className="col-span-1 flex h-full bg-gray-600">Testing</div> */}
         </div>
       </div>
     </>

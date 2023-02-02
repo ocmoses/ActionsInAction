@@ -15,6 +15,7 @@ import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
+import Image from "next/image"
 
 export default function GetStarted({ data }) {
   const {
@@ -30,14 +31,15 @@ export default function GetStarted({ data }) {
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
   const {
+    form,
     setForm,
     setProcessing,
     setFormSteps,
     moveToNextForm,
     setActiveCategory,
   } = useProcessing()
-  const [{ errors, setError, clearErrors }] = useErrors(null)
-
+  const [{ errors, clearErrors }] = useErrors(null)
+  console.log({ form })
   useEffect(() => {
     setCategoriesData(categories)
   }, [categories])
@@ -115,165 +117,233 @@ export default function GetStarted({ data }) {
   }
   return (
     <>
-      {isOnboarding && (
-        <>
-          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">
-            <OnboardingLayout
-              isOnboarding={isOnboarding}
-              setIsOnboarding={setIsOnboarding}
-              setContinuedCategory={setContinuedCategory}
-              setTmpCat={setTmpCat}
-            />
-          </div>
-        </>
-      )}
-      <div ref={MainBox} className="max-w-[807px] px-20 pt-[72px]">
-        {user?.first_name && (
-          <h2 className="text-4xl font-bold text-white">
-            Hello, {user.first_name}
-          </h2>
-        )}
-        <p className="text-[#999999]">
-          Choose a partner category that best suits your service
-        </p>
-        {errors && errors["category"] && (
-          <div className="mb-6">
-            <FormErrors error={errors["getStarted"]} />
-          </div>
-        )}
-        {partnerCategories && (
-          <div
-            className={`flex flex-col gap-4 max-w-[837px] mt-16 w3-animate-opacity
-           `}
-          >
-            {partnerCategories.map((progress) => (
-              <div
-                key={progress.category_uuid}
-                className="flex flex-row justify-between gap-6 bg-[#111111] px-[20px] py-4 border border-white/10 rounded-xl"
-              >
-                <div className="flex gap-6 justify-start items-center">
-                  <div className="flex justify-center items-center">
-                    <UserPercentage
-                      size={72}
-                      thickness={2}
-                      textsize={20}
-                      percent={progress.percentage}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-0 justify-center items-start h-full">
-                    <span className="text-sm text-[#999999]">In progress</span>
-                    <span className="text-white font-bold">
-                      {progress.category_name}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex gap-6 justify-end items-center">
-                  {progress.percentage < 100 ? (
-                    <Button
-                      onClick={() =>
-                        continueRegistration(progress.category_uuid)
-                      }
-                      label="Finish up"
-                      noicon="yes"
-                      textsizecss="text-[13px] md:text-sm"
-                    />
-                  ) : (
-                    <Button
-                      onClick={() =>
-                        continueRegistration(progress.category_uuid)
-                      }
-                      label="Detail"
-                      outline="yes"
-                      noicon="yes"
-                      textsizecss="text-[13px] md:text-sm"
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {partnerCategories?.length > 0 &&
-          partnerActiveCategories?.length > 0 && (
-            <div
-              ref={CategoryBox}
-              onClick={toggleProgress}
-              className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
-            >
-              {showProgress && (
-                <>
-                  <span className="text-[#999999]">
-                    Explore other categories
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 text-[#FFCB03]"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </>
-              )}
-              {!showProgress && (
-                <>
-                  <span className="text-[#999999]">Show less categories</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 text-[#FFCB03]"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                    />
-                  </svg>
-                </>
-              )}
-            </div>
-          )}
-        {!showProgress && (
-          <div className="grid lg:grid-cols-2 gap-[24px] my-16 w3-animate-opacity">
-            {partnerActiveCategories &&
-              partnerActiveCategories?.length > 0 &&
-              partnerActiveCategories.map((category) => (
-                <CategoryCard
-                  key={category.uuid}
-                  category={category}
-                  isOpen={isOpen}
-                  setIsOpen={setIsOpen}
-                  tmpCat={tmpCat}
+      <div className="grid grid-cols-12">
+        <div className="col-span-10 w-full max-w-[837px] mx-auto ">
+          {isOnboarding && (
+            <>
+              <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">
+                <OnboardingLayout
+                  isOnboarding={isOnboarding}
+                  setIsOnboarding={setIsOnboarding}
+                  setContinuedCategory={setContinuedCategory}
                   setTmpCat={setTmpCat}
                 />
-              ))}
+              </div>
+            </>
+          )}
+          <div ref={MainBox} className="w-full pt-[72px]">
+            {user?.first_name && (
+              <h2 className="text-4xl font-bold text-white">
+                Hello, {user.first_name}
+              </h2>
+            )}
+            <p className="text-[#999999]">
+              Choose a partner category that best suits your service
+            </p>
+            {errors && errors["category"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["getStarted"]} />
+              </div>
+            )}
+            {partnerCategories && (
+              <div
+                className={`flex flex-col gap-4 max-w-[837px] mt-16 w3-animate-opacity
+           `}
+              >
+                {partnerCategories.map((progress) => (
+                  <div
+                    onClick={() => continueRegistration(progress.category_uuid)}
+                    key={progress.category_uuid}
+                    className="flex flex-col lg:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
+                  >
+                    <div className="flex flex-col lg:flex-row gap-6 justify-start items-center">
+                      <div className="flex justify-center items-center">
+                        <UserPercentage
+                          size={86}
+                          thickness={2}
+                          textsize={20}
+                          percent={progress.percentage}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-0 justify-center items-center lg:items-start h-full">
+                        <span className="text-sm text-[#999999]">
+                          In progress
+                        </span>
+                        <span className="text-white text-center lg:text-left font-bold">
+                          {progress.category_name}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-6 justify-center lg:justify-end items-center">
+                      {progress.percentage < 100 ? (
+                        <Button
+                          label="Finish up"
+                          noicon="yes"
+                          textsizecss="text-[13px] lg:text-sm"
+                        />
+                      ) : (
+                        <div className="flex justify-center">
+                          <Button
+                            onClick={() =>
+                              continueRegistration(progress.category_uuid)
+                            }
+                            label="Detail"
+                            outline="yes"
+                            noicon="yes"
+                            textsizecss="text-[13px] lg:text-sm"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {partnerCategories?.length > 0 &&
+              partnerActiveCategories?.length > 0 && (
+                <div
+                  ref={CategoryBox}
+                  onClick={toggleProgress}
+                  className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
+                >
+                  {showProgress && (
+                    <>
+                      <span className="text-[#999999]">
+                        Explore other categories
+                      </span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 text-[#FFCB03]"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                    </>
+                  )}
+                  {!showProgress && (
+                    <>
+                      <span className="text-[#999999]">
+                        Show less categories
+                      </span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 text-[#FFCB03]"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                    </>
+                  )}
+                </div>
+              )}
+            {!showProgress && (
+              <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
+                {partnerActiveCategories &&
+                  partnerActiveCategories?.length > 0 &&
+                  partnerActiveCategories.map((category) => (
+                    <CategoryCard
+                      key={category.uuid}
+                      category={category}
+                      isOpen={isOpen}
+                      setIsOpen={setIsOpen}
+                      tmpCat={tmpCat}
+                      setTmpCat={setTmpCat}
+                    />
+                  ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <CategorySideDrawer
-        setTmpCat={setTmpCat}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      >
-        {tmpCat && isOpen && (
-          <CategoryDetail
-            category={tmpCat}
-            setIsOnboarding={setIsOnboarding}
+          <div className="flex flex-col items-center lg:items-between ">
+            <h3 className="text-lg text-white font-bold mb-8">
+              Learn how to use
+            </h3>
+            <div className="grid gridcols-1 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                <Image
+                  src={"/assets/icons/graphics-1.png"}
+                  height={147}
+                  width={259}
+                  className="w-full"
+                  alt=""
+                />
+                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                    Read the documentation
+                  </h4>
+                  <p className="text-sm text-[#999999] text-center lg:text-start">
+                    Explore our guides, API references and code examples
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                <Image
+                  src={"/assets/icons/graphics-1.png"}
+                  height={147}
+                  width={259}
+                  className="w-full"
+                  alt=""
+                />
+                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                    Discover the right Metrics
+                  </h4>
+                  <p className="text-sm text-[#999999] text-center lg:text-start">
+                    Talk to our partner portal team and learn more about what
+                    you can do
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                <Image
+                  src={"/assets/icons/graphics-1.png"}
+                  height={147}
+                  width={259}
+                  className="w-full"
+                  alt=""
+                />
+                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                    Write Custom Codes
+                  </h4>
+                  <p className="text-sm text-[#999999] text-center lg:text-start">
+                    Talk to our partner portal team and learn more about what
+                    you can do
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <CategorySideDrawer
+            setTmpCat={setTmpCat}
+            isOpen={isOpen}
             setIsOpen={setIsOpen}
-            validation={validation}
-          />
-        )}
-      </CategorySideDrawer>
+          >
+            {tmpCat && isOpen && (
+              <CategoryDetail
+                category={tmpCat}
+                setIsOnboarding={setIsOnboarding}
+                setIsOpen={setIsOpen}
+                validation={validation}
+              />
+            )}
+          </CategorySideDrawer>
+        </div>
+      </div>
     </>
   )
 }

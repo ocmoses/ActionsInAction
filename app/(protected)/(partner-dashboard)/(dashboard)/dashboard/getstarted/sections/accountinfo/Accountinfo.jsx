@@ -1,51 +1,49 @@
 "use client"
-import TextInput from "@/app/components/form/TextInput"
 import FileInput from "@/app/components/form/FileInput"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+import ButtonNext from "@/app/components/form/ButtonNext"
+import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
+import usePartners from "@/hooks/usePartners"
+import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
-import { BANKS } from "@/app/modules/banks"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
-import useProcessing from "@/hooks/useProcessing"
 
 export default function Accountinfo() {
-  const { processing, setProcessing, form, setForm } = useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
+    useProcessing()
+  const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
-    account_name: "",
-    account_no: "",
-    bank: "",
+    partner_uuid: "",
+    category_uuid: "",
     audited_account_1: "",
     audited_account_2: "",
     audited_account_3: "",
+    audited_account_4: "",
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+
   useEffect(() => {
-    if (partnerInfo)
+    if (category)
       setData({
-        account_name: partnerInfo.account_name ?? "",
-        account_no: partnerInfo.account_no ?? "",
-        bank: partnerInfo.bank ?? "",
-        audited_account_1: partnerInfo.audited_account_1 ?? "",
-        audited_account_2: partnerInfo.audited_account_2 ?? "",
-        audited_account_3: partnerInfo.audited_account_3 ?? "",
+        audited_account_1: category?.audited_account_1 ?? "",
+        audited_account_2: category?.audited_account_2 ?? "",
+        audited_account_3: category?.audited_account_3 ?? "",
+        audited_account_: category?.audited_account_ ?? "",
       })
-  }, [partnerInfo])
+  }, [category])
+
   useEffect(() => {
     setForm("accountinfo")
     setProcessing(false)
   }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -54,15 +52,17 @@ export default function Accountinfo() {
       for (const field in required) {
         if (!!!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
     }
     const result = await registerPartner("accountinfo", data)
+    console.log({ result })
     if (result) {
-      if (result?.error) setError("global", result.error)
+      if (result?.error) return setError({ accountinfo: result.error })
     }
+    moveToNextForm(["accountinfo"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -77,38 +77,8 @@ export default function Accountinfo() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["global"]} />}
+          {errors && <FormErrors error={errors["accountinfo"]} />}
         </div>
-        <TextInput
-          id="account_name"
-          label="Account name"
-          value={data.account_name}
-          onChange={handleFormChange}
-          errors={errors}
-        />
-        <TextInput
-          id="account_no"
-          label="Account number"
-          value={data.account_no}
-          onChange={handleFormChange}
-          errors={errors}
-        />
-        <SelectInput
-          id="bank"
-          label="Bank"
-          value={data.bank}
-          onChange={handleFormChange}
-          errors={errors}
-        >
-          <SelectInputOption value="" label="" />
-          {BANKS.map((bank) => (
-            <SelectInputOption
-              key={bank.code}
-              value={bank.code}
-              label={bank.name}
-            />
-          ))}
-        </SelectInput>
         <FileInputWrapper>
           <FileInput
             id="audited_account_1"
@@ -131,6 +101,13 @@ export default function Accountinfo() {
             onChange={handleFormChange}
             errors={errors}
           />
+          <FileInput
+            id="audited_account_4"
+            label="Audited account 4"
+            value={data.audited_account_4}
+            onChange={handleFormChange}
+            errors={errors}
+          />
         </FileInputWrapper>
 
         <div className="mt-6">
@@ -142,7 +119,16 @@ export default function Accountinfo() {
               fill="#efb703"
             />
           ) : (
-            <Button label="Next" />
+            <div className="flex items-center gap-4">
+              <ButtonPrev
+                onClick={() => moveToPrevForm("indemnity")}
+                type="button"
+                label="Next"
+                outline="yes"
+                outlineColor="border-white"
+              />
+              <ButtonNext type="submit" label="Next" />
+            </div>
           )}
         </div>
       </form>

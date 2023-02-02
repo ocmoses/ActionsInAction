@@ -14,9 +14,6 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
       const categoryData = categories.find((cat) => cat.uuid === activeCategory)
       setCategoryData(categoryData)
     }
-    // return () => {
-    //   setActiveCategory(null)
-    // }
   }, [activeCategory])
   const cancelOnboarding = () => {
     setIsOnboarding(false)
@@ -47,7 +44,7 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
           </span>
         </div>
         {Category?.category_name && (
-          <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
+          <div className="flex gap-5 justify-start  items-center text-white px-3 py-2">
             <span className="text-[#999999] group-hover:!text-white">
               Partner category:
             </span>

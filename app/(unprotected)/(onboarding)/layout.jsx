@@ -18,7 +18,7 @@ export default function Layout({ children }) {
           <div className="layout-center h-full px-3">{children}</div>
         </div>
         <div className="relative min-h-screen hidden md:flex">
-          <UserAvartar />
+          {/* <UserAvartar /> */}
           <Image
             className="h-full object-cover"
             src="/assets/pic/onboarding.png"

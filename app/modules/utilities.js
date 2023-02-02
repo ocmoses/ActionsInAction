@@ -150,7 +150,7 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
   // const maxAge = data?.login_token?.expires_in
   const maxAge = 60 * 60 * 24
   const User = userData(data, partnerID)
-  console.log({ User })
+  // console.log({ User })
   if (authToken) {
     // SET COOKIES
     const encryptedAuthToken = Encrypt(authToken)

@@ -21,7 +21,7 @@ export default function RegisterValidation({ params }) {
   const [processed, setProcessed] = useState(false)
   const [count, setCount] = useState(0)
 
-  console.log(params)
+  // console.log(params)
 
   const router = useRouter()
   // useEffect(() => {
@@ -86,11 +86,9 @@ export default function RegisterValidation({ params }) {
       }
       if (response) {
         const results = await response?.json()
-        console.log({ results })
+        // console.log({ results })
         const { success, data } = results
         if (results) {
-          console.log({ data })
-          console.log({ success })
           return router.push(url)
           if (success) {
             clearErrors()

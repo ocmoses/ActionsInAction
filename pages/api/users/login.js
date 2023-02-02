@@ -100,10 +100,10 @@ export default async function handler(req, res) {
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])
     User.categories = categories
-    console.log("Login User", User)
+    // console.log("Login User", User)
     return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    console.log({ error })
+    // console.log({ error })
     return res.status(200).json({
       success: false,
       error:

@@ -1,12 +1,12 @@
 export const fetchData = async (url, opt) => {
   const Opts = opt ?? {}
   const defaultHeaders = {
-    apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU',
-    'content-type': 'application/json'
+    apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
+    "content-type": "application/json",
   }
   const defaultOptions = {
-    method: Opts?.method ?? 'GET',
-    headers: { ...defaultHeaders, ...Opts?.headers }
+    method: Opts?.method ?? "GET",
+    headers: { ...defaultHeaders, ...Opts?.headers },
   }
   const options = { ...defaultOptions, ...Opts }
   try {
@@ -19,8 +19,8 @@ export const fetchData = async (url, opt) => {
         } else {
           return {
             success: false,
-            error: 'Sorry! Something went wrong. No data was returned',
-            data: null
+            error: "Sorry! Something went wrong. No data was returned",
+            data: null,
           }
         }
       } else if (data?.message) {
@@ -30,18 +30,17 @@ export const fetchData = async (url, opt) => {
       return {
         success: false,
         error:
-          'Sorry! We could not reach the server. Please check your connection and reload this page',
-        data: null
+          "Sorry! We could not reach the server. Please check your connection.",
+        data: null,
       }
     }
   } catch (e) {
     return {
       success: false,
       error:
-        'Sorry! We could not reach the server. Please check your connection. ' +
-        e.toString(),
-      data: null
+        "Sorry! We could not reach the server. Please check your connection.",
+      data: null,
     }
   }
-  return { success: false, error: 'Something went wrong', data: null }
+  return { success: false, error: "Something went wrong", data: null }
 }

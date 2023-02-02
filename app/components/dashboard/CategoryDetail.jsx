@@ -41,7 +41,7 @@ export default function CategoryDetail({
 
       setFormSteps(validation)
       setActiveCategory(category.uuid)
-      moveToNextForm("category")
+      moveToNextForm(["category"])
       setIsOnboarding(true)
       setIsOpen(false)
       return

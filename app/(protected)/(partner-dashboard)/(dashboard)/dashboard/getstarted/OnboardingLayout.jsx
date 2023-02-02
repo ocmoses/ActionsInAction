@@ -19,9 +19,9 @@ export default function OnboardingLayout({
   setTmpCat,
 }) {
   const { form } = useProcessing()
-  useEffect(() => {
-    console.log({ form })
-  }, [form])
+  // useEffect(() => {
+  //   console.log({ form })
+  // }, [form])
   return (
     <>
       <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">

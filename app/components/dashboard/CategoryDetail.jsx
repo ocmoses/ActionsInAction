@@ -27,7 +27,6 @@ export default function CategoryDetail({
   } = useProcessing()
 
   const selectCategory = async (category) => {
-    console.log({ category })
     clearErrors()
     const result = await registerPartner("category", {
       category_uuid: category.uuid,

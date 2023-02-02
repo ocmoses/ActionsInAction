@@ -25,7 +25,7 @@
 //     "nlrclicense",
 //     "shortcode",
 //     "indemnity",
-//     "financial",
+//     "accountinfo",
 //   ]
 //   const Pages = {
 //     userinfo: "/onboarding/userinfo",
@@ -37,7 +37,7 @@
 //     nlrclicense: "/profile/nlrclicense",
 //     shortcode: "/profile/shortcode",
 //     indemnity: "/profile/indemnity",
-//     financial: "/profile/financial",
+//     accountinfo: "/profile/accountinfo",
 //   }
 //   let nextstage = null
 //   Stages.map((stage) => {
@@ -277,15 +277,15 @@
 //       setPartner(userdata)
 //       updatePercentComplete(indemnity)
 //       setUpdateStatus("review", "indemnity", true)
-//       router.push("/profile/financial")
+//       router.push("/profile/accountinfo")
 //       break
-//     case "financial":
+//     case "accountinfo":
 //       setProcessing(true)
 //       const {
-//         success: financialSuccess,
-//         error: financialError,
-//         data: financial,
-//       } = await fetchData(`${apiURL}/v1/auth/register/financial`, {
+//         success: accountinfoSuccess,
+//         error: accountinfoError,
+//         data: accountinfo,
+//       } = await fetchData(`${apiURL}/v1/auth/register/accountinfo`, {
 //         method: "PUT",
 //         cache: "no-store",
 //         body: JSON.stringify({
@@ -298,13 +298,13 @@
 //           audited_account_3: userdata.audited_account_3 ?? "",
 //         }),
 //       })
-//       if (financialError) {
+//       if (accountinfoError) {
 //         setProcessing(false)
-//         return { success: false, error: financialError, data: null }
+//         return { success: false, error: accountinfoError, data: null }
 //       }
 //       setPartner(userdata)
-//       updatePercentComplete(financial)
-//       setUpdateStatus("review", "financial", true)
+//       updatePercentComplete(accountinfo)
+//       setUpdateStatus("review", "accountinfo", true)
 //       router.push("/profile/review")
 //       break
 //     // Existing partner flows

@@ -8,6 +8,7 @@ import useUsers from "@/hooks/useUsers"
 import useLogout from "@/hooks/useLogout"
 import { useSelectedLayoutSegments } from "next/navigation"
 import { TailSpinPreloader } from "@/app/components/Icons"
+import { useEffect } from "react"
 
 function Navbar() {
   const { Logout } = useLogout()
@@ -42,7 +43,7 @@ function Navbar() {
                 className="text-white text-sm cursor-pointer transition ease-in-out duration-500 hover:scale-[120%]"
                 onClick={Logout}
               >
-                {loading.logout ? (
+                {loading?.logout ? (
                   <TailSpinPreloader width={28} height={28} fill="#efb703" />
                 ) : (
                   "Logout"

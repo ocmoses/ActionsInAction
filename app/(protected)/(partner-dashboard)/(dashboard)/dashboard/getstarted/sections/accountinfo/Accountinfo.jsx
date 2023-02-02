@@ -17,7 +17,7 @@ import { forms } from "@/app/modules/constants"
 import { useStoreState, useStoreActions } from "easy-peasy"
 import useProcessing from "@/hooks/useProcessing"
 
-export default function Financial() {
+export default function Accountinfo() {
   const { processing, setProcessing, form, setForm } = useProcessing()
   const { partnerInfo, registerPartner } = useOnboardingContext()
 
@@ -29,7 +29,7 @@ export default function Financial() {
     audited_account_2: "",
     audited_account_3: "",
   })
-  const { title, subtitle, hand, required } = forms["financial"]
+  const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (partnerInfo)
@@ -43,7 +43,7 @@ export default function Financial() {
       })
   }, [partnerInfo])
   useEffect(() => {
-    setForm("financial")
+    setForm("accountinfo")
     setProcessing(false)
   }, [])
   const handleSubmit = async (e) => {
@@ -59,7 +59,7 @@ export default function Financial() {
       }
       if (error) return
     }
-    const result = await registerPartner("financial", data)
+    const result = await registerPartner("accountinfo", data)
     if (result) {
       if (result?.error) setError("global", result.error)
     }

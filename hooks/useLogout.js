@@ -1,21 +1,16 @@
 "use client"
 import { logout } from "@/app/modules/utilities"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import usePartners from "@/hooks/usePartners"
+import { PageRoutes } from "@/app/modules/menu"
 
-const useLogout = () => {
-  const { setUser } = useUsers()
-  const {
-    startLoading,
-    endLoading,
-    clearErrors,
-    setForm,
-    setProcessing,
-    setActiveCategory,
-    setFormSteps,
-    moveToNextForm,
-  } = useApp()
+import usePartners from "@/hooks/usePartners"
+import { useStoreActions, useStoreState } from "easy-peasy"
+import store, { model } from "@/store"
+import { useRouter } from "next/navigation"
+
+export default function useLogout() {
+  const router = useRouter()
+  const actions = useStoreActions((action) => action)
+
   const {
     setPartner,
     setPartners,
@@ -25,27 +20,22 @@ const useLogout = () => {
     setPartnerCategories,
   } = usePartners()
 
+  const clearStore = () => {
+    for (const store in model) {
+      actions[store].clear()
+    }
+  }
   const Logout = async () => {
-    startLoading("logout")
+    // store.persist.clear().then(async () => {
+    console.log("Persisted state has been removed")
+    actions.app.startLoading("logout")
     await logout()
-    setUser(null)
-    setForm(null)
-
-    clearErrors(null)
-    setProcessing(null)
-    setActiveCategory(null)
-    setFormSteps(null)
-    moveToNextForm(null)
-
-    setPartner(null)
-    setPartners(null)
-    setPartnerID(null)
-    setCategory(null)
-    setCategories(null)
-    setPartnerCategories(null)
-    endLoading("logout")
+    actions.app.endLoading("logout")
+    clearStore()
+    router.push(PageRoutes.home)
+    // })
   }
 
-  return { Logout }
+  return { Logout, clearStore }
 }
-export default useLogout
+useLogout

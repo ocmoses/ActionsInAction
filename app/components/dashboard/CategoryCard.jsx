@@ -1,28 +1,14 @@
 import Image from "next/image"
 import useErrors from "@/hooks/useErrors"
+import usePartners from "@/hooks/usePartners"
 
-export default function CategoryCard({
-  category,
-  isOpen,
-  setIsOpen,
-  tmpCat,
-  setTmpCat,
-}) {
+export default function CategoryCard({ category, setIsOpen, setTmpCat }) {
   const [{ clearErrors }] = useErrors(null)
-  const selectCategory = (cat) => {
+
+  const selectCategory = (category) => {
     clearErrors()
-    if (tmpCat) {
-      if (tmpCat.uuid === cat.uuid) {
-        setTmpCat(null)
-        setIsOpen(false)
-      } else {
-        setTmpCat(cat)
-        setIsOpen(true)
-      }
-    } else {
-      setTmpCat(cat)
-      setIsOpen(true)
-    }
+    setTmpCat(category)
+    setIsOpen(true)
   }
   return (
     <div

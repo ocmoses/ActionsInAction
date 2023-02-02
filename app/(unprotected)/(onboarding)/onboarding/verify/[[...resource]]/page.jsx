@@ -17,7 +17,6 @@ export default function Validate({ params }) {
   const [{ errors, success, clearErrors }] = useErrors({})
   const [type, setType] = useState("")
   const { resource } = params
-  console.log({ resource })
   useEffect(() => {
     setForm(null)
     setProcessing(false)
@@ -54,20 +53,20 @@ export default function Validate({ params }) {
             {success && <FormErrors success={success} align="center" />}
           </>
         </div>
-        {user.email && (
+        {user?.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
             A confirmation email has been sent to your email <br />
-            {/* {Util.obscureEmail(user.email)}. <br /> */}
+            {/* {Util.obscureEmail(user?.email)}. <br /> */}
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {user.email !== "" && (
+        {user?.email !== "" && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(user.email, type)}
+              onClick={() => resendEmail(user?.email, type)}
             >
               Resend email
             </span>
@@ -79,7 +78,7 @@ export default function Validate({ params }) {
         //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
       */}
       <Link
-        href={`/onboarding/validate/${user.uuid}/${type}/`}
+        href={`/onboarding/validate/${resource[0]}/${resource[1]}/`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
         [[DEV TOOL. Continue to next screen]]

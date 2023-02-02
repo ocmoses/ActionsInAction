@@ -11,11 +11,21 @@ import FormErrors from "@/app/components/FormErrors"
 import { forms } from "@/app/modules/constants"
 import usePartners from "@/hooks/usePartners"
 
-function SetPassword() {
+function SetPassword({ params: { params } }) {
   const { processing, setProcessing, setForm } = useProcessing()
   const { title, subtitle, hand, required } = forms["setpassword"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
-  const [data, setData] = useState({ password: "", password_confirmed: "" })
+  const [data, setData] = useState({
+    password: "",
+    password_confirmed: "",
+    type: "",
+  })
+  useEffect(() => {
+    setData((oldState) => ({
+      ...oldState,
+      type: params?.length > 0 ? params[0] : "",
+    }))
+  }, [params])
   const { registerPartner } = usePartners()
 
   useEffect(() => {
@@ -39,10 +49,6 @@ function SetPassword() {
         setError({ password: "Your password must be at least, 8 characters" })
         return
       }
-      // if (data["password"] !== data["password_confirmed"]) {
-      //   setError({ password_confirmed: "Password did not match" })
-      //   return
-      // }
     }
     const result = await registerPartner("setpassword", data)
     if (result) {
@@ -77,18 +83,10 @@ function SetPassword() {
           Must be at least 8 characters, includes uppercase and lowercase
           letter, a number and a special character
         </div>
-        {/* <TextInput
-          id="password_confirmed"
-          label="Repeat your password"
-          type="password"
-          value={data.password_confirmed}
-          onChange={handleFormChange}
-          errors={errors}
-        /> */}
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (
-          <Button label="Continue" />
+          <Button label={`Continue`} />
         )}
       </form>
     </div>

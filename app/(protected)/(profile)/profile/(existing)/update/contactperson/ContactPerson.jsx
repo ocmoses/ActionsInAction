@@ -131,7 +131,7 @@ function ContactPerson() {
         <div className="mb-6">
           {errors && typeof errors["telephone"] !== "undefined" && (
             <div className="text-sm text-red-600 mt-2">
-              {errors["telephone"]}
+              {errors && errors["telephone"]}
             </div>
           )}
         </div>

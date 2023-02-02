@@ -2,8 +2,15 @@
 import Image from "next/image"
 import Link from "next/link"
 import MenuIcom from "@/public/assets/icons/menu.svg"
+import useUsers from "@/hooks/useUsers"
+import useApp from "@/hooks/useApp"
+import useLogout from "@/hooks/useLogout"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
 function NavbarDashboard({ open, setOpen }) {
+  const { session } = useUsers()
+  const { Logout } = useLogout()
+  const { loading } = useApp()
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-10 border-b border-b-white/20">
       <div className="flex items-center">
@@ -29,7 +36,24 @@ function NavbarDashboard({ open, setOpen }) {
           Search for transactions, users, pages...
         </div>
       </div>
-      <div className="flex justify-end text-white px-3">icons</div>
+      <div className="flex justify-end text-white px-3">
+        {session.status && session.status === "authenticated" && (
+          <div className="flex justify-end">
+            <div className="text-white flex items-center mr-0 md:mr-3">
+              <div
+                className="text-white text-sm cursor-pointer transition ease-in-out duration-500 hover:scale-[120%]"
+                onClick={Logout}
+              >
+                {loading?.logout ? (
+                  <TailSpinPreloader width={28} height={28} fill="#efb703" />
+                ) : (
+                  "Logout"
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   )
 }

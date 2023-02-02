@@ -18,6 +18,10 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
     //   setActiveCategory(null)
     // }
   }, [activeCategory])
+  const cancelOnboarding = () => {
+    setIsOnboarding(false)
+    setTmpCat(null)
+  }
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
@@ -53,7 +57,7 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
       </div>
       <div className="flex justify-end text-white px-3">
         <span
-          onClick={() => setIsOnboarding(false)}
+          onClick={cancelOnboarding}
           className="flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"
         >
           Save and exit

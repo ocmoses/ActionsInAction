@@ -15,32 +15,38 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
+import { useStoreActions, useStoreState } from "easy-peasy"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
   const { partner, category, registerPartner } = usePartners()
+  const partnerStore = useStoreState((state) => state.partners)
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
-    company_name: "",
-    country: "NG",
-    company_address: "",
-    company_city: "",
-    company_state: "",
-    company_postcode: "",
+    partner_uuid: category?.partner_uuid ?? "",
+    category_uuid: category?.category_uuid ?? "",
+    company_name: category?.company_name ?? "",
+    country: category?.country ?? "NG",
+    company_address: category?.company_address ?? "",
+    company_city: category?.company_city ?? "",
+    company_state: category?.company_state ?? "",
+    company_postcode: category?.company_postcode ?? "",
   })
+  console.log({ category })
   useEffect(() => {
-    if (partner?.category)
-      setData({
-        company_name: partner?.category?.company_name ?? "",
-        country: partner?.category?.country ?? "NG",
-        company_address: partner?.category?.company_address ?? "",
-        company_city: partner?.category?.company_city ?? "",
-        company_state: partner?.category?.company_state ?? "",
-        company_postcode: partner?.category?.company_postcode ?? "",
-      })
-  }, [partner?.category])
+    setData({
+      partner_uuid: category?.partner_uuid,
+      category_uuid: category?.category_uuid,
+      company_name: category?.company_name ?? "",
+      country: category?.country ?? "NG",
+      company_address: category?.company_address ?? "",
+      company_city: category?.company_city ?? "",
+      company_state: category?.company_state ?? "",
+      company_postcode: category?.company_postcode ?? "",
+    })
+  }, [category])
   useEffect(() => {
     setForm("companydetail")
     setProcessing(false)
@@ -68,7 +74,6 @@ function CompanyDetail() {
     }
 
     const result = await registerPartner("companydetail", data)
-    console.log({ result })
     if (result) {
       if (result?.error) return setError({ companydetail: result.error })
     }
@@ -83,6 +88,7 @@ function CompanyDetail() {
   }
   return (
     <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
+      {/* <div className="p-2 text-white">{JSON.stringify(category)}</div> */}
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

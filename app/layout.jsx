@@ -5,86 +5,126 @@ import ResponsiveLabel from "@/app/components/ResponsiveLabel"
 import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
-import RemoteEndpoints, { EndPointHeaders } from "@/app/modules/endpoints"
+import RemoteEndpoints from "@/app/modules/endpoints"
 
 const getCategories = async () => {
-  const response = await fetch(RemoteEndpoints.CATEGORIES, {
-    method: "GET",
-    headers: {
-      apikey: `${process.env.APIKEY}`,
-    },
-    redirect: "follow",
-    next: { revalidate: 60 * 60 * 24 },
-  }).catch((error) => {
-    console.log("error", error)
-  })
-  return await response?.json()
+  try {
+    const response = await fetch(RemoteEndpoints.CATEGORIES, {
+      method: "GET",
+      headers: {
+        apikey: `${process.env.APIKEY}`,
+      },
+      redirect: "follow",
+      next: { revalidate: 60 * 60 * 24 },
+    }).catch((error) => {
+      return {
+        success: false,
+        error: "Error reaching the server. Please check your connection",
+        data: null,
+      }
+    })
+    if (response) {
+      return await response?.json()
+    } else {
+      return {
+        success: false,
+        error: "Error reaching the server. Please check your connection",
+        data: null,
+      }
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: "Error reaching the server. Please check your connection",
+      data: null,
+    }
+  }
 }
 
 const getServerSession = async () => {
-  const nextCookies = cookies()
-  const token = nextCookies.has("auth-token")
-    ? nextCookies.get("auth-token")?.value
-    : null
-  const partnerid = nextCookies.has("partnerid")
-    ? nextCookies.get("partnerid")?.value
-    : null
-  const user_id = nextCookies.has("user_id")
-    ? nextCookies.get("user_id")?.value
-    : null
+  try {
+    const nextCookies = cookies()
+    const token = nextCookies.has("auth-token")
+      ? nextCookies.get("auth-token")?.value
+      : null
+    const partnerid = nextCookies.has("partnerid")
+      ? nextCookies.get("partnerid")?.value
+      : null
+    const user_id = nextCookies.has("user_id")
+      ? nextCookies.get("user_id")?.value
+      : null
 
-  if (user_id) {
-    // GET USER INFO
-    const authToken = token ? Decrypt(token) : null
-    const partnerID = partnerid ? Decrypt(partnerid) : null
-    try {
-      const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
-        headers: {
-          apikey: `${process.env.APIKEY}`,
-          "Content-Type": "application/json",
-          redirect: "follow",
-          referrerPolicy: "no-referrer",
-          Authorization: `Bearer ${authToken}`,
-        },
-      })
-      const { success, data } = await response.json()
-      if (response?.ok) {
-        const User = userData(data)
-        if (partnerID && User.partners?.length > 0) {
-          User.partnerID = partnerID
-          User.partner = User.partners.find((p) => p.uuid === partnerID)
-        }
-        return { success, error: null, data: User }
-      } else {
-        if (data) {
-          return { success: false, error: data.error, data: null }
+    if (user_id) {
+      // GET USER INFO
+      const authToken = token ? Decrypt(token) : null
+      const partnerID = partnerid ? Decrypt(partnerid) : null
+      try {
+        const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
+          headers: {
+            apikey: `${process.env.APIKEY}`,
+            "Content-Type": "application/json",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }).catch((error) => {
+          console.log("getServerSession error", error)
+        })
+        if (response) {
+          const { success, data } = await response.json()
+          if (response?.ok) {
+            const User = userData(data)
+            if (partnerID && User.partners?.length > 0) {
+              User.partnerID = partnerID
+              User.partner = User.partners.find((p) => p.uuid === partnerID)
+            }
+            return { success, error: null, data: User }
+          } else {
+            if (data) {
+              return { success: false, error: data.error, data: null }
+            } else {
+              return {
+                success: false,
+                error: "Something went wrong",
+                data: null,
+              }
+            }
+          }
         } else {
           return {
             success: false,
-            error: `${response.status} ${response.statusText}`,
+            error: "Error reaching the server. Please check your connection",
             data: null,
           }
         }
+      } catch (error) {
+        return { success: false, error: error.message, data: null }
       }
-    } catch (error) {
-      return { success: false, error: error.message, data: null }
+    } else {
+      return { success: true, error: null, data: null }
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: "Error reaching the server. Please check your connection",
+      data: null,
     }
   }
 }
 export default async function RootLayout({ children }) {
-  //
-  // const categories = await getCategories()
-  // const result = await getServerSession()
-
   const resultGetServerSession = getServerSession()
   const resultGetCategories = getCategories()
 
   // Wait for the promises to resolve
-  const [result, categoriesData] = await Promise.all([
-    getServerSession,
-    getCategories,
+  const [sessionData, categoriesData] = await Promise.all([
+    resultGetServerSession,
+    resultGetCategories,
   ])
-  const categories = { data: null, error: null }
+  const categories = {
+    success: categoriesData.success,
+    data: null,
+    error: null,
+  }
 
   if (categoriesData) {
     if (categoriesData?.success) {
@@ -97,8 +137,8 @@ export default async function RootLayout({ children }) {
   }
 
   const serverSession = {
-    status: result?.data ? "authenticated" : "unauthenticated",
-    User: result?.data ?? null,
+    status: sessionData?.data ? "authenticated" : "unauthenticated",
+    User: sessionData?.data ?? null,
   }
   return (
     <html lang="en">

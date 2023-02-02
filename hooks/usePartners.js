@@ -1,6 +1,7 @@
 import useProcessing from "@/hooks/useProcessing"
 import useErrors from "@/hooks/useErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
+import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
@@ -14,61 +15,48 @@ const usePartners = () => {
   const router = useRouter()
   const { setProcessing } = useProcessing()
   const [{ setError, setSuccess }] = useErrors({})
-
-  const partner = useStoreState(
-    (state) => state.partners.partner,
-    (prev, next) => prev === next
-  )
-  const partners = useStoreState(
-    (state) => state.partners.partners,
-    (prev, next) => prev === next
-  )
-  const category = useStoreState(
-    (state) => state.partners.category,
-    (prev, next) => prev === next
-  )
-  const user = useStoreState(
-    (state) => state.users.user,
-    (prev, next) => prev === next
-  )
-
   const actions = useStoreActions((action) => action)
+  const states = useStoreState((state) => state)
 
-  const { setUser } = actions.users
-  const partnerStates = useStoreState((state) => state.partners)
-  const partnerActions = actions.partners
-
+  const { partner, category } = states.partners
   const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
     actions.partners
+  const { setUser } = actions.users
+  const { user } = states.users
 
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
   })
-
-  const completeOnboarding = (category) => {
-    setCategory(category)
+  const setValidationRules = (category) => {
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
     if (category?.validation) {
       for (const validate in category.validation) {
-        if (category?.validation[validate] === "r") {
-          required.push(forms[validate].label)
-          allForms.required.push(validate)
-          allForms.all.push(validate)
-        } else if (category?.validation[validate] === "o") {
-          optional.push(forms[validate].label)
-          allForms.optional.push(validate)
-          allForms.all.push(validate)
+        if (validate && forms[validate]) {
+          if (forms[validate] && category.validation[validate] === "r") {
+            required.push(forms[validate].label)
+            allForms.required.push(validate)
+            allForms.all.push(validate)
+          } else if (category?.validation[validate] === "o") {
+            optional.push(forms[validate].label)
+            allForms.optional.push(validate)
+            allForms.all.push(validate)
+          }
         }
       }
     }
-    setValidation({ required, optional, allForms })
-    setProcessing(false)
+    const validated = { required, optional, allForms }
+    setValidation(validated)
+    actions.app.setFormSteps(validated)
+    return validated
   }
-
+  const completeOnboarding = (category) => {
+    setCategory(category)
+    setValidationRules(category)
+  }
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
       cache: "no-store",
@@ -77,7 +65,6 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
-
   const checkUpdateStatus = (type, key) => {
     if (type === "review") {
       if (reviewStatus[key]) return true
@@ -101,7 +88,7 @@ const usePartners = () => {
       "nlrclicense",
       "shortcode",
       "indemnity",
-      "financial",
+      "accountinfo",
     ]
     const Pages = {
       userinfo: "/onboarding/userinfo",
@@ -113,16 +100,17 @@ const usePartners = () => {
       nlrclicense: "/profile/nlrclicense",
       shortcode: "/profile/shortcode",
       indemnity: "/profile/indemnity",
-      financial: "/profile/financial",
+      accountinfo: "/profile/accountinfo",
     }
     let nextstage = null
     Stages.map((stage) => {
       if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
     })
-    if (!nextstage) nextstage = "/dashboard"
+    if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
   const registerPartner = async (frm, userdata) => {
+    console.log({ userdata })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
@@ -166,8 +154,10 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: setpasswordError, data: null }
         }
-        // updatePartner(userdata)
-        router.push("/dashboard")
+        if (userdata.type === "existing" || userdata.type === "reset")
+          router.push(PageRoutes.login)
+        // if (userdata.type === "existing") router.push(PageRoutes.getstarted)
+        else router.push(PageRoutes.dashboard)
         break
       case "userinfo":
         setProcessing(true)
@@ -220,22 +210,20 @@ const usePartners = () => {
         }
         setCategory(categoryData.category)
         setPartner(categoryData.partner)
+        // return { success: true, data: userdata, error: null } //!Renove
         setUpdateStatus("review", "category", true)
         return { success: true, error: null, data: categoryData }
         break
       case "companydetail":
         setProcessing(true)
-        const categories = partnerStates.categories
-        // console.log({ categories })
-        // return console.log({ category })
-        // return { success: true, error: null, data: userdata }
+        const categories = states.partners.categories
         const { error: companydetailError, data: companydetail } =
           await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
             method: "PUT",
             cache: "no-store",
             body: JSON.stringify({
-              partner_uuid: partner.uuid,
-              category_uuid: category.category_uuid,
+              partner_uuid: userdata.partner_uuid,
+              category_uuid: userdata.category_uuid,
               company_name: userdata.company_name,
               country: userdata.country,
               company_address: userdata.company_address,
@@ -250,6 +238,7 @@ const usePartners = () => {
         }
         updatePartner(companydetail.partner)
         setUpdateStatus("review", "companydetail", true)
+        return { success: true, error: null, data: null }
         break
       case "compliance":
         setProcessing(true)
@@ -379,13 +368,13 @@ const usePartners = () => {
         updatePartner(userdata)
         setUpdateStatus("review", "indemnity", true)
         break
-      case "financial":
+      case "accountinfo":
         setProcessing(true)
         const {
-          success: financialSuccess,
-          error: financialError,
-          data: financial,
-        } = await fetchData(`${apiURL}/v1/auth/register/financial`, {
+          success: accountinfoSuccess,
+          error: accountinfoError,
+          data: accountinfo,
+        } = await fetchData(`${apiURL}/v1/auth/register/accountinfo`, {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
@@ -398,13 +387,13 @@ const usePartners = () => {
             audited_account_3: userdata.audited_account_3 ?? "",
           }),
         })
-        if (financialError) {
+        if (accountinfoError) {
           setProcessing(false)
-          return { success: false, error: financialError, data: null }
+          return { success: false, error: accountinfoError, data: null }
         }
         updatePartner(userdata)
-        updatePercentComplete(financial)
-        setUpdateStatus("review", "financial", true)
+        updatePercentComplete(accountinfo)
+        setUpdateStatus("review", "accountinfo", true)
         router.push("/profile/review")
         break
 
@@ -500,7 +489,7 @@ const usePartners = () => {
     nlrclicense: false,
     shortcode: false,
     indemnity: false,
-    financial: false,
+    accountinfo: false,
     review: false,
   })
   const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
@@ -546,8 +535,8 @@ const usePartners = () => {
   }
 
   return {
-    ...partnerStates,
-    ...partnerActions,
+    ...states.partners,
+    ...actions.partners,
     getPartner,
     updatePartner,
     registerPartner,
@@ -557,6 +546,7 @@ const usePartners = () => {
     resendEmail,
     validation,
     setValidation,
+    setValidationRules,
     completeOnboarding,
   }
 }

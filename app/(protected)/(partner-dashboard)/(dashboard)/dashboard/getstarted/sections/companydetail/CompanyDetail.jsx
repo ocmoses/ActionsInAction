@@ -5,23 +5,20 @@ import TextInput from "@/app/components/form/TextInput"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+import ButtonNext from "@/app/components/form/ButtonNext"
 import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
-
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { useStoreActions, useStoreState } from "easy-peasy"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { partner, category, registerPartner } = usePartners()
-  const partnerStore = useStoreState((state) => state.partners)
+  const { category, registerPartner } = usePartners()
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
@@ -34,7 +31,6 @@ function CompanyDetail() {
     company_state: category?.company_state ?? "",
     company_postcode: category?.company_postcode ?? "",
   })
-  console.log({ category })
   useEffect(() => {
     setData({
       partner_uuid: category?.partner_uuid,
@@ -77,7 +73,7 @@ function CompanyDetail() {
     if (result) {
       if (result?.error) return setError({ companydetail: result.error })
     }
-    moveToNextForm("companydetail")
+    moveToNextForm(["companydetail"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -160,7 +156,7 @@ function CompanyDetail() {
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
-            <Button label="Next" />
+            <ButtonNext label="Next" />
           )}
         </div>
       </form>

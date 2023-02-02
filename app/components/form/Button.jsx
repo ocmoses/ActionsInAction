@@ -10,7 +10,9 @@ export default function Button(props) {
           className={`rounded-full px-6 py-2 flex justify-between items-center ${
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
-              : "bg-black/50 text-white border-2 border-mtn hover:border-mtn-300"
+              : "bg-black/50 text-white border-2 " +
+                (props.outlineColor ?? "border-mtn") +
+                " hover:border-mtn-300"
           }  transition ease-in-out 5000`}
           {...props}
           type={props.type ?? "submit"}
@@ -25,7 +27,9 @@ export default function Button(props) {
           className={`rounded-full px-6 py-2 flex justify-between items-center ${
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
-              : "bg-black/50 text-white border-2 border-mtn hover:border-mtn-300"
+              : "bg-black/50 text-white border-2 " +
+                (props.outlineColor ?? "border-mtn") +
+                " hover:border-mtn-300"
           }  transition ease-in-out 5000`}
           {...props}
         >

@@ -5,7 +5,7 @@ import TextInput from "@/app/components/form/TextInput"
 import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import useUsers from "@/hooks/useUsers"
+import useLogout from "@/hooks/useLogout"
 import useProcessing from "@/hooks/useProcessing"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect, use } from "react"
@@ -20,6 +20,7 @@ function Login({ params }) {
 
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
+  const { clearStore } = useLogout()
 
   const [data, setData] = useState({
     email: process.env.NODE_ENV === "production" ? "" : "test@gmail.com",
@@ -50,7 +51,7 @@ function Login({ params }) {
       return setError({ password: `Please enter your password` })
     }
     setProcessing(true)
-    // await clearPersistStore()
+    clearStore()
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({

@@ -31,6 +31,11 @@ function LandingPage() {
 
               <div className="flex flex-col sm:flex-row w-full gap-4 mt-8">
                 <Button label="Become Partner" />
+                <Button
+                  label="Discover program"
+                  outline="yes"
+                  outlineColor="border-white/80"
+                />
               </div>
             </div>
 

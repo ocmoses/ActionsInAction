@@ -24,18 +24,6 @@ export default function RegisterValidation({ params }) {
   // console.log(params)
 
   const router = useRouter()
-  // useEffect(() => {
-  //   setValidateErrors(false)
-  // }, [])
-  // useEffect(() => {
-  //   if (params.user_uuid) {
-  //     router.push(params.data)
-  //     setValidateErrors(false)
-  //   } else {
-  //     setValidateErrors(true)
-  //     setError({ validate: params.error })
-  //   }
-  // }, [params])
   const ValidateEmailAndUser = async (payload) => {
     setProcessing(true)
     try {

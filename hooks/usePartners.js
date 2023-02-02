@@ -110,7 +110,6 @@ const usePartners = () => {
     return { percent, nextstage }
   }
   const registerPartner = async (frm, userdata) => {
-    console.log({ userdata })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
@@ -208,8 +207,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: categoryError, data: null }
         }
+        updatePartner(categoryData.partner)
         setCategory(categoryData.category)
-        setPartner(categoryData.partner)
         // return { success: true, data: userdata, error: null } //!Renove
         setUpdateStatus("review", "category", true)
         return { success: true, error: null, data: categoryData }
@@ -302,7 +301,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             nlrc_license_id: userdata.nlrc_license_id ?? "",
             nlrc_issue_date: userdata.nlrc_issue_date ?? "",
             nlrc_expiry_date: userdata.nlrc_expiry_date ?? "",
@@ -326,7 +326,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             shortcode: userdata.shortcode ?? "",
             shortcode_issue_date: userdata.shortcode_issue_date ?? "",
             shortcode_expiry_date: userdata.shortcode_expiry_date ?? "",
@@ -355,18 +356,19 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             indemnity_no: userdata.indemnity_no ?? "",
             indemnity_issue_date: userdata.indemnity_issue_date ?? "",
             indemnity_expiry_date: userdata.indemnity_expiry_date ?? "",
             indemnity_doc: userdata.indemnity_doc ?? "",
           }),
         })
-        // if (indemnityError) {
-        //   setProcessing(false)
-        //   return { success: false, error: indemnityError, data: null }
-        // }
-        updatePartner(userdata)
+        if (indemnityError) {
+          setProcessing(false)
+          return { success: false, error: indemnityError, data: null }
+        }
+        updatePartner(indemnity.partner)
         setUpdateStatus("review", "indemnity", true)
         break
       case "accountinfo":
@@ -379,7 +381,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             account_name: userdata.account_name ?? "",
             account_no: userdata.account_no ?? "",
             bank: userdata.bank ?? "",
@@ -392,10 +395,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: accountinfoError, data: null }
         }
-        updatePartner(userdata)
-        updatePercentComplete(accountinfo)
+        updatePartner(accountinfo.partner)
         setUpdateStatus("review", "accountinfo", true)
-        router.push("/profile/review")
         break
 
       case "companyinfo":

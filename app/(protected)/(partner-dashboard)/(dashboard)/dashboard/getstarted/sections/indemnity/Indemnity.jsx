@@ -5,10 +5,12 @@ import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import FormErrors from "@/app/components/FormErrors"
+import ButtonNext from "@/app/components/form/ButtonNext"
+import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+import usePartners from "@/hooks/usePartners"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
@@ -16,9 +18,11 @@ import { forms } from "@/app/modules/constants"
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partnerInfo, registerPartner } = useOnboardingContext()
+  const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
+    partner_uuid: "",
+    category_uuid: "",
     indemnity_no: "",
     indemnity_issue_date: "",
     indemnity_expiry_date: "",
@@ -27,14 +31,16 @@ function Indemnity() {
   const { title, subtitle, hand, required } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partnerInfo)
+    if (category)
       setData({
-        indemnity_no: partnerInfo.indemnity_no ?? "",
-        indemnity_issue_date: partnerInfo.indemnity_issue_date ?? "",
-        indemnity_expiry_date: partnerInfo.indemnity_expiry_date ?? "",
-        indemnity_doc: partnerInfo.indemnity_doc ?? "",
+        partner_uuid: category?.partner_uuid,
+        category_uuid: category?.category_uuid,
+        indemnity_no: category?.indemnity_no ?? "",
+        indemnity_issue_date: category?.indemnity_issue_date ?? "",
+        indemnity_expiry_date: category?.indemnity_expiry_date ?? "",
+        indemnity_doc: category?.indemnity_doc ?? "",
       })
-  }, [partnerInfo])
+  }, [category])
   useEffect(() => {
     setForm("indemnity")
     setProcessing(false)
@@ -48,13 +54,12 @@ function Indemnity() {
       for (const field in required) {
         if (!!!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
     }
     const result = await registerPartner("indemnity", data)
-    console.log({ result })
     if (result) {
       if (result?.error) return setError({ indemnity: result.error })
     }

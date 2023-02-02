@@ -77,7 +77,7 @@ function Login({ params }) {
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard
+        : PageRoutes.getstarted
     return router.replace(redirect)
   }
 

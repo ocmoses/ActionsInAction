@@ -54,7 +54,6 @@ const app = {
     state.processing = status
   }),
   startLoading: action((state, key) => {
-    console.log("loading", key)
     state.loading = { ...state.loading, [key]: true }
   }),
   endLoading: action((state, key) => {
@@ -75,7 +74,6 @@ const app = {
     }
   }),
   moveToNextForm: action((state, current) => {
-    console.log({ current })
     if (!current || current?.length < 1) {
       state.form = null
     } else {
@@ -84,10 +82,8 @@ const app = {
 
       const index = state.allforms?.indexOf(currentForm)
       if (useCurrent) {
-        console.log("use current")
         state.form = currentForm
       } else {
-        console.log("use next")
         if (index === state.allforms?.length - 1) {
           state.form = "review"
         } else {
@@ -100,7 +96,6 @@ const app = {
     }
   }),
   moveToPrevForm: action((state, current) => {
-    console.log({ current })
     if (!current) {
       state.form = null
     } else {

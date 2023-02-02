@@ -6,9 +6,8 @@ import Button from "@/app/components/form/Button"
 import useApp from "@/hooks/useApp"
 import useUsers from "@/hooks/useUsers"
 import useLogout from "@/hooks/useLogout"
-import { useSelectedLayoutSegments } from "next/navigation"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { useEffect } from "react"
+import UserAvartar from "@/app/components/UserAvartar"
 
 function Navbar() {
   const { Logout } = useLogout()
@@ -31,28 +30,17 @@ function Navbar() {
           </Link>
           <NavLinks />
         </div>
-        {!session?.status && (
+        {!session && (
           <div className="flex justify-end">
             <TailSpinPreloader width={28} height={28} fill="#efb703" />
           </div>
         )}
-        {session.status && session.status === "authenticated" && (
+        {session && session.status === "authenticated" && (
           <div className="flex justify-end">
-            <div className="text-white flex items-center mr-0 md:mr-3">
-              <div
-                className="text-white text-sm cursor-pointer transition ease-in-out duration-500 hover:scale-[120%]"
-                onClick={Logout}
-              >
-                {loading?.logout ? (
-                  <TailSpinPreloader width={28} height={28} fill="#efb703" />
-                ) : (
-                  "Logout"
-                )}
-              </div>
-            </div>
+            <UserAvartar />
           </div>
         )}
-        {session.status === "unauthenticated" && (
+        {session && session.status === "unauthenticated" && (
           <div className="flex gap-3">
             <Button href="/onboarding/register" label="Register" />
             <Link

@@ -40,7 +40,6 @@ const getCategories = async () => {
     }
   }
 }
-
 const getServerSession = async () => {
   try {
     const nextCookies = cookies()

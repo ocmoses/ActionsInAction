@@ -110,7 +110,6 @@ const usePartners = () => {
     return { percent, nextstage }
   }
   const registerPartner = async (frm, userdata) => {
-    console.log({ userdata })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
@@ -208,8 +207,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: categoryError, data: null }
         }
+        updatePartner(categoryData.partner)
         setCategory(categoryData.category)
-        setPartner(categoryData.partner)
         // return { success: true, data: userdata, error: null } //!Renove
         setUpdateStatus("review", "category", true)
         return { success: true, error: null, data: categoryData }

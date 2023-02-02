@@ -7,7 +7,7 @@ import useApp from "@/hooks/useApp"
 import useUsers from "@/hooks/useUsers"
 import useLogout from "@/hooks/useLogout"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import UserAvartar from "@/app/components/UserAvartar"
+import ProfileIcons from "@/app/components/ProfileIcons"
 
 function Navbar() {
   const { Logout } = useLogout()
@@ -37,7 +37,7 @@ function Navbar() {
         )}
         {session && session.status === "authenticated" && (
           <div className="flex justify-end">
-            <UserAvartar />
+            <ProfileIcons />
           </div>
         )}
         {session && session.status === "unauthenticated" && (

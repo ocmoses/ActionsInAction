@@ -39,7 +39,6 @@ export default function GetStarted({ data }) {
     setActiveCategory,
   } = useProcessing()
   const [{ errors, clearErrors }] = useErrors(null)
-  console.log({ form })
   useEffect(() => {
     setCategoriesData(categories)
   }, [categories])
@@ -117,8 +116,8 @@ export default function GetStarted({ data }) {
   }
   return (
     <>
-      <div className="grid grid-cols-12">
-        <div className="col-span-10 w-full max-w-[837px] mx-auto ">
+      <div className="grid grid-cols-12 px-6">
+        <div className="col-span-11 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
           {isOnboarding && (
             <>
               <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">
@@ -268,62 +267,64 @@ export default function GetStarted({ data }) {
               </div>
             )}
           </div>
-          <div className="flex flex-col items-center lg:items-between ">
-            <h3 className="text-lg text-white font-bold mb-8">
+          <div className="flex flex-col">
+            <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
               Learn how to use
             </h3>
-            <div className="grid gridcols-1 lg:grid-cols-3 gap-6">
-              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
-                <Image
-                  src={"/assets/icons/graphics-1.png"}
-                  height={147}
-                  width={259}
-                  className="w-full"
-                  alt=""
-                />
-                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
-                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
-                    Read the documentation
-                  </h4>
-                  <p className="text-sm text-[#999999] text-center lg:text-start">
-                    Explore our guides, API references and code examples
-                  </p>
+            <div className="flex flex-col items-center lg:items-between ">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                  <Image
+                    src={"/assets/icons/graphics-1.png"}
+                    height={147}
+                    width={259}
+                    className="w-full"
+                    alt=""
+                  />
+                  <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                    <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                      Read the documentation
+                    </h4>
+                    <p className="text-sm text-[#999999] text-center lg:text-start">
+                      Explore our guides, API references and code examples
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
-                <Image
-                  src={"/assets/icons/graphics-1.png"}
-                  height={147}
-                  width={259}
-                  className="w-full"
-                  alt=""
-                />
-                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
-                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
-                    Discover the right Metrics
-                  </h4>
-                  <p className="text-sm text-[#999999] text-center lg:text-start">
-                    Talk to our partner portal team and learn more about what
-                    you can do
-                  </p>
+                <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                  <Image
+                    src={"/assets/icons/graphics-1.png"}
+                    height={147}
+                    width={259}
+                    className="w-full"
+                    alt=""
+                  />
+                  <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                    <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                      Discover the right Metrics
+                    </h4>
+                    <p className="text-sm text-[#999999] text-center lg:text-start">
+                      Talk to our partner portal team and learn more about what
+                      you can do
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
-                <Image
-                  src={"/assets/icons/graphics-1.png"}
-                  height={147}
-                  width={259}
-                  className="w-full"
-                  alt=""
-                />
-                <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
-                  <h4 className="text-lg text-white mb-3 text-center lg:text-start">
-                    Write Custom Codes
-                  </h4>
-                  <p className="text-sm text-[#999999] text-center lg:text-start">
-                    Talk to our partner portal team and learn more about what
-                    you can do
-                  </p>
+                <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
+                  <Image
+                    src={"/assets/icons/graphics-1.png"}
+                    height={147}
+                    width={259}
+                    className="w-full"
+                    alt=""
+                  />
+                  <div className="flex flex-col p-[24px] bg-[#111111]  items-center lg:items-start justify-start max-w-md">
+                    <h4 className="text-lg text-white mb-3 text-center lg:text-start">
+                      Write Custom Codes
+                    </h4>
+                    <p className="text-sm text-[#999999] text-center lg:text-start">
+                      Talk to our partner portal team and learn more about what
+                      you can do
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

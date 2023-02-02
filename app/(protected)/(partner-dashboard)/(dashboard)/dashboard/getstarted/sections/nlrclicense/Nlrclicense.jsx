@@ -61,7 +61,6 @@ function NlrcLicense() {
       if (error) return
     }
     const result = await registerPartner("nlrclicense", data)
-    console.log({ result })
     if (result) {
       scrollToTop()
       if (result?.error) return setError({ nlrclicense: result.error })

@@ -27,7 +27,7 @@ export default function useLogout() {
   }
   const Logout = async () => {
     // store.persist.clear().then(async () => {
-    console.log("Persisted state has been removed")
+    // console.log("Persisted state has been removed")
     actions.app.startLoading("logout")
     await logout()
     actions.app.endLoading("logout")

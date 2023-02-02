@@ -62,7 +62,6 @@ function Ncclicense() {
     }
 
     const result = await registerPartner("ncclicense", data)
-    console.log({ result })
     if (result) {
       scrollToTop()
       if (result?.error) return setError({ ncclicense: result.error })

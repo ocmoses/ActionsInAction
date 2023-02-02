@@ -11,7 +11,6 @@ export default function UserAvartar() {
   const { Logout } = useLogout()
   const { session } = useUsers()
   const { loading } = useApp()
-  console.log({ session })
 
   const [initial, setInitial] = useState("")
   const [showMenu, setShowMenu] = useState(false)
@@ -34,13 +33,12 @@ export default function UserAvartar() {
     <>
       <div className="z-10 flex items-center justify-between gap-3">
         {!session.status && <TailSpinPreloader width={32} height={32} />}
-        {/* {session && ( */}
         <div className="relative">
           <div
             onClick={toggleProfileMenu}
             className="flex justify-end items-center cursor-pointer z-20"
           >
-            <div className="flex justify-center items-center rounded-full w-[32px] h-[32px] bg-[#030303] text-white">
+            <div className="flex justify-center items-center rounded-full w-[26px] h-[26px] bg-[#396587] text-white text-[12px] mr-2">
               <span>{initial}</span>
             </div>
             {showMenu ? (
@@ -50,7 +48,7 @@ export default function UserAvartar() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-4 h-4 text-[#999999]"
               >
                 <path
                   strokeLinecap="round"
@@ -63,9 +61,9 @@ export default function UserAvartar() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={3.5}
+                strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-4 text-white font-bold shadow-sm"
+                className="w-4 h-4 text-[#999999]"
               >
                 <path
                   strokeLinecap="round"
@@ -94,7 +92,6 @@ export default function UserAvartar() {
             </div>
           )}
         </div>
-        {/* )} */}
       </div>
     </>
   )

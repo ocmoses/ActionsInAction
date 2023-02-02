@@ -60,7 +60,6 @@ function Indemnity() {
       if (error) return
     }
     const result = await registerPartner("indemnity", data)
-    console.log({ result })
     if (result) {
       if (result?.error) return setError({ indemnity: result.error })
     }

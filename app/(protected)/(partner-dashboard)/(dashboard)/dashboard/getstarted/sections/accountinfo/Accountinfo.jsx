@@ -58,7 +58,6 @@ export default function Accountinfo() {
       if (error) return
     }
     const result = await registerPartner("accountinfo", data)
-    console.log({ result })
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }

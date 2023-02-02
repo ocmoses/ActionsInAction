@@ -60,7 +60,7 @@ function Compliance() {
       if (error) return
     }
     const result = await registerPartner("compliance", data)
-    console.log({ result })
+    // console.log({ result })
     if (result) {
       scrollToTop()
       if (result?.error) return setError({ compliance: result.error })

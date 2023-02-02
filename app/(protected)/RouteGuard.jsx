@@ -12,11 +12,10 @@ export default function RouteGuard({ children }) {
   const dologout = useLogout()
   useEffect(() => {
     if (session) {
-      console.log({ session })
+      // console.log({ session })
       if (session?.status === "unauthenticated") {
         const currentUrl = window.location.pathname
         if (session?.user?.uuid) dologout.clearStore()
-        console.log({ currentUrl })
         if (currentUrl !== "/") router.push(`/login${currentUrl}`)
       } else {
         // const sanitizeSegment = sanitizeSegments(segments)

@@ -8,7 +8,7 @@ export default function MenuBar({ open }) {
 
   const currentPath = segments?.reverse()[0]
   return (
-    <ul className="p-0 flex-grow h-fit">
+    <ul className="p-0 flex-grow h-full">
       {PartnerMenu.map((menu) => {
         const path = `/${getPath(segments)}`
         return (
@@ -35,7 +35,7 @@ export default function MenuBar({ open }) {
               </svg>
 
               {open && (
-                <span className="text-gray-100 transition-transform ease-in-out duration-500">
+                <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
                   {menu.label}
                 </span>
               )}

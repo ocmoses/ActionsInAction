@@ -22,14 +22,14 @@ function CompanyDetail() {
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
-    partner_uuid: category?.partner_uuid ?? "",
-    category_uuid: category?.category_uuid ?? "",
-    company_name: category?.company_name ?? "",
-    country: category?.country ?? "NG",
-    company_address: category?.company_address ?? "",
-    company_city: category?.company_city ?? "",
-    company_state: category?.company_state ?? "",
-    company_postcode: category?.company_postcode ?? "",
+    partner_uuid: "",
+    category_uuid: "",
+    company_name: "",
+    country: "NG",
+    company_address: "",
+    company_city: "",
+    company_state: "",
+    company_postcode: "",
   })
   useEffect(() => {
     setData({

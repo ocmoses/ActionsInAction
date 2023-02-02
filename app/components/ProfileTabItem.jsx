@@ -9,7 +9,7 @@ import {
   ReviewIcon,
 } from "./Icons"
 import { profileMenuIcons } from "@/app/modules/constants"
-import Badge from "./ProfileTabBadge"
+import Badge from "@/app/components/ProfileTabBadge"
 import useProcessing from "@/hooks/useProcessing"
 
 function ProfileTabItem({ menu, form }) {

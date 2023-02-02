@@ -49,8 +49,8 @@ function Login({ params }) {
     if (!data.password) {
       return setError({ password: `Please enter your password` })
     }
-    setProcessing(true)
     clearStore()
+    setProcessing(true)
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({
@@ -59,14 +59,15 @@ function Login({ params }) {
       }),
     })
     const result = await response.json()
+
     const { success, error, data: loginData } = result
     if (!loginData) {
       setProcessing(false)
       return setError({ login: "Authentication failed" })
     }
-    if (!success) {
+    if (!loginData.success) {
       setProcessing(false)
-      return setError({ login: error })
+      return setError({ login: loginData.error })
     }
 
     const serverSession = {

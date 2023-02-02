@@ -1,22 +1,20 @@
 "use client"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import UserPercentage from "@/app/components/UserPercentage"
 import useApp from "@/hooks/useApp"
 import { useEffect, useState } from "react"
 
-export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
+export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
   const { activeCategory } = useProcessing()
-  const { categories } = usePartners()
-  const { setActiveCategory } = useApp()
+  const { partner, category: partnerCategory, categories } = usePartners()
   const [Category, setCategoryData] = useState(null)
+
   useEffect(() => {
     if (categories?.length) {
       const categoryData = categories.find((cat) => cat.uuid === activeCategory)
       setCategoryData(categoryData)
     }
-    // return () => {
-    //   setActiveCategory(null)
-    // }
   }, [activeCategory])
   const cancelOnboarding = () => {
     setIsOnboarding(false)
@@ -25,7 +23,7 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
-        onClick={() => setIsOnboarding(false)}
+        onClick={cancelOnboarding}
         className="flex justify-start items-center text-md group cursor-pointer "
       >
         <div className="flex-1 flex items-center">
@@ -47,7 +45,7 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
           </span>
         </div>
         {Category?.category_name && (
-          <div className="flex gap-5 justify-start items-center text-white px-3 py-2">
+          <div className="flex gap-5 justify-start  items-center text-white px-3 py-2">
             <span className="text-[#999999] group-hover:!text-white">
               Partner category:
             </span>
@@ -55,7 +53,21 @@ export default function NavbarOnboarding({ isOnboarding, setIsOnboarding }) {
           </div>
         )}
       </div>
-      <div className="flex justify-end text-white px-3">
+      <div className="flex justify-end items-center gap-3 text-white px-3">
+        <div className="flex justify-end items-center gap-1 text-white">
+          {partnerCategory && (
+            <UserPercentage
+              size={22}
+              thickness={2}
+              textsize={8}
+              percent={partnerCategory?.percentage}
+              hidelabel={true}
+            />
+          )}
+          <span className="text-white text-[12px]">
+            {partnerCategory?.percentage}% completed
+          </span>
+        </div>
         <span
           onClick={cancelOnboarding}
           className="flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"

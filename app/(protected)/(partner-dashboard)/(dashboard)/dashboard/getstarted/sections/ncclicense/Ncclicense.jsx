@@ -19,9 +19,11 @@ import { scrollToTop } from "@/app/modules/utilities"
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner } = usePartners()
+  const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
+    partner_uuid: "",
+    category_uuid: "",
     vas_license_id: "",
     ncc_issue_date: "",
     ncc_expiry_date: "",
@@ -30,16 +32,16 @@ function Ncclicense() {
   const { title, subtitle, hand, required } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
-    if (partner?.category)
+    if (category)
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        vas_license_id: partner?.category?.vas_license_id ?? "",
-        ncc_issue_date: partner?.category?.ncc_issue_date ?? "",
-        ncc_expiry_date: partner?.category?.ncc_expiry_date ?? "",
-        ncc_doc: partner?.category?.ncc_doc ?? "",
+        vas_license_id: category?.vas_license_id ?? "",
+        ncc_issue_date: category?.ncc_issue_date ?? "",
+        ncc_expiry_date: category?.ncc_expiry_date ?? "",
+        ncc_doc: category?.ncc_doc ?? "",
       })
-  }, [partner?.category])
+  }, [category])
   useEffect(() => {
     setForm("ncclicense")
     setProcessing(false)
@@ -60,7 +62,6 @@ function Ncclicense() {
     }
 
     const result = await registerPartner("ncclicense", data)
-    console.log({ result })
     if (result) {
       scrollToTop()
       if (result?.error) return setError({ ncclicense: result.error })

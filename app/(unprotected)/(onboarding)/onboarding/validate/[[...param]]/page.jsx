@@ -8,7 +8,6 @@ import { PageRoutes } from "@/app/modules/menu"
 let processed = false
 const ValidateEmailUser = async (payload) => {
   if (processed) return
-  console.log(EndPointHeaders)
   try {
     let url = ""
     let response = null

@@ -16,6 +16,7 @@ export default function RouteGuard({ children }) {
       if (session?.status === "unauthenticated") {
         const currentUrl = window.location.pathname
         if (session?.user?.uuid) dologout.clearStore()
+        // console.log({ currentUrl })
         if (currentUrl !== "/") router.push(`/login${currentUrl}`)
       } else {
         // const sanitizeSegment = sanitizeSegments(segments)

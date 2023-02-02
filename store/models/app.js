@@ -75,14 +75,43 @@ const app = {
     }
   }),
   moveToNextForm: action((state, current) => {
+    console.log({ current })
+    if (!current || current?.length < 1) {
+      state.form = null
+    } else {
+      const currentForm = current[0]
+      const useCurrent = current?.length > 1 ? true : false
+
+      const index = state.allforms?.indexOf(currentForm)
+      if (useCurrent) {
+        console.log("use current")
+        state.form = currentForm
+      } else {
+        console.log("use next")
+        if (index === state.allforms?.length - 1) {
+          state.form = "review"
+        } else {
+          state.form =
+            state.allforms?.length && state.allforms[index + 1]
+              ? state.allforms[index + 1]
+              : null
+        }
+      }
+    }
+  }),
+  moveToPrevForm: action((state, current) => {
+    console.log({ current })
     if (!current) {
       state.form = null
     } else {
       const index = state.allforms?.indexOf(current)
-      if (index === state.allforms?.length - 1) {
-        state.form = "review"
+      if (index === 0) {
+        state.form = state.allforms[1]
       } else {
-        state.form = state.allforms?.length ? state.allforms[index + 1] : null
+        state.form =
+          state.allforms?.length && state.allforms[index - 1]
+            ? state.allforms[index - 1]
+            : null
       }
     }
   }),

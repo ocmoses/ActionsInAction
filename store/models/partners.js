@@ -32,7 +32,6 @@ const partners = {
     state.partners = [...Partners, partner]
   }),
   setCategory: action((state, category) => {
-    console.log({ category })
     state.category = category
   }),
   setCategories: action((state, categories) => {

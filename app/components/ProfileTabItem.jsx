@@ -10,9 +10,16 @@ import {
 } from "./Icons"
 import { profileMenuIcons } from "@/app/modules/constants"
 import Badge from "./ProfileTabBadge"
+import useProcessing from "@/hooks/useProcessing"
+
 function ProfileTabItem({ menu, form }) {
+  const { moveToNextForm } = useProcessing()
+
   return (
-    <div className="flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4">
+    <div
+      onClick={() => moveToNextForm([menu, true])}
+      className="flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4 cursor-pointer"
+    >
       <div
         className={`${
           menu === form && "border-[#FFCB03] border-1"

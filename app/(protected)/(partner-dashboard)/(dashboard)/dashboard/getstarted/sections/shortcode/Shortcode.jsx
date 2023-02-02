@@ -4,18 +4,20 @@ import FileInput from "@/app/components/form/FileInput"
 import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
+import ButtonNext from "@/app/components/form/ButtonNext"
+import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { useState, useEffect } from "react"
+import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import useProcessing from "@/hooks/useProcessing"
 
 function Shortcode() {
-  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
+    useProcessing()
   const { partner, registerPartner } = usePartners()
 
   const [data, setData] = useState({
@@ -65,7 +67,7 @@ function Shortcode() {
     if (result) {
       if (result?.error) return setError({ shortcode: result.error })
     }
-    moveToNextForm("shortcode")
+    moveToNextForm(["shortcode"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -156,7 +158,16 @@ function Shortcode() {
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
-            <Button label="Next" />
+            <div className="flex items-center gap-4">
+              <ButtonPrev
+                onClick={() => moveToPrevForm("shortcode")}
+                type="button"
+                label="Next"
+                outline="yes"
+                outlineColor="border-white"
+              />
+              <ButtonNext type="submit" label="Next" />
+            </div>
           )}
         </div>
       </form>

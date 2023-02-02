@@ -101,12 +101,13 @@ export default function GetStarted({ data }) {
       completeOnboarding(category)
       setFormSteps(validation)
       setActiveCategory(category.category_uuid)
-      moveToNextForm("category")
+      moveToNextForm(["category"])
       setIsOnboarding(true)
       setIsOpen(false)
     }
   }
   const continueRegistration = (category_uuid) => {
+    clearErrors()
     const category = partner?.categories?.find(
       (cat) => cat.category_uuid === category_uuid
     )

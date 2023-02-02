@@ -15,17 +15,19 @@ export default function OnboardingLayout({
   inOnboarding,
   setIsOnboarding,
   setContinuedCategory,
+  setTmpCat,
 }) {
   const { form } = useProcessing()
   return (
     <>
-      <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen bg-[#030303]">
+      <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
         <NavbarOnboarding
           inOnboarding={inOnboarding}
           setIsOnboarding={setIsOnboarding}
+          setTmpCat={setTmpCat}
         />
         <div className="grid grid-cols-4 h-full w-full">
-          <div className="col-span-1 flex justify-center  h-[110vh] mb-[10vh] py-[72px] px-4 scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] scrollbar-w-[6px]">
+          <div className="col-span-1 flex justify-center  h-full mb-[10vh] py-[72px] px-4">
             <div className="flex">
               {form && profileMenu.includes(form) && (
                 <div className="flex justify-start flex-col items-end">
@@ -43,8 +45,8 @@ export default function OnboardingLayout({
               )}
             </div>
           </div>
-          <div className=" col-span-3 flex w-full px-4 py-[72px] overflow-y-auto scrollbar scrollbar-thumb-[#111111] scrollbar-track-[#212121] scrollbar-w-[10px]">
-            <div className="w-[80%] md:w-[60%] h-[110vh] mb-[10vh] flex justify-start items-start relative pb-12">
+          <div className=" col-span-3 flex w-full px-4 py-[72px] ">
+            <div className="w-[80%] md:w-[60%] h-full mb-[10vh] flex justify-start items-start relative pb-12">
               {form === "companydetail" && <CompanyDetail />}
               {form === "compliance" && <Compliance />}
               {form === "ncclicense" && <Ncclicense />}

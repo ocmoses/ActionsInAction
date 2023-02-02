@@ -42,6 +42,7 @@ export const PartnerMenu = [
 ]
 
 export const PageRoutes = {
+  home: "/",
   login: "/login",
   partnerwelcome: "/onboarding/register/partnerwelcome",
   passwordreset: "/onboarding/register/resetpassword",

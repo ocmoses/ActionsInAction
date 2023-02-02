@@ -4,11 +4,12 @@ import app from "./models/app"
 import users from "./models/users"
 import partners from "./models/partners"
 
-const model = {
+export const model = {
   app,
   users,
   partners,
 }
+// const store = createStore(model)
 const store = createStore(persist(model))
 
 export const clearPersistStore = () => {

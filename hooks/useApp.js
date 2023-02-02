@@ -1,31 +1,49 @@
 "use client"
 import { useStoreActions, useStoreState } from "easy-peasy"
+import { Util, isObject } from "@/app/modules/utilities"
+
 const useApp = () => {
-  const states = useStoreState((state) => state.app)
-  // const errors = useStoreState(
-  //   (state) => state.app.errors,
-  //   (prev, next) => prev === next
-  // )
-  // const success = useStoreState(
-  //   (state) => state.app.success,
-  //   (prev, next) => prev === next
-  // )
-  // const processing = useStoreState(
-  //   (state) => state.app.processing,
-  //   (prev, next) => prev === next
-  // )
-  // const loading = useStoreState(
-  //   (state) => state.app.loading,
-  //   (prev, next) => prev === next
-  // )
-  // const form = useStoreState(
-  //   (state) => state.app.form,
-  //   (prev, next) => prev === next
-  // )
+  const states = useStoreState((state) => state)
+  const actions = useStoreActions((action) => action)
 
-  const actions = useStoreActions((action) => action.app)
+  const appStates = states.app
+  const appActions = actions.app
 
-  return { ...states, ...actions }
+  const setStoreStates = (serverSession, categories) => {
+    console.log({ serverSession })
+    if (serverSession?.status === "authenticated") {
+      if (serverSession?.User?.user.uuid) {
+        serverSession.User.user.status = "authenticated"
+        actions.users.setUser(serverSession.User.user)
+        if (serverSession?.User?.partners?.length)
+          actions.partners.setPartners(serverSession.User.partners)
+        if (
+          isObject(serverSession?.User?.partner) &&
+          !Util.isEmpty(serverSession?.User?.partner)
+        ) {
+          actions.partners.setPartner(serverSession?.User?.partner)
+          actions.partners.setPartnerCategories(
+            serverSession?.User?.partner.categories
+          )
+        } else {
+          if (serverSession?.User?.partners?.length) {
+            actions.partners.setPartner(serverSession?.User?.partners[0])
+            actions.partners.setPartnerCategories(
+              serverSession?.User?.partners[0].categories
+            )
+          }
+        }
+
+        if (serverSession?.User?.partnerID)
+          actions.partners.setPartnerID(serverSession?.User?.partnerID)
+
+        actions.partners.setCategories(categories.data)
+        if (categories.error) actions.app.setError(categories.error)
+      }
+    }
+  }
+
+  return { ...appStates, ...appActions, setStoreStates }
 }
 
 export default useApp

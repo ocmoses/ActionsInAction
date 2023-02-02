@@ -20,50 +20,49 @@ export default function GetStarted({ data }) {
   const {
     session: { user },
   } = useUsers()
-  const {
-    categories,
-    partner,
-    setCategories,
-    validation,
-    setCategory,
-    completeOnboarding,
-  } = usePartners()
-
+  const { categories, partner, setValidationRules, completeOnboarding } =
+    usePartners()
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
   const [partnerActiveCategories, setPartnerActiveCategories] = useState([])
-
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
-  const { setForm, form, setFormSteps, moveToNextForm, setActiveCategory } =
-    useProcessing()
+  const {
+    setForm,
+    setProcessing,
+    setFormSteps,
+    moveToNextForm,
+    setActiveCategory,
+  } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  // useEffect(() => {
-  //   if (data) {
-  //     if (data?.success) {
-  //       const { data: categories_data } = data
-  //       setCategoriesData(categories_data)
-  //       setCategories(categories_data)
-  //     } else {
-  //       setError({ getStaerted: data.message })
-  //     }
-  //   } else {
-  //     setError({ getStaerted: "Something went wrong" })
-  //   }
-  // }, [data])
+
   useEffect(() => {
     setCategoriesData(categories)
   }, [categories])
+
+  const [validation, setValidation] = useState({
+    required: [],
+    optional: [],
+    allForms: [],
+  })
+
+  useEffect(() => {
+    setActiveCategory(tmpCat)
+    const validation = setValidationRules(tmpCat)
+    setValidation(validation)
+  }, [tmpCat])
+
   useEffect(() => {
     setForm(null)
     setShowProgress(false)
+    setProcessing(false)
   }, [])
   useEffect(() => {
     const partnerCat = []
     const partnerActiveCat = []
-    if (!Util.isEmpty(partner) && categoriesData?.length) {
+    if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((category) => {
           partnerActiveCat.push(category.category_uuid)
@@ -82,7 +81,7 @@ export default function GetStarted({ data }) {
     }
     // if (partnerCat?.length) setShowProgress(true)
 
-    const newCatArray = categoriesData.filter(
+    const newCatArray = categoriesData?.filter(
       (category) => !partnerActiveCat.includes(category.uuid)
     )
     setPartnerActiveCategories(
@@ -97,7 +96,7 @@ export default function GetStarted({ data }) {
   const MainBox = useRef()
   const CategoryBox = useRef()
 
-  const setContinuedCategory = (category, frm) => {
+  const setContinuedCategory = (category) => {
     if (category) {
       completeOnboarding(category)
       setFormSteps(validation)
@@ -107,7 +106,7 @@ export default function GetStarted({ data }) {
       setIsOpen(false)
     }
   }
-  const contunueRegistration = (category_uuid) => {
+  const continueRegistration = (category_uuid) => {
     const category = partner?.categories?.find(
       (cat) => cat.category_uuid === category_uuid
     )
@@ -122,11 +121,12 @@ export default function GetStarted({ data }) {
               isOnboarding={isOnboarding}
               setIsOnboarding={setIsOnboarding}
               setContinuedCategory={setContinuedCategory}
+              setTmpCat={setTmpCat}
             />
           </div>
         </>
       )}
-      <div ref={MainBox} className="max-w-[807px]  mx-auto px-20 pt-[72px]">
+      <div ref={MainBox} className="max-w-[807px] px-20 pt-[72px]">
         {user?.first_name && (
           <h2 className="text-4xl font-bold text-white">
             Hello, {user.first_name}
@@ -135,7 +135,7 @@ export default function GetStarted({ data }) {
         <p className="text-[#999999]">
           Choose a partner category that best suits your service
         </p>
-        {errors["category"] && (
+        {errors && errors["category"] && (
           <div className="mb-6">
             <FormErrors error={errors["getStarted"]} />
           </div>
@@ -170,7 +170,7 @@ export default function GetStarted({ data }) {
                   {progress.percentage < 100 ? (
                     <Button
                       onClick={() =>
-                        contunueRegistration(progress.category_uuid)
+                        continueRegistration(progress.category_uuid)
                       }
                       label="Finish up"
                       noicon="yes"
@@ -179,7 +179,7 @@ export default function GetStarted({ data }) {
                   ) : (
                     <Button
                       onClick={() =>
-                        contunueRegistration(progress.category_uuid)
+                        continueRegistration(progress.category_uuid)
                       }
                       label="Detail"
                       outline="yes"
@@ -193,56 +193,59 @@ export default function GetStarted({ data }) {
           </div>
         )}
 
-        {partnerCategories?.length && (
-          <div
-            ref={CategoryBox}
-            onClick={toggleProgress}
-            className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
-          >
-            {showProgress && (
-              <>
-                <span className="text-[#999999]">Explore other categories</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-[#FFCB03]"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                  />
-                </svg>
-              </>
-            )}
-            {!showProgress && (
-              <>
-                <span className="text-[#999999]">Show less categories</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-[#FFCB03]"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                  />
-                </svg>
-              </>
-            )}
-          </div>
-        )}
+        {partnerCategories?.length > 0 &&
+          partnerActiveCategories?.length > 0 && (
+            <div
+              ref={CategoryBox}
+              onClick={toggleProgress}
+              className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
+            >
+              {showProgress && (
+                <>
+                  <span className="text-[#999999]">
+                    Explore other categories
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 text-[#FFCB03]"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </>
+              )}
+              {!showProgress && (
+                <>
+                  <span className="text-[#999999]">Show less categories</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 text-[#FFCB03]"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </>
+              )}
+            </div>
+          )}
         {!showProgress && (
           <div className="grid lg:grid-cols-2 gap-[24px] my-16 w3-animate-opacity">
             {partnerActiveCategories &&
-              partnerActiveCategories?.length &&
+              partnerActiveCategories?.length > 0 &&
               partnerActiveCategories.map((category) => (
                 <CategoryCard
                   key={category.uuid}
@@ -256,12 +259,17 @@ export default function GetStarted({ data }) {
           </div>
         )}
       </div>
-      <CategorySideDrawer isOpen={isOpen} setIsOpen={setIsOpen}>
-        {tmpCat && (
+      <CategorySideDrawer
+        setTmpCat={setTmpCat}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      >
+        {tmpCat && isOpen && (
           <CategoryDetail
             category={tmpCat}
             setIsOnboarding={setIsOnboarding}
             setIsOpen={setIsOpen}
+            validation={validation}
           />
         )}
       </CategorySideDrawer>

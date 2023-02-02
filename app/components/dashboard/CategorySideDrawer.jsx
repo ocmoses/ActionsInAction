@@ -1,4 +1,13 @@
-export default function CategorySideDrawer({ children, isOpen, setIsOpen }) {
+export default function CategorySideDrawer({
+  children,
+  isOpen,
+  setIsOpen,
+  setTmpCat,
+}) {
+  const closeDrawer = () => {
+    setTmpCat(null)
+    setIsOpen(false)
+  }
   return (
     <main
       className={
@@ -16,9 +25,7 @@ export default function CategorySideDrawer({ children, isOpen, setIsOpen }) {
       >
         <article className="relative w-screen max-w-md pb-10 overflow-y-scroll h-full">
           <div
-            onClick={() => {
-              setIsOpen(false)
-            }}
+            onClick={closeDrawer}
             className="absolute z-50 text-[#999999] cursor-pointer hover:text-white top-[30px] right-[40px]"
           >
             <svg
@@ -39,12 +46,12 @@ export default function CategorySideDrawer({ children, isOpen, setIsOpen }) {
           {children}
         </article>
       </section>
-      <section
+      {/* <section
         className=" w-screen h-full cursor-pointer "
-        // onClick={() => {
-        //   setIsOpen(false)
-        // }}
-      ></section>
+        onClick={() => {
+          setIsOpen(false)
+        }}
+      ></section> */}
     </main>
   )
 }

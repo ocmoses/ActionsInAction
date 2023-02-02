@@ -470,7 +470,7 @@ export default function ReviewBox() {
       {/* Account info */}
       <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
         <div className="md:grid md:grid-cols-4 gap-12">
-          <ReviewTitle title="Audited accounts" href="/profile/financial" />
+          <ReviewTitle title="Audited accounts" href="/profile/accountinfo" />
           <div className="md:col-span-3 divide-y divide-slate-400/25">
             <div className="pb-3">
               <div className="grid">

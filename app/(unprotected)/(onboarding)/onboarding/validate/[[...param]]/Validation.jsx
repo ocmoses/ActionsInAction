@@ -21,20 +21,22 @@ export default function RegisterValidation({ params }) {
   const [processed, setProcessed] = useState(false)
   const [count, setCount] = useState(0)
 
+  console.log(params)
+
   const router = useRouter()
-  useEffect(() => {
-    setValidateErrors(false)
-  }, [])
-  useEffect(() => {
-    if (params.success) {
-      router.push(params.data)
-      setValidateErrors(false)
-    } else {
-      setValidateErrors(true)
-      setError({ validate: params.error })
-    }
-  }, [params])
-  const ValidateEmailAndUser = async () => {
+  // useEffect(() => {
+  //   setValidateErrors(false)
+  // }, [])
+  // useEffect(() => {
+  //   if (params.user_uuid) {
+  //     router.push(params.data)
+  //     setValidateErrors(false)
+  //   } else {
+  //     setValidateErrors(true)
+  //     setError({ validate: params.error })
+  //   }
+  // }, [params])
+  const ValidateEmailAndUser = async (payload) => {
     setProcessing(true)
     try {
       let url = ""
@@ -73,45 +75,42 @@ export default function RegisterValidation({ params }) {
           )
           break
       }
-      // const response = await fetch(url, {
-      //   method: "POST",
-      //   headers: {
-      //     // ...EndPointHeaders,
-      //     apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-      //   },
-      //   cache: "no-store",
-      //   body: JSON.stringify({ user_uuid: params.user_uuid }),
-      // })
-      const results = await response?.json()
-      const { success, data } = results
-      if (results) {
-        console.log({ processed })
-        console.log({ data })
-        console.log(params.type)
-        console.log({ success })
-
-        if (success) {
-          switch (params.type) {
-            case "existing":
-            case "reset":
-              url = `${PageRoutes.setpassword}/${params.type}`
-              break
-            case "new":
-              url = PageRoutes.getstarted
-              break
-          }
-          clearErrors()
-          setProcessed(false)
+      switch (params.type) {
+        case "existing":
+        case "reset":
+          url = `${PageRoutes.setpassword}/${params.type}`
+          break
+        case "new":
+          url = PageRoutes.getstarted
+          break
+      }
+      if (response) {
+        const results = await response?.json()
+        console.log({ results })
+        const { success, data } = results
+        if (results) {
+          console.log({ data })
+          console.log({ success })
           return router.push(url)
+          if (success) {
+            clearErrors()
+            setProcessed(false)
+            console.log({ url })
+            // return router.push(url)
+          } else {
+            setProcessing(false)
+            setProcessed(true)
+            setError({ validate: data.message ?? "Something went wrong" })
+          }
         } else {
           setProcessing(false)
           setProcessed(true)
-          setError({ validate: data.message ?? "Something went wrong" })
+          setError({ validate: "Something went wrong" })
         }
       } else {
         setProcessing(false)
         setProcessed(true)
-        setError({ validate: "Something went wrong" })
+        setError({ validate: "Unable to reach the server" })
       }
     } catch (err) {
       setProcessing(false)
@@ -123,23 +122,19 @@ export default function RegisterValidation({ params }) {
     setForm(null)
     setProcessed(false)
     clearErrors()
-    if (!processed && count < 1) {
-      console.log({ count })
-      setCount((oc) => oc++)
-      ValidateEmailAndUser()
-    }
-  }, [])
-  console.log({ errors })
+    ValidateEmailAndUser(params)
+  }, [params])
+
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {!validateError && (
+          {processing && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {validateError && (
+          {errors?.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

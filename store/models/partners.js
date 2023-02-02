@@ -7,6 +7,14 @@ const partners = {
   categories: null,
   partnerCategories: null,
 
+  clear: action((state) => {
+    state.partnerID = null
+    state.partners = null
+    state.partner = null
+    state.category = null
+    state.categories = null
+    state.partnerCategories = null
+  }),
   setPartner: action((state, partner) => {
     state.partner = partner
   }),
@@ -18,12 +26,13 @@ const partners = {
   }),
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }
-    const Partners = state.partners.filter((p) => {
+    const Partners = state.partners?.filter((p) => {
       p.uuid !== partner.uuid
     })
     state.partners = [...Partners, partner]
   }),
   setCategory: action((state, category) => {
+    console.log({ category })
     state.category = category
   }),
   setCategories: action((state, categories) => {

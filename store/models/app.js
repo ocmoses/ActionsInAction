@@ -1,9 +1,42 @@
 import { action } from "easy-peasy"
 const app = {
+  count: 0,
   errors: {},
   success: null,
   processing: false,
   loading: {},
+  form: null,
+  formSteps: [],
+  allforms: [
+    "userinfo",
+    "category",
+    "companydetail",
+    "compliance",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ],
+  formValidation: {},
+  activeCategory: {},
+  increaseCount: action((state, key) => {
+    return state.count++
+  }),
+  clear: action((state) => {
+    state.count = 0
+    state.errors = {}
+    state.success = null
+    state.processing = false
+    state.loading = {}
+    state.form = null
+    state.formSteps = []
+    state.formValidation = {}
+    state.activeCategory = {}
+  }),
+  isLoading: action((state, key) => {
+    return state.loading && state.loading[key] !== "undefined"
+  }),
   setError: action((state, errorObject) => {
     state.errors = { ...state.errors, ...errorObject }
   }),
@@ -21,28 +54,12 @@ const app = {
     state.processing = status
   }),
   startLoading: action((state, key) => {
-    state.loading[key] = true
+    console.log("loading", key)
+    state.loading = { ...state.loading, [key]: true }
   }),
   endLoading: action((state, key) => {
     if (state.loading[key]) delete state.loading[key]
   }),
-
-  // FORMS
-  form: null,
-  formSteps: null,
-  allforms: [
-    "userinfo",
-    "category",
-    "companydetail",
-    "compliance",
-    "ncclicense",
-    "nlrclicense",
-    "shortcode",
-    "indemnity",
-    "financial",
-  ],
-  formValidation: [],
-  activeCategory: null,
 
   setActiveCategory: action((state, uuid) => {
     state.activeCategory = uuid

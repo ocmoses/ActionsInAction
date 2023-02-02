@@ -73,11 +73,7 @@ export async function proxyFetch(url, options) {
     return { success: null, error: err.message, data: null }
   }
 }
-export async function logout() {
-  const response = await fetch("/api/users/logout")
-  await response.json()
-  return { success: true }
-}
+
 export const isArray = (data) => {
   return Array.isArray(data)
 }
@@ -98,7 +94,7 @@ export const Util = {
     return new Date(date).toLocaleTimeString()
   },
   isEmpty: (obj) => {
-    if (typeof obj === "undefined") return true
+    if (!obj || typeof obj === "undefined") return true
     return Object.keys(obj).length === 0
   },
   obscureEmail: (email) => {
@@ -124,6 +120,11 @@ export const scrollToTop = (id) => {
     top: 0,
     behavior: "smooth",
   })
+}
+export async function logout() {
+  const response = await fetch("/api/users/logout")
+  await response.json()
+  return { success: true }
 }
 export function userData(data, partnerID) {
   if (!data?.partner && data?.partners?.length > 0) {
@@ -193,4 +194,8 @@ export const getPath = (segments) => {
   if (!segments) return null
   const segment = segments.filter((seg) => !seg.includes("("))
   return segment.reverse().join("/")
+}
+export const sanitizeSegments = (segments) => {
+  if (!segments) return null
+  return segments.filter((seg) => !seg.includes("("))
 }

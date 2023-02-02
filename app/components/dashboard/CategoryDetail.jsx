@@ -13,25 +13,12 @@ export default function CategoryDetail({
   category,
   setIsOnboarding,
   setIsOpen,
+  validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const {
-    partner,
-    registerPartner,
-    setCategory,
-    validation,
-    setValidation,
-    completeOnboarding,
-  } = usePartners()
-
-  // const [validation, setValidation] = useState({
-  //   required: [],
-  //   optional: [],
-  //   allForms: [],
-  // })
+  const { registerPartner } = usePartners()
 
   const {
-    form,
     processing,
     setProcessing,
     setFormSteps,
@@ -51,7 +38,7 @@ export default function CategoryDetail({
       if (result?.error) {
         return setError({ category: result.error })
       }
-      completeOnboarding(category)
+
       setFormSteps(validation)
       setActiveCategory(category.uuid)
       moveToNextForm("category")
@@ -77,7 +64,7 @@ export default function CategoryDetail({
               />
             )}
           </div>
-          {errors["category"] && (
+          {errors && errors["category"] && (
             <div className="mb-6">
               <FormErrors error={errors["category"]} />
             </div>
@@ -97,10 +84,11 @@ export default function CategoryDetail({
               informations from our VAS providers.
             </p>
           </div>
+
           <div className="">
             <ul className="flex flex-col gap-4">
-              {validation.required.length > 0 &&
-                validation.required.map((required) => (
+              {validation?.required?.length > 0 &&
+                validation?.required?.map((required) => (
                   <li
                     key={required}
                     className="flex justify-start items-center gap-4"
@@ -120,7 +108,7 @@ export default function CategoryDetail({
           ) : (
             <Button
               onClick={() => selectCategory(category)}
-              label="Get started"
+              label={`Get started`}
             />
           )}
         </div>

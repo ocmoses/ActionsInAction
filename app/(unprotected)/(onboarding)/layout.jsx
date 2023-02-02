@@ -3,11 +3,8 @@ import Image from "next/image"
 import React from "react"
 import NavbarOnboarding from "@/app/components/NavbarOnboarding"
 import UserAvartar from "@/app/components/UserAvartar"
-import { useSelectedLayoutSegments } from "next/navigation"
 
 export default function Layout({ children }) {
-  const segments = useSelectedLayoutSegments()
-  const currentPath = segments?.reverse()[0]
   return (
     <>
       <div className="grid grid-cols-4 w-screen">

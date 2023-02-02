@@ -4,18 +4,21 @@ import FileInput from "@/app/components/form/FileInput"
 import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import useErrors from "@/hooks/useErrors"
-import Button from "@/app/components/form/Button"
+import ButtonNext from "@/app/components/form/ButtonNext"
+import ButtonPrev from "@/app/components/form/ButtonPrev"
 import FormErrors from "@/app/components/FormErrors"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import usePartners from "@/hooks/usePartners"
+import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import useProcessing from "@/hooks/useProcessing"
+import { scrollToTop } from "@/app/modules/utilities"
 
 function Ncclicense() {
-  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
+  const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
+    useProcessing()
   const { partner, category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
@@ -29,6 +32,8 @@ function Ncclicense() {
   useEffect(() => {
     if (partner?.category)
       setData({
+        partner_uuid: category?.partner_uuid ?? "",
+        category_uuid: category?.category_uuid ?? "",
         vas_license_id: partner?.category?.vas_license_id ?? "",
         ncc_issue_date: partner?.category?.ncc_issue_date ?? "",
         ncc_expiry_date: partner?.category?.ncc_expiry_date ?? "",
@@ -48,7 +53,7 @@ function Ncclicense() {
       for (const field in required) {
         if (!!!data[field]) {
           error = true
-          setError(field, `${required[field]} is required`)
+          setError({ [field]: `${required[field]} is required` })
         }
       }
       if (error) return
@@ -57,9 +62,10 @@ function Ncclicense() {
     const result = await registerPartner("ncclicense", data)
     console.log({ result })
     if (result) {
+      scrollToTop()
       if (result?.error) return setError({ ncclicense: result.error })
     }
-    moveToNextForm("ncclicense")
+    moveToNextForm(["ncclicense"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -123,7 +129,16 @@ function Ncclicense() {
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
-            <Button label="Next" />
+            <div className="flex items-center gap-4">
+              <ButtonPrev
+                onClick={() => moveToPrevForm("ncclicense")}
+                type="button"
+                label="Next"
+                outline="yes"
+                outlineColor="border-white"
+              />
+              <ButtonNext type="submit" label="Next" />
+            </div>
           )}
         </div>
       </form>

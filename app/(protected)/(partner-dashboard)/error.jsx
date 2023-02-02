@@ -13,10 +13,10 @@ export default function Error({ error, reset }) {
   }, [error])
 
   return (
-    <div className="flex mx-auto py-20 justify-center items-center flex-col gap-5 text-white">
+    <div className="flex p-20 justify-center items-center flex-col gap-5 text-white">
       <p className="text-2xl font-mtn">Oops! Something went wrong!</p>
-      <div className="text-red-500 p-4 my-4 max-w-[480px]">
-        <pre>{error.toString()}</pre>
+      <div className="text-red-500 p-4 my-4 max-w-[480px] break-words">
+        {error.toString()}
       </div>
       <button onClick={() => reset()}>Reset</button>
     </div>

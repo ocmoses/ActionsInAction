@@ -4,18 +4,18 @@ import FileInput from "@/app/components/form/FileInput"
 import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
 import FormErrors from "@/app/components/FormErrors"
 import useErrors from "@/hooks/useErrors"
+import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import useProcessing from "@/hooks/useProcessing"
 
 function Indemnity() {
-  const { processing, setProcessing, setForm } = useProcessing()
+  const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
+    useProcessing()
   const { partnerInfo, registerPartner } = useOnboardingContext()
 
   const [data, setData] = useState({
@@ -58,7 +58,7 @@ function Indemnity() {
     if (result) {
       if (result?.error) return setError({ indemnity: result.error })
     }
-    moveToNextForm("indemnity")
+    moveToNextForm(["indemnity"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -122,7 +122,16 @@ function Indemnity() {
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
-            <Button label="Next" />
+            <div className="flex items-center gap-4">
+              <ButtonPrev
+                onClick={() => moveToPrevForm("indemnity")}
+                type="button"
+                label="Next"
+                outline="yes"
+                outlineColor="border-white"
+              />
+              <ButtonNext type="submit" label="Next" />
+            </div>
           )}
         </div>
       </form>

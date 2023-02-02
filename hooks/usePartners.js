@@ -250,8 +250,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            user_uuid: user.uuid,
-            partner_uuid: partner.uuid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             rc_no: userdata.rc_no ?? "",
             tin_no: userdata.tin_no ?? "",
             tin_doc: userdata.tin_doc ?? "",
@@ -259,11 +259,11 @@ const usePartners = () => {
             cac_doc: userdata.cac_doc ?? "",
           }),
         })
-        // if (complianceError) {
-        //   setProcessing(false)
-        //   return { success: false, error: complianceError, data: null }
-        // }
-        updatePartner(userdata)
+        if (complianceError) {
+          setProcessing(false)
+          return { success: false, error: complianceError, data: null }
+        }
+        updatePartner(compliance.partner)
         setUpdateStatus("review", "compliance", true)
         break
       case "ncclicense":
@@ -276,7 +276,8 @@ const usePartners = () => {
           method: "PUT",
           cache: "no-store",
           body: JSON.stringify({
-            partnerid: partner.partnerid,
+            partner_uuid: userdata.partner_uuid,
+            category_uuid: userdata.category_uuid,
             vas_license_id: userdata.vas_license_id ?? "",
             ncc_issue_date: userdata.ncc_issue_date ?? "",
             ncc_expiry_date: userdata.ncc_expiry_date ?? "",
@@ -284,11 +285,11 @@ const usePartners = () => {
           }),
         })
 
-        // if (ncclicenseError) {
-        //   setProcessing(false)
-        //   return { success: false, error: ncclicenseError, data: null }
-        // }
-        updatePartner(userdata)
+        if (ncclicenseError) {
+          setProcessing(false)
+          return { success: false, error: ncclicenseError, data: null }
+        }
+        updatePartner(ncclicense.partner)
         setUpdateStatus("review", "ncclicense", true)
         break
       case "nlrclicense":
@@ -308,11 +309,11 @@ const usePartners = () => {
             nlrc_doc: userdata.nlrc_doc ?? "",
           }),
         })
-        // if (nlrclicenseError) {
-        //   setProcessing(false)
-        //   return { success: false, error: nlrclicenseError, data: null }
-        // }
-        updatePartner(userdata)
+        if (nlrclicenseError) {
+          setProcessing(false)
+          return { success: false, error: nlrclicenseError, data: null }
+        }
+        updatePartner(nlrclicense.partner)
         setUpdateStatus("review", "nlrclicense", true)
         break
       case "shortcode":

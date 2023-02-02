@@ -10,6 +10,7 @@ import Indemnity from "./sections/indemnity/Indemnity"
 import Shortcode from "./sections/shortcode/Shortcode"
 import { profileMenu } from "@/app/modules/constants"
 import { updateMenu } from "@/app/modules/constants"
+import { useEffect } from "react"
 
 export default function OnboardingLayout({
   inOnboarding,
@@ -18,6 +19,9 @@ export default function OnboardingLayout({
   setTmpCat,
 }) {
   const { form } = useProcessing()
+  useEffect(() => {
+    console.log({ form })
+  }, [form])
   return (
     <>
       <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
@@ -31,16 +35,16 @@ export default function OnboardingLayout({
             <div className="flex">
               {form && profileMenu.includes(form) && (
                 <div className="flex justify-start flex-col items-end">
-                  {profileMenu.map((menu) => (
-                    <ProfileTabItem key={menu} menu={menu} form={form} />
-                  ))}
+                  {profileMenu.map((menu) => {
+                    return <ProfileTabItem key={menu} menu={menu} form={form} />
+                  })}
                 </div>
               )}
               {form && updateMenu.includes(form) && (
                 <div className="flex justify-start flex-col items-end">
-                  {updateMenu.map((menu) => (
-                    <ProfileTabItem key={menu} menu={menu} form={form} />
-                  ))}
+                  {updateMenu.map((menu) => {
+                    return <ProfileTabItem key={menu} menu={menu} form={form} />
+                  })}
                 </div>
               )}
             </div>

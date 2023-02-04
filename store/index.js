@@ -12,10 +12,8 @@ export const model = {
 // const store = createStore(model)
 const store = createStore(persist(model))
 
-export const clearPersistStore = () => {
-  store.persist.clear().then(() => {
-    // console.log("Persisted state has been removed")
-  })
+export const clearPersistStore = async () => {
+  await store.persist.clear()
 }
 
 export default store

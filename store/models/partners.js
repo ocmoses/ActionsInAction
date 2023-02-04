@@ -26,6 +26,12 @@ const partners = {
   }),
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }
+    const category = state.category
+    state.category = partner.categories.find(
+      (c) => c.category_uuid === category.category_uuid
+    )
+    partner.categories.find((c) => c.category_uuid === category.category_uuid)
+    state.partnerCategories = partner.state
     const Partners = state.partners?.filter((p) => {
       p.uuid !== partner.uuid
     })

@@ -133,7 +133,7 @@ function Indemnity() {
                 type="button"
                 label="Next"
                 outline="yes"
-                outlineColor="border-white"
+                outlinecolor="border-white"
               />
               <ButtonNext type="submit" label="Next" />
             </div>

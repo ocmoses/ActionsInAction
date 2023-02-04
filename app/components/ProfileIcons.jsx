@@ -3,7 +3,7 @@ export default function ProfileIcons() {
   return (
     <>
       <div className="flex gap-6 items-center justify-end">
-        <div className="text-[#888888]">
+        <div className="hidden md:flex text-[#888888]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -20,7 +20,7 @@ export default function ProfileIcons() {
           </svg>{" "}
         </div>
 
-        <div className="text-[#888888]">
+        <div className="hidden md:flex text-[#888888]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

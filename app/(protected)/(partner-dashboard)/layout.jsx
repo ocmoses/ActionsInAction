@@ -13,7 +13,7 @@ function Layout({ children }) {
         <div
           className={` ${
             open ? "w-[250px]" : "w-[100px] "
-          } flex h-full py-[36px] px-4 duration-300`}
+          } hidden md:flex h-full py-[36px] px-4 duration-300`}
         >
           <div className="flex-1">
             <MenuBar open={open} />

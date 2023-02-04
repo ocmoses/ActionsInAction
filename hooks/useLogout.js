@@ -4,7 +4,7 @@ import { PageRoutes } from "@/app/modules/menu"
 
 import usePartners from "@/hooks/usePartners"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import store, { model } from "@/store"
+import store, { model, clearPersistStore } from "@/store"
 import { useRouter } from "next/navigation"
 
 export default function useLogout() {
@@ -24,16 +24,14 @@ export default function useLogout() {
     for (const store in model) {
       actions[store].clear()
     }
+    clearPersistStore()
   }
   const Logout = async () => {
-    // store.persist.clear().then(async () => {
-    // console.log("Persisted state has been removed")
     actions.app.startLoading("logout")
     await logout()
-    actions.app.endLoading("logout")
     clearStore()
+    actions.app.endLoading("logout")
     router.push(PageRoutes.home)
-    // })
   }
 
   return { Logout, clearStore }

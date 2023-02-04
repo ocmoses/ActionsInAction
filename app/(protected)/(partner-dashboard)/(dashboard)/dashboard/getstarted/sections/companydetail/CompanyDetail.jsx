@@ -43,6 +43,7 @@ function CompanyDetail() {
       company_postcode: category?.company_postcode ?? "",
     })
   }, [category])
+
   useEffect(() => {
     setForm("companydetail")
     setProcessing(false)

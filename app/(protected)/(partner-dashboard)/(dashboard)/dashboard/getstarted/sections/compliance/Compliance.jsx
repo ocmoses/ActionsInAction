@@ -21,6 +21,8 @@ function Compliance() {
   const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
+    partner_uuid: "",
+    category_uuid: "",
     rc_no: "",
     tin_no: "",
     tin_doc: "",
@@ -29,6 +31,7 @@ function Compliance() {
   })
   const { title, subtitle, hand, required } = forms["compliance"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+
   useEffect(() => {
     if (category)
       setData({
@@ -41,6 +44,7 @@ function Compliance() {
         cac_doc: category?.cac_doc ?? "",
       })
   }, [category])
+
   useEffect(() => {
     setForm("compliance")
     setProcessing(false)
@@ -50,6 +54,9 @@ function Compliance() {
     e.preventDefault()
     clearErrors()
     let error = false
+
+    console.log({ data })
+    // return
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
@@ -59,6 +66,7 @@ function Compliance() {
       }
       if (error) return
     }
+
     const result = await registerPartner("compliance", data)
     if (result) {
       scrollToTop()
@@ -127,7 +135,7 @@ function Compliance() {
                 type="button"
                 label="Next"
                 outline="yes"
-                outlineColor="border-white"
+                outlinecolor="border-white"
               />
               <ButtonNext type="submit" label="Next" />
             </div>

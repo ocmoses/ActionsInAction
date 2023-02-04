@@ -1,12 +1,12 @@
-import axios from 'axios'
-import { apiURL } from './constants.js'
+import axios from "axios"
+import { apiURL } from "./constants.js"
 // create an axios instance
 const service = axios.create({
   baseURL: apiURL,
   withCredentials: false, // send cookies when cross-domain requests
-  timeout: 30000 // request timeout
+  timeout: 30000, // request timeout
 })
-
+service.defaults.headers.common["apikey"] = process.env.NEXT_PUBLIC_APIKEY
 // response interceptor
 let refresh = false
 service.interceptors.response.use(
@@ -39,8 +39,8 @@ service.interceptors.response.use(
       refresh = true
 
       const { success, data /* , status */ } = await service
-        .get('/user/refresh', {
-          withCredentials: false
+        .get("/user/refresh", {
+          withCredentials: false,
         })
         .catch(() => {
           // console.log(status);
@@ -48,7 +48,7 @@ service.interceptors.response.use(
 
       if (success) {
         service.defaults.headers.common[
-          'Authorization'
+          "Authorization"
         ] = `Bearer ${data.authorisation.token}`
         return service(error.config)
       } else {
@@ -56,7 +56,7 @@ service.interceptors.response.use(
       }
     }
     refresh = false
-    return error
+    return error?.response?.data
     // return Promise.reject(error);
   }
 )

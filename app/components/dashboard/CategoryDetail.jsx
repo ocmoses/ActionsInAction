@@ -4,9 +4,7 @@ import useProcessing from "@/hooks/useProcessing"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
-import { forms } from "@/app/modules/constants"
 import { CircleOkCheckmarkIcon } from "@/app/components/Icons"
-import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
 export default function CategoryDetail({
@@ -16,19 +14,13 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { registerPartner, setValidationRules, completeOnboarding } =
-    usePartners()
+  const { setCategory, registerPartner } = usePartners()
 
-  const {
-    processing,
-    setProcessing,
-    setFormSteps,
-    moveToNextForm,
-    setActiveCategory,
-  } = useProcessing()
+  const { processing, setProcessing, moveToNextForm } = useProcessing()
 
   const selectCategory = async (category) => {
     clearErrors()
+    setCategory(category)
     const result = await registerPartner("category", {
       category_uuid: category.uuid,
     })
@@ -38,13 +30,6 @@ export default function CategoryDetail({
       if (result?.error) {
         return setError({ category: result.error })
       }
-      const categories = result.data.partner.categories
-      const currentCategory = categories?.find(
-        (c) => c.category_uuid === category.uuid
-      )
-      completeOnboarding(currentCategory)
-      setFormSteps(validation)
-      setActiveCategory(currentCategory.category_uuid)
       moveToNextForm(["category"])
       setIsOnboarding(true)
       setIsOpen(false)

@@ -34,6 +34,10 @@ const useRegistration = () => {
         data: null,
       }
     })
+    if (!result) {
+      setProcessing(false)
+      return { success: false, error: "Something went wrong", data: null }
+    }
     console.log({ result })
     const { success, data } = result
     if (!success) {

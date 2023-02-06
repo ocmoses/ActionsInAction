@@ -192,7 +192,20 @@ function Shortcode() {
       //   },
       //   pricing: { ...oldState.pricing },
       // }))
-      setShortCodes((oldState) => [...oldState, ...content])
+      // setShortCodes((oldState) => [...oldState, ...content])
+
+      setFormdata((prevState) => ({
+        ...prevState,
+        shortcode: {
+          ...prevState.shortcode,
+          shortcodes: [...prevState.shortcode.shortcodes, ...content],
+        },
+        pricing: {
+          ...prevState.pricing,
+          shortcodes: [...prevState.pricing.pricing_shortcodes, ...content],
+        },
+      }))
+
       setShtcde("")
     }
   }
@@ -316,8 +329,8 @@ function Shortcode() {
             </div>
             <p className="mb-0 text-[#999999]">Enter applicable short codes</p>
             <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
-              {shortcodes?.length > 0 &&
-                shortcodes.map((sc, index) => (
+              {formdata.shortcode.shortcodes?.length > 0 &&
+                formdata.shortcode.shortcodes.map((sc, index) => (
                   <span className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20">
                     <span>{sc}</span>
                     <div
@@ -336,7 +349,8 @@ function Shortcode() {
               label="Short codes"
               value={shtcde}
               onKeyUp={handleKeyUp}
-              onChange={handleKeyUp}
+              onChange={handleShortcodeChange}
+              onBlur={handleKeyUp}
               errors={errors}
               margin="mb-2"
             />

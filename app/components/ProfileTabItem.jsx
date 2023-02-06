@@ -11,14 +11,20 @@ import {
 import { profileMenuIcons } from "@/app/modules/constants"
 import Badge from "@/app/components/ProfileTabBadge"
 import useProcessing from "@/hooks/useProcessing"
+import usePartners from "@/hooks/usePartners"
 
 function ProfileTabItem({ menu, form }) {
   const { moveToNextForm } = useProcessing()
-
+  const { checkUpdateStatus } = usePartners()
   return (
     <div
+      // onClick={() =>
+      //   checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
+      // }
       onClick={() => moveToNextForm([menu, true])}
-      className="flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4 cursor-pointer"
+      className={`flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4 ${
+        checkUpdateStatus(menu) && "cursor-pointer"
+      }`}
     >
       <div
         className={`${
@@ -35,7 +41,7 @@ function ProfileTabItem({ menu, form }) {
                   : "w-[20px] h-[20px]"
               }
             />
-            <Badge type="review" name={"companydetail"} />
+            <Badge name={"companydetail"} />
           </div>
         )}
         {menu === "confirmcompanyinfo" && (
@@ -48,7 +54,7 @@ function ProfileTabItem({ menu, form }) {
                   : "w-[20px] h-[20px]"
               }
             />
-            <Badge type="updatereview" name={"confirmcompanyinfo"} />
+            <Badge name={"confirmcompanyinfo"} />
           </div>
         )}
         {menu === "contactperson" && (
@@ -62,7 +68,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="updatereview" name={"contactperson"} />
+            <Badge name={"contactperson"} />
           </div>
         )}
         {menu === "compliance" && (
@@ -76,7 +82,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"compliance"} />
+            <Badge name={"compliance"} />
           </div>
         )}
         {menu === "ncclicense" && (
@@ -90,7 +96,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"ncclicense"} />
+            <Badge name={"ncclicense"} />
           </div>
         )}
         {menu === "nlrclicense" && (
@@ -104,7 +110,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"nlrclicense"} />
+            <Badge name={"nlrclicense"} />
           </div>
         )}
         {menu === "shortcode" && (
@@ -118,7 +124,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"shortcode"} />
+            <Badge name={"shortcode"} />
           </div>
         )}
         {menu === "indemnity" && (
@@ -132,7 +138,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"indemnity"} />
+            <Badge name={"indemnity"} />
           </div>
         )}
         {menu === "accountinfo" && (
@@ -146,7 +152,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"accountinfo"} />
+            <Badge name={"accountinfo"} />
           </div>
         )}
         {menu === "review" && (
@@ -160,7 +166,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="review" name={"review"} />
+            <Badge name={"review"} />
           </div>
         )}
         {menu === "updatereview" && (
@@ -174,7 +180,7 @@ function ProfileTabItem({ menu, form }) {
               }
             />
 
-            <Badge type="updatereview" name={"updatereview"} />
+            <Badge name={"updatereview"} />
           </div>
         )}
       </div>

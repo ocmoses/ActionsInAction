@@ -14,14 +14,14 @@ import { forms } from "@/app/modules/constants"
 
 const usePartners = () => {
   const router = useRouter()
-  const { setProcessing } = useProcessing()
+  const { setProcessing, setFormSteps } = useProcessing()
   const { register } = useRegistration()
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
-  const { category, partner } = states.partners
+  const { category, categories, partner } = states.partners
   const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
     actions.partners
   const { setUser } = actions.users
@@ -32,6 +32,8 @@ const usePartners = () => {
     allForms: [],
   })
   const setValidationRules = (category) => {
+    console.log({ category })
+    console.log("validation", category)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
@@ -53,9 +55,12 @@ const usePartners = () => {
     const validated = { required, optional, allForms }
     setValidation(validated)
     actions.app.setFormSteps(validated)
+    actions.app.setActiveCategory(category?.uuid)
     return validated
   }
   const completeOnboarding = (category) => {
+    const currentCategory = categories?.find((c) => c.uuid === category.uuid)
+    category.validation = currentCategory.validation
     setCategory(category)
     setValidationRules(category)
   }
@@ -67,18 +72,25 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
-  const checkUpdateStatus = (type, key) => {
-    if (type === "review") {
-      if (reviewStatus[key]) return true
-      return false
-    } else {
-      if (reviewUpdateStatus[key]) return true
-      return false
-    }
+  const setCurrentCategory = (category, partner) => {
+    const currentCategory = partner?.categories?.find(
+      (c) => c.uuid === category.uuid
+    )
+    const baseCategory = categories?.find(
+      (c) => c.uuid === currentCategory.category_uuid
+    )
+    currentCategory.validation = baseCategory.validation
+    currentCategory.category_name = baseCategory.category_name
+    setCategory(currentCategory)
+    setValidationRules(currentCategory)
+  }
+  const checkUpdateStatus = (stage) => {
+    const progress = category.profile_stage
+    return progress[stage] && parseInt(progress[stage]) ? true : false
   }
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null
-    const { percent, stages, status } = partner.progress
+    const { percent, stages } = partner.progress
     if (!(percent < 100)) return { percent, nextstage: "dashboard" }
     const Stages = [
       "userinfo",
@@ -194,123 +206,144 @@ const usePartners = () => {
         router.push(`/onboarding/verify/${User.user.uuid}/new`)
         break
       case "category":
-        setProcessing(true)
-        const { error: categoryError, data: categoryData } = await fetchData(
+        // setProcessing(true)
+        // const { error: categoryError, data: categoryData } = await fetchData(
+        //   `${apiURL}/v1/auth/register/category`,
+        //   {
+        //     method: "POST",
+        //     cache: "no-store",
+        //     body: JSON.stringify({
+        //       partner_uuid: partner.uuid,
+        //       category_uuid: userdata.category_uuid,
+        //       user_uuid: user.uuid,
+        //     }),
+        //   }
+        // )
+        const responseCategory = await register(
           `${apiURL}/v1/auth/register/category`,
-          {
-            method: "POST",
-            cache: "no-store",
-            body: JSON.stringify({
-              partner_uuid: partner.uuid,
-              category_uuid: userdata.category_uuid,
-              user_uuid: user.uuid,
-            }),
-          }
+          userdata
         )
+        if (!responseCategory) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: categoryError, data: categoryData } = responseCategory
         if (categoryError) {
-          setProcessing(false)
           return { success: false, error: categoryError, data: null }
         }
+        setCurrentCategory(categoryData.category, categoryData.partner)
         updatePartner(categoryData.partner)
-        setCategory(categoryData.category)
-        // return { success: true, data: userdata, error: null } //!Renove
-        setUpdateStatus("review", "category", true)
-        return { success: true, error: null, data: categoryData }
+        setUpdateStatus("category", true)
         break
       case "companydetail":
+        const responseCompanydetail = await register(
+          `${apiURL}/v1/auth/register/companydetail`,
+          userdata
+        )
+        if (!responseCompanydetail) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
         const { error: companydetailError, data: companydetail } =
-          await register(`${apiURL}/v1/auth/register/companydetail`, userdata)
+          responseCompanydetail
         if (companydetailError) {
           return { success: false, error: companydetailError, data: null }
         }
-        console.log({ category })
         updatePartner(companydetail.partner)
-        console.log({ category })
-        setUpdateStatus("review", "companydetail", true)
+        console.log("companydetail", { category })
+        setUpdateStatus("companydetail", true)
         break
       case "compliance":
-        const { error: complianceError, data: compliance } = await register(
+        const responseCompliance = await register(
           `${apiURL}/v1/auth/register/compliance`,
           userdata
         )
+        if (!responseCompliance) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: complianceError, data: compliance } = responseCompliance
         if (complianceError) {
           return { success: false, error: complianceError, data: null }
         }
         updatePartner(compliance.partner)
-        setUpdateStatus("review", "compliance", true)
+        setUpdateStatus("compliance", true)
         break
 
       case "ncclicense":
-        const { error: ncclicenseError, data: ncclicense } = await register(
+        const responseNcclicense = await register(
           `${apiURL}/v1/auth/register/ncclicense`,
           userdata
         )
+        if (!responseNcclicense) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: ncclicenseError, data: ncclicense } = responseNcclicense
         if (ncclicenseError) {
           return { success: false, error: ncclicenseError, data: null }
         }
         updatePartner(ncclicense.partner)
-        setUpdateStatus("review", "ncclicense", true)
+        setUpdateStatus("ncclicense", true)
         break
       case "nlrclicense":
-        const { error: nlrclicenseError, data: nlrclicense } = await register(
+        const responseNlrclicense = await register(
           `${apiURL}/v1/auth/register/nlrclicense`,
           userdata
         )
+        if (!responseNlrclicense) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: nlrclicenseError, data: nlrclicense } =
+          responseNlrclicense
         if (nlrclicenseError) {
           return { success: false, error: nlrclicenseError, data: null }
         }
         updatePartner(nlrclicense.partner)
-        setUpdateStatus("review", "nlrclicense", true)
+        setUpdateStatus("nlrclicense", true)
         break
       case "shortcode":
-        const { error: shortcodeError, data: shortcode } = await register(
+        const responseShortcose = await register(
           `${apiURL}/v1/auth/register/shortcode`,
           userdata
         )
+        if (!responseShortcose) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: shortcodeError, data: shortcode } = responseShortcose
         if (shortcodeError) {
           return { success: false, error: shortcodeError, data: null }
         }
         updatePartner(shortcode.partner)
-        setUpdateStatus("review", "shortcode", true)
+        setUpdateStatus("shortcode", true)
         break
       case "indemnity":
-        const { error: indemnityError, data: indemnity } = await register(
+        const responseIndemnity = await register(
           `${apiURL}/v1/auth/register/indemnity`,
           userdata
         )
+        if (!responseIndemnity) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: indemnityError, data: indemnity } = responseIndemnity
         if (indemnityError) {
           return { success: false, error: indemnityError, data: null }
         }
         updatePartner(indemnity.partner)
-        setUpdateStatus("review", "indemnity", true)
+        setUpdateStatus("indemnity", true)
         break
       case "accountinfo":
-        setProcessing(true)
-        const {
-          success: accountinfoSuccess,
-          error: accountinfoError,
-          data: accountinfo,
-        } = await fetchData(`${apiURL}/v1/auth/register/accountinfo`, {
-          method: "POST",
-          cache: "no-store",
-          body: JSON.stringify({
-            partner_uuid: userdata.partner_uuid,
-            category_uuid: userdata.category_uuid,
-            account_name: userdata.account_name ?? "",
-            account_no: userdata.account_no ?? "",
-            bank: userdata.bank ?? "",
-            audited_account_1: userdata.audited_account_1 ?? "",
-            audited_account_2: userdata.audited_account_2 ?? "",
-            audited_account_3: userdata.audited_account_3 ?? "",
-            _method: "PUT",
-          }),
-        })
+        const responseAccountinfo = await register(
+          `${apiURL}/v1/auth/register/accountinfo`,
+          userdata
+        )
+        if (!responseAccountinfo) {
+          return { success: false, error: "Something went wrong", data: null }
+        }
+        const { error: accountinfoError, data: accountinfo } =
+          responseAccountinfo
+
         if (accountinfoError) {
-          setProcessing(false)
           return { success: false, error: accountinfoError, data: null }
         }
         updatePartner(accountinfo.partner)
-        setUpdateStatus("review", "accountinfo", true)
+        setUpdateStatus("accountinfo", true)
         break
 
       case "companyinfo":
@@ -333,7 +366,7 @@ const usePartners = () => {
         }
         updatePartner(userdata)
         updatePercentComplete(companyinfo)
-        setUpdateStatus("review", "companyinfo", true)
+        setUpdateStatus("companyinfo", true)
         router.push("/onboarding/register/validate")
         break
 
@@ -413,20 +446,9 @@ const usePartners = () => {
     contactperson: false,
     updatereview: false,
   })
-  const setUpdateStatus = (type, key, status) => {
-    if (type === "review") {
-      if (reviewStatus[key] !== "undefined")
-        setReviewStatus((oldState) => ({
-          ...oldState,
-          [key]: status,
-        }))
-    } else {
-      if (reviewUpdateStatus[key] !== "undefined")
-        setReviewUpdateStatus((oldState) => ({
-          ...oldState,
-          [key]: status,
-        }))
-    }
+  const setUpdateStatus = (stage) => {
+    console.log({ stage })
+    console.log({ category })
   }
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
@@ -464,6 +486,7 @@ const usePartners = () => {
     setValidation,
     setValidationRules,
     completeOnboarding,
+    setCurrentCategory,
   }
 }
 export default usePartners

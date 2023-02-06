@@ -2,6 +2,7 @@
 import NavbarOnboarding from "@/app/components/dashboard/NavbarOnboarding"
 import ProfileTabItem from "@/app/components/ProfileTabItem"
 import useProcessing from "@/hooks/useProcessing"
+import usePartners from "@/hooks/usePartners"
 import CompanyDetail from "./sections/companydetail/CompanyDetail"
 import Compliance from "./sections/compliance/Compliance"
 import Ncclicense from "./sections/ncclicense/Ncclicense"
@@ -10,10 +11,12 @@ import Indemnity from "./sections/indemnity/Indemnity"
 import Accountinfo from "./sections/accountinfo/Accountinfo"
 import Shortcode from "./sections/shortcode/Shortcode"
 import { profileMenu } from "@/app/modules/constants"
-import { updateMenu } from "@/app/modules/constants"
 
 export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
   const { form } = useProcessing()
+  const { category } = usePartners()
+  const validForms = category?.validation
+
   return (
     <>
       <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
@@ -24,20 +27,23 @@ export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
         <div className="grid grid-cols-4 h-full w-full">
           <div className="col-span-1 flex justify-center  h-full mb-[10vh] py-[72px] px-4">
             <div className="flex">
-              {form && profileMenu.includes(form) && (
-                <div className="flex justify-start flex-col items-end">
-                  {profileMenu.map((menu) => {
-                    return <ProfileTabItem key={menu} menu={menu} form={form} />
-                  })}
-                </div>
-              )}
-              {form && updateMenu.includes(form) && (
-                <div className="flex justify-start flex-col items-end">
-                  {updateMenu.map((menu) => {
-                    return <ProfileTabItem key={menu} menu={menu} form={form} />
-                  })}
-                </div>
-              )}
+              {form &&
+                validForms &&
+                validForms[form] &&
+                profileMenu.includes(form) && (
+                  <div className="flex justify-start flex-col items-end">
+                    {profileMenu.map((menu) => {
+                      return (
+                        <div key={menu}>
+                          {(validForms[menu] === "r" ||
+                            validForms[menu] === "o") && (
+                            <ProfileTabItem menu={menu} form={form} />
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
             </div>
           </div>
           <div className=" col-span-3 flex w-full px-4 py-[72px] ">

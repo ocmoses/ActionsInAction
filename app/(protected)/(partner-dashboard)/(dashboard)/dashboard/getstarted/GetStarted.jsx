@@ -21,7 +21,7 @@ export default function GetStarted({ data }) {
   const {
     session: { user },
   } = useUsers()
-  const { categories, partner, setValidationRules, completeOnboarding } =
+  const { categories, partner, setValidationRules, setCurrentCategory } =
     usePartners()
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
@@ -31,7 +31,6 @@ export default function GetStarted({ data }) {
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
   const {
-    form,
     setForm,
     setProcessing,
     setFormSteps,
@@ -66,22 +65,22 @@ export default function GetStarted({ data }) {
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((category) => {
-          partnerActiveCat.push(category.category_uuid)
+          partnerActiveCat.push(category.uuid)
+          const mainCategory = categoriesData.find(
+            (c) => c.uuid === category.category_uuid
+          )
           partnerCat.push({
-            category_name: categoriesData.find(
-              (c) => c.uuid === category.category_uuid
-            )?.category_name,
-            category_uuid: category.category_uuid,
+            category_name: mainCategory?.category_name,
+            uuid: category.uuid,
             user_uuid: category.user_uuid,
             partner_uuid: category.partner_uuid,
-            category_uuid: category.category_uuid,
+            uuid: category.uuid,
             percentage: category.percentage,
+            validation: mainCategory.validation,
           })
         })
       }
     }
-    // if (partnerCat?.length) setShowProgress(true)
-
     const newCatArray = categoriesData?.filter(
       (category) => !partnerActiveCat.includes(category.uuid)
     )
@@ -98,21 +97,23 @@ export default function GetStarted({ data }) {
   const CategoryBox = useRef()
 
   const setContinuedCategory = (category) => {
+    clearErrors()
     if (category) {
-      completeOnboarding(category)
-      setFormSteps(validation)
-      setActiveCategory(category.category_uuid)
+      setCurrentCategory(category, partner)
       moveToNextForm(["category"])
       setIsOnboarding(true)
       setIsOpen(false)
     }
   }
-  const continueRegistration = (category_uuid) => {
+  const continueRegistration = (uuid) => {
     clearErrors()
-    const category = partner?.categories?.find(
-      (cat) => cat.category_uuid === category_uuid
-    )
-    if (category) setContinuedCategory(category)
+    const category = partner?.categories?.find((cat) => cat.uuid === uuid)
+    if (category) {
+      setCurrentCategory(category, partner)
+      moveToNextForm(["category"])
+      setIsOnboarding(true)
+      setIsOpen(false)
+    }
   }
   return (
     <>
@@ -124,7 +125,6 @@ export default function GetStarted({ data }) {
                 <OnboardingLayout
                   isOnboarding={isOnboarding}
                   setIsOnboarding={setIsOnboarding}
-                  setContinuedCategory={setContinuedCategory}
                   setTmpCat={setTmpCat}
                 />
               </div>
@@ -151,8 +151,8 @@ export default function GetStarted({ data }) {
               >
                 {partnerCategories.map((progress) => (
                   <div
-                    onClick={() => continueRegistration(progress.category_uuid)}
-                    key={progress.category_uuid}
+                    onClick={() => continueRegistration(progress.uuid)}
+                    key={progress.uuid}
                     className="flex flex-col lg:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
                   >
                     <div className="flex flex-col lg:flex-row gap-6 justify-start items-center">
@@ -183,9 +183,7 @@ export default function GetStarted({ data }) {
                       ) : (
                         <div className="flex justify-center">
                           <Button
-                            onClick={() =>
-                              continueRegistration(progress.category_uuid)
-                            }
+                            onClick={() => continueRegistration(progress.uuid)}
                             label="Detail"
                             outline="yes"
                             noicon="yes"

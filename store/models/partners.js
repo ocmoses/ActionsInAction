@@ -13,6 +13,7 @@ const partners = {
     state.partner = null
     state.category = null
     state.categories = null
+    state.partnerCategory = null
     state.partnerCategories = null
   }),
   setPartner: action((state, partner) => {
@@ -27,13 +28,22 @@ const partners = {
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }
     const category = state.category
-    state.category = partner.categories.find(
-      (c) => c.category_uuid === category.category_uuid
+    console.log({ category })
+    console.log("partner.categories", partner?.categories)
+
+    const currentCategory = partner?.categories?.find(
+      (c) => c.uuid === category.uuid
     )
-    partner.categories.find((c) => c.category_uuid === category.category_uuid)
-    state.partnerCategories = partner.state
+    console.log("state.categories", state.categories)
+    const baseCategory = state.categories?.find(
+      (c) => c.uuid === currentCategory.category_uuid
+    )
+    currentCategory.validation = baseCategory.validation
+    currentCategory.category_name = baseCategory.category_name
+    state.category = currentCategory
+
     const Partners = state.partners?.filter((p) => {
-      p.uuid !== partner.uuid
+      p.uuid !== partner?.uuid
     })
     state.partners = [...Partners, partner]
   }),

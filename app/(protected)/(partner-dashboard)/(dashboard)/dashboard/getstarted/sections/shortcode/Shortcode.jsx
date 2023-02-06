@@ -10,6 +10,8 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
+import Image from "next/image"
+import { outputDate } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -30,6 +32,22 @@ function Shortcode() {
   const [shortcodeSet, setShortcodeSet] = useState(0)
   const [activeform, setActiveform] = useState("shortcode")
 
+  const [formdata, setFormdata] = useState({
+    shortcode: {
+      shortcodes: ["12345", "34234", "65434"], // ARRAY OR STRING
+      shortcode_doc: null, //FILE
+      shortcode_file: null, //FILE
+      shortcode_issue_date: "2020-06-08", //DATE
+      shortcode_expiry_date: "2024-06-07", //DATE
+    },
+    pricing: {
+      pricing_shortcodes: ["12345", "65434"], // ARRAY OR STRING
+      pricing_doc: null,
+      pricing_file: null,
+      pricing_issue_date: "2020-06-20", //DATE
+      pricing_expiry_date: "2024-06-01", //DATE
+    },
+  })
   const { title, subtitle, hand, required } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
@@ -37,7 +55,7 @@ function Shortcode() {
     setForm("shortcode")
     setProcessing(false)
     setShortcodeSet(0)
-    setActiveform("shortcode")
+    setActiveform(null)
   }, [])
   useEffect(() => {
     // {
@@ -63,12 +81,36 @@ function Shortcode() {
     //     },
     //   ],
     // }
-    if (category)
+    if (category) {
+      // setData({
+      //   partner_uuid: category?.partner_uuid ?? "",
+      //   category_uuid: category?.category_uuid ?? "",
+      //   shortcodes: category?.shortcodes ?? "",
+      // })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        shortcodes: category?.shortcodes ?? "",
+        category_shortcodes: [
+          // ARRAY OF OBJECT
+          {
+            shortcode: {
+              shortcodes: ["12345", "34234", "65434"], // ARRAY OR STRING
+              shortcode_doc: null, //FILE
+              shortcode_file: null, //FILE
+              shortcode_issue_date: "2020-06-08", //DATE
+              shortcode_expiry_date: "2024-06-07", //DATE
+            },
+            shortcode_pricing: {
+              pricing_shortcodes: ["12345", "65434"], // ARRAY OR STRING
+              pricing_doc: null,
+              pricing_file: null,
+              pricing_issue_date: "2020-06-20", //DATE
+              pricing_expiry_date: "2024-06-01", //DATE
+            },
+          },
+        ],
       })
+    }
   }, [category])
 
   const handleSubmit = async (e) => {
@@ -91,21 +133,36 @@ function Shortcode() {
     }
     moveToNextForm(["shortcode"])
   }
-  const handleFormChange = (e) => {
-    removeError(e.target.id)
-    setData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }))
-  }
-  const handleDateChange = (e) => {
-    removeError(e.target.id)
-    setData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }))
-  }
 
+  const handleShortcodeFormChange = (e) => {
+    removeError(e.target.id)
+    setFormdata((prevState) => ({
+      ...prevState,
+      shortcode: { ...prevState.shortcode, [e.target.id]: e.target.value },
+    }))
+  }
+  const handlePricingFormChange = (e) => {
+    removeError(e.target.id)
+    setFormdata((prevState) => ({
+      ...prevState,
+      pricing: { ...prevState.pricing, [e.target.id]: e.target.value },
+    }))
+  }
+  console.log({ formdata })
+  // const handleDateChange = (e) => {
+  //   removeError(e.target.id)
+  //   setData((prevState) => ({
+  //     ...prevState,
+  //     [e.target.id]: e.target.value,
+  //   }))
+  // }
+  // const handleShortcodeDateChange = (e) => {
+  //   removeError(e.target.id)
+  //   setData((prevState) => ({
+  //     ...prevState,
+  //     [e.target.id]: e.target.value,
+  //   }))
+  // }
   const formShortcodeArray = (shtcd) => {
     const input = shtcd
       ?.replaceAll(";", " ")
@@ -121,7 +178,6 @@ function Shortcode() {
     }
     return string.filter((str) => str !== "undefined")
   }
-
   const handleKeyUp = (e) => {
     const content = []
     if (e.key === " " || e.key === "Enter") {
@@ -130,19 +186,39 @@ function Shortcode() {
       if (cnt.length > 0) content.push(cnt)
     }
     if (content.length > 0) {
+      // setFormdata((oldState) => ({
+      //   shortcode: {
+      //     ...oldState.shortcode,
+      //     shortcodes: [...oldState.shortcode.shortcodes, ...content],
+      //   },
+      //   pricing: { ...oldState.pricing },
+      // }))
       setShortCodes((oldState) => [...oldState, ...content])
       setShtcde("")
     }
   }
-
   const handleShortcodeChange = (e) => {
-    // console.log("value", e.target.value)
     setShtcde(e.target.value)
   }
   const removeShtcde = (index) => {
     console.log(index)
     const newArray = shortcodes.filter((sc, i) => i !== index)
     setShortCodes(newArray)
+  }
+  const editShortcode = (index) => {
+    setShortcodeSet(index)
+    setActiveform("shortcode")
+  }
+  const addShortcode = () => {
+    setShortcodeSet((oldState) => oldState++)
+    setActiveform("shortcode")
+  }
+  const goToPricing = () => {
+    setActiveform("pricing")
+  }
+  const goBack = () => {
+    setShortcodeSet((oldState) => (oldState > 0 ? oldState-- : oldState))
+    setActiveform(null)
   }
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
@@ -151,34 +227,70 @@ function Shortcode() {
         <div className="mb-6">
           {errors && <FormErrors error={errors["shortcode"]} />}
         </div>
-        {data?.category_shortcodes?.length > 0 && (
+        {!activeform && (
           <>
-            <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
-              {shortcodes?.length > 0 &&
-                shortcodes.map((sc, index) => (
-                  <span className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20">
-                    <span>{sc}</span>
-                    <div
-                      onClick={() => {
-                        removeShtcde(index)
-                      }}
-                      className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
-                    >
-                      x
+            {data?.category_shortcodes?.length > 0 && (
+              <>
+                {data?.category_shortcodes?.map((d, index) => (
+                  <div
+                    key={`'shortcode-${index}`}
+                    className="flex justify-between items-center gap-4 mt-4 mb-4 p-[12px] rounded-lg bg-[#212121]"
+                  >
+                    <div className="flex justify-start items-center gap-4">
+                      <div className="flex justify-center items-center rounded-full w-[44px] h-[44px] bg-[#111111]">
+                        <Image
+                          src="/assets/icons/shortcode.svg"
+                          width={20}
+                          height={20}
+                          alt=""
+                        />
+                      </div>
+                      {d.shortcode.shortcodes?.length > 0 && (
+                        <div className="flex flex-col truncate">
+                          <div className="flex justify-start items-center text-lg text-white truncate">
+                            {d.shortcode.shortcodes.join(", ")}
+                          </div>
+                          <div className="flex justify-start items-center text-sm text-[#999999] truncate">
+                            Issued{" "}
+                            {outputDate(d.shortcode.shortcode_issue_date)}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </span>
+                    <div className="flex justify-end items-center gap-2">
+                      <button
+                        onClick={() => editShortcode(index)}
+                        className={`rounded-full text-sm px-2 h-6 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+                      >
+                        <span>Edit</span>
+                      </button>
+                      <div className="flex justify-center items-center rounded-full text-sm w-6 h-6 text-red-600 hover:text-red-600/60 bg-transparent border border-red-600 hover:border-red/60 transition ease-in-out 5000 cursor-pointer">
+                        x
+                      </div>
+                    </div>
+                  </div>
                 ))}
-            </div>
+                <div className="mt-3 flex justify-end">
+                  <button
+                    onClick={addShortcode}
+                    className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+                  >
+                    <span>Add shortcodes</span>
+                  </button>
+                </div>
+              </>
+            )}
           </>
         )}
+
         {activeform === "shortcode" && (
           <div id="shortcodeform" className="w3-animate-opacity">
             <FileInputWrapper>
               <FileInput
                 id="shortcode_doc"
                 label="Short code document"
-                value={data.shortcode_doc}
-                onChange={handleFormChange}
+                value={formdata.shortcode.shortcode_doc}
+                onChange={handleShortcodeFormChange}
                 errors={errors}
                 margin="mb-6"
               />
@@ -188,8 +300,8 @@ function Shortcode() {
                 <DatePicker
                   id="shortcode_issue_date"
                   label="Issue date"
-                  value={data.shortcode_issue_date}
-                  onChange={handleDateChange}
+                  value={formdata.shortcode.shortcode_issue_date}
+                  onChange={handleShortcodeFormChange}
                   errors={errors}
                 />
               </div>
@@ -197,8 +309,8 @@ function Shortcode() {
                 <DatePicker
                   id="shortcode_expiry_date"
                   label="Expiry date"
-                  value={data.shortcode_expiry_date}
-                  onChange={handleDateChange}
+                  value={formdata.shortcode.shortcode_expiry_date}
+                  onChange={handleShortcodeFormChange}
                   errors={errors}
                 />
               </div>
@@ -225,8 +337,7 @@ function Shortcode() {
               label="Short codes"
               value={shtcde}
               onKeyUp={handleKeyUp}
-              onChange={handleShortcodeChange}
-              onBlur={handleKeyUp}
+              onChange={handleKeyUp}
               errors={errors}
               margin="mb-2"
             />
@@ -234,11 +345,84 @@ function Shortcode() {
               Enter multile comma-separated shortcodes and press "Enter" to
               apply
             </p>
-            <div className="mt-3 flex justify-end">
+            <div className="mt-3 flex justify-end gap-2">
               <button
+                onClick={goBack}
+                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+              >
+                <span>Back</span>
+              </button>
+              <button
+                onClick={goToPricing}
                 className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
               >
                 <span>Next</span>
+              </button>
+            </div>
+          </div>
+        )}
+        {activeform === "pricing" && (
+          <div id="pricingform" className="w3-animate-opacity">
+            <p className="mb-0 text-[#999999]">Enter applicable short codes</p>
+            <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
+              {shortcodes?.length > 0 &&
+                shortcodes.map((sc, index) => (
+                  <span className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20">
+                    <span>{sc}</span>
+                    <div
+                      onClick={() => {
+                        removeShtcde(index)
+                      }}
+                      className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
+                    >
+                      x
+                    </div>
+                  </span>
+                ))}
+            </div>
+
+            <div className="md:grid md:grid-cols-2 md:gap-4">
+              <div className="">
+                <DatePicker
+                  id="pricing_issue_date"
+                  label="Issue date"
+                  value={formdata.pricing.pricing_issue_date}
+                  onChange={handlePricingFormChange}
+                  errors={errors}
+                />
+              </div>
+              <div className=" ">
+                <DatePicker
+                  id="pricing_expiry_date"
+                  label="Expiry date"
+                  value={formdata.pricing.pricing_expiry_date}
+                  onChange={handlePricingFormChange}
+                  errors={errors}
+                />
+              </div>
+            </div>
+            <FileInputWrapper>
+              <FileInput
+                id="pricing_doc"
+                label="Short code document"
+                value={formdata.pricing.pricing_doc}
+                onChange={handlePricingFormChange}
+                errors={errors}
+                margin="mb-6"
+              />
+            </FileInputWrapper>
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                onClick={goBack}
+                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+              >
+                <span>Back</span>
+              </button>
+              <button
+                onClick={goToPricing}
+                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+              >
+                <span>Save shortcodes</span>
               </button>
             </div>
           </div>

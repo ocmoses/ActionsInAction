@@ -11,7 +11,7 @@ export default function Button(props) {
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
               : "bg-black/50 text-white border-2 " +
-                (props.outlineColor ?? "border-mtn") +
+                (props.outlinecolor ?? "border-mtn") +
                 " hover:border-mtn-300"
           }  transition ease-in-out 5000`}
           {...props}
@@ -28,7 +28,7 @@ export default function Button(props) {
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
               : "bg-black/50 text-white border " +
-                (props.outlineColor ?? "border-mtn") +
+                (props.outlinecolor ?? "border-mtn") +
                 " hover:border-mtn-300"
           }  transition ease-in-out 5000`}
           {...props}

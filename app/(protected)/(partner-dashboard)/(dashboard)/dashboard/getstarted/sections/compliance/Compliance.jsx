@@ -21,26 +21,38 @@ function Compliance() {
   const { category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
+    partner_uuid: "",
+    category_uuid: "",
     rc_no: "",
     tin_no: "",
     tin_doc: "",
     memart_doc: "",
     cac_doc: "",
+    tin_file: "",
+    memart_file: "",
+    cac_file: "",
   })
   const { title, subtitle, hand, required } = forms["compliance"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+
   useEffect(() => {
-    if (category)
+    if (category) {
+      console.log({ category })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
         rc_no: category?.rc_no ?? "",
         tin_no: category?.tin_no ?? "",
-        tin_doc: category?.tin_doc ?? "",
-        memart_doc: category?.memart_doc ?? "",
-        cac_doc: category?.cac_doc ?? "",
+        tin_doc: category?.tin_doc ?? {},
+        memart_doc: category?.memart_doc ?? {},
+        cac_doc: category?.cac_doc ?? {},
+        tin_file: "",
+        memart_file: "",
+        cac_file: "",
       })
+    }
   }, [category])
+
   useEffect(() => {
     setForm("compliance")
     setProcessing(false)
@@ -50,6 +62,9 @@ function Compliance() {
     e.preventDefault()
     clearErrors()
     let error = false
+
+    console.log({ data })
+    // return
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
@@ -59,6 +74,7 @@ function Compliance() {
       }
       if (error) return
     }
+
     const result = await registerPartner("compliance", data)
     if (result) {
       scrollToTop()
@@ -96,21 +112,22 @@ function Compliance() {
         />
         <FileInputWrapper>
           <FileInput
-            id="tin_doc"
+            id="tin_file"
             label="TIN Document"
             value={data.tin_doc}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
-            id="memart_doc"
+            id="memart_file"
             label="Memart certificate"
             value={data.memart_doc}
             onChange={handleFormChange}
             errors={errors}
           />
+
           <FileInput
-            id="cac_doc"
+            id="cac_file"
             label="CAC Registration Certificate"
             value={data.cac_doc}
             onChange={handleFormChange}
@@ -127,7 +144,7 @@ function Compliance() {
                 type="button"
                 label="Next"
                 outline="yes"
-                outlineColor="border-white"
+                outlinecolor="border-white"
               />
               <ButtonNext type="submit" label="Next" />
             </div>

@@ -7,6 +7,8 @@ function TextInput({
   label,
   value,
   onChange,
+  onKeyUp,
+  onBlur,
   type,
   border,
   bg,
@@ -36,6 +38,8 @@ function TextInput({
           placeholder={label}
           autoComplete="new-password"
           onChange={onChange}
+          onKeyUp={onKeyUp}
+          onBlur={onBlur}
           style={{
             fontStyle: "normal",
             fontWeight: 400,

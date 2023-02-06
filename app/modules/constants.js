@@ -9,6 +9,8 @@ import {
   ContactPersonIcon,
 } from "@/app/components/Icons"
 
+export const persistStore = true
+
 export const EmailType = {
   EXISTING: "existing",
   NEW: "new",

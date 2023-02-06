@@ -34,7 +34,7 @@ function LandingPage() {
                 <Button
                   label="Discover program"
                   outline="yes"
-                  outlineColor="border-white/80"
+                  outlinecolor="border-white/80"
                 />
               </div>
             </div>

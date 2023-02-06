@@ -115,11 +115,12 @@ export const Util = {
   },
 }
 export const scrollToTop = (id) => {
-  var contentBody = document.getElementById(id ?? "contentBody")
-  contentBody.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  })
+  return true
+  // var contentBody = document.getElementById(id ?? ".contentBody")
+  // contentBody.scrollTo({
+  //   top: 0,
+  //   behavior: "smooth",
+  // })
 }
 export async function logout() {
   const response = await fetch("/api/users/logout")

@@ -133,7 +133,6 @@ function Shortcode() {
     }
     moveToNextForm(["shortcode"])
   }
-
   const handleShortcodeFormChange = (e) => {
     removeError(e.target.id)
     setFormdata((prevState) => ({

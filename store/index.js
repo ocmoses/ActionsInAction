@@ -1,4 +1,5 @@
 import { createStore, persist } from "easy-peasy"
+import { persistStore } from "@/app/modules/constants"
 
 import app from "./models/app"
 import users from "./models/users"
@@ -9,13 +10,10 @@ export const model = {
   users,
   partners,
 }
-// const store = createStore(model)
-const store = createStore(persist(model))
+const store = persistStore ? createStore(persist(model)) : createStore(model)
 
-export const clearPersistStore = () => {
-  store.persist.clear().then(() => {
-    // console.log("Persisted state has been removed")
-  })
+export const clearPersistStore = async () => {
+  if (persistStore) await store.persist.clear()
 }
 
 export default store

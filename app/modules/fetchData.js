@@ -1,4 +1,5 @@
 export const fetchData = async (url, opt) => {
+  console.log({ opt })
   const Opts = opt ?? {}
   const defaultHeaders = {
     apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
@@ -10,6 +11,7 @@ export const fetchData = async (url, opt) => {
   }
   const options = { ...defaultOptions, ...Opts }
   try {
+    console.log({ options })
     const result = await fetch(url, options)
     if (result) {
       const { data, success } = await result?.json()

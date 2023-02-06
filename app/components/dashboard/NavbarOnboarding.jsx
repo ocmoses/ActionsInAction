@@ -2,20 +2,11 @@
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import UserPercentage from "@/app/components/UserPercentage"
-import useApp from "@/hooks/useApp"
 import { useEffect, useState } from "react"
 
 export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
-  const { activeCategory } = useProcessing()
-  const { partner, category: partnerCategory, categories } = usePartners()
-  const [Category, setCategoryData] = useState(null)
+  const { category } = usePartners()
 
-  useEffect(() => {
-    if (categories?.length) {
-      const categoryData = categories.find((cat) => cat.uuid === activeCategory)
-      setCategoryData(categoryData)
-    }
-  }, [activeCategory])
   const cancelOnboarding = () => {
     setIsOnboarding(false)
     setTmpCat(null)
@@ -44,28 +35,28 @@ export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
             </svg>
           </span>
         </div>
-        {Category?.category_name && (
+        {category?.category_name && (
           <div className="flex gap-5 justify-start  items-center text-white px-3 py-2">
             <span className="text-[#999999] group-hover:!text-white">
               Partner category:
             </span>
-            <span className="font-bold">{Category?.category_name}</span>
+            <span className="font-bold">{category?.category_name}</span>
           </div>
         )}
       </div>
       <div className="flex justify-end items-center gap-3 text-white px-3">
         <div className="flex justify-end items-center gap-1 text-white">
-          {partnerCategory && (
+          {category && (
             <UserPercentage
               size={22}
               thickness={2}
               textsize={8}
-              percent={partnerCategory?.percentage}
+              percent={category?.percentage}
               hidelabel={true}
             />
           )}
           <span className="text-white text-[12px]">
-            {partnerCategory?.percentage}% completed
+            {category?.percentage}% completed
           </span>
         </div>
         <span

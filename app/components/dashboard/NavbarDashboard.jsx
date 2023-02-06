@@ -28,28 +28,12 @@ function NavbarDashboard({ open, setOpen }) {
             <Image src={MenuIcom} width={24} height={24} alt="" />
           </span>
         </div>
-        <div className="flex flex-grow justify-start text-[#666666] px-3 py-2">
+        <div className="hidden md:flex flex-grow justify-start text-[#666666] px-3 py-2">
           Search for transactions, users, pages...
         </div>
       </div>
       <div className="flex justify-end text-white pl-3 pr-[52px]">
         {session && session.status === "authenticated" && <ProfileIcons />}
-        {/* {session.status && session.status === "authenticated" && (
-          <div className="flex justify-end">
-            <div className="text-white flex items-center mr-0 md:mr-3">
-              <div
-                className="text-white text-sm cursor-pointer transition ease-in-out duration-500 hover:scale-[120%]"
-                onClick={Logout}
-              >
-                {loading?.logout ? (
-                  <TailSpinPreloader width={28} height={28} fill="#efb703" />
-                ) : (
-                  "Logout"
-                )}
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
     </header>
   )

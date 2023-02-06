@@ -1,11 +1,19 @@
 import usePartners from "@/hooks/usePartners"
+import Image from "next/image"
 import { StepBadgeIcon } from "./Icons"
-export default function ProfileTabBadge({ type, name }) {
+export default function ProfileTabBadge({ name }) {
   const { checkUpdateStatus } = usePartners()
   return (
-    <StepBadgeIcon
-      iconClass="absolute right-[-4px] bottom-[-4px]"
-      fill={checkUpdateStatus(type, name) ? "#FFCB03" : "#999999"}
-    />
+    <>
+      {checkUpdateStatus(name) && (
+        <Image
+          src="/assets/icons/check-solid.svg"
+          width={16}
+          height={16}
+          alt=""
+          className="absolute right-[-4px] bottom-[-4px]"
+        />
+      )}
+    </>
   )
 }

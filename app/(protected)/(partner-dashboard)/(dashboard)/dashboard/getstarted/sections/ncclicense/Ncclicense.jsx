@@ -118,7 +118,8 @@ function Ncclicense() {
         </div>
         <FileInputWrapper>
           <FileInput
-            id="ncc_doc"
+            id="ncc_file"
+            doc_id="ncc_doc"
             label="NCC VAS License"
             value={data.ncc_doc}
             onChange={handleFormChange}

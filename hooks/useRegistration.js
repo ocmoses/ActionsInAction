@@ -31,7 +31,7 @@ const useRegistration = () => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      timeout: 30000,
+      timeout: process.NEXT_PUBLIC_TIMEOUT,
     }).catch((e) => {
       return {
         success: false,

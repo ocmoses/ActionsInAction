@@ -6,11 +6,11 @@ import { useEffect } from "react"
 import Image from "next/image"
 function FileInput({
   id,
+  doc_id,
   label,
   onChange,
   allowedtypes,
   value,
-  border,
   bg,
   margin,
   errors,
@@ -26,28 +26,51 @@ function FileInput({
   }, [])
 
   useEffect(() => {
-    setDoc(value)
-  }, [value])
-
+    if (file) {
+      setDoc({
+        file_name: file.name,
+        file_path: null,
+        file_size: Math.ceil(file.size / 1024),
+        file_type: file.type.split("/")[1],
+      })
+      onChange({ target: { id, value: file } })
+    } else if (value) {
+      setDoc({
+        file_name: value.file_name,
+        file_path: value.file_path,
+        file_size: value.file_size,
+        file_type: value.file_type,
+      })
+    } else {
+      setDoc({
+        file_name: null,
+        file_path: null,
+        file_size: null,
+        file_type: null,
+      })
+    }
+  }, [value, file])
   const handleFile = (e) => {
     setMessage(null)
     let file = e.target.files[0]
-    // console.log(file)
     const fileType = file["type"]
     const validImageTypes = allowedtypes ?? ["application/pdf"]
     if (validImageTypes.includes(fileType)) {
       setFile(file)
     } else {
-      // setFile(file)
       setMessage("Only PDF accepted")
+      file = null
     }
-    onChange({ target: { id, value: file } })
   }
   const removeImage = () => {
-    setFile(null)
-    setFile(null)
+    if (file) {
+      setFile(null)
+      onChange({ target: { id, value: null } })
+    } else if (doc) {
+      setDoc(null)
+      onChange({ target: { id: doc_id, value: null } })
+    }
     setMessage(null)
-    setDoc(null)
   }
 
   return (
@@ -70,7 +93,7 @@ function FileInput({
               className="h-full w-full opacity-0 z-10 absolute"
               name="files"
             />
-            {!file && !doc?.file_name && (
+            {!doc?.file_name && (
               <>
                 <div className="flex flex-start gap-3">
                   <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
@@ -93,7 +116,7 @@ function FileInput({
               </>
             )}
 
-            {file && (
+            {/* {file && (
               <div className="text-white w-full h-16 flex items-center justify-between rounded p-3">
                 <div className="flex flex-row items-start gap-2">
                   <div className="h-12 w-12 ">
@@ -125,8 +148,8 @@ function FileInput({
                   x
                 </div>
               </div>
-            )}
-            {!file && doc?.file_name && (
+            )} */}
+            {doc?.file_name && (
               <div className="text-white w-full h-16 flex items-center justify-between rounded p-3">
                 <div className="flex flex-row items-start gap-2">
                   <div className="h-12 w-12 ">
@@ -146,7 +169,7 @@ function FileInput({
                         TYPE: {doc?.file_type}
                       </span>
                       <span className="text-[12px]">
-                        SIZE: {Math.ceil(doc?.file_size / 1024)}kb
+                        SIZE: {doc?.file_size}kb
                       </span>
                     </div>
                   </div>

@@ -117,7 +117,8 @@ function NlrcLicense() {
         </div>
         <FileInputWrapper>
           <FileInput
-            id="nlrc_doc"
+            id="nlrc_file"
+            doc_id="nlrc_doc"
             label="NLRC Document"
             value={data.nlrc_doc}
             onChange={handleFormChange}

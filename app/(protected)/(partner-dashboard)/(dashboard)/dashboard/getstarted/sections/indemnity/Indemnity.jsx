@@ -115,7 +115,8 @@ function Indemnity() {
         </div>
         <FileInputWrapper>
           <FileInput
-            id="indemnity_doc"
+            id="indemnity_file"
+            doc_id="indemnity_doc"
             label="Professional indemnity insurance Document"
             value={data.indemnity_doc}
             onChange={handleFormChange}

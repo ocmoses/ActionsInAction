@@ -63,7 +63,6 @@ function Compliance() {
     clearErrors()
     let error = false
 
-    console.log({ data })
     // return
     if (!Util.isEmpty(required)) {
       for (const field in required) {
@@ -113,6 +112,7 @@ function Compliance() {
         <FileInputWrapper>
           <FileInput
             id="tin_file"
+            doc_id="tin_doc"
             label="TIN Document"
             value={data.tin_doc}
             onChange={handleFormChange}
@@ -120,6 +120,7 @@ function Compliance() {
           />
           <FileInput
             id="memart_file"
+            doc_id="memart_doc"
             label="Memart certificate"
             value={data.memart_doc}
             onChange={handleFormChange}
@@ -128,6 +129,7 @@ function Compliance() {
 
           <FileInput
             id="cac_file"
+            doc_id="cac_doc"
             label="CAC Registration Certificate"
             value={data.cac_doc}
             onChange={handleFormChange}

@@ -21,10 +21,14 @@ export default function Accountinfo() {
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
-    audited_account_1: "",
-    audited_account_2: "",
-    audited_account_3: "",
-    audited_account_4: "",
+    audited_account_1: null,
+    audited_account_1_file: null,
+    audited_account_2: null,
+    audited_account_2_file: null,
+    audited_account_3: null,
+    audited_account_3_file: null,
+    audited_account_4: null,
+    audited_account_4_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
@@ -32,10 +36,16 @@ export default function Accountinfo() {
   useEffect(() => {
     if (category)
       setData({
+        partner_uuid: category?.partner_uuid ?? "",
+        category_uuid: category?.category_uuid ?? "",
         audited_account_1: category?.audited_account_1 ?? "",
+        audited_account_1_file: null,
         audited_account_2: category?.audited_account_2 ?? "",
+        audited_account_2_file: null,
         audited_account_3: category?.audited_account_3 ?? "",
-        audited_account_: category?.audited_account_ ?? "",
+        audited_account_3_file: null,
+        job_evidence: category?.job_evidence ?? "",
+        job_evidence_file: null,
       })
   }, [category])
 
@@ -48,15 +58,15 @@ export default function Accountinfo() {
     e.preventDefault()
     clearErrors()
     let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
-        }
-      }
-      if (error) return
-    }
+    // if (!Util.isEmpty(required)) {
+    //   for (const field in required) {
+    //     if (!!!data[field]) {
+    //       error = true
+    //       setError({ [field]: `${required[field]} is required` })
+    //     }
+    //   }
+    //   if (error) return
+    // }
     const result = await registerPartner("accountinfo", data)
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
@@ -80,30 +90,34 @@ export default function Accountinfo() {
         </div>
         <FileInputWrapper>
           <FileInput
-            id="audited_account_1"
+            id="audited_account_1_file"
+            doc_id="audited_account_1"
             label="Audited account 1"
             value={data.audited_account_1}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
-            id="audited_account_2"
+            id="audited_account_2_file"
+            doc_id="audited_account_2"
             label="Audited account 2"
             value={data.audited_account_2}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
-            id="audited_account_3"
+            id="audited_account_3_file"
+            doc_id="audited_account_3"
             label="Audited account 3"
             value={data.audited_account_3}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
-            id="audited_account_4"
-            label="Audited account 4"
-            value={data.audited_account_4}
+            id="job_evidence_file"
+            doc_id="job_evidence"
+            label="Evidence of 3 jobs done"
+            value={data.job_evidence}
             onChange={handleFormChange}
             errors={errors}
           />

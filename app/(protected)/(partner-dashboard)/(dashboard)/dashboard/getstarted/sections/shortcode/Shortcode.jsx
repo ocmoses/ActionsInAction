@@ -33,18 +33,18 @@ function Shortcode() {
 
   const [formdata, setFormdata] = useState({
     shortcode: {
-      shortcodes: ["12345", "34234", "65434"], // ARRAY OR STRING
+      shortcodes: [], // ARRAY OR STRING
       shortcode_doc: null, //FILE
       shortcode_file: null, //FILE
-      shortcode_issue_date: "2020-06-08", //DATE
-      shortcode_expiry_date: "2024-06-07", //DATE
+      shortcode_issue_date: "", //DATE
+      shortcode_expiry_date: "", //DATE
     },
     shortcode_pricing: {
-      pricing_shortcodes: ["12345", "65434"], // ARRAY OR STRING
+      pricing_shortcodes: [], // ARRAY OR STRING
       pricing_doc: null,
       pricing_file: null,
-      pricing_issue_date: "2020-06-20", //DATE
-      pricing_expiry_date: "2024-06-01", //DATE
+      pricing_issue_date: "", //DATE
+      pricing_expiry_date: "", //DATE
     },
   })
   const { title, subtitle, hand, required } = forms["shortcode"]
@@ -107,7 +107,7 @@ function Shortcode() {
     if (result) {
       if (result?.error) return setError({ shortcode: result.error })
     }
-    // moveToNextForm(["shortcode"])
+    moveToNextForm(["shortcode"])
   }
   const handleShortcodeFormChange = (e) => {
     removeError(e.target.id)
@@ -305,7 +305,6 @@ function Shortcode() {
         prvState.shortcodes.push(newPayload)
         return prvState
       })
-      // data.shortcodes.push(newPayload)
     }
     resetFormdata()
     setActiveform(null)
@@ -386,6 +385,7 @@ function Shortcode() {
           <FileInputWrapper>
             <FileInput
               id="shortcode_file"
+              doc_id="shortcode_doc"
               label="Short code document"
               value={
                 formdata.shortcode.shortcode_file ??
@@ -524,6 +524,7 @@ function Shortcode() {
           <FileInputWrapper>
             <FileInput
               id="pricing_file"
+              doc_id="pricing_doc"
               label="Short code document"
               value={
                 formdata.shortcode_pricing.pricing_file ??

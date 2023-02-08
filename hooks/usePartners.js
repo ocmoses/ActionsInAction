@@ -301,25 +301,7 @@ const usePartners = () => {
         setUpdateStatus("nlrclicense", true)
         break
       case "shortcode":
-        // const responseShortcode = await register(
-        //   `${apiURL}/v1/auth/register/shortcode`,
-        //   userdata
-        // )
         userdata["_method"] = "PUT"
-
-        // const formData = new FormData()
-        // for (const field in userdata) {
-        //   if (isArray(userdata[field])) {
-        //     userdata[field].map((d, i) => formData.append([field][i], d))
-        //   } else {
-        //     formData.append(field, userdata[field])
-        //   }
-        // }
-        // for (const field in userdata) {
-        //   formData.append(field, userdata[field])
-        // }
-        // formData.append("_method", "PUT")
-        console.log({ userdata })
         const responseShortcode = await Axios.post(
           `${apiURL}/v1/auth/register/shortcode`,
           userdata,
@@ -327,7 +309,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: 30000,
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           return {
@@ -344,7 +326,7 @@ const usePartners = () => {
           return { success: false, error: shortcodeError, data: null }
         }
         // console.log({ shortcode })
-        // updatePartner(shortcode.partner)
+        updatePartner(shortcode.partner)
         setUpdateStatus("shortcode", true)
         break
       case "indemnity":
@@ -379,107 +361,23 @@ const usePartners = () => {
         updatePartner(accountinfo.partner)
         setUpdateStatus("accountinfo", true)
         break
-
-      case "companyinfo":
-        setProcessing(true)
-        const { error: companyinfoError, data: companyinfo } = await fetchData(
-          `${apiURL}/v1/auth/register/companyinfo`,
-          {
-            method: "PUT",
-            cache: "no-store",
-            body: JSON.stringify({
-              partnerid: partner.partnerid,
-              company_name: userdata.company_name,
-              company_role: userdata.company_role,
-            }),
-          }
-        )
-        if (companyinfoError) {
-          setProcessing(false)
-          return { success: false, error: companyinfoError, data: null }
-        }
-        updatePartner(userdata)
-        updatePercentComplete(companyinfo)
-        setUpdateStatus("companyinfo", true)
-        router.push("/onboarding/register/validate")
-        break
-
-      case "confirmcompanyinfo":
-        setProcessing(true)
-        const {
-          success: confirmcompanyinfoSuccess,
-          error: confirmcompanyinfoError,
-          data: confirmcompanyinfo,
-        } = await fetchData(
-          `${apiURL}/v1/existing-partner/confirm-companyinfo`,
-          {
-            method: "PUT",
-            cache: "no-store",
-            body: JSON.stringify({
-              partnerid: partner.partnerid,
-              company_name: userdata.company_name ?? "",
-              country: userdata.country ?? "",
-              company_address: userdata.company_address ?? "",
-              company_city: userdata.company_city ?? "",
-              company_state: userdata.company_state ?? "",
-              company_postcode: userdata.company_postcode ?? "",
-            }),
-          }
-        )
-        if (confirmcompanyinfoError) {
-          setProcessing(false)
-          return { success: false, error: confirmcompanyinfoError, data: null }
-        }
-        updatePartner(userdata)
-        updatePercentComplete(confirmcompanyinfo)
-        setUpdateStatus("updatereview", "confirmcompanyinfo", true)
-        router.push("/profile/update/contactperson")
-        break
-      case "contactperson":
-        setProcessing(true)
-        const {
-          success: contactpersonSuccess,
-          error: contactpersonError,
-          data: contactperson,
-        } = await fetchData(`${apiURL}/v1/existing-partner/contact-person`, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            partnerid: partner.partnerid,
-            first_name: userdata.first_name ?? "",
-            last_name: userdata.last_name ?? "",
-            email: userdata.email ?? "",
-            country: partner.country ?? "",
-            countrycode: userdata.countrycode ?? "",
-            telephone: userdata.telephone ?? "",
-          }),
-        })
-        if (contactpersonError) {
-          setProcessing(false)
-          return { success: false, error: contactpersonError, data: null }
-        }
-        updatePartner(userdata)
-        updatePercentComplete(contactperson)
-        setUpdateStatus("updatereview", "contactperson", true)
-        router.push("/profile/update/review")
-        break
     }
   }
-  const [reviewStatus, setReviewStatus] = useState({
-    companydetail: false,
-    compliance: false,
-    ncclicense: false,
-    nlrclicense: false,
-    shortcode: false,
-    indemnity: false,
-    accountinfo: false,
-    review: false,
-  })
-  const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
-    confirmcompanyinfo: false,
-    contactperson: false,
-    updatereview: false,
-  })
+  // const [reviewStatus, setReviewStatus] = useState({
+  //   companydetail: false,
+  //   compliance: false,
+  //   ncclicense: false,
+  //   nlrclicense: false,
+  //   shortcode: false,
+  //   indemnity: false,
+  //   accountinfo: false,
+  //   review: false,
+  // })
+  // const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
+  //   confirmcompanyinfo: false,
+  //   contactperson: false,
+  //   updatereview: false,
+  // })
   const setUpdateStatus = (stage) => {
     // console.log({ stage })
     // console.log({ category })

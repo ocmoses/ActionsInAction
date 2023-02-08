@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation"
 import { proxyFetch } from "@/app/modules/utilities"
 import { userData } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
+import Axios from "@/app/modules/axios"
+import { isArray } from "@/app/modules/utilities"
 
 const usePartners = () => {
   const router = useRouter()
@@ -32,8 +34,8 @@ const usePartners = () => {
     allForms: [],
   })
   const setValidationRules = (category) => {
-    console.log({ category })
-    console.log("validation", category)
+    // console.log({ category })
+    // console.log("validation", category)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
@@ -299,18 +301,50 @@ const usePartners = () => {
         setUpdateStatus("nlrclicense", true)
         break
       case "shortcode":
-        const responseShortcose = await register(
+        // const responseShortcode = await register(
+        //   `${apiURL}/v1/auth/register/shortcode`,
+        //   userdata
+        // )
+        userdata["_method"] = "PUT"
+
+        // const formData = new FormData()
+        // for (const field in userdata) {
+        //   if (isArray(userdata[field])) {
+        //     userdata[field].map((d, i) => formData.append([field][i], d))
+        //   } else {
+        //     formData.append(field, userdata[field])
+        //   }
+        // }
+        // for (const field in userdata) {
+        //   formData.append(field, userdata[field])
+        // }
+        // formData.append("_method", "PUT")
+        console.log({ userdata })
+        const responseShortcode = await Axios.post(
           `${apiURL}/v1/auth/register/shortcode`,
-          userdata
-        )
-        if (!responseShortcose) {
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: 30000,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!responseShortcode) {
           return { success: false, error: "Something went wrong", data: null }
         }
-        const { error: shortcodeError, data: shortcode } = responseShortcose
+        const { error: shortcodeError, data: shortcode } = responseShortcode
         if (shortcodeError) {
           return { success: false, error: shortcodeError, data: null }
         }
-        updatePartner(shortcode.partner)
+        // console.log({ shortcode })
+        // updatePartner(shortcode.partner)
         setUpdateStatus("shortcode", true)
         break
       case "indemnity":
@@ -447,8 +481,8 @@ const usePartners = () => {
     updatereview: false,
   })
   const setUpdateStatus = (stage) => {
-    console.log({ stage })
-    console.log({ category })
+    // console.log({ stage })
+    // console.log({ category })
   }
   const resendEmail = async (email, email_type) => {
     setProcessing(true)

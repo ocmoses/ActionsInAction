@@ -28,13 +28,13 @@ const partners = {
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }
     const category = state.category
-    console.log({ category })
-    console.log("partner.categories", partner?.categories)
+    // console.log({ category })
+    // console.log("partner.categories", partner?.categories)
 
     const currentCategory = partner?.categories?.find(
       (c) => c.uuid === category.uuid
     )
-    console.log("state.categories", state.categories)
+    // console.log("state.categories", state.categories)
     const baseCategory = state.categories?.find(
       (c) => c.uuid === currentCategory.category_uuid
     )

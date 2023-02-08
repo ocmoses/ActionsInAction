@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { EyeOpenIcon, EyeCloseIcon } from "../Icons"
 import FormErrors from "@/app/components/FormErrors"
-function TextInput({
+export default function TextInput({
   id,
   label,
   value,
@@ -68,5 +68,3 @@ function TextInput({
     </div>
   )
 }
-
-export default TextInput

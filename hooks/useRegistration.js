@@ -3,6 +3,7 @@
 import { useState } from "react"
 import useProcessing from "@/hooks/useProcessing"
 import Axios from "@/app/modules/axios"
+import { isArray } from "@/app/modules/utilities"
 
 const useRegistration = () => {
   const { setProcessing } = useProcessing()
@@ -18,7 +19,11 @@ const useRegistration = () => {
 
     const formData = new FormData()
     for (const field in userdata) {
-      formData.append(field, userdata[field])
+      if (isArray(userdata[field])) {
+        userdata[field].map((d, i) => formData.append([field][i], d))
+      } else {
+        formData.append(field, userdata[field])
+      }
     }
     formData.append("_method", "PUT")
 

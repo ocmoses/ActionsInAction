@@ -9,6 +9,7 @@ export const EndPointHeaders = {
 export const NextEndPoints = {
   LOGIN: "/api/users/login",
   VALIDATE_USER: "/api/users/validate_user",
+  SETPASSWORD: "/api/users/reset-password",
 }
 
 const RemoteEndpoints = {

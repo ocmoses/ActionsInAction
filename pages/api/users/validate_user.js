@@ -1,50 +1,71 @@
-import RemoteEndpoints, { EndPointHeaders } from "@/app/modules/endpoints"
-import { fetchData } from "@/app/modules/fetchData"
+import RemoteEndpoints from "@/app/modules/endpoints"
+import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
+import { getCategories } from "@/app/modules/categories"
 
+const doLogin = async (body, req, res) => {
+  const response = await fetch(
+    `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${body.user_uuid}`,
+    {
+      headers: {
+        apikey: `${process.env.APIKEY}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer",
+    }
+  )
+  console.log({ response })
+  if (response) {
+    const result = await response.json()
+    console.log({ result })
+    const { data, success } = result
+    if (success) {
+      const partnerID = getCookie("partnerid", { req, res })
+      const { User, authToken } = createHttpOnlyCookie(
+        data,
+        req,
+        res,
+        partnerID
+      )
+      if (!authToken) return { success, error: "Invalid request", data: User }
+      return { success, error: null, data: User }
+    } else {
+      if (data) {
+        return { success, error: data.message, data: null }
+      } else {
+        return {
+          success: false,
+          error: `${response.status} ${response.statusText}`,
+        }
+      }
+    }
+  } else {
+    return { success: false, error: "AN error was encountered", data: null }
+  }
+}
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
-      res
-        .status(200)
-        .json({ success: false, data: { message: "Invalid request method" } })
+      res.status(200).json({ success: false, error: "Invalid request method" })
       return
     }
-    const user_uuid = req.body.user_uuid
-    const response = await fetch(
-      `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${user_uuid}`,
-      {
-        cache: "no-store",
-        headers: { ...EndPointHeaders },
-      }
-    )
-    if (response) {
-      const result = await response.json()
-      // console.log({ result })
-      const { data, success } = result
-      if (success) {
-        const { User, authToken } = createHttpOnlyCookie(data, req, res)
-        if (!authToken)
-          return res.status(200).json({
-            success: false,
-            data: {
-              message: "Invalid requiest. Unable to proceed.",
-            },
-          })
-        return res.status(200).json({ success, data: User })
-      }
+    const body = JSON.parse(req.body)
 
-      return res.status(200).json({ success, data })
-    } else {
-      return res.status(200).json({
-        success: false,
-        data: { message: `${response.status} ${response.statusText}` },
-      })
-    }
+    const loginData = doLogin(body, req, res)
+    const categoriesData = getCategories(process.env.APIKEY)
+
+    // Wait for the promises to resolve
+    const [User, categories] = await Promise.all([loginData, categoriesData])
+    User.categories = categories
+    return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    // console.log({ error })
-    return res
-      .status(200)
-      .json({ success: false, data: { message: error.message } })
+    console.log({ error })
+    return res.status(200).json({
+      success: false,
+      error:
+        "Something went wrong. You may need to check your internet connection",
+    })
   }
 }

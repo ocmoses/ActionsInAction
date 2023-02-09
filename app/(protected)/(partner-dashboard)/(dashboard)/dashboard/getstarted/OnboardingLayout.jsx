@@ -10,12 +10,21 @@ import Nlrclicense from "./sections/nlrclicense/Nlrclicense"
 import Indemnity from "./sections/indemnity/Indemnity"
 import Accountinfo from "./sections/accountinfo/Accountinfo"
 import Shortcode from "./sections/shortcode/Shortcode"
+import Review from "./sections/review/Review"
 import { profileMenu } from "@/app/modules/constants"
+import { useEffect } from "react"
 
 export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
   const { form } = useProcessing()
   const { category } = usePartners()
   const validForms = category?.validation
+
+  useEffect(() => {
+    if (validForms) {
+      console.log({ validForms })
+      validForms.review = "r"
+    }
+  }, [validForms])
 
   return (
     <>
@@ -42,12 +51,13 @@ export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
                         </div>
                       )
                     })}
+                    {/* <ProfileTabItem menu={"review"} form={"review"} /> */}
                   </div>
                 )}
             </div>
           </div>
           <div className=" col-span-3 flex w-full px-4 py-[72px] ">
-            <div className="w-[80%] md:w-[60%] h-full mb-[10vh] flex justify-start items-start relative pb-12">
+            <div className="w-full lg:w-[80%] h-full mb-[10vh] flex justify-start items-start relative pb-12">
               {form === "companydetail" && <CompanyDetail />}
               {form === "compliance" && <Compliance />}
               {form === "ncclicense" && <Ncclicense />}
@@ -55,6 +65,7 @@ export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
               {form === "indemnity" && <Indemnity />}
               {form === "shortcode" && <Shortcode />}
               {form === "accountinfo" && <Accountinfo />}
+              {form === "review" && <Review />}
             </div>
           </div>
         </div>

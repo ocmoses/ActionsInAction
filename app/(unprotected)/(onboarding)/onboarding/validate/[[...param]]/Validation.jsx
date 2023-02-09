@@ -3,119 +3,83 @@ import "client-only"
 
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useUsers from "@/hooks/useUsers"
-import RemoteEndpoints, {
-  NextEndPoints,
-  EndPointHeaders,
-} from "@/app/modules/endpoints"
+import useLogout from "@/hooks/useLogout"
+import useApp from "@/hooks/useApp"
 import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { NextEndPoints } from "@/app/modules/endpoints"
 
-export default function RegisterValidation({ params }) {
-  const [{ errors, setError, clearErrors }] = useErrors()
-  const { processing, setProcessing, setForm } = useProcessing()
-  const [validateError, setValidateErrors] = useState(false)
-  const [processed, setProcessed] = useState(false)
-  const [count, setCount] = useState(0)
-
+export default function RegisterValidation({ url, err, params }) {
   // console.log(params)
-
+  const { processing, setProcessing } = useProcessing()
+  const [{ errors, setError, removeError, clearErrors }] = useErrors({})
+  const [data, setData] = useState(null)
+  const { clearStore } = useLogout()
   const router = useRouter()
-  const ValidateEmailAndUser = async (payload) => {
+  const app = useApp()
+
+  const ValidateNewUser = async () => {
     setProcessing(true)
     try {
-      let url = ""
-      let response = null
-      switch (params.type) {
-        case "existing":
-        case "reset":
-          // url = RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK
-          response = await fetch(
-            RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
-            {
-              method: "POST",
-              headers: {
-                // ...EndPointHeaders,
-                apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-              },
-              cache: "no-store",
-              next: { revalidate: 0 },
-              body: JSON.stringify({ user_uuid: payload.user_uuid }),
-            }
-          )
-          break
-        case "new":
-          // url = NextEndPoints.VALIDATE_USER
-          // url =  `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`
-          response = await fetch(
-            `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`,
-            {
-              cache: "no-store",
-              next: { revalidate: 0 },
-              headers: {
-                // ...EndPointHeaders
-                apikey: `${process.env.NEXT_PUBLIC_APIKEY}`,
-              },
-            }
-          )
-          break
-      }
-      switch (params.type) {
-        case "existing":
-        case "reset":
-          url = `${PageRoutes.setpassword}/${params.type}`
-          break
-        case "new":
-          url = PageRoutes.getstarted
-          break
-      }
-      if (response) {
-        const results = await response?.json()
-        // console.log({ results })
-        const { success, data } = results
-        if (results) {
-          return router.push(url)
-          if (success) {
-            clearErrors()
-            setProcessed(false)
-            console.log({ url })
-            // return router.push(url)
-          } else {
-            setProcessing(false)
-            setProcessed(true)
-            setError({ validate: data.message ?? "Something went wrong" })
-          }
-        } else {
-          setProcessing(false)
-          setProcessed(true)
-          setError({ validate: "Something went wrong" })
-        }
-      } else {
+      const url = PageRoutes.getstarted
+      clearErrors()
+      clearStore()
+      const response = await fetch(NextEndPoints.VALIDATE_USER, {
+        method: "POST",
+        body: JSON.stringify({
+          user_uuid: params.user_uuid,
+          type: params.type,
+        }),
+      })
+      const result = await response.json()
+      console.log({ result })
+      const { data: loginData, error } = result
+      if (error) return setError({ validate: error })
+      console.log({ params })
+      if (!loginData) {
         setProcessing(false)
-        setProcessed(true)
-        setError({ validate: "Unable to reach the server" })
+        return setError({ validate: "Authentication failed" })
       }
+      if (!loginData.success) {
+        setProcessing(false)
+        return setError({ validate: loginData.error })
+      }
+      const serverSession = {
+        status: loginData?.data?.user?.uuid
+          ? "authenticated"
+          : "unauthenticated",
+        User: loginData?.data,
+      }
+      app.setStoreStates(serverSession, loginData?.categories)
+      console.log({ serverSession, categories })
+
+      // return router.push(url)
     } catch (err) {
+      console.log({ err })
       setProcessing(false)
-      setProcessed(true)
       setError({ validate: JSON.stringify(err) })
     }
   }
   useEffect(() => {
-    setForm(null)
-    setProcessed(false)
-    clearErrors()
-    ValidateEmailAndUser(params)
-  }, [params])
-
+    if (err) setError({ validate: err.message ?? err.messsage })
+    if (params?.type !== "new" && url) {
+      router.push(url)
+    } else {
+      ValidateNewUser()
+    }
+    if (params?.type === "new") {
+      ValidateNewUser()
+    } else {
+      if (url) router.push(url)
+    }
+  }, [])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {processing && (
+          {!errors?.validate && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
@@ -137,7 +101,7 @@ export default function RegisterValidation({ params }) {
                 />
               </svg>
 
-              <p>{errors.validate}</p>
+              <p className="text-center">{errors.validate}</p>
               <div className="font-mtn-extralight flex gap-5 justify-center text-white/70 mb-16 p-2">
                 <span
                   className="cursor-pointer text-lg text-white hover:text-gray-300"

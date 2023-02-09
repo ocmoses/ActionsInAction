@@ -1,21 +1,30 @@
 "use client"
-import { useEffect, useState } from "react"
 import Button from "@/app/components/form/Button"
-import { TailSpinPreloader } from "@/app/components/Icons"
 import TextInput from "@/app/components/form/TextInput"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import useProcessing from "@/hooks/useProcessing"
-import { Util } from "@/utils/utility"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { forms } from "@/app/modules/constants"
 import usePartners from "@/hooks/usePartners"
+import useApp from "@/hooks/useApp"
+import useLogout from "@/hooks/useLogout"
+import { useEffect, useState } from "react"
+import { Util } from "@/utils/utility"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { forms } from "@/app/modules/constants"
+import { NextEndPoints } from "@/app/modules/endpoints"
+import { PageRoutes } from "@/app/modules/menu"
+import { useRouter } from "next/navigation"
 
 function SetPassword({ params: { params } }) {
+  const { clearStore } = useLogout()
+  const router = useRouter()
+  const app = useApp()
   const { processing, setProcessing, setForm } = useProcessing()
   const { title, subtitle, hand, required } = forms["setpassword"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState({
+    user_uuid: "",
     password: "",
     password_confirmed: "",
     type: "",
@@ -24,7 +33,9 @@ function SetPassword({ params: { params } }) {
     setData((oldState) => ({
       ...oldState,
       type: params?.length > 0 ? params[0] : "",
+      user_uuid: params?.length > 1 ? params[1] : "",
     }))
+    if (!params[0] || !params[1]) setError({ setpassword: "Invalid request" })
   }, [params])
   const { registerPartner } = usePartners()
 
@@ -33,6 +44,42 @@ function SetPassword({ params: { params } }) {
     setProcessing(false)
     clearErrors()
   }, [])
+
+  const handleReset = async () => {
+    clearErrors()
+    clearStore()
+    setProcessing(true)
+    const response = await fetch(NextEndPoints.SETPASSWORD, {
+      method: "POST",
+      body: JSON.stringify({
+        user_uuid: data.user_uuid,
+        password: data.password,
+        password_confirmed: data.password,
+        type: data.type,
+      }),
+    })
+    const result = await response.json()
+    const { data: loginData } = result
+    if (!loginData) {
+      setProcessing(false)
+      return setError({ login: "Authentication failed" })
+    }
+    if (!loginData.success) {
+      setProcessing(false)
+      return setError({ login: loginData.error })
+    }
+    const serverSession = {
+      status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
+      User: loginData?.data,
+    }
+    app.setStoreStates(serverSession, loginData?.categories)
+    const redirect =
+      data.type === "existing" || data.type === "new"
+        ? PageRoutes.getstarted
+        : PageRoutes.getstarted
+    return router.push(redirect)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -50,10 +97,11 @@ function SetPassword({ params: { params } }) {
         return
       }
     }
-    const result = await registerPartner("setpassword", data)
-    if (result) {
-      if (result?.error) setError({ setpassword: result.error })
-    }
+    handleReset()
+    // const result = await registerPartner("setpassword", data)
+    // if (result) {
+    //   if (result?.error) setError({ setpassword: result.error })
+    // }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

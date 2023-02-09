@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout"
 import useProcessing from "@/hooks/useProcessing"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect, use } from "react"
-import { useRouter, useSelectedLayoutSegments } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
@@ -60,7 +60,7 @@ function Login({ params }) {
     })
     const result = await response.json()
 
-    const { success, error, data: loginData } = result
+    const { data: loginData } = result
     if (!loginData) {
       setProcessing(false)
       return setError({ login: "Authentication failed" })

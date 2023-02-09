@@ -3,7 +3,6 @@
 import { useState } from "react"
 import useProcessing from "@/hooks/useProcessing"
 import Axios from "@/app/modules/axios"
-import { isArray } from "@/app/modules/utilities"
 
 const useRegistration = () => {
   const { setProcessing } = useProcessing()
@@ -14,18 +13,8 @@ const useRegistration = () => {
     data: null,
   })
 
-  const register = async (url, userdata) => {
+  const register = async (url, formData) => {
     setProcessing(true)
-
-    const formData = new FormData()
-    for (const field in userdata) {
-      if (isArray(userdata[field])) {
-        userdata[field].map((d, i) => formData.append([field][i], d))
-      } else {
-        formData.append(field, userdata[field])
-      }
-    }
-    formData.append("_method", "PUT")
 
     const result = await Axios.post(url, formData, {
       headers: {

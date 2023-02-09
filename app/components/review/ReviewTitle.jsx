@@ -6,12 +6,9 @@ export default function ReviewTitle({ title, href }) {
       <span className=" text-[#999999] text-[18px] md:max-w-[164px]">
         {title}
       </span>
-      <Link
-        href={href}
-        className="px-2 py-0 text-sm text-white/25 inline-block rounded-full border-[1px] border-white/25  hover:text-white/60 hover:border-white/60"
-      >
+      <div className="px-2 py-0 text-sm text-white/25 inline-block rounded-full border-[1px] border-white/25  hover:text-white/60 hover:border-white/60">
         Edit
-      </Link>
+      </div>
     </div>
   )
 }

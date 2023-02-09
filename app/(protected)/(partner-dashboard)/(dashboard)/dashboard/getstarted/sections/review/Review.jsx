@@ -3,8 +3,6 @@ import ReviewBox from "@/app/components/review/ReviewBox"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import { useEffect } from "react"
 import { forms } from "@/app/modules/constants"
-import { useStoreState, useStoreActions } from "easy-peasy"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 import useProcessing from "@/hooks/useProcessing"
 
 export default function Review() {
@@ -17,10 +15,7 @@ export default function Review() {
   }, [])
 
   return (
-    <>
-      <h3 className="text-center text-[#FFCB03] uppercase ">
-        One last thing...
-      </h3>
+    <div className="flex flex-col">
       <RegisterStepHeader
         title={title}
         subtitle={subtitle}
@@ -28,6 +23,6 @@ export default function Review() {
         align="center"
       />
       <ReviewBox />
-    </>
+    </div>
   )
 }

@@ -1,93 +1,103 @@
 import "server-only"
 import Validation from "./Validation"
+import Axios from "@/app/modules/axios"
 import RemoteEndpoints, {
   NextEndPoints,
   EndPointHeaders,
 } from "@/app/modules/endpoints"
+import { redirect } from "next/navigation"
 import { PageRoutes } from "@/app/modules/menu"
-let processed = false
-const ValidateEmailUser = async (payload) => {
-  if (processed) return
+
+const ValidateEmailAndUser = async (params) => {
   try {
     let url = ""
     let response = null
-    switch (payload.type) {
+    switch (params.type) {
       case "existing":
       case "reset":
-        response = await fetch(RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK, {
-          method: "POST",
-          headers: {
-            ...EndPointHeaders,
-          },
-          cache: "no-store",
-          next: { revalidate: 0 },
-          body: JSON.stringify({ user_uuid: payload.user_uuid }),
+        url = `${PageRoutes.setpassword}/${params.type}/${params.user_uuid}`
+        response = await Axios.post(
+          RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
+          { user_uuid: params.user_uuid },
+          {
+            timeout: process.TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
         })
         break
       case "new":
-        response = await fetch(
-          `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${payload.user_uuid}`,
+        url = PageRoutes.getstarted
+        // url = NextEndPoints.VALIDATE_USER
+        // url =  `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${params.user_uuid}`
+        // response = await fetch(
+        //   `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${params.user_uuid}`,
+        //   {
+        //     cache: "no-store",
+        //     next: { revalidate: 0 },
+        //     headers: {
+        //       // ...EndPointHeaders
+        //       apikey: `${process.env.APIKEY}`,
+        //     },
+        //   }
+        // )
+        response = await Axios.get(
+          `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${params.user_uuid}`,
+          { user_uuid: params.user_uuid },
           {
-            cache: "no-store",
-            next: { revalidate: 0 },
-            headers: { ...EndPointHeaders },
+            timeout: process.TIMEOUT,
           }
-        )
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        console.log({ response })
         break
     }
-    const results = await response?.json()
-    processed = true
-    console.log({ results })
-
-    if (results) {
-      return results
-      // const { success, data } = results
-      // console.log({ data })
-      // console.log({ success })
-      // if (success) {
-      //   switch (payload.type) {
-      //     case "existing":
-      //     case "reset":
-      //       url = `${PageRoutes.setpassword}/${payload.type}`
-      //       break
-      //     case "new":
-      //       url = PageRoutes.getstarted
-      //       break
-      //   }
-      //   return { success: true, error: null, data: url }
-      // } else {
-      //   console.log("data, data", data)
-      //   if (data) {
-      //     return {
-      //       success: false,
-      //       error: data.message,
-      //       data: null,
-      //     }
-      //   } else {
-      //     return {
-      //       success: false,
-      //       error: data.message ?? "Something went wrong",
-      //       data: null,
-      //     }
-      //   }
-      // }
+    const { success, data } = response
+    if (response) {
+      if (success) {
+        return {
+          success: true,
+          error: null,
+          data: url,
+        }
+      } else {
+        return {
+          success: false,
+          error: data,
+          data: null,
+        }
+      }
     } else {
       return {
         success: false,
-        error: "Something went wrong",
+        error: "Cannot reach the server. Please check your connection",
         data: null,
       }
     }
   } catch (err) {
     console.log({ err })
-    return { success: false, error: JSON.stringify(err), data: null }
+    return {
+      success: false,
+      error: "Something went wrong",
+      data: null,
+    }
   }
 }
 export default async function ValidationPage({ params: { param } }) {
   const user_uuid = param && param[0] ? param[0] : null
   const type = param && param[1] ? param[1] : null
   const Params = { user_uuid, type }
-  // const result = await ValidateEmailUser(Params)
-  // console.log({ result })
-  return <Validation params={Params} />
+  const { data, error } = await ValidateEmailAndUser(Params)
+  console.log({ data })
+  console.log({ error })
+  return <Validation url={data} err={error} params={Params} />
 }

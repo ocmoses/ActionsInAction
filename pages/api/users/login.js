@@ -1,54 +1,55 @@
 import RemoteEndPoints from "@/app/modules/endpoints"
 import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
-const getCategories = async () => {
-  try {
-    const response = await fetch(RemoteEndPoints.CATEGORIES, {
-      method: "GET",
-      headers: {
-        apikey: `${process.env.APIKEY}`,
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      next: { revalidate: 60 * 60 * 24 },
-    }).catch(() => {
-      return {
-        success: false,
-        error: "Error reaching the server. Please check your connection",
-        data: null,
-      }
-    })
+import { getCategories } from "@/app/modules/categories"
+// const getCategories = async () => {
+//   try {
+//     const response = await fetch(RemoteEndPoints.CATEGORIES, {
+//       method: "GET",
+//       headers: {
+//         apikey: `${process.env.APIKEY}`,
+//         "Content-Type": "application/json",
+//       },
+//       redirect: "follow",
+//       next: { revalidate: 60 * 60 * 24 },
+//     }).catch(() => {
+//       return {
+//         success: false,
+//         error: "Error reaching the server. Please check your connection",
+//         data: null,
+//       }
+//     })
 
-    if (response) {
-      const result = await response.json()
-      const { data, success } = result
-      if (success) {
-        return { success, error: null, data }
-      } else {
-        if (data) {
-          return { success, error: data.message, data: null }
-        } else {
-          return {
-            success: false,
-            error: `${response.status} ${response.statusText}`,
-          }
-        }
-      }
-    } else {
-      return {
-        success: false,
-        error: "Error reaching the server. Please check your connection",
-        data: null,
-      }
-    }
-  } catch (err) {
-    return {
-      success: false,
-      error: err.message,
-      data: null,
-    }
-  }
-}
+//     if (response) {
+//       const result = await response.json()
+//       const { data, success } = result
+//       if (success) {
+//         return { success, error: null, data }
+//       } else {
+//         if (data) {
+//           return { success, error: data.message, data: null }
+//         } else {
+//           return {
+//             success: false,
+//             error: `${response.status} ${response.statusText}`,
+//           }
+//         }
+//       }
+//     } else {
+//       return {
+//         success: false,
+//         error: "Error reaching the server. Please check your connection",
+//         data: null,
+//       }
+//     }
+//   } catch (err) {
+//     return {
+//       success: false,
+//       error: err.message,
+//       data: null,
+//     }
+//   }
+// }
 const doLogin = async (body, req, res) => {
   const response = await fetch(RemoteEndPoints.LOGIN, {
     method: "POST",
@@ -95,7 +96,7 @@ export default async function handler(req, res) {
     const body = JSON.parse(req.body)
 
     const loginData = doLogin(body, req, res)
-    const categoriesData = getCategories()
+    const categoriesData = getCategories(process.env.APIKEY)
 
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])

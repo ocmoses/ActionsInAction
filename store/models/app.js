@@ -20,6 +20,7 @@ const app = {
   ],
   formValidation: {},
   activeCategory: {},
+  tmpUserUUID: null,
   increaseCount: action((state, key) => {
     return state.count++
   }),
@@ -31,8 +32,23 @@ const app = {
     state.loading = {}
     state.form = null
     state.formSteps = []
+    state.allforms = [
+      "userinfo",
+      "category",
+      "companydetail",
+      "compliance",
+      "ncclicense",
+      "nlrclicense",
+      "shortcode",
+      "indemnity",
+      "accountinfo",
+    ]
     state.formValidation = {}
     state.activeCategory = {}
+    state.tmpUserUUID = null
+  }),
+  setTmpUserUUID: action((state, uuid) => {
+    state.tmpUserUUID = uuid
   }),
   isLoading: action((state, key) => {
     return state.loading && state.loading[key] !== "undefined"

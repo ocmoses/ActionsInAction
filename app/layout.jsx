@@ -5,41 +5,42 @@ import ResponsiveLabel from "@/app/components/ResponsiveLabel"
 import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
-import RemoteEndpoints from "@/app/modules/endpoints"
+// import RemoteEndpoints from "@/app/modules/endpoints"
+import { getCategories } from "@/app/modules/categories"
 
-const getCategories = async () => {
-  try {
-    const response = await fetch(RemoteEndpoints.CATEGORIES, {
-      method: "GET",
-      headers: {
-        apikey: `${process.env.APIKEY}`,
-      },
-      redirect: "follow",
-      next: { revalidate: 60 * 60 * 24 },
-    }).catch((error) => {
-      return {
-        success: false,
-        error: "Error reaching the server. Please check your connection",
-        data: null,
-      }
-    })
-    if (response) {
-      return await response?.json()
-    } else {
-      return {
-        success: false,
-        error: "Error reaching the server. Please check your connection",
-        data: null,
-      }
-    }
-  } catch (err) {
-    return {
-      success: false,
-      error: "Error reaching the server. Please check your connection",
-      data: null,
-    }
-  }
-}
+// const getCategories = async () => {
+//   try {
+//     const response = await fetch(RemoteEndpoints.CATEGORIES, {
+//       method: "GET",
+//       headers: {
+//         apikey: `${process.env.APIKEY}`,
+//       },
+//       redirect: "follow",
+//       next: { revalidate: 60 * 60 * 24 },
+//     }).catch((error) => {
+//       return {
+//         success: false,
+//         error: "Error reaching the server. Please check your connection",
+//         data: null,
+//       }
+//     })
+//     if (response) {
+//       return await response?.json()
+//     } else {
+//       return {
+//         success: false,
+//         error: "Error reaching the server. Please check your connection",
+//         data: null,
+//       }
+//     }
+//   } catch (err) {
+//     return {
+//       success: false,
+//       error: "Error reaching the server. Please check your connection",
+//       data: null,
+//     }
+//   }
+// }
 const getServerSession = async () => {
   try {
     const nextCookies = cookies()
@@ -112,7 +113,7 @@ const getServerSession = async () => {
 }
 export default async function RootLayout({ children }) {
   const resultGetServerSession = getServerSession()
-  const resultGetCategories = getCategories()
+  const resultGetCategories = getCategories(process.env.APIKEY)
 
   // Wait for the promises to resolve
   const [sessionData, categoriesData] = await Promise.all([

@@ -2,6 +2,8 @@ import useProcessing from "@/hooks/useProcessing"
 import useRegistration from "@/hooks/useRegistration"
 import useErrors from "@/hooks/useErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
+import Axios from "@/app/modules/axios"
+import useApp from "@/hooks/useApp"
 import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
@@ -11,13 +13,14 @@ import { useRouter } from "next/navigation"
 import { proxyFetch } from "@/app/modules/utilities"
 import { userData } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
-import Axios from "@/app/modules/axios"
+import { getCategories } from "@/app/modules/categories"
 import { isArray } from "@/app/modules/utilities"
 
 const usePartners = () => {
   const router = useRouter()
-  const { setProcessing, setFormSteps } = useProcessing()
+  const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { register } = useRegistration()
+  const app = useApp()
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
@@ -154,27 +157,36 @@ const usePartners = () => {
         break
       case "setpassword":
         setProcessing(true)
-        const {
-          success: setpasswordSuccess,
-          error: setpasswordError,
-          data: setpassword,
-        } = await fetchData(RemoteEndpoints.RESETPASSWORD, {
-          method: "PUT",
-          cache: "no-store",
-          body: JSON.stringify({
-            user_uuid: user.uuid,
-            password: userdata.password,
-            password_confirmed: userdata.password,
-          }),
-        })
+        const { data: setpassword, error: setpasswordError } = await fetchData(
+          RemoteEndpoints.RESETPASSWORD,
+          {
+            method: "PUT",
+            cache: "no-store",
+            body: JSON.stringify({
+              user_uuid: user?.uuid ?? tmpUserUUID,
+              password: userdata.password,
+              password_confirmed: userdata.password,
+            }),
+          }
+        )
         if (setpasswordError) {
           setProcessing(false)
           return { success: false, error: setpasswordError, data: null }
         }
-        if (userdata.type === "existing" || userdata.type === "reset")
-          router.push(PageRoutes.login)
-        // if (userdata.type === "existing") router.push(PageRoutes.getstarted)
-        else router.push(PageRoutes.dashboard)
+        // setTmpUserUUID(null)
+        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
+        const serverSession = {
+          status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
+          User: setpassword,
+        }
+        app.setStoreStates(serverSession, categories)
+        console.log({ serverSession })
+        console.log({ categories })
+        return
+        if (userdata.type === "existing" || userdata.type === "new")
+          // router.push(PageRoutes.login)
+          router.push(PageRoutes.getstarted)
+        else router.push(PageRoutes.getstarted)
         break
       case "userinfo":
         setProcessing(true)
@@ -208,22 +220,19 @@ const usePartners = () => {
         router.push(`/onboarding/verify/${User.user.uuid}/new`)
         break
       case "category":
-        // setProcessing(true)
-        // const { error: categoryError, data: categoryData } = await fetchData(
-        //   `${apiURL}/v1/auth/register/category`,
-        //   {
-        //     method: "POST",
-        //     cache: "no-store",
-        //     body: JSON.stringify({
-        //       partner_uuid: partner.uuid,
-        //       category_uuid: userdata.category_uuid,
-        //       user_uuid: user.uuid,
-        //     }),
-        //   }
-        // )
+        const formDataCategory = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataCategory.append([field][i], d)
+            )
+          } else {
+            formDataCategory.append(field, userdata[field])
+          }
+        }
         const responseCategory = await register(
           `${apiURL}/v1/auth/register/category`,
-          userdata
+          formDataCategory
         )
         if (!responseCategory) {
           return { success: false, error: "Something went wrong", data: null }
@@ -237,9 +246,21 @@ const usePartners = () => {
         setUpdateStatus("category", true)
         break
       case "companydetail":
+        const formDataCompanydetail = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataCompanydetail.append([field][i], d)
+            )
+          } else {
+            formDataCompanydetail.append(field, userdata[field])
+          }
+        }
+        formDataCompanydetail.append("_method", "PUT")
+
         const responseCompanydetail = await register(
           `${apiURL}/v1/auth/register/companydetail`,
-          userdata
+          formDataCompanydetail
         )
         if (!responseCompanydetail) {
           return { success: false, error: "Something went wrong", data: null }
@@ -254,9 +275,21 @@ const usePartners = () => {
         setUpdateStatus("companydetail", true)
         break
       case "compliance":
+        const formDataCompliance = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataCompliance.append([field][i], d)
+            )
+          } else {
+            formDataCompliance.append(field, userdata[field])
+          }
+        }
+        formDataCompliance.append("_method", "PUT")
+
         const responseCompliance = await register(
           `${apiURL}/v1/auth/register/compliance`,
-          userdata
+          formDataCompliance
         )
         if (!responseCompliance) {
           return { success: false, error: "Something went wrong", data: null }
@@ -270,9 +303,21 @@ const usePartners = () => {
         break
 
       case "ncclicense":
+        const formDataNcclicense = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataNcclicense.append([field][i], d)
+            )
+          } else {
+            formDataNcclicense.append(field, userdata[field])
+          }
+        }
+        formDataNcclicense.append("_method", "PUT")
+
         const responseNcclicense = await register(
           `${apiURL}/v1/auth/register/ncclicense`,
-          userdata
+          formDataNcclicense
         )
         if (!responseNcclicense) {
           return { success: false, error: "Something went wrong", data: null }
@@ -285,9 +330,21 @@ const usePartners = () => {
         setUpdateStatus("ncclicense", true)
         break
       case "nlrclicense":
+        const formDataNlrclicense = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataNlrclicense.append([field][i], d)
+            )
+          } else {
+            formDataNlrclicense.append(field, userdata[field])
+          }
+        }
+        formDataNlrclicense.append("_method", "PUT")
+
         const responseNlrclicense = await register(
           `${apiURL}/v1/auth/register/nlrclicense`,
-          userdata
+          formDataNlrclicense
         )
         if (!responseNlrclicense) {
           return { success: false, error: "Something went wrong", data: null }
@@ -330,9 +387,21 @@ const usePartners = () => {
         setUpdateStatus("shortcode", true)
         break
       case "indemnity":
+        const formDataIndemnity = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataIndemnity.append([field][i], d)
+            )
+          } else {
+            formDataIndemnity.append(field, userdata[field])
+          }
+        }
+        formDataIndemnity.append("_method", "PUT")
+
         const responseIndemnity = await register(
           `${apiURL}/v1/auth/register/indemnity`,
-          userdata
+          formDataIndemnity
         )
         if (!responseIndemnity) {
           return { success: false, error: "Something went wrong", data: null }
@@ -345,9 +414,21 @@ const usePartners = () => {
         setUpdateStatus("indemnity", true)
         break
       case "accountinfo":
+        const formDataAccountinfo = new FormData()
+        for (const field in userdata) {
+          if (isArray(userdata[field])) {
+            userdata[field].map((d, i) =>
+              formDataAccountinfo.append([field][i], d)
+            )
+          } else {
+            formDataAccountinfo.append(field, userdata[field])
+          }
+        }
+        formDataAccountinfo.append("_method", "PUT")
+
         const responseAccountinfo = await register(
           `${apiURL}/v1/auth/register/accountinfo`,
-          userdata
+          formDataAccountinfo
         )
         if (!responseAccountinfo) {
           return { success: false, error: "Something went wrong", data: null }
@@ -363,25 +444,7 @@ const usePartners = () => {
         break
     }
   }
-  // const [reviewStatus, setReviewStatus] = useState({
-  //   companydetail: false,
-  //   compliance: false,
-  //   ncclicense: false,
-  //   nlrclicense: false,
-  //   shortcode: false,
-  //   indemnity: false,
-  //   accountinfo: false,
-  //   review: false,
-  // })
-  // const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
-  //   confirmcompanyinfo: false,
-  //   contactperson: false,
-  //   updatereview: false,
-  // })
-  const setUpdateStatus = (stage) => {
-    // console.log({ stage })
-    // console.log({ category })
-  }
+  const setUpdateStatus = (stage) => {}
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 

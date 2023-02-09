@@ -9,7 +9,6 @@ import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
 
@@ -21,14 +20,14 @@ export default function Accountinfo() {
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
-    audited_account_1: null,
+    audited_account_1_doc: null,
     audited_account_1_file: null,
-    audited_account_2: null,
+    audited_account_2_doc: null,
     audited_account_2_file: null,
-    audited_account_3: null,
+    audited_account_3_doc: null,
     audited_account_3_file: null,
-    audited_account_4: null,
-    audited_account_4_file: null,
+    job_evidence_4_doc: null,
+    job_evidence_4_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
@@ -38,13 +37,13 @@ export default function Accountinfo() {
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        audited_account_1: category?.audited_account_1 ?? "",
+        audited_account_1_doc: category?.audited_account_1_doc ?? "",
         audited_account_1_file: null,
-        audited_account_2: category?.audited_account_2 ?? "",
+        audited_account_2_doc: category?.audited_account_2_doc ?? "",
         audited_account_2_file: null,
-        audited_account_3: category?.audited_account_3 ?? "",
+        audited_account_3_doc: category?.audited_account_3_doc ?? "",
         audited_account_3_file: null,
-        job_evidence: category?.job_evidence ?? "",
+        job_evidence_doc: category?.job_evidence_doc ?? "",
         job_evidence_file: null,
       })
   }, [category])
@@ -57,16 +56,6 @@ export default function Accountinfo() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    // if (!Util.isEmpty(required)) {
-    //   for (const field in required) {
-    //     if (!!!data[field]) {
-    //       error = true
-    //       setError({ [field]: `${required[field]} is required` })
-    //     }
-    //   }
-    //   if (error) return
-    // }
     const result = await registerPartner("accountinfo", data)
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
@@ -91,33 +80,33 @@ export default function Accountinfo() {
         <FileInputWrapper>
           <FileInput
             id="audited_account_1_file"
-            doc_id="audited_account_1"
+            doc_id="audited_account_1_doc"
             label="Audited account 1"
-            value={data.audited_account_1}
+            value={data.audited_account_1_doc}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
             id="audited_account_2_file"
-            doc_id="audited_account_2"
+            doc_id="audited_account_2_doc"
             label="Audited account 2"
-            value={data.audited_account_2}
+            value={data.audited_account_2_doc}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
             id="audited_account_3_file"
-            doc_id="audited_account_3"
+            doc_id="audited_account_3_doc"
             label="Audited account 3"
-            value={data.audited_account_3}
+            value={data.audited_account_3_doc}
             onChange={handleFormChange}
             errors={errors}
           />
           <FileInput
             id="job_evidence_file"
-            doc_id="job_evidence"
+            doc_id="job_evidence_doc"
             label="Evidence of 3 jobs done"
-            value={data.job_evidence}
+            value={data.job_evidence_doc}
             onChange={handleFormChange}
             errors={errors}
           />

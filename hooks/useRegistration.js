@@ -13,8 +13,19 @@ const useRegistration = () => {
     data: null,
   })
 
-  const register = async (url, formData) => {
+  const register = async (url, userdata) => {
     setProcessing(true)
+
+    const formData = new FormData()
+
+    for (const field in userdata) {
+      if (isArray(userdata[field])) {
+        userdata[field].map((d, i) => formData.append([field][i], d))
+      } else {
+        formData.append(field, userdata[field])
+      }
+    }
+    formData.append("_method", "PUT")
 
     const result = await Axios.post(url, formData, {
       headers: {

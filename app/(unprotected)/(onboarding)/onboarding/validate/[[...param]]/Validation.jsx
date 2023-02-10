@@ -5,11 +5,14 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import useLogout from "@/hooks/useLogout"
 import useApp from "@/hooks/useApp"
+import useUsers from "@/hooks/useUsers"
+
 import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
+import { Util } from "@/app/modules/utilities"
 
 export default function RegisterValidation({ url, err, params }) {
   // console.log(params)
@@ -19,11 +22,11 @@ export default function RegisterValidation({ url, err, params }) {
   const { clearStore } = useLogout()
   const router = useRouter()
   const app = useApp()
+  const users = useUsers()
 
   const ValidateNewUser = async () => {
     setProcessing(true)
     try {
-      const url = PageRoutes.getstarted
       clearErrors()
       clearStore()
       const response = await fetch(NextEndPoints.VALIDATE_USER, {
@@ -33,29 +36,42 @@ export default function RegisterValidation({ url, err, params }) {
           type: params.type,
         }),
       })
-      const result = await response.json()
-      console.log({ result })
-      const { data: loginData, error } = result
-      if (error) return setError({ validate: error })
-      console.log({ params })
-      if (!loginData) {
-        setProcessing(false)
-        return setError({ validate: "Authentication failed" })
-      }
-      if (!loginData.success) {
-        setProcessing(false)
-        return setError({ validate: loginData.error })
-      }
-      const serverSession = {
-        status: loginData?.data?.user?.uuid
-          ? "authenticated"
-          : "unauthenticated",
-        User: loginData?.data,
-      }
-      app.setStoreStates(serverSession, loginData?.categories)
-      console.log({ serverSession, categories })
+      if (response) {
+        const result = await response.json()
+        console.log({ result })
+        const { data: loginData, error } = result
+        if (!loginData) {
+          setProcessing(false)
+          return setError({ validate: "Authentication failed" })
+        }
+        if (loginData.error) {
+          users.setTmpUser(loginData.data)
+          if (loginData.data && loginData.data.email_verified === "yes") {
+            return setError({
+              validate: `Your email ${Util.obscureEmail(
+                loginData.data.email
+              )} is already verified. Please login to proceed`,
+            })
+          }
+          return setError({ validate: loginData.error })
+        }
+        const serverSession = {
+          status: loginData?.data?.user?.uuid
+            ? "authenticated"
+            : "unauthenticated",
+          User: loginData?.data,
+        }
+        const categories = loginData?.categories
 
-      // return router.push(url)
+        app.setStoreStates(serverSession, categories)
+        console.log({ serverSession, categories })
+        return router.push(PageRoutes.getstarted)
+      } else {
+        setProcessing(false)
+        return setError({
+          validate: "Cannot reach the server. Please check your connection",
+        })
+      }
     } catch (err) {
       console.log({ err })
       setProcessing(false)
@@ -64,13 +80,8 @@ export default function RegisterValidation({ url, err, params }) {
   }
   useEffect(() => {
     if (err) setError({ validate: err.message ?? err.messsage })
-    if (params?.type !== "new" && url) {
-      router.push(url)
-    } else {
-      ValidateNewUser()
-    }
     if (params?.type === "new") {
-      ValidateNewUser()
+      if (!processing) ValidateNewUser()
     } else {
       if (url) router.push(url)
     }
@@ -101,13 +112,13 @@ export default function RegisterValidation({ url, err, params }) {
                 />
               </svg>
 
-              <p className="text-center">{errors.validate}</p>
-              <div className="font-mtn-extralight flex gap-5 justify-center text-white/70 mb-16 p-2">
+              <p className="text-center max-w-md">{errors.validate}</p>
+              <div className="font-mtn-extralight font-mtn text-center text-white/50 mb-16 p-0">
                 <span
-                  className="cursor-pointer text-lg text-white hover:text-gray-300"
+                  className="cursor-pointer text-sm text-white hover:text-gray-300"
                   onClick={() => router.push(PageRoutes.login)}
                 >
-                  Login
+                  LOGIN TO PROCEED
                 </span>
               </div>
             </div>

@@ -4,6 +4,7 @@ import useErrors from "@/hooks/useErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import Axios from "@/app/modules/axios"
 import useApp from "@/hooks/useApp"
+import useUsers from "@/hooks/useUsers"
 import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
@@ -14,7 +15,6 @@ import { proxyFetch } from "@/app/modules/utilities"
 import { userData } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
-import { isArray } from "@/app/modules/utilities"
 
 const usePartners = () => {
   const router = useRouter()
@@ -31,6 +31,7 @@ const usePartners = () => {
     actions.partners
   const { setUser } = actions.users
   const { user } = states.users
+  const users = useUsers()
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -180,11 +181,7 @@ const usePartners = () => {
           User: setpassword,
         }
         app.setStoreStates(serverSession, categories)
-        console.log({ serverSession })
-        console.log({ categories })
-        return
         if (userdata.type === "existing" || userdata.type === "new")
-          // router.push(PageRoutes.login)
           router.push(PageRoutes.getstarted)
         else router.push(PageRoutes.getstarted)
         break
@@ -214,53 +211,51 @@ const usePartners = () => {
           return { success, error, data }
         }
         const User = userData(data)
-        setPartner(User.partner)
-        setPartnerID(User.partner.uuid)
-        setUser(User.user)
+        // setPartner(User.partner)
+        // setPartnerID(User.partner.uuid)
+        // setUser(User.user)
+        users.setTmpUser(User.user)
         router.push(`/onboarding/verify/${User.user.uuid}/new`)
         break
       case "category":
-        const formDataCategory = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataCategory.append([field][i], d)
-            )
-          } else {
-            formDataCategory.append(field, userdata[field])
-          }
-        }
-        const responseCategory = await register(
+        setProcessing(true)
+        const responseCategory = await Axios.post(
           `${apiURL}/v1/auth/register/category`,
-          formDataCategory
-        )
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          setProcessing(false)
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseCategory) {
+          setProcessing(false)
           return { success: false, error: "Something went wrong", data: null }
         }
-        const { error: categoryError, data: categoryData } = responseCategory
-        if (categoryError) {
-          return { success: false, error: categoryError, data: null }
+
+        const { success: successCategory, data: categoryData } =
+          responseCategory
+        if (!successCategory) {
+          setProcessing(false)
+          return { success: false, error: categoryData.message, data: null }
         }
         setCurrentCategory(categoryData.category, categoryData.partner)
         updatePartner(categoryData.partner)
         setUpdateStatus("category", true)
-        break
-      case "companydetail":
-        const formDataCompanydetail = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataCompanydetail.append([field][i], d)
-            )
-          } else {
-            formDataCompanydetail.append(field, userdata[field])
-          }
-        }
-        formDataCompanydetail.append("_method", "PUT")
+        return { success: true, error: null, data: categoryData }
 
+      case "companydetail":
         const responseCompanydetail = await register(
           `${apiURL}/v1/auth/register/companydetail`,
-          formDataCompanydetail
+          userdata
         )
         if (!responseCompanydetail) {
           return { success: false, error: "Something went wrong", data: null }
@@ -275,21 +270,9 @@ const usePartners = () => {
         setUpdateStatus("companydetail", true)
         break
       case "compliance":
-        const formDataCompliance = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataCompliance.append([field][i], d)
-            )
-          } else {
-            formDataCompliance.append(field, userdata[field])
-          }
-        }
-        formDataCompliance.append("_method", "PUT")
-
         const responseCompliance = await register(
           `${apiURL}/v1/auth/register/compliance`,
-          formDataCompliance
+          userdata
         )
         if (!responseCompliance) {
           return { success: false, error: "Something went wrong", data: null }
@@ -303,21 +286,9 @@ const usePartners = () => {
         break
 
       case "ncclicense":
-        const formDataNcclicense = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataNcclicense.append([field][i], d)
-            )
-          } else {
-            formDataNcclicense.append(field, userdata[field])
-          }
-        }
-        formDataNcclicense.append("_method", "PUT")
-
         const responseNcclicense = await register(
           `${apiURL}/v1/auth/register/ncclicense`,
-          formDataNcclicense
+          userdata
         )
         if (!responseNcclicense) {
           return { success: false, error: "Something went wrong", data: null }
@@ -330,21 +301,9 @@ const usePartners = () => {
         setUpdateStatus("ncclicense", true)
         break
       case "nlrclicense":
-        const formDataNlrclicense = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataNlrclicense.append([field][i], d)
-            )
-          } else {
-            formDataNlrclicense.append(field, userdata[field])
-          }
-        }
-        formDataNlrclicense.append("_method", "PUT")
-
         const responseNlrclicense = await register(
           `${apiURL}/v1/auth/register/nlrclicense`,
-          formDataNlrclicense
+          userdata
         )
         if (!responseNlrclicense) {
           return { success: false, error: "Something went wrong", data: null }
@@ -387,21 +346,9 @@ const usePartners = () => {
         setUpdateStatus("shortcode", true)
         break
       case "indemnity":
-        const formDataIndemnity = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataIndemnity.append([field][i], d)
-            )
-          } else {
-            formDataIndemnity.append(field, userdata[field])
-          }
-        }
-        formDataIndemnity.append("_method", "PUT")
-
         const responseIndemnity = await register(
           `${apiURL}/v1/auth/register/indemnity`,
-          formDataIndemnity
+          userdata
         )
         if (!responseIndemnity) {
           return { success: false, error: "Something went wrong", data: null }
@@ -414,21 +361,9 @@ const usePartners = () => {
         setUpdateStatus("indemnity", true)
         break
       case "accountinfo":
-        const formDataAccountinfo = new FormData()
-        for (const field in userdata) {
-          if (isArray(userdata[field])) {
-            userdata[field].map((d, i) =>
-              formDataAccountinfo.append([field][i], d)
-            )
-          } else {
-            formDataAccountinfo.append(field, userdata[field])
-          }
-        }
-        formDataAccountinfo.append("_method", "PUT")
-
         const responseAccountinfo = await register(
           `${apiURL}/v1/auth/register/accountinfo`,
-          formDataAccountinfo
+          userdata
         )
         if (!responseAccountinfo) {
           return { success: false, error: "Something went wrong", data: null }

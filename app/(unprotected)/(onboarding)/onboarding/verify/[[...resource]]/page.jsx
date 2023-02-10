@@ -12,7 +12,7 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 
 export default function Validate({ params }) {
   const { processing, setProcessing, setForm } = useProcessing()
-  const { user } = useUsers()
+  const { tmpuser } = useUsers()
   const { resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
   const [type, setType] = useState("")
@@ -53,20 +53,20 @@ export default function Validate({ params }) {
             {success && <FormErrors success={success} align="center" />}
           </>
         </div>
-        {user?.email && (
+        {tmpuser?.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
             A confirmation email has been sent to your email <br />
-            {/* {Util.obscureEmail(user?.email)}. <br /> */}
+            {/* {Util.obscureEmail(tmpuser?.email)}. <br /> */}
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {user?.email !== "" && (
+        {tmpuser?.email !== "" && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(user?.email, type)}
+              onClick={() => resendEmail(tmpuser?.email, type)}
             >
               Resend email
             </span>

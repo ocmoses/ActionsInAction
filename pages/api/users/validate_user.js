@@ -3,7 +3,7 @@ import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
 import { getCategories } from "@/app/modules/categories"
 
-const doLogin = async (body, req, res) => {
+const validateUser = async (body, req, res) => {
   const response = await fetch(
     `${RemoteEndpoints.GET_USER_INFO_VALIDATED}/${body.user_uuid}`,
     {
@@ -16,10 +16,9 @@ const doLogin = async (body, req, res) => {
       referrerPolicy: "no-referrer",
     }
   )
-  console.log({ response })
+  console.log({ body })
   if (response) {
     const result = await response.json()
-    console.log({ result })
     const { data, success } = result
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })
@@ -33,7 +32,7 @@ const doLogin = async (body, req, res) => {
       return { success, error: null, data: User }
     } else {
       if (data) {
-        return { success, error: data.message, data: null }
+        return { success, error: data.message, data: data.user }
       } else {
         return {
           success: false,
@@ -53,7 +52,7 @@ export default async function handler(req, res) {
     }
     const body = JSON.parse(req.body)
 
-    const loginData = doLogin(body, req, res)
+    const loginData = validateUser(body, req, res)
     const categoriesData = getCategories(process.env.APIKEY)
 
     // Wait for the promises to resolve

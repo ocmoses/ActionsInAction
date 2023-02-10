@@ -14,7 +14,7 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { setCategory, registerPartner } = usePartners()
+  const { partner, setCategory, registerPartner } = usePartners()
 
   const { processing, setProcessing, moveToNextForm } = useProcessing()
 
@@ -22,6 +22,8 @@ export default function CategoryDetail({
     clearErrors()
     setCategory(category)
     const result = await registerPartner("category", {
+      user_uuid: partner?.user_uuid ?? "",
+      partner_uuid: partner?.uuid ?? "",
       category_uuid: category.uuid,
     })
 

@@ -10,7 +10,6 @@ const useApp = () => {
   const appActions = actions.app
 
   const setStoreStates = (serverSession, categories) => {
-    // console.log({ serverSession })
     if (serverSession?.status === "authenticated") {
       if (serverSession?.User?.user.uuid) {
         serverSession.User.user.status = "authenticated"

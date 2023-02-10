@@ -9,7 +9,7 @@ import {
   ContactPersonIcon,
 } from "@/app/components/Icons"
 
-export const persistStore = false
+export const persistStore = true
 
 export const EmailType = {
   EXISTING: "existing",

@@ -28,7 +28,7 @@ const usePartners = () => {
   const { category, categories, partner } = states.partners
   const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
     actions.partners
-  const { setUser } = actions.users
+  const { setUser, setTmpUser } = actions.users
   const { user } = states.users
   const users = useUsers()
   const [validation, setValidation] = useState({
@@ -135,7 +135,7 @@ const usePartners = () => {
       // Existing partner flows
       case "partnerwelcome":
         setProcessing(true)
-        const { error: partnerwelcomeError, data: partnerwelcome } =
+        const { success: partnerwelcomeSuccess, data: partnerwelcome } =
           await fetchData(RemoteEndpoints.WELCOMEBACK, {
             method: "POST",
             cache: "no-store",
@@ -144,12 +144,12 @@ const usePartners = () => {
               email_type: userdata.email_type,
             }),
           })
-        if (partnerwelcomeError) {
+        if (!partnerwelcomeSuccess) {
           setProcessing(false)
-          return { success: false, error: partnerwelcomeError, data: null }
+          return { success: false, error: partnerwelcome.message, data: null }
         }
 
-        setUser(partnerwelcome.user)
+        setTmpUser(partnerwelcome.user)
         setPartners(partnerwelcome.partners)
         router.push(
           `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`

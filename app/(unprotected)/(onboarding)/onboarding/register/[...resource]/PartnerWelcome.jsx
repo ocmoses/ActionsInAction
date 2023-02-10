@@ -34,6 +34,7 @@ export default function PartnerWelcome({ resource }) {
         resource && resource[0] === "resetpassword" ? "reset" : "existing",
     }))
   }, [resource])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()

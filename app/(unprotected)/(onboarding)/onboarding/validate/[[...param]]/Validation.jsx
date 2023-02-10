@@ -65,6 +65,7 @@ export default function RegisterValidation({ url, err, params }) {
 
         app.setStoreStates(serverSession, categories)
         console.log({ serverSession, categories })
+        setData(serverSession)
         return router.push(PageRoutes.getstarted)
       } else {
         setProcessing(false)
@@ -86,16 +87,17 @@ export default function RegisterValidation({ url, err, params }) {
       if (url) router.push(url)
     }
   }, [])
+  console.log(data)
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {!errors?.validate && (
+          {((!data && !errors?.validate) || (data && errors?.validate)) && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {errors?.validate && (
+          {!data && errors?.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

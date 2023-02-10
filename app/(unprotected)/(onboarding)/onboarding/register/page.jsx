@@ -7,11 +7,9 @@ import { PageRoutes } from "@/app/modules/menu"
 export default function Register() {
   const router = useRouter()
   const registerUserInfo = () => {
-    console.log("registerUserinfo")
     router.push(PageRoutes.registerUserinfo)
   }
   const partnerWelcome = () => {
-    console.log("partnerwelcome")
     router.push(PageRoutes.partnerwelcome)
   }
   return (
@@ -46,7 +44,10 @@ export default function Register() {
           />
         </div>
       </div>
-      <div onClick={partnerWelcome} className="flex flex-col gap-8 group p-2">
+      <div
+        onClick={partnerWelcome}
+        className="flex flex-col gap-8 group p-2  cursor-pointer"
+      >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-600 to-mtn/10 hover:bg-black/70  transition-none sm:transition-color ease-in-out duration-700 relative">
           <div className="translate-y-0 sm:translate-y-6 group-hover:translate-y-0 transition-none sm:transition ease-in-out duration-700">
             <h1 className="text-lg sm:text-2xl text-white font-mtn-bold w-[65%]">

@@ -25,7 +25,7 @@ export default function Validate({ params }) {
   useEffect(() => {
     setType(resource && resource[1] ? resource[1] : "new")
   }, [resource])
-
+  console.log({ tmpuser })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -77,12 +77,12 @@ export default function Validate({ params }) {
        //? https//......com/onboarding/validate/{uuid}/category // for new user onboarding
         //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
       */}
-      <Link
+      <a
         href={`/onboarding/validate/${resource[0]}/${resource[1]}/`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
         [[DEV TOOL. Continue to next screen]]
-      </Link>
+      </a>
     </>
   )
 }

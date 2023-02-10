@@ -71,9 +71,7 @@ function CompanyDetail() {
     }
 
     const result = await registerPartner("companydetail", data)
-    if (result) {
-      if (result?.error) return setError({ companydetail: result.error })
-    }
+    if (result?.error) return setError({ companydetail: result.error })
     moveToNextForm(["companydetail"])
   }
   const handleFormChange = (e) => {

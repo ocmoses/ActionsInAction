@@ -18,10 +18,10 @@ function ProfileTabItem({ menu, form }) {
   const { checkUpdateStatus } = usePartners()
   return (
     <div
-      // onClick={() =>
-      //   checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
-      // }
-      onClick={() => moveToNextForm([menu, true])}
+      onClick={() =>
+        checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
+      }
+      // onClick={() => moveToNextForm([menu, true])}
       className={`flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4 ${
         checkUpdateStatus(menu) && "cursor-pointer"
       }`}

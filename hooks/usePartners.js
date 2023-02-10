@@ -11,8 +11,7 @@ import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch } from "@/app/modules/utilities"
-import { userData } from "@/app/modules/utilities"
+import { proxyFetch, userData } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -220,7 +219,7 @@ const usePartners = () => {
       case "category":
         setProcessing(true)
         const responseCategory = await Axios.post(
-          `${apiURL}/v1/auth/register/category`,
+          RemoteEndpoints.CATEGORY,
           userdata,
           {
             headers: {
@@ -254,7 +253,7 @@ const usePartners = () => {
 
       case "companydetail":
         const responseCompanydetail = await register(
-          `${apiURL}/v1/auth/register/companydetail`,
+          RemoteEndpoints.COMPANYDETAIL,
           userdata
         )
         if (!responseCompanydetail) {
@@ -270,10 +269,23 @@ const usePartners = () => {
         setUpdateStatus("companydetail", true)
         break
       case "compliance":
-        const responseCompliance = await register(
-          `${apiURL}/v1/auth/register/compliance`,
-          userdata
-        )
+        userdata["_method"] = "PUT"
+        const responseCompliance = await Axios.post(
+          RemoteEndpoints.COMPLIANCE,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseCompliance) {
           return { success: false, error: "Something went wrong", data: null }
         }
@@ -286,10 +298,23 @@ const usePartners = () => {
         break
 
       case "ncclicense":
-        const responseNcclicense = await register(
-          `${apiURL}/v1/auth/register/ncclicense`,
-          userdata
-        )
+        userdata["_method"] = "PUT"
+        const responseNcclicense = await Axios.post(
+          RemoteEndpoints.NCCLICENSE,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseNcclicense) {
           return { success: false, error: "Something went wrong", data: null }
         }
@@ -301,10 +326,23 @@ const usePartners = () => {
         setUpdateStatus("ncclicense", true)
         break
       case "nlrclicense":
-        const responseNlrclicense = await register(
-          `${apiURL}/v1/auth/register/nlrclicense`,
-          userdata
-        )
+        userdata["_method"] = "PUT"
+        const responseNlrclicense = await Axios.post(
+          RemoteEndpoints.NLRCLICENSE,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseNlrclicense) {
           return { success: false, error: "Something went wrong", data: null }
         }
@@ -319,7 +357,7 @@ const usePartners = () => {
       case "shortcode":
         userdata["_method"] = "PUT"
         const responseShortcode = await Axios.post(
-          `${apiURL}/v1/auth/register/shortcode`,
+          RemoteEndpoints.SHORTCODE,
           userdata,
           {
             headers: {
@@ -346,10 +384,23 @@ const usePartners = () => {
         setUpdateStatus("shortcode", true)
         break
       case "indemnity":
-        const responseIndemnity = await register(
-          `${apiURL}/v1/auth/register/indemnity`,
-          userdata
-        )
+        userdata["_method"] = "PUT"
+        const responseIndemnity = await Axios.post(
+          RemoteEndpoints.INDEMNITY,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseIndemnity) {
           return { success: false, error: "Something went wrong", data: null }
         }
@@ -361,10 +412,23 @@ const usePartners = () => {
         setUpdateStatus("indemnity", true)
         break
       case "accountinfo":
-        const responseAccountinfo = await register(
-          `${apiURL}/v1/auth/register/accountinfo`,
-          userdata
-        )
+        userdata["_method"] = "PUT"
+        const responseAccountinfo = await Axios.post(
+          RemoteEndpoints.ACCOUNTINFO,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
         if (!responseAccountinfo) {
           return { success: false, error: "Something went wrong", data: null }
         }

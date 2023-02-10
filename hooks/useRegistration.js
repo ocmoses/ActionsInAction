@@ -3,6 +3,7 @@
 import { useState } from "react"
 import useProcessing from "@/hooks/useProcessing"
 import Axios from "@/app/modules/axios"
+import { isArray } from "@/app/modules/utilities"
 
 const useRegistration = () => {
   const { setProcessing } = useProcessing()

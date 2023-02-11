@@ -14,7 +14,11 @@ import Review from "./sections/review/Review"
 import { profileMenu } from "@/app/modules/constants"
 import { useEffect } from "react"
 
-export default function OnboardingLayout({ setIsOnboarding, setTmpCat }) {
+export default function OnboardingLayout({
+  setIsOnboarding,
+  setTmpCat,
+  section,
+}) {
   const { form } = useProcessing()
   const { category } = usePartners()
   const validForms = category?.validation

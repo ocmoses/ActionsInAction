@@ -3,13 +3,23 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ArrowRightCircle } from "@/app/components/Icons"
 import { PageRoutes } from "@/app/modules/menu"
+import useApp from "@/hooks/useApp"
+import { useEffect } from "react"
 
 export default function Register() {
+  const { setRouteloading } = useApp()
   const router = useRouter()
+
+  useEffect(() => {
+    setRouteloading(false)
+  }, [])
+
   const registerUserInfo = () => {
+    setRouteloading(true)
     router.push(PageRoutes.registerUserinfo)
   }
   const partnerWelcome = () => {
+    setRouteloading(true)
     router.push(PageRoutes.partnerwelcome)
   }
   return (

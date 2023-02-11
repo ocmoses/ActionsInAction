@@ -2,7 +2,6 @@
 import Image from "next/image"
 import React from "react"
 import NavbarOnboarding from "@/app/components/NavbarOnboarding"
-import UserAvartar from "@/app/components/UserAvartar"
 
 export default function Layout({ children }) {
   return (

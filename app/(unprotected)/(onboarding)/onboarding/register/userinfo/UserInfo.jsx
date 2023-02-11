@@ -16,8 +16,11 @@ import { COUNTRIES } from "@/app/components/countrycode/countries"
 import { forms } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
+import useApp from "@/hooks/useApp"
 
 function UserInfo({ designations }) {
+  const { setRouteloading } = useApp()
+
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, registerPartner } = usePartners()
   const { user } = useUsers()
@@ -56,6 +59,7 @@ function UserInfo({ designations }) {
     setForm("userinfo")
     setProcessing(false)
     clearErrors()
+    setRouteloading(false)
   }, [])
   useEffect(() => {
     if (designations.error) setError({ userinfo: designations.error })

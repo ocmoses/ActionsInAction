@@ -5,6 +5,7 @@ const app = {
   success: null,
   processing: false,
   loading: {},
+  routeloading: false,
   form: null,
   formSteps: [],
   allforms: [
@@ -30,6 +31,7 @@ const app = {
     state.success = null
     state.processing = false
     state.loading = {}
+    state.routeloading = false
     state.form = null
     state.formSteps = []
     state.allforms = [
@@ -46,6 +48,9 @@ const app = {
     state.formValidation = {}
     state.activeCategory = {}
     state.tmpUserUUID = null
+  }),
+  setRouteloading: action((state, status) => {
+    state.routeloading = status ?? false
   }),
   setTmpUserUUID: action((state, uuid) => {
     state.tmpUserUUID = uuid

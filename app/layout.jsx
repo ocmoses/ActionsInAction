@@ -2,6 +2,7 @@ import "@/styles/globals.css"
 import Providers from "@/app/Providers"
 import Session from "@/app/Session"
 import ResponsiveLabel from "@/app/components/ResponsiveLabel"
+import RouteLoader from "@/app/components/RouteLoader"
 import { userData, Decrypt } from "@/app/modules/utilities"
 import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
@@ -146,8 +147,10 @@ export default async function RootLayout({ children }) {
       <body>
         <div id="portals" className="relative"></div>
         {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
+
         <Providers>
           <Session serverSession={serverSession} categories={categories}>
+            {<RouteLoader />}
             {children}
           </Session>
         </Providers>

@@ -10,8 +10,11 @@ import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { Util } from "@/utils/utility"
 import { forms } from "@/app/modules/constants"
+import useApp from "@/hooks/useApp"
 
 export default function PartnerWelcome({ resource }) {
+  const { setRouteloading } = useApp()
+
   const { processing, setProcessing, setForm } = useProcessing()
   const { registerPartner } = usePartners()
 
@@ -26,6 +29,7 @@ export default function PartnerWelcome({ resource }) {
     setForm("partnerwelcome")
     setProcessing(false)
     clearErrors()
+    setRouteloading(false)
   }, [])
   useEffect(() => {
     setData((oldState) => ({

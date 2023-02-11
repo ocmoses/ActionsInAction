@@ -96,15 +96,6 @@ export default function GetStarted({ data }) {
   const MainBox = useRef()
   const CategoryBox = useRef()
 
-  // const setContinuedCategory = (category) => {
-  //   clearErrors()
-  //   if (category) {
-  //     setCurrentCategory(category, partner)
-  //     moveToNextForm(["category"])
-  //     setIsOnboarding(true)
-  //     setIsOpen(false)
-  //   }
-  // }
   const continueRegistration = (uuid) => {
     clearErrors()
     const category = partner?.categories?.find((cat) => cat.uuid === uuid)

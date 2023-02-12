@@ -115,7 +115,7 @@ export default function GetStarted({ data }) {
     <>
       {isOnboarding && (
         <>
-          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">
+          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
             <OnboardingLayout
               isOnboarding={isOnboarding}
               setIsOnboarding={setIsOnboarding}

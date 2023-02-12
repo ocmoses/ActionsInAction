@@ -15,7 +15,7 @@ export default function NavbarOnboarding({
     scrollpage()
   }
   return (
-    <header className=" flex justify-between items-center h-[64px] px-4 py-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
+    <header className=" flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
         onClick={cancelOnboarding}
         className="flex justify-start items-center text-md group cursor-pointer "

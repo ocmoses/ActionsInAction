@@ -22,7 +22,7 @@ export default function RegisterStepHeader({
         </h1>
       )}
       {subtitle && (
-        <div className="font-hairline font-mtn-extralight flex-wrap text-[18px] text-white/70">
+        <div className="font-hairline font-mtn-extralight flex-wrap text-[18px] text-white/70 text-center justify-start md:text-start md:justify-start">
           <p className={`${subtitleClassName}`}>{subtitle}</p>
         </div>
       )}

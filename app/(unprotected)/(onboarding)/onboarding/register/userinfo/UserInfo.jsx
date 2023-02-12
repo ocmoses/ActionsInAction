@@ -41,21 +41,6 @@ function UserInfo({ designations }) {
   })
 
   useEffect(() => {
-    if (partner)
-      setData({
-        first_name: user?.first_name ?? "",
-        last_name: user?.last_name ?? "",
-        email: user?.email ?? "",
-        company_name: partner?.company_name ?? "",
-        designation: partner?.designation ?? "",
-        countrycode: user?.countrycode ?? "234",
-        country: user?.country ?? "NG",
-        telephone: user?.telephone ?? "",
-        password: user?.password ?? "",
-        password_confirmed: user?.password_confirmed ?? "",
-      })
-  }, [partner])
-  useEffect(() => {
     setForm("userinfo")
     setProcessing(false)
     clearErrors()

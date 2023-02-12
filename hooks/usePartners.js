@@ -217,29 +217,7 @@ const usePartners = () => {
         break
       case "userinfo":
         setProcessing(true)
-        // const { success, error, data } = await fetchData(
-        //   RemoteEndpoints.USERINFO,
-        //   {
-        //     method: "POST",
-        //     cache: "no-store",
-        //     body: JSON.stringify({
-        //       first_name: userdata.first_name,
-        //       last_name: userdata.last_name,
-        //       company_name: userdata.company_name,
-        //       email: userdata.email,
-        //       countrycode: userdata.countrycode,
-        //       country: userdata.country,
-        //       telephone: userdata.telephone,
-        //       designation: userdata.designation,
-        //       password: userdata.password,
-        //       password_confirmed: userdata.password,
-        //     }),
-        //   }
-        // )
-        // if (error) {
-        //   setProcessing(false)
-        //   return { success, error, data }
-        // }
+        userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,

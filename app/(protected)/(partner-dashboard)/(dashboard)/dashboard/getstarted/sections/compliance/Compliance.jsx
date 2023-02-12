@@ -55,6 +55,7 @@ function Compliance() {
   useEffect(() => {
     setForm("compliance")
     setProcessing(false)
+    scrollToTop("onboardinglayout")
   }, [])
 
   const handleSubmit = async (e) => {
@@ -70,12 +71,36 @@ function Compliance() {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
+    }
+    if (
+      category?.validation.compliance === "r" &&
+      (!data.tin_doc || !data.tin_doc.length) &&
+      !data.tin_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ compliance: `TIN document is required` })
+    }
+    if (
+      category?.validation.compliance === "r" &&
+      (!data.memart_doc || !data.memart_doc.length) &&
+      !data.memart_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ compliance: `Memart document is required` })
+    }
+    if (
+      category?.validation.compliance === "r" &&
+      (!data.cac_doc || !data.cac_doc.length) &&
+      !data.cac_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ compliance: `CAC certificate is required` })
     }
 
     const result = await registerPartner("compliance", data)
     if (result) {
-      scrollToTop()
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
     }
     moveToNextForm(["compliance"])
@@ -88,7 +113,10 @@ function Compliance() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[550px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[550px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

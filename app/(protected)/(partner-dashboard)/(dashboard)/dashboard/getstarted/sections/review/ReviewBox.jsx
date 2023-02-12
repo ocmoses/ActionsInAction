@@ -1,14 +1,15 @@
 import { outputDate } from "@/app/modules/utilities"
-import ReviewTitle from "./ReviewTitle"
+import ReviewTitle from "@/app/components/dashboard/ReviewTitle"
 import Button from "@/app/components/form/Button"
-import Link from "next/link"
 import usePartners from "@/hooks/usePartners"
+import useProcessing from "@/hooks/useProcessing"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import Image from "next/image"
 
 export default function ReviewBox() {
-  const { category, categories } = usePartners()
+  const { setForm } = useProcessing()
+  const { category } = usePartners()
   console.log({ category })
   const showSection = (section) =>
     category?.validation &&
@@ -360,7 +361,7 @@ export default function ReviewBox() {
                       Shortcode
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.shortcode}{" "}
+                      {/* {category.shortcode} */}
                     </div>
                   </div>
                 </div>
@@ -372,7 +373,7 @@ export default function ReviewBox() {
                       Shortcode Issuing date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.shortcode_issue_date)}
+                      {/* {outputDate(category.shortcode_issue_date)} */}
                     </div>
                   </div>
 
@@ -381,7 +382,7 @@ export default function ReviewBox() {
                       Shortcode Expiry date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.shortcode_expiry_date)}
+                      {/* {outputDate(category.shortcode_expiry_date)} */}
                     </div>
                   </div>
                 </div>
@@ -393,7 +394,7 @@ export default function ReviewBox() {
                       NCC pricing approval Issuing date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.shortcode_price_issue_date)}
+                      {/* {outputDate(category.shortcode_price_issue_date)} */}
                     </div>
                   </div>
 
@@ -402,7 +403,7 @@ export default function ReviewBox() {
                       NCC pricing approval Expiry date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.shortcode_price_expiry_date)}
+                      {/* {outputDate(category.shortcode_price_expiry_date)} */}
                     </div>
                   </div>
                 </div>
@@ -601,7 +602,12 @@ export default function ReviewBox() {
         provided are accurate and truthful.
       </div>
       <div className="mt-3 pb-12 flex justify-center items-start w-full">
-        <Button onClick={() => {}} label="Submit application" />
+        <Button
+          onClick={() => {
+            setForm("complete")
+          }}
+          label="Submit application"
+        />
       </div>
     </>
   )

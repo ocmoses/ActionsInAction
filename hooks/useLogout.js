@@ -27,6 +27,7 @@ export default function useLogout() {
     clearPersistStore()
   }
   const Logout = async () => {
+    console.log("Logout")
     actions.app.startLoading("logout")
     await logout()
     clearStore()

@@ -14,6 +14,7 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
+import { scrollToTop } from "@/app/modules/utilities"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
@@ -47,6 +48,7 @@ function CompanyDetail() {
   useEffect(() => {
     setForm("companydetail")
     setProcessing(false)
+    scrollToTop("onboardinglayout")
   }, [])
   const [states, setStates] = useState([])
   useEffect(() => {
@@ -67,11 +69,14 @@ function CompanyDetail() {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
     }
 
     const result = await registerPartner("companydetail", data)
-    if (result?.error) return setError({ companydetail: result.error })
+    if (result?.error) {
+      scrollToTop("onboardinglayout")
+      return setError({ companydetail: result.error })
+    }
     moveToNextForm(["companydetail"])
   }
   const handleFormChange = (e) => {

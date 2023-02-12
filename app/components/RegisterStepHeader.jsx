@@ -13,8 +13,8 @@ export default function RegisterStepHeader({
     <div className={`mb-12 w-full ${className}`}>
       {title && (
         <h1
-          className={`flex justify-${
-            align ?? "start"
+          className={`flex ${
+            align ?? "justify-center text-center md:text-start md:justify-start"
           } font-mtn-light items-center gap-4 mtn-h1 text-white text-[24px] md:text-[28px]  lg:text-[36px]`}
         >
           <span className={titleClassName}>{title}</span>

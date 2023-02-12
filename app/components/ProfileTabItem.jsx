@@ -18,11 +18,11 @@ function ProfileTabItem({ menu, form }) {
   const { checkUpdateStatus } = usePartners()
   return (
     <div
-      onClick={() =>
-        checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
-      }
-      // onClick={() => moveToNextForm([menu, true])}
-      className={`flex justify-start items-center gap-3 h-[44px] lg:min-w-[175px] mb-4 ${
+      // onClick={() =>
+      //   checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
+      // }
+      onClick={() => moveToNextForm([menu, true])}
+      className={`flex justify-start items-center gap-3 h-[44px] md:min-w-[175px] mb-4 ${
         checkUpdateStatus(menu) && "cursor-pointer"
       }`}
     >
@@ -187,7 +187,7 @@ function ProfileTabItem({ menu, form }) {
       <span
         className={`block text-start whitespace-nowrap ${
           menu === form ? "text-[#FFCB03]" : "text-[#999999]"
-        } hidden  lg:flex`}
+        } hidden  md:flex`}
       >
         {profileMenuIcons[menu]?.title}
       </span>

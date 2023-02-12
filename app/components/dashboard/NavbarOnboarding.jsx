@@ -1,15 +1,18 @@
 "use client"
-import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import UserPercentage from "@/app/components/UserPercentage"
-import { useEffect, useState } from "react"
 
-export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
+export default function NavbarOnboarding({
+  setTmpCat,
+  setIsOnboarding,
+  scrollpage,
+}) {
   const { category } = usePartners()
 
   const cancelOnboarding = () => {
     setIsOnboarding(false)
     setTmpCat(null)
+    scrollpage()
   }
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 py-2 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
@@ -55,9 +58,9 @@ export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
               hidelabel={true}
             />
           )}
-          <span className=" text-white text-[12px]">
-            {category?.percentage}%{" "}
-            <span className="hidden sm:flex">completed</span>
+          <span className="flex text-white text-[12px] flex-nowrap">
+            {category?.percentage}%
+            <span className="hidden sm:flex"> completed</span>
           </span>
         </div>
         <span

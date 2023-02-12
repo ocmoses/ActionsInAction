@@ -6,7 +6,6 @@ import Link from "next/link"
 export default function MenuBar({ open }) {
   const segments = useSelectedLayoutSegments()
 
-  const currentPath = segments?.reverse()[0]
   return (
     <ul className="p-0 flex-grow h-full">
       {PartnerMenu.map((menu) => {
@@ -15,7 +14,10 @@ export default function MenuBar({ open }) {
           <li key={menu.label}>
             <Link
               href={menu.route}
-              className="flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121]"
+              className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
+                !open && "tooltip tooltip-right tooltip-mtn"
+              }`}
+              data-tip={menu.label}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

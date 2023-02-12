@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   compiler: {
-    removeConsole: false,
+    removeConsole: true,
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
     domains: ["amazonpartner.com.ng", "10.1.29.77"],
   },

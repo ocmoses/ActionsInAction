@@ -14,7 +14,7 @@ import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import { scrollToTop } from "@/app/modules/utilities"
+import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -29,7 +29,7 @@ function Ncclicense() {
     ncc_expiry_date: "",
     ncc_doc: "",
   })
-  const { title, subtitle, hand, required } = forms["ncclicense"]
+  const { title, subtitle, hand, required, validity } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -45,6 +45,7 @@ function Ncclicense() {
   useEffect(() => {
     setForm("ncclicense")
     setProcessing(false)
+    scrollToTop("onboardinglayout")
   }, [])
 
   const handleSubmit = async (e) => {
@@ -58,12 +59,26 @@ function Ncclicense() {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
+    }
+    if (
+      category?.validation.ncclicense === "r" &&
+      (!data.ncc_doc || !data.ncc_doc.length) &&
+      !data.ncc_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ ncclicense: `NCC document is required` })
     }
 
+    const expiryError = validateExpiryDate(
+      data.ncc_issue_date,
+      data.ncc_expiry_date,
+      validity
+    )
+    if (expiryError) return setError({ ncclicense: expiryError })
     const result = await registerPartner("ncclicense", data)
     if (result) {
-      scrollToTop()
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ ncclicense: result.error })
     }
     moveToNextForm(["ncclicense"])
@@ -83,7 +98,10 @@ function Ncclicense() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[492px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

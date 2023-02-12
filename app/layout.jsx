@@ -36,6 +36,11 @@ const getServerSession = async () => {
           },
         }).catch((error) => {
           console.log("getServerSession error", error)
+          return {
+            success: false,
+            error: error.message,
+            data: null,
+          }
         })
         if (response) {
           const { success, data } = await response.json()
@@ -106,7 +111,9 @@ export default async function RootLayout({ children }) {
   const serverSession = {
     status: sessionData?.data ? "authenticated" : "unauthenticated",
     User: sessionData?.data ?? null,
+    error: sessionData?.error ?? null,
   }
+  // console.log({ serverSession })
   return (
     <html lang="en">
       <head />

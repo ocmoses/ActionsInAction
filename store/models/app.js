@@ -1,4 +1,4 @@
-import { action } from "easy-peasy"
+import { action, thunk } from "easy-peasy"
 const app = {
   count: 0,
   errors: {},
@@ -94,39 +94,64 @@ const app = {
       optional: validation?.optional,
     }
   }),
-  moveToNextForm: action((state, current) => {
+  moveToNextForm: thunk((actions, current, helpers) => {
+    const states = helpers.getStoreState()
+    const validation = states.partners?.category
     if (!current || current?.length < 1) {
-      state.form = null
+      actions.setForm(null)
     } else {
       const currentForm = current[0]
       const useCurrent = current?.length > 1 ? true : false
 
-      const index = state.allforms?.indexOf(currentForm)
+      const index = states.app?.formSteps?.indexOf(currentForm)
       if (useCurrent) {
-        state.form = currentForm
+        actions.setForm(currentForm)
       } else {
-        if (index === state.allforms?.length - 1) {
-          state.form = "review"
+        if (index === states.app?.formSteps?.length - 1) {
+          actions.setForm("review")
         } else {
-          state.form =
-            state.allforms?.length && state.allforms[index + 1]
-              ? state.allforms[index + 1]
+          actions.setForm(
+            states.app?.formSteps?.length && states.app?.formSteps[index + 1]
+              ? states.app?.formSteps[index + 1]
               : null
+          )
         }
       }
     }
   }),
+  // moveToNextFormX: action((state, current) => {
+  //   if (!current || current?.length < 1) {
+  //     state.form = null
+  //   } else {
+  //     const currentForm = current[0]
+  //     const useCurrent = current?.length > 1 ? true : false
+
+  //     const index = state.formSteps?.indexOf(currentForm)
+  //     if (useCurrent) {
+  //       state.form = currentForm
+  //     } else {
+  //       if (index === state.formSteps?.length - 1) {
+  //         state.form = "review"
+  //       } else {
+  //         state.form =
+  //           state.formSteps?.length && state.formSteps[index + 1]
+  //             ? state.formSteps[index + 1]
+  //             : null
+  //       }
+  //     }
+  //   }
+  // }),
   moveToPrevForm: action((state, current) => {
     if (!current) {
       state.form = null
     } else {
-      const index = state.allforms?.indexOf(current)
+      const index = state.formSteps?.indexOf(current)
       if (index === 0) {
-        state.form = state.allforms[1]
+        state.form = state.formSteps[1]
       } else {
         state.form =
-          state.allforms?.length && state.allforms[index - 1]
-            ? state.allforms[index - 1]
+          state.formSteps?.length && state.formSteps[index - 1]
+            ? state.formSteps[index - 1]
             : null
       }
     }

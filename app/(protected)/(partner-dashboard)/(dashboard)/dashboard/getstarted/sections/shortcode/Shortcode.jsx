@@ -57,7 +57,6 @@ function Shortcode() {
   }, [])
   useEffect(() => {
     if (category) {
-      console.log({ category })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
@@ -103,7 +102,6 @@ function Shortcode() {
     })
 
     const result = await registerPartner("shortcode", data)
-    // console.log({ result })
     if (result) {
       if (result?.error) return setError({ shortcode: result.error })
     }

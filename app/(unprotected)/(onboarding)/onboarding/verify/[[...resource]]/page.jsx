@@ -25,7 +25,6 @@ export default function Validate({ params }) {
   useEffect(() => {
     setType(resource && resource[1] ? resource[1] : "new")
   }, [resource])
-  console.log({ tmpuser })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

@@ -25,7 +25,6 @@ export default function OnboardingLayout({
 
   useEffect(() => {
     if (validForms) {
-      console.log({ validForms })
       validForms.review = "r"
     }
   }, [validForms])
@@ -38,7 +37,7 @@ export default function OnboardingLayout({
           setTmpCat={setTmpCat}
         />
         <div className="grid grid-cols-4 h-full w-full">
-          <div className="col-span-1 flex justify-center  h-full mb-[10vh] py-[72px] px-4">
+          <div className="col-span-1 hidden md:flex justify-center  h-full mb-[10vh] py-[72px] px-4">
             <div className="flex">
               {form &&
                 validForms &&
@@ -60,7 +59,7 @@ export default function OnboardingLayout({
                 )}
             </div>
           </div>
-          <div className=" col-span-3 flex w-full px-4 py-[72px] ">
+          <div className="col-span-4 md:col-span-3 flex w-full px-4 py-[72px] ">
             <div className="w-full lg:w-[80%] h-full mb-[10vh] flex justify-start items-start relative pb-12">
               {form === "companydetail" && <CompanyDetail />}
               {form === "compliance" && <Compliance />}

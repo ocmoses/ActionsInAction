@@ -26,6 +26,10 @@ export default function UserAvartar() {
     getInitials()
   }, [session])
 
+  useEffect(() => {
+    setShowMenu(false)
+  }, [])
+
   const toggleProfileMenu = () => {
     setShowMenu((oldState) => !oldState)
   }
@@ -74,16 +78,23 @@ export default function UserAvartar() {
             )}
           </div>
           {showMenu && (
-            <div className="absolute top-10 right-0 text-right w-[140px] bg-white/10 p-0 mt-3 rounded-lg shadow-lg w3-animate-opacity">
+            <div
+              onMouseLeave={() => setShowMenu(false)}
+              className="absolute top-10 right-0 text-right w-[140px] bg-white/10 p-0 mt-3 rounded-lg shadow-lg w3-animate-opacity"
+            >
               <div className="w-full flex flex-col justify-start items-start">
                 <Link
                   href={PageRoutes.dashboard}
+                  onClick={() => setShowMenu(false)}
                   className="w-full text-end text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
                 >
                   Dashboard
                 </Link>
                 <div
-                  onClick={Logout}
+                  onClick={() => {
+                    Logout
+                    setShowMenu(false)
+                  }}
                   className="w-full text-end cursor-pointer text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
                 >
                   Logout

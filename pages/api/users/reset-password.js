@@ -14,10 +14,8 @@ const doLogin = async (body, req, res) => {
     referrerPolicy: "no-referrer",
     body: JSON.stringify(body),
   })
-  console.log({ response })
   if (response) {
     const result = await response.json()
-    console.log({ result })
     const { data, success } = result
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })

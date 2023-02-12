@@ -1,9 +1,9 @@
 "use client"
-import ReviewBox from "@/app/components/review/ReviewBox"
+import ReviewBox from "./ReviewBox"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
+import useProcessing from "@/hooks/useProcessing"
 import { useEffect } from "react"
 import { forms } from "@/app/modules/constants"
-import useProcessing from "@/hooks/useProcessing"
 
 export default function Review() {
   const { setProcessing, setForm } = useProcessing()

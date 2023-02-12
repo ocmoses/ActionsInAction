@@ -9,11 +9,12 @@ import ButtonNext from "@/app/components/form/ButtonNext"
 import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
-import { useState, useEffect } from "react"
 import usePartners from "@/hooks/usePartners"
+import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
+import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -28,8 +29,9 @@ function Indemnity() {
     indemnity_expiry_date: "",
     indemnity_doc: "",
   })
-  const { title, subtitle, hand, required } = forms["indemnity"]
+  const { title, subtitle, hand, required, validity } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+
   useEffect(() => {
     if (category)
       setData({
@@ -44,6 +46,7 @@ function Indemnity() {
   useEffect(() => {
     setForm("indemnity")
     setProcessing(false)
+    scrollToTop("onboardinglayout")
   }, [])
 
   const handleSubmit = async (e) => {
@@ -57,10 +60,27 @@ function Indemnity() {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
     }
+    if (
+      category?.validation.indemnity === "r" &&
+      (!data.indemnity_doc || !data.indemnity_doc.length) &&
+      !data.indemnity_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ indemnity: `Indemnity document is required` })
+    }
+
+    const expiryError = validateExpiryDate(
+      data.indemnity_issue_date,
+      data.indemnity_expiry_date,
+      validity
+    )
+    if (expiryError) return setError({ indemnity: expiryError })
+
     const result = await registerPartner("indemnity", data)
     if (result) {
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ indemnity: result.error })
     }
     moveToNextForm(["indemnity"])
@@ -80,7 +100,10 @@ function Indemnity() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[492px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

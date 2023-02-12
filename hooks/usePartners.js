@@ -18,16 +18,15 @@ import { getCategories } from "@/app/modules/categories"
 const usePartners = () => {
   const router = useRouter()
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
-  const { register, updateCategory } = useRegistration()
+  const { updateCategory } = useRegistration()
   const app = useApp()
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
-  const { category, categories, partner } = states.partners
-  const { setPartner, setPartners, updatePartner, setCategory, setPartnerID } =
-    actions.partners
+  const { category, categories } = states.partners
+  const { setPartners, updatePartner, setCategory } = actions.partners
   const { setUser, setTmpUser } = actions.users
   const { user } = states.users
   const users = useUsers()
@@ -131,20 +130,40 @@ const usePartners = () => {
 
   const registerPartner = async (frm, userdata) => {
     console.log({ userdata })
+    console.log({ category })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
         setProcessing(true)
-        const { success: partnerwelcomeSuccess, data: partnerwelcome } =
-          await fetchData(RemoteEndpoints.WELCOMEBACK, {
-            method: "POST",
-            cache: "no-store",
-            body: JSON.stringify({
-              partnerid: userdata.partnerid,
-              email_type: userdata.email_type,
-            }),
-          })
-        if (!partnerwelcomeSuccess) {
+        const responsePartnerwelcome = await Axios.post(
+          RemoteEndpoints.WELCOMEBACK,
+          userdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          setProcessing(false)
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!responsePartnerwelcome) {
+          setProcessing(false)
+          return { success: false, error: "Something went wrong", data: null }
+        }
+
+        const { success: successPartnerwelcome, data: partnerwelcome } =
+          responsePartnerwelcome
+        if (!successPartnerwelcome) {
+          setProcessing(false)
+          return { success: false, error: partnerwelcome.message, data: null }
+        }
+        if (!successPartnerwelcome) {
           setProcessing(false)
           return { success: false, error: partnerwelcome.message, data: null }
         }
@@ -157,23 +176,35 @@ const usePartners = () => {
         break
       case "setpassword":
         setProcessing(true)
-        const { data: setpassword, error: setpasswordError } = await fetchData(
+        const responseSetpassword = await Axios.post(
           RemoteEndpoints.RESETPASSWORD,
+          userdata,
           {
-            method: "PUT",
-            cache: "no-store",
-            body: JSON.stringify({
-              user_uuid: user?.uuid ?? tmpUserUUID,
-              password: userdata.password,
-              password_confirmed: userdata.password,
-            }),
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
           }
-        )
-        if (setpasswordError) {
+        ).catch((e) => {
           setProcessing(false)
-          return { success: false, error: setpasswordError, data: null }
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!responseSetpassword) {
+          setProcessing(false)
+          return { success: false, error: "Something went wrong", data: null }
         }
-        // setTmpUserUUID(null)
+
+        const { success: successSetpassword, data: setpassword } =
+          responseSetpassword
+        if (!successSetpassword) {
+          setProcessing(false)
+          return { success: false, error: setpassword.message, data: null }
+        }
+        setTmpUserUUID(null)
         const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
         const serverSession = {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
@@ -186,33 +217,57 @@ const usePartners = () => {
         break
       case "userinfo":
         setProcessing(true)
-        const { success, error, data } = await fetchData(
+        // const { success, error, data } = await fetchData(
+        //   RemoteEndpoints.USERINFO,
+        //   {
+        //     method: "POST",
+        //     cache: "no-store",
+        //     body: JSON.stringify({
+        //       first_name: userdata.first_name,
+        //       last_name: userdata.last_name,
+        //       company_name: userdata.company_name,
+        //       email: userdata.email,
+        //       countrycode: userdata.countrycode,
+        //       country: userdata.country,
+        //       telephone: userdata.telephone,
+        //       designation: userdata.designation,
+        //       password: userdata.password,
+        //       password_confirmed: userdata.password,
+        //     }),
+        //   }
+        // )
+        // if (error) {
+        //   setProcessing(false)
+        //   return { success, error, data }
+        // }
+        const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
+          userdata,
           {
-            method: "POST",
-            cache: "no-store",
-            body: JSON.stringify({
-              first_name: userdata.first_name,
-              last_name: userdata.last_name,
-              company_name: userdata.company_name,
-              email: userdata.email,
-              countrycode: userdata.countrycode,
-              country: userdata.country,
-              telephone: userdata.telephone,
-              designation: userdata.designation,
-              password: userdata.password,
-              password_confirmed: userdata.password,
-            }),
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
           }
-        )
-        if (error) {
+        ).catch((e) => {
           setProcessing(false)
-          return { success, error, data }
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!responseUserinfo) {
+          setProcessing(false)
+          return { success: false, error: "Something went wrong", data: null }
         }
-        const User = userData(data)
-        // setPartner(User.partner)
-        // setPartnerID(User.partner.uuid)
-        // setUser(User.user)
+
+        const { success: successUserinfo, data: userinfo } = responseUserinfo
+        if (!successUserinfo) {
+          setProcessing(false)
+          return { success: false, error: userinfo.message, data: null }
+        }
+        const User = userData(userinfo)
         users.setTmpUser(User.user)
         router.push(`/onboarding/verify/${User.user.uuid}/new`)
         break
@@ -250,196 +305,6 @@ const usePartners = () => {
         updatePartner(categoryData.partner)
         setUpdateStatus("category", true)
         return { success: true, error: null, data: categoryData }
-
-      // case "companydetail":
-      //   const responseCompanydetail = await register(
-      //     RemoteEndpoints.COMPANYDETAIL,
-      //     userdata
-      //   )
-      //   if (!responseCompanydetail) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: companydetailError, data: companydetail } =
-      //     responseCompanydetail
-      //   if (companydetailError) {
-      //     return { success: false, error: companydetailError, data: null }
-      //   }
-      //   updatePartner(companydetail.partner)
-      //   setUpdateStatus("companydetail", true)
-      //   break
-      // case "compliance":
-      //   userdata["_method"] = "PUT"
-      //   const responseCompliance = await Axios.post(
-      //     RemoteEndpoints.COMPLIANCE,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseCompliance) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: complianceError, data: compliance } = responseCompliance
-      //   if (complianceError) {
-      //     return { success: false, error: complianceError, data: null }
-      //   }
-      //   updatePartner(compliance.partner)
-      //   setUpdateStatus("compliance", true)
-      //   break
-
-      // case "ncclicense":
-      //   userdata["_method"] = "PUT"
-      //   const responseNcclicense = await Axios.post(
-      //     RemoteEndpoints.NCCLICENSE,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseNcclicense) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: ncclicenseError, data: ncclicense } = responseNcclicense
-      //   if (ncclicenseError) {
-      //     return { success: false, error: ncclicenseError, data: null }
-      //   }
-      //   updatePartner(ncclicense.partner)
-      //   setUpdateStatus("ncclicense", true)
-      //   break
-      // case "nlrclicense":
-      //   userdata["_method"] = "PUT"
-      //   const responseNlrclicense = await Axios.post(
-      //     RemoteEndpoints.NLRCLICENSE,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseNlrclicense) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: nlrclicenseError, data: nlrclicense } =
-      //     responseNlrclicense
-      //   if (nlrclicenseError) {
-      //     return { success: false, error: nlrclicenseError, data: null }
-      //   }
-      //   updatePartner(nlrclicense.partner)
-      //   setUpdateStatus("nlrclicense", true)
-      //   break
-      // case "shortcode":
-      //   userdata["_method"] = "PUT"
-      //   const responseShortcode = await Axios.post(
-      //     RemoteEndpoints.SHORTCODE,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseShortcode) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: shortcodeError, data: shortcode } = responseShortcode
-      //   if (shortcodeError) {
-      //     return { success: false, error: shortcodeError, data: null }
-      //   }
-      //   // console.log({ shortcode })
-      //   updatePartner(shortcode.partner)
-      //   setUpdateStatus("shortcode", true)
-      //   break
-      // case "indemnity":
-      //   userdata["_method"] = "PUT"
-      //   const responseIndemnity = await Axios.post(
-      //     RemoteEndpoints.INDEMNITY,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseIndemnity) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: indemnityError, data: indemnity } = responseIndemnity
-      //   if (indemnityError) {
-      //     return { success: false, error: indemnityError, data: null }
-      //   }
-      //   updatePartner(indemnity.partner)
-      //   setUpdateStatus("indemnity", true)
-      //   break
-      // case "accountinfo":
-      //   userdata["_method"] = "PUT"
-      //   const responseAccountinfo = await Axios.post(
-      //     RemoteEndpoints.ACCOUNTINFO,
-      //     userdata,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //       timeout: process.NEXT_PUBLIC_TIMEOUT,
-      //     }
-      //   ).catch((e) => {
-      //     return {
-      //       success: false,
-      //       error: `${e.message}. Please check you connection`,
-      //       data: null,
-      //     }
-      //   })
-      //   if (!responseAccountinfo) {
-      //     return { success: false, error: "Something went wrong", data: null }
-      //   }
-      //   const { error: accountinfoError, data: accountinfo } =
-      //     responseAccountinfo
-
-      //   if (accountinfoError) {
-      //     return { success: false, error: accountinfoError, data: null }
-      //   }
-      //   updatePartner(accountinfo.partner)
-      //   setUpdateStatus("accountinfo", true)
-      //   break
       case "companydetail":
         return updateCategory("companydetail", userdata)
       case "compliance":

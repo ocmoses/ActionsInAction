@@ -11,13 +11,14 @@ import Indemnity from "./sections/indemnity/Indemnity"
 import Accountinfo from "./sections/accountinfo/Accountinfo"
 import Shortcode from "./sections/shortcode/Shortcode"
 import Review from "./sections/review/Review"
+import Complete from "./sections/complete/Complete"
 import { profileMenu } from "@/app/modules/constants"
 import { useEffect } from "react"
 
 export default function OnboardingLayout({
   setIsOnboarding,
   setTmpCat,
-  section,
+  scrollpage,
 }) {
   const { form } = useProcessing()
   const { category } = usePartners()
@@ -31,11 +32,17 @@ export default function OnboardingLayout({
 
   return (
     <>
-      <div className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
-        <NavbarOnboarding
-          setIsOnboarding={setIsOnboarding}
-          setTmpCat={setTmpCat}
-        />
+      <div
+        id="onboardinglayout"
+        className="absolute top-0 bottom-0 flex flex-col min-h-screen w-screen overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]"
+      >
+        {form !== "complete" && (
+          <NavbarOnboarding
+            setIsOnboarding={setIsOnboarding}
+            setTmpCat={setTmpCat}
+            scrollpage={scrollpage}
+          />
+        )}
         <div className="grid grid-cols-4 h-full w-full">
           <div className="col-span-1 hidden md:flex justify-center  h-full mb-[10vh] py-[72px] px-4">
             <div className="flex">
@@ -69,6 +76,12 @@ export default function OnboardingLayout({
               {form === "shortcode" && <Shortcode />}
               {form === "accountinfo" && <Accountinfo />}
               {form === "review" && <Review />}
+              {form === "complete" && (
+                <Complete
+                  setIsOnboarding={setIsOnboarding}
+                  setTmpCat={setTmpCat}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
+import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -47,38 +48,22 @@ function Shortcode() {
       pricing_expiry_date: "", //DATE
     },
   })
-  const { title, subtitle, hand, required } = forms["shortcode"]
+  const { title, subtitle, hand, required, validity } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     setForm("shortcode")
     setProcessing(false)
     setShortcodeSet(0)
     setActiveform(null)
+    scrollToTop("onboardinglayout")
   }, [])
   useEffect(() => {
     if (category) {
+      console.log({ category })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        shortcodes: [
-          // ARRAY OF OBJECT
-          {
-            shortcode: {
-              shortcodes: ["12345", "34234", "65434"], // ARRAY OR STRING
-              shortcode_doc: null, //FILE
-              shortcode_file: null, //FILE
-              shortcode_issue_date: "2020-06-08", //DATE
-              shortcode_expiry_date: "2024-06-07", //DATE
-            },
-            shortcode_pricing: {
-              pricing_shortcodes: ["12345", "65434"], // ARRAY OR STRING
-              pricing_doc: null,
-              pricing_file: null,
-              pricing_issue_date: "2020-06-20", //DATE
-              pricing_expiry_date: "2024-06-01", //DATE
-            },
-          },
-        ],
+        shortcodes: [],
       })
     }
   }, [category])
@@ -87,7 +72,7 @@ function Shortcode() {
     e.preventDefault()
     clearErrors()
 
-    if (Util.isEmpty(data.shortcodes))
+    if (category?.validation.shortcode === "r" && Util.isEmpty(data.shortcodes))
       return setError({ shortcode: `Please provide shortcode data` })
 
     data.shortcodes.map((shortcodePrice) => {
@@ -103,6 +88,7 @@ function Shortcode() {
 
     const result = await registerPartner("shortcode", data)
     if (result) {
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
     moveToNextForm(["shortcode"])
@@ -248,9 +234,7 @@ function Shortcode() {
     const newData = data.shortcodes.filter((d, i) => i !== index)
     setData((oldData) => ({ ...oldData, shortcodes: newData }))
   }
-  const goToPricing = () => {
-    setActiveform("pricing")
-  }
+
   const cancelShortcode = () => {
     resetFormdata()
     setActiveform(null)
@@ -259,17 +243,74 @@ function Shortcode() {
   const goBackToShortcode = () => {
     setActiveform("shortcode")
   }
-  const saveShortcode = () => {
+  const goToPricing = () => {
     clearErrors()
-    if (!(formdata.shortcode.shortcodes.length > 0)) {
+    if (
+      category?.validation.shortcode === "r" &&
+      required.shortcode &&
+      !(formdata.shortcode.shortcodes.length > 0)
+    ) {
+      scrollToTop("onboardinglayout")
       return setError({ shortcode: `Shortcode is required` })
-    } else {
+    }
+    if (formdata.shortcode.shortcodes.length > 0) {
       if (
         !formdata.shortcode.shortcode_doc &&
         !formdata.shortcode.shortcode_file
       ) {
+        scrollToTop("onboardinglayout")
         return setError({ shortcode: `Shortcode document is required` })
       }
+      if (!formdata.shortcode.shortcode_issue_date) {
+        scrollToTop("onboardinglayout")
+        return setError({
+          shortcode: `Shortcode issue date is required`,
+        })
+      }
+      if (!formdata.shortcode.shortcode_expiry_date) {
+        scrollToTop("onboardinglayout")
+        return setError({
+          shortcode: `Shortcode expiry date is required`,
+        })
+      }
+      const expiryError = validateExpiryDate(
+        formdata.shortcode.shortcode_issue_date,
+        formdata.shortcode.shortcode_expiry_date,
+        validity
+      )
+      if (expiryError) return setError({ shortcode: expiryError })
+    }
+    setActiveform("pricing")
+  }
+  const saveShortcode = () => {
+    clearErrors()
+
+    if (formdata.shortcode_pricing.pricing_shortcodes.length > 0) {
+      if (
+        !formdata.shortcode_pricing.pricing_doc &&
+        !formdata.shortcode_pricing.pricing_file
+      ) {
+        scrollToTop("onboardinglayout")
+        return setError({ shortcode: `Shortcode pricing document is required` })
+      }
+      if (!formdata.shortcode_pricing.pricing_issue_date) {
+        scrollToTop("onboardinglayout")
+        return setError({
+          shortcode: `Shortcode pricing issue date is required`,
+        })
+      }
+      if (!formdata.shortcode_pricing.pricing_expiry_date) {
+        scrollToTop("onboardinglayout")
+        return setError({
+          shortcode: `Shortcode pricing expiry date is required`,
+        })
+      }
+      const pricingExpiryError = validateExpiryDate(
+        formdata.shortcode_pricing.pricing_issue_date,
+        formdata.shortcode_pricing.pricing_expiry_date,
+        validity
+      )
+      if (pricingExpiryError) return setError({ shortcode: pricingExpiryError })
     }
     const newPayload = {
       shortcode: {
@@ -309,7 +350,10 @@ function Shortcode() {
     setShortcodeSet(null)
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[492px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
@@ -361,16 +405,16 @@ function Shortcode() {
                     </div>
                   </div>
                 ))}
-                <div className="mt-3 flex justify-end">
-                  <button
-                    onClick={addShortcode}
-                    className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
-                  >
-                    <span>Add shortcodes</span>
-                  </button>
-                </div>
               </>
             )}
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={addShortcode}
+                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+              >
+                <span>Add shortcodes</span>
+              </button>
+            </div>
           </div>
         )}
 

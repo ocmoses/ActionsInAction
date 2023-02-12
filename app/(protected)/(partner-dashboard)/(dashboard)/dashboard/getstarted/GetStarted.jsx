@@ -8,7 +8,6 @@ import OnboardingLayout from "./OnboardingLayout"
 
 import useUsers from "@/hooks/useUsers"
 import { useState, useEffect, useRef } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
 import { Util } from "@/app/modules/utilities"
 
 import useProcessing from "@/hooks/useProcessing"
@@ -106,9 +105,15 @@ export default function GetStarted({ data }) {
       setIsOpen(false)
     }
   }
+  const scrollpage = () => {
+    document.getElementById("portals").scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  }
   return (
     <>
-      <div className="grid grid-cols-12">
+      <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
         <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
           {isOnboarding && (
             <>
@@ -117,17 +122,18 @@ export default function GetStarted({ data }) {
                   isOnboarding={isOnboarding}
                   setIsOnboarding={setIsOnboarding}
                   setTmpCat={setTmpCat}
+                  scrollpage={scrollpage}
                 />
               </div>
             </>
           )}
-          <div ref={MainBox} className="w-full pt-[72px]">
+          <div className="w-full pt-[72px]">
             {user?.first_name && (
-              <h2 className="text-4xl font-bold text-white">
+              <h2 className="text-4xl font-bold text-white text-center md:text-start">
                 Hello, {user.first_name}
               </h2>
             )}
-            <p className="text-[#999999]">
+            <p className="text-[#999999] text-center md:text-start">
               Choose a partner category that best suits your service
             </p>
             {errors && errors["category"] && (
@@ -146,9 +152,9 @@ export default function GetStarted({ data }) {
                       <div
                         onClick={() => continueRegistration(progress.uuid)}
                         key={progress.uuid}
-                        className="flex flex-col md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
+                        className="flex flex-col cursor-pointer items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
                       >
-                        <div className="flex flex-col md:flex-row gap-6 justify-start items-center">
+                        <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
                           <div className="flex justify-center items-center">
                             <UserPercentage
                               size={86}
@@ -157,7 +163,7 @@ export default function GetStarted({ data }) {
                               percent={progress.percentage}
                             />
                           </div>
-                          <div className="flex flex-col gap-0 justify-center items-center md:items-start h-full">
+                          <div className="flex flex-col gap-0 justify-center items-center sm:items-start h-full">
                             <span className="text-sm text-[#999999]">
                               In progress
                             </span>
@@ -166,7 +172,7 @@ export default function GetStarted({ data }) {
                             </span>
                           </div>
                         </div>
-                        <div className="flex gap-6 justify-center md:justify-end items-center">
+                        <div className="sm:hidden md:flex gap-6 justify-center md:justify-end items-center">
                           {progress.percentage < 100 ? (
                             <Button
                               label="Finish up"

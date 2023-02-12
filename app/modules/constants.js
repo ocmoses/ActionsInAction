@@ -9,7 +9,7 @@ import {
   ContactPersonIcon,
 } from "@/app/components/Icons"
 
-export const persistStore = true
+export const persistStore = false
 
 export const EmailType = {
   EXISTING: "existing",
@@ -198,6 +198,7 @@ export const forms = {
       ncc_expiry_date: "Expiry date",
       // vas_doc: 'NCC VAS License'
     },
+    validity: "5 years",
   },
   nlrclicense: {
     form: "nlrclicense",
@@ -217,6 +218,7 @@ export const forms = {
       nlrc_expiry_date: "Expiry date",
       // nlrc_doc: 'NLRC Document'
     },
+    validity: null,
   },
   shortcode: {
     form: "shortcode",
@@ -242,6 +244,7 @@ export const forms = {
       // shortcode_doc: 'Short code document',
       // shortcode_approval_doc: 'NCC Pricing approval'
     },
+    validity: null,
   },
   indemnity: {
     form: "indemnity",
@@ -261,6 +264,7 @@ export const forms = {
       indemnity_expiry_date: "Expiry date",
       // indemnity_doc: 'Professional indemnity insurance Document'
     },
+    validity: null,
   },
   accountinfo: {
     form: "accountinfo",

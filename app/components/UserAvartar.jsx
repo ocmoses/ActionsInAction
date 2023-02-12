@@ -92,7 +92,7 @@ export default function UserAvartar() {
                 </Link>
                 <div
                   onClick={() => {
-                    Logout
+                    Logout()
                     setShowMenu(false)
                   }}
                   className="w-full text-end cursor-pointer text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"

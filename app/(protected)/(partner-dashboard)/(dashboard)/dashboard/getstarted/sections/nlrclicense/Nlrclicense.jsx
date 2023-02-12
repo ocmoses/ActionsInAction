@@ -14,7 +14,7 @@ import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
-import { scrollToTop } from "@/app/modules/utilities"
+import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -29,7 +29,7 @@ function NlrcLicense() {
     nlrc_expiry_date: "",
     nlrc_doc: "",
   })
-  const { title, subtitle, hand, required } = forms["nlrclicense"]
+  const { title, subtitle, hand, required, validity } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -45,6 +45,7 @@ function NlrcLicense() {
   useEffect(() => {
     setForm("nlrclicense")
     setProcessing(false)
+    scrollToTop("onboardinglayout")
   }, [])
 
   const handleSubmit = async (e) => {
@@ -58,11 +59,26 @@ function NlrcLicense() {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
     }
+    if (
+      category?.validation.nlrclicense === "r" &&
+      (!data.nlrc_doc || !data.nlrc_doc.length) &&
+      !data.nlrc_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({ nlrclicense: `NCC document is required` })
+    }
+
+    const expiryError = validateExpiryDate(
+      data.nlrc_issue_date,
+      data.nlrc_expiry_date,
+      validity
+    )
+    if (expiryError) return setError({ nlrclicense: expiryError })
     const result = await registerPartner("nlrclicense", data)
     if (result) {
-      scrollToTop()
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ nlrclicense: result.error })
     }
     moveToNextForm(["nlrclicense"])
@@ -82,7 +98,10 @@ function NlrcLicense() {
     }))
   }
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[492px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

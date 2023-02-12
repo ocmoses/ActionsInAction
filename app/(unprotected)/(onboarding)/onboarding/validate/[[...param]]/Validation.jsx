@@ -15,7 +15,6 @@ import { NextEndPoints } from "@/app/modules/endpoints"
 import { Util } from "@/app/modules/utilities"
 
 export default function RegisterValidation({ url, err, params }) {
-  // console.log(params)
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState(null)
@@ -38,7 +37,6 @@ export default function RegisterValidation({ url, err, params }) {
       })
       if (response) {
         const result = await response.json()
-        console.log({ result })
         const { data: loginData, error } = result
         if (!loginData) {
           setProcessing(false)
@@ -64,7 +62,6 @@ export default function RegisterValidation({ url, err, params }) {
         const categories = loginData?.categories
 
         app.setStoreStates(serverSession, categories)
-        console.log({ serverSession, categories })
         setData(serverSession)
         return router.push(PageRoutes.getstarted)
       } else {
@@ -87,7 +84,6 @@ export default function RegisterValidation({ url, err, params }) {
       if (url) router.push(url)
     }
   }, [])
-  console.log(data)
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

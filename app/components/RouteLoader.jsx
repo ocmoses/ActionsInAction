@@ -4,7 +4,6 @@ import useApp from "@/hooks/useApp"
 
 export default function RouteLoader() {
   const { routeloading } = useApp()
-  console.log({ routeloading })
   return (
     <>
       {routeloading && (

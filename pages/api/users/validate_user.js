@@ -16,7 +16,6 @@ const validateUser = async (body, req, res) => {
       referrerPolicy: "no-referrer",
     }
   )
-  console.log({ body })
   if (response) {
     const result = await response.json()
     const { data, success } = result
@@ -60,7 +59,6 @@ export default async function handler(req, res) {
     User.categories = categories
     return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    console.log({ error })
     return res.status(200).json({
       success: false,
       error:

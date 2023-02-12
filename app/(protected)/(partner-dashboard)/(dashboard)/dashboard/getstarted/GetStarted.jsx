@@ -108,8 +108,8 @@ export default function GetStarted({ data }) {
   }
   return (
     <>
-      <div className="grid grid-cols-12 px-6">
-        <div className="col-span-11 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
+      <div className="grid grid-cols-12">
+        <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
           {isOnboarding && (
             <>
               <div className="fixed z-20 left-0 bottom-0 flex flex-col h-screen w-screen bg-[#030303]">

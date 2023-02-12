@@ -1,5 +1,6 @@
 "use client"
 import Navbar from "@/app/components/Navbar"
+
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
@@ -10,7 +11,7 @@ function LandingPage() {
 
   useEffect(() => {
     setRouteloading(false)
-  })
+  }, [])
   return (
     <>
       <main className="px-8 xl:px-0 m-0 pb-2xl w-full relative overflow-hidden">

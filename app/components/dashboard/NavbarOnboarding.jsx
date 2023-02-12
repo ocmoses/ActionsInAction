@@ -12,7 +12,7 @@ export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
     setTmpCat(null)
   }
   return (
-    <header className=" flex justify-between items-center h-[64px] px-4 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
+    <header className=" flex justify-between items-center h-[64px] px-4 py-2 m-0 w-full mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
         onClick={cancelOnboarding}
         className="flex justify-start items-center text-md group cursor-pointer "
@@ -37,7 +37,7 @@ export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
         </div>
         {category?.category_name && (
           <div className="flex gap-5 justify-start  items-center text-white px-3 py-2">
-            <span className="text-[#999999] group-hover:!text-white">
+            <span className="hidden sm:flex text-[#999999] group-hover:!text-white">
               Partner category:
             </span>
             <span className="font-bold">{category?.category_name}</span>
@@ -55,13 +55,14 @@ export default function NavbarOnboarding({ setTmpCat, setIsOnboarding }) {
               hidelabel={true}
             />
           )}
-          <span className="text-white text-[12px]">
-            {category?.percentage}% completed
+          <span className=" text-white text-[12px]">
+            {category?.percentage}%{" "}
+            <span className="hidden sm:flex">completed</span>
           </span>
         </div>
         <span
           onClick={cancelOnboarding}
-          className="flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"
+          className="hidden sm:flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"
         >
           Save and exit
         </span>

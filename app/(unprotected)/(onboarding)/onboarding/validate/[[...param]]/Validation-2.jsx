@@ -22,8 +22,6 @@ export default function RegisterValidation({ params }) {
   const [processed, setProcessed] = useState(false)
   const [count, setCount] = useState(0)
 
-  // console.log(params)
-
   const router = useRouter()
   const ValidateEmailAndUser = async (payload) => {
     setProcessing(true)
@@ -121,7 +119,6 @@ export default function RegisterValidation({ params }) {
     clearErrors()
     if (!processed) ValidateEmailAndUser(params)
   }, [])
-  console.log({ processed })
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">

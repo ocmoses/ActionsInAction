@@ -7,7 +7,7 @@ export default function LayoutContent({ children }, open, setOpen) {
         <div
           className={` ${
             open ? "w-[250px]" : "w-[100px] "
-          } flex h-fit min-h-screen py-[36px] px-4 duration-300 border-r border-r-white/20 bg-[#111111]`}
+          } flex h-full py-[36px] px-4 duration-300 border-r border-r-white/20 bg-[#111111]`}
         >
           <div className="flex-1 flex-grow">
             <MenuBar open={open} />

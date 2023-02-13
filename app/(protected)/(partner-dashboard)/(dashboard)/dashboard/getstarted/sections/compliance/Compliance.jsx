@@ -62,7 +62,6 @@ function Compliance() {
     e.preventDefault()
     clearErrors()
     let error = false
-
     // return
     if (!Util.isEmpty(required)) {
       for (const field in required) {

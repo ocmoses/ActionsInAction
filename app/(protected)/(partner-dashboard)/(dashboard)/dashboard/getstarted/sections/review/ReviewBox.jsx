@@ -8,7 +8,7 @@ import { STATES } from "@/app/modules/states"
 import Image from "next/image"
 
 export default function ReviewBox() {
-  const { setForm } = useProcessing()
+  const { setForm, moveToNextForm } = useProcessing()
   const { category } = usePartners()
   console.log({ category })
   const showSection = (section) =>

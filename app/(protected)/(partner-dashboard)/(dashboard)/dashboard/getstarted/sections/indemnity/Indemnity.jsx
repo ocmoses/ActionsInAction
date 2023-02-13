@@ -64,7 +64,8 @@ function Indemnity() {
     }
     if (
       category?.validation.indemnity === "r" &&
-      (!data.indemnity_doc || !data.indemnity_doc.length) &&
+      !data.indemnity_doc &&
+      !data.indemnity_doc.length &&
       !data.indemnity_file
     ) {
       scrollToTop("onboardinglayout")

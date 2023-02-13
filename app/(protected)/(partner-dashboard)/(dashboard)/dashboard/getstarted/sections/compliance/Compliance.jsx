@@ -75,7 +75,8 @@ function Compliance() {
     }
     if (
       category?.validation.compliance === "r" &&
-      (!data.tin_doc || !data.tin_doc.length) &&
+      !data.tin_doc &&
+      !data.tin_doc.length &&
       !data.tin_file
     ) {
       scrollToTop("onboardinglayout")
@@ -83,7 +84,8 @@ function Compliance() {
     }
     if (
       category?.validation.compliance === "r" &&
-      (!data.memart_doc || !data.memart_doc.length) &&
+      !data.memart_doc &&
+      !data.memart_doc.length &&
       !data.memart_file
     ) {
       scrollToTop("onboardinglayout")
@@ -91,7 +93,8 @@ function Compliance() {
     }
     if (
       category?.validation.compliance === "r" &&
-      (!data.cac_doc || !data.cac_doc.length) &&
+      !data.cac_doc &&
+      !data.cac_doc.length &&
       !data.cac_file
     ) {
       scrollToTop("onboardinglayout")

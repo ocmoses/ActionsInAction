@@ -63,7 +63,8 @@ function Ncclicense() {
     }
     if (
       category?.validation.ncclicense === "r" &&
-      (!data.ncc_doc || !data.ncc_doc.length) &&
+      !data.ncc_doc &&
+      !data.ncc_doc.length &&
       !data.ncc_file
     ) {
       scrollToTop("onboardinglayout")

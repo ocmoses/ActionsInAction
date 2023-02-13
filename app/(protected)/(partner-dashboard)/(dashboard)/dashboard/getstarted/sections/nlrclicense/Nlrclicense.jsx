@@ -63,7 +63,8 @@ function NlrcLicense() {
     }
     if (
       category?.validation.nlrclicense === "r" &&
-      (!data.nlrc_doc || !data.nlrc_doc.length) &&
+      !data.nlrc_doc &&
+      !data.nlrc_doc.length &&
       !data.nlrc_file
     ) {
       scrollToTop("onboardinglayout")

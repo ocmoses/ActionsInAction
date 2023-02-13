@@ -1,7 +1,8 @@
 import { useState } from "react"
 
-import { FileUploadIcon, InfoIcon } from "../Icons"
+import { FileUploadIcon, FileUploadActiveIcon, InfoIcon } from "../Icons"
 import FormErrors from "@/app/components/FormErrors"
+import useErrors from "@/hooks/useErrors"
 import { useEffect } from "react"
 import Image from "next/image"
 function FileInput({
@@ -19,10 +20,13 @@ function FileInput({
   const [message, setMessage] = useState("")
   const [doc, setDoc] = useState(null)
 
+  const [{ setError, removeError }] = useErrors(null)
+
   useEffect(() => {
     setMessage(null)
     setFile(null)
     setDoc(null)
+    removeError(id)
   }, [])
 
   useEffect(() => {
@@ -50,15 +54,18 @@ function FileInput({
       })
     }
   }, [value, file])
+  console.log({ errors })
   const handleFile = (e) => {
-    setMessage(null)
+    removeError(id)
     let file = e.target.files[0]
+    console.log({ file })
     const fileType = file["type"]
     const validImageTypes = allowedtypes ?? ["application/pdf"]
     if (validImageTypes.includes(fileType)) {
       setFile(file)
     } else {
-      setMessage("Only PDF accepted")
+      setError({ [id]: "Only PDF accepted" })
+      console.log("Error")
       file = null
     }
   }
@@ -70,7 +77,7 @@ function FileInput({
       setDoc(null)
       onChange({ target: { id: doc_id, value: null } })
     }
-    setMessage(null)
+    removeError(id)
   }
 
   return (
@@ -101,9 +108,18 @@ function FileInput({
                   </div>
                   <div className="flex flex-col">
                     <p className="text-white font-mtn-bold">{label}</p>
-                    <p className="text-[#999999]">
-                      Drag and drop or a choose file
-                    </p>
+                    {!errors[id] && (
+                      <p className="text-[#999999]">
+                        Drag and drop or a choose file
+                      </p>
+                    )}
+                    {errors[id] && (
+                      <div className="flex flex-col items-start">
+                        <span className="truncate overflow-hidden text-red-600 text-[13px]">
+                          {errors ? errors[id] : message ? message : ""}
+                        </span>
+                      </div>
+                    )}
                     <p className="text-[#999999]">PDF file (5mb max)</p>
                   </div>
                 </div>
@@ -115,102 +131,31 @@ function FileInput({
                 </div>
               </>
             )}
-
-            {/* {file && (
-              <div className="text-white w-full h-16 flex items-center justify-between rounded p-3">
-                <div className="flex flex-row items-start gap-2">
-                  <div className="h-12 w-12 ">
-                    <Image
-                      src={`/assets/icons/files-icons/doc.png`}
-                      width={512}
-                      height={512}
-                      alt=""
-                    />
+            {doc?.file_name && (
+              <>
+                <div className="flex flex-start items-center gap-3">
+                  <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                    <FileUploadActiveIcon />
                   </div>
                   <div className="flex flex-col">
-                    <span className="truncate">{file.name}</span>
-                    <div className="flex flex-row gap-4 justify-start">
-                      <span className="text-[12px]">
-                        TYPE: {file.type.split("/")[1]}
-                      </span>
-                      <span className="text-[12px]">
-                        SIZE: {Math.ceil(file.size / 1024)}kb
-                      </span>
-                    </div>
+                    <p className="text-white font-mtn-bold">{label}</p>
+                    {!errors[id] && (
+                      <p className="text-[#999999]">{doc?.file_name}</p>
+                    )}
+                    {errors[id] && (
+                      <div className="flex flex-col items-start">
+                        <span className="truncate overflow-hidden text-red-600 text-[13px]">
+                          {errors ? errors[id] : message ? message : ""}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div
-                  onClick={() => {
-                    removeImage()
-                  }}
-                  className="h-6 w-6 bg-red-400 z-20 flex items-center cursor-pointer justify-center rounded-full hover:bg-red-600"
-                >
-                  x
-                </div>
-              </div>
-            )} */}
-            {doc?.file_name && (
-              <div className="text-white w-full h-16 flex items-center justify-between rounded p-3">
-                <div className="flex flex-row items-start gap-2">
-                  <div className="h-12 w-12 ">
-                    {
-                      <Image
-                        src={`/assets/icons/files-icons/doc.png`}
-                        width={512}
-                        height={512}
-                        alt=""
-                      />
-                    }
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <span className="truncate">{doc?.file_name}</span>
-                    <div className="flex flex-row gap-4 justify-start">
-                      <span className="text-[12px]">
-                        TYPE: {doc?.file_type}
-                      </span>
-                      <span className="text-[12px]">
-                        SIZE: {doc?.file_size}kb
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  onClick={() => {
-                    removeImage()
-                  }}
-                  className="h-6 w-6 bg-red-400 z-20 flex items-center cursor-pointer justify-center rounded-full hover:bg-red-600"
-                >
-                  x
-                </div>
-              </div>
+              </>
             )}
           </div>
         </div>
       </div>
-      {errors && (
-        <div className="pl-4 pb-2">
-          <FormErrors error={errors[id]} />
-        </div>
-      )}
-      {message && (
-        <div className="pl-4 pb-2 flex justify-start items-center gap-4 text-sm text-red-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-            />
-          </svg>
-          <div>{message}</div>
-        </div>
-      )}
     </div>
   )
 }

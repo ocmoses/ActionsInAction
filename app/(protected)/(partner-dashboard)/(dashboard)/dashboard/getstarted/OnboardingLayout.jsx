@@ -34,7 +34,7 @@ export default function OnboardingLayout({
     <>
       <div
         id="onboardinglayout"
-        className="absolute top-0 left-0 flex flex-col w-screen h-full overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]"
+        className="absolute top-0 left-0 flex flex-col items-start justify-start w-screen h-full overflow-y-auto bg-[#030303]  scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]"
       >
         {form !== "complete" && (
           <NavbarOnboarding

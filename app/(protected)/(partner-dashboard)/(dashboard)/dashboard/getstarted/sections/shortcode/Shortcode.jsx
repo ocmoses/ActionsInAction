@@ -63,7 +63,7 @@ function Shortcode() {
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        shortcodes: [],
+        shortcodes: category?.shortcode ?? [],
       })
     }
   }, [category])

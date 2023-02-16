@@ -81,14 +81,14 @@ export default function PartnerWelcome({ resource }) {
         </div>
         <TextInput
           id="partnerid"
-          label="Enter your login email"
+          label="Enter your email"
           value={data.partnerid}
           onChange={handleFormChange}
           errors={errors}
           margin="mb-2"
         />
         <p className="text-[#999999] text-md mb-6">
-          This is a 10-digit number that identifies you as a partner
+          We'll send a confirmation link to this email
         </p>
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />

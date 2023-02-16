@@ -292,15 +292,15 @@ export const forms = {
   // EXISTING PARTNERS
   partnerwelcome: {
     form: "partnerwelcome",
-    title: "Enter your email or partner ID",
-    label: "Sevices",
-    subtitle: "We'll send a confirmation email to your liked email address",
+    title: "Enter your email",
+    label: "Enter your email",
+    subtitle: "",
     hand: "👋",
     fields: {
-      partnerid: "Partner ID or email",
+      partnerid: "Email",
     },
     required: {
-      partnerid: "Partner ID or email",
+      partnerid: "Email",
     },
   },
   setpassword: {

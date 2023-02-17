@@ -1,16 +1,22 @@
 import {
-  AccountInfo,
-  CompanyDetail,
-  Compliance,
-  Indemnity,
-  NccLicense,
-  Shortcode,
-  Review,
-  ContactPerson,
-  StepBadge,
+  AccountinfoIcon,
+  CompanyDetailIcon,
+  ComplianceIcon,
+  IndemnityIcon,
+  NccLicenseIcon,
+  ShortcodeIcon,
+  ReviewIcon,
+  ContactPersonIcon,
 } from "@/app/components/Icons"
 
+export const persistStore = true
+
+export const EmailType = {
+  EXISTING: "existing",
+  NEW: "new",
+}
 export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
+// export const apiURL = "http://10.1.29.77/api"
 export const partnerFields = {
   partnerid: "",
 
@@ -81,150 +87,12 @@ export const partnerFields = {
   audited_account_3: "",
   progress: {},
 }
-// export const partnerFields =
-//   process.env.NODE_ENV === 'production'
-//     ? {
-//         partnerid: '',
 
-//         // userinfo
-//         first_name: '',
-//         last_name: '',
-//         email: '',
-//         countrycode: '234',
-//         telephone: '',
-//         password: '',
-//         password_confirmed: '',
-
-//         //  companyinfo
-//         company_name: '',
-//         company_role: '',
-
-//         // category
-//         category_id: [],
-
-//         // companyinfo
-//         company_name: '',
-//         country: 'NG',
-//         company_address: '',
-//         company_city: '',
-//         company_state: '',
-//         company_postcode: '',
-
-//         // compliance
-//         rc_no: '',
-//         tin_no: '',
-//         tin_doc: '',
-//         memart_doc: '',
-//         cac_doc: '',
-
-//         // ncclicense
-//         vas_license_id: '',
-//         ncc_issue_date: '',
-//         ncc_expiry_date: '',
-//         ncc_doc: '',
-
-//         // nlrclicense
-//         nlrc_license_id: '',
-//         nlrc_issue_date: '',
-//         nlrc_expiry_date: '',
-//         nlrc_doc: '',
-
-//         // shortcode
-//         shortcode: '',
-//         shortcode_issue_date: '',
-//         shortcode_expiry_date: '',
-//         shortcode_price_issue_date: '',
-//         shortcode_price_expiry_date: '',
-//         shortcode_doc: '',
-//         shortcode_approval_doc: '',
-
-//         // indemnity
-//         indemnity_no: '',
-//         indemnity_issue_date: '',
-//         indemnity_expiry_date: '',
-//         indemnity_doc: '',
-
-//         // accountinfo
-//         account_name: '',
-//         account_no: '',
-//         bank: '',
-//         audited_account_1: '',
-//         audited_account_2: '',
-//         audited_account_3: '',
-//         progress: {}
-//       }
-//     : {
-//         partnerid: '234477941',
-
-//         // userinfo
-//         first_name: 'Prince',
-//         last_name: 'Morpheus',
-//         email: 'olabode.gbolu@mtn.com',
-//         countrycode: '234',
-//         telephone: '07062026073',
-//         password: 'Todoo45@222',
-//         password_confirmed: 'Todoo45@222',
-//         //  companyinfo
-//         company_name: 'MTN Nigeria',
-//         company_role: 'admin',
-
-//         // category
-//         category_id: [1],
-
-//         // companyinfo
-//         country: 'NG',
-//         company_address: '1, Alh Sule Maito Street, Benson',
-//         company_city: 'Ikorodu',
-//         company_state: '05',
-//         company_postcode: '23401',
-
-//         // compliance
-//         rc_no: '123456',
-//         tin_no: '2345432',
-//         tin_doc: '',
-//         memart_doc: '',
-//         cac_doc: '',
-
-//         // ncclicense
-//         vas_license_id: '9876532',
-//         ncc_issue_date: '2019-06-02',
-//         ncc_expiry_date: '', //'2025-06-01',
-//         ncc_doc: '',
-
-//         // nlrclicense
-//         nlrc_license_id: '65478934',
-//         nlrc_issue_date: '2020-04-07',
-//         nlrc_expiry_date: '2025-04-06',
-//         nlrc_doc: '',
-
-//         // shortcode
-//         shortcode: '*777#',
-//         shortcode_issue_date: '2021-06-01',
-//         shortcode_expiry_date: '2026-05-31',
-//         shortcode_price_issue_date: '2022-03-07',
-//         shortcode_price_expiry_date: '2024-03-06',
-//         shortcode_doc: '',
-//         shortcode_approval_doc: '',
-
-//         // indemnity
-//         indemnity_no: 'AD7RE-WU209',
-//         indemnity_issue_date: '2018-12-19',
-//         indemnity_expiry_date: '2023-12-18',
-//         indemnity_doc: '',
-
-//         // accountinfo
-//         account_name: 'PRINCE MORPHEUS',
-//         account_no: '2345678901',
-//         bank: '214',
-//         audited_account_1: '',
-//         audited_account_2: '',
-//         audited_account_3: '',
-//         progress: {}
-//       }
 export const forms = {
   userinfo: {
     form: "userinfo",
     title: "Get started",
+    label: "User profile",
     subtitle: "it'll only take a few minutes",
     hand: "👋",
     fields: {
@@ -253,6 +121,7 @@ export const forms = {
   companyinfo: {
     form: "companyinfo",
     title: "Your company and role",
+    label: "Company information",
     subtitle: "it'll only take a few minutes",
     hand: "",
     fields: { company_name: "Company name", company_role: "Company role" },
@@ -261,6 +130,7 @@ export const forms = {
   category: {
     form: "category",
     title: "Choose a service category",
+    label: "Service category",
     subtitle: "You'll be able to add more later",
     hand: "",
     fields: { category_id: "Category ID" },
@@ -268,7 +138,8 @@ export const forms = {
   },
   companydetail: {
     form: "companydetail",
-    title: "Provide your company information",
+    title: "Tell us a bit more about your organisation",
+    label: "Company information",
     subtitle: "",
     hand: "",
     fields: {
@@ -291,6 +162,7 @@ export const forms = {
   compliance: {
     form: "compliance",
     title: "Provide your company's compliance details",
+    label: "Company compliance detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -311,6 +183,7 @@ export const forms = {
   ncclicense: {
     form: "ncclicense",
     title: "Provide your company's NCC license details",
+    label: "NCC license detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -325,10 +198,12 @@ export const forms = {
       ncc_expiry_date: "Expiry date",
       // vas_doc: 'NCC VAS License'
     },
+    validity: "5 years",
   },
   nlrclicense: {
     form: "nlrclicense",
     title: "Provide your company's NLRC license details",
+    label: "NLRC license detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -343,10 +218,12 @@ export const forms = {
       nlrc_expiry_date: "Expiry date",
       // nlrc_doc: 'NLRC Document'
     },
+    validity: null,
   },
   shortcode: {
     form: "shortcode",
     title: "Provide your company's short code details",
+    label: "Shortcode detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -367,10 +244,12 @@ export const forms = {
       // shortcode_doc: 'Short code document',
       // shortcode_approval_doc: 'NCC Pricing approval'
     },
+    validity: null,
   },
   indemnity: {
     form: "indemnity",
     title: "Provide your company's indemnity insurance",
+    label: "Indemnity insurance information",
     subtitle: "",
     hand: "",
     fields: {
@@ -385,10 +264,12 @@ export const forms = {
       indemnity_expiry_date: "Expiry date",
       // indemnity_doc: 'Professional indemnity insurance Document'
     },
+    validity: null,
   },
   accountinfo: {
     form: "accountinfo",
     title: "Provide your company’s audited accounts",
+    label: "Company's audited accounts detail",
     subtitle: "",
     hand: "",
     fields: {
@@ -411,14 +292,15 @@ export const forms = {
   // EXISTING PARTNERS
   partnerwelcome: {
     form: "partnerwelcome",
-    title: "Welcome back",
-    subtitle: "We'll send a confirmation email to your linked email address",
+    title: "Enter your email",
+    label: "Enter your email",
+    subtitle: "",
     hand: "👋",
     fields: {
-      partnerid: "Partner ID or email",
+      partnerid: "Email",
     },
     required: {
-      partnerid: "Partner ID or email",
+      partnerid: "Email",
     },
   },
   setpassword: {
@@ -428,11 +310,11 @@ export const forms = {
     hand: "",
     fields: {
       password: "Password",
-      password_confirmed: "Repeat password",
+      // password_confirmed: "Repeat password",
     },
     required: {
       password: "Password",
-      password_confirmed: "Repeat password",
+      // password_confirmed: "Repeat password",
     },
   },
   confirmcompanyinfo: {
@@ -575,49 +457,49 @@ export const updateMenu = [
 ]
 export const profileMenuIcons = {
   companydetail: {
-    component: <CompanyDetail />,
+    component: <CompanyDetailIcon />,
     title: "Company Info",
   },
 
   compliance: {
-    compliance: <Compliance />,
+    compliance: <ComplianceIcon />,
     title: "Compliance",
   },
   ncclicense: {
-    component: <NccLicense />,
+    component: <NccLicenseIcon />,
     title: "NCC Licence",
   },
   nlrclicense: {
-    component: <NccLicense />,
+    component: <NccLicenseIcon />,
     title: "NLRC Licence",
   },
   shortcode: {
-    component: <Shortcode />,
+    component: <ShortcodeIcon />,
     title: "Shortcode",
   },
   indemnity: {
-    component: <Indemnity />,
+    component: <IndemnityIcon />,
     title: "Indemnity",
   },
   accountinfo: {
-    component: <AccountInfo />,
+    component: <AccountinfoIcon />,
     title: "Account Info",
   },
   // Update menu
   confirmcompanyinfo: {
-    component: <CompanyDetail />,
+    component: <CompanyDetailIcon />,
     title: "Company Info",
   },
   contactperson: {
-    component: <ContactPerson />,
+    component: <ContactPersonIcon />,
     title: "Contact Person",
   },
   review: {
-    component: <Review />,
+    component: <ReviewIcon />,
     title: "Review & Submit",
   },
   updatereview: {
-    component: <Review />,
+    component: <ReviewIcon />,
     title: "Review & Submit",
   },
 }

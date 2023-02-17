@@ -1,8 +1,27 @@
+"use client"
 import Image from "next/image"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ArrowRightCircle } from "@/app/components/Icons"
+import { PageRoutes } from "@/app/modules/menu"
+import useApp from "@/hooks/useApp"
+import { useEffect } from "react"
 
 export default function Register() {
+  const { setRouteloading } = useApp()
+  const router = useRouter()
+
+  useEffect(() => {
+    setRouteloading(false)
+  }, [])
+
+  const registerUserInfo = () => {
+    setRouteloading(true)
+    router.push(PageRoutes.registerUserinfo)
+  }
+  const partnerWelcome = () => {
+    setRouteloading(true)
+    router.push(PageRoutes.partnerwelcome)
+  }
   return (
     <div className="mx-auto w3-animate-opacity pb-20">
       <h1 className="flex items-center font-mtn-extrabold mb-6  text-white text-4xl">
@@ -11,8 +30,8 @@ export default function Register() {
       <p className="font-hairline font-mtn-extralight text-xl mb-8 text-white">
         How would you like to join our platform?
       </p>
-      <Link
-        href="/onboarding/register/userinfo"
+      <div
+        onClick={registerUserInfo}
         className="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
       >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-mtn to-mtn/10 hover:bg-mtn/70  transition-none sm:transition-color ease-in-out duration-700 relative">
@@ -34,10 +53,10 @@ export default function Register() {
             className="absolute bottom-0 w-[110px] md:w-[175px] h-auto right-0 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />
         </div>
-      </Link>
-      <Link
-        href="/onboarding/register/partnerwelcome"
-        className="flex flex-col gap-8 group p-2"
+      </div>
+      <div
+        onClick={partnerWelcome}
+        className="flex flex-col gap-8 group p-2  cursor-pointer"
       >
         <div className="flex flex-col gap-3 px-8 pt-6 md:pt-10 w-full aspect-[5/2] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-600 to-mtn/10 hover:bg-black/70  transition-none sm:transition-color ease-in-out duration-700 relative">
           <div className="translate-y-0 sm:translate-y-6 group-hover:translate-y-0 transition-none sm:transition ease-in-out duration-700">
@@ -58,7 +77,7 @@ export default function Register() {
             className="absolute -bottom-8 w-[110px] md:w-[175px] h-auto -right-8 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />
         </div>
-      </Link>
+      </div>
     </div>
   )
 }

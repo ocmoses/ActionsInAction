@@ -16,8 +16,11 @@ import { COUNTRIES } from "@/app/components/countrycode/countries"
 import { forms } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
+import useApp from "@/hooks/useApp"
 
 function UserInfo({ designations }) {
+  const { setRouteloading } = useApp()
+
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, registerPartner } = usePartners()
   const { user } = useUsers()
@@ -38,24 +41,11 @@ function UserInfo({ designations }) {
   })
 
   useEffect(() => {
-    if (partner)
-      setData({
-        first_name: user?.first_name ?? "",
-        last_name: user?.last_name ?? "",
-        email: user?.email ?? "",
-        company_name: partner?.company_name ?? "",
-        designation: partner?.designation ?? "",
-        countrycode: user?.countrycode ?? "234",
-        country: user?.country ?? "NG",
-        telephone: user?.telephone ?? "",
-        password: user?.password ?? "",
-        password_confirmed: user?.password_confirmed ?? "",
-      })
-  }, [partner])
-  useEffect(() => {
     setForm("userinfo")
     setProcessing(false)
     clearErrors()
+    setRouteloading(false)
+    scrollToTop("onboardinglayout")
   }, [])
   useEffect(() => {
     if (designations.error) setError({ userinfo: designations.error })
@@ -73,7 +63,7 @@ function UserInfo({ designations }) {
           setError({ [field]: `${required[field]} is required` })
         }
       }
-      if (error) return
+      if (error) return scrollToTop("onboardinglayout")
     }
     if (!Util.validateEmail(data["email"])) {
       setError({ email: "Your email address is not valid" })
@@ -84,9 +74,14 @@ function UserInfo({ designations }) {
       return
     }
 
+    if (data["telephone"].length < 6 || data["telephone"].length > 11) {
+      setError({ telephone: "Your telephone is not valid" })
+      return
+    }
+
     const result = await registerPartner("userinfo", data)
     if (result) {
-      scrollToTop()
+      scrollToTop("onboardinglayout")
       if (result?.error) return setError({ userinfo: result.error })
     }
   }
@@ -118,7 +113,10 @@ function UserInfo({ designations }) {
   }, [country, countrycode])
 
   return (
-    <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
+    <div
+      id="onboardingform"
+      className="w3-animate-opacity pb-20 w-full max-w-[492px]"
+    >
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

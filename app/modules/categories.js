@@ -1,28 +1,50 @@
-export const getCategories = async () => {
-  const response = await fetch(
-    'https://amazonpartner.com.ng/amazon/public/api/v1/categories',
-    {
-      method: 'GET',
+import RemoteEndPoints from "@/app/modules/endpoints"
+
+export const getCategories = async (apikey) => {
+  try {
+    const response = await fetch(RemoteEndPoints.CATEGORIES, {
+      method: "GET",
       headers: {
-        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
+        apikey: apikey,
+        "Content-Type": "application/json",
       },
-      redirect: 'follow'
+      redirect: "follow",
+      next: { revalidate: 60 * 60 * 24 },
+    }).catch(() => {
+      return {
+        success: false,
+        error: "Error reaching the server. Please check your connection",
+        data: null,
+      }
+    })
+
+    if (response) {
+      const result = await response.json()
+      const { data, success } = result
+      if (success) {
+        return { success, error: null, data }
+      } else {
+        if (data) {
+          return { success, error: data.message, data: null }
+        } else {
+          return {
+            success: false,
+            error: `${response.status} ${response.statusText}`,
+          }
+        }
+      }
+    } else {
+      return {
+        success: false,
+        error: "Error reaching the server. Please check your connection",
+        data: null,
+      }
     }
-  ).catch((error) => console.log('error', error))
-  const categories = await response?.json()
-  return categories
-}
-export const getSubcategories = async () => {
-  const response = await fetch(
-    'https://amazonpartner.com.ng/amazon/public/api/v1/categories/sub-categories',
-    {
-      method: 'GET',
-      headers: {
-        apikey: 't7286gyfe987ffey87*Zzzht45334DSWTU'
-      },
-      redirect: 'follow'
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message,
+      data: null,
     }
-  ).catch((error) => console.log('error', error))
-  const subcategories = await response?.json()
-  return subcategories
+  }
 }

@@ -1,139 +1,196 @@
 import {
-  AccountInfo,
-  CompanyDetail,
-  Compliance,
-  Indemnity,
-  NccLicense,
-  Shortcode,
-  ContactPerson,
-  Review
-} from './Icons'
-import { profileMenuIcons } from '@/app/modules/constants'
-import Badge from './ProfileTabBadge'
+  AccountinfoIcon,
+  CompanyDetailIcon,
+  ComplianceIcon,
+  IndemnityIcon,
+  NccLicenseIcon,
+  ShortcodeIcon,
+  ContactPersonIcon,
+  ReviewIcon,
+} from "./Icons"
+import { profileMenuIcons } from "@/app/modules/constants"
+import Badge from "@/app/components/ProfileTabBadge"
+import useProcessing from "@/hooks/useProcessing"
+import usePartners from "@/hooks/usePartners"
+
 function ProfileTabItem({ menu, form }) {
+  const { moveToNextForm } = useProcessing()
+  const { checkUpdateStatus } = usePartners()
   return (
-    <div className="flex justify-end items-center gap-3 h-[44px] lg:min-w-[175px] mb-4">
-      <span
-        className={`block text-end whitespace-nowrap ${
-          menu === form ? 'text-[#FFCB03]' : 'text-[#383838] opacity-50'
-        } hidden  lg:flex`}
-      >
-        {profileMenuIcons[menu]?.title}
-      </span>
+    <div
+      onClick={() =>
+        checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
+      }
+      // onClick={() => moveToNextForm([menu, true])}
+      className={`flex justify-start items-center gap-3 h-[44px] md:min-w-[175px] mb-4 ${
+        checkUpdateStatus(menu) && "cursor-pointer"
+      }`}
+    >
       <div
         className={`${
-          menu === form && 'border-[#FFCB03] border-1'
-        } flex items-center justify-center  rounded-xl min-w-[44px] h-[44px]`}
+          menu === form && "border-[#FFCB03] border-1"
+        } flex items-center justify-center  rounded-full min-w-[40px] h-[40px]`}
       >
-        {menu === 'companydetail' && (
+        {menu === "companydetail" && (
           <div className="text-white relative">
-            <CompanyDetail
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <CompanyDetailIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
-            <Badge type="review" name={'companydetail'} />
+            <Badge name={"companydetail"} />
           </div>
         )}
-        {menu === 'confirmcompanyinfo' && (
+        {menu === "confirmcompanyinfo" && (
           <div className="text-white relative">
-            <CompanyDetail
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <CompanyDetailIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
-            <Badge type="updatereview" name={'confirmcompanyinfo'} />
+            <Badge name={"confirmcompanyinfo"} />
           </div>
         )}
-        {menu === 'contactperson' && (
+        {menu === "contactperson" && (
           <div className="text-white relative">
-            <ContactPerson
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <ContactPersonIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="updatereview" name={'contactperson'} />
+            <Badge name={"contactperson"} />
           </div>
         )}
-        {menu === 'compliance' && (
+        {menu === "compliance" && (
           <div className="text-white relative">
-            <Compliance
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <ComplianceIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'compliance'} />
+            <Badge name={"compliance"} />
           </div>
         )}
-        {menu === 'ncclicense' && (
+        {menu === "ncclicense" && (
           <div className="text-white relative">
-            <NccLicense
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <NccLicenseIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'ncclicense'} />
+            <Badge name={"ncclicense"} />
           </div>
         )}
-        {menu === 'nlrclicense' && (
+        {menu === "nlrclicense" && (
           <div className="text-white relative">
-            <NccLicense
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <NccLicenseIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'nlrclicense'} />
+            <Badge name={"nlrclicense"} />
           </div>
         )}
-        {menu === 'shortcode' && (
+        {menu === "shortcode" && (
           <div className="text-white relative">
-            <Shortcode
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <ShortcodeIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'shortcode'} />
+            <Badge name={"shortcode"} />
           </div>
         )}
-        {menu === 'indemnity' && (
+        {menu === "indemnity" && (
           <div className="text-white relative">
-            <Indemnity
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <IndemnityIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'indemnity'} />
+            <Badge name={"indemnity"} />
           </div>
         )}
-        {menu === 'accountinfo' && (
+        {menu === "accountinfo" && (
           <div className="text-white relative">
-            <AccountInfo
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <AccountinfoIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'accountinfo'} />
+            <Badge name={"accountinfo"} />
           </div>
         )}
-        {menu === 'review' && (
+        {menu === "review" && (
           <div className="text-white relative">
-            <Review
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <ReviewIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="review" name={'review'} />
+            <Badge name={"review"} />
           </div>
         )}
-        {menu === 'updatereview' && (
+        {menu === "updatereview" && (
           <div className="text-white relative">
-            <Review
-              fill={menu === form ? '#ffffff' : '#666666'}
-              iconClass={menu === form ? ' w3-animate-opacity text-white' : ''}
+            <ReviewIcon
+              fill={menu === form ? "#ffffff" : "#999999"}
+              iconClass={
+                menu === form
+                  ? " w3-animate-opacity text-white w-[20px] h-[20px]"
+                  : "w-[20px] h-[20px]"
+              }
             />
 
-            <Badge type="updatereview" name={'updatereview'} />
+            <Badge name={"updatereview"} />
           </div>
         )}
       </div>
+      <span
+        className={`block text-start whitespace-nowrap ${
+          menu === form ? "text-[#FFCB03]" : "text-[#999999]"
+        } hidden  md:flex`}
+      >
+        {profileMenuIcons[menu]?.title}
+      </span>
     </div>
   )
 }

@@ -1,26 +1,22 @@
-import { apiURL } from "@/app/modules/constants"
+import RemoteEndPoints from "@/app/modules/endpoints"
 import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
+import { getCategories } from "@/app/modules/categories"
 
-export default async function handler(req, res) {
-  try {
-    if (req.method !== "POST") {
-      res.status(200).json({ success: false, error: "Invalid request method" })
-      return
-    }
-    const body = JSON.parse(req.body)
-    const response = await fetch(`${apiURL}/v1/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(body),
-    })
+const doLogin = async (body, req, res) => {
+  const response = await fetch(RemoteEndPoints.LOGIN, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify(body),
+  })
+  if (response) {
     const result = await response.json()
-    if (result?.success) {
-      const { data, success } = result
+    const { data, success } = result
+    if (success) {
       const partnerID = getCookie("partnerid", { req, res })
       const { User, authToken } = createHttpOnlyCookie(
         data,
@@ -28,27 +24,44 @@ export default async function handler(req, res) {
         res,
         partnerID
       )
-      if (!authToken)
-        return res
-          .status(200)
-          .json({ success, error: "Invalid request", data: User })
-      res.status(200).json({ success, error: null, data: User })
-      return
+      if (!authToken) return { success, error: "Invalid request", data: User }
+      return { success, error: null, data: User }
     } else {
-      if (result?.data) {
-        const { data, success } = result
-        res.status(200).json({ success, error: data.message, data: null })
-        return
+      if (data) {
+        return { success, error: data.message, data: null }
       } else {
-        res.status(200).json({
+        return {
           success: false,
           error: `${response.status} ${response.statusText}`,
-        })
-        return
+        }
       }
     }
+  } else {
+    return { success: false, error: "AN error was encountered", data: null }
+  }
+}
+export default async function handler(req, res) {
+  try {
+    if (req.method !== "POST") {
+      res.status(200).json({ success: false, error: "Invalid request method" })
+      return
+    }
+    const body = JSON.parse(req.body)
+
+    const loginData = doLogin(body, req, res)
+    const categoriesData = getCategories(process.env.APIKEY)
+
+    // Wait for the promises to resolve
+    const [User, categories] = await Promise.all([loginData, categoriesData])
+    User.categories = categories
+    // console.log("Login User", User)
+    return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    res.status(200).json({ success: false, error: error.message })
-    return
+    // console.log({ error })
+    return res.status(200).json({
+      success: false,
+      error:
+        "Something went wrong. You may need to check your internet connection",
+    })
   }
 }

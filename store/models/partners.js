@@ -1,76 +1,21 @@
 import { action, computed, thunk } from "easy-peasy"
 const partners = {
   partnerID: null,
-  partners: [],
-  partner: {
-    uuid: "",
-    partnerid: "",
+  partners: null,
+  partner: null,
+  category: null,
+  categories: null,
+  partnerCategories: null,
 
-    // userinfo
-    first_name: "Olabode",
-    last_name: "Gbolu",
-    email: "princemorpheus@gmail.com",
-    countrycode: "234",
-    telephone: "08090956548",
-    password: "Password12345%",
-    password_confirmed: "Password12345%",
-
-    // category
-    category_id: [],
-
-    // companyinfo
-    company_name: "",
-    company_role: "",
-    designation: "",
-    country: "NG",
-    company_address: "",
-    company_city: "",
-    company_state: "",
-    company_postcode: "",
-
-    // compliance
-    rc_no: "",
-    tin_no: "",
-    tin_doc: "",
-    memart_doc: "",
-    cac_doc: "",
-
-    // ncclicense
-    vas_license_id: "",
-    ncc_issue_date: "",
-    ncc_expiry_date: "",
-    ncc_doc: "",
-
-    // nlrclicense
-    nlrc_license_id: "",
-    nlrc_issue_date: "",
-    nlrc_expiry_date: "",
-    nlrc_doc: "",
-
-    // shortcode
-    shortcode: "",
-    shortcode_issue_date: "",
-    shortcode_expiry_date: "",
-    shortcode_price_issue_date: "",
-    shortcode_price_expiry_date: "",
-    shortcode_doc: "",
-    shortcode_approval_doc: "",
-
-    // indemnity
-    indemnity_no: "",
-    indemnity_issue_date: "",
-    indemnity_expiry_date: "",
-    indemnity_doc: "",
-
-    // accountinfo
-    account_name: "",
-    account_no: "",
-    bank: "",
-    audited_account_1: "",
-    audited_account_2: "",
-    audited_account_3: "",
-  },
-
+  clear: action((state) => {
+    state.partnerID = null
+    state.partners = null
+    state.partner = null
+    state.category = null
+    state.categories = null
+    state.partnerCategory = null
+    state.partnerCategories = null
+  }),
   setPartner: action((state, partner) => {
     state.partner = partner
   }),
@@ -82,10 +27,38 @@ const partners = {
   }),
   updatePartner: action((state, partner) => {
     state.partner = { ...state.partner, ...partner }
-    const Partners = state.partners.filter((p) => {
-      p.uuid !== partner.uuid
+    const category = state.category
+    // console.log({ category })
+    // console.log("partner.categories", partner?.categories)
+
+    const currentCategory = partner?.categories?.find(
+      (c) => c.uuid === category.uuid
+    )
+    // console.log("state.categories", state.categories)
+    const baseCategory = state.categories?.find(
+      (c) => c.uuid === currentCategory.category_uuid
+    )
+    currentCategory.validation = baseCategory.validation
+    currentCategory.category_name = baseCategory.category_name
+    state.category = currentCategory
+
+    const Partners = state.partners?.filter((p) => {
+      p.uuid !== partner?.uuid
     })
     state.partners = [...Partners, partner]
+  }),
+  setCategory: action((state, category) => {
+    state.category = category
+  }),
+  setCategories: action((state, categories) => {
+    state.categories = categories
+  }),
+  setPartnerCategories: action((state, categories) => {
+    state.partnerCategories = categories
+  }),
+  activeCategory: computed((state) => {
+    if (!state.category || !state.categories) return null
+    return state.categories.find((cat) => cat.uuid === state.category.uuid)
   }),
 }
 export default partners

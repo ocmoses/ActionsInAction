@@ -48,13 +48,24 @@ export const CountrySelector = React.forwardRef<
           onClick={props.onToggle}
         >
           <span className=" flex items-center pr-2">
-            <img
+            <Image
+              alt={`${props.selectedValue?.value}`}
+              src={`/assets/flags/${
+                props.selectedValue?.value.toLowerCase() ?? "ng"
+              }.svg`}
+              className={"inline mr-2 h-4 rounded-sm h-auto"}
+              width={24}
+              height={15}
+              priority
+            />
+
+            {/* <img
               alt={`${props.selectedValue?.value ?? "NG"}`}
               src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${
                 props.selectedValue?.value ?? "NG"
               }.svg`}
               className={"inline mr-2 h-4 rounded-sm"}
-            />
+            /> */}
             {/* {props.selectedValue.code} */}
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">

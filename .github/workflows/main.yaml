@@ -3,24 +3,23 @@ name: Deploy Activity-Tracker-Frontend.
 on:
  push:
    branches:
-     - v3
+     - dev
  workflow_dispatch:
   push:
     branches:
       - main
 jobs:
  deploy_dev:
+    if: github.ref == 'refs/heads/dev'
     runs-on:
       - self-hosted
       - tribe-frontend
 
     steps:
       - name: Checkout
-        # if: github.ref == 'refs/heads/cicd-frontend-dev'
         uses: actions/checkout@v2
 
       - uses: benjlevesque/short-sha@v1.2
-        # if: github.ref == 'refs/heads/cicd-frontend-dev'
         id: short-sha
         with:
           length: 6
@@ -32,7 +31,6 @@ jobs:
           SHA: ${{ env.SHA }}
 
       - name: Build docker image.
-        # if: github.ref == 'refs/heads/cicd-frontend-dev'
         env:
           PASSWD: ${{ secrets.PASSWD }}
           UNAME: ${{ secrets.UNAME }}
@@ -47,7 +45,6 @@ jobs:
         with:
           ref: cicd-frontend-dev
       - name: Update Version
-        # if: github.ref == 'refs/heads/cicd-backend-dev'
         env:
           IMAGE_TAG: ${{ env.SHA }}
         run: |

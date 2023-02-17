@@ -2,20 +2,8 @@
 import Image from "next/image"
 import React from "react"
 import NavbarOnboarding from "@/app/components/NavbarOnboarding"
-import UserAvartar from "@/app/components/UserAvartar"
-import { useRouter, useSelectedLayoutSegments } from "next/navigation"
-// import { useSession } from 'next-auth/react'
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useEffect } from "react"
 
-function Layout({ children }) {
-  const segments = useSelectedLayoutSegments()
-  const currentPath = segments?.reverse()[0]
-  // console.log("currentPath", currentPath)
-
-  // const session = useSession()
-  const router = useRouter()
-  const exclude = ["companyinfo"]
+export default function Layout({ children }) {
   return (
     <>
       <div className="grid grid-cols-4 w-screen">
@@ -29,7 +17,7 @@ function Layout({ children }) {
           <div className="layout-center h-full px-3">{children}</div>
         </div>
         <div className="relative min-h-screen hidden md:flex">
-          <UserAvartar />
+          {/* <UserAvartar /> */}
           <Image
             className="h-full object-cover"
             src="/assets/pic/onboarding.png"
@@ -43,5 +31,3 @@ function Layout({ children }) {
     </>
   )
 }
-
-export default Layout

@@ -10,6 +10,8 @@ const getDesignations = async () => {
         redirect: "follow",
         referrerPolicy: "no-referrer",
       },
+      redirect: "follow",
+      next: { revalidate: 60 * 60 * 24 },
     })
     const { success, data } = await response.json()
     if (response?.ok) {

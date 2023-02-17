@@ -1,5 +1,5 @@
-'use client'
-import AppGuard from '@/app/AppGuard'
+"use client"
+import RouteGuard from "./RouteGuard"
 export default function Layout({ children }) {
-  return <AppGuard>{children}</AppGuard>
+  return <RouteGuard>{children}</RouteGuard>
 }

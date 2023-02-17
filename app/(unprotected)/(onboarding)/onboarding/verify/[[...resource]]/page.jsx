@@ -7,29 +7,24 @@ import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
 import useErrors from "@/hooks/useErrors"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 
-export default function Validate({ params: { resource } }) {
+export default function Validate({ params }) {
   const { processing, setProcessing, setForm } = useProcessing()
-  const { user } = useUsers()
+  const { tmpuser } = useUsers()
   const { resendEmail } = usePartners()
   const [{ errors, success, clearErrors }] = useErrors({})
+  const [type, setType] = useState("")
+  const { resource } = params
   useEffect(() => {
     setForm(null)
     setProcessing(false)
     clearErrors()
   }, [])
-  let url = `/onboarding/validate/${user.uuid}/setpassword/`
-  const path = resource && resource[0] ? resource[0] : "userinfo"
-  switch (path) {
-    case "userinfo":
-      url = `/onboarding/validate/${user.uuid}/userinfo/`
-      break
-    case "setpassword":
-      url = `/onboarding/validate/${user.uuid}/setpassword/`
-      break
-  }
+  useEffect(() => {
+    setType(resource && resource[1] ? resource[1] : "new")
+  }, [resource])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -53,24 +48,24 @@ export default function Validate({ params: { resource } }) {
             </div>
           )}
           <>
-            {errors && <FormErrors error={errors["validate"]} align="center" />}
+            {errors && <FormErrors error={errors["verify"]} align="center" />}
             {success && <FormErrors success={success} align="center" />}
           </>
         </div>
-        {user.email && (
+        {tmpuser?.email && (
           <div className="font-mtn-extralight text-center text-white/70 mb-116 p-2">
             A confirmation email has been sent to your email <br />
-            {/* {Util.obscureEmail(user.email)}. <br /> */}
+            {/* {Util.obscureEmail(tmpuser?.email)}. <br /> */}
             Check your inbox and follow the instructions to get started.
           </div>
         )}
 
-        {user.email !== "" && (
+        {tmpuser?.email !== "" && (
           <div className="font-mtn-extralight text-center text-white/70 mb-16 p-2">
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(user.email)}
+              onClick={() => resendEmail(tmpuser?.email, type)}
             >
               Resend email
             </span>
@@ -81,12 +76,12 @@ export default function Validate({ params: { resource } }) {
        //? https//......com/onboarding/validate/{uuid}/category // for new user onboarding
         //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
       */}
-      <Link
-        href={`${url}`}
+      <a
+        href={`/onboarding/validate/${resource[0]}/${resource[1]}/`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
         [[DEV TOOL. Continue to next screen]]
-      </Link>
+      </a>
     </>
   )
 }

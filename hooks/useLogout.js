@@ -1,24 +1,40 @@
 "use client"
 import { logout } from "@/app/modules/utilities"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
+import { PageRoutes } from "@/app/modules/menu"
+
 import usePartners from "@/hooks/usePartners"
+import { useStoreActions, useStoreState } from "easy-peasy"
+import store, { model, clearPersistStore } from "@/store"
+import { useRouter } from "next/navigation"
 
-const useLogout = () => {
-  const { setUser } = useUsers()
-  const { startLoading, endLoading } = useApp()
-  const { setPartners, setPartner, setPartnerID } = usePartners()
+export default function useLogout() {
+  const router = useRouter()
+  const actions = useStoreActions((action) => action)
 
+  const {
+    setPartner,
+    setPartners,
+    setPartnerID,
+    setCategory,
+    setCategories,
+    setPartnerCategories,
+  } = usePartners()
+
+  const clearStore = () => {
+    for (const store in model) {
+      actions[store].clear()
+    }
+    clearPersistStore()
+  }
   const Logout = async () => {
-    startLoading("logout")
+    console.log("Logout")
+    actions.app.startLoading("logout")
     await logout()
-    setUser(null)
-    setPartners(null)
-    setPartner(null)
-    setPartnerID(null)
-    endLoading("logout")
+    clearStore()
+    actions.app.endLoading("logout")
+    router.push(PageRoutes.home)
   }
 
-  return { Logout }
+  return { Logout, clearStore }
 }
-export default useLogout
+useLogout

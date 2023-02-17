@@ -3,7 +3,7 @@ export default function FormErrors({ error, success, align }) {
     <>
       {(error || success) && (
         <div
-          className={`flex gap-2  items-center ${
+          className={`flex gap-3  items-center ${
             align === "center" ? "justify-center" : "justify-start"
           } text-[14px] ${error ? "text-red-600" : "text-green-600"} mt-2`}
         >
@@ -13,7 +13,7 @@ export default function FormErrors({ error, success, align }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-4 h-4"
+            className="w-8 h-8"
           >
             <path
               strokeLinecap="round"

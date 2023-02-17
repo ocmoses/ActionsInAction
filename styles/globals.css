@@ -1,7 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "font/mtn/stylesheet.css";
+@import "./font/mtn/stylesheet.css";
+@import "iconsax-css/style.css";
 @import "./w3.css";
 /* @import './w3-mtn-theme.css'; */
 
@@ -19,11 +20,11 @@
 
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
-    /* background: #f7f4ed; */
+    background: #212121;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    /* background: #e0cbcb; */
+    background: #111111;
     border-radius: 100vh;
     border: 0px solid #f6f7ed;
     cursor: pointer !important;
@@ -68,5 +69,10 @@
   }
   .border-l-1 {
     border-left-width: 1px !important;
+  }
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: #030303 !important;
   }
 }

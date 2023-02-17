@@ -94,7 +94,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ env.SHA }}
         run: |
-            yq e '.image.version = "'$IMAGE_TAG'"' -i /export/home/dmsb_girish/amazon-tribe-frontend-runner/_work/Amazon-Tribe-Frontend/Amazon-Tribe-Frontend/dms/backend/charts/helm-example/values.yaml
+            yq e '.image.version = "'$IMAGE_TAG'"' -i /export/home/dmsb_girish/amazon-tribe-frontend-runner/_work/Amazon-Tribe-Frontend/Amazon-Tribe-Frontend/Amazon-Tribe/backend/charts/helm-example/values.yaml
             git config --global user.name 'gkhhgcl'
             git config --global user.email "girish.kumar@hhgcl.com"
             git add .

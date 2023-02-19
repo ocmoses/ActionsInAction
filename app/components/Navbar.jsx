@@ -19,44 +19,40 @@ function Navbar() {
   }
 
   return (
-    <header>
-      <div className="container px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center max-w-[1220px]  z-10">
-        <div className="flex gap-6 md:gap-10 items-center">
-          <span className="cursor-pointer">
-            <Image
-              priority
-              src="/assets/pic/mtn-logo.svg"
-              width={96}
-              height={47}
-              alt="MTN Nigeria Logo"
-              className=" text-white min-w-[96px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500 cursor-pointer"
-            />
-          </span>
-          <NavLinks />
-        </div>
-        {!session && (
-          <div className="flex justify-end">
-            <TailSpinPreloader width={28} height={28} fill="#efb703" />
-          </div>
-        )}
-        {session && session.status === "authenticated" && (
-          <div className="flex justify-end">
-            <ProfileIcons />
-          </div>
-        )}
-        {session && session.status === "unauthenticated" && (
-          <div className="flex gap-3">
-            <Button onClick={goToRegister} label="Register" />
-            <Link
-              href="/login"
-              className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
-            >
-              Login
-            </Link>
-          </div>
-        )}
+    <div className="px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center z-10 relative">
+      <div className="flex space-x-20 items-center">
+        <Image
+          priority
+          src="/assets/pic/mtn-logo.svg"
+          width={76.71}
+          height={38.32}
+          alt="MTN Nigeria Logo"
+          className=" text-white min-w-[76px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+        />
+        <NavLinks />
       </div>
-    </header>
+      {!session && (
+        <div className="flex justify-end">
+          <TailSpinPreloader width={28} height={28} fill="#efb703" />
+        </div>
+      )}
+      {session && session.status === "authenticated" && (
+        <div className="flex justify-end">
+          <ProfileIcons />
+        </div>
+      )}
+      {session && session.status === "unauthenticated" && (
+        <div className="flex gap-3">
+          <Button onClick={goToRegister} label="Register" />
+          <Link
+            href="/login"
+            className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
+          >
+            Login
+          </Link>
+        </div>
+      )}
+    </div>
   )
 }
 

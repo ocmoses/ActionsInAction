@@ -54,12 +54,12 @@ export default function NavbarOnboarding({
               size={22}
               thickness={2}
               textsize={8}
-              percent={category?.percentage}
+              percent={category?.percentage ?? 0}
               hidelabel={true}
             />
           )}
           <span className="flex text-white text-[12px] flex-nowrap">
-            {category?.percentage}%
+            {category?.percentage ?? 0}%
             <span className="hidden sm:flex"> completed</span>
           </span>
         </div>

@@ -173,7 +173,7 @@ function Compliance() {
               <ButtonPrev
                 onClick={() => moveToPrevForm("compliance")}
                 type="button"
-                label="Next"
+                label="Back"
                 outline="yes"
                 outlinecolor="border-white"
               />

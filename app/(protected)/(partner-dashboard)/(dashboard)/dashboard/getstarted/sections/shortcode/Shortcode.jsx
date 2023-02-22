@@ -60,10 +60,21 @@ function Shortcode() {
   useEffect(() => {
     if (category) {
       console.log({ category })
+      console.log(category?.shortcode)
+      const Shortcodes = []
+      if (category?.shortcode?.length > 0) {
+        category.shortcode.map((sc) => {
+          console.log({ sc })
+          sc.shortcode.shortcode_file = ""
+          sc.shortcode_pricing.pricing_file = ""
+          Shortcodes.push(sc)
+        })
+      }
+      console.log({ Shortcodes })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        shortcodes: category?.shortcode ?? [],
+        shortcodes: Shortcodes ?? [],
       })
     }
   }, [category])
@@ -85,7 +96,7 @@ function Shortcode() {
       )
         return setError({ shortcode: `Shortcode document is required` })
     })
-
+    console.log({ data })
     const result = await registerPartner("shortcode", data)
     if (result) {
       scrollToTop("onboardinglayout")
@@ -341,8 +352,8 @@ function Shortcode() {
       })
     } else {
       setData((prvState) => {
-        prvState.shortcodes.push(newPayload)
-        return prvState
+        // prvState.shortcodes.push(newPayload)
+        return { ...prvState, shortcodes: [...prvState.shortcodes, newPayload] }
       })
     }
     resetFormdata()
@@ -604,7 +615,7 @@ function Shortcode() {
                 <ButtonPrev
                   onClick={() => moveToPrevForm("shortcode")}
                   type="button"
-                  label="Next"
+                  label="Back"
                   outline="yes"
                   outlinecolor="border-white"
                 />

@@ -12,25 +12,34 @@ function FilePreviewModal({ file, filePath, closeModal }) {
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg overflow-hidden h-5/6 w-5/6">
-        <div className="flex items-center justify-between bg-gray-200 px-4 py-3">
-          <h2 className="text-lg font-medium">File Preview</h2>
+      <div className="bg-white rounded-lg overflow-hidden h-[95%] w-[95%] max-w-[1158px] mx-auto">
+        <div className="flex items-center justify-between px-4 py-3  bg-[#030303]">
+          <h2 className="text-lg font-bold font-mtn">File Preview</h2>
           <button
-            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            className="text-red-500 hover:text-white focus:outline-none"
             onClick={closeModal}
           >
-            <svg className="h-6 w-6 fill-current" viewBox="0 0 20 20">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
               <path
-                fillRule="evenodd"
-                d="M10.707 9.293a1 1 0 0 0-1.414 0L7.586 11.5H3a1 1 0 1 0 0 2h4.586l1.707 1.707a1 1 0 0 0 1.414-1.414L9.414 12l1.293-1.293a1 1 0 0 0 0-1.414z"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
               />
             </svg>
           </button>
         </div>
-        <div className="px-4 py-2">
+        <div className="px-4 py-2 w-full h-full">
           {isPdf && (
             <embed
               className="preview"
+              style={{ width: "100%", height: "100%" }}
               src={file ? URL.createObjectURL(file) : filePath}
               type="application/pdf"
             />
@@ -38,18 +47,27 @@ function FilePreviewModal({ file, filePath, closeModal }) {
           {isDoc && (
             <iframe
               className="preview"
+              style={{ width: "100%", height: "100%" }}
               src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
                 file ? URL.createObjectURL(file) : filePath
               )}`}
             />
           )}
           {isVideo && (
-            <video className="preview" controls>
+            <video
+              className="preview"
+              style={{ width: "100%", height: "100%" }}
+              controls
+            >
               <source src={filePath} type={`video/${fileExtension}`} />
             </video>
           )}
           {isAudio && (
-            <audio className="preview" controls>
+            <audio
+              className="preview"
+              style={{ width: "100%", height: "100%" }}
+              controls
+            >
               <source src={filePath} type={`audio/${fileExtension}`} />
             </audio>
           )}

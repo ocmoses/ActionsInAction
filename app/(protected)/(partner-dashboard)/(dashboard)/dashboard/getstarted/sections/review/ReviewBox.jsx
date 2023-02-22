@@ -207,7 +207,12 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       MEMART certificate
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.memart_doc?.file_path ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -225,7 +230,12 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       TIN document
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.tin_doc?.file_path ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -290,7 +300,12 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       VAS document
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.ncc_doc?.file_path ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -354,7 +369,12 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       NLRC document
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.nlrc_doc?.file_path ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -380,7 +400,10 @@ export default function ReviewBox() {
             />
             {category.shortcode?.length > 0 && (
               <div className="md:col-span-3 divide-y divide-slate-400/25">
-                <ShortcodeReview shortcode={category.shortcode} />
+                <ShortcodeReview
+                  shortcode={category.shortcode}
+                  PreviewFile={PreviewFile}
+                />
               </div>
             )}
           </div>
@@ -434,7 +457,12 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       Indemnity insurance document
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.indemnity_doc?.file_path ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -465,7 +493,14 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       Audited account 1
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(
+                          category.audited_account_1_doc?.file_path ?? null
+                        )
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -483,7 +518,14 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       Audited account 2
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(
+                          category.audited_account_2_doc?.file_path ?? null
+                        )
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -501,7 +543,14 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       Audited account 3
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(
+                          category.audited_account_3_doc?.file_path ?? null
+                        )
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -519,7 +568,14 @@ export default function ReviewBox() {
                     <div className="text-[#999999] text-[12px] truncate">
                       Evidence of job done
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(
+                          category.job_evidence_doc?.file_path ?? null
+                        )
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""

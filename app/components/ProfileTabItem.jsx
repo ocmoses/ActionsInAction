@@ -21,7 +21,13 @@ function ProfileTabItem({ menu, form }) {
       // onClick={() =>
       //   checkUpdateStatus(menu) ? moveToNextForm([menu, true]) : {}
       // }
-      onClick={() => moveToNextForm([menu, true])}
+      onClick={() =>
+        process.env.NODE_ENV === "production"
+          ? checkUpdateStatus(menu)
+            ? moveToNextForm([menu, true])
+            : {}
+          : moveToNextForm([menu, true])
+      }
       className={`flex justify-start items-center gap-3 h-[44px] md:min-w-[175px] mb-4 ${
         checkUpdateStatus(menu) && "cursor-pointer"
       }`}

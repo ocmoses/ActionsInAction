@@ -186,7 +186,7 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.cac_doc?.file_name ?? null)
+                        PreviewFile(category.cac_doc?.file_path ?? null)
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >

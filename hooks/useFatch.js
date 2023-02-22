@@ -55,7 +55,7 @@ const useFetch = (initialUrl, options) => {
                 } else {
                   errors.push(
                     data?.message ??
-                      "An error occured. Please reach out to us if issue persists"
+                      "An error was encountered. Please reach out to us if issue persists"
                   )
                 }
               }

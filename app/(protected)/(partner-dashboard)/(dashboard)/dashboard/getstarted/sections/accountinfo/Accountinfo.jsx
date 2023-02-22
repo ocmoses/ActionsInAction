@@ -125,7 +125,7 @@ export default function Accountinfo() {
               <ButtonPrev
                 onClick={() => moveToPrevForm("indemnity")}
                 type="button"
-                label="Next"
+                label="Back"
                 outline="yes"
                 outlinecolor="border-white"
               />

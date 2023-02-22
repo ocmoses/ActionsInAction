@@ -154,7 +154,7 @@ function NlrcLicense() {
               <ButtonPrev
                 onClick={() => moveToPrevForm("nlrclicense")}
                 type="button"
-                label="Next"
+                label="Back"
                 outline="yes"
                 outlinecolor="border-white"
               />

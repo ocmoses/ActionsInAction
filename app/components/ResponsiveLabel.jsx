@@ -1,6 +1,6 @@
 function ResponsiveLabel() {
   return (
-    <div className="bg-yellow-300 p-1 inline-flex absolute top-40 right-0 z-50">
+    <div className="bg-yellow-300 p-1 inline-flex fixed top-40 right-0 z-50">
       <span className="text-md font-bold inline-flex sm:hidden">XS</span>
       <span className="text-md font-bold hidden sm:inline-flex md:hidden">
         SM

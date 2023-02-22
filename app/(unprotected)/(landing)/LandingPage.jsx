@@ -126,9 +126,9 @@ function LandingPage() {
                 <Button label="Get started" />
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div class="col-span-1 md:col-span-2">
-                <div class="flex flex-col items-end rounded-3xl overflow-hidden h-full bg-gradient-to-b from-[#1B1B1B] to-transparent">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="col-span-1 md:col-span-2">
+                <div className="flex flex-col items-end rounded-3xl overflow-hidden h-full bg-gradient-to-b from-[#1B1B1B] to-transparent">
                   <Image
                     src="/assets/illustrations/data-analytics-img.png"
                     alt=""
@@ -148,8 +148,8 @@ function LandingPage() {
                   </div>
                 </div>
               </div>
-              <div class="col-span-1 md:col-span-3 flex flex-col space-y-20 h-full relative">
-                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between rounded-3xl overflow-hidden h-fit bg-gradient-to-b from-[#1B1B1B] to-transparent">
+              <div className="col-span-1 md:col-span-3 flex flex-col space-y-20 h-full relative">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between rounded-3xl overflow-hidden h-fit bg-gradient-to-b from-[#1B1B1B] to-transparent">
                   <div className="px-10 py-8 flex items-center h-fit">
                     <div>
                       <p className="font-mtn-bold text-white text-[30px]">
@@ -169,7 +169,7 @@ function LandingPage() {
                     height={251}
                   />
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between rounded-3xl overflow-hidden h-fit bg-gradient-to-b from-[#1B1B1B] to-transparent">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between rounded-3xl overflow-hidden h-fit bg-gradient-to-b from-[#1B1B1B] to-transparent">
                   <div className="px-10 py-8 flex items-center h-fit">
                     <div>
                       <p className="font-mtn-bold text-white text-[30px]">

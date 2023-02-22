@@ -24,8 +24,10 @@ const useRegistration = () => {
 
     for (const field in userdata) {
       if (isArray(userdata[field])) {
+        console.log("array field", field)
         userdata[field].map((d, i) => formData.append([field][i], d))
       } else {
+        console.log({ field })
         formData.append(field, userdata[field])
       }
     }
@@ -71,7 +73,7 @@ const useRegistration = () => {
     }
     setProcessing(true)
     if (CONFIG[section].method === "PUT") userdata["_method"] = "PUT"
-
+    console.log({ userdata })
     const response = await Axios.post(CONFIG[section].url, userdata, {
       headers: {
         "Content-Type": "multipart/form-data",

@@ -6,6 +6,9 @@ import useProcessing from "@/hooks/useProcessing"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import Image from "next/image"
+import ShortcodeReview from "./ShortcodeReview"
+import FilePreviewModal from "@/app/components/FilePreviewModal"
+import { useState } from "react"
 
 export default function ReviewBox() {
   const { setForm, moveToNextForm } = useProcessing()
@@ -17,8 +20,26 @@ export default function ReviewBox() {
     (category.validation[section] === "r" ||
       category.validation[section] === "o")
 
+  const [showModal, setShowModal] = useState(false)
+  const [filePath, setFilePath] = useState("")
+
+  const PreviewFile = (url) => {
+    if (url) {
+      setFilePath(url)
+      setShowModal(true)
+    }
+  }
+
+  function handleCloseModal() {
+    setFilePath("")
+    setShowModal(false)
+  }
+
   return (
     <>
+      {showModal && (
+        <FilePreviewModal filePath={filePath} closeModal={handleCloseModal} />
+      )}
       {/* Company info */}
       {showSection("companydetail") && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
@@ -32,7 +53,7 @@ export default function ReviewBox() {
               <div className="pb-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Company name
                     </div>
                     <div className="text-white text-[14px]">
@@ -41,7 +62,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Company type
                     </div>
                     <div className="flex justify-between gap-3">
@@ -56,7 +77,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Country
                     </div>
                     <div className="text-white text-[14px]">
@@ -67,7 +88,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Address
                     </div>
                     <div className="text-white text-[14px]">
@@ -80,7 +101,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       City
                     </div>
                     <div className="text-white text-[14px]">
@@ -89,7 +110,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       State
                     </div>
                     <div className="text-white text-[14px]">
@@ -107,7 +128,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Postal codes
                     </div>
                     <div className="text-white text-[14px]">
@@ -116,7 +137,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden"></div>
+                    <div className="text-[#999999] text-[12px] truncate"></div>
                     <div className="text-white text-[14px]"></div>
                   </div>
                 </div>
@@ -138,7 +159,7 @@ export default function ReviewBox() {
               <div className="pb-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       RC. number
                     </div>
                     <div className="text-white text-[14px]">
@@ -147,7 +168,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Tax identification number
                     </div>
                     <div className="text-white text-[14px]">
@@ -160,10 +181,15 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       CAC registration cert.
                     </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
+                    <div
+                      onClick={() =>
+                        PreviewFile(category.cac_doc?.file_name ?? null)
+                      }
+                      className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                    >
                       <Image
                         src="/assets/icons/fileicon.png"
                         alt=""
@@ -178,7 +204,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       MEMART certificate
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -196,7 +222,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       TIN document
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -228,7 +254,7 @@ export default function ReviewBox() {
               <div className="pb-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       VAS License ID
                     </div>
                     <div className="text-white text-[14px]">
@@ -240,7 +266,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
@@ -249,7 +275,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
@@ -261,7 +287,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       VAS document
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -292,7 +318,7 @@ export default function ReviewBox() {
               <div className="pb-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       NLRC License number
                     </div>
                     <div className="text-white text-[14px]">
@@ -304,7 +330,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
@@ -313,7 +339,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
@@ -325,7 +351,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       NLRC document
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -352,99 +378,11 @@ export default function ReviewBox() {
               title="Shortcode"
               onClick={() => moveToNextForm(["shortcode", true])}
             />
-
-            <div className="md:col-span-3 divide-y divide-slate-400/25">
-              <div className="pb-3">
-                <div className="grid">
-                  <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      Shortcode
-                    </div>
-                    <div className="text-white text-[14px]">
-                      {/* {category.shortcode} */}
-                    </div>
-                  </div>
-                </div>
+            {category.shortcode?.length > 0 && (
+              <div className="md:col-span-3 divide-y divide-slate-400/25">
+                <ShortcodeReview shortcode={category.shortcode} />
               </div>
-              <div className="py-3">
-                <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
-                  <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      Shortcode Issuing date
-                    </div>
-                    <div className="text-white text-[14px]">
-                      {/* {outputDate(category.shortcode_issue_date)} */}
-                    </div>
-                  </div>
-
-                  <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      Shortcode Expiry date
-                    </div>
-                    <div className="text-white text-[14px]">
-                      {/* {outputDate(category.shortcode_expiry_date)} */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="py-3">
-                <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
-                  <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      NCC pricing approval Issuing date
-                    </div>
-                    <div className="text-white text-[14px]">
-                      {/* {outputDate(category.shortcode_price_issue_date)} */}
-                    </div>
-                  </div>
-
-                  <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      NCC pricing approval Expiry date
-                    </div>
-                    <div className="text-white text-[14px]">
-                      {/* {outputDate(category.shortcode_price_expiry_date)} */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="py-3">
-                <div className="grid">
-                  <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      Shortcode document
-                    </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
-                      {/* <Image
-                      src="/assets/icons/fileicon.png"
-                      alt=""
-                      width={14}
-                      height={16}
-                    /> */}
-                      {/* {category.shortcode_doc} */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="py-3">
-                <div className="grid">
-                  <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
-                      NCC pricing approval document
-                    </div>
-                    <div className="text-white text-[14px] flex items-center gap-3">
-                      {/* <Image
-                      src="/assets/icons/fileicon.png"
-                      alt=""
-                      width={14}
-                      height={16}
-                    /> */}
-                      {/* {category.shortcode_approval_doc} */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -460,7 +398,7 @@ export default function ReviewBox() {
               <div className="pb-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Indemnity issue number
                     </div>
                     <div className="text-white text-[14px]">
@@ -472,7 +410,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
                   <div className="mb-2 sm:mb-0 sm:col-span-2">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
@@ -481,7 +419,7 @@ export default function ReviewBox() {
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
@@ -493,7 +431,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Indemnity insurance document
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -524,7 +462,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Audited account 1
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -542,7 +480,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Audited account 2
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -560,7 +498,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Audited account 3
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">
@@ -578,7 +516,7 @@ export default function ReviewBox() {
               <div className="py-3">
                 <div className="grid">
                   <div className="">
-                    <div className="text-[#999999] text-[12px] text-ellipsis overflow-hidden">
+                    <div className="text-[#999999] text-[12px] truncate">
                       Evidence of job done
                     </div>
                     <div className="text-white text-[14px] flex items-center gap-3">

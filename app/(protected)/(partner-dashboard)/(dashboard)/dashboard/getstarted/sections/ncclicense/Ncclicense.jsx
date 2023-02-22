@@ -154,7 +154,7 @@ function Ncclicense() {
               <ButtonPrev
                 onClick={() => moveToPrevForm("ncclicense")}
                 type="button"
-                label="Next"
+                label="Back"
                 outline="yes"
                 outlinecolor="border-white"
               />

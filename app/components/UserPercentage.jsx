@@ -31,34 +31,34 @@ export default function UserPercentage({
   }, [size, thickness, textsize, hidelabel])
   return (
     <>
-      {percent && (
-        <div className="text-white flex items-center gap-3 m-0">
-          <div
-            className={`radial-progress text-2xl  text-mtn bg-[#333333] ${
-              borderWidthCss ?? "border-2"
-            } ${borderColorCss ?? "border-[#333]"}`}
-            style={{
-              "--value": percent,
-              "--size": `${config.size}px`,
-              "--thickness": `${config.thickness}px`,
-            }}
-          >
-            {!config.hidelabel && (
-              <span
-                className={`rounded-full flex justify-center items-center bg-black`}
-                style={{
-                  minHeight: `${config.inner}px`,
-                  minWidth: `${config.inner}px`,
-                  fontSize: `${config.textsize}px`,
-                }}
-              >
-                {percent}%
-              </span>
-            )}
-          </div>
-          {/* <span>{percent}% completed</span> */}
+      {/* {percent && ( */}
+      <div className="text-white flex items-center gap-3 m-0">
+        <div
+          className={`radial-progress text-2xl  text-mtn bg-[#333333] ${
+            borderWidthCss ?? "border-2"
+          } ${borderColorCss ?? "border-[#333]"}`}
+          style={{
+            "--value": percent ?? 0,
+            "--size": `${config.size}px`,
+            "--thickness": `${config.thickness}px`,
+          }}
+        >
+          {!config.hidelabel && (
+            <span
+              className={`rounded-full flex justify-center items-center bg-black`}
+              style={{
+                minHeight: `${config.inner}px`,
+                minWidth: `${config.inner}px`,
+                fontSize: `${config.textsize}px`,
+              }}
+            >
+              {percent ?? 0}%
+            </span>
+          )}
         </div>
-      )}
+        {/* <span>{percent}% completed</span> */}
+      </div>
+      {/* )} */}
     </>
   )
 }

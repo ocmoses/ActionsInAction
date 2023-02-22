@@ -1,4 +1,4 @@
-name: Deploy Activity-Tracker-Frontend.
+name: Deploy Activity-tribe-Frontend.
 
 on:
  push:

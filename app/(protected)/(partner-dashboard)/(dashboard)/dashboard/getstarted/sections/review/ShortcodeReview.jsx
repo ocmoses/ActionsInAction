@@ -1,9 +1,8 @@
 import { outputDate } from "@/app/modules/utilities"
 import Image from "next/image"
-export default function ShortcodeReview({ shortcode }) {
+export default function ShortcodeReview({ shortcode, PreviewFile }) {
   console.log({ shortcode })
   return shortcode.map((sc) => {
-    console.log({ sc })
     return (
       <div
         className={`bg-[#212121] relative p-[8px] z-0 w-full group rounded-[10px] ${
@@ -17,7 +16,12 @@ export default function ShortcodeReview({ shortcode }) {
                 <div className="text-[#999999] text-[12px] truncate">
                   Shortcode document
                 </div>
-                <div className="text-white text-[14px] flex items-center gap-3">
+                <div
+                  onClick={() =>
+                    PreviewFile(sc.shortcode?.shortcode_doc?.file_path ?? null)
+                  }
+                  className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                >
                   <Image
                     src="/assets/icons/fileicon.png"
                     alt=""
@@ -68,7 +72,14 @@ export default function ShortcodeReview({ shortcode }) {
                 <div className="text-[#999999] text-[12px] truncate">
                   NCC pricing approval document
                 </div>
-                <div className="text-white text-[14px] flex items-center gap-3">
+                <div
+                  onClick={() =>
+                    PreviewFile(
+                      sc.shortcode_pricing?.pricing_doc?.file_path ?? null
+                    )
+                  }
+                  className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
+                >
                   <Image
                     src="/assets/icons/fileicon.png"
                     alt=""

@@ -37,7 +37,7 @@ const doLogin = async (body, req, res) => {
       }
     }
   } else {
-    return { success: false, error: "AN error was encountered", data: null }
+    return { success: false, error: "An error was encountered", data: null }
   }
 }
 export default async function handler(req, res) {
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     // console.log("Login User", User)
     return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    // console.log({ error })
+    console.log({ error })
     return res.status(200).json({
       success: false,
       error:

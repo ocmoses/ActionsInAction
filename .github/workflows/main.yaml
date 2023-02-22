@@ -1,0 +1,103 @@
+name: Deploy Activity-Tracker-Frontend.
+
+on:
+ push:
+   branches:
+     - dev
+ workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+ deploy_dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on:
+      - self-hosted
+      - tribe-frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+        with:
+          length: 6
+      - run: echo $SHA
+        env:
+          SHA: ${{ steps.short-sha.outputs.sha }}
+      - run: echo $SHA
+        env:
+          SHA: ${{ env.SHA }}
+
+      - name: Build docker image.
+        env:
+          PASSWD: ${{ secrets.PASSWD }}
+          UNAME: ${{ secrets.UNAME }}
+          IMAGE_TAG: ${{ env.SHA }}
+        run: |
+          docker login ojtkgsbharb01.mtn.com.ng -u $UNAME -p $PASSWD
+          docker build -t amazon-tribe-frontend-dev .
+          docker tag amazon-tribe-frontend-dev ojtkgsbharb01.mtn.com.ng/amazon-tribe/amazon-tribe-frontend-dev:$IMAGE_TAG
+          docker push ojtkgsbharb01.mtn.com.ng/amazon-tribe/amazon-tribe-frontend-dev:$IMAGE_TAG
+      
+      - uses: actions/checkout@v3
+        with:
+          ref: cicd-frontend-dev
+      - name: Update Version
+        env:
+          IMAGE_TAG: ${{ env.SHA }}
+        run: |
+            ls -ltr
+            git branch
+            git remote show origin
+            pwd
+            echo $IMAGE_TAG
+            yq e '.image.version = "'$IMAGE_TAG'"' -i /export/home/dmsb_girish/amazon-tribe-frontend-runner/_work/Amazon-Tribe-Frontend/Amazon-Tribe-Frontend/charts/helm-example/values.yaml
+            cat /export/home/dmsb_girish/amazon-tribe-frontend-runner/_work/Amazon-Tribe-Frontend/Amazon-Tribe-Frontend/charts/helm-example/values.yaml
+            git config --global user.name 'gkhhgcl'
+            git config --global user.email "girish.kumar@hhgcl.com"
+            git add .
+            git commit -m "updated values.yml file"
+            echo "Done.."
+            git push origin cicd-frontend-dev
+
+
+# update_chart:
+#    needs: deploy_dev
+#    runs-on:
+#      - self-hosted
+#      - tribe-frontend
+#      - cicd
+
+#    steps:
+#      - name: Check out helm repo
+#        uses: actions/checkout@v2
+#        with:
+#          ref: dev
+#          repository: gkhhgcl/helm-chart
+#          token: ${{ secrets.my_pat }}
+
+#      - uses: benjlevesque/short-sha@v1.2
+#        id: short-sha
+#        with:
+#          length: 6
+#      - run: echo $SHA
+#        env:
+#          SHA: ${{ steps.short-sha.outputs.sha }}
+#      - run: echo $SHA
+#        env:
+#          SHA: ${{ env.SHA }}
+
+#      - name: Update helm
+#        if: github.ref == 'refs/heads/dev'
+#        env:
+#          IMAGE_TAG: ${{ env.SHA }}
+#        run: |
+#            yq e '.image.version = "'$IMAGE_TAG'"' -i /export/home/dmsb_girish/amazon-tribe-frontend-runner/_work/Amazon-Tribe-Frontend/Amazon-Tribe-Frontend/Amazon-Tribe/frontend/charts/helm-example/values.yaml
+#            git config --global user.name 'gkhhgcl'
+#            git config --global user.email "girish.kumar@hhgcl.com"
+#            git add .
+#            git commit -m "updated values.yml file"
+#            echo "Done.."
+#            git push origin dev

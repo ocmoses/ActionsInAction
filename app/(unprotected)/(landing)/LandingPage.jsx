@@ -24,6 +24,17 @@ function LandingPage() {
   useEffect(() => {
     setRouteloading(false)
   }, [])
+
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const slides = ["growth"]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((currentSlide + 1) % slides.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [currentSlide, slides.length])
+
   return (
     <>
       <main className="flex items-start px-8 xl:px-0 m-0 pb-2xl w-full relative bg-[url('/assets/pic/hero-bg.png')] bg-contain  sm:bg-right-top bg-no-repeat">
@@ -37,7 +48,15 @@ function LandingPage() {
               </h3>
               <div className="mx-auto max-w-[633px] text-[36px] sm:text-[40px] md:text-[80px] text-white text-center font-mtn-extrabold leading-[0.9] pb-5">
                 Hello partner, meet{" "}
-                <span className="text-[#FFCB03]">growth!</span>
+                {slides.map((s, i) => {
+                  return i === currentSlide ? (
+                    <span className="text-[#FFCB03]  animate-slide-up">
+                      {slides[currentSlide]}
+                    </span>
+                  ) : (
+                    ""
+                  )
+                })}
               </div>
 
               <div className="text-white/70 max-w-[594px]">

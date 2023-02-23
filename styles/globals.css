@@ -75,4 +75,25 @@
   select:-webkit-autofill {
     -webkit-text-fill-color: #030303 !important;
   }
+  @keyframes slide-up {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-up {
+    animation-name: slide-up;
+    animation-duration: var(--animate-duration, 1s);
+    animation-fill-mode: forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up.delay-100 {
+    --animate-delay: 100ms;
+  }
 }

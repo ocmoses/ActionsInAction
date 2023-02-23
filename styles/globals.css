@@ -96,4 +96,12 @@
   .animate-slide-up.delay-100 {
     --animate-delay: 100ms;
   }
+
+  .transform {
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .translate-y-full {
+    transform: translateY(-100%);
+  }
 }

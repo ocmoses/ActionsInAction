@@ -26,7 +26,7 @@ function LandingPage() {
   }, [])
 
   const [currentSlide, setCurrentSlide] = useState(0)
-  const slides = ["growth"]
+  const slides = ["growth!", "success!", "next level!", "profit!", "support!"]
 
   useEffect(() => {
     const interval = setInterval(() => {

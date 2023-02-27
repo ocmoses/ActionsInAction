@@ -5,7 +5,7 @@ export const PartnerMenu = [
     route: "/dashboard/getstarted",
   },
   {
-    label: "Home",
+    label: "Dashboard",
     icon: "",
     route: "/dashboard",
   },
@@ -38,6 +38,18 @@ export const PartnerMenu = [
     label: "Settings",
     icon: "",
     route: "",
+  },
+]
+export const AdminMenu = [
+  {
+    label: "Dashboard",
+    icon: "",
+    route: "/admin/dashboard",
+  },
+  {
+    label: "Compliance",
+    icon: "",
+    route: "/admin/dashboard/compliance",
   },
 ]
 

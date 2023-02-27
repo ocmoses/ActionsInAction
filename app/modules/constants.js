@@ -15,8 +15,10 @@ export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
-export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
+// export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
+export const apiURL = "http://10.1.29.122/api"
 // export const apiURL = "http://10.1.29.77/api"
+
 export const partnerFields = {
   partnerid: "",
 

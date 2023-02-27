@@ -75,7 +75,7 @@
   select:-webkit-autofill {
     -webkit-text-fill-color: #030303 !important;
   }
-  @keyframes slide-up {
+  @keyframes slide-up-in {
     from {
       transform: translateY(-100%);
       opacity: 0;
@@ -85,16 +85,47 @@
       opacity: 1;
     }
   }
+  table.transparent th,
+  table.transparent td {
+    @apply bg-transparent text-[#999999];
+  }
+  table.transparent tr {
+    @apply border-b border-b-white/10;
+  }
+  table.transparent h4 {
+    @apply text-white text-[14px] font-mtn-bold;
+  }
 
-  .animate-slide-up {
-    animation-name: slide-up;
+  .animate-slide-up-in {
+    animation-name: slide-up-in;
     animation-duration: var(--animate-duration, 1s);
     animation-fill-mode: forwards;
     opacity: 0;
   }
 
-  .animate-slide-up.delay-100 {
-    --animate-delay: 100ms;
+  .animate-slide-up-in.delay-100 {
+    --animate-delay: 1000ms;
+  }
+  @keyframes slide-up-out {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  .animate-slide-up-out {
+    animation-name: slide-up-out;
+    animation-duration: var(--animate-duration, 1s);
+    animation-fill-mode: forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up-out.delay-100 {
+    --animate-delay: 1000ms;
   }
 
   .transform {

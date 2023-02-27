@@ -50,7 +50,7 @@ function LandingPage() {
                 Hello partner, meet{" "}
                 {slides.map((s, i) => {
                   return i === currentSlide ? (
-                    <span className="text-[#FFCB03]  animate-slide-up">
+                    <span className="text-[#FFCB03] animate-slide-up-in delay-100">
                       {slides[currentSlide]}
                     </span>
                   ) : (

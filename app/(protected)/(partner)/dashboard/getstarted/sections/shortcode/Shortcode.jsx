@@ -64,7 +64,6 @@ function Shortcode() {
       const Shortcodes = []
       if (category?.shortcode?.length > 0) {
         category.shortcode.map((sc) => {
-          console.log({ sc })
           sc.shortcode.shortcode_file = ""
           sc.shortcode_pricing.pricing_file = ""
           Shortcodes.push(sc)
@@ -138,13 +137,47 @@ function Shortcode() {
     return string.filter((str) => str !== "undefined")
   }
   const handleKeyUp = (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      processKeyUp()
+    }
+    // if (content.length > 0) {
+    //   const duplicate = []
+    //   content.map((c) => {
+    //     if (formdata.shortcode.shortcodes.includes(c)) {
+    //       duplicate.push(c)
+    //     }
+    //   })
+    //   if (duplicate.length > 0) {
+    //     setError({
+    //       shtcde: `${duplicate.join(", ")} already exists in shortcodes`,
+    //     })
+    //     return false
+    //   }
+    //   //  9088, 65674 8765 098, 564 737 966
+    //   setFormdata((prevState) => ({
+    //     ...prevState,
+    //     shortcode: {
+    //       ...prevState.shortcode,
+    //       shortcodes: [...prevState.shortcode.shortcodes, ...content],
+    //     },
+    //     shortcode_pricing: {
+    //       ...prevState.pricing,
+    //       pricing_shortcodes: [
+    //         ...prevState.shortcode_pricing.pricing_shortcodes,
+    //         ...content,
+    //       ],
+    //     },
+    //   }))
+
+    //   setShtcde("")
+    // }
+    // return true
+  }
+  const processKeyUp = () => {
     removeError("shtcde")
     let content = []
-    if (e.key === " " || e.key === "Enter") {
-      content = formShortcodeArray(shtcde)
-      // if (cnt.length > 0) content.push(cnt)
-    }
-    if (content.length > 0) {
+    content = formShortcodeArray(shtcde)
+    if (content && content.length > 0) {
       const duplicate = []
       content.map((c) => {
         if (formdata.shortcode.shortcodes.includes(c)) {
@@ -155,7 +188,7 @@ function Shortcode() {
         setError({
           shtcde: `${duplicate.join(", ")} already exists in shortcodes`,
         })
-        return
+        return false
       }
       //  9088, 65674 8765 098, 564 737 966
       setFormdata((prevState) => ({
@@ -175,6 +208,7 @@ function Shortcode() {
 
       setShtcde("")
     }
+    return true
   }
   const handleShortcodeChange = (e) => {
     setShtcde(e.target.value)
@@ -255,6 +289,7 @@ function Shortcode() {
     setActiveform("shortcode")
   }
   const goToPricing = () => {
+    if (!processKeyUp()) return
     clearErrors()
     if (
       category?.validation.shortcode === "r" &&
@@ -495,7 +530,6 @@ function Shortcode() {
             value={shtcde}
             onKeyUp={handleKeyUp}
             onChange={handleShortcodeChange}
-            onBlur={handleKeyUp}
             errors={errors}
             margin="mb-2"
           />

@@ -1,6 +1,6 @@
 "use client"
 import Navbar from "@/app/components/Navbar"
-
+import Typewriter from "typewriter-effect"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
@@ -46,17 +46,35 @@ function LandingPage() {
               <h3 className="text-mtn text-[20px] font-mtn font-semibold mb-6">
                 MTN Partner Portal
               </h3>
-              <div className="mx-auto max-w-[633px] text-[36px] sm:text-[40px] md:text-[80px] text-white text-center font-mtn-extrabold leading-[0.9] pb-5">
+              <div className="typeanimation mx-auto max-w-[633px] text-[36px] sm:text-[40px] md:text-[80px] text-white text-center font-mtn-extrabold leading-[0.9] pb-5">
                 Hello partner, meet{" "}
-                {slides.map((s, i) => {
-                  return i === currentSlide ? (
-                    <span className="text-[#FFCB03] animate-slide-up-in delay-100">
-                      {slides[currentSlide]}
-                    </span>
-                  ) : (
-                    ""
-                  )
-                })}
+                <Typewriter
+                  className="inline"
+                  options={{
+                    strings: [
+                      "growth!",
+                      "success!",
+                      "next level!",
+                      "profit!",
+                      "support!",
+                    ],
+                    autoStart: true,
+                    loop: true,
+                    delay: 75,
+                    skipAddStyles: false,
+                    wrapperClassName: "inline text-[#FFCB03]",
+                    cursorClassName: "text-[64px] text-white/60",
+                  }}
+                  // {slides.map((s, i) => {
+                  //   return i === currentSlide ? (
+                  //     <span className="text-[#FFCB03] animate-slide-up-in delay-100">
+                  //       {slides[currentSlide]}
+                  //     </span>
+                  //   ) : (
+                  //     ""
+                  //   )
+                  // })}
+                />
               </div>
 
               <div className="text-white/70 max-w-[594px]">

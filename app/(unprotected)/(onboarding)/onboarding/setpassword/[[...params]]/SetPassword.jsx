@@ -62,11 +62,11 @@ function SetPassword({ params: { params } }) {
     const { data: loginData } = result
     if (!loginData) {
       setProcessing(false)
-      return setError({ login: "Authentication failed" })
+      return setError({ setpassword: "Authentication failed" })
     }
     if (!loginData.success) {
       setProcessing(false)
-      return setError({ login: loginData.error })
+      return setError({ setpassword: loginData.error })
     }
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",

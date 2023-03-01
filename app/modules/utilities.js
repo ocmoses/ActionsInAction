@@ -290,3 +290,14 @@ export const sanitizeSegments = (segments) => {
   if (!segments) return null
   return segments.filter((seg) => !seg.includes("("))
 }
+export const getInitials = (fullname) => {
+  if (!fullname) return ""
+  console.log({ fullname })
+  const Names = fullname.split(" ")
+  const firstName = Names[0] ?? ""
+  const lastName = Names[1] ?? ""
+  const initials = `${firstName ? firstName[0] : ""}${
+    lastName ? lastName[0] : ""
+  }`
+  return initials
+}

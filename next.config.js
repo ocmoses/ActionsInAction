@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   compiler: {
-    removeConsole: true,
+    removeConsole: process.env.NODE_ENV === "production" ? true : false,
   },
   reactStrictMode: true,
   images: {

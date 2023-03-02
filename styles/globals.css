@@ -135,7 +135,7 @@
   .translate-y-full {
     transform: translateY(-100%);
   }
-  .typeanimation > .Typewriter {
+  .typeanimation .Typewriter {
     display: inline;
   }
 }

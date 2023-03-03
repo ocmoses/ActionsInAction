@@ -24,6 +24,7 @@ export default function Validate({ params }) {
   }, [])
   useEffect(() => {
     setType(resource && resource[1] ? resource[1] : "new")
+    clearErrors()
   }, [resource])
   return (
     <>
@@ -65,7 +66,10 @@ export default function Validate({ params }) {
             Didn't receive our email?{" "}
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
-              onClick={() => resendEmail(tmpuser?.email, type)}
+              onClick={() => {
+                clearErrors()
+                resendEmail(tmpuser?.email, type)
+              }}
             >
               Resend email
             </span>

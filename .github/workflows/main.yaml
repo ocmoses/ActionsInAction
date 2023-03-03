@@ -42,6 +42,11 @@ jobs:
       - run: echo $SHA
         env: 
           SHA: ${{ env.SHA }}
+
+      - name: 'dev nginx conf'
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          cp dev_default/default default
         
       - name: Login to dev image repository
         if: github.ref == 'refs/heads/dev'
@@ -85,6 +90,11 @@ jobs:
             git commit -m "updated values.yml file"
             echo "Done.."
             git push origin dev
+
+      - name: 'stage nginx conf'
+        if: github.ref == 'refs/heads/stage'
+        run: |
+          cp stage_default/default default
         
       - name: Login to staging image repository
         if: github.ref == 'refs/heads/stage'

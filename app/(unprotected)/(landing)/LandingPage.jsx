@@ -65,7 +65,7 @@ function LandingPage() {
                       skipAddStyles: false,
                       wrapperClassName: "inline text-[#FFCB03]",
                       cursorClassName:
-                        " text-[28px] sm:text-[48px] md:text-[66px] text-white/60",
+                        " text-[28px] sm:text-[48px] md:text-[66px] text-white/20 animate-pulse",
                     }}
                     // {slides.map((s, i) => {
                     //   return i === currentSlide ? (

@@ -72,16 +72,12 @@ export default function Validate({ params }) {
           </div>
         )}
       </div>
-      {/** 
-       //? https//......com/onboarding/validate/{uuid}/category // for new user onboarding
-        //! https//......com/onboarding/validate/{uuid}/profile //? for existing user onboarding 
-      */}
-      <a
+      {/* <a
         href={`/onboarding/validate/${resource[0]}/${resource[1]}/`}
         className="block w3-animate-opacity w-full font-mtn-extralight cursor-pointer text-center text-white/70 mt-[100px] p-2"
       >
         [[DEV TOOL. Continue to next screen]]
-      </a>
+      </a> */}
     </>
   )
 }

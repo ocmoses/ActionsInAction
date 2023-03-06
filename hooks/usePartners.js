@@ -127,6 +127,30 @@ const usePartners = () => {
     if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
+  const lastStage = async (category) => {
+    if (!category?.profile_stage) return null
+    const progress = category.profile_stage
+    const validation = category.validation
+    console.log({ progress, validation })
+    const Stages = [
+      "userinfo",
+      "companyinfo",
+      "category",
+      "companydetail",
+      "compliance",
+      "ncclicense",
+      "nlrclicense",
+      "shortcode",
+      "indemnity",
+      "accountinfo",
+    ]
+
+    Stages.map((stage) => {
+      if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
+    })
+    if (!nextstage) nextstage = PageRoutes.dashboard
+    return { percent, nextstage }
+  }
 
   const registerPartner = async (frm, userdata) => {
     console.log({ userdata })
@@ -299,119 +323,119 @@ const usePartners = () => {
         return updateCategory("accountinfo", userdata)
     }
   }
-  const registerPartnerRefactored = async (frm, userdata) => {
-    console.log({ userdata })
-    switch (frm) {
-      // Existing partner flows
-      case "partnerwelcome":
-        setProcessing(true)
-        const { success: partnerwelcomeSuccess, data: partnerwelcome } =
-          await fetchData(RemoteEndpoints.WELCOMEBACK, {
-            method: "POST",
-            cache: "no-store",
-            body: JSON.stringify({
-              partnerid: userdata.partnerid,
-              email_type: userdata.email_type,
-            }),
-          })
-        if (!partnerwelcomeSuccess) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
-        }
+  // const registerPartnerRefactored = async (frm, userdata) => {
+  //   console.log({ userdata })
+  //   switch (frm) {
+  //     // Existing partner flows
+  //     case "partnerwelcome":
+  //       setProcessing(true)
+  //       const { success: partnerwelcomeSuccess, data: partnerwelcome } =
+  //         await fetchData(RemoteEndpoints.WELCOMEBACK, {
+  //           method: "POST",
+  //           cache: "no-store",
+  //           body: JSON.stringify({
+  //             partnerid: userdata.partnerid,
+  //             email_type: userdata.email_type,
+  //           }),
+  //         })
+  //       if (!partnerwelcomeSuccess) {
+  //         setProcessing(false)
+  //         return { success: false, error: partnerwelcome.message, data: null }
+  //       }
 
-        users.setTmpUser(partnerwelcome.user)
-        // setPartners(partnerwelcome.partners)
-        router.push(
-          `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
-        )
-        break
-      case "setpassword":
-        setProcessing(true)
-        const { data: setpassword, error: setpasswordError } = await fetchData(
-          RemoteEndpoints.RESETPASSWORD,
-          {
-            method: "PUT",
-            cache: "no-store",
-            body: JSON.stringify({
-              user_uuid: user?.uuid ?? tmpUserUUID,
-              password: userdata.password,
-              password_confirmed: userdata.password,
-            }),
-          }
-        )
-        if (setpasswordError) {
-          setProcessing(false)
-          return { success: false, error: setpasswordError, data: null }
-        }
-        setTmpUserUUID(null)
-        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
-        const serverSession = {
-          status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
-          User: setpassword,
-        }
-        app.setStoreStates(serverSession, categories)
-        if (userdata.type === "existing" || userdata.type === "new")
-          router.push(PageRoutes.getstarted)
-        else router.push(PageRoutes.getstarted)
-        break
-      case "userinfo":
-        setProcessing(true)
-        const { success, error, data } = await fetchData(
-          RemoteEndpoints.USERINFO,
-          {
-            method: "POST",
-            cache: "no-store",
-            body: JSON.stringify({
-              first_name: userdata.first_name,
-              last_name: userdata.last_name,
-              company_name: userdata.company_name,
-              email: userdata.email,
-              countrycode: userdata.countrycode,
-              country: userdata.country,
-              telephone: userdata.telephone,
-              designation: userdata.designation,
-              password: userdata.password,
-              password_confirmed: userdata.password,
-            }),
-          }
-        )
-        if (error) {
-          setProcessing(false)
-          return { success, error, data }
-        }
-        const User = userData(data)
-        users.setTmpUser(User.user)
-        router.push(`/onboarding/verify/${User.user.uuid}/new`)
-        break
-      case "category":
-        const categoryResponse = updateCategory("category", userdata)
-        if (categoryResponse.error) {
-          setProcessing(false)
-          return categoryResponse
-        }
-        const { data: categoryData } = categoryResponse
-        setCurrentCategory(categoryData.category, categoryData.partner)
-        updatePartner(categoryData.partner)
-        // setUpdateStatus("category", true)
-        return categoryResponse
-        break
-      case "companydetail":
-        return updateCategory("companydetail", userdata)
-      case "compliance":
-        return updateCategory("compliance", userdata)
-      case "ncclicense":
-        return updateCategory("ncclicense", userdata)
-      case "nlrclicense":
-        return updateCategory("nlrclicense", userdata)
-      case "shortcode":
-        return updateCategory("shortcode", userdata)
-      case "indemnity":
-        return updateCategory("indemnity", userdata)
-      case "accountinfo":
-        return updateCategory("accountinfo", userdata)
-    }
-  }
-  const setUpdateStatus = (stage) => {}
+  //       users.setTmpUser(partnerwelcome.user)
+  //       // setPartners(partnerwelcome.partners)
+  //       router.push(
+  //         `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
+  //       )
+  //       break
+  //     case "setpassword":
+  //       setProcessing(true)
+  //       const { data: setpassword, error: setpasswordError } = await fetchData(
+  //         RemoteEndpoints.RESETPASSWORD,
+  //         {
+  //           method: "PUT",
+  //           cache: "no-store",
+  //           body: JSON.stringify({
+  //             user_uuid: user?.uuid ?? tmpUserUUID,
+  //             password: userdata.password,
+  //             password_confirmed: userdata.password,
+  //           }),
+  //         }
+  //       )
+  //       if (setpasswordError) {
+  //         setProcessing(false)
+  //         return { success: false, error: setpasswordError, data: null }
+  //       }
+  //       setTmpUserUUID(null)
+  //       const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
+  //       const serverSession = {
+  //         status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
+  //         User: setpassword,
+  //       }
+  //       app.setStoreStates(serverSession, categories)
+  //       if (userdata.type === "existing" || userdata.type === "new")
+  //         router.push(PageRoutes.getstarted)
+  //       else router.push(PageRoutes.getstarted)
+  //       break
+  //     case "userinfo":
+  //       setProcessing(true)
+  //       const { success, error, data } = await fetchData(
+  //         RemoteEndpoints.USERINFO,
+  //         {
+  //           method: "POST",
+  //           cache: "no-store",
+  //           body: JSON.stringify({
+  //             first_name: userdata.first_name,
+  //             last_name: userdata.last_name,
+  //             company_name: userdata.company_name,
+  //             email: userdata.email,
+  //             countrycode: userdata.countrycode,
+  //             country: userdata.country,
+  //             telephone: userdata.telephone,
+  //             designation: userdata.designation,
+  //             password: userdata.password,
+  //             password_confirmed: userdata.password,
+  //           }),
+  //         }
+  //       )
+  //       if (error) {
+  //         setProcessing(false)
+  //         return { success, error, data }
+  //       }
+  //       const User = userData(data)
+  //       users.setTmpUser(User.user)
+  //       router.push(`/onboarding/verify/${User.user.uuid}/new`)
+  //       break
+  //     case "category":
+  //       const categoryResponse = updateCategory("category", userdata)
+  //       if (categoryResponse.error) {
+  //         setProcessing(false)
+  //         return categoryResponse
+  //       }
+  //       const { data: categoryData } = categoryResponse
+  //       setCurrentCategory(categoryData.category, categoryData.partner)
+  //       updatePartner(categoryData.partner)
+  //       // setUpdateStatus("category", true)
+  //       return categoryResponse
+  //       break
+  //     case "companydetail":
+  //       return updateCategory("companydetail", userdata)
+  //     case "compliance":
+  //       return updateCategory("compliance", userdata)
+  //     case "ncclicense":
+  //       return updateCategory("ncclicense", userdata)
+  //     case "nlrclicense":
+  //       return updateCategory("nlrclicense", userdata)
+  //     case "shortcode":
+  //       return updateCategory("shortcode", userdata)
+  //     case "indemnity":
+  //       return updateCategory("indemnity", userdata)
+  //     case "accountinfo":
+  //       return updateCategory("accountinfo", userdata)
+  //   }
+  // }
+  // const setUpdateStatus = (stage) => {}
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 
@@ -441,8 +465,9 @@ const usePartners = () => {
     updatePartner,
     registerPartner,
     checkRegStatus,
-    setUpdateStatus,
+    // setUpdateStatus,
     checkUpdateStatus,
+    lastStage,
     resendEmail,
     validation,
     setValidation,

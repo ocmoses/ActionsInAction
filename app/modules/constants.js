@@ -17,6 +17,7 @@ const environment = {
   STAGING: "http://10.1.44.40/api",
 }
 export const apiURL = environment.STAGING
+// export const apiURL = process.env.APIURI
 
 export const EmailType = {
   EXISTING: "existing",

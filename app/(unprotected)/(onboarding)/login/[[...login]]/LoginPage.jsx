@@ -10,7 +10,7 @@ import useProcessing from "@/hooks/useProcessing"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
-import { NextEndPoints } from "@/app/modules/endpoints"
+import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
 
@@ -56,6 +56,7 @@ function Login({ params }) {
       body: JSON.stringify({
         email: data.email,
         password: data.password,
+        endpoint: RemoteEndPoints.LOGIN,
       }),
     })
     const result = await response.json()

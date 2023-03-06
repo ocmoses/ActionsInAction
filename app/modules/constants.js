@@ -15,12 +15,15 @@ export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
-// export const apiURL = "https://amazonpartner.com.ng/amazon/public/api"
-export const apiURL = "http://10.1.29.122/api"
+const environment = {
+  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
+  DEV: "http://10.1.29.122/api",
+  STAGING: "http://10.1.44.40/api",
+}
+export const apiURL = environment.DEV
 
 export const partnerFields = {
   partnerid: "",
-
   // userinfo
   first_name: "",
   last_name: "",

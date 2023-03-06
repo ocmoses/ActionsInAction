@@ -13,8 +13,10 @@ const doLogin = async (body, req, res) => {
     referrerPolicy: "no-referrer",
     body: JSON.stringify(body),
   })
+  console.log("URL", RemoteEndPoints.LOGIN)
   if (response) {
     const result = await response.json()
+    console.log({ result })
     const { data, success } = result
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })
@@ -47,9 +49,11 @@ export default async function handler(req, res) {
       return
     }
     const body = JSON.parse(req.body)
-
-    const loginData = doLogin(body, req, res)
-    const categoriesData = getCategories(process.env.APIKEY)
+    console.log("URL", RemoteEndPoints.LOGIN)
+    const loginData = await doLogin(body, req, res)
+    console.log({ loginData })
+    const categoriesData = await getCategories(process.env.APIKEY)
+    console.log({ categoriesData })
 
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])

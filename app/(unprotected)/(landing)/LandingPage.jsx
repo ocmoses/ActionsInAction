@@ -46,35 +46,38 @@ function LandingPage() {
               <h3 className="text-mtn text-[20px] font-mtn font-semibold mb-6">
                 MTN Partner Portal
               </h3>
-              <div className="typeanimation mx-auto max-w-[633px] text-[36px] sm:text-[40px] md:text-[80px] text-white text-center font-mtn-extrabold leading-[0.9] pb-5">
-                Hello partner, meet{" "}
-                <Typewriter
-                  className="inline"
-                  options={{
-                    strings: [
-                      "growth!",
-                      "success!",
-                      "next level!",
-                      "profit!",
-                      "support!",
-                    ],
-                    autoStart: true,
-                    loop: true,
-                    delay: 75,
-                    skipAddStyles: false,
-                    wrapperClassName: "inline text-[#FFCB03]",
-                    cursorClassName: "text-[64px] text-white/60",
-                  }}
-                  // {slides.map((s, i) => {
-                  //   return i === currentSlide ? (
-                  //     <span className="text-[#FFCB03] animate-slide-up-in delay-100">
-                  //       {slides[currentSlide]}
-                  //     </span>
-                  //   ) : (
-                  //     ""
-                  //   )
-                  // })}
-                />
+              <div className="typeanimation mx-auto max-w-[680px] text-[34px] sm:text-[54px] md:text-[72px] text-white text-center font-mtn-extrabold leading-[0.9] pb-5">
+                <div className="block md:inline">Hello partner,</div>{" "}
+                <div className="inline">
+                  meet{" "}
+                  <Typewriter
+                    options={{
+                      strings: [
+                        "growth!",
+                        "success!",
+                        "next level!",
+                        "profit!",
+                        "support!",
+                      ],
+                      autoStart: true,
+                      loop: true,
+                      delay: 75,
+                      skipAddStyles: false,
+                      wrapperClassName: "inline text-[#FFCB03]",
+                      cursorClassName:
+                        " text-[28px] sm:text-[48px] md:text-[66px] text-white/20 animate-pulse",
+                    }}
+                    // {slides.map((s, i) => {
+                    //   return i === currentSlide ? (
+                    //     <span className="text-[#FFCB03] animate-slide-up-in delay-100">
+                    //       {slides[currentSlide]}
+                    //     </span>
+                    //   ) : (
+                    //     ""
+                    //   )
+                    // })}
+                  />
+                </div>
               </div>
 
               <div className="text-white/70 max-w-[594px]">

@@ -60,10 +60,10 @@ function Shortcode() {
   useEffect(() => {
     if (category) {
       console.log({ category })
-      console.log(category?.shortcode)
+      console.log(category?.shortcodes)
       const Shortcodes = []
-      if (category?.shortcode?.length > 0) {
-        category.shortcode.map((sc) => {
+      if (category?.shortcodes?.length > 0) {
+        category.shortcodes.map((sc) => {
           sc.shortcode.shortcode_file = ""
           sc.shortcode_pricing.pricing_file = ""
           Shortcodes.push(sc)

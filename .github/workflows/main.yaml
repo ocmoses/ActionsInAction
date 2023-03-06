@@ -23,6 +23,7 @@ jobs:
           find . -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
 
  deployment:
+    needs: linting
     runs-on:
       - self-hosted
       - tribe-frontend

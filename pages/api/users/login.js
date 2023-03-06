@@ -18,6 +18,7 @@ const doLogin = async (body, req, res) => {
     const result = await response.json()
     console.log({ result })
     const { data, success } = result
+    console.log({ data })
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })
       const { User, authToken } = createHttpOnlyCookie(

@@ -57,7 +57,7 @@ server {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.
 		# proxy_pass http://10.1.29.77:80/;
-		proxy_pass http://amazon-tribe-backend:80/;
+		proxy_pass http://amazon-tribe-backend;
 	}
 
 	location ~ /\.(?!well-known).* {

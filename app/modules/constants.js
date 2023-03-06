@@ -11,10 +11,6 @@ import {
 
 export const persistStore = true
 
-export const EmailType = {
-  EXISTING: "existing",
-  NEW: "new",
-}
 const environment = {
   INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
@@ -23,6 +19,10 @@ const environment = {
 export const apiURL = environment.STAGING
 // export const apiURL = process.env.APIURI
 
+export const EmailType = {
+  EXISTING: "existing",
+  NEW: "new",
+}
 export const partnerFields = {
   partnerid: "",
   // userinfo

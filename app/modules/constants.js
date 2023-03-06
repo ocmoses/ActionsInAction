@@ -20,7 +20,7 @@ const environment = {
   DEV: "http://10.1.29.122/api",
   STAGING: "http://10.1.44.40/api",
 }
-export const apiURL = environment.DEV
+export const apiURL = environment.STAGING
 
 export const partnerFields = {
   partnerid: "",

@@ -139,6 +139,11 @@ jobs:
             git commit -m "updated values.yml file"
             echo "Done.."
             git push origin stage
+
+      - name: 'Prod nginx conf'
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cp prod_default/default default
         
       - name: Login to prod image repository
         if: github.ref == 'refs/heads/main'

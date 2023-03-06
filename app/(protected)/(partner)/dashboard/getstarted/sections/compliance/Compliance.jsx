@@ -18,7 +18,9 @@ import { scrollToTop } from "@/app/modules/utilities"
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, lastStage } =
+    usePartners()
+  console.log("lastStage", lastStage(category))
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -177,7 +179,10 @@ function Compliance() {
                 outline="yes"
                 outlinecolor="border-white"
               />
-              <ButtonNext type="submit" label="Next" />
+              <ButtonNext
+                type="submit"
+                label={checkUpdateStatus("compliance") ? "Update" : "Next"}
+              />
             </div>
           )}
         </div>

@@ -5,7 +5,12 @@ module.exports = {
   },
   reactStrictMode: true,
   images: {
-    domains: ["amazonpartner.com.ng", "10.1.29.77"],
+    domains: [
+      "amazonpartner.com.ng",
+      "10.1.29.122",
+      "10.1.29.123",
+      "10.1.44.40",
+    ],
   },
   experimental: {
     appDir: true,

@@ -140,38 +140,6 @@ function Shortcode() {
     if (e.key === " " || e.key === "Enter") {
       processKeyUp()
     }
-    // if (content.length > 0) {
-    //   const duplicate = []
-    //   content.map((c) => {
-    //     if (formdata.shortcode.shortcodes.includes(c)) {
-    //       duplicate.push(c)
-    //     }
-    //   })
-    //   if (duplicate.length > 0) {
-    //     setError({
-    //       shtcde: `${duplicate.join(", ")} already exists in shortcodes`,
-    //     })
-    //     return false
-    //   }
-    //   //  9088, 65674 8765 098, 564 737 966
-    //   setFormdata((prevState) => ({
-    //     ...prevState,
-    //     shortcode: {
-    //       ...prevState.shortcode,
-    //       shortcodes: [...prevState.shortcode.shortcodes, ...content],
-    //     },
-    //     shortcode_pricing: {
-    //       ...prevState.pricing,
-    //       pricing_shortcodes: [
-    //         ...prevState.shortcode_pricing.pricing_shortcodes,
-    //         ...content,
-    //       ],
-    //     },
-    //   }))
-
-    //   setShtcde("")
-    // }
-    // return true
   }
   const processKeyUp = () => {
     removeError("shtcde")
@@ -264,6 +232,7 @@ function Shortcode() {
   const editShortcode = (index) => {
     clearErrors()
     const _data = data.shortcodes[index]
+    console.log({ _data })
     setFormdata(_data)
     setShortcodeSet(index)
     setActiveform("shortcode")
@@ -476,8 +445,9 @@ function Shortcode() {
               doc_id="shortcode_doc"
               label="Short code document"
               value={
-                formdata.shortcode.shortcode_file ??
-                formdata.shortcode.shortcode_doc
+                formdata.shortcode?.shortcode_file?.name
+                  ? formdata.shortcode.shortcode_file
+                  : formdata.shortcode.shortcode_doc
               }
               onChange={handleShortcodeFormChange}
               errors={errors}
@@ -534,7 +504,7 @@ function Shortcode() {
             margin="mb-2"
           />
           <p className="text-[12px] text-[#999999] mb-2">
-            Enter multile comma-separated shortcodes and press "Enter" to apply
+            Enter multiple comma-separated shortcodes and press "Enter" to apply
           </p>
           <div className="mt-3 flex justify-end gap-2">
             <button
@@ -614,8 +584,9 @@ function Shortcode() {
               doc_id="pricing_doc"
               label="Short code document"
               value={
-                formdata.shortcode_pricing.pricing_file ??
-                formdata.shortcode_pricing.pricing_doc
+                formdata.shortcode_pricing.pricing_file?.name
+                  ? formdata.shortcode_pricing.pricing_file
+                  : formdata.shortcode_pricing.pricing_doc
               }
               onChange={handlePricingFormChange}
               errors={errors}

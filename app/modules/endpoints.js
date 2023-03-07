@@ -8,6 +8,7 @@ export const EndPointHeaders = {
 }
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
+  LOGOUT: "/api/next/users/logout",
   VALIDATE_USER: "/api/next/users/validate_user",
   SETPASSWORD: "/api/next/users/reset-password",
 }

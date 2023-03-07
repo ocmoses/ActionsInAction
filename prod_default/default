@@ -52,7 +52,9 @@ server {
 		# as directory, then fall back to displaying a 404.
 		proxy_pass http://localhost:3000;
 	}
-
+        location /api/next {
+                proxy_pass http://localhost:3000;
+                }
 	location /api {
 		# First attempt to serve request as file, then
 		# as directory, then fall back to displaying a 404.

@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js"
 import { setCookie } from "cookies-next"
 import moment from "moment"
+import { NextEndPoints } from "./endpoints"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -213,7 +214,7 @@ export const scrollToTop = (id) => {
   }
 }
 export async function logout() {
-  const response = await fetch("/api/users/logout")
+  const response = await fetch(NextEndPoints.LOGOUT)
   await response.json()
   return { success: true }
 }

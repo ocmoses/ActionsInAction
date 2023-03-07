@@ -305,7 +305,7 @@ const usePartners = () => {
         }
         setCurrentCategory(categoryData.category, categoryData.partner)
         updatePartner(categoryData.partner)
-        setUpdateStatus("category", true)
+        // setUpdateStatus("category", true)
         return { success: true, error: null, data: categoryData }
       case "companydetail":
         return updateCategory("companydetail", userdata)

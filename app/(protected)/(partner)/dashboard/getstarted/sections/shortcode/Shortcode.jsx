@@ -534,7 +534,7 @@ function Shortcode() {
             margin="mb-2"
           />
           <p className="text-[12px] text-[#999999] mb-2">
-            Enter multile comma-separated shortcodes and press "Enter" to apply
+            Enter multiple comma-separated shortcodes and press "Enter" to apply
           </p>
           <div className="mt-3 flex justify-end gap-2">
             <button

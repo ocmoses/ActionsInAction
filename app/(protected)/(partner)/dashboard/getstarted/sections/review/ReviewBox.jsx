@@ -398,10 +398,10 @@ export default function ReviewBox() {
               title="Shortcode"
               onClick={() => moveToNextForm(["shortcode", true])}
             />
-            {category.shortcode?.length > 0 && (
+            {category.shortcodes?.length > 0 && (
               <div className="md:col-span-3 divide-y divide-slate-400/25">
                 <ShortcodeReview
-                  shortcode={category.shortcode}
+                  shortcode={category.shortcodes}
                   PreviewFile={PreviewFile}
                 />
               </div>

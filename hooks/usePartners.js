@@ -36,8 +36,6 @@ const usePartners = () => {
     allForms: [],
   })
   const setValidationRules = (category) => {
-    // console.log({ category })
-    // console.log("validation", category)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
@@ -153,8 +151,6 @@ const usePartners = () => {
   }
 
   const registerPartner = async (frm, userdata) => {
-    console.log({ userdata })
-    console.log({ category })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
@@ -439,7 +435,7 @@ const usePartners = () => {
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 
-    const { error: resendEmailError } = await fetchData(
+    const { data: resendEmailData, error: resendEmailError } = await fetchData(
       RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
       {
         method: "POST",
@@ -455,7 +451,7 @@ const usePartners = () => {
       return setError({ verify: resendEmailError })
     }
 
-    setSuccess("Email sent successfully")
+    setSuccess(resendEmailData.message)
   }
 
   return {

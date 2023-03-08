@@ -1,7 +1,6 @@
 import { useState } from "react"
 
 import { FileUploadIcon, FileUploadActiveIcon, InfoIcon } from "../Icons"
-import FormErrors from "@/app/components/FormErrors"
 import useErrors from "@/hooks/useErrors"
 import { useEffect } from "react"
 import Image from "next/image"
@@ -21,14 +20,17 @@ function FileInput({
   const [doc, setDoc] = useState(null)
 
   const [{ setError, removeError }] = useErrors(null)
-
+  const resetdata = () => {
+    setFile(null)
+    setDoc(null)
+  }
   useEffect(() => {
     setMessage(null)
     setFile(null)
     setDoc(null)
     removeError(id)
+    return () => resetdata()
   }, [])
-
   useEffect(() => {
     if (file) {
       setDoc({

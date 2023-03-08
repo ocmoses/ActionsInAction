@@ -21,7 +21,9 @@ import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -59,8 +61,6 @@ function Shortcode() {
   }, [])
   useEffect(() => {
     if (category) {
-      console.log({ category })
-      console.log(category?.shortcodes)
       const Shortcodes = []
       if (category?.shortcodes?.length > 0) {
         category.shortcodes.map((sc) => {
@@ -69,7 +69,6 @@ function Shortcode() {
           Shortcodes.push(sc)
         })
       }
-      console.log({ Shortcodes })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
@@ -95,12 +94,12 @@ function Shortcode() {
       )
         return setError({ shortcode: `Shortcode document is required` })
     })
-    console.log({ data })
     const result = await registerPartner("shortcode", data)
     if (result) {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["shortcode"])
   }
   const handleShortcodeFormChange = (e) => {
@@ -232,13 +231,27 @@ function Shortcode() {
   const editShortcode = (index) => {
     clearErrors()
     const _data = data.shortcodes[index]
-    console.log({ _data })
     setFormdata(_data)
     setShortcodeSet(index)
     setActiveform("shortcode")
   }
   const addShortcode = () => {
-    resetFormdata()
+    setFormdata({
+      shortcode: {
+        shortcodes: [], // ARRAY OR STRING
+        shortcode_doc: null, //FILE
+        shortcode_file: null, //FILE
+        shortcode_issue_date: "", //DATE
+        shortcode_expiry_date: "", //DATE
+      },
+      shortcode_pricing: {
+        pricing_shortcodes: [], // ARRAY OR STRING
+        pricing_doc: null,
+        pricing_file: null,
+        pricing_issue_date: "", //DATE
+        pricing_expiry_date: "", //DATE
+      },
+    })
     const index = data.shortcodes.length
     setShortcodeSet(index)
     setActiveform("shortcode")
@@ -356,7 +369,6 @@ function Shortcode() {
       })
     } else {
       setData((prvState) => {
-        // prvState.shortcodes.push(newPayload)
         return { ...prvState, shortcodes: [...prvState.shortcodes, newPayload] }
       })
     }
@@ -444,6 +456,7 @@ function Shortcode() {
               id="shortcode_file"
               doc_id="shortcode_doc"
               label="Short code document"
+              key={`shortcode_file-${shortcodeSet}}`}
               value={
                 formdata.shortcode?.shortcode_file?.name
                   ? formdata.shortcode.shortcode_file
@@ -583,6 +596,7 @@ function Shortcode() {
               id="pricing_file"
               doc_id="pricing_doc"
               label="Short code document"
+              key={`shortcode_file-${shortcodeSet}}`}
               value={
                 formdata.shortcode_pricing.pricing_file?.name
                   ? formdata.shortcode_pricing.pricing_file
@@ -625,7 +639,11 @@ function Shortcode() {
                   outlinecolor="border-white"
                 />
 
-                <ButtonNext onClick={handleSubmit} type="button" label="Next" />
+                <ButtonNext
+                  onClick={handleSubmit}
+                  type="button"
+                  label={checkUpdateStatus("shortcode") ? "Update" : "Next"}
+                />
               </div>
             )
           )}

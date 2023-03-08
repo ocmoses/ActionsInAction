@@ -1,4 +1,4 @@
-import { outputDate } from "@/app/modules/utilities"
+import { outputDate, scrollToTop } from "@/app/modules/utilities"
 import ReviewTitle from "@/app/components/dashboard/ReviewTitle"
 import Button from "@/app/components/form/Button"
 import usePartners from "@/hooks/usePartners"
@@ -13,7 +13,6 @@ import { useState } from "react"
 export default function ReviewBox() {
   const { setForm, moveToNextForm } = useProcessing()
   const { category } = usePartners()
-  console.log({ category })
   const showSection = (section) =>
     category?.validation &&
     category.validation[section] &&
@@ -35,6 +34,10 @@ export default function ReviewBox() {
     setShowModal(false)
   }
 
+  const moveTo = (section) => {
+    moveToNextForm([section, true])
+    scrollToTop("onboardinglayout")
+  }
   return (
     <>
       {showModal && (
@@ -46,7 +49,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="Company information"
-              onClick={() => moveToNextForm(["companydetail", true])}
+              onClick={() => moveTo("companydetail")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -152,7 +155,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="Compliance details"
-              onClick={() => moveToNextForm(["compliance", true])}
+              onClick={() => moveTo("compliance")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -257,7 +260,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="NCC VAS Licence"
-              onClick={() => moveToNextForm(["ncclicense", true])}
+              onClick={() => moveTo("ncclicense")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -325,10 +328,7 @@ export default function ReviewBox() {
       {showSection("nlrclicense") && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
-            <ReviewTitle
-              title="NLRC"
-              onClick={() => moveToNextForm(["nlrclicense", true])}
-            />
+            <ReviewTitle title="NLRC" onClick={() => moveTo("nlrclicense")} />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="pb-3">
                 <div className="grid">
@@ -396,7 +396,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="Shortcode"
-              onClick={() => moveToNextForm(["shortcode", true])}
+              onClick={() => moveTo("shortcode")}
             />
             {category.shortcodes?.length > 0 && (
               <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -415,7 +415,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="Professional indemnity insurance"
-              onClick={() => moveToNextForm(["indemnity", true])}
+              onClick={() => moveTo("indemnity")}
             />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="pb-3">
@@ -484,7 +484,7 @@ export default function ReviewBox() {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               title="Audited accounts"
-              onClick={() => moveToNextForm(["accountinfo", true])}
+              onClick={() => moveTo("accountinfo")}
             />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="py-3">

@@ -19,7 +19,9 @@ import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -82,6 +84,7 @@ function Ncclicense() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ ncclicense: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["ncclicense"])
   }
   const handleFormChange = (e) => {
@@ -158,7 +161,10 @@ function Ncclicense() {
                 outline="yes"
                 outlinecolor="border-white"
               />
-              <ButtonNext type="submit" label="Next" />
+              <ButtonNext
+                type="submit"
+                label={checkUpdateStatus("ncclicense") ? "Update" : "Next"}
+              />
             </div>
           )}
         </div>

@@ -35,7 +35,7 @@ export default function Complete({ setIsOnboarding, setTmpCat }) {
             lineHeight: "40px",
           }}
         >
-          Thank's for providing your information
+          Thanks for providing your information
         </h1>
         <div className="mb-16 text-center w-full p-2 mtn-h1-subtitle text-[#999999] max-w-[480px]">
           Next, we'll review your application to ensure it meets our criteria.

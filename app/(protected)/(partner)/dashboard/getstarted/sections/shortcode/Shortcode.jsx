@@ -51,6 +51,14 @@ function Shortcode() {
     },
   })
   const { title, subtitle, hand, required, validity } = forms["shortcode"]
+  const [pageTitle, setPageTitle] = useState(title)
+  useEffect(() => {
+    setPageTitle(
+      activeform === "pricing"
+        ? "Provide your short code pricing details"
+        : title
+    )
+  }, [activeform])
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     setForm("shortcode")
@@ -382,7 +390,7 @@ function Shortcode() {
       className="w3-animate-opacity pb-20 w-full max-w-[492px]"
     >
       <form method="POST" onSubmit={handleSubmit}>
-        <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <RegisterStepHeader title={pageTitle} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
           {errors && <FormErrors error={errors["shortcode"]} />}
         </div>
@@ -551,6 +559,7 @@ function Shortcode() {
               Edit
             </span>
           </p>
+
           <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
             {formdata.shortcode_pricing.pricing_shortcodes?.length > 0 &&
               formdata.shortcode_pricing.pricing_shortcodes.map((sc, index) => (
@@ -570,7 +579,9 @@ function Shortcode() {
                 </span>
               ))}
           </div>
-
+          <p className="my-3 text-[#999999]">
+            Pricing detail for your short codes
+          </p>
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker

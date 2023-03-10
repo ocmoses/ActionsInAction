@@ -11,6 +11,7 @@ export const NextEndPoints = {
   LOGOUT: "/api/next/users/logout",
   VALIDATE_USER: "/api/next/users/validate_user",
   SETPASSWORD: "/api/next/users/reset-password",
+  EMAIL_VALIDATOR: "/api/next/external/mailvalidator",
 }
 
 const RemoteEndpoints = {

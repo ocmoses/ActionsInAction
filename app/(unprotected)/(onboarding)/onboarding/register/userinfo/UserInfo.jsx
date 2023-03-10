@@ -9,6 +9,7 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
+import { NextEndPoints } from "@/app/modules/endpoints"
 import { createRef, useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { CountrySelector } from "@/app/components/countrycode/selector"
@@ -58,9 +59,7 @@ function UserInfo({ designations }) {
     try {
       setCheckingEmail(true)
       const response = await axios
-        .get(
-          `https://api.mailboxvalidator.com/v1/email/free?email=${email}&key=${process.env.NEXT_PUBLIC_MAILBOX_VALIDATOR_API_KEY}`
-        )
+        .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
         .catch((err) => {
           console.log({ err })
           return "An error occured"
@@ -69,8 +68,8 @@ function UserInfo({ designations }) {
       if (response) {
         const { data } = response
         if (!data) return "Something went wrong while verifying your email"
-        const { is_free, error_message } = data
-        if (error_message) return error_message
+        const { is_free, error } = data
+        if (error) return error
         if (is_free) return "Free email service account is not allowed"
       } else {
         return "Something went wrong while verifying your email"
@@ -98,15 +97,16 @@ function UserInfo({ designations }) {
       setError({ email: "Your email address is not valid" })
       return
     }
-    const verifyEmail = await checkEmail(data["email"])
-    console.log({ verifyEmail })
-    if (verifyEmail) return setError({ email: verifyEmail })
+    // const verifyEmail = await checkEmail(data["email"])
+    // console.log({ verifyEmail })
+    // if (verifyEmail) return setError({ email: verifyEmail })
+    // return setError({ userinfo: "Submitted" })
 
     if (data["password"].length < 8) {
       setError({ password: "Your password must be at least, 8 characters" })
       return
     }
-    return setError({ userinfo: "Submitted" })
+
     if (data["telephone"].length < 6 || data["telephone"].length > 11) {
       setError({ telephone: "Your telephone is not valid" })
       return

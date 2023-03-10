@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     const loginData = await doLogin(body, req, res)
     // console.log({ loginData })
     const categoriesData = await getCategories(process.env.APIKEY)
-    // console.log({ categoriesData })
+    console.log({ categoriesData })
 
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])

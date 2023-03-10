@@ -302,3 +302,23 @@ export const getInitials = (fullname) => {
   }`
   return initials
 }
+export const getFileSize = (size) => {
+  if (size < 1024) return { size, unit: "kb" }
+  if (size >= 1024 && size < 1024 * 1024)
+    return { size: size / 1024, unit: "mb" }
+  if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024, unit: "gb" }
+  if (size >= 1024 * 1024 * 1024 && size < 1024 * 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024 / 1024, unit: "tb" }
+}
+export const getFileSizeText = (size) => {
+  console.log({ size })
+  if (size < 1024) return `${Math.ceil(size * 100) / 100}B`
+  if (size < 1024 * 1024) return `${Math.ceil((size / 1024) * 100) / 100}KB`
+  if (size < 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024) * 100) / 100}MB`
+  if (size < 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100}GB`
+  if (size < 1024 * 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
+}

@@ -1,15 +1,16 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+import { getFileSizeText } from "@/app/modules/utilities"
 
 import { FileUploadIcon, FileUploadActiveIcon, InfoIcon } from "../Icons"
 import useErrors from "@/hooks/useErrors"
-import { useEffect } from "react"
-import Image from "next/image"
 function FileInput({
   id,
   doc_id,
   label,
   onChange,
   allowedtypes,
+  maxSize,
   value,
   bg,
   margin,
@@ -33,14 +34,17 @@ function FileInput({
   }, [])
   useEffect(() => {
     if (file) {
+      console.log("file", file)
+      console.log("size", file.size)
       setDoc({
         file_name: file.name,
         file_path: null,
-        file_size: Math.ceil(file.size / 1024),
+        file_size: file.size,
         file_type: file.type.split("/")[1],
       })
       onChange({ target: { id, value: file } })
     } else if (value) {
+      console.log("doc", value)
       setDoc({
         file_name: value.file_name,
         file_path: value.file_path,
@@ -48,6 +52,7 @@ function FileInput({
         file_type: value.file_type,
       })
     } else {
+      console.log("none", file)
       setDoc({
         file_name: null,
         file_path: null,
@@ -57,14 +62,35 @@ function FileInput({
     }
   }, [value, file])
   const handleFile = (e) => {
+    const validImageTypes = allowedtypes ?? ["application/pdf"]
+    const maxFileSize = maxSize ?? 5 * 1024 * 1024
     removeError(id)
     let file = e.target.files[0]
     const fileType = file["type"]
-    const validImageTypes = allowedtypes ?? ["application/pdf"]
+    const filesize = file["size"]
+    const fsize = filesize / 1024 / 1024
+    const max = maxFileSize / 1024 / 1024
+    console.log("Uploaded file", file)
+    console.log("filesize", filesize)
+    console.log("fsize", fsize.toFixed(2))
+    console.log("max", max.toFixed(2))
+    console.log("max2", Math.round(max * 100) / 100)
+    console.log("fsize2", Math.ceil(fsize * 100) / 100)
+    console.log("maxFileSize", maxFileSize)
+
     if (validImageTypes.includes(fileType)) {
-      setFile(file)
+      if (filesize > maxFileSize) {
+        setError({
+          [id]: `${label} file should not be greater that ${getFileSizeText(
+            maxFileSize
+          )}`,
+        })
+        file = null
+      } else {
+        setFile(file)
+      }
     } else {
-      setError({ [id]: "Only PDF accepted" })
+      setError({ [id]: "Only PDF files are allowed" })
       file = null
     }
   }
@@ -110,7 +136,7 @@ function FileInput({
                     {!errors[id] && (
                       <>
                         <p className="text-[#999999]">
-                          Drag and drop or a choose file
+                          Drag and drop or choose file
                         </p>
                         <p className="text-[#999999]">PDF file (5mb max)</p>
                       </>
@@ -141,7 +167,12 @@ function FileInput({
                   <div className="flex flex-col">
                     <p className="text-white font-mtn-bold">{label}</p>
                     {!errors[id] && (
-                      <p className="text-[#999999]">{doc?.file_name}</p>
+                      <>
+                        <p className="text-[#999999] mb-0">{doc?.file_name}</p>
+                        <p className="text-[#999999] mt-0">
+                          {doc ? getFileSizeText(doc.file_size) : "0"}
+                        </p>
+                      </>
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">

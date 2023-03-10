@@ -12,9 +12,9 @@ import {
 export const persistStore = true
 
 const environment = {
-  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
   STAGING: "http://10.1.44.40/api",
+  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
 }
 export const apiURL = environment.STAGING
 // export const apiURL = process.env.APIURI

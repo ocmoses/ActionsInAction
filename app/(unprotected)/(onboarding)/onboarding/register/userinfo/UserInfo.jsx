@@ -17,6 +17,7 @@ import { forms } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
 import useApp from "@/hooks/useApp"
+import axios from "axios"
 
 function UserInfo({ designations }) {
   const { setRouteloading } = useApp()
@@ -52,6 +53,34 @@ function UserInfo({ designations }) {
     else clearErrors()
   }, [designations])
 
+  const [checkingEmail, setCheckingEmail] = useState(false)
+  const checkEmail = async (email) => {
+    try {
+      setCheckingEmail(true)
+      const response = await axios
+        .get(
+          `https://api.mailboxvalidator.com/v1/email/free?email=${email}&key=${process.env.NEXT_PUBLIC_MAILBOX_VALIDATOR_API_KEY}`
+        )
+        .catch((err) => {
+          console.log({ err })
+          return "An error occured"
+        })
+      setCheckingEmail(false)
+      if (response) {
+        const { data } = response
+        if (!data) return "Something went wrong while verifying your email"
+        const { is_free, error_message } = data
+        if (error_message) return error_message
+        if (is_free) return "Free email service account is not allowed"
+      } else {
+        return "Something went wrong while verifying your email"
+      }
+    } catch (error) {
+      console.log({ error })
+      return "An error occured"
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -69,11 +98,15 @@ function UserInfo({ designations }) {
       setError({ email: "Your email address is not valid" })
       return
     }
+    const verifyEmail = await checkEmail(data["email"])
+    console.log({ verifyEmail })
+    if (verifyEmail) return setError({ email: verifyEmail })
+
     if (data["password"].length < 8) {
       setError({ password: "Your password must be at least, 8 characters" })
       return
     }
-
+    return setError({ userinfo: "Submitted" })
     if (data["telephone"].length < 6 || data["telephone"].length > 11) {
       setError({ telephone: "Your telephone is not valid" })
       return
@@ -87,6 +120,7 @@ function UserInfo({ designations }) {
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
+
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,

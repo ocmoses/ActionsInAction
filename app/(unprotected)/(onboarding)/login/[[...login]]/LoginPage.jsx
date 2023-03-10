@@ -66,11 +66,11 @@ function Login({ params }) {
       }),
     })
     const result = await response.json()
-
-    const { data: loginData } = result
+    console.log({ result })
+    const { data: loginData, error: loginError } = result
     if (!loginData) {
       setProcessing(false)
-      return setError({ login: "Authentication failed" })
+      return setError({ login: loginError /*"Authentication failed"*/ })
     }
     if (!loginData.success) {
       setProcessing(false)

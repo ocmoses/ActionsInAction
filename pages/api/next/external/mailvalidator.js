@@ -32,8 +32,8 @@ export default async function handler(req, res) {
         })
       case "HUNTER":
         const { data, errors } = result
-        console.log({ errors })
-        console.log({ data })
+        // console.log({ errors })
+        // console.log({ data })
         if (errors)
           return res.status(200).json({
             success: false,
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, error: null, data: result })
   } catch (error) {
     console.log({ error })
-    res.status(200).json({ success: false, error: error })
+    res.status(200).json({ success: false, error: "Something went wrong" })
     return
   }
 }

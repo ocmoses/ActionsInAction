@@ -6,11 +6,11 @@ export default async function handler(req, res) {
         ? `https://api.mailboxvalidator.com/v1/email/free?email=${email}&key=${process.env.MAILBOX_VALIDATOR_API_KEY}`
         : `https://api.hunter.io/v2/email-verifier?email==${email}&api_key=${process.env.HUNTER_API_KEY}`
     const response = await fetch(url).catch((err) => {
-      console.log({ err })
-      return "An error occured"
+      // console.log({ err })
+      return "Something went wrong"
     })
     const result = await response.json()
-    console.log("process.env.VALIDATOR", process.env.VALIDATOR)
+    // console.log("process.env.VALIDATOR", process.env.VALIDATOR)
     if (!result)
       return res.status(200).json({
         success: false,
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       })
     switch (process.env.VALIDATOR) {
       case "MAILBOX":
-        console.log({ result })
+        // console.log({ result })
         if (result.error_code)
           return res.status(200).json({
             success: false,
@@ -32,8 +32,8 @@ export default async function handler(req, res) {
         })
       case "HUNTER":
         const { data, errors } = result
-        console.log({ errors })
-        console.log({ data })
+        // console.log({ errors })
+        // console.log({ data })
         if (errors)
           return res.status(200).json({
             success: false,
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, error: null, data: result })
   } catch (error) {
     console.log({ error })
-    res.status(200).json({ success: false, error: error })
+    res.status(200).json({ success: false, error: "Something went wrong" })
     return
   }
 }

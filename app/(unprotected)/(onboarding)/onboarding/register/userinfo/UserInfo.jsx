@@ -57,10 +57,12 @@ function UserInfo({ designations }) {
   const [checkingEmail, setCheckingEmail] = useState(false)
   const [lastEmailChecked, setLastEmailChecked] = useState(null)
   const checkIsFreeEmail = async (email) => {
+    removeError("email")
+    if (!Util.validateEmail(data["email"]))
+      return setError({ email: "Your email address is not valid" })
     if (process.env.NODE_ENV === "development") return
     if (errors?.email && email === lastEmailChecked) return
     try {
-      removeError("email")
       setCheckingEmail(true)
       const response = await axios
         .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
@@ -101,23 +103,20 @@ function UserInfo({ designations }) {
       }
       if (error) return scrollToTop("onboardinglayout")
     }
-    if (!Util.validateEmail(data["email"])) {
-      setError({ email: "Your email address is not valid" })
-      return
-    }
+    if (!Util.validateEmail(data["email"]))
+      return setError({ email: "Your email address is not valid" })
+
     const isFreeEmail = await checkIsFreeEmail(data["email"])
     if (isFreeEmail) return setError({ email: isFreeEmail })
     // return setError({ userinfo: "Submitted" })
 
-    if (data["password"].length < 8) {
-      setError({ password: "Your password must be at least, 8 characters" })
-      return
-    }
+    if (data["password"].length < 8)
+      return setError({
+        password: "Your password must be at least, 8 characters",
+      })
 
-    if (data["telephone"].length < 6 || data["telephone"].length > 11) {
-      setError({ telephone: "Your telephone is not valid" })
-      return
-    }
+    if (data["telephone"].length < 6 || data["telephone"].length > 11)
+      return setError({ telephone: "Your telephone is not valid" })
 
     const result = await registerPartner("userinfo", data)
     if (result) {
@@ -196,10 +195,16 @@ function UserInfo({ designations }) {
           onChange={handleFormChange}
           onBlur={(e) => checkIsFreeEmail(e.target.value)}
           errors={errors}
+          margin="mb-1"
         />
-        {checkingEmail && (
-          <p className="text-white -mt-6 mb-6">Verifying email...</p>
-        )}
+        <div className="text-white mb-6">
+          {checkingEmail && (
+            <p className="px-0 pt-2 m-0 text-[12px] flex justify-start gap-3 items-center">
+              <TailSpinPreloader width={24} height={24} fill="#efb703" />{" "}
+              Checking your email address...
+            </p>
+          )}
+        </div>
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector

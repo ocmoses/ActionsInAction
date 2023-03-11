@@ -2,6 +2,7 @@
 import FormErrors from "@/app/components/FormErrors"
 import Button from "@/app/components/form/Button"
 import TextInput from "@/app/components/form/TextInput"
+import DebounceTextInput from "@/app/components/form/TextInput"
 import SelectInput from "@/app/components/form/SelectInput"
 import SelectInputOption from "@/app/components/form/SelectInputOption"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
@@ -55,28 +56,36 @@ function UserInfo({ designations }) {
   }, [designations])
 
   const [checkingEmail, setCheckingEmail] = useState(false)
-  const checkEmail = async (email) => {
+  const [lastEmailChecked, setLastEmailChecked] = useState(null)
+  const checkIsFreeEmail = async (email) => {
+    if (process.env.NODE_ENV === "development") return
+    if (errors?.email && email === lastEmailChecked) return
     try {
+      removeError("email")
       setCheckingEmail(true)
       const response = await axios
         .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
         .catch((err) => {
-          console.log({ err })
-          return "An error occured"
+          setError({ email: "An error occured while verifying your email" })
         })
       setCheckingEmail(false)
       if (response) {
         const { data } = response
-        if (!data) return "Something went wrong while verifying your email"
+        setLastEmailChecked(email)
+        if (!data)
+          setError({ email: "Something went wrong while verifying your email" })
         const { is_free, error } = data
-        if (error) return error
-        if (is_free) return "Free email service account is not allowed"
+        if (error) setError({ email: error })
+        if (is_free)
+          setError({
+            email:
+              "Free email service account is not allowed. Please use a corporate email",
+          })
       } else {
-        return "Something went wrong while verifying your email"
+        setError({ email: "Something went wrong while verifying your email" })
       }
     } catch (error) {
-      console.log({ error })
-      return "An error occured"
+      setError({ email: "An error occured while verifying your email" })
     }
   }
 
@@ -97,9 +106,8 @@ function UserInfo({ designations }) {
       setError({ email: "Your email address is not valid" })
       return
     }
-    // const verifyEmail = await checkEmail(data["email"])
-    // console.log({ verifyEmail })
-    // if (verifyEmail) return setError({ email: verifyEmail })
+    const isFreeEmail = await checkIsFreeEmail(data["email"])
+    if (isFreeEmail) return setError({ email: isFreeEmail })
     // return setError({ userinfo: "Submitted" })
 
     if (data["password"].length < 8) {
@@ -118,8 +126,10 @@ function UserInfo({ designations }) {
       if (result?.error) return setError({ userinfo: result.error })
     }
   }
-  const handleFormChange = (e) => {
-    removeError(e.target.id)
+
+  const handleFormChange = async (e) => {
+    const input = e.target.id
+    removeError(input)
 
     setData((prevState) => ({
       ...prevState,
@@ -185,8 +195,12 @@ function UserInfo({ designations }) {
           label="Email"
           value={data.email}
           onChange={handleFormChange}
+          onBlur={(e) => checkIsFreeEmail(e.target.value)}
           errors={errors}
         />
+        {checkingEmail && (
+          <p className="text-white -mt-6 mb-6">Verifying email...</p>
+        )}
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector

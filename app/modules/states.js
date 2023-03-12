@@ -15538,7 +15538,7 @@ export const STATES = [
     id: 2220,
     country_code: "NG",
     state_code: "37",
-    state_name: "Ekpoma",
+    state_name: "Edo",
     status: 1,
   },
   {

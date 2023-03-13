@@ -65,8 +65,10 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
   console.log({ expiry_date })
   console.log({ validity })
   const today = moment().format("YYYY-MM-DD")
-  if (moment(issue_date).isSame(today))
-    return "Issue date entry cannot be today's date"
+  if (moment(issue_date).isSameOrAfter(today))
+    return "Issue date entry cannot be today or later"
+  if (moment(expiry_date).isSameOrBefore(today))
+    return "Expiry date entry cannot be today or earlier"
   if (moment(issue_date).isSameOrAfter(expiry_date))
     return "Expiry date cannot be earlier than or equal to issue date"
   if (validity) {

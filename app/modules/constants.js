@@ -92,7 +92,17 @@ export const partnerFields = {
   audited_account_3: "",
   progress: {},
 }
-
+export const validities = {
+  ncc: "5 years",
+  nlrc_lottery: "10 years",
+  nlrc_sport_betting: "5 years",
+  nlrc_mobile_lottery: "5 years",
+  shortcode: "1 year",
+  shortcode_2: "2 years",
+  shortcode_pricing: "1 year",
+  shortcode_pricing_2: "2 years",
+  indemnity: "1 year",
+}
 export const forms = {
   userinfo: {
     form: "userinfo",
@@ -203,7 +213,7 @@ export const forms = {
       ncc_expiry_date: "Expiry date",
       // vas_doc: 'NCC VAS License'
     },
-    validity: "5 years",
+    validity: "1 years",
   },
   nlrclicense: {
     form: "nlrclicense",

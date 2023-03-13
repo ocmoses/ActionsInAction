@@ -13,7 +13,7 @@ import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
+import { forms, validities } from "@/app/modules/constants"
 import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function NlrcLicense() {
@@ -29,7 +29,7 @@ function NlrcLicense() {
     nlrc_expiry_date: "",
     nlrc_doc: "",
   })
-  const { title, subtitle, hand, required, validity } = forms["nlrclicense"]
+  const { title, subtitle, hand, required } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -74,7 +74,7 @@ function NlrcLicense() {
     const expiryError = validateExpiryDate(
       data.nlrc_issue_date,
       data.nlrc_expiry_date,
-      validity
+      validities.nlrc_lottery
     )
     if (expiryError) return setError({ nlrclicense: expiryError })
     const result = await registerPartner("nlrclicense", data)

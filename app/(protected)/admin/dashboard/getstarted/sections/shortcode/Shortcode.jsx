@@ -15,7 +15,7 @@ import { outputDate } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
+import { forms, validities } from "@/app/modules/constants"
 import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Shortcode() {
@@ -48,7 +48,7 @@ function Shortcode() {
       pricing_expiry_date: "", //DATE
     },
   })
-  const { title, subtitle, hand, required, validity } = forms["shortcode"]
+  const { title, subtitle, hand, required } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     setForm("shortcode")
@@ -287,7 +287,7 @@ function Shortcode() {
       const expiryError = validateExpiryDate(
         formdata.shortcode.shortcode_issue_date,
         formdata.shortcode.shortcode_expiry_date,
-        validity
+        validities.shortcode
       )
       if (expiryError) return setError({ shortcode: expiryError })
     }
@@ -319,7 +319,7 @@ function Shortcode() {
       const pricingExpiryError = validateExpiryDate(
         formdata.shortcode_pricing.pricing_issue_date,
         formdata.shortcode_pricing.pricing_expiry_date,
-        validity
+        validities.shortcode_pricing
       )
       if (pricingExpiryError) return setError({ shortcode: pricingExpiryError })
     }

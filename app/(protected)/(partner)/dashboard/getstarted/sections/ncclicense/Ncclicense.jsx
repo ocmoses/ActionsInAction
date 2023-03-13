@@ -13,7 +13,7 @@ import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
+import { forms, validities } from "@/app/modules/constants"
 import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Ncclicense() {
@@ -31,7 +31,7 @@ function Ncclicense() {
     ncc_expiry_date: "",
     ncc_doc: "",
   })
-  const { title, subtitle, hand, required, validity } = forms["ncclicense"]
+  const { title, subtitle, hand, required } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -76,7 +76,7 @@ function Ncclicense() {
     const expiryError = validateExpiryDate(
       data.ncc_issue_date,
       data.ncc_expiry_date,
-      validity
+      validities.ncc
     )
     if (expiryError) return setError({ ncclicense: expiryError })
     const result = await registerPartner("ncclicense", data)

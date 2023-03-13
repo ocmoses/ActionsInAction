@@ -27,8 +27,8 @@ const usePartners = () => {
 
   const { category, categories } = states.partners
   const { setPartners, updatePartner, setCategory } = actions.partners
-  const { setUser, setTmpUser } = actions.users
-  const { user } = states.users
+  const { setTmpUser } = actions.users
+  // const { user } = states.users
   const users = useUsers()
   const [validation, setValidation] = useState({
     required: [],
@@ -74,7 +74,11 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
+  const consolidateCategory = () => {
+    console.log({ categories })
+  }
   const setCurrentCategory = (category, partner) => {
+    consolidateCategory()
     const currentCategory = partner?.categories?.find(
       (c) => c.uuid === category.uuid
     )
@@ -322,6 +326,33 @@ const usePartners = () => {
         return updateCategory("indemnity", userdata)
       case "accountinfo":
         return updateCategory("accountinfo", userdata)
+      case "complete_registration":
+        setProcessing(true)
+        const regResponse = await Axios.post(
+          RemoteEndpoints.REGISTRATION_COMPLETION,
+          userdata,
+          {
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          setProcessing(false)
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!regResponse) {
+          setProcessing(false)
+          return { success: false, error: "Something went wrong", data: null }
+        }
+
+        const { success: regSuccess, data: regData } = regResponse
+        if (!regSuccess) {
+          setProcessing(false)
+          return { success: false, error: regData.message, data: null }
+        }
+        return { success: true, error: null, data: null }
     }
   }
 

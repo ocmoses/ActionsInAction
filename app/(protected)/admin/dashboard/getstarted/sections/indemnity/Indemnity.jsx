@@ -13,7 +13,7 @@ import usePartners from "@/hooks/usePartners"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
+import { forms, validities } from "@/app/modules/constants"
 import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 
 function Indemnity() {
@@ -29,7 +29,7 @@ function Indemnity() {
     indemnity_expiry_date: "",
     indemnity_doc: "",
   })
-  const { title, subtitle, hand, required, validity } = forms["indemnity"]
+  const { title, subtitle, hand, required } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function Indemnity() {
     const expiryError = validateExpiryDate(
       data.indemnity_issue_date,
       data.indemnity_expiry_date,
-      validity
+      validities.indemnity
     )
     if (expiryError) return setError({ indemnity: expiryError })
 

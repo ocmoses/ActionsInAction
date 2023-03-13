@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js"
 import { setCookie } from "cookies-next"
 import moment from "moment"
+import { NextEndPoints } from "./endpoints"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -213,7 +214,7 @@ export const scrollToTop = (id) => {
   }
 }
 export async function logout() {
-  const response = await fetch("/api/users/logout")
+  const response = await fetch(NextEndPoints.LOGOUT)
   await response.json()
   return { success: true }
 }
@@ -300,4 +301,24 @@ export const getInitials = (fullname) => {
     lastName ? lastName[0] : ""
   }`
   return initials
+}
+export const getFileSize = (size) => {
+  if (size < 1024) return { size, unit: "kb" }
+  if (size >= 1024 && size < 1024 * 1024)
+    return { size: size / 1024, unit: "mb" }
+  if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024, unit: "gb" }
+  if (size >= 1024 * 1024 * 1024 && size < 1024 * 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024 / 1024, unit: "tb" }
+}
+export const getFileSizeText = (size) => {
+  console.log({ size })
+  if (size < 1024) return `${Math.ceil(size * 100) / 100}B`
+  if (size < 1024 * 1024) return `${Math.ceil((size / 1024) * 100) / 100}KB`
+  if (size < 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024) * 100) / 100}MB`
+  if (size < 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100}GB`
+  if (size < 1024 * 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }

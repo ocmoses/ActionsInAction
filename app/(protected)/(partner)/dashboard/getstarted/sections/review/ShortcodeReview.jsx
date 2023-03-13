@@ -5,6 +5,7 @@ export default function ShortcodeReview({ shortcode, PreviewFile }) {
   return shortcode.map((sc) => {
     return (
       <div
+        key={sc.shortcode_uuid}
         className={`bg-[#212121] relative p-[8px] z-0 w-full group rounded-[10px] ${
           shortcode.length > 0 && "mb-4"
         }`}

@@ -7,9 +7,11 @@ export const EndPointHeaders = {
   referrerPolicy: "no-referrer",
 }
 export const NextEndPoints = {
-  LOGIN: "/api/users/login",
-  VALIDATE_USER: "/api/users/validate_user",
-  SETPASSWORD: "/api/users/reset-password",
+  LOGIN: "/api/next/users/login",
+  LOGOUT: "/api/next/users/logout",
+  VALIDATE_USER: "/api/next/users/validate_user",
+  SETPASSWORD: "/api/next/users/reset-password",
+  EMAIL_VALIDATOR: "/api/next/external/mailvalidator",
 }
 
 const RemoteEndpoints = {

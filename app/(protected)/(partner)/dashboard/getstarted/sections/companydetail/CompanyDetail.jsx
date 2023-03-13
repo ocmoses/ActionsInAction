@@ -19,7 +19,9 @@ import { scrollToTop } from "@/app/modules/utilities"
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
@@ -77,6 +79,7 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["companydetail"])
   }
   const handleFormChange = (e) => {
@@ -160,7 +163,9 @@ function CompanyDetail() {
           {processing ? (
             <TailSpinPreloader width={40} height={40} fill="#efb703" />
           ) : (
-            <ButtonNext label="Next" />
+            <ButtonNext
+              label={checkUpdateStatus("companydetail") ? "Update" : "Next"}
+            />
           )}
         </div>
       </form>

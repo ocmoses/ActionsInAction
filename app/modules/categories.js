@@ -17,9 +17,10 @@ export const getCategories = async (apikey) => {
         data: null,
       }
     })
-
+    console.log({ response })
     if (response) {
       const result = await response.json()
+
       const { data, success } = result
       if (success) {
         return { success, error: null, data }
@@ -34,6 +35,7 @@ export const getCategories = async (apikey) => {
         }
       }
     } else {
+      console.log({ result })
       return {
         success: false,
         error: "Error reaching the server. Please check your connection",
@@ -41,6 +43,7 @@ export const getCategories = async (apikey) => {
       }
     }
   } catch (err) {
+    console.log({ err })
     return {
       success: false,
       error: err.message,

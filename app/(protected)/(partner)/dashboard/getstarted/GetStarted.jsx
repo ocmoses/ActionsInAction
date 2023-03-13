@@ -20,8 +20,13 @@ export default function GetStarted({ data }) {
   const {
     session: { user },
   } = useUsers()
-  const { categories, partner, setValidationRules, setCurrentCategory } =
-    usePartners()
+  const {
+    categories,
+    partner,
+    setValidationRules,
+    setCurrentCategory,
+    nextStage,
+  } = usePartners()
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -29,6 +34,7 @@ export default function GetStarted({ data }) {
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
+
   const {
     setForm,
     setProcessing,
@@ -100,9 +106,12 @@ export default function GetStarted({ data }) {
     const category = partner?.categories?.find((cat) => cat.uuid === uuid)
     if (category) {
       setCurrentCategory(category, partner)
-      moveToNextForm(["category"])
+      const { nextstage: NextStage } = nextStage(category)
       setIsOnboarding(true)
       setIsOpen(false)
+      console.log({ NextStage })
+      if (NextStage === "review") return moveToNextForm(["review", true])
+      moveToNextForm([NextStage, true])
     }
   }
   const scrollpage = () => {

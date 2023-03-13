@@ -19,7 +19,9 @@ import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -84,6 +86,7 @@ function Indemnity() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ indemnity: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["indemnity"])
   }
   const handleFormChange = (e) => {
@@ -160,7 +163,10 @@ function Indemnity() {
                 outline="yes"
                 outlinecolor="border-white"
               />
-              <ButtonNext type="submit" label="Next" />
+              <ButtonNext
+                type="submit"
+                label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
+              />
             </div>
           )}
         </div>

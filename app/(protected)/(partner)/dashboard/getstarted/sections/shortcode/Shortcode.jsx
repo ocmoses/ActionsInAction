@@ -21,7 +21,9 @@ import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -49,6 +51,14 @@ function Shortcode() {
     },
   })
   const { title, subtitle, hand, required, validity } = forms["shortcode"]
+  const [pageTitle, setPageTitle] = useState(title)
+  useEffect(() => {
+    setPageTitle(
+      activeform === "pricing"
+        ? "Provide your short code pricing details"
+        : title
+    )
+  }, [activeform])
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     setForm("shortcode")
@@ -59,17 +69,14 @@ function Shortcode() {
   }, [])
   useEffect(() => {
     if (category) {
-      console.log({ category })
-      console.log(category?.shortcode)
       const Shortcodes = []
-      if (category?.shortcode?.length > 0) {
-        category.shortcode.map((sc) => {
+      if (category?.shortcodes?.length > 0) {
+        category.shortcodes.map((sc) => {
           sc.shortcode.shortcode_file = ""
           sc.shortcode_pricing.pricing_file = ""
           Shortcodes.push(sc)
         })
       }
-      console.log({ Shortcodes })
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
@@ -95,12 +102,12 @@ function Shortcode() {
       )
         return setError({ shortcode: `Shortcode document is required` })
     })
-    console.log({ data })
     const result = await registerPartner("shortcode", data)
     if (result) {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["shortcode"])
   }
   const handleShortcodeFormChange = (e) => {
@@ -140,38 +147,6 @@ function Shortcode() {
     if (e.key === " " || e.key === "Enter") {
       processKeyUp()
     }
-    // if (content.length > 0) {
-    //   const duplicate = []
-    //   content.map((c) => {
-    //     if (formdata.shortcode.shortcodes.includes(c)) {
-    //       duplicate.push(c)
-    //     }
-    //   })
-    //   if (duplicate.length > 0) {
-    //     setError({
-    //       shtcde: `${duplicate.join(", ")} already exists in shortcodes`,
-    //     })
-    //     return false
-    //   }
-    //   //  9088, 65674 8765 098, 564 737 966
-    //   setFormdata((prevState) => ({
-    //     ...prevState,
-    //     shortcode: {
-    //       ...prevState.shortcode,
-    //       shortcodes: [...prevState.shortcode.shortcodes, ...content],
-    //     },
-    //     shortcode_pricing: {
-    //       ...prevState.pricing,
-    //       pricing_shortcodes: [
-    //         ...prevState.shortcode_pricing.pricing_shortcodes,
-    //         ...content,
-    //       ],
-    //     },
-    //   }))
-
-    //   setShtcde("")
-    // }
-    // return true
   }
   const processKeyUp = () => {
     removeError("shtcde")
@@ -269,7 +244,22 @@ function Shortcode() {
     setActiveform("shortcode")
   }
   const addShortcode = () => {
-    resetFormdata()
+    setFormdata({
+      shortcode: {
+        shortcodes: [], // ARRAY OR STRING
+        shortcode_doc: null, //FILE
+        shortcode_file: null, //FILE
+        shortcode_issue_date: "", //DATE
+        shortcode_expiry_date: "", //DATE
+      },
+      shortcode_pricing: {
+        pricing_shortcodes: [], // ARRAY OR STRING
+        pricing_doc: null,
+        pricing_file: null,
+        pricing_issue_date: "", //DATE
+        pricing_expiry_date: "", //DATE
+      },
+    })
     const index = data.shortcodes.length
     setShortcodeSet(index)
     setActiveform("shortcode")
@@ -387,7 +377,6 @@ function Shortcode() {
       })
     } else {
       setData((prvState) => {
-        // prvState.shortcodes.push(newPayload)
         return { ...prvState, shortcodes: [...prvState.shortcodes, newPayload] }
       })
     }
@@ -401,7 +390,7 @@ function Shortcode() {
       className="w3-animate-opacity pb-20 w-full max-w-[492px]"
     >
       <form method="POST" onSubmit={handleSubmit}>
-        <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+        <RegisterStepHeader title={pageTitle} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
           {errors && <FormErrors error={errors["shortcode"]} />}
         </div>
@@ -475,9 +464,11 @@ function Shortcode() {
               id="shortcode_file"
               doc_id="shortcode_doc"
               label="Short code document"
+              key={`shortcode_file-${shortcodeSet}}`}
               value={
-                formdata.shortcode.shortcode_file ??
-                formdata.shortcode.shortcode_doc
+                formdata.shortcode?.shortcode_file?.name
+                  ? formdata.shortcode.shortcode_file
+                  : formdata.shortcode.shortcode_doc
               }
               onChange={handleShortcodeFormChange}
               errors={errors}
@@ -534,7 +525,7 @@ function Shortcode() {
             margin="mb-2"
           />
           <p className="text-[12px] text-[#999999] mb-2">
-            Enter multile comma-separated shortcodes and press "Enter" to apply
+            Enter multiple comma-separated shortcodes and press "Enter" to apply
           </p>
           <div className="mt-3 flex justify-end gap-2">
             <button
@@ -568,6 +559,7 @@ function Shortcode() {
               Edit
             </span>
           </p>
+
           <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
             {formdata.shortcode_pricing.pricing_shortcodes?.length > 0 &&
               formdata.shortcode_pricing.pricing_shortcodes.map((sc, index) => (
@@ -587,7 +579,9 @@ function Shortcode() {
                 </span>
               ))}
           </div>
-
+          <p className="my-3 text-[#999999]">
+            Pricing detail for your short codes
+          </p>
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker
@@ -613,9 +607,11 @@ function Shortcode() {
               id="pricing_file"
               doc_id="pricing_doc"
               label="Short code document"
+              key={`shortcode_file-${shortcodeSet}}`}
               value={
-                formdata.shortcode_pricing.pricing_file ??
-                formdata.shortcode_pricing.pricing_doc
+                formdata.shortcode_pricing.pricing_file?.name
+                  ? formdata.shortcode_pricing.pricing_file
+                  : formdata.shortcode_pricing.pricing_doc
               }
               onChange={handlePricingFormChange}
               errors={errors}
@@ -654,7 +650,11 @@ function Shortcode() {
                   outlinecolor="border-white"
                 />
 
-                <ButtonNext onClick={handleSubmit} type="button" label="Next" />
+                <ButtonNext
+                  onClick={handleSubmit}
+                  type="button"
+                  label={checkUpdateStatus("shortcode") ? "Update" : "Next"}
+                />
               </div>
             )
           )}

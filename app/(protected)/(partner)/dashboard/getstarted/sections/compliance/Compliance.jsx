@@ -18,7 +18,9 @@ import { scrollToTop } from "@/app/modules/utilities"
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { category, registerPartner, checkUpdateStatus, nextStage } =
+    usePartners()
+  const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -105,6 +107,7 @@ function Compliance() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
     }
+    if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["compliance"])
   }
   const handleFormChange = (e) => {
@@ -177,7 +180,10 @@ function Compliance() {
                 outline="yes"
                 outlinecolor="border-white"
               />
-              <ButtonNext type="submit" label="Next" />
+              <ButtonNext
+                type="submit"
+                label={checkUpdateStatus("compliance") ? "Update" : "Next"}
+              />
             </div>
           )}
         </div>

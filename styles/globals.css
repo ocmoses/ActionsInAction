@@ -138,4 +138,8 @@
   .typeanimation .Typewriter {
     display: inline;
   }
+  select.react-datepicker__month-select,
+  select.react-datepicker__year-select {
+    @apply !bg-transparent !border-0 !py-1;
+  }
 }

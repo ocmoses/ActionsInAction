@@ -65,7 +65,6 @@ function Login({ params }) {
       }),
     })
     const result = await response.json()
-    console.log({ result })
     const { data: loginData, error: loginError } = result
     if (!loginData) {
       setProcessing(false)
@@ -87,7 +86,9 @@ function Login({ params }) {
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
-        : PageRoutes.getstarted
+        : PageRoutes.dashboard
+    if (params?.includes("getstarted")) app.toggleGetstartedLink(true)
+    else app.toggleGetstartedLink(false)
     return router.replace(redirect)
   }
 

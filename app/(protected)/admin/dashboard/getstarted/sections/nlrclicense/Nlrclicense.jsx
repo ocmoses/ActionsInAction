@@ -24,10 +24,10 @@ function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
   const { category, registerPartner } = usePartners()
-  const { min_start_date, max_end_date } = getValidityRange(
-    validities.nlrc_lottery
-  )
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.nlrc_lottery)
 
+  console.log({ min_start_date, max_end_date, yesterday, tomorrow })
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -131,7 +131,7 @@ function NlrcLicense() {
               onChange={handleDateChange}
               errors={errors}
               min={new Date(min_start_date)}
-              max={new Date()}
+              max={yesterday}
             />
           </div>
           <div className="">
@@ -141,7 +141,7 @@ function NlrcLicense() {
               value={data.nlrc_expiry_date}
               onChange={handleDateChange}
               errors={errors}
-              min={new Date()}
+              min={tomorrow}
               max={new Date(max_end_date)}
             />
           </div>

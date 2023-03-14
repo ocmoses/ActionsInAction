@@ -34,8 +34,8 @@ function FileInput({
   }, [])
   useEffect(() => {
     if (file) {
-      console.log("file", file)
-      console.log("size", file.size)
+      // console.log("file", file)
+      // console.log("size", file.size)
       setDoc({
         file_name: file.name,
         file_path: null,
@@ -44,7 +44,7 @@ function FileInput({
       })
       onChange({ target: { id, value: file } })
     } else if (value) {
-      console.log("doc", value)
+      // console.log("doc", value)
       setDoc({
         file_name: value.file_name,
         file_path: value.file_path,
@@ -52,7 +52,7 @@ function FileInput({
         file_type: value.file_type,
       })
     } else {
-      console.log("none", file)
+      // console.log("none", file)
       setDoc({
         file_name: null,
         file_path: null,
@@ -70,13 +70,13 @@ function FileInput({
     const filesize = file["size"]
     const fsize = filesize / 1024 / 1024
     const max = maxFileSize / 1024 / 1024
-    console.log("Uploaded file", file)
-    console.log("filesize", filesize)
-    console.log("fsize", fsize.toFixed(2))
-    console.log("max", max.toFixed(2))
-    console.log("max2", Math.round(max * 100) / 100)
-    console.log("fsize2", Math.ceil(fsize * 100) / 100)
-    console.log("maxFileSize", maxFileSize)
+    // console.log("Uploaded file", file)
+    // console.log("filesize", filesize)
+    // console.log("fsize", fsize.toFixed(2))
+    // console.log("max", max.toFixed(2))
+    // console.log("max2", Math.round(max * 100) / 100)
+    // console.log("fsize2", Math.ceil(fsize * 100) / 100)
+    // console.log("maxFileSize", maxFileSize)
 
     if (validImageTypes.includes(fileType)) {
       if (filesize > maxFileSize) {

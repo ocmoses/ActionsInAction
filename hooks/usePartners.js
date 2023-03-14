@@ -240,10 +240,8 @@ const usePartners = () => {
           User: setpassword,
         }
         app.setStoreStates(serverSession, categories)
-        if (userdata.type === "existing" || userdata.type === "new")
-          router.push(PageRoutes.getstarted)
-        else router.push(PageRoutes.getstarted)
-        break
+        if (userdata.type === "new") return router.push(PageRoutes.getstarted)
+        return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
         userdata.password_confirmed = userdata.password

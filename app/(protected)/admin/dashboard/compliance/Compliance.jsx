@@ -1,19 +1,28 @@
 "use client"
-import useUsers from "@/hooks/useUsers"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { getInitials } from "@/app/modules/utilities"
 import useProcessing from "@/hooks/useProcessing"
+import useAdminPartners from "@/hooks/admin/useAdminPartners"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
 import Image from "next/image"
 
 export default function Compliance() {
-  const { categories, partner } = usePartners()
+  const { getAllPartners } = useAdminPartners()
+  const { categories } = usePartners()
   const { setForm, setProcessing } = useProcessing()
-  const [{ errors, clearErrors }] = useErrors(null)
+  const [{ errors, setError, clearErrors }] = useErrors(null)
+  const [Partners, setAppPartners] = useState([])
 
   useEffect(() => {
     setProcessing(false)
+    const get_all_Partner = async () => {
+      const allPartners = await getAllPartners()
+      console.log({ allPartners })
+      if (allPartners.partners) setAppPartners(allPartners.partners)
+      if (allPartners.error) setError({ compliance: allPartners.error })
+    }
+    get_all_Partner()
   }, [])
 
   return (
@@ -46,38 +55,48 @@ export default function Compliance() {
               </tr>
 
               {/* row 1 */}
-              <tr className="border-b border-b-white/10">
-                <th>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className="checkbox border-2 border-white/20 focus:border-mtn hover:border-mtn checked:border-mtn focus:font-mtn bg-transparent focus:bg-transparent focus:ring-mtn"
-                    />
-                  </label>
-                </th>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex justify-center items-center rounded-full w-12 h-12 bg-[#396587] text-white text-[12px] mr-2">
-                      <span>{getInitials("Prince Morpheus")}</span>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">United States</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  Zemlak, Daniel and Leannon
-                  <br />
-                  <span className="badge badge-ghost badge-sm">
-                    Desktop Support Technician
-                  </span>
-                </td>
-                <td>Purple</td>
-                <th>
-                  <button className="btn btn-ghost btn-xs">details</button>
-                </th>
-              </tr>
+              {Partners && (
+                <>
+                  {Partners?.map(() => (
+                    <tr className="border-b border-b-white/10">
+                      <th>
+                        <label>
+                          <input
+                            type="checkbox"
+                            className="checkbox border-2 border-white/20 focus:border-mtn hover:border-mtn checked:border-mtn focus:font-mtn bg-transparent focus:bg-transparent focus:ring-mtn"
+                          />
+                        </label>
+                      </th>
+                      <td>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex justify-center items-center rounded-full w-12 h-12 bg-[#396587] text-white text-[12px] mr-2">
+                            <span>{getInitials("Prince Morpheus")}</span>
+                          </div>
+                          <div>
+                            <div className="font-bold">Hart Hagerty</div>
+                            <div className="text-sm opacity-50">
+                              United States
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        Zemlak, Daniel and Leannon
+                        <br />
+                        <span className="badge badge-ghost badge-sm">
+                          Desktop Support Technician
+                        </span>
+                      </td>
+                      <td>Purple</td>
+                      <th>
+                        <button className="btn btn-ghost btn-xs">
+                          details
+                        </button>
+                      </th>
+                    </tr>
+                  ))}
+                </>
+              )}
               {/* row 2 */}
             </table>
           </div>

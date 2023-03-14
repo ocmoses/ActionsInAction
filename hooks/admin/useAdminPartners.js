@@ -23,12 +23,16 @@ export default function useAdminPartners() {
   const states = useStoreState((state) => state)
 
   const getAllPartners = async () => {
-    const response = await Axios.get(RemoteEndpoints.ALL_PARTNERS, {
+    const response = await fetch(RemoteEndpoints.ALL_PARTNERS, {
       cache: "no-store",
       next: { revalidate: 0 },
+      headers: {
+        apikey: process.env.NEXT_PUBLIC_APIKEY,
+        "Content-Type": "application/json",
+      },
     })
     const result = await response.json()
-    if (result.success) return { parners: result.data.partners }
+    if (result.success) return { partners: result.data.partners }
     return { error: data?.message ?? "Something went wrong" }
   }
 

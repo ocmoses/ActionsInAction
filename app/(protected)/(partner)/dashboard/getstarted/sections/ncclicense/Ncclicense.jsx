@@ -26,9 +26,8 @@ function Ncclicense() {
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { nextstage: NextStage } = nextStage(category)
-  const { min_start_date, max_end_date, today } = getValidityRange(
-    validities.ncc
-  )
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.ncc)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -134,7 +133,7 @@ function Ncclicense() {
               onChange={handleDateChange}
               errors={errors}
               min={new Date(min_start_date)}
-              max={today}
+              max={yesterday}
             />
           </div>
           <div className="">
@@ -144,7 +143,7 @@ function Ncclicense() {
               value={data.ncc_expiry_date}
               onChange={handleDateChange}
               errors={errors}
-              min={today}
+              min={tomorrow}
               max={new Date(max_end_date)}
             />
           </div>

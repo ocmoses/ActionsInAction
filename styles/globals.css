@@ -142,4 +142,10 @@
   select.react-datepicker__year-select {
     @apply !bg-transparent !border-0 !py-1;
   }
+
+  .table:where(:not(.table-zebra))
+    :where(thead, tbody, tfoot)
+    :where(tr:not(:last-child) :where(th, td)) {
+    border-bottom-width: 0px !important;
+  }
 }

@@ -1,4 +1,4 @@
-export const COUNTRIES = [
+const countries = [
   {
     title: "Afghanistan",
     code: "93",
@@ -1200,3 +1200,7 @@ export const COUNTRIES = [
     value: "ZW",
   },
 ]
+
+export const COUNTRIES = countries.sort((c1, c2) =>
+  c1.title < c2.title ? -1 : c1.title > c2.title ? 1 : 0
+)

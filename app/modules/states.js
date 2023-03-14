@@ -1,4 +1,4 @@
-export const STATES = [
+const states = [
   {
     id: 1,
     country_code: "AD",
@@ -9686,7 +9686,7 @@ export const STATES = [
     id: 1384,
     country_code: "JM",
     state_code: "11",
-    state_name: " Elizabeth",
+    state_name: "Elizabeth",
     status: 1,
   },
   {
@@ -26728,3 +26728,7 @@ export const STATES = [
     status: 1,
   },
 ]
+
+export const STATES = states.sort((s1, s2) =>
+  s1.state_name < s2.state_name ? -1 : s1.state_name > s2.state_name ? 1 : 0
+)

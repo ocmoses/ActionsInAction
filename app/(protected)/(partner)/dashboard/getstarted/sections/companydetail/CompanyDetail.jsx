@@ -22,7 +22,6 @@ function CompanyDetail() {
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { nextstage: NextStage } = nextStage(category)
-
   const { title, subtitle, hand, required } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
@@ -64,7 +63,7 @@ function CompanyDetail() {
     e.preventDefault()
     clearErrors()
     let error = false
-    if (!Util.isEmpty(required)) {
+    if (category?.validation.companydetail === "r" && !Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
           error = true

@@ -38,5 +38,6 @@ const RemoteEndpoints = {
 
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
+  ALL_PARTNERS: `${apiURL}/v2/admin/partners`,
 }
 export default RemoteEndpoints

@@ -60,15 +60,7 @@ export function inputDate(date) {
     ("0" + d.getDate()).slice(-2)
   )
 }
-export const validateExpiryDate = (issue_date, expiry_date, validity) => {
-  console.log({ issue_date })
-  console.log({ expiry_date })
-  console.log({ validity })
-  const today = moment().format("YYYY-MM-DD")
-  if (moment(issue_date).isSame(today))
-    return "Issue date entry cannot be today's date"
-  if (moment(issue_date).isSameOrAfter(expiry_date))
-    return "Expiry date cannot be earlier than or equal to issue date"
+export const getValidityTerm = (validity) => {
   if (validity) {
     const Validity = validity.split(" ")
     const period = parseInt(Validity[0])
@@ -132,8 +124,20 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
         term = "seconds"
         break
     }
-    console.log({ period })
-    console.log({ term })
+    return { period, term }
+  }
+  return null
+}
+export const validateExpiryDate = (issue_date, expiry_date, validity) => {
+  const today = moment().format("YYYY-MM-DD")
+  if (moment(issue_date).isSameOrAfter(today))
+    return "Issue date entry cannot be today or later"
+  if (moment(expiry_date).isSameOrBefore(today))
+    return "Expiry date entry cannot be today or earlier"
+  if (moment(issue_date).isSameOrAfter(expiry_date))
+    return "Expiry date cannot be earlier than or equal to issue date"
+  if (validity) {
+    const { period, term } = getValidityTerm(validity)
     if (period) {
       const expected_end_date = moment(issue_date)
         .add(period, term)
@@ -144,6 +148,120 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
           "Expiry date cannot be beyond " +
           moment(expected_end_date).format("DD/MM/YYYY")
         )
+    }
+  }
+  return null
+}
+// export const validateExpiryDate = (issue_date, expiry_date, validity) => {
+//   // console.log({ issue_date })
+//   // console.log({ expiry_date })
+//   // console.log({ validity })
+//   const today = moment().format("YYYY-MM-DD")
+//   if (moment(issue_date).isSameOrAfter(today))
+//     return "Issue date entry cannot be today or later"
+//   if (moment(expiry_date).isSameOrBefore(today))
+//     return "Expiry date entry cannot be today or earlier"
+//   if (moment(issue_date).isSameOrAfter(expiry_date))
+//     return "Expiry date cannot be earlier than or equal to issue date"
+//   if (validity) {
+//     const Validity = validity.split(" ")
+//     const period = parseInt(Validity[0])
+//     const unit = Validity[1]?.trim() ?? "years"
+//     let term = "years"
+//     switch (unit.toLowerCase()) {
+//       case "y":
+//       case "year":
+//       case "years":
+//       case "yr":
+//       case "yrs":
+//         term = "years"
+//         break
+//       case "q":
+//       case "quarter":
+//       case "quarters":
+//       case "qtr":
+//       case "qtrs":
+//         term = "quarters"
+//         break
+//       case "m":
+//       case "month":
+//       case "months":
+//       case "mth":
+//       case "mths":
+//         term = "months"
+//         break
+//       case "d":
+//       case "day":
+//       case "days":
+//       case "dy":
+//       case "dys":
+//         term = "days"
+//         break
+//       case "w":
+//       case "week":
+//       case "weeks":
+//       case "wk":
+//       case "wks":
+//         term = "weeks"
+//         break
+//       case "h":
+//       case "hour":
+//       case "hours":
+//       case "hr":
+//       case "hrs":
+//         term = "hours"
+//         break
+//       case "min":
+//       case "minute":
+//       case "minutes":
+//       case "mn":
+//       case "mns":
+//         term = "minutes"
+//         break
+//       case "s":
+//       case "second":
+//       case "seconds":
+//       case "sec":
+//       case "secs":
+//         term = "seconds"
+//         break
+//     }
+//     // console.log({ period })
+//     // console.log({ term })
+//     if (period) {
+//       const expected_end_date = moment(issue_date)
+//         .add(period, term)
+//         .format("YYYY MM DD")
+
+//       if (moment(expiry_date).isAfter(expected_end_date))
+//         return (
+//           "Expiry date cannot be beyond " +
+//           moment(expected_end_date).format("DD/MM/YYYY")
+//         )
+//     }
+//   }
+//   return null
+// }
+export const getValidityRange = (validity) => {
+  const today = moment().format("YYYY-MM-DD")
+  if (validity) {
+    const { period, term } = getValidityTerm(validity)
+    if (period) {
+      const min_start_date = moment(today)
+        .subtract(period, term)
+        .format("YYYY MM DD")
+
+      const max_end_date = moment(today).add(period, term).format("YYYY MM DD")
+      var Today = new Date()
+      var Tomorrow = new Date()
+      Today.setDate(Today.getDate() - 1)
+      Tomorrow.setDate(Tomorrow.getDate() - 1)
+      return {
+        min_start_date,
+        max_end_date,
+        today: Today,
+        tomorrow: Tomorrow,
+      }
     }
   }
   return null

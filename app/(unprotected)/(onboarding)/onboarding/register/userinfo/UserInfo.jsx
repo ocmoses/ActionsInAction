@@ -261,7 +261,8 @@ function UserInfo({ designations }) {
           errors={errors}
         />
         <div className=" font-mtn-extralight text-white/70 text-start -mt-6 mb-6 p-2">
-          Must include at least 8 characters, an uppercase letter, and a number
+          Must be at least 8 characters, includes uppercase and lowercase
+          letter, a number and a special character
         </div>
         {/* <TextInput
           id="password_confirmed"

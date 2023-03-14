@@ -14,7 +14,11 @@ import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms, validities } from "@/app/modules/constants"
-import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
+import {
+  scrollToTop,
+  validateExpiryDate,
+  getValidityRange,
+} from "@/app/modules/utilities"
 
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =

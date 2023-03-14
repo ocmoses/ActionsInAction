@@ -1,11 +1,11 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { getInitials } from "@/app/modules/utilities"
 import useProcessing from "@/hooks/useProcessing"
 import useAdminPartners from "@/hooks/admin/useAdminPartners"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
-import Image from "next/image"
+import { PhoneIcon } from "@heroicons/react/24/solid"
 
 export default function Compliance() {
   const { getAllPartners } = useAdminPartners()
@@ -24,6 +24,7 @@ export default function Compliance() {
     }
     get_all_Partner()
   }, [])
+  const goToPartnerDetail = (uuid) => {}
   return (
     <>
       <div id="compliance" className="flex flex-cols">
@@ -55,12 +56,15 @@ export default function Compliance() {
                 </tr>
 
                 {/* row 1 */}
-                {Partners && (
-                  <>
-                    {Partners?.map((partner) => (
+                <Suspense
+                  fallback={<p className="text-white p-4">Loading...</p>}
+                >
+                  {Partners &&
+                    Partners?.map((partner) => (
                       <tr
                         key={partner.uuid}
-                        className="border-b border-b-white/10"
+                        className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/20"
+                        onClick={() => goToPartnerDetail(partner.uuid)}
                       >
                         <th>
                           <label>
@@ -79,7 +83,8 @@ export default function Compliance() {
                               <div className="font-bold">
                                 {partner.company_name}
                               </div>
-                              <div className="text-sm opacity-50">
+                              <div className="flex items-center gap-4 text-sm text-white/80">
+                                <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "}
                                 {partner.telephone}
                               </div>
                             </div>
@@ -100,8 +105,7 @@ export default function Compliance() {
                         </th>
                       </tr>
                     ))}
-                  </>
-                )}
+                </Suspense>
                 {/* row 2 */}
               </tbody>
             </table>

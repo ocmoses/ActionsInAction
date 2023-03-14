@@ -65,7 +65,7 @@ function Compliance() {
     clearErrors()
     let error = false
     // return
-    if (!Util.isEmpty(required)) {
+    if (category?.validation.compliance === "r" && !Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
           error = true

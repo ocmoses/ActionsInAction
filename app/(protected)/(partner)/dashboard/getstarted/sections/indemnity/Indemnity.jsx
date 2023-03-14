@@ -63,7 +63,7 @@ function Indemnity() {
     let error = false
     if (!Util.isEmpty(required)) {
       for (const field in required) {
-        if (!!!data[field]) {
+        if (category?.validation.indemnity === "r" && !!!data[field]) {
           error = true
           setError({ [field]: `${required[field]} is required` })
         }

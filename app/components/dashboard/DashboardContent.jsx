@@ -304,7 +304,7 @@ export default function GetStarted({ type }) {
                   </div>
                   <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
                     <Image
-                      src={"/assets/icons/graphics-1.png"}
+                      src={"/assets/icons/graphics-2.png"}
                       height={147}
                       width={259}
                       className="w-full"
@@ -322,7 +322,7 @@ export default function GetStarted({ type }) {
                   </div>
                   <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
                     <Image
-                      src={"/assets/icons/graphics-1.png"}
+                      src={"/assets/icons/graphics-3.png"}
                       height={147}
                       width={259}
                       className="w-full"

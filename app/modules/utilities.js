@@ -252,13 +252,16 @@ export const getValidityRange = (validity) => {
         .format("YYYY MM DD")
 
       const max_end_date = moment(today).add(period, term).format("YYYY MM DD")
+      var Yesterday = new Date()
       var Today = new Date()
       var Tomorrow = new Date()
-      Today.setDate(Today.getDate() - 1)
-      Tomorrow.setDate(Tomorrow.getDate() - 1)
+      Yesterday.setDate(Yesterday.getDate() - 1)
+      Today.setDate(Today.getDate())
+      Tomorrow.setDate(Tomorrow.getDate() + 1)
       return {
         min_start_date,
         max_end_date,
+        yesterday: Yesterday,
         today: Today,
         tomorrow: Tomorrow,
       }

@@ -26,9 +26,9 @@ function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
   const { category, registerPartner } = usePartners()
-  const { min_start_date, max_end_date } = getValidityRange(
-    validities.shortcode
-  )
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.shortcode)
+
   console.log("validities.shortcode", validities.shortcode)
   console.log({ min_start_date, max_end_date })
   const [data, setData] = useState({
@@ -466,7 +466,7 @@ function Shortcode() {
                 onChange={handleShortcodeFormChange}
                 errors={errors}
                 min={new Date(min_start_date)}
-                max={new Date()}
+                max={yesterday}
               />
             </div>
             <div className=" ">
@@ -476,7 +476,7 @@ function Shortcode() {
                 value={formdata.shortcode.shortcode_expiry_date}
                 onChange={handleShortcodeFormChange}
                 errors={errors}
-                min={new Date()}
+                min={tomorrow}
                 max={new Date(max_end_date)}
               />
             </div>

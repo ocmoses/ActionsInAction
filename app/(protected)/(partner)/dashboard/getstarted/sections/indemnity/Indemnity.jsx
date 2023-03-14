@@ -26,9 +26,8 @@ function Indemnity() {
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { nextstage: NextStage } = nextStage(category)
-  const { min_start_date, max_end_date } = getValidityRange(
-    validities.indemnity
-  )
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.indemnity)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -136,7 +135,7 @@ function Indemnity() {
               onChange={handleDateChange}
               errors={errors}
               min={new Date(min_start_date)}
-              max={new Date()}
+              max={yesterday}
             />
           </div>
           <div className="">
@@ -146,7 +145,7 @@ function Indemnity() {
               value={data.indemnity_expiry_date}
               onChange={handleDateChange}
               errors={errors}
-              min={new Date()}
+              min={tomorrow}
               max={new Date(max_end_date)}
             />
           </div>

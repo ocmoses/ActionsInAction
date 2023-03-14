@@ -22,6 +22,7 @@ const app = {
   formValidation: {},
   activeCategory: {},
   tmpUserUUID: null,
+  showGetstartedLink: false,
   increaseCount: action((state, key) => {
     return state.count++
   }),
@@ -48,12 +49,16 @@ const app = {
     state.formValidation = {}
     state.activeCategory = {}
     state.tmpUserUUID = null
+    state.showGetstartedLink = false
   }),
   setRouteloading: action((state, status) => {
     state.routeloading = status ?? false
   }),
   setTmpUserUUID: action((state, uuid) => {
     state.tmpUserUUID = uuid
+  }),
+  toggleGetstartedLink: action((state, status) => {
+    state.showGetstartedLink = status ?? false
   }),
   isLoading: action((state, key) => {
     return state.loading && state.loading[key] !== "undefined"

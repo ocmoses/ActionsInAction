@@ -15,14 +15,22 @@ import { outputDate } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
+import { forms, validities } from "@/app/modules/constants"
+import {
+  scrollToTop,
+  validateExpiryDate,
+  getValidityRange,
+} from "@/app/modules/utilities"
 
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
   const { category, registerPartner } = usePartners()
-
+  const { min_start_date, max_end_date } = getValidityRange(
+    validities.shortcode
+  )
+  console.log("validities.shortcode", validities.shortcode)
+  console.log({ min_start_date, max_end_date })
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -48,7 +56,7 @@ function Shortcode() {
       pricing_expiry_date: "", //DATE
     },
   })
-  const { title, subtitle, hand, required, validity } = forms["shortcode"]
+  const { title, subtitle, hand, required } = forms["shortcode"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     setForm("shortcode")
@@ -287,7 +295,7 @@ function Shortcode() {
       const expiryError = validateExpiryDate(
         formdata.shortcode.shortcode_issue_date,
         formdata.shortcode.shortcode_expiry_date,
-        validity
+        validities.shortcode
       )
       if (expiryError) return setError({ shortcode: expiryError })
     }
@@ -319,7 +327,7 @@ function Shortcode() {
       const pricingExpiryError = validateExpiryDate(
         formdata.shortcode_pricing.pricing_issue_date,
         formdata.shortcode_pricing.pricing_expiry_date,
-        validity
+        validities.shortcode_pricing
       )
       if (pricingExpiryError) return setError({ shortcode: pricingExpiryError })
     }
@@ -457,6 +465,8 @@ function Shortcode() {
                 value={formdata.shortcode.shortcode_issue_date}
                 onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={new Date(min_start_date)}
+                max={new Date()}
               />
             </div>
             <div className=" ">
@@ -466,6 +476,8 @@ function Shortcode() {
                 value={formdata.shortcode.shortcode_expiry_date}
                 onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={new Date()}
+                max={new Date(max_end_date)}
               />
             </div>
           </div>

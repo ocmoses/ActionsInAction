@@ -81,9 +81,9 @@ function FileInput({
     if (validImageTypes.includes(fileType)) {
       if (filesize > maxFileSize) {
         setError({
-          [id]: `${label} file should not be greater that ${getFileSizeText(
+          [id]: `File size exceeds limit. Please ensure uploaded files are ${getFileSizeText(
             maxFileSize
-          )}`,
+          )} or less.`,
         })
         file = null
       } else {

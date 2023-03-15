@@ -15,14 +15,21 @@ import { outputDate } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
+import { forms, validities } from "@/app/modules/constants"
+import {
+  scrollToTop,
+  validateExpiryDate,
+  getValidityRange,
+} from "@/app/modules/utilities"
 
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.shortcode)
+
   const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
@@ -50,7 +57,7 @@ function Shortcode() {
       pricing_expiry_date: "", //DATE
     },
   })
-  const { title, subtitle, hand, required, validity } = forms["shortcode"]
+  const { title, subtitle, hand, required } = forms["shortcode"]
   const [pageTitle, setPageTitle] = useState(title)
   useEffect(() => {
     setPageTitle(
@@ -312,7 +319,7 @@ function Shortcode() {
       const expiryError = validateExpiryDate(
         formdata.shortcode.shortcode_issue_date,
         formdata.shortcode.shortcode_expiry_date,
-        validity
+        validities.shortcode
       )
       if (expiryError) return setError({ shortcode: expiryError })
     }
@@ -344,7 +351,7 @@ function Shortcode() {
       const pricingExpiryError = validateExpiryDate(
         formdata.shortcode_pricing.pricing_issue_date,
         formdata.shortcode_pricing.pricing_expiry_date,
-        validity
+        validities.shortcode_pricing
       )
       if (pricingExpiryError) return setError({ shortcode: pricingExpiryError })
     }
@@ -483,6 +490,8 @@ function Shortcode() {
                 value={formdata.shortcode.shortcode_issue_date}
                 onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={new Date(min_start_date)}
+                max={yesterday}
               />
             </div>
             <div className=" ">
@@ -492,6 +501,8 @@ function Shortcode() {
                 value={formdata.shortcode.shortcode_expiry_date}
                 onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={tomorrow}
+                max={new Date(max_end_date)}
               />
             </div>
           </div>
@@ -585,20 +596,24 @@ function Shortcode() {
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker
-                id="pricing_issue_date"
+                id="shortcode_issue_date"
                 label="Issue date"
-                value={formdata.shortcode_pricing.pricing_issue_date}
-                onChange={handlePricingFormChange}
+                value={formdata.shortcode.shortcode_issue_date}
+                onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={new Date(min_start_date)}
+                max={yesterday}
               />
             </div>
             <div className=" ">
               <DatePicker
-                id="pricing_expiry_date"
+                id="shortcode_expiry_date"
                 label="Expiry date"
-                value={formdata.shortcode_pricing.pricing_expiry_date}
-                onChange={handlePricingFormChange}
+                value={formdata.shortcode.shortcode_expiry_date}
+                onChange={handleShortcodeFormChange}
                 errors={errors}
+                min={tomorrow}
+                max={new Date(max_end_date)}
               />
             </div>
           </div>

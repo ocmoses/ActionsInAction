@@ -2,6 +2,8 @@ import { outputDate, scrollToTop } from "@/app/modules/utilities"
 import ReviewTitle from "@/app/components/dashboard/ReviewTitle"
 import Button from "@/app/components/form/Button"
 import usePartners from "@/hooks/usePartners"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
@@ -12,7 +14,8 @@ import { useState } from "react"
 
 export default function ReviewBox() {
   const { setForm, moveToNextForm } = useProcessing()
-  const { category } = usePartners()
+  const { category, registerPartner } = usePartners()
+  const [{ errors, setError, clearErrors }] = useErrors()
   const showSection = (section) =>
     category?.validation &&
     category.validation[section] &&
@@ -21,7 +24,22 @@ export default function ReviewBox() {
 
   const [showModal, setShowModal] = useState(false)
   const [filePath, setFilePath] = useState("")
+  const saveForm = async () => {
+    clearErrors()
+    console.log({ category })
+    const result = await registerPartner("complete_registration", {
+      partner_uuid: category.partner_uuid,
+      category_uuid: category.category_uuid,
+      user_uuid: category.user_uuid,
+      action_completed: "category_registration",
+    })
 
+    if (result) {
+      scrollToTop("onboardinglayout")
+      if (result?.error) return setError({ review: result.error })
+    }
+    setForm("complete")
+  }
   const PreviewFile = (url) => {
     if (url) {
       setFilePath(url)
@@ -43,6 +61,13 @@ export default function ReviewBox() {
       {showModal && (
         <FilePreviewModal filePath={filePath} closeModal={handleCloseModal} />
       )}
+
+      {errors && (
+        <div className="mb-6">
+          <FormErrors error={errors["compliance"]} />{" "}
+        </div>
+      )}
+
       {/* Company info */}
       {showSection("companydetail") && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
@@ -596,12 +621,7 @@ export default function ReviewBox() {
         provided are accurate and truthful.
       </div>
       <div className="mt-3 pb-12 flex justify-center items-start w-full">
-        <Button
-          onClick={() => {
-            setForm("complete")
-          }}
-          label="Submit application"
-        />
+        <Button onClick={saveForm} label="Submit application" />
       </div>
     </>
   )

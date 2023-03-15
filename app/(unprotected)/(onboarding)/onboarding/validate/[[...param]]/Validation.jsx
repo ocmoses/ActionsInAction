@@ -37,7 +37,7 @@ export default function RegisterValidation({ url, err, params }) {
       })
       if (response) {
         const result = await response.json()
-        const { data: loginData, error } = result
+        const { data: loginData } = result
         if (!loginData) {
           setProcessing(false)
           return setError({ validate: "Authentication failed" })
@@ -63,7 +63,12 @@ export default function RegisterValidation({ url, err, params }) {
 
         app.setStoreStates(serverSession, categories)
         setData(serverSession)
-        return router.push(PageRoutes.getstarted)
+        if (params.type === "new") {
+          app.toggleGetstartedLink(true)
+          return router.push(PageRoutes.getstarted)
+        }
+        app.toggleGetstartedLink(false)
+        return router.push(PageRoutes.dashboard)
       } else {
         setProcessing(false)
         return setError({

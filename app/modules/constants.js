@@ -109,6 +109,16 @@ export const categoryCombination = [
   ["VAS", "MKP"],
   ["MKP", "AGR"],
 ]
+const welcomeMessages = {
+  new: {
+    welcome: "Choose a partner category that best suits your service",
+    cta: "Finish up",
+  },
+  existing: {
+    welcome: "Choose a partner category that best suits your service",
+    cta: "Finish up",
+  },
+}
 export const forms = {
   userinfo: {
     form: "userinfo",

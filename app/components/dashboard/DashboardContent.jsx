@@ -6,7 +6,7 @@ import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
 import OnboardingLayout from "./OnboardingLayout"
 import useUsers from "@/hooks/useUsers"
 import { useState, useEffect, useRef } from "react"
-import { Util } from "@/app/modules/utilities"
+import { Util, AllowedCategories } from "@/app/modules/utilities"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -32,19 +32,16 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
+  const [allowedCategories, setAllowedCategories] = useState(false)
 
-  const {
-    setForm,
-    setProcessing,
-    setFormSteps,
-    moveToNextForm,
-    setActiveCategory,
-  } = useProcessing()
+  const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
+    useProcessing()
   const [{ errors, clearErrors }] = useErrors(null)
   useEffect(() => {
     setCategoriesData(categories)
+    setAllowedCategories(AllowedCategories(categories))
   }, [categories])
-
+  console.log({ setAllowedCategories })
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -155,60 +152,6 @@ export default function GetStarted({ type }) {
                   type={type}
                   onClick={continueRegistration}
                 />
-                // <div
-                //   className={`flex flex-col gap-4 max-w-[837px] mt-16 w3-animate-opacity`}
-                // >
-                //   {partnerCategories.map(
-                //     (progress) =>
-                //       progress.category_name && (
-                //         <div
-                //           onClick={() => continueRegistration(progress.uuid)}
-                //           key={progress.uuid}
-                //           className="flex flex-col cursor-pointer items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
-                //         >
-                //           <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
-                //             <div className="flex justify-center items-center">
-                //               <UserPercentage
-                //                 size={86}
-                //                 thickness={2}
-                //                 textsize={20}
-                //                 percent={progress.percentage}
-                //               />
-                //             </div>
-                //             <div className="flex flex-col gap-0 justify-center items-center sm:items-start h-full">
-                //               <span className="text-sm text-[#999999]">
-                //                 In progress
-                //               </span>
-                //               <span className="text-white text-center md:text-left font-bold">
-                //                 {progress.category_name}
-                //               </span>
-                //             </div>
-                //           </div>
-                //           <div className="sm:hidden md:flex gap-6 justify-center md:justify-end items-center">
-                //             {progress.percentage < 100 ? (
-                //               <Button
-                //                 label="Finish up"
-                //                 noicon="yes"
-                //                 textsizecss="text-[13px] md:text-sm"
-                //               />
-                //             ) : (
-                //               <div className="flex justify-center">
-                //                 <Button
-                //                   onClick={() =>
-                //                     continueRegistration(progress.uuid)
-                //                   }
-                //                   label="Detail"
-                //                   outline="yes"
-                //                   noicon="yes"
-                //                   textsizecss="text-[13px] md:text-sm"
-                //                 />
-                //               </div>
-                //             )}
-                //           </div>
-                //         </div>
-                //       )
-                //   )}
-                // </div>
               )}
 
               {partnerCategories?.length > 0 &&
@@ -262,6 +205,9 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+              {console.log({ allowedCategories })}
+              {console.log({ partnerActiveCategories })}
+              {console.log({ partner })}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
                   {partnerActiveCategories &&

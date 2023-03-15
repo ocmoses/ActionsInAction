@@ -261,8 +261,9 @@ export default function GetStarted({ type }) {
                         Discover the right Metrics
                       </h4>
                       <p className="text-sm text-[#999999] text-center lg:text-start">
-                        Talk to our partner portal team and learn more about
-                        what you can do
+                        Learn to monitor system performance by selecting
+                        relevant metrics, collecting and analyzing data that
+                        matters most to you.
                       </p>
                     </div>
                   </div>
@@ -279,8 +280,9 @@ export default function GetStarted({ type }) {
                         Write Custom Codes
                       </h4>
                       <p className="text-sm text-[#999999] text-center lg:text-start">
-                        Talk to our partner portal team and learn more about
-                        what you can do
+                        Build custom code tailored to your unique needs,
+                        integrating with existing systems and creating powerful
+                        new functionality from scratch.
                       </p>
                     </div>
                   </div>

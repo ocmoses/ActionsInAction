@@ -327,12 +327,14 @@ export const Util = {
   },
 }
 export const scrollToTop = (id) => {
-  var contentBody = document.getElementById(id ?? "partnerdashboard")
-  if (contentBody) {
-    contentBody.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
+  var element = document.getElementById(id ?? "partnerdashboard")
+  if (element) {
+    console.log({ element })
+    // element.scrollTo({
+    //   top: 0,
+    //   behavior: "smooth",
+    // })
+    element.scrollIntoView({ behavior: "smooth" })
   }
 }
 export async function logout() {

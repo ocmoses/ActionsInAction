@@ -4,17 +4,39 @@ import Typewriter from "typewriter-effect"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
-import { useEffect, useState } from "react"
 import Link from "next/link"
+import ScrollToTop from "react-scroll-to-top"
+import { useEffect, useState } from "react"
+import { scrollToTop } from "@/app/modules/utilities"
 
 function LandingPage() {
   const { setRouteloading } = useApp()
   const [faq, setFaq] = useState([
-    { id: "1", faq: "What is the MTN Partner Portal" },
-    { id: "2", faq: "What do I need to register?" },
-    { id: "3", faq: "How long does the documentation verification take?" },
-    { id: "4", faq: "How do I reset my password?" },
-    { id: "5", faq: "Who can sign up on MTN Partner Portal?" },
+    {
+      id: "1",
+      faq: "What is the MTN Partner Portal for",
+      ans: "The MTN Partner Portal is designed for developers, content creators/providers, licensed VAS aggregators, and e-commerce vendors.",
+    },
+    {
+      id: "2",
+      faq: "What do I need to register?",
+      ans: "They are specific requirements needed to partner with us. Kindly click on this link to get the detailed requirement.",
+    },
+    {
+      id: "3",
+      faq: "How long does the documentation verification take?",
+      ans: "In less than a week, all documents submitted will be verified. To check the status of your document verification, click here.",
+    },
+    {
+      id: "4",
+      faq: "How do I reset my password?",
+      ans: "Kindly log in to your dashboard and click on the reset button. A password reset email will be shared.",
+    },
+    {
+      id: "5",
+      faq: "Who can sign up on MTN Partner Portal?",
+      ans: "The number of products or services that can be promoted on the platform would depend on the terms and conditions of the contract. Partners should check the terms and conditions page on the MTN Partner Portal website for more details.",
+    },
   ])
   const [openFaq, setOpenFaq] = useState("")
   const toggleFaq = (id) => {
@@ -37,6 +59,12 @@ function LandingPage() {
 
   return (
     <>
+      <ScrollToTop
+        smooth
+        color="#FFCB03"
+        className="flex justify-center items-center !border !border-white/40 !bg-[#111111] hover:!bg-[#313131]"
+        style={{ zIndex: 11111 }}
+      />
       <main className="flex items-start px-8 xl:px-0 m-0 pb-2xl w-full relative bg-[url('/assets/pic/hero-bg.png')] bg-contain  sm:bg-right-top bg-no-repeat">
         <div className="w-full h-full mx-auto max-w-[1158px] relative">
           <Navbar />
@@ -436,7 +464,10 @@ function LandingPage() {
               <Button label="Get started" />
             </div>
             {/* Support */}
-            <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 pt-6 mb-[100px]">
+            <div
+              id="supportsection"
+              className="flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 pt-6 mb-[100px]"
+            >
               <div className="flex flex-col flex-1 max-w-[400px] ">
                 <h3 className="text-mtn text-[20px] font-mtn font-semibold mb-4">
                   Support
@@ -483,10 +514,7 @@ function LandingPage() {
                         } rounded-lg bg-black px-3 py-4`}
                       >
                         <p className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]">
-                          The MTN partner portal is a platform specifically
-                          created to help businesses, content creators, licensed
-                          VAS aggregators, and e-commerce vendors reach millions
-                          of people and grow their businesses seamlessly.
+                          {f.ans}
                         </p>
                       </div>
                     </div>
@@ -616,7 +644,8 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
+                      onClick={(e) => scrollToTop("supportsection")}
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       FAQ

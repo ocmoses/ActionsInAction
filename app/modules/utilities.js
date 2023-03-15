@@ -2,6 +2,7 @@ import CryptoJS from "crypto-js"
 import { setCookie } from "cookies-next"
 import moment from "moment"
 import { NextEndPoints } from "./endpoints"
+import { categoryCombination } from "@/app/modules/constants"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -442,4 +443,17 @@ export const getFileSizeText = (size) => {
     return `${Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100}GB`
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
+}
+export const AllowedCategories = (categories) => {
+  console.log({ categories })
+  return categories
+  const target = []
+  categoryCombination.map((srv) => {
+    if (srv.includes(category)) {
+      srv.map((s) => {
+        if (s !== category) target.push(s)
+      })
+    }
+  })
+  return target
 }

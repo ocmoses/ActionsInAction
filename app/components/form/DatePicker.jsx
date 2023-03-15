@@ -42,7 +42,7 @@ function FileInput({
           onChange={(date) => handleDateChange(date)}
           maxDate={max}
           minDate={min}
-          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-mtn peer z-50"
+          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer z-50"
           placeholderText={label}
           dateFormat="dd/MM/yyyy"
           peekNextMonth

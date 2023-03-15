@@ -5,7 +5,9 @@ import useProcessing from "@/hooks/useProcessing"
 import useAdminPartners from "@/hooks/admin/useAdminPartners"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
+import UserPercentage from "@/app/components/UserPercentage"
 import { PhoneIcon } from "@heroicons/react/24/solid"
+import moment from "moment"
 
 export default function Compliance() {
   const { getAllPartners } = useAdminPartners()
@@ -76,7 +78,7 @@ export default function Compliance() {
                         </th>
                         <td>
                           <div className="flex items-center space-x-3">
-                            <div className="flex justify-center items-center rounded-full w-12 h-12 bg-[#396587] text-white text-[12px] mr-2">
+                            <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                               <span>{getInitials(partner.company_name)}</span>
                             </div>
                             <div>
@@ -91,11 +93,24 @@ export default function Compliance() {
                           </div>
                         </td>
                         <td>
-                          Zemlak, Daniel and Leannon
-                          <br />
-                          <span className="badge badge-ghost badge-sm">
-                            Desktop Support Technician
-                          </span>
+                          <div className="flex flex-col gap-3">
+                            {partner?.categories?.length > 0 &&
+                              partner?.categories.map((category) => (
+                                <div className="flex justify-between">
+                                  <div className="flex gap-4 items-center">
+                                    <div className="w-10 h-10 border border-white/20 rounded-full flex text-mtn text-[12px] bg-black items-center justify-center">
+                                      {category.category_percentage}%
+                                    </div>
+                                    <span>{category.category_name}</span>
+                                  </div>
+                                  <div>
+                                    {moment(category.submitted_on).format(
+                                      "DD/MM/YYYY"
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
                         </td>
                         <td>Purple</td>
                         <th>

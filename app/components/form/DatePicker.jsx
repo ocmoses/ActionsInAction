@@ -1,15 +1,26 @@
-import { useEffect } from 'react'
-import { useState } from 'react'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import { inputDate } from '@/app/modules/utilities'
-import FormErrors from '@/app/components/FormErrors'
+import { useEffect } from "react"
+import { useState } from "react"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { inputDate } from "@/app/modules/utilities"
+import FormErrors from "@/app/components/FormErrors"
 
-function FileInput({ id, label, value, onChange, border, bg, margin, errors }) {
+function FileInput({
+  id,
+  label,
+  value,
+  onChange,
+  border,
+  bg,
+  margin,
+  errors,
+  min,
+  max,
+}) {
   const [startDate, setStartDate] = useState()
 
   useEffect(() => {
-    setStartDate(value ? new Date(value) : '')
+    setStartDate(value ? new Date(value) : "")
   }, [value])
 
   const handleDateChange = (date) => {
@@ -17,24 +28,36 @@ function FileInput({ id, label, value, onChange, border, bg, margin, errors }) {
     onChange({ target: { id, value: inputDate(date) } })
   }
   return (
-    <div className={margin ? margin + ' ' : 'mb-6 '}>
+    <div className={margin ? margin + " " : "mb-6 "}>
       <div
         className={
-          (border ? border + ' ' : 'border-1 ') +
-          (bg ? bg + ' ' : 'bg-[#212121] ') +
-          'relative px-3 py-3 pb-2 w-full group  border-[#333333] rounded-[10px]'
+          (border ? border + " " : "border-1 ") +
+          (bg ? bg + " " : "bg-[#212121] ") +
+          "relative w-full group  border-[#333333] rounded-[10px]"
         }
       >
         <DatePicker
+          showIcon
           selected={startDate}
           onChange={(date) => handleDateChange(date)}
-          className="block px-3 py-3 pb-2 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-0 peer z-50"
+          maxDate={max}
+          minDate={min}
+          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer z-50"
           placeholderText={label}
           dateFormat="dd/MM/yyyy"
+          peekNextMonth
+          showYearDropdown
+          showMonthDropdown
+          // dropdownMode="select"
+          dateFormatCalendar="MMMM"
+          yearDropdownItemNumber={10}
+          scrollableYearDropdown
+          tabIndex={9999999}
+          fixedHeight
         />
         <label
           htmlFor={id}
-          className="absolute text-lg top-0 left-6 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
+          className="absolute text-lg top-0 left-5 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
         >
           {label}
         </label>

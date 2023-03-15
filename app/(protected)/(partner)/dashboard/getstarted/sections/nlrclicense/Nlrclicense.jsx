@@ -13,14 +13,21 @@ import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
+import { forms, validities } from "@/app/modules/constants"
+import {
+  scrollToTop,
+  validateExpiryDate,
+  getValidityRange,
+} from "@/app/modules/utilities"
 
 function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.nlrc_lottery)
+
   const { nextstage: NextStage } = nextStage(category)
 
   const [data, setData] = useState({
@@ -31,7 +38,7 @@ function NlrcLicense() {
     nlrc_expiry_date: "",
     nlrc_doc: "",
   })
-  const { title, subtitle, hand, required, validity } = forms["nlrclicense"]
+  const { title, subtitle, hand, required } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -76,7 +83,7 @@ function NlrcLicense() {
     const expiryError = validateExpiryDate(
       data.nlrc_issue_date,
       data.nlrc_expiry_date,
-      validity
+      validities.nlrc_lottery
     )
     if (expiryError) return setError({ nlrclicense: expiryError })
     const result = await registerPartner("nlrclicense", data)
@@ -126,6 +133,8 @@ function NlrcLicense() {
               value={data.nlrc_issue_date}
               onChange={handleDateChange}
               errors={errors}
+              min={new Date(min_start_date)}
+              max={yesterday}
             />
           </div>
           <div className="">
@@ -135,6 +144,8 @@ function NlrcLicense() {
               value={data.nlrc_expiry_date}
               onChange={handleDateChange}
               errors={errors}
+              min={tomorrow}
+              max={new Date(max_end_date)}
             />
           </div>
         </div>

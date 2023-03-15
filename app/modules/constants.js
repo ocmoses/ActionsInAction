@@ -92,7 +92,23 @@ export const partnerFields = {
   audited_account_3: "",
   progress: {},
 }
-
+export const validities = {
+  ncc: "5 years",
+  nlrc_lottery: "10 years",
+  nlrc_sport_betting: "5 years",
+  nlrc_mobile_lottery: "5 years",
+  shortcode: "1 years",
+  shortcode_2: "2 years",
+  shortcode_pricing: "1 years",
+  shortcode_pricing_2: "2 years",
+  indemnity: "1 years",
+}
+export const categoryCombination = [
+  ["VAS", "RMS"],
+  ["RMS", "MKP"],
+  ["VAS", "MKP"],
+  ["MKP", "AGR"],
+]
 export const forms = {
   userinfo: {
     form: "userinfo",
@@ -123,24 +139,24 @@ export const forms = {
       // password_confirmed: "Repeat password",
     },
   },
-  companyinfo: {
-    form: "companyinfo",
-    title: "Your company and role",
-    label: "Company information",
-    subtitle: "it'll only take a few minutes",
-    hand: "",
-    fields: { company_name: "Company name", company_role: "Company role" },
-    required: { company_name: "Company name", company_role: "Company role" },
-  },
-  category: {
-    form: "category",
-    title: "Choose a service category",
-    label: "Service category",
-    subtitle: "You'll be able to add more later",
-    hand: "",
-    fields: { category_id: "Category ID" },
-    required: { category_id: "Category ID" },
-  },
+  // companyinfo: {
+  //   form: "companyinfo",
+  //   title: "Your company and role",
+  //   label: "Company information",
+  //   subtitle: "it'll only take a few minutes",
+  //   hand: "",
+  //   fields: { company_name: "Company name", company_role: "Company role" },
+  //   required: { company_name: "Company name", company_role: "Company role" },
+  // },
+  // category: {
+  //   form: "category",
+  //   title: "Choose a service category",
+  //   label: "Service category",
+  //   subtitle: "You'll be able to add more later",
+  //   hand: "",
+  //   fields: { category_id: "Category ID" },
+  //   required: { category_id: "Category ID" },
+  // },
   companydetail: {
     form: "companydetail",
     title: "Tell us a bit more about your organisation",
@@ -203,7 +219,7 @@ export const forms = {
       ncc_expiry_date: "Expiry date",
       // vas_doc: 'NCC VAS License'
     },
-    validity: "5 years",
+    validity: "1 years",
   },
   nlrclicense: {
     form: "nlrclicense",
@@ -221,9 +237,7 @@ export const forms = {
       nlrc_license_id: "NLRC License ID",
       nlrc_issue_date: "Issuing date",
       nlrc_expiry_date: "Expiry date",
-      // nlrc_doc: 'NLRC Document'
     },
-    validity: null,
   },
   shortcode: {
     form: "shortcode",
@@ -246,10 +260,7 @@ export const forms = {
       shortcode_expiry_date: "Expiry date",
       shortcode_price_issue_date: "Princing Issue date",
       shortcode_price_expiry_date: "Pricing Expiry date",
-      // shortcode_doc: 'Short code document',
-      // shortcode_approval_doc: 'NCC Pricing approval'
     },
-    validity: null,
   },
   indemnity: {
     form: "indemnity",
@@ -267,7 +278,6 @@ export const forms = {
       indemnity_no: "Professional indemnity insurance number",
       indemnity_issue_date: "Issuing date",
       indemnity_expiry_date: "Expiry date",
-      // indemnity_doc: 'Professional indemnity insurance Document'
     },
     validity: null,
   },

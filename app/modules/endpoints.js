@@ -25,7 +25,7 @@ const RemoteEndpoints = {
   CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v1/auth/check-email-verification-link`,
   CATEGORIES: `${apiURL}/v1/categories`,
   DESIGNATION: `${apiURL}/v1/your-roles`,
-  SINGLE_PARNER: `${apiURL}/v1/auth/partner-info/`,
+  SINGLE_PARNER: `${apiURL}/v1/auth/partner-info`,
   // onboarding
   CATEGORY: `${apiURL}/v1/auth/register/category`,
   COMPANYDETAIL: `${apiURL}/v1/auth/register/companydetail`,
@@ -35,5 +35,9 @@ const RemoteEndpoints = {
   SHORTCODE: `${apiURL}/v1/auth/register/shortcode`,
   INDEMNITY: `${apiURL}/v1/auth/register/indemnity`,
   ACCOUNTINFO: `${apiURL}/v1/auth/register/accountinfo`,
+
+  // version 2
+  REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
+  ALL_PARTNERS: `${apiURL}/v2/admin/partners`,
 }
 export default RemoteEndpoints

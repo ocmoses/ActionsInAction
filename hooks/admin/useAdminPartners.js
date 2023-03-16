@@ -1,19 +1,8 @@
 import useProcessing from "@/hooks/useProcessing"
-import useRegistration from "@/hooks/useRegistration"
-import useErrors from "@/hooks/useErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
-import Axios from "@/app/modules/axios"
 import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import { PageRoutes } from "@/app/modules/menu"
-import { fetchData } from "@/app/modules/fetchData"
-import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData } from "@/app/modules/utilities"
-import { forms } from "@/app/modules/constants"
-import { getCategories } from "@/app/modules/categories"
 
 export default function useAdminPartners() {
   const router = useRouter()

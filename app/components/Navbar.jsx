@@ -8,6 +8,7 @@ import useUsers from "@/hooks/useUsers"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
 import ProfileIcons from "@/app/components/ProfileIcons"
+import { PageRoutes } from "@/app/modules/menu"
 
 function Navbar() {
   const { session } = useUsers()
@@ -15,7 +16,7 @@ function Navbar() {
   const router = useRouter()
   const goToRegister = () => {
     setRouteloading(true)
-    router.push("/onboarding/register")
+    router.push(PageRoutes.register)
   }
 
   return (

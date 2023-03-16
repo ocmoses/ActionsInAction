@@ -35,6 +35,7 @@ const usePartners = () => {
     optional: [],
     allForms: [],
   })
+
   const setValidationRules = (category) => {
     const required = []
     const optional = []
@@ -87,6 +88,7 @@ const usePartners = () => {
     )
     currentCategory.validation = baseCategory.validation
     currentCategory.category_name = baseCategory.category_name
+    currentCategory.category_code = baseCategory.category_code
     setCategory(currentCategory)
     setValidationRules(currentCategory)
   }

@@ -105,9 +105,9 @@ export const validities = {
 }
 export const categoryCombination = [
   ["VAS", "RMS"],
-  ["RMS", "MKP"],
   ["VAS", "MKP"],
-  ["MKP", "AGR"],
+  ["RMS", "MKP"],
+  ["AGR", "MKP"],
 ]
 const welcomeMessages = {
   new: {

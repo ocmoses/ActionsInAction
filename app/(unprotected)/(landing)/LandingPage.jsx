@@ -297,7 +297,8 @@ function LandingPage() {
                   Customized payment channel
                 </h4>
                 <p className="text-[18px] leading-[24px] text-white/60 max-w-[260px] font-mtn-extralight">
-                  Create plans from 1MB to Unlimited, depending on your use case
+                  Create plans from 1MB to Unlimited, depending on your use
+                  case.
                 </p>
               </div>
               <div className="rounded-3xl p-8 border border-white/10 w-full">
@@ -330,7 +331,7 @@ function LandingPage() {
                 </h4>
                 <p className="text-[18px] leading-[24px] text-white/60 max-w-[260px] font-mtn-extralight">
                   See payments & history, manage refunds, & discounts and
-                  promotions. All in one place
+                  promotions. All in one place.
                 </p>
               </div>
             </div>

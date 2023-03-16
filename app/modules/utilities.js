@@ -439,16 +439,33 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
-export const AllowedCategories = (categories) => {
-  console.log({ categories })
-  return categories
-  const target = []
-  categoryCombination.map((srv) => {
-    if (srv.includes(category)) {
-      srv.map((s) => {
-        if (s !== category) target.push(s)
+export const AllowedCategories = (category_codes) => {
+  // category_codes = ["VAS"]
+  const combi = categoryCombination.filter((srv) =>
+    category_codes.every((r) => srv.includes(r))
+  )
+  const Combination = []
+  combi.map((c) => {
+    Combination.push(...c)
+  })
+  const possible = [...new Set(Combination)]
+  return possible.filter((p) => !category_codes.includes(p))
+}
+// Filter partner info hook
+export const filterPartner = (partnerInfo, categories) => {
+  const allCategories = categories.data
+  const registeredCategories = []
+  if (partnerInfo) {
+    if (partnerInfo.categories?.length > 0) {
+      partnerInfo.categories.map((category) => {
+        const category_code = allCategories.find(
+          (c) => c.uuid === category.category_uuid
+        ).category_code
+        category.category_code = category_code
+        registeredCategories.push(category_code)
       })
     }
-  })
-  return target
+    partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
+  }
+  return partnerInfo
 }

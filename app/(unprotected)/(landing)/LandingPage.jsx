@@ -211,9 +211,9 @@ function LandingPage() {
                       Data analytics and insights
                     </p>
                     <p className="text-[22px] leading-[29px] text-white/60">
-                      Insights into the behaviours that make up campaign
-                      interactions and how those attributes impact the path to
-                      conversion.
+                      Get access to valuable data analytics that will help
+                      inform your business decisions that will help grow your
+                      business like a Pro.
                     </p>
                   </div>
                 </div>

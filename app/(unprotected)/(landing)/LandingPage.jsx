@@ -15,7 +15,7 @@ function LandingPage() {
   const [faq, setFaq] = useState([
     {
       id: "1",
-      faq: "What is the MTN Partner Portal for",
+      faq: "What is the MTN Partner Portal for?",
       ans: "The MTN Partner Portal is designed for developers, content creators/providers, licensed VAS aggregators, and e-commerce vendors.",
     },
     {
@@ -439,8 +439,9 @@ function LandingPage() {
                     Discover the right Metrics
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Talk to our partner portal team and learn more about what
-                    you can do
+                    Learn to monitor system performance by selecting relevant
+                    metrics, collecting and analyzing data that matters most to
+                    you.
                   </p>
                 </div>
               </div>
@@ -458,8 +459,9 @@ function LandingPage() {
                     Write Custom Codes
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Talk to our partner portal team and learn more about what
-                    you can do
+                    Build custom code tailored to your unique needs, integrating
+                    with existing systems and creating powerful new
+                    functionality from scratch.
                   </p>
                 </div>
               </div>

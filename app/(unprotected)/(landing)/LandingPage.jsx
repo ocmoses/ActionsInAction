@@ -35,7 +35,7 @@ function LandingPage() {
     },
     {
       id: "5",
-      faq: "Who can sign up on MTN Partner Portal?",
+      faq: "Is there a limit to the number of products or services I can promote on the MTN Partner Portal?",
       ans: "The number of products or services that can be promoted on the platform would depend on the terms and conditions of the contract. Partners should check the terms and conditions page on the MTN Partner Portal website for more details.",
     },
   ])
@@ -485,14 +485,14 @@ function LandingPage() {
                 <div className="flex flex-col gap-2 w-full">
                   {faq.map((f) => (
                     <div key={f.id} className="rounded-lg bg-[#1B1B1B] p-4">
-                      <div className="flex flex-row justify-between items-center px-2 py-2">
+                      <div
+                        className="flex flex-row justify-between items-center px-2 py-2 cursor-pointer"
+                        onClick={() => toggleFaq(f.id)}
+                      >
                         <span className="text-white text-[16px] leading-[22px]">
                           {f.faq}
                         </span>
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => toggleFaq(f.id)}
-                        >
+                        <div>
                           {openFaq === f.id ? (
                             <Image
                               src="/assets/illustrations/icon-minus.png"

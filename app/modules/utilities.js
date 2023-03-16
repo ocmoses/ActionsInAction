@@ -328,14 +328,7 @@ export const Util = {
 }
 export const scrollToTop = (id) => {
   var element = document.getElementById(id ?? "partnerdashboard")
-  if (element) {
-    console.log({ element })
-    // element.scrollTo({
-    //   top: 0,
-    //   behavior: "smooth",
-    // })
-    element.scrollIntoView({ behavior: "smooth" })
-  }
+  if (element) element.scrollIntoView({ behavior: "smooth" })
 }
 export async function logout() {
   const response = await fetch(NextEndPoints.LOGOUT)

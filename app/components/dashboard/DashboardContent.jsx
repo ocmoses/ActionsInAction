@@ -19,12 +19,14 @@ export default function GetStarted({ type }) {
     session: { user },
   } = useUsers()
   const {
+    category,
     categories,
     partner,
     setValidationRules,
     setCurrentCategory,
     nextStage,
   } = usePartners()
+  console.log("allowedCategories", partner.allowedCategories)
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -41,7 +43,6 @@ export default function GetStarted({ type }) {
     setCategoriesData(categories)
     setAllowedCategories(AllowedCategories(categories))
   }, [categories])
-  console.log({ setAllowedCategories })
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -82,13 +83,16 @@ export default function GetStarted({ type }) {
       }
     }
     const newCatArray = categoriesData?.filter(
-      (category) => !partnerActiveCat.includes(category.uuid)
+      (category) =>
+        !partnerActiveCat.includes(category.uuid) &&
+        partner.allowedCategories.includes(category.category_code)
     )
-    setPartnerActiveCategories(
-      partnerActiveCat.length ? newCatArray : categoriesData
-    )
+    // setPartnerActiveCategories(
+    //   partnerActiveCat.length ? newCatArray : categoriesData
+    // )
+    setPartnerActiveCategories(newCatArray)
     setPartnerCategories(partnerCat)
-  }, [partner, categoriesData])
+  }, [partner, categoriesData, category])
 
   const toggleProgress = () => {
     setShowProgress((oldState) => !oldState)
@@ -104,7 +108,6 @@ export default function GetStarted({ type }) {
       const { nextstage: NextStage } = nextStage(category)
       setIsOnboarding(true)
       setIsOpen(false)
-      console.log({ NextStage })
       if (NextStage === "review") return moveToNextForm(["review", true])
       moveToNextForm([NextStage, true])
     }
@@ -205,9 +208,9 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {console.log({ allowedCategories })}
+              {/* {console.log({ allowedCategories })}
               {console.log({ partnerActiveCategories })}
-              {console.log({ partner })}
+              {console.log({ partner })} */}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
                   {partnerActiveCategories &&

@@ -8,6 +8,7 @@ import Link from "next/link"
 import ScrollToTop from "react-scroll-to-top"
 import { useEffect, useState } from "react"
 import { scrollToTop } from "@/app/modules/utilities"
+import { PageRoutes } from "@/app/modules/menu"
 
 function LandingPage() {
   const { setRouteloading } = useApp()
@@ -119,6 +120,7 @@ function LandingPage() {
               {/* BUTTONS */}
               <div className="flex flex-col sm:flex-row w-full justify-center items-center gap-4 mt-8">
                 <Button
+                  href={PageRoutes.register}
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon
@@ -191,7 +193,7 @@ function LandingPage() {
                   Worry less about how to reach your customers. Reach millions
                   of people and bring life to your business goals.
                 </p>
-                <Button label="Get started" />
+                <Button href={PageRoutes.register} label="Get started" />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -241,12 +243,12 @@ function LandingPage() {
                   <div className="px-10 py-8 flex items-center h-fit">
                     <div>
                       <p className="font-mtn-bold text-white text-[30px]">
-                        Audience analysis
+                        Campaign analysis
                       </p>
                       <p className="text-[21px] leading-[29px] text-white/60">
-                        Get access to a 360-degree view of your audiences by
-                        analysing data signals across user attributes and
-                        behaviours.
+                        Insights into the behaviours that make up campaign
+                        interactions and how those attributes impact the path to
+                        conversion.
                       </p>
                     </div>
                   </div>
@@ -343,7 +345,7 @@ function LandingPage() {
                   Don’t know where to start with A/B testing? Get access to
                   tools that help you create personalised experiences
                 </p>
-                <Button label="Get started" />
+                <Button href={PageRoutes.register} label="Get started" />
               </div>
               <Image
                 className="mb-4 sm:w-[50%] lg:w-auto"
@@ -370,7 +372,7 @@ function LandingPage() {
                       the tools you are already familiar with. Enjoy a seamless
                       onboarding experience integrating our service.
                     </p>
-                    <Button label="Get started" />
+                    <Button href={PageRoutes.register} label="Get started" />
                   </div>
                 </div>
               </div>
@@ -404,7 +406,7 @@ function LandingPage() {
                 height={617}
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 justify-start sm:justify-between items-start max-w-[917px] mx-auto -mt-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-start sm:justify-between items-start max-w-[917px] mx-auto -mt-6 mb-12">
               <div className="flex justify-start items-start flex-col gap-4">
                 <Image
                   className="w-full"
@@ -414,7 +416,7 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
                     Read the documentation
                   </p>
@@ -432,12 +434,13 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
-                    Read the documentation
+                    Discover the right Metrics
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Explore our guides, API references and code examples
+                    Talk to our partner portal team and learn more about what
+                    you can do
                   </p>
                 </div>
               </div>
@@ -450,18 +453,19 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
-                    Read the documentation
+                    Write Custom Codes
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Explore our guides, API references and code examples
+                    Talk to our partner portal team and learn more about what
+                    you can do
                   </p>
                 </div>
               </div>
             </div>
             <div className="flex justify-center items-center pt-6 mb-[100px]">
-              <Button label="Get started" />
+              <Button href={PageRoutes.register} label="Get started" />
             </div>
             {/* Support */}
             <div
@@ -541,7 +545,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Identity APIs
@@ -549,7 +553,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Customer APIs
@@ -557,7 +561,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Messaging APIs
@@ -572,7 +576,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       My Account
@@ -580,7 +584,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Documentation
@@ -589,7 +593,7 @@ function LandingPage() {
 
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Support
@@ -597,7 +601,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Insights
@@ -605,7 +609,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="/onboarding/register"
+                      href={PageRoutes.register}
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Become a partner
@@ -620,7 +624,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       About MTN
@@ -628,7 +632,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Community
@@ -636,7 +640,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Contact Us
@@ -691,19 +695,19 @@ function LandingPage() {
             {/* Footer nav */}
             <div className="flex justify-between gap-4 w-full max-w-[521px]">
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Contact Us
               </Link>
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Copyright and Privacy
               </Link>
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Terms & Conditions

@@ -142,7 +142,6 @@ export default function RegisterValidation({ params }) {
     }
   }
   useEffect(() => {
-    console.log("ValidateNewUser")
     if (params?.type === "new") {
       ValidateNewUser()
     } else {

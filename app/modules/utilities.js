@@ -153,96 +153,6 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
   }
   return null
 }
-// export const validateExpiryDate = (issue_date, expiry_date, validity) => {
-//   // console.log({ issue_date })
-//   // console.log({ expiry_date })
-//   // console.log({ validity })
-//   const today = moment().format("YYYY-MM-DD")
-//   if (moment(issue_date).isSameOrAfter(today))
-//     return "Issue date entry cannot be today or later"
-//   if (moment(expiry_date).isSameOrBefore(today))
-//     return "Expiry date entry cannot be today or earlier"
-//   if (moment(issue_date).isSameOrAfter(expiry_date))
-//     return "Expiry date cannot be earlier than or equal to issue date"
-//   if (validity) {
-//     const Validity = validity.split(" ")
-//     const period = parseInt(Validity[0])
-//     const unit = Validity[1]?.trim() ?? "years"
-//     let term = "years"
-//     switch (unit.toLowerCase()) {
-//       case "y":
-//       case "year":
-//       case "years":
-//       case "yr":
-//       case "yrs":
-//         term = "years"
-//         break
-//       case "q":
-//       case "quarter":
-//       case "quarters":
-//       case "qtr":
-//       case "qtrs":
-//         term = "quarters"
-//         break
-//       case "m":
-//       case "month":
-//       case "months":
-//       case "mth":
-//       case "mths":
-//         term = "months"
-//         break
-//       case "d":
-//       case "day":
-//       case "days":
-//       case "dy":
-//       case "dys":
-//         term = "days"
-//         break
-//       case "w":
-//       case "week":
-//       case "weeks":
-//       case "wk":
-//       case "wks":
-//         term = "weeks"
-//         break
-//       case "h":
-//       case "hour":
-//       case "hours":
-//       case "hr":
-//       case "hrs":
-//         term = "hours"
-//         break
-//       case "min":
-//       case "minute":
-//       case "minutes":
-//       case "mn":
-//       case "mns":
-//         term = "minutes"
-//         break
-//       case "s":
-//       case "second":
-//       case "seconds":
-//       case "sec":
-//       case "secs":
-//         term = "seconds"
-//         break
-//     }
-//     // console.log({ period })
-//     // console.log({ term })
-//     if (period) {
-//       const expected_end_date = moment(issue_date)
-//         .add(period, term)
-//         .format("YYYY MM DD")
-
-//       if (moment(expiry_date).isAfter(expected_end_date))
-//         return (
-//           "Expiry date cannot be beyond " +
-//           moment(expected_end_date).format("DD/MM/YYYY")
-//         )
-//     }
-//   }
-//   return null
-// }
 export const getValidityRange = (validity) => {
   const today = moment().format("YYYY-MM-DD")
   if (validity) {
@@ -410,7 +320,6 @@ export const sanitizeSegments = (segments) => {
 }
 export const getInitials = (fullname) => {
   if (!fullname) return ""
-  console.log({ fullname })
   const Names = fullname.split(" ")
   const firstName = Names[0] ?? ""
   const lastName = Names[1] ?? ""
@@ -429,7 +338,6 @@ export const getFileSize = (size) => {
     return { size: size / 1024 / 1024 / 1024, unit: "tb" }
 }
 export const getFileSizeText = (size) => {
-  console.log({ size })
   if (size < 1024) return `${Math.ceil(size * 100) / 100}B`
   if (size < 1024 * 1024) return `${Math.ceil((size / 1024) * 100) / 100}KB`
   if (size < 1024 * 1024 * 1024)
@@ -453,16 +361,18 @@ export const AllowedCategories = (category_codes) => {
 }
 // Filter partner info hook
 export const filterPartner = (partnerInfo, categories) => {
-  const allCategories = categories.data
+  console.log({ categories })
   const registeredCategories = []
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
       partnerInfo.categories.map((category) => {
-        const category_code = allCategories.find(
+        const category_code = categories.find(
           (c) => c.uuid === category.category_uuid
-        ).category_code
-        category.category_code = category_code
-        registeredCategories.push(category_code)
+        )?.category_code
+        if (category_code) {
+          category.category_code = category_code
+          registeredCategories.push(category_code)
+        }
       })
     }
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)

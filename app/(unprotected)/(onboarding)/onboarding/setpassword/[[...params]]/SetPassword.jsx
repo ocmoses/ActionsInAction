@@ -73,11 +73,11 @@ function SetPassword({ params: { params } }) {
       User: loginData?.data,
     }
     app.setStoreStates(serverSession, loginData?.categories)
-    const redirect =
-      data.type === "existing" || data.type === "new"
-        ? PageRoutes.getstarted
-        : PageRoutes.getstarted
-    return router.push(redirect)
+    // const redirect =
+    //   data.type === "existing"
+    //     ? PageRoutes.getstarted
+    //     : PageRoutes.dashboard
+    return router.push(PageRoutes.dashboard)
   }
 
   const handleSubmit = async (e) => {
@@ -98,10 +98,6 @@ function SetPassword({ params: { params } }) {
       }
     }
     handleReset()
-    // const result = await registerPartner("setpassword", data)
-    // if (result) {
-    //   if (result?.error) setError({ setpassword: result.error })
-    // }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

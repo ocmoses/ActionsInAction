@@ -17,7 +17,7 @@ const useApp = () => {
         actions.users.setUser(serverSession.User.user)
         if (serverSession?.User?.partners?.length) {
           const PartnersAccounts = serverSession.User.partners.map((partner) =>
-            filterPartner(partner, categories)
+            filterPartner(partner, categories?.data)
           )
           actions.partners.setPartners(PartnersAccounts)
         }

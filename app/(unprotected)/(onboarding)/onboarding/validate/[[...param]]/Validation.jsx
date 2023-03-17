@@ -6,11 +6,12 @@ import useProcessing from "@/hooks/useProcessing"
 import useLogout from "@/hooks/useLogout"
 import useApp from "@/hooks/useApp"
 import useUsers from "@/hooks/useUsers"
+import usePartners from "@/hooks/usePartners"
 
 import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { Util } from "@/app/modules/utilities"
 
@@ -18,16 +19,19 @@ export default function RegisterValidation({ url, err, params }) {
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState(null)
+  // const [validating, setValidating] = useState(false)
+  const validating = useRef(false)
   const { clearStore } = useLogout()
   const router = useRouter()
   const app = useApp()
   const users = useUsers()
+  const { resendEmail } = usePartners()
 
   const ValidateNewUser = async () => {
     setProcessing(true)
     try {
       clearErrors()
-      clearStore()
+      // clearStore()
       const response = await fetch(NextEndPoints.VALIDATE_USER, {
         method: "POST",
         body: JSON.stringify({
@@ -36,12 +40,17 @@ export default function RegisterValidation({ url, err, params }) {
         }),
       })
       if (response) {
+        // setValidating(true)
+        validating.current = true
         const result = await response.json()
         const { data: loginData } = result
+        console.log({ loginData })
+
         if (!loginData) {
           setProcessing(false)
           return setError({ validate: "Authentication failed" })
         }
+
         if (loginData.error) {
           users.setTmpUser(loginData.data)
           if (loginData.data && loginData.data.email_verified === "yes") {
@@ -61,7 +70,7 @@ export default function RegisterValidation({ url, err, params }) {
         }
         const categories = loginData?.categories
 
-        app.setStoreStates(serverSession, categories)
+        app.setStoreStates(serverSession, categories, "validation")
         setData(serverSession)
         if (params.type === "new") {
           app.toggleGetstartedLink(true)
@@ -82,11 +91,16 @@ export default function RegisterValidation({ url, err, params }) {
     }
   }
   useEffect(() => {
-    if (err) setError({ validate: err.message ?? err.messsage })
-    if (params?.type === "new") {
-      if (!processing) ValidateNewUser()
+    if (err) {
+      console.log("err.user", err.user)
+      users.setTmpUser(err.user)
+      setError({ validate: err.message ?? err.messsage })
     } else {
-      if (url) router.push(url)
+      if (params?.type === "new") {
+        if (!validating) ValidateNewUser()
+      } else {
+        if (url) router.push(url)
+      }
     }
   }, [])
   return (
@@ -116,13 +130,24 @@ export default function RegisterValidation({ url, err, params }) {
               </svg>
 
               <p className="text-center max-w-md">{errors.validate}</p>
-              <div className="font-mtn-extralight font-mtn text-center text-white/50 mb-16 p-0">
-                <span
-                  className="cursor-pointer text-sm text-white hover:text-gray-300"
+              <div className="flex justify-between gap-3 font-mtn-extralight font-mtn text-center text-white/50 mb-16 p-0">
+                <div
+                  className="cursor-pointer text-[12px] text-white hover:text-gray-300 px-4 py-1 border border-white/30 rounded-full"
                   onClick={() => router.push(PageRoutes.login)}
                 >
                   LOGIN TO PROCEED
-                </span>
+                </div>
+                {users?.tmpuser?.email !== "" &&
+                  users?.tmpuser?.email_verified !== "yes" && (
+                    <div
+                      className="cursor-pointer text-[12px] text-white hover:text-gray-300 px-4 py-1 border border-white/30 rounded-full"
+                      onClick={() =>
+                        resendEmail(users?.tmpuser?.email, params.type)
+                      }
+                    >
+                      RESEND VERIFICATION EMAIL
+                    </div>
+                  )}
               </div>
             </div>
           )}

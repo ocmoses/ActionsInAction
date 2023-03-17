@@ -73,7 +73,6 @@ const useRegistration = () => {
     }
     setProcessing(true)
     if (CONFIG[section].method === "PUT") userdata["_method"] = "PUT"
-    console.log({ userdata })
     const response = await Axios.post(CONFIG[section].url, userdata, {
       headers: {
         "Content-Type": "multipart/form-data",

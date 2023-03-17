@@ -9,7 +9,7 @@ export default function Session({ children, serverSession, categories }) {
     clearStore()
     if (serverSession) {
       if (serverSession?.status === "authenticated") {
-        app.setStoreStates(serverSession, categories)
+        app.setStoreStates(serverSession, categories, "session")
       }
     }
   }, [serverSession])

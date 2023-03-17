@@ -241,7 +241,7 @@ const usePartners = () => {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
           User: setpassword,
         }
-        app.setStoreStates(serverSession, categories)
+        app.setStoreStates(serverSession, categories, "partner store")
         if (userdata.type === "new") return router.push(PageRoutes.getstarted)
         return router.push(PageRoutes.dashboard)
       case "userinfo":
@@ -352,6 +352,7 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: regData.message, data: null }
         }
+        updatePartner(regData.partner)
         return { success: true, error: null, data: null }
     }
   }

@@ -109,16 +109,18 @@ export const categoryCombination = [
   ["RMS", "MKP"],
   ["AGR", "MKP"],
 ]
-const welcomeMessages = {
-  new: {
-    welcome: "Choose a partner category that best suits your service",
-    cta: "Finish up",
+export const company_type = [
+  {
+    value: "co",
+    label: "Limited Company",
   },
-  existing: {
-    welcome: "Choose a partner category that best suits your service",
-    cta: "Finish up",
+
+  { value: "bn", label: "Business Name" },
+  {
+    value: "it",
+    label: "Incorporated Trustee",
   },
-}
+]
 export const forms = {
   userinfo: {
     form: "userinfo",

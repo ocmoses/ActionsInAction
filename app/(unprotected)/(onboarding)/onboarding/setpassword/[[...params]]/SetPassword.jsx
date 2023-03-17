@@ -72,7 +72,7 @@ function SetPassword({ params: { params } }) {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
     }
-    app.setStoreStates(serverSession, loginData?.categories)
+    app.setStoreStates(serverSession, loginData?.categories, "setpassword")
     // const redirect =
     //   data.type === "existing"
     //     ? PageRoutes.getstarted

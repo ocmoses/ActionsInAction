@@ -70,7 +70,7 @@ export default function RegisterValidation({ url, err, params }) {
         }
         const categories = loginData?.categories
 
-        app.setStoreStates(serverSession, categories)
+        app.setStoreStates(serverSession, categories, "validation")
         setData(serverSession)
         if (params.type === "new") {
           app.toggleGetstartedLink(true)

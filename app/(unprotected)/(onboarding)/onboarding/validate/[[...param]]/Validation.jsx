@@ -3,7 +3,8 @@ import "client-only"
 
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
-import useLogout from "@/hooks/useLogout"
+import Axios from "@/app/modules/axios"
+import RemoteEndpoints from "@/app/modules/endpoints"
 import useApp from "@/hooks/useApp"
 import useUsers from "@/hooks/useUsers"
 import usePartners from "@/hooks/usePartners"
@@ -15,20 +16,62 @@ import { useEffect, useState, useRef } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { Util } from "@/app/modules/utilities"
 
-export default function RegisterValidation({ url, err, params }) {
+export default function RegisterValidation({ params }) {
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState(null)
-  // const [validating, setValidating] = useState(false)
   const validating = useRef(false)
-  const { clearStore } = useLogout()
   const router = useRouter()
   const app = useApp()
   const users = useUsers()
   const { resendEmail } = usePartners()
 
+  const ValidateEmailAndUser = async (params) => {
+    console.log("ValidateEmailAndUser")
+    console.log("params.type", params.type)
+    setProcessing(true)
+    try {
+      let response = null
+
+      const url = `${PageRoutes.setpassword}/${params.type}/${params.user_uuid}`
+      response = await Axios.post(
+        RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
+        { user_uuid: params.user_uuid },
+        {
+          timeout: process.TIMEOUT,
+        }
+      ).catch((e) => {
+        setProcessing(false)
+        return setError({
+          validate: `${e.message}. Please check you connection`,
+        })
+      })
+      if (response) {
+        const { success, data } = response
+        if (success) {
+          return router.push(url)
+        } else {
+          setProcessing(false)
+          return setError({
+            validate: `${data.message}`,
+          })
+        }
+      } else {
+        setProcessing(false)
+        return setError({
+          validate: "Cannot reach the server. Please check your connection",
+        })
+      }
+    } catch (err) {
+      setProcessing(false)
+      return setError({
+        validate: "Something went wrong",
+      })
+    }
+  }
   const ValidateNewUser = async () => {
     setProcessing(true)
+    console.log("ValidateNewUser")
     try {
       clearErrors()
       // clearStore()
@@ -39,7 +82,9 @@ export default function RegisterValidation({ url, err, params }) {
           type: params.type,
         }),
       })
+      console.log(1)
       if (response) {
+        console.log(2)
         // setValidating(true)
         validating.current = true
         const result = await response.json()
@@ -47,13 +92,17 @@ export default function RegisterValidation({ url, err, params }) {
         console.log({ loginData })
 
         if (!loginData) {
+          console.log(3)
           setProcessing(false)
           return setError({ validate: "Authentication failed" })
         }
 
         if (loginData.error) {
+          console.log(4)
+          setProcessing(false)
           users.setTmpUser(loginData.data)
           if (loginData.data && loginData.data.email_verified === "yes") {
+            console.log(5)
             return setError({
               validate: `Your email ${Util.obscureEmail(
                 loginData.data.email
@@ -62,6 +111,7 @@ export default function RegisterValidation({ url, err, params }) {
           }
           return setError({ validate: loginData.error })
         }
+        console.log(6)
         const serverSession = {
           status: loginData?.data?.user?.uuid
             ? "authenticated"
@@ -79,6 +129,7 @@ export default function RegisterValidation({ url, err, params }) {
         app.toggleGetstartedLink(false)
         return router.push(PageRoutes.dashboard)
       } else {
+        console.log(7)
         setProcessing(false)
         return setError({
           validate: "Cannot reach the server. Please check your connection",
@@ -91,28 +142,23 @@ export default function RegisterValidation({ url, err, params }) {
     }
   }
   useEffect(() => {
-    if (err) {
-      console.log("err.user", err.user)
-      users.setTmpUser(err.user)
-      setError({ validate: err.message ?? err.messsage })
+    console.log("ValidateNewUser")
+    if (params?.type === "new") {
+      ValidateNewUser()
     } else {
-      if (params?.type === "new") {
-        if (!validating) ValidateNewUser()
-      } else {
-        if (url) router.push(url)
-      }
+      ValidateEmailAndUser(params)
     }
   }, [])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {((!data && !errors?.validate) || (data && errors?.validate)) && (
+          {!errors?.validate && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {!data && errors?.validate && (
+          {errors?.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,6 @@
 import { action, computed, thunk } from "easy-peasy"
+import { filterPartner } from "@/app/modules/utilities"
+
 const partners = {
   partnerID: null,
   partners: null,
@@ -26,6 +28,7 @@ const partners = {
     state.partnerID = partnerID
   }),
   updatePartner: action((state, partner) => {
+    filterPartner(partner, state.categories)
     state.partner = { ...state.partner, ...partner }
     const category = state.category
     // console.log({ category })

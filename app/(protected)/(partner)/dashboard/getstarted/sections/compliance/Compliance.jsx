@@ -3,6 +3,8 @@ import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import FileInput from "@/app/components/form/FileInput"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import TextInput from "@/app/components/form/TextInput"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
 import ButtonNext from "@/app/components/form/ButtonNext"
 import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
@@ -12,7 +14,7 @@ import FormErrors from "@/app/components/FormErrors"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
+import { forms, company_type } from "@/app/modules/constants"
 import { scrollToTop } from "@/app/modules/utilities"
 
 function Compliance() {
@@ -127,20 +129,42 @@ function Compliance() {
         <div className="mb-6">
           {errors && <FormErrors error={errors["compliance"]} />}
         </div>
-        <TextInput
-          id="rc_no"
-          label="RC Number"
-          value={data.rc_no}
+        {/* <SelectInput
+          id="company_type"
+          label="Company type"
+          value={data.company_type}
           onChange={handleFormChange}
           errors={errors}
-        />
-        <TextInput
-          id="tin_no"
-          label="Tax identification number"
-          value={data.tin_no}
-          onChange={handleFormChange}
-          errors={errors}
-        />
+        >
+          <SelectInputOption value="" label="" />
+          {company_type.map((ct) => (
+            <SelectInputOption
+              key={ct.value}
+              value={ct.value}
+              label={ct.label}
+            />
+          ))}
+        </SelectInput> */}
+        <div className="md:grid md:grid-cols-2 md:gap-4">
+          <div className="relative ">
+            <TextInput
+              id="tin_no"
+              label="Tax identification number"
+              value={data.tin_no}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
+          <div className="relative ">
+            <TextInput
+              id="rc_no"
+              label="RC Number"
+              value={data.rc_no}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
+        </div>
         <FileInputWrapper>
           <FileInput
             id="tin_file"
@@ -158,7 +182,6 @@ function Compliance() {
             onChange={handleFormChange}
             errors={errors}
           />
-
           <FileInput
             id="cac_file"
             doc_id="cac_doc"

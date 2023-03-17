@@ -46,7 +46,6 @@ const ValidateEmailAndUser = async (params) => {
         }
       }
     } catch (err) {
-      console.log({ err })
       return {
         success: false,
         error: "Something went wrong",

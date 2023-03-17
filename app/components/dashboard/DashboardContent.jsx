@@ -6,7 +6,7 @@ import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
 import OnboardingLayout from "./OnboardingLayout"
 import useUsers from "@/hooks/useUsers"
 import { useState, useEffect, useRef } from "react"
-import { Util, AllowedCategories } from "@/app/modules/utilities"
+import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -26,7 +26,7 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners()
-  console.log("allowedCategories", partner.allowedCategories)
+  console.log({ partner })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -63,6 +63,7 @@ export default function GetStarted({ type }) {
   useEffect(() => {
     const partnerCat = []
     const partnerActiveCat = []
+    filterPartner(partner, categoriesData)
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((category) => {
@@ -141,9 +142,18 @@ export default function GetStarted({ type }) {
                   Hello, {user.first_name}
                 </h2>
               )}
-              <p className="text-[#999999] text-center md:text-start">
-                Choose a partner category that best suits your service
-              </p>
+              {partner?.onboarding_type === "new" &&
+                partner?.is_login === "no" && (
+                  <p className="text-[#999999] text-center md:text-start">
+                    Choose a partner category that best suits your service
+                  </p>
+                )}
+              {partner?.onboarding_type === "migrated" &&
+                partner?.is_login === "no" && (
+                  <p className="text-[#999999] text-center md:text-start">
+                    Review your details to get started
+                  </p>
+                )}
               {errors && errors["category"] && (
                 <div className="mb-6">
                   <FormErrors error={errors["getStarted"]} />

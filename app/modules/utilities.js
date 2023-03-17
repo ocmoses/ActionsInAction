@@ -153,96 +153,6 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
   }
   return null
 }
-// export const validateExpiryDate = (issue_date, expiry_date, validity) => {
-//   // console.log({ issue_date })
-//   // console.log({ expiry_date })
-//   // console.log({ validity })
-//   const today = moment().format("YYYY-MM-DD")
-//   if (moment(issue_date).isSameOrAfter(today))
-//     return "Issue date entry cannot be today or later"
-//   if (moment(expiry_date).isSameOrBefore(today))
-//     return "Expiry date entry cannot be today or earlier"
-//   if (moment(issue_date).isSameOrAfter(expiry_date))
-//     return "Expiry date cannot be earlier than or equal to issue date"
-//   if (validity) {
-//     const Validity = validity.split(" ")
-//     const period = parseInt(Validity[0])
-//     const unit = Validity[1]?.trim() ?? "years"
-//     let term = "years"
-//     switch (unit.toLowerCase()) {
-//       case "y":
-//       case "year":
-//       case "years":
-//       case "yr":
-//       case "yrs":
-//         term = "years"
-//         break
-//       case "q":
-//       case "quarter":
-//       case "quarters":
-//       case "qtr":
-//       case "qtrs":
-//         term = "quarters"
-//         break
-//       case "m":
-//       case "month":
-//       case "months":
-//       case "mth":
-//       case "mths":
-//         term = "months"
-//         break
-//       case "d":
-//       case "day":
-//       case "days":
-//       case "dy":
-//       case "dys":
-//         term = "days"
-//         break
-//       case "w":
-//       case "week":
-//       case "weeks":
-//       case "wk":
-//       case "wks":
-//         term = "weeks"
-//         break
-//       case "h":
-//       case "hour":
-//       case "hours":
-//       case "hr":
-//       case "hrs":
-//         term = "hours"
-//         break
-//       case "min":
-//       case "minute":
-//       case "minutes":
-//       case "mn":
-//       case "mns":
-//         term = "minutes"
-//         break
-//       case "s":
-//       case "second":
-//       case "seconds":
-//       case "sec":
-//       case "secs":
-//         term = "seconds"
-//         break
-//     }
-//     // console.log({ period })
-//     // console.log({ term })
-//     if (period) {
-//       const expected_end_date = moment(issue_date)
-//         .add(period, term)
-//         .format("YYYY MM DD")
-
-//       if (moment(expiry_date).isAfter(expected_end_date))
-//         return (
-//           "Expiry date cannot be beyond " +
-//           moment(expected_end_date).format("DD/MM/YYYY")
-//         )
-//     }
-//   }
-//   return null
-// }
 export const getValidityRange = (validity) => {
   const today = moment().format("YYYY-MM-DD")
   if (validity) {
@@ -285,7 +195,6 @@ export async function proxyFetch(url, options) {
     return { success: null, error: err.message, data: null }
   }
 }
-
 export const isArray = (data) => {
   return Array.isArray(data)
 }
@@ -335,13 +244,18 @@ export async function logout() {
   await response.json()
   return { success: true }
 }
-export function userData(data, partnerID) {
-  if (!data?.partner && data?.partners?.length > 0) {
-    if (partnerID) {
-      const Partner = data.partners.find((p) => p.uuid === partnerID)
-      if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
-    } else {
-      data.partner = { ...data.partners[0] }
+export function userData(data, partnerID, categories) {
+  if (data?.partners?.length > 0) {
+    data?.partners.map((p) => {
+      p = filterPartner(p, categories)
+    })
+    if (!data?.partner && data?.partners?.length > 0) {
+      if (partnerID) {
+        const Partner = data.partners.find((p) => p.uuid === partnerID)
+        if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
+      } else {
+        data.partner = { ...data.partners[0] }
+      }
     }
   }
   // delete data.profile_status
@@ -354,11 +268,11 @@ export function userData(data, partnerID) {
     ...data,
   }
 }
-export const createHttpOnlyCookie = (data, req, res, partnerID) => {
+export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
   const authToken = data?.login_token?.access_token
   // const maxAge = data?.login_token?.expires_in
   const maxAge = 60 * 60 * 24
-  const User = userData(data, partnerID)
+  const User = userData(data, partnerID, categories)
   // console.log({ User })
   if (authToken) {
     // SET COOKIES
@@ -410,7 +324,6 @@ export const sanitizeSegments = (segments) => {
 }
 export const getInitials = (fullname) => {
   if (!fullname) return ""
-  console.log({ fullname })
   const Names = fullname.split(" ")
   const firstName = Names[0] ?? ""
   const lastName = Names[1] ?? ""
@@ -429,7 +342,6 @@ export const getFileSize = (size) => {
     return { size: size / 1024 / 1024 / 1024, unit: "tb" }
 }
 export const getFileSizeText = (size) => {
-  console.log({ size })
   if (size < 1024) return `${Math.ceil(size * 100) / 100}B`
   if (size < 1024 * 1024) return `${Math.ceil((size / 1024) * 100) / 100}KB`
   if (size < 1024 * 1024 * 1024)
@@ -439,16 +351,36 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
-export const AllowedCategories = (categories) => {
-  console.log({ categories })
-  return categories
-  const target = []
-  categoryCombination.map((srv) => {
-    if (srv.includes(category)) {
-      srv.map((s) => {
-        if (s !== category) target.push(s)
+export const AllowedCategories = (category_codes) => {
+  // category_codes = ["VAS"]
+  const combi = categoryCombination.filter((srv) =>
+    category_codes?.every((r) => srv.includes(r))
+  )
+  const Combination = []
+  combi.map((c) => {
+    Combination.push(...c)
+  })
+  const possible = [...new Set(Combination)]
+  return possible.filter((p) => !category_codes?.includes(p))
+}
+// Filter partner info hook
+export const filterPartner = (partnerInfo, Categories) => {
+  const categories = Categories?.data ? Categories?.data : Categories
+  const registeredCategories = []
+  if (partnerInfo) {
+    if (partnerInfo.categories?.length > 0) {
+      partnerInfo?.categories?.map((category) => {
+        console.log("categories", { categories })
+        const category_code = categories?.find(
+          (c) => c.uuid === category.category_uuid
+        )?.category_code
+        if (category_code) {
+          category.category_code = category_code
+          registeredCategories.push(category_code)
+        }
       })
     }
-  })
-  return target
+    partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
+  }
+  return partnerInfo
 }

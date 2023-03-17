@@ -44,7 +44,6 @@ function Login({ params }) {
       [e.target.id]: e.target.value,
     }))
   }
-
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -83,9 +82,14 @@ function Login({ params }) {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
     }
-    app.setStoreStates(serverSession, loginData?.categories)
+    console.log("loginData?.categories.data", loginData?.categories.data)
+    app.setStoreStates(serverSession, loginData?.categories, "login")
+
     const redirect =
-      params && params?.length && params[0] !== "login"
+      params &&
+      params?.length &&
+      params[0] !== "login" &&
+      params[1] !== "getstarted"
         ? `/${params.join("/")}`
         : PageRoutes.dashboard
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true)

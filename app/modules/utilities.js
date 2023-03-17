@@ -350,14 +350,14 @@ export const getFileSizeText = (size) => {
 export const AllowedCategories = (category_codes) => {
   // category_codes = ["VAS"]
   const combi = categoryCombination.filter((srv) =>
-    category_codes.every((r) => srv.includes(r))
+    category_codes?.every((r) => srv.includes(r))
   )
   const Combination = []
   combi.map((c) => {
     Combination.push(...c)
   })
   const possible = [...new Set(Combination)]
-  return possible.filter((p) => !category_codes.includes(p))
+  return possible.filter((p) => !category_codes?.includes(p))
 }
 // Filter partner info hook
 export const filterPartner = (partnerInfo, categories) => {

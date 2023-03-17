@@ -6,7 +6,7 @@ import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
 import OnboardingLayout from "./OnboardingLayout"
 import useUsers from "@/hooks/useUsers"
 import { useState, useEffect, useRef } from "react"
-import { Util, AllowedCategories } from "@/app/modules/utilities"
+import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -19,12 +19,14 @@ export default function GetStarted({ type }) {
     session: { user },
   } = useUsers()
   const {
+    category,
     categories,
     partner,
     setValidationRules,
     setCurrentCategory,
     nextStage,
   } = usePartners()
+  console.log({ partner })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -41,7 +43,6 @@ export default function GetStarted({ type }) {
     setCategoriesData(categories)
     setAllowedCategories(AllowedCategories(categories))
   }, [categories])
-  console.log({ setAllowedCategories })
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -62,6 +63,7 @@ export default function GetStarted({ type }) {
   useEffect(() => {
     const partnerCat = []
     const partnerActiveCat = []
+    filterPartner(partner, categoriesData)
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((category) => {
@@ -70,25 +72,29 @@ export default function GetStarted({ type }) {
             (c) => c.uuid === category.category_uuid
           )
           partnerCat.push({
+            ...category,
             category_name: mainCategory?.category_name,
-            uuid: category.uuid,
-            user_uuid: category.user_uuid,
-            partner_uuid: category.partner_uuid,
-            uuid: category.uuid,
-            percentage: category.percentage,
+            // uuid: category.uuid,
+            // user_uuid: category.user_uuid,
+            // partner_uuid: category.partner_uuid,
+            // uuid: category.uuid,
+            // percentage: category.percentage,
             validation: mainCategory?.validation,
           })
         })
       }
     }
     const newCatArray = categoriesData?.filter(
-      (category) => !partnerActiveCat.includes(category.uuid)
+      (category) =>
+        !partnerActiveCat.includes(category.uuid) &&
+        partner.allowedCategories.includes(category.category_code)
     )
-    setPartnerActiveCategories(
-      partnerActiveCat.length ? newCatArray : categoriesData
-    )
+    // setPartnerActiveCategories(
+    //   partnerActiveCat.length ? newCatArray : categoriesData
+    // )
+    setPartnerActiveCategories(newCatArray)
     setPartnerCategories(partnerCat)
-  }, [partner, categoriesData])
+  }, [partner, categoriesData, category])
 
   const toggleProgress = () => {
     setShowProgress((oldState) => !oldState)
@@ -104,7 +110,6 @@ export default function GetStarted({ type }) {
       const { nextstage: NextStage } = nextStage(category)
       setIsOnboarding(true)
       setIsOpen(false)
-      console.log({ NextStage })
       if (NextStage === "review") return moveToNextForm(["review", true])
       moveToNextForm([NextStage, true])
     }
@@ -138,9 +143,22 @@ export default function GetStarted({ type }) {
                   Hello, {user.first_name}
                 </h2>
               )}
-              <p className="text-[#999999] text-center md:text-start">
-                Choose a partner category that best suits your service
-              </p>
+              {partner?.onboarding_type === "new" &&
+              !partner?.categories?.length ? (
+                <p className="text-[#999999] text-center md:text-start">
+                  Choose a partner category that best suits your service
+                </p>
+              ) : (
+                <p className="text-[#999999] text-center md:text-start">
+                  Complete your setup to get started!
+                </p>
+              )}
+              {partner?.onboarding_type === "migrated" &&
+                partner?.is_login === "no" && (
+                  <p className="text-[#999999] text-center md:text-start">
+                    Review your details to get started
+                  </p>
+                )}
               {errors && errors["category"] && (
                 <div className="mb-6">
                   <FormErrors error={errors["getStarted"]} />
@@ -148,6 +166,7 @@ export default function GetStarted({ type }) {
               )}
               {partnerCategories && (
                 <PartnerCategories
+                  partner={partner}
                   partnerCategories={partnerCategories}
                   type={type}
                   onClick={continueRegistration}
@@ -205,9 +224,9 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {console.log({ allowedCategories })}
+              {/* {console.log({ allowedCategories })}
               {console.log({ partnerActiveCategories })}
-              {console.log({ partner })}
+              {console.log({ partner })} */}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
                   {partnerActiveCategories &&

@@ -7,7 +7,9 @@ export default function Button(props) {
     <>
       {!props.href ? (
         <button
-          className={`rounded-full pl-4 pr-3 py-2 flex justify-between items-center ${
+          className={`rounded-full ${
+            props.paddingClass ?? "pl-4 pr-3 py-2"
+          } flex justify-between items-center ${
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
               : "bg-black/50 text-white border-2 " +
@@ -29,7 +31,9 @@ export default function Button(props) {
         </button>
       ) : (
         <Link
-          className={`rounded-full pl-3 pr-2 py-2 flex justify-between items-center ${
+          className={`rounded-full ${
+            props.paddingClass ?? "pl-3 pr-2 py-2"
+          } flex justify-between items-center ${
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
               : "bg-black/50 text-white border " +

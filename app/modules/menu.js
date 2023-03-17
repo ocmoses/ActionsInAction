@@ -1,9 +1,9 @@
 export const PartnerMenu = [
-  {
-    label: "Get started",
-    icon: "",
-    route: "/dashboard/getstarted",
-  },
+  // {
+  //   label: "Get started",
+  //   icon: "",
+  //   route: "/dashboard/getstarted",
+  // },
   {
     label: "Dashboard",
     icon: "",

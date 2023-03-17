@@ -288,6 +288,7 @@ function Shortcode() {
   const goToPricing = () => {
     if (!processKeyUp()) return
     clearErrors()
+    console.log({ formdata })
     if (
       category?.validation.shortcode === "r" &&
       required.shortcode &&
@@ -327,7 +328,7 @@ function Shortcode() {
   }
   const saveShortcode = () => {
     clearErrors()
-
+    console.log({ formdata })
     if (formdata.shortcode_pricing.pricing_shortcodes.length > 0) {
       if (
         !formdata.shortcode_pricing.pricing_doc &&
@@ -596,10 +597,10 @@ function Shortcode() {
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker
-                id="shortcode_issue_date"
+                id="pricing_issue_date"
                 label="Issue date"
-                value={formdata.shortcode.shortcode_issue_date}
-                onChange={handleShortcodeFormChange}
+                value={formdata.shortcode.pricing_issue_date}
+                onChange={handlePricingFormChange}
                 errors={errors}
                 min={new Date(min_start_date)}
                 max={yesterday}
@@ -607,10 +608,10 @@ function Shortcode() {
             </div>
             <div className=" ">
               <DatePicker
-                id="shortcode_expiry_date"
+                id="pricing_expiry_date"
                 label="Expiry date"
-                value={formdata.shortcode.shortcode_expiry_date}
-                onChange={handleShortcodeFormChange}
+                value={formdata.shortcode.pricing_expiry_date}
+                onChange={handlePricingFormChange}
                 errors={errors}
                 min={tomorrow}
                 max={new Date(max_end_date)}
@@ -622,7 +623,7 @@ function Shortcode() {
               id="pricing_file"
               doc_id="pricing_doc"
               label="Short code document"
-              key={`shortcode_file-${shortcodeSet}}`}
+              key={`pricing_file-${shortcodeSet}}`}
               value={
                 formdata.shortcode_pricing.pricing_file?.name
                   ? formdata.shortcode_pricing.pricing_file

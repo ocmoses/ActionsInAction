@@ -76,7 +76,7 @@ const usePartners = () => {
     return { success, error, data }
   }
   const consolidateCategory = () => {
-    console.log({ categories })
+    // console.log({ categories })
   }
   const setCurrentCategory = (category, partner) => {
     consolidateCategory()

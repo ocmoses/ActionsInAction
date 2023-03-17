@@ -361,12 +361,12 @@ export const AllowedCategories = (category_codes) => {
 }
 // Filter partner info hook
 export const filterPartner = (partnerInfo, categories) => {
-  console.log({ categories })
   const registeredCategories = []
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
-      partnerInfo.categories.map((category) => {
-        const category_code = categories.find(
+      partnerInfo?.categories?.map((category) => {
+        console.log("categories", { categories })
+        const category_code = categories?.find(
           (c) => c.uuid === category.category_uuid
         )?.category_code
         if (category_code) {

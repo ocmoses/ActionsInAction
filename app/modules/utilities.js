@@ -195,7 +195,6 @@ export async function proxyFetch(url, options) {
     return { success: null, error: err.message, data: null }
   }
 }
-
 export const isArray = (data) => {
   return Array.isArray(data)
 }
@@ -245,13 +244,18 @@ export async function logout() {
   await response.json()
   return { success: true }
 }
-export function userData(data, partnerID) {
-  if (!data?.partner && data?.partners?.length > 0) {
-    if (partnerID) {
-      const Partner = data.partners.find((p) => p.uuid === partnerID)
-      if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
-    } else {
-      data.partner = { ...data.partners[0] }
+export function userData(data, partnerID, categories) {
+  if (data?.partners?.length > 0) {
+    data?.partners.map((p) => {
+      p = filterPartner(p, categories)
+    })
+    if (!data?.partner && data?.partners?.length > 0) {
+      if (partnerID) {
+        const Partner = data.partners.find((p) => p.uuid === partnerID)
+        if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
+      } else {
+        data.partner = { ...data.partners[0] }
+      }
     }
   }
   // delete data.profile_status
@@ -264,11 +268,11 @@ export function userData(data, partnerID) {
     ...data,
   }
 }
-export const createHttpOnlyCookie = (data, req, res, partnerID) => {
+export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
   const authToken = data?.login_token?.access_token
   // const maxAge = data?.login_token?.expires_in
   const maxAge = 60 * 60 * 24
-  const User = userData(data, partnerID)
+  const User = userData(data, partnerID, categories)
   // console.log({ User })
   if (authToken) {
     // SET COOKIES
@@ -360,7 +364,8 @@ export const AllowedCategories = (category_codes) => {
   return possible.filter((p) => !category_codes?.includes(p))
 }
 // Filter partner info hook
-export const filterPartner = (partnerInfo, categories) => {
+export const filterPartner = (partnerInfo, Categories) => {
+  const categories = Categories?.data ? Categories?.data : Categories
   const registeredCategories = []
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {

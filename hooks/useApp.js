@@ -9,14 +9,14 @@ const useApp = () => {
   const appStates = states.app
   const appActions = actions.app
 
-  const setStoreStates = (serverSession, categories) => {
-    if (categories.error) return setError({ global: categories.error })
+  const setStoreStates = (serverSession, categories, source) => {
+    console.log(source, categories)
+    if (categories?.error) setError({ global: categories.error })
     if (serverSession?.status === "authenticated") {
       if (serverSession?.User?.user.uuid) {
         serverSession.User.user.status = "authenticated"
         actions.users.setUser(serverSession.User.user)
         if (serverSession?.User?.partners?.length) {
-          console.log("categories?.data", categories?.data)
           const PartnersAccounts = serverSession.User.partners.map((partner) =>
             filterPartner(partner, categories?.data)
           )

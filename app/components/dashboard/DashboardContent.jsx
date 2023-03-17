@@ -72,12 +72,13 @@ export default function GetStarted({ type }) {
             (c) => c.uuid === category.category_uuid
           )
           partnerCat.push({
+            ...category,
             category_name: mainCategory?.category_name,
-            uuid: category.uuid,
-            user_uuid: category.user_uuid,
-            partner_uuid: category.partner_uuid,
-            uuid: category.uuid,
-            percentage: category.percentage,
+            // uuid: category.uuid,
+            // user_uuid: category.user_uuid,
+            // partner_uuid: category.partner_uuid,
+            // uuid: category.uuid,
+            // percentage: category.percentage,
             validation: mainCategory?.validation,
           })
         })
@@ -165,6 +166,7 @@ export default function GetStarted({ type }) {
               )}
               {partnerCategories && (
                 <PartnerCategories
+                  partner={partner}
                   partnerCategories={partnerCategories}
                   type={type}
                   onClick={continueRegistration}

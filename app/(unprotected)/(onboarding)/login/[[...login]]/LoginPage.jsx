@@ -44,7 +44,6 @@ function Login({ params }) {
       [e.target.id]: e.target.value,
     }))
   }
-  console.log({ params })
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -82,7 +81,8 @@ function Login({ params }) {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
     }
-    app.setStoreStates(serverSession, loginData?.categories.data)
+    console.log("loginData?.categories.data", loginData?.categories.data)
+    app.setStoreStates(serverSession, loginData?.categories, "login")
 
     const redirect =
       params &&

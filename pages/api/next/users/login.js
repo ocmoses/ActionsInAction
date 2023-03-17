@@ -3,7 +3,7 @@ import { getCookie } from "cookies-next"
 import { createHttpOnlyCookie } from "@/app/modules/utilities"
 import { getCategories } from "@/app/modules/categories"
 
-const doLogin = async (body, req, res) => {
+const doLogin = async (body, req, res, categories) => {
   const response = await fetch(RemoteEndPoints.LOGIN, {
     method: "POST",
     headers: {
@@ -23,7 +23,8 @@ const doLogin = async (body, req, res) => {
         data,
         req,
         res,
-        partnerID
+        partnerID,
+        categories
       )
       if (!authToken) return { success, error: "Invalid request", data: User }
       return { success, error: null, data: User }
@@ -49,10 +50,8 @@ export default async function handler(req, res) {
     }
     const body = JSON.parse(req.body)
     // console.log("URL", RemoteEndPoints.LOGIN)
-    const loginData = await doLogin(body, req, res)
-    // console.log({ loginData })
     const categoriesData = await getCategories(process.env.APIKEY)
-    console.log({ categoriesData })
+    const loginData = await doLogin(body, req, res, categoriesData)
 
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])

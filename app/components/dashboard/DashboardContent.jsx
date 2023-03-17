@@ -143,11 +143,15 @@ export default function GetStarted({ type }) {
                 </h2>
               )}
               {partner?.onboarding_type === "new" &&
-                partner?.is_login === "no" && (
-                  <p className="text-[#999999] text-center md:text-start">
-                    Choose a partner category that best suits your service
-                  </p>
-                )}
+              !partner?.categories?.length ? (
+                <p className="text-[#999999] text-center md:text-start">
+                  Choose a partner category that best suits your service
+                </p>
+              ) : (
+                <p className="text-[#999999] text-center md:text-start">
+                  Complete your setup to get started!
+                </p>
+              )}
               {partner?.onboarding_type === "migrated" &&
                 partner?.is_login === "no" && (
                   <p className="text-[#999999] text-center md:text-start">

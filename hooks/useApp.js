@@ -16,6 +16,7 @@ const useApp = () => {
         serverSession.User.user.status = "authenticated"
         actions.users.setUser(serverSession.User.user)
         if (serverSession?.User?.partners?.length) {
+          console.log("categories?.data", categories?.data)
           const PartnersAccounts = serverSession.User.partners.map((partner) =>
             filterPartner(partner, categories?.data)
           )

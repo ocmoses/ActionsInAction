@@ -11,7 +11,7 @@ import usePartners from "@/hooks/usePartners"
 import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { Util } from "@/app/modules/utilities"
 
@@ -19,6 +19,8 @@ export default function RegisterValidation({ url, err, params }) {
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState(null)
+  // const [validating, setValidating] = useState(false)
+  const validating = useRef(false)
   const { clearStore } = useLogout()
   const router = useRouter()
   const app = useApp()
@@ -29,7 +31,7 @@ export default function RegisterValidation({ url, err, params }) {
     setProcessing(true)
     try {
       clearErrors()
-      clearStore()
+      // clearStore()
       const response = await fetch(NextEndPoints.VALIDATE_USER, {
         method: "POST",
         body: JSON.stringify({
@@ -38,6 +40,8 @@ export default function RegisterValidation({ url, err, params }) {
         }),
       })
       if (response) {
+        // setValidating(true)
+        validating.current = true
         const result = await response.json()
         const { data: loginData } = result
         console.log({ loginData })
@@ -93,7 +97,7 @@ export default function RegisterValidation({ url, err, params }) {
       setError({ validate: err.message ?? err.messsage })
     } else {
       if (params?.type === "new") {
-        if (!processing) ValidateNewUser()
+        if (!validating) ValidateNewUser()
       } else {
         if (url) router.push(url)
       }

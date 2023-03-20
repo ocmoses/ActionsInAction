@@ -261,12 +261,8 @@ export function userData(data, partnerID, categories) {
       }
     }
   }
-  // delete data.profile_status
-  // delete data.percent_complete
-  // delete data.profile_stage
   delete data.login_token
   return {
-    // partners,
     partnerID,
     ...data,
   }
@@ -368,13 +364,17 @@ export const AllowedCategories = (category_codes) => {
 }
 // Filter partner info hook
 export const filterPartner = (partnerInfo, Categories) => {
-  const categories = Categories?.data ? Categories?.data : Categories
+  const partnercategories = Categories?.data ? Categories?.data : Categories
+  const categories = partnercategories.sort((s1, s2) =>
+    s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
+  )
+
+  const masterCategory = {}
   const registeredCategories = []
   let edittable = false
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
       partnerInfo?.categories?.map((category) => {
-        // console.log("categories", { categories })
         const category_code = categories?.find(
           (c) => c.uuid === category.category_uuid
         )?.category_code
@@ -383,8 +383,18 @@ export const filterPartner = (partnerInfo, Categories) => {
           category.category_code = category_code
           registeredCategories.push(category_code)
         }
+
+        // Build master category
+        for (const master in complianceRequirements) {
+          for (const key in complianceRequirements[master]) {
+            masterCategory[key] = category[key]
+              ? category[key]
+              : masterCategory[key]
+          }
+        }
       })
     }
+    partnerInfo.master = masterCategory
     partnerInfo.edittable = edittable
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }

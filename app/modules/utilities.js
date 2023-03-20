@@ -2,7 +2,10 @@ import CryptoJS from "crypto-js"
 import { setCookie } from "cookies-next"
 import moment from "moment"
 import { NextEndPoints } from "./endpoints"
-import { categoryCombination } from "@/app/modules/constants"
+import {
+  categoryCombination,
+  complianceRequirements,
+} from "@/app/modules/constants"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -367,20 +370,40 @@ export const AllowedCategories = (category_codes) => {
 export const filterPartner = (partnerInfo, Categories) => {
   const categories = Categories?.data ? Categories?.data : Categories
   const registeredCategories = []
+  let edittable = false
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
       partnerInfo?.categories?.map((category) => {
-        console.log("categories", { categories })
+        // console.log("categories", { categories })
         const category_code = categories?.find(
           (c) => c.uuid === category.category_uuid
         )?.category_code
+        if (category.status === "open") edittable = true
         if (category_code) {
           category.category_code = category_code
           registeredCategories.push(category_code)
         }
       })
     }
+    partnerInfo.edittable = edittable
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }
   return partnerInfo
+}
+export const ValidateField = (field, stage, data, category) => {
+  const value = data[field]
+  fieldRequired(field, stage, category)
+  if (!value && fieldRequired(field, stage, category))
+    return `${fieldName(field, stage)} is required`
+}
+export const fieldRequired = (field, stage, category) => {
+  const categories = complianceRequirements[stage][field]?.categories
+  return (
+    category.category_code &&
+    categories?.length > 0 &&
+    categories?.includes(category.category_code)
+  )
+}
+export const fieldName = (field, stage) => {
+  return complianceRequirements[stage][field].title
 }

@@ -107,14 +107,16 @@ const app = {
     } else {
       const currentForm = current[0]
       const useCurrent = current?.length > 1 ? true : false
-
       const index = states.app?.formSteps?.indexOf(currentForm)
       if (useCurrent) {
+        // MOVE TO SELECTED FORM
         actions.setForm(currentForm)
       } else {
         if (index === states.app?.formSteps?.length - 1) {
+          // If next for is last then move to preview
           actions.setForm("review")
         } else {
+          // move to next form in stack
           actions.setForm(
             states.app?.formSteps?.length && states.app?.formSteps[index + 1]
               ? states.app?.formSteps[index + 1]

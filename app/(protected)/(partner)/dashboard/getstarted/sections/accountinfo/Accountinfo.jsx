@@ -8,9 +8,11 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
+import { Util } from "@/utils/utility"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
+import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
 
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -20,13 +22,13 @@ export default function Accountinfo() {
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
-    audited_account_1_doc: null,
+    audited_account_1_doc: {},
     audited_account_1_file: null,
-    audited_account_2_doc: null,
+    audited_account_2_doc: {},
     audited_account_2_file: null,
-    audited_account_3_doc: null,
+    audited_account_3_doc: {},
     audited_account_3_file: null,
-    job_evidence_4_doc: null,
+    job_evidence_4_doc: {},
     job_evidence_4_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
@@ -37,13 +39,13 @@ export default function Accountinfo() {
       setData({
         partner_uuid: category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        audited_account_1_doc: category?.audited_account_1_doc ?? "",
+        audited_account_1_doc: category?.audited_account_1_doc ?? {},
         audited_account_1_file: null,
-        audited_account_2_doc: category?.audited_account_2_doc ?? "",
+        audited_account_2_doc: category?.audited_account_2_doc ?? {},
         audited_account_2_file: null,
-        audited_account_3_doc: category?.audited_account_3_doc ?? "",
+        audited_account_3_doc: category?.audited_account_3_doc ?? {},
         audited_account_3_file: null,
-        job_evidence_doc: category?.job_evidence_doc ?? "",
+        job_evidence_doc: category?.job_evidence_doc ?? {},
         job_evidence_file: null,
       })
   }, [category])
@@ -56,6 +58,58 @@ export default function Accountinfo() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
+    if (
+      fieldRequired("audited_account_1_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_1_doc) &&
+      !data.audited_account_1_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_1_file: `${fieldName(
+          "audited_account_1_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("audited_account_2_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_2_doc) &&
+      !data.audited_account_2_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_2_file: `${fieldName(
+          "audited_account_2_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("audited_account_3_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_3_doc) &&
+      !data.audited_account_3_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_3_file: `${fieldName(
+          "audited_account_3_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("job_evidence_doc", "accountinfo", category) &&
+      Util.isEmpty(data.job_evidence_doc) &&
+      !data.job_evidence_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        job_evidence_file: `${fieldName(
+          "job_evidence_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
     const result = await registerPartner("accountinfo", data)
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })

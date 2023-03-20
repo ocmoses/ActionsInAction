@@ -20,6 +20,9 @@ import {
   scrollToTop,
   validateExpiryDate,
   getValidityRange,
+  ValidateField,
+  fieldRequired,
+  fieldName,
 } from "@/app/modules/utilities"
 
 function Shortcode() {
@@ -44,14 +47,14 @@ function Shortcode() {
   const [formdata, setFormdata] = useState({
     shortcode: {
       shortcodes: [], // ARRAY OR STRING
-      shortcode_doc: null, //FILE
+      shortcode_doc: {}, //FILE
       shortcode_file: null, //FILE
       shortcode_issue_date: "", //DATE
       shortcode_expiry_date: "", //DATE
     },
     shortcode_pricing: {
       pricing_shortcodes: [], // ARRAY OR STRING
-      pricing_doc: null,
+      pricing_doc: {},
       pricing_file: null,
       pricing_issue_date: "", //DATE
       pricing_expiry_date: "", //DATE
@@ -81,7 +84,15 @@ function Shortcode() {
         category.shortcodes.map((sc) => {
           sc.shortcode.shortcode_file = ""
           sc.shortcode_pricing.pricing_file = ""
-          Shortcodes.push(sc)
+          // Shortcodes.push(sc)
+          Shortcodes.push({
+            ...sc,
+            shortcode: { ...sc.shortcode, shortcode_file: "" },
+            shortcode_pricing: {
+              ...sc.shortcode_pricing,
+              pricing_file: "",
+            },
+          })
         })
       }
       setData({
@@ -96,14 +107,22 @@ function Shortcode() {
     e.preventDefault()
     clearErrors()
 
-    if (category?.validation.shortcode === "r" && Util.isEmpty(data.shortcodes))
+    if (
+      fieldRequired("shortcode", "shortcode", category) &&
+      // category?.validation.shortcode === "r" &&
+      Util.isEmpty(data.shortcodes)
+    )
       return setError({ shortcode: `Please provide shortcode data` })
-
+    console.log(data.shortcodes)
     data.shortcodes.map((shortcodePrice) => {
-      if (!shortcodePrice.shortcode?.shortcodes.length) {
+      if (
+        fieldRequired("shortcode", "shortcode", category) &&
+        !shortcodePrice.shortcode?.shortcodes.length
+      ) {
         return setError({ shortcode: `Shortcode is required` })
       }
       if (
+        fieldRequired("shortcode_doc", "shortcode", category) &&
         !shortcodePrice.shortcode.shortcode_doc &&
         !shortcodePrice.shortcode.shortcode_file
       )
@@ -288,62 +307,88 @@ function Shortcode() {
   const goToPricing = () => {
     if (!processKeyUp()) return
     clearErrors()
-    console.log({ formdata })
     if (
-      category?.validation.shortcode === "r" &&
+      fieldRequired("shortcode", "shortcode", category) &&
+      // category?.validation.shortcode === "r" &&
       required.shortcode &&
       !(formdata.shortcode.shortcodes.length > 0)
     ) {
       scrollToTop("onboardinglayout")
       return setError({ shortcode: `Shortcode is required` })
     }
-    if (formdata.shortcode.shortcodes.length > 0) {
+    if (
+      fieldRequired("shortcode_doc", "shortcode", category) &&
+      formdata.shortcode.shortcodes.length > 0
+    ) {
       if (
+        fieldRequired("shortcode_doc", "shortcode", category) &&
         !formdata.shortcode.shortcode_doc &&
         !formdata.shortcode.shortcode_file
       ) {
         scrollToTop("onboardinglayout")
         return setError({ shortcode: `Shortcode document is required` })
       }
-      if (!formdata.shortcode.shortcode_issue_date) {
+      if (
+        fieldRequired("shortcode_issue_date", "shortcode", category) &&
+        !formdata.shortcode.shortcode_issue_date
+      ) {
         scrollToTop("onboardinglayout")
         return setError({
           shortcode: `Shortcode issue date is required`,
         })
       }
-      if (!formdata.shortcode.shortcode_expiry_date) {
+      if (
+        fieldRequired("shortcode_expiry_date", "shortcode", category) &&
+        !formdata.shortcode.shortcode_expiry_date
+      ) {
         scrollToTop("onboardinglayout")
         return setError({
           shortcode: `Shortcode expiry date is required`,
         })
       }
-      const expiryError = validateExpiryDate(
-        formdata.shortcode.shortcode_issue_date,
-        formdata.shortcode.shortcode_expiry_date,
+      if (
+        formdata.shortcode.shortcode_issue_date &&
+        formdata.shortcode.shortcode_expiry_date &&
         validities.shortcode
-      )
-      if (expiryError) return setError({ shortcode: expiryError })
+      ) {
+        const expiryError = validateExpiryDate(
+          formdata.shortcode.shortcode_issue_date,
+          formdata.shortcode.shortcode_expiry_date,
+          validities.shortcode
+        )
+        if (expiryError) return setError({ shortcode: expiryError })
+      }
     }
     setActiveform("pricing")
   }
   const saveShortcode = () => {
     clearErrors()
-    console.log({ formdata })
-    if (formdata.shortcode_pricing.pricing_shortcodes.length > 0) {
+
+    if (
+      fieldRequired("shortcode_pricing_doc", "shortcode", category) &&
+      formdata.shortcode_pricing.pricing_shortcodes.length > 0
+    ) {
       if (
+        fieldRequired("shortcode_pricing_doc", "shortcode", category) &&
         !formdata.shortcode_pricing.pricing_doc &&
         !formdata.shortcode_pricing.pricing_file
       ) {
         scrollToTop("onboardinglayout")
         return setError({ shortcode: `Shortcode pricing document is required` })
       }
-      if (!formdata.shortcode_pricing.pricing_issue_date) {
+      if (
+        fieldRequired("pricing_issue_date", "shortcode", category) &&
+        !formdata.shortcode_pricing.pricing_issue_date
+      ) {
         scrollToTop("onboardinglayout")
         return setError({
           shortcode: `Shortcode pricing issue date is required`,
         })
       }
-      if (!formdata.shortcode_pricing.pricing_expiry_date) {
+      if (
+        fieldRequired("pricing_expiry_date", "shortcode", category) &&
+        !formdata.shortcode_pricing.pricing_expiry_date
+      ) {
         scrollToTop("onboardinglayout")
         return setError({
           shortcode: `Shortcode pricing expiry date is required`,
@@ -391,6 +436,32 @@ function Shortcode() {
     resetFormdata()
     setActiveform(null)
     setShortcodeSet(null)
+  }
+  const ValidateShortcode = (field) => {
+    removeError(field)
+    const error = ValidateField(
+      field,
+      "shortcode",
+      formdata.shortcode,
+      category
+    )
+    if (error)
+      return setError({
+        [field]: error,
+      })
+  }
+  const ValidatePricing = (field) => {
+    removeError(field)
+    const error = ValidateField(
+      field,
+      "shortcode",
+      formdata.shortcode,
+      category
+    )
+    if (error)
+      return setError({
+        [field]: error,
+      })
   }
   return (
     <div
@@ -490,6 +561,7 @@ function Shortcode() {
                 label="Issue date"
                 value={formdata.shortcode.shortcode_issue_date}
                 onChange={handleShortcodeFormChange}
+                onBlur={() => ValidateShortcode("shortcode_issue_date")}
                 errors={errors}
                 min={new Date(min_start_date)}
                 max={yesterday}
@@ -501,6 +573,7 @@ function Shortcode() {
                 label="Expiry date"
                 value={formdata.shortcode.shortcode_expiry_date}
                 onChange={handleShortcodeFormChange}
+                onBlur={() => ValidateShortcode("shortcode_expiry_date")}
                 errors={errors}
                 min={tomorrow}
                 max={new Date(max_end_date)}
@@ -594,13 +667,15 @@ function Shortcode() {
           <p className="my-3 text-[#999999]">
             Pricing detail for your short codes
           </p>
+          {console.log({ formdata })}
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker
                 id="pricing_issue_date"
                 label="Issue date"
-                value={formdata.shortcode.pricing_issue_date}
+                value={formdata.shortcode_pricing.pricing_issue_date}
                 onChange={handlePricingFormChange}
+                onBlur={() => ValidatePricing("pricing_issue_date")}
                 errors={errors}
                 min={new Date(min_start_date)}
                 max={yesterday}
@@ -610,8 +685,9 @@ function Shortcode() {
               <DatePicker
                 id="pricing_expiry_date"
                 label="Expiry date"
-                value={formdata.shortcode.pricing_expiry_date}
+                value={formdata.shortcode_pricing.pricing_expiry_date}
                 onChange={handlePricingFormChange}
+                onBlur={() => ValidatePricing("pricing_expiry_date")}
                 errors={errors}
                 min={tomorrow}
                 max={new Date(max_end_date)}

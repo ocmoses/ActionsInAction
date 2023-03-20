@@ -18,6 +18,9 @@ import {
   scrollToTop,
   validateExpiryDate,
   getValidityRange,
+  ValidateField,
+  fieldRequired,
+  fieldName,
 } from "@/app/modules/utilities"
 
 function Ncclicense() {
@@ -35,9 +38,10 @@ function Ncclicense() {
     vas_license_id: "",
     ncc_issue_date: "",
     ncc_expiry_date: "",
-    ncc_doc: "",
+    ncc_doc: {},
+    ncc_file: "",
   })
-  const { title, subtitle, hand, required } = forms["ncclicense"]
+  const { title, subtitle, hand, fields } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -47,7 +51,8 @@ function Ncclicense() {
         vas_license_id: category?.vas_license_id ?? "",
         ncc_issue_date: category?.ncc_issue_date ?? "",
         ncc_expiry_date: category?.ncc_expiry_date ?? "",
-        ncc_doc: category?.ncc_doc ?? "",
+        ncc_doc: category?.ncc_doc ?? {},
+        ncc_file: category?.ncc_file ?? "",
       })
   }, [category])
   useEffect(() => {
@@ -59,32 +64,38 @@ function Ncclicense() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        if (field !== "ncc_doc") {
+          const error = ValidateField(field, "ncclicense", data, category)
+          if (error) {
+            scrollToTop("onboardinglayout")
+            return setError({
+              [field]: error,
+            })
+          }
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
     if (
-      category?.validation.ncclicense === "r" &&
-      !data.ncc_doc &&
-      !data.ncc_doc.length &&
+      fieldRequired("ncc_doc", "ncclicense", category) &&
+      Util.isEmpty(data.ncc_doc) &&
       !data.ncc_file
     ) {
       scrollToTop("onboardinglayout")
-      return setError({ ncclicense: `NCC document is required` })
+      return setError({
+        ncc_file: `${fieldName("ncc_doc", "ncclicense")} is required`,
+      })
+    }
+    if (data.ncc_issue_date && data.ncc_expiry_date) {
+      const expiryError = validateExpiryDate(
+        data.ncc_issue_date,
+        data.ncc_expiry_date,
+        validities.ncc
+      )
+      if (expiryError) return setError({ ncc_issue_date: expiryError })
     }
 
-    const expiryError = validateExpiryDate(
-      data.ncc_issue_date,
-      data.ncc_expiry_date,
-      validities.ncc
-    )
-    if (expiryError) return setError({ ncclicense: expiryError })
     const result = await registerPartner("ncclicense", data)
     if (result) {
       scrollToTop("onboardinglayout")
@@ -107,6 +118,15 @@ function Ncclicense() {
       [e.target.id]: e.target.value,
     }))
   }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "ncclicense", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
+  }
+
   return (
     <div
       id="onboardingform"
@@ -122,6 +142,7 @@ function Ncclicense() {
           label="VAS License ID"
           value={data.vas_license_id}
           onChange={handleFormChange}
+          onBlur={() => Validate("vas_license_id")}
           errors={errors}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
@@ -131,6 +152,7 @@ function Ncclicense() {
               label="Issue date"
               value={data.ncc_issue_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("ncc_issue_date")}
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
@@ -142,6 +164,7 @@ function Ncclicense() {
               label="Expiry date"
               value={data.ncc_expiry_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("ncc_expiry_date")}
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}

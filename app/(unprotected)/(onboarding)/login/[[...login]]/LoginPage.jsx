@@ -82,7 +82,6 @@ function Login({ params }) {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
     }
-    console.log("loginData?.categories.data", loginData?.categories.data)
     app.setStoreStates(serverSession, loginData?.categories, "login")
 
     const redirect =

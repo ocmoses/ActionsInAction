@@ -38,8 +38,8 @@ const app = {
     state.allforms = [
       "userinfo",
       "category",
-      "companydetail",
       "compliance",
+      "companydetail",
       "ncclicense",
       "nlrclicense",
       "shortcode",

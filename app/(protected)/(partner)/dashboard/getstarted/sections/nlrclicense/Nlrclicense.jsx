@@ -18,6 +18,9 @@ import {
   scrollToTop,
   validateExpiryDate,
   getValidityRange,
+  ValidateField,
+  fieldRequired,
+  fieldName,
 } from "@/app/modules/utilities"
 
 function NlrcLicense() {
@@ -36,9 +39,10 @@ function NlrcLicense() {
     nlrc_license_id: "",
     nlrc_issue_date: "",
     nlrc_expiry_date: "",
-    nlrc_doc: "",
+    nlrc_doc: {},
+    nlrc_file: "",
   })
-  const { title, subtitle, hand, required } = forms["nlrclicense"]
+  const { title, subtitle, hand, fields } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
   useEffect(() => {
     if (category)
@@ -48,7 +52,8 @@ function NlrcLicense() {
         nlrc_license_id: category?.nlrc_license_id ?? "",
         nlrc_issue_date: category?.nlrc_issue_date ?? "",
         nlrc_expiry_date: category?.nlrc_expiry_date ?? "",
-        nlrc_doc: category?.nlrc_doc ?? "",
+        nlrc_doc: category?.nlrc_doc ?? {},
+        nlrc_file: category?.nlrc_file ?? "",
       })
   }, [category])
   useEffect(() => {
@@ -60,32 +65,37 @@ function NlrcLicense() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        if (field !== "nlrc_doc") {
+          const error = ValidateField(field, "nlrclicense", data, category)
+          if (error) {
+            scrollToTop("onboardinglayout")
+            return setError({
+              [field]: error,
+            })
+          }
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
     if (
-      category?.validation.nlrclicense === "r" &&
-      !data.nlrc_doc &&
-      !data.nlrc_doc.length &&
+      fieldRequired("nlrc_doc", "nlrclicense", category) &&
+      Util.isEmpty(data.nlrc_doc) &&
       !data.nlrc_file
     ) {
       scrollToTop("onboardinglayout")
-      return setError({ nlrclicense: `NCC document is required` })
+      return setError({
+        tin_file: `${fieldName("nlrc_doc", "nlrclicense")} is required`,
+      })
     }
-
-    const expiryError = validateExpiryDate(
-      data.nlrc_issue_date,
-      data.nlrc_expiry_date,
-      validities.nlrc_lottery
-    )
-    if (expiryError) return setError({ nlrclicense: expiryError })
+    if (data.nlrc_issue_date && data.nlrc_expiry_date) {
+      const expiryError = validateExpiryDate(
+        data.nlrc_issue_date,
+        data.nlrc_expiry_date,
+        validities.nlrc_lottery
+      )
+      if (expiryError) return setError({ nlrclicense: expiryError })
+    }
     const result = await registerPartner("nlrclicense", data)
     if (result) {
       scrollToTop("onboardinglayout")
@@ -101,12 +111,27 @@ function NlrcLicense() {
       [e.target.id]: e.target.value,
     }))
   }
+
+  const [selectField, setSelectField] = useState(null)
+  useEffect(() => {
+    removeError(selectField)
+    Validate(selectField)
+  }, [selectField, data])
+
   const handleDateChange = (e) => {
     removeError(e.target.id)
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }))
+  }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "nlrclicense", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
   }
   return (
     <div
@@ -118,11 +143,32 @@ function NlrcLicense() {
         <div className="mb-6">
           {errors && <FormErrors error={errors["nlrclicense"]} />}
         </div>
+        <SelectInput
+          id="license_type"
+          label="License type"
+          value={data.license_type}
+          onChange={(e) => {
+            handleFormChange(e)
+            setSelectField("license_type")
+          }}
+          errors={errors}
+          margin="mb-1"
+        >
+          <SelectInputOption value="" label="" />
+          {company_type.map((ct) => (
+            <SelectInputOption
+              key={ct.value}
+              value={ct.value}
+              label={ct.label}
+            />
+          ))}
+        </SelectInput>
         <TextInput
           id="nlrc_license_id"
           label="NLRC License ID"
           value={data.nlrc_license_id}
           onChange={handleFormChange}
+          onBlur={() => Validate("nlrc_license_id")}
           errors={errors}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
@@ -132,6 +178,7 @@ function NlrcLicense() {
               label="Issue date"
               value={data.nlrc_issue_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("nlrc_issue_date")}
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
@@ -143,6 +190,7 @@ function NlrcLicense() {
               label="Expiry date"
               value={data.nlrc_expiry_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("nlrc_expiry_date")}
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}

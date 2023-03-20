@@ -10,6 +10,7 @@ function SelectInput({
   bg,
   margin,
   errors,
+  disabled,
 }) {
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
@@ -24,6 +25,7 @@ function SelectInput({
           type={type ? type : "text"}
           id={id}
           name={id}
+          disabled={disabled}
           className="block pl-5 pr-4 pt-6 pb-3 form-select scrollbar scrollbar-thumb-[#212121] scrollbar-track-[#383838] w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn  peer"
           placeholder={label}
           onChange={onChange}

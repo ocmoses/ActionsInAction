@@ -1,5 +1,7 @@
 "use client"
 import TextInput from "@/app/components/form/TextInput"
+import SelectInput from "@/app/components/form/SelectInput"
+import SelectInputOption from "@/app/components/form/SelectInputOption"
 import FileInput from "@/app/components/form/FileInput"
 import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
@@ -13,7 +15,7 @@ import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms, validities } from "@/app/modules/constants"
+import { forms, validities, license_type } from "@/app/modules/constants"
 import {
   scrollToTop,
   validateExpiryDate,
@@ -36,6 +38,7 @@ function NlrcLicense() {
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
+    license_type: "",
     nlrc_license_id: "",
     nlrc_issue_date: "",
     nlrc_expiry_date: "",
@@ -49,6 +52,7 @@ function NlrcLicense() {
       setData({
         partner_uuid: category?.partner_uuid,
         category_uuid: category?.category_uuid,
+        license_type: category?.license_type ?? "",
         nlrc_license_id: category?.nlrc_license_id ?? "",
         nlrc_issue_date: category?.nlrc_issue_date ?? "",
         nlrc_expiry_date: category?.nlrc_expiry_date ?? "",
@@ -97,10 +101,12 @@ function NlrcLicense() {
       if (expiryError) return setError({ nlrclicense: expiryError })
     }
     const result = await registerPartner("nlrclicense", data)
+
     if (result) {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ nlrclicense: result.error })
     }
+
     if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["nlrclicense"])
   }
@@ -155,7 +161,7 @@ function NlrcLicense() {
           margin="mb-1"
         >
           <SelectInputOption value="" label="" />
-          {company_type.map((ct) => (
+          {license_type.map((ct) => (
             <SelectInputOption
               key={ct.value}
               value={ct.value}

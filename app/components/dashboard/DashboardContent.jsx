@@ -4,7 +4,9 @@ import CategoryCard from "@/app/components/dashboard/CategoryCard"
 import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
 import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
 import OnboardingLayout from "./OnboardingLayout"
+import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
+import RemoteEndpoints from "@/app/modules/endpoints"
 import { useState, useEffect, useRef } from "react"
 import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
 
@@ -26,7 +28,7 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners()
-  console.log({ partner })
+  // console.log({ partner })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -38,7 +40,7 @@ export default function GetStarted({ type }) {
 
   const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
     useProcessing()
-  const [{ errors, clearErrors }] = useErrors(null)
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
   useEffect(() => {
     setCategoriesData(categories)
     setAllowedCategories(AllowedCategories(categories))
@@ -74,11 +76,6 @@ export default function GetStarted({ type }) {
           partnerCat.push({
             ...category,
             category_name: mainCategory?.category_name,
-            // uuid: category.uuid,
-            // user_uuid: category.user_uuid,
-            // partner_uuid: category.partner_uuid,
-            // uuid: category.uuid,
-            // percentage: category.percentage,
             validation: mainCategory?.validation,
           })
         })
@@ -89,9 +86,6 @@ export default function GetStarted({ type }) {
         !partnerActiveCat.includes(category.uuid) &&
         partner.allowedCategories.includes(category.category_code)
     )
-    // setPartnerActiveCategories(
-    //   partnerActiveCat.length ? newCatArray : categoriesData
-    // )
     setPartnerActiveCategories(newCatArray)
     setPartnerCategories(partnerCat)
   }, [partner, categoriesData, category])
@@ -119,6 +113,43 @@ export default function GetStarted({ type }) {
       top: 0,
       behavior: "smooth",
     })
+  }
+
+  const finishApplication = async () => {
+    try {
+      const response = await fetch(
+        RemoteEndpoints.START_CONTRACT,
+        { partner_uuid: partner?.uuid },
+        {
+          timeout: process.TIMEOUT,
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+        }
+      ).catch((error) => {
+        console.log(error)
+        return setError({ dashboard: "Something went wrong" })
+      })
+      if (response) {
+        const result = await response.json()
+        const { success, data } = result
+        console.log({ data })
+        if (success) {
+          return {
+            success: true,
+            error: null,
+            data: url,
+          }
+        } else {
+          return setError({ dashboard: data.message })
+        }
+      } else {
+        return setError({
+          dashboard: "Cannot reach the server. Please check your connection",
+        })
+      }
+    } catch (err) {
+      console.log({ err })
+      return setError({ dashboard: "Something went wrong" })
+    }
   }
   return (
     <>
@@ -173,6 +204,15 @@ export default function GetStarted({ type }) {
                 />
               )}
 
+              <div className="flex my-12 justify-center items-center">
+                <Button
+                  onClick={finishApplication}
+                  label="Finish Application"
+                  paddingClass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                  textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                />
+              </div>
+
               {partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (
                   <div
@@ -224,9 +264,6 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {/* {console.log({ allowedCategories })}
-              {console.log({ partnerActiveCategories })}
-              {console.log({ partner })} */}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
                   {partnerActiveCategories &&

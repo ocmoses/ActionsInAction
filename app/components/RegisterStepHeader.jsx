@@ -1,5 +1,5 @@
 "use client"
-import { useOnboardingContext } from "@/hooks/useOnboardingContext"
+// import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 export default function RegisterStepHeader({
   title,
   subtitle,

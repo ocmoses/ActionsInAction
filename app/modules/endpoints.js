@@ -12,6 +12,8 @@ export const NextEndPoints = {
   VALIDATE_USER: "/api/next/users/validate_user",
   SETPASSWORD: "/api/next/users/reset-password",
   EMAIL_VALIDATOR: "/api/next/external/mailvalidator",
+  TIN_CHECK: "/api/next/external/tin",
+  CAC_CHECK: "/api/next/external/cac",
 }
 
 const RemoteEndpoints = {
@@ -38,6 +40,7 @@ const RemoteEndpoints = {
 
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
+  START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,
   ALL_PARTNERS: `${apiURL}/v2/admin/partners`,
 }
 export default RemoteEndpoints

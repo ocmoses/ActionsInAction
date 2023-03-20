@@ -252,26 +252,32 @@ function UserInfo({ designations }) {
               />
             ))}
         </SelectInput>
-        <TextInput
-          id="password"
-          type="password"
-          label="Choose a password"
-          value={data.password}
-          onChange={handleFormChange}
-          errors={errors}
-        />
+        <div className="md:grid md:grid-cols-2 md:gap-4">
+          <div className="relative ">
+            <TextInput
+              id="password"
+              type="password"
+              label="Choose a password"
+              value={data.password}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
+          <div className="relative ">
+            <TextInput
+              id="password_confirmed"
+              type="password"
+              label="Repeat your password"
+              value={data.password_confirmed}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
+        </div>
         <div className=" font-mtn-extralight text-white/70 text-start -mt-6 mb-6 p-2">
           Must be at least 8 characters, includes uppercase and lowercase
           letter, a number and a special character
         </div>
-        {/* <TextInput
-          id="password_confirmed"
-          type="password"
-          label="Repeat your password"
-          value={data.password_confirmed}
-          onChange={handleFormChange}
-          errors={errors}
-        /> */}
         <div
           className=" text-white/70 text-start mb-12 p-2"
           style={{

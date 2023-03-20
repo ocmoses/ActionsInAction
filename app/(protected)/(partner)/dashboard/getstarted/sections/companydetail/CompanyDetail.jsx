@@ -14,7 +14,7 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { scrollToTop } from "@/app/modules/utilities"
+import { scrollToTop, ValidateField } from "@/app/modules/utilities"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
@@ -22,7 +22,7 @@ function CompanyDetail() {
   const { category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { nextstage: NextStage } = nextStage(category)
-  const { title, subtitle, hand, required } = forms["companydetail"]
+  const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -62,15 +62,16 @@ function CompanyDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (category?.validation.companydetail === "r" && !Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        const error = ValidateField(field, "companydetail", data, category)
+        if (error) {
+          scrollToTop("onboardinglayout")
+          return setError({
+            [field]: error,
+          })
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
 
     const result = await registerPartner("companydetail", data)
@@ -81,12 +82,26 @@ function CompanyDetail() {
     if (NextStage === "review") return moveToNextForm(["review", true])
     moveToNextForm(["companydetail"])
   }
+  const [selectField, setSelectField] = useState(null)
+  useEffect(() => {
+    removeError(selectField)
+    Validate(selectField)
+  }, [selectField, data])
+
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    const field = e.target.id
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [field]: e.target.value,
     }))
+  }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "companydetail", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
   }
   return (
     <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
@@ -101,13 +116,17 @@ function CompanyDetail() {
           label="Company name"
           value={data.company_name}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_name")}
           errors={errors}
         />
         <SelectInput
           id="country"
           label="Select Country"
           value={data.country}
-          onChange={handleFormChange}
+          onChange={(e) => {
+            handleFormChange(e)
+            setSelectField("country")
+          }}
           errors={errors}
         >
           {COUNTRIES.map((c) => (
@@ -120,6 +139,7 @@ function CompanyDetail() {
           label="Company address"
           value={data.company_address}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_address")}
           errors={errors}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
@@ -129,6 +149,7 @@ function CompanyDetail() {
               label="City"
               value={data.company_city}
               onChange={handleFormChange}
+              onBlur={() => Validate("company_city")}
               errors={errors}
             />
           </div>
@@ -137,7 +158,10 @@ function CompanyDetail() {
               id="company_state"
               label="State"
               value={data.company_state}
-              onChange={handleFormChange}
+              onChange={(e) => {
+                handleFormChange(e)
+                setSelectField("company_state")
+              }}
               errors={errors}
             >
               <SelectInputOption value="" label="" />
@@ -156,6 +180,7 @@ function CompanyDetail() {
           label="Company postcode"
           value={data.company_postcode}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_postcode")}
           errors={errors}
         />
         <div className="mt-6">

@@ -1,15 +1,16 @@
 import { useEffect } from "react"
 import { useState } from "react"
 import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
 import { inputDate } from "@/app/modules/utilities"
 import FormErrors from "@/app/components/FormErrors"
+import "react-datepicker/dist/react-datepicker.css"
 
 function FileInput({
   id,
   label,
   value,
   onChange,
+  onBlur,
   border,
   bg,
   margin,
@@ -54,6 +55,7 @@ function FileInput({
           scrollableYearDropdown
           tabIndex={9999999}
           fixedHeight
+          onBlur={onBlur}
         />
         <label
           htmlFor={id}

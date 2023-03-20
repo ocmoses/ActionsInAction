@@ -29,7 +29,7 @@ export default function PartnerCategories({
                   category.status === "open" ?? "cursor - pointer"
                 } items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl`}
               >
-                {console.log({ category })}
+                {/* {console.log({ category })} */}
                 <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
                   <div className="flex justify-center items-center">
                     <UserPercentage

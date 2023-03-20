@@ -18,6 +18,9 @@ import {
   scrollToTop,
   validateExpiryDate,
   getValidityRange,
+  ValidateField,
+  fieldRequired,
+  fieldName,
 } from "@/app/modules/utilities"
 
 function Indemnity() {
@@ -35,9 +38,10 @@ function Indemnity() {
     indemnity_no: "",
     indemnity_issue_date: "",
     indemnity_expiry_date: "",
-    indemnity_doc: "",
+    indemnity_doc: {},
+    indemnity_file: "",
   })
-  const { title, subtitle, hand, required } = forms["indemnity"]
+  const { title, subtitle, hand, fields } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
   useEffect(() => {
@@ -48,7 +52,8 @@ function Indemnity() {
         indemnity_no: category?.indemnity_no ?? "",
         indemnity_issue_date: category?.indemnity_issue_date ?? "",
         indemnity_expiry_date: category?.indemnity_expiry_date ?? "",
-        indemnity_doc: category?.indemnity_doc ?? "",
+        indemnity_doc: category?.indemnity_doc ?? {},
+        indemnity_file: category?.indemnity_file ?? "",
       })
   }, [category])
   useEffect(() => {
@@ -60,24 +65,31 @@ function Indemnity() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (category?.validation.indemnity === "r" && !!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        if (field !== "indemnity_doc") {
+          const error = ValidateField(field, "indemnity", data, category)
+          if (error) {
+            scrollToTop("onboardinglayout")
+            return setError({
+              [field]: error,
+            })
+          }
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
     if (
-      category?.validation.indemnity === "r" &&
-      !data.indemnity_doc &&
-      !data.indemnity_doc.length &&
+      fieldRequired("indemnity_doc", "indemnity", category) &&
+      Util.isEmpty(data.indemnity_doc) &&
       !data.indemnity_file
     ) {
       scrollToTop("onboardinglayout")
-      return setError({ indemnity: `Indemnity document is required` })
+      return setError({
+        indemnity_file: `${fieldName(
+          "indemnity_doc",
+          "indemnity"
+        )} is required`,
+      })
     }
 
     const expiryError = validateExpiryDate(
@@ -109,6 +121,14 @@ function Indemnity() {
       [e.target.id]: e.target.value,
     }))
   }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "indemnity", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
+  }
   return (
     <div
       id="onboardingform"
@@ -124,6 +144,7 @@ function Indemnity() {
           label="Professional indemnity insurance number"
           value={data.indemnity_no}
           onChange={handleFormChange}
+          onBlur={() => Validate("indemnity_no")}
           errors={errors}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
@@ -133,6 +154,7 @@ function Indemnity() {
               label="Issue date"
               value={data.indemnity_issue_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("indemnity_issue_date")}
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
@@ -144,6 +166,7 @@ function Indemnity() {
               label="Expiry date"
               value={data.indemnity_expiry_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("indemnity_expiry_date")}
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}

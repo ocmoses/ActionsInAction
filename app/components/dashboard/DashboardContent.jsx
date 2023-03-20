@@ -204,14 +204,16 @@ export default function GetStarted({ type }) {
                 />
               )}
 
-              <div className="flex my-12 justify-center items-center">
-                <Button
-                  onClick={finishApplication}
-                  label="Finish Application"
-                  paddingClass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                  textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                />
-              </div>
+              {partner?.categories?.length > 0 && !partner?.edittable && (
+                <div className="flex my-12 justify-center items-center">
+                  <Button
+                    onClick={finishApplication}
+                    label="Finish Application"
+                    paddingClass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                    textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                  />
+                </div>
+              )}
 
               {partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (

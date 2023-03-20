@@ -52,6 +52,29 @@ export const company_type = [
     label: "Incorporated Trustee",
   },
 ]
+export const license_type = [
+  {
+    value: "National lottery",
+    label: "National lottery",
+    description: "General lottery licence",
+  },
+
+  {
+    value: "Mobile lottery/gaming",
+    label: "Mobile lottery/gaming",
+    description: "SMS, USSD, Mobile apps",
+  },
+  {
+    value: "Sports betting permit",
+    label: "Sports betting permit",
+    description: "For sports betting service providers",
+  },
+  {
+    value: "Promotional lottery(CSPS)",
+    label: "Promotional lottery(CSPS)",
+    description: "Promotional scheme with an element of chance",
+  },
+]
 export const forms = {
   userinfo: {
     form: "userinfo",

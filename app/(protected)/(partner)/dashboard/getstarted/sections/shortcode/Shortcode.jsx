@@ -28,12 +28,12 @@ import {
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.shortcode)
 
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [data, setData] = useState({
     partner_uuid: "",

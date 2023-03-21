@@ -101,7 +101,8 @@ const app = {
   }),
   moveToNextForm: thunk((actions, current, helpers) => {
     const states = helpers.getStoreState()
-    const validation = states.partners?.category
+    const sections = states.partner.sections
+
     if (!current || current?.length < 1) {
       actions.setForm(null)
     } else {
@@ -117,11 +118,15 @@ const app = {
           actions.setForm("review")
         } else {
           // move to next form in stack
-          actions.setForm(
+          const nextSection =
             states.app?.formSteps?.length && states.app?.formSteps[index + 1]
               ? states.app?.formSteps[index + 1]
               : null
-          )
+
+          // checkNextForm(nextSection, category, partner)
+
+          console.log({ nextSection })
+          actions.setForm(nextSection)
         }
       }
     }

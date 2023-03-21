@@ -26,9 +26,9 @@ import {
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [retryTIN, setRetryTIN] = useState(false)
   const [checkingTIN, setCheckingTIN] = useState(false)

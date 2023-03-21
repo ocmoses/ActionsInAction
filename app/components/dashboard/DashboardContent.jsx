@@ -100,8 +100,10 @@ export default function GetStarted({ type }) {
     clearErrors()
     const category = partner?.categories?.find((cat) => cat.uuid === uuid)
     if (category) {
-      setCurrentCategory(category, partner)
+      //  CHECK IF MASTER DATA EXISTS
+      console.log(partner)
       const { nextstage: NextStage } = nextStage(category)
+      setCurrentCategory(category, partner)
       setIsOnboarding(true)
       setIsOpen(false)
       if (NextStage === "review") return moveToNextForm(["review", true])
@@ -209,7 +211,7 @@ export default function GetStarted({ type }) {
                   <Button
                     onClick={finishApplication}
                     label="Finish Application"
-                    paddingClass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                    paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
                     textsizecss="inline-flex text-[14px] whitespace-nowrap"
                   />
                 </div>

@@ -350,6 +350,28 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
+export const getValidationRules = (category) => {
+  const required = []
+  const optional = []
+  const allForms = { required: [], optional: [], all: [] }
+  if (category?.validation) {
+    for (const validate in category.validation) {
+      if (validate && forms[validate]) {
+        if (forms[validate] && category.validation[validate] === "r") {
+          required.push(forms[validate].label)
+          allForms.required.push(validate)
+          allForms.all.push(validate)
+        } else if (category?.validation[validate] === "o") {
+          optional.push(forms[validate].label)
+          allForms.optional.push(validate)
+          allForms.all.push(validate)
+        }
+      }
+    }
+  }
+  const validated = { required, optional, allForms }
+  return validated
+}
 export const AllowedCategories = (category_codes) => {
   // category_codes = ["VAS"]
   const combi = categoryCombination.filter((srv) =>
@@ -369,35 +391,55 @@ export const filterPartner = (partnerInfo, Categories) => {
     s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
   )
 
-  const masterCategory = {}
   const registeredCategories = []
+  const sections = {}
   let edittable = false
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
-      partnerInfo?.categories?.map((category) => {
-        const category_code = categories?.find(
+      partnerInfo?.categories?.map((category, index) => {
+        const sysCategory = categories?.find(
           (c) => c.uuid === category.category_uuid
-        )?.category_code
+        )
+        category.position = index + 1
         if (category.status === "open") edittable = true
-        if (category_code) {
-          category.category_code = category_code
-          registeredCategories.push(category_code)
+        if (sysCategory) {
+          category.category_code = sysCategory.category_code
+          category.validation = sysCategory.validation
+          registeredCategories.push(sysCategory.category_code)
         }
-
+        const validation = category.validation
+        console.log({ category })
         // Build master category
-        for (const master in complianceRequirements) {
-          for (const key in complianceRequirements[master]) {
-            masterCategory[key] = category[key]
-              ? category[key]
-              : masterCategory[key]
+        for (const section in complianceRequirements) {
+          for (const key in complianceRequirements[section]) {
+            if (typeof sections[category.category_uuid] === "undefined")
+              sections[category.category_uuid] = {
+                status: category.status,
+                status_date: category.status_date,
+                master: category.status !== "open",
+              }
+            if (
+              typeof sections[category.category_uuid][section] === "undefined"
+            )
+              sections[category.category_uuid][section] = {
+                fields: {},
+                status: null,
+                completed: false,
+              }
+            sections[category.category_uuid][section].fields[key] =
+              category[key]
           }
+          sections[category.category_uuid][section].completed =
+            category.profile_stage[section] === "1"
+          sections[category.category_uuid][section].status = validation[section]
         }
       })
     }
-    partnerInfo.master = masterCategory
+    partnerInfo.sections = sections
     partnerInfo.edittable = edittable
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }
+  console.log({ partnerInfo })
   return partnerInfo
 }
 export const ValidateField = (field, stage, data, category) => {

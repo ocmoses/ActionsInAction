@@ -56,36 +56,13 @@ const usePartners = () => {
     }
     const validated = { required, optional, allForms }
     setValidation(validated)
+    console.log(category)
+    console.log(validated)
     actions.app.setFormSteps(validated)
     actions.app.setActiveCategory(category?.uuid)
     return validated
   }
 
-  const setValidationRulesBkp = (category) => {
-    const required = []
-    const optional = []
-    const allForms = { required: [], optional: [], all: [] }
-    if (category?.validation) {
-      for (const validate in category.validation) {
-        if (validate && forms[validate]) {
-          if (forms[validate] && category.validation[validate] === "r") {
-            required.push(forms[validate].label)
-            allForms.required.push(validate)
-            allForms.all.push(validate)
-          } else if (category?.validation[validate] === "o") {
-            optional.push(forms[validate].label)
-            allForms.optional.push(validate)
-            allForms.all.push(validate)
-          }
-        }
-      }
-    }
-    const validated = { required, optional, allForms }
-    setValidation(validated)
-    actions.app.setFormSteps(validated)
-    actions.app.setActiveCategory(category?.uuid)
-    return validated
-  }
   const completeOnboarding = (category) => {
     const currentCategory = categories?.find((c) => c.uuid === category.uuid)
     category.validation = currentCategory.validation
@@ -412,7 +389,6 @@ const usePartners = () => {
     updatePartner,
     registerPartner,
     checkRegStatus,
-    // setUpdateStatus,
     checkUpdateStatus,
     nextStage,
     resendEmail,

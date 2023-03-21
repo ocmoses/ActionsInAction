@@ -71,12 +71,13 @@ export default function PartnerCategories({
                       }
                       noicon="yes"
                       textsizecss="!text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
-                      paddingClass="px-3 py-1"
+                      paddingclass="px-3 py-1"
                     />
                   ) : (
                     <div className="flex justify-center">
                       <div className="flex gap-2 bg-[#2D200A] text-[#F9D89A] rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden">
                         <Image
+                          alt=""
                           src="/assets/icons/review.svg"
                           width={16}
                           height={16}

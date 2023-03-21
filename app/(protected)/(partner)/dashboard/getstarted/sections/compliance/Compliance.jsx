@@ -378,8 +378,9 @@ function Compliance() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["compliance"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

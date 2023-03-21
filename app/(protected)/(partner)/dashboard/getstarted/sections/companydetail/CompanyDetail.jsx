@@ -79,8 +79,10 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["companydetail"])
+    console.log({ NextStage })
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const [selectField, setSelectField] = useState(null)
   useEffect(() => {

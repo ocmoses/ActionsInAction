@@ -32,7 +32,7 @@ export default function CategoryDetail({
       if (result?.error) {
         return setError({ category: result.error })
       }
-      moveToNextForm(["category"])
+      moveToNextForm(["category", category])
       setIsOnboarding(true)
       setIsOpen(false)
       return

@@ -133,8 +133,9 @@ function Shortcode() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["shortcode"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const handleShortcodeFormChange = (e) => {
     removeError(e.target.id)

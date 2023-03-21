@@ -104,8 +104,9 @@ function Indemnity() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ indemnity: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["indemnity"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

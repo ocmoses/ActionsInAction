@@ -27,8 +27,8 @@ function Login({ params }) {
   const { clearStore } = useLogout()
 
   const [data, setData] = useState({
-    email: process.env.NODE_ENV === "production" ? "" : "test@gmail.com",
-    password: process.env.NODE_ENV === "production" ? "" : "Todoo45@222",
+    email: process.env.NODE_ENV === "production" ? "" : "bodegbolu@gmail.com",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
   const [notVerified, setNotVerified] = useState(null)
   useEffect(() => {

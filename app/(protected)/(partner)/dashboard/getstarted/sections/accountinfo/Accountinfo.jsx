@@ -28,8 +28,8 @@ export default function Accountinfo() {
     audited_account_2_file: null,
     audited_account_3_doc: {},
     audited_account_3_file: null,
-    job_evidence_4_doc: {},
-    job_evidence_4_file: null,
+    job_evidence_doc: {},
+    job_evidence_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)

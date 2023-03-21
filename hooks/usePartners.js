@@ -133,7 +133,8 @@ const usePartners = () => {
     if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
-  const nextStage = (category) => {
+  const nextStage = (category, partner) => {
+    console.log({ partner })
     if (!category?.profile_stage) return null
     const progress = category.profile_stage
     const validation = category.validation

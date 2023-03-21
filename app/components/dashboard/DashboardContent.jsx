@@ -21,9 +21,9 @@ export default function GetStarted({ type }) {
     session: { user },
   } = useUsers()
   const {
+    partner,
     category,
     categories,
-    partner,
     setValidationRules,
     setCurrentCategory,
     nextStage,
@@ -102,7 +102,7 @@ export default function GetStarted({ type }) {
     if (category) {
       //  CHECK IF MASTER DATA EXISTS
       console.log(partner)
-      const { nextstage: NextStage } = nextStage(category)
+      const { nextstage: NextStage } = nextStage(category, partner)
       setCurrentCategory(category, partner)
       setIsOnboarding(true)
       setIsOpen(false)

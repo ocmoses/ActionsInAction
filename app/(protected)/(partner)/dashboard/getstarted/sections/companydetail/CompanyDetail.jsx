@@ -19,9 +19,9 @@ import { scrollToTop, ValidateField } from "@/app/modules/utilities"
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
   const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",

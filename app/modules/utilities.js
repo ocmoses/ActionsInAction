@@ -350,27 +350,39 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
-export const getValidationRules = (category) => {
-  const required = []
-  const optional = []
-  const allForms = { required: [], optional: [], all: [] }
-  if (category?.validation) {
-    for (const validate in category.validation) {
-      if (validate && forms[validate]) {
-        if (forms[validate] && category.validation[validate] === "r") {
-          required.push(forms[validate].label)
-          allForms.required.push(validate)
-          allForms.all.push(validate)
-        } else if (category?.validation[validate] === "o") {
-          optional.push(forms[validate].label)
-          allForms.optional.push(validate)
-          allForms.all.push(validate)
-        }
-      }
+export const checkNextForm = (nextSection, category) => {
+  console.log("checkNextForm", { category })
+  return nextSection
+}
+export const getNextStage = (category, partner) => {
+  console.log({ partner })
+  if (!category?.profile_stage) return null
+  const progress = category.profile_stage
+  const validation = category.validation
+  let nextstage = null
+  const Stages = [
+    "userinfo",
+    "category",
+    "compliance",
+    "companydetail",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ]
+
+  Stages.map((stage) => {
+    if (
+      !nextstage &&
+      (!progress[stage] || parseInt(progress[stage]) === 0) &&
+      (validation[stage] == "r" || validation[stage] == "o")
+    ) {
+      nextstage = stage
     }
-  }
-  const validated = { required, optional, allForms }
-  return validated
+  })
+  if (!nextstage) nextstage = "review"
+  return { nextstage }
 }
 export const AllowedCategories = (category_codes) => {
   // category_codes = ["VAS"]

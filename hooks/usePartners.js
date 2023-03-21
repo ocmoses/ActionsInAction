@@ -11,7 +11,7 @@ import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData } from "@/app/modules/utilities"
+import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -39,6 +39,7 @@ const usePartners = () => {
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
+    console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -54,6 +55,7 @@ const usePartners = () => {
         }
       }
     }
+    console.log({ allForms })
     const validated = { required, optional, allForms }
     setValidation(validated)
     console.log(category)
@@ -134,34 +136,7 @@ const usePartners = () => {
     return { percent, nextstage }
   }
   const nextStage = (category, partner) => {
-    console.log({ partner })
-    if (!category?.profile_stage) return null
-    const progress = category.profile_stage
-    const validation = category.validation
-    let nextstage = null
-    const Stages = [
-      "userinfo",
-      "companyinfo",
-      "category",
-      "compliance",
-      "companydetail",
-      "ncclicense",
-      "nlrclicense",
-      "shortcode",
-      "indemnity",
-      "accountinfo",
-    ]
-
-    Stages.map((stage) => {
-      if (
-        !nextstage &&
-        (!progress[stage] || parseInt(progress[stage]) === 0) &&
-        (validation[stage] == "r" || validation[stage] == "o")
-      )
-        nextstage = stage
-    })
-    if (!nextstage) nextstage = "review"
-    return { nextstage }
+    return getNextStage(category, partner)
   }
 
   const registerPartner = async (frm, userdata) => {

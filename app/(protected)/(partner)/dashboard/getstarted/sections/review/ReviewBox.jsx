@@ -26,7 +26,6 @@ export default function ReviewBox() {
   const [filePath, setFilePath] = useState("")
   const saveForm = async () => {
     clearErrors()
-    console.log({ category })
     const result = await registerPartner("complete_registration", {
       partner_uuid: category.partner_uuid,
       category_uuid: category.category_uuid,
@@ -52,8 +51,8 @@ export default function ReviewBox() {
     setShowModal(false)
   }
 
-  const moveTo = (section) => {
-    moveToNextForm([section, true])
+  const moveTo = (section, category) => {
+    moveToNextForm([section, category, true])
     scrollToTop("onboardinglayout")
   }
   return (

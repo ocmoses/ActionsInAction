@@ -106,8 +106,9 @@ export default function GetStarted({ type }) {
       setCurrentCategory(category, partner)
       setIsOnboarding(true)
       setIsOpen(false)
-      if (NextStage === "review") return moveToNextForm(["review", true])
-      moveToNextForm([NextStage, true])
+      if (NextStage === "review")
+        return moveToNextForm(["review", category, true])
+      moveToNextForm([NextStage, category, true])
     }
   }
   const scrollpage = () => {

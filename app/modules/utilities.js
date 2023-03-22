@@ -428,8 +428,6 @@ export const filterPartner = (partnerInfo, Categories) => {
           }
           // Build master category
           for (const section in complianceRequirements) {
-            console.log({ validation })
-            console.log({ section })
             if (validation && validation[section]) {
               if (validation[section] === "r" || validation[section] === "o") {
                 for (const key in complianceRequirements[section]) {

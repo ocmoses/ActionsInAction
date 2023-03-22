@@ -207,7 +207,7 @@ export default function GetStarted({ type }) {
                 </div>
               )}
               {partner?.onboarding_type === "migrated" && (
-                <div>
+                <>
                   {partner?.is_login === "no" ? (
                     <>
                       <p className="mb-12 text-[#999999] max-w-[500px]">
@@ -221,10 +221,12 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      Complete your setup to get started!
+                      {partner?.edittable
+                        ? "Complete your setup to get started!"
+                        : "In review"}
                     </p>
                   )}
-                </div>
+                </>
               )}
               {errors && errors["category"] && (
                 <div className="mb-6">

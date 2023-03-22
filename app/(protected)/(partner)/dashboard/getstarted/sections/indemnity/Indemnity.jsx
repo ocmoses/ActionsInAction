@@ -26,9 +26,9 @@ import {
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.indemnity)
 
@@ -44,17 +44,31 @@ function Indemnity() {
   const { title, subtitle, hand, fields } = forms["indemnity"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
 
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
-    if (category)
+    if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.indemnity &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.indemnity &&
+          category.category_uuid !== partner.master.category_uuid
+      )
       setData({
-        partner_uuid: category?.partner_uuid,
+        partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
-        indemnity_no: category?.indemnity_no ?? "",
-        indemnity_issue_date: category?.indemnity_issue_date ?? "",
-        indemnity_expiry_date: category?.indemnity_expiry_date ?? "",
-        indemnity_doc: category?.indemnity_doc ?? {},
-        indemnity_file: category?.indemnity_file ?? "",
+        indemnity_no: Category?.indemnity_no ?? "",
+        indemnity_issue_date: Category?.indemnity_issue_date ?? "",
+        indemnity_expiry_date: Category?.indemnity_expiry_date ?? "",
+        indemnity_doc: Category?.indemnity_doc ?? {},
+        indemnity_file: Category?.indemnity_file ?? "",
       })
+    }
   }, [category])
   useEffect(() => {
     setForm("indemnity")
@@ -104,8 +118,9 @@ function Indemnity() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ indemnity: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["indemnity"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -146,6 +161,7 @@ function Indemnity() {
           onChange={handleFormChange}
           onBlur={() => Validate("indemnity_no")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -158,6 +174,7 @@ function Indemnity() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
+              disabled={isMasterData}
             />
           </div>
           <div className="">
@@ -170,6 +187,7 @@ function Indemnity() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
+              disabled={isMasterData}
             />
           </div>
         </div>
@@ -181,28 +199,31 @@ function Indemnity() {
             value={data.indemnity_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("indemnity")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
-              />
-              <ButtonNext
-                type="submit"
-                label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
-              />
-            </div>
-          )}
-        </div>
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <div className="flex items-center gap-4">
+                <ButtonPrev
+                  onClick={() => moveToPrevForm("indemnity")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                />
+                <ButtonNext
+                  type="submit"
+                  label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

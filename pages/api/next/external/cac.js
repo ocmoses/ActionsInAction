@@ -7,12 +7,7 @@ export default async function handler(req, res) {
         error: "Company CAC number is required",
         data: null,
       })
-    console.log({
-      registration_number: cac,
-      type: type, // co, bn, it
-      class: "basic",
-      country_code: "NG",
-    })
+
     const response = await fetch(process.env.BLUSALT_CAC_URL, {
       method: "POST",
       headers: {
@@ -32,8 +27,13 @@ export default async function handler(req, res) {
     }).catch((err) => {
       return "Something went wrong"
     })
+    console.log({
+      clientid: process.env.BLUSALT_CLIENTID,
+      appname: process.env.BLUSALT_APPNAME,
+      apikey: process.env.BLUSALT_APIKEY,
+    })
     const result = await response.json()
-
+    console.log({ result })
     if (!result)
       return res.status(200).json({
         success: false,

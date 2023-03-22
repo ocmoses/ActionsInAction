@@ -11,7 +11,7 @@ import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData } from "@/app/modules/utilities"
+import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -39,6 +39,7 @@ const usePartners = () => {
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
+    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -54,38 +55,16 @@ const usePartners = () => {
         }
       }
     }
+    // console.log({ allForms })
     const validated = { required, optional, allForms }
     setValidation(validated)
+    // console.log(category)
+    // console.log(validated)
     actions.app.setFormSteps(validated)
     actions.app.setActiveCategory(category?.uuid)
     return validated
   }
 
-  const setValidationRulesBkp = (category) => {
-    const required = []
-    const optional = []
-    const allForms = { required: [], optional: [], all: [] }
-    if (category?.validation) {
-      for (const validate in category.validation) {
-        if (validate && forms[validate]) {
-          if (forms[validate] && category.validation[validate] === "r") {
-            required.push(forms[validate].label)
-            allForms.required.push(validate)
-            allForms.all.push(validate)
-          } else if (category?.validation[validate] === "o") {
-            optional.push(forms[validate].label)
-            allForms.optional.push(validate)
-            allForms.all.push(validate)
-          }
-        }
-      }
-    }
-    const validated = { required, optional, allForms }
-    setValidation(validated)
-    actions.app.setFormSteps(validated)
-    actions.app.setActiveCategory(category?.uuid)
-    return validated
-  }
   const completeOnboarding = (category) => {
     const currentCategory = categories?.find((c) => c.uuid === category.uuid)
     category.validation = currentCategory.validation
@@ -104,18 +83,24 @@ const usePartners = () => {
     // console.log({ categories })
   }
   const setCurrentCategory = (category, partner) => {
-    consolidateCategory()
-    const currentCategory = partner?.categories?.find(
-      (c) => c.uuid === category.uuid
-    )
+    console.log({ category })
+    console.log({ partner })
     const baseCategory = categories?.find(
-      (c) => c.uuid === currentCategory.category_uuid
+      (c) => c.uuid === category.category_uuid
     )
-    currentCategory.validation = baseCategory.validation
-    currentCategory.category_name = baseCategory.category_name
-    currentCategory.category_code = baseCategory.category_code
-    setCategory(currentCategory)
-    setValidationRules(currentCategory)
+    console.log({ baseCategory })
+    // const currentCategory = category
+    // const currentCategory = partner?.categories?.find(
+    //   (c) => c.uuid === category.uuid
+    // )
+    // console.log({ currentCategory })
+
+    // currentCategory.validation = baseCategory.validation
+    category.category_name = baseCategory.category_name
+    category.category_code = baseCategory.category_code
+    setCategory(category)
+
+    setValidationRules(category)
   }
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage
@@ -156,34 +141,8 @@ const usePartners = () => {
     if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
-  const nextStage = (category) => {
-    if (!category?.profile_stage) return null
-    const progress = category.profile_stage
-    const validation = category.validation
-    let nextstage = null
-    const Stages = [
-      "userinfo",
-      "companyinfo",
-      "category",
-      "compliance",
-      "companydetail",
-      "ncclicense",
-      "nlrclicense",
-      "shortcode",
-      "indemnity",
-      "accountinfo",
-    ]
-
-    Stages.map((stage) => {
-      if (
-        !nextstage &&
-        (!progress[stage] || parseInt(progress[stage]) === 0) &&
-        (validation[stage] == "r" || validation[stage] == "o")
-      )
-        nextstage = stage
-    })
-    if (!nextstage) nextstage = "review"
-    return { nextstage }
+  const nextStage = (category, partner) => {
+    return getNextStage(category, partner)
   }
 
   const registerPartner = async (frm, userdata) => {
@@ -271,7 +230,7 @@ const usePartners = () => {
         return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        userdata.password_confirmed = userdata.password
+        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -335,7 +294,6 @@ const usePartners = () => {
         }
         setCurrentCategory(categoryData.category, categoryData.partner)
         updatePartner(categoryData.partner)
-        // setUpdateStatus("category", true)
         return { success: true, error: null, data: categoryData }
       case "companydetail":
         return updateCategory("companydetail", userdata)
@@ -412,7 +370,6 @@ const usePartners = () => {
     updatePartner,
     registerPartner,
     checkRegStatus,
-    // setUpdateStatus,
     checkUpdateStatus,
     nextStage,
     resendEmail,

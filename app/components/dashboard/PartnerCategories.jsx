@@ -1,13 +1,25 @@
 import UserPercentage from "@/app/components/UserPercentage"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 
 export default function PartnerCategories({
   partner,
   type,
   partnerCategories,
   onClick,
+  categories,
 }) {
+  const [allCats, setAllCats] = useState([])
+  useEffect(() => {
+    if (categories?.length > 0) {
+      const Categories = {}
+      categories.map((cat) => {
+        Categories[cat.uuid] = cat
+      })
+      setAllCats(Categories)
+    }
+  }, [categories])
   return (
     <>
       <div
@@ -37,20 +49,33 @@ export default function PartnerCategories({
                 {/* {console.log({ category })} */}
                 <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
                   <div className="flex justify-center items-center">
-                    <UserPercentage
-                      size={
-                        type === "getstarted" || partnerCategories.length < 2
-                          ? 86
-                          : 54
-                      }
-                      thickness={2}
-                      textsize={
-                        type === "getstarted" || partnerCategories.length < 2
-                          ? 20
-                          : 15
-                      }
-                      percent={category.percentage}
-                    />
+                    {category.status === "open" ? (
+                      <UserPercentage
+                        size={
+                          type === "getstarted" || partnerCategories.length < 2
+                            ? 86
+                            : 54
+                        }
+                        thickness={2}
+                        textsize={
+                          type === "getstarted" || partnerCategories.length < 2
+                            ? 20
+                            : 15
+                        }
+                        percent={category.percentage}
+                      />
+                    ) : (
+                      <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
+                        {allCats[category.category_uuid]?.icon && (
+                          <Image
+                            src={allCats[category.category_uuid].icon}
+                            alt=""
+                            width={28}
+                            height={28}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col gap-0 justify-center items-center sm:items-start h-full">
                     <span className="text-sm text-[#999999]">

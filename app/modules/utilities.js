@@ -351,12 +351,12 @@ export const getFileSizeText = (size) => {
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
 export const checkNextForm = (nextSection, category) => {
-  console.log("checkNextForm", { category })
+  // console.log("checkNextForm", { category })
   return nextSection
 }
 export const getNextStage = (category, partner) => {
-  console.log({ category })
-  console.log({ partner })
+  // console.log({ category })
+  // console.log({ partner })
   if (!category?.profile_stage) return null
   const progress = category.profile_stage
   const validation = category.validation
@@ -448,6 +448,7 @@ export const filterPartner = (partnerInfo, Categories) => {
               validation[section]
           }
         }
+
         if (!masterset && category.status !== "open") {
           sections[category.category_uuid].master = true
           category.master = true
@@ -456,7 +457,10 @@ export const filterPartner = (partnerInfo, Categories) => {
         }
       })
       partnerInfo?.categories?.map((category) => {
-        if (category.category_uuid !== partnerInfo.master.category_uuid) {
+        if (
+          partnerInfo.master &&
+          category.category_uuid !== partnerInfo.master.category_uuid
+        ) {
           const profile_stage = {
             ...category.profile_stage,
           }

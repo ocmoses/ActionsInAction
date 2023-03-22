@@ -10,11 +10,11 @@ import { STATES } from "@/app/modules/states"
 import Image from "next/image"
 import ShortcodeReview from "./ShortcodeReview"
 import FilePreviewModal from "@/app/components/FilePreviewModal"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function ReviewBox() {
   const { setForm, moveToNextForm } = useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { partner, category, registerPartner } = usePartners()
   const [{ errors, setError, clearErrors }] = useErrors()
   const showSection = (section) =>
     category?.validation &&
@@ -22,31 +22,68 @@ export default function ReviewBox() {
     (category.validation[section] === "r" ||
       category.validation[section] === "o")
 
-  // const [isMasterData, setIsMasterData] = useState({})
-  // useEffect(() => {
-  //   if (category) {
-  //     const Category =
-  //       partner.master &&
-  //       partner.sections[partner.master.category_uuid]?.nlrclicense &&
-  //       category.category_uuid !== partner.master.category_uuid
-  //         ? partner.master
-  //         : category
+  const [isMaster, setIsMaster] = useState({
+    compliance: false,
+    companydetail: false,
+    ncclicense: false,
+    nlrclicense: false,
+    shortcode: false,
+    indemnity: false,
+    accountinfo: false,
+  })
+  const [Category, setCategory] = useState({
+    compliance: null,
+    companydetail: null,
+    ncclicense: null,
+    nlrclicense: null,
+    shortcode: null,
+    indemnity: null,
+    accountinfo: null,
+  })
+  useEffect(() => {
+    const Stages = [
+      "compliance",
+      "companydetail",
+      "ncclicense",
+      "shortcode",
+      "indemnity",
+      "accountinfo",
+    ]
+    if (category) {
+      const Cats = {}
+      Stages.map((stage) => {
+        Cats[stage] =
+          partner?.master &&
+          partner.sections[partner?.master.category_uuid] &&
+          partner.sections[partner?.master.category_uuid][stage] &&
+          category.category_uuid !== partner?.master.category_uuid
+            ? partner?.master
+            : category
+      })
+      setCategory(Cats)
 
-  //     setIsMasterData(
-  //       partner.master &&
-  //         partner.sections[partner.master.category_uuid]?.nlrclicense &&
-  //         category.category_uuid !== partner.master.category_uuid
-  //     )
-  //     setData({
-
-  //     })
-  //   }
-  // }, [category])
-
+      setIsMaster((oldState) => {
+        Stages.map((stage) => {
+          oldState[stage] =
+            partner?.master &&
+            partner.sections[partner?.master.category_uuid] &&
+            partner.sections[partner?.master.category_uuid][stage] &&
+            category.category_uuid !== partner?.master.category_uuid
+        })
+        return oldState
+      })
+    }
+  }, [category])
+  console.log({ category })
+  console.log({ Category })
+  console.log({ isMaster })
   const [showModal, setShowModal] = useState(false)
   const [filePath, setFilePath] = useState("")
+  const [saving, setSaving] = useState(false)
   const saveForm = async () => {
     clearErrors()
+    if (saving) return
+    setSaving(true)
     const result = await registerPartner("complete_registration", {
       partner_uuid: category.partner_uuid,
       category_uuid: category.category_uuid,
@@ -56,7 +93,10 @@ export default function ReviewBox() {
 
     if (result) {
       scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ review: result.error })
+      if (result?.error) {
+        setSaving(false)
+        return setError({ review: result.error })
+      }
     }
     setForm("complete")
   }

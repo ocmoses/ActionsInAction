@@ -39,7 +39,7 @@ const usePartners = () => {
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
-    console.log("category?.validation", category?.validation)
+    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -55,11 +55,11 @@ const usePartners = () => {
         }
       }
     }
-    console.log({ allForms })
+    // console.log({ allForms })
     const validated = { required, optional, allForms }
     setValidation(validated)
-    console.log(category)
-    console.log(validated)
+    // console.log(category)
+    // console.log(validated)
     actions.app.setFormSteps(validated)
     actions.app.setActiveCategory(category?.uuid)
     return validated

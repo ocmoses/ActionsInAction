@@ -32,8 +32,8 @@ export default function CategoryDetail({
       if (result?.error) {
         return setError({ category: result.error })
       }
-      setForm("compliance")
-      // moveToNextForm(["compliance", category, true])
+      // setForm("compliance")
+      moveToNextForm(["compliance", category, true])
       setIsOnboarding(true)
       setIsOpen(false)
       return

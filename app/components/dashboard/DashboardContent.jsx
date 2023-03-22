@@ -186,22 +186,46 @@ export default function GetStarted({ type }) {
                   Hello, {user.first_name}
                 </h2>
               )}
-              {partner?.onboarding_type === "new" &&
-              !partner?.categories?.length ? (
-                <p className="text-[#999999] text-center md:text-start">
-                  Choose a partner category that best suits your service
-                </p>
-              ) : (
-                <p className="text-[#999999] text-center md:text-start">
-                  Complete your setup to get started!
-                </p>
+              {partner?.onboarding_type === "new" && (
+                <div>
+                  {!partner?.categories?.length ? (
+                    <>
+                      <p className="mb-12">
+                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Explore advanced analytics, reporting, and dedicated
+                        support to grow your business today.
+                      </p>
+                      <p className="text-[#999999] text-center md:text-start">
+                        Choose a partner category that best suits your service
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#999999] text-center md:text-start">
+                      Complete your setup to get started!
+                    </p>
+                  )}
+                </div>
               )}
-              {partner?.onboarding_type === "migrated" &&
-                partner?.is_login === "no" && (
-                  <p className="text-[#999999] text-center md:text-start">
-                    Review your details to get started
-                  </p>
-                )}
+              {partner?.onboarding_type === "migrated" && (
+                <div>
+                  {partner?.is_login === "no" ? (
+                    <>
+                      <p className="mb-12">
+                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Explore advanced analytics, reporting, and dedicated
+                        support to grow your business today.
+                      </p>
+                      <p className="text-[#999999] text-center md:text-start">
+                        Review your details to get started
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#999999] text-center md:text-start">
+                      Complete your setup to get started!
+                    </p>
+                  )}
+                </div>
+              )}
               {errors && errors["category"] && (
                 <div className="mb-6">
                   <FormErrors error={errors["getStarted"]} />
@@ -213,6 +237,7 @@ export default function GetStarted({ type }) {
                   partnerCategories={partnerCategories}
                   type={type}
                   onClick={continueRegistration}
+                  categories={categoriesData}
                 />
               )}
 
@@ -289,7 +314,8 @@ export default function GetStarted({ type }) {
                 )}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
-                  {partnerActiveCategories &&
+                  {!partner?.edittable &&
+                    partnerActiveCategories &&
                     partnerActiveCategories?.length > 0 &&
                     partnerActiveCategories.map((category) => (
                       <CategoryCard

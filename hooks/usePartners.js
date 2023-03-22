@@ -86,21 +86,21 @@ const usePartners = () => {
     console.log({ category })
     console.log({ partner })
     const baseCategory = categories?.find(
-      (c) => c.uuid === currentCategory.category_uuid
+      (c) => c.uuid === category.category_uuid
     )
     console.log({ baseCategory })
-    const currentCategory = category
+    // const currentCategory = category
     // const currentCategory = partner?.categories?.find(
     //   (c) => c.uuid === category.uuid
     // )
-    console.log({ currentCategory })
+    // console.log({ currentCategory })
 
     // currentCategory.validation = baseCategory.validation
-    currentCategory.category_name = baseCategory.category_name
-    currentCategory.category_code = baseCategory.category_code
-    setCategory(currentCategory)
+    category.category_name = baseCategory.category_name
+    category.category_code = baseCategory.category_code
+    setCategory(category)
 
-    setValidationRules(currentCategory)
+    setValidationRules(category)
   }
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage

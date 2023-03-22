@@ -28,17 +28,17 @@ import {
 function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.nlrc_lottery)
 
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
-    license_type: "",
+    nlrc_license_type: "",
     nlrc_license_id: "",
     nlrc_issue_date: "",
     nlrc_expiry_date: "",
@@ -47,18 +47,32 @@ function NlrcLicense() {
   })
   const { title, subtitle, hand, fields } = forms["nlrclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
-    if (category)
+    if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.nlrclicense &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.nlrclicense &&
+          category.category_uuid !== partner.master.category_uuid
+      )
       setData({
-        partner_uuid: category?.partner_uuid,
+        partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
-        license_type: category?.license_type ?? "",
-        nlrc_license_id: category?.nlrc_license_id ?? "",
-        nlrc_issue_date: category?.nlrc_issue_date ?? "",
-        nlrc_expiry_date: category?.nlrc_expiry_date ?? "",
-        nlrc_doc: category?.nlrc_doc ?? {},
-        nlrc_file: category?.nlrc_file ?? "",
+        nlrc_license_type: Category?.nlrc_license_type ?? "",
+        nlrc_license_id: Category?.nlrc_license_id ?? "",
+        nlrc_issue_date: Category?.nlrc_issue_date ?? "",
+        nlrc_expiry_date: Category?.nlrc_expiry_date ?? "",
+        nlrc_doc: Category?.nlrc_doc ?? {},
+        nlrc_file: Category?.nlrc_file ?? "",
       })
+    }
   }, [category])
   useEffect(() => {
     setForm("nlrclicense")
@@ -107,8 +121,9 @@ function NlrcLicense() {
       if (result?.error) return setError({ nlrclicense: result.error })
     }
 
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["nlrclicense"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -133,6 +148,7 @@ function NlrcLicense() {
   }
   const Validate = (field) => {
     removeError(field)
+    console.log({ category })
     const error = ValidateField(field, "nlrclicense", data, category)
     if (error)
       return setError({
@@ -150,15 +166,15 @@ function NlrcLicense() {
           {errors && <FormErrors error={errors["nlrclicense"]} />}
         </div>
         <SelectInput
-          id="license_type"
+          id="nlrc_license_type"
           label="License type"
-          value={data.license_type}
+          value={data.nlrc_license_type}
           onChange={(e) => {
             handleFormChange(e)
-            setSelectField("license_type")
+            setSelectField("nlrc_license_type")
           }}
           errors={errors}
-          margin="mb-1"
+          disabled={isMasterData}
         >
           <SelectInputOption value="" label="" />
           {license_type.map((ct) => (
@@ -176,6 +192,7 @@ function NlrcLicense() {
           onChange={handleFormChange}
           onBlur={() => Validate("nlrc_license_id")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -188,6 +205,7 @@ function NlrcLicense() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
+              disabled={isMasterData}
             />
           </div>
           <div className="">
@@ -200,6 +218,7 @@ function NlrcLicense() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
+              disabled={isMasterData}
             />
           </div>
         </div>
@@ -211,28 +230,31 @@ function NlrcLicense() {
             value={data.nlrc_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("nlrclicense")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
-              />
-              <ButtonNext
-                type="submit"
-                label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}
-              />
-            </div>
-          )}
-        </div>
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <div className="flex items-center gap-4">
+                <ButtonPrev
+                  onClick={() => moveToPrevForm("nlrclicense")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                />
+                <ButtonNext
+                  type="submit"
+                  label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

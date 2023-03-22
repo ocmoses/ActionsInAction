@@ -13,7 +13,7 @@ import Badge from "@/app/components/ProfileTabBadge"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 
-function ProfileTabItem({ menu, form }) {
+function ProfileTabItem({ menu, form, category }) {
   const { moveToNextForm } = useProcessing()
   const { checkUpdateStatus } = usePartners()
   return (
@@ -24,9 +24,9 @@ function ProfileTabItem({ menu, form }) {
       onClick={() =>
         process.env.NODE_ENV === "production"
           ? checkUpdateStatus(menu)
-            ? moveToNextForm([menu, true])
+            ? moveToNextForm([menu, category, true])
             : {}
-          : moveToNextForm([menu, true])
+          : moveToNextForm([menu, category, true])
       }
       className={`flex justify-start items-center gap-3 h-[44px] md:min-w-[175px] mb-4 ${
         checkUpdateStatus(menu) && "cursor-pointer"

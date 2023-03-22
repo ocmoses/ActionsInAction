@@ -17,7 +17,7 @@ import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const { partner, category, registerPartner } = usePartners()
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -28,26 +28,39 @@ export default function Accountinfo() {
     audited_account_2_file: null,
     audited_account_3_doc: {},
     audited_account_3_file: null,
-    job_evidence_4_doc: {},
-    job_evidence_4_file: null,
+    job_evidence_doc: {},
+    job_evidence_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
-    if (category)
+    if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.accountinfo &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.accountinfo &&
+          category.category_uuid !== partner.master.category_uuid
+      )
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        audited_account_1_doc: category?.audited_account_1_doc ?? {},
+        audited_account_1_doc: Category?.audited_account_1_doc ?? {},
         audited_account_1_file: null,
-        audited_account_2_doc: category?.audited_account_2_doc ?? {},
+        audited_account_2_doc: Category?.audited_account_2_doc ?? {},
         audited_account_2_file: null,
-        audited_account_3_doc: category?.audited_account_3_doc ?? {},
+        audited_account_3_doc: Category?.audited_account_3_doc ?? {},
         audited_account_3_file: null,
-        job_evidence_doc: category?.job_evidence_doc ?? {},
+        job_evidence_doc: Category?.job_evidence_doc ?? {},
         job_evidence_file: null,
       })
+    }
   }, [category])
 
   useEffect(() => {
@@ -114,7 +127,7 @@ export default function Accountinfo() {
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }
-    moveToNextForm(["accountinfo"])
+    moveToNextForm(["accountinfo", category])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -139,6 +152,7 @@ export default function Accountinfo() {
             value={data.audited_account_1_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="audited_account_2_file"
@@ -147,6 +161,7 @@ export default function Accountinfo() {
             value={data.audited_account_2_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="audited_account_3_file"
@@ -155,6 +170,7 @@ export default function Accountinfo() {
             value={data.audited_account_3_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="job_evidence_file"
@@ -163,30 +179,33 @@ export default function Accountinfo() {
             value={data.job_evidence_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader
-              width={40}
-              iconClass="mt-6"
-              height={40}
-              fill="#efb703"
-            />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("indemnity")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader
+                width={40}
+                iconClass="mt-6"
+                height={40}
+                fill="#efb703"
               />
-              <ButtonNext type="submit" label="Next" />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <ButtonPrev
+                  onClick={() => moveToPrevForm("indemnity")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                />
+                <ButtonNext type="submit" label="Next" />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

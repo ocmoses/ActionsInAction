@@ -26,15 +26,19 @@ export default function CategoryDetail({
       partner_uuid: partner?.uuid ?? "",
       category_uuid: category.uuid,
     })
-
+    console.log({ result })
     if (result) {
       setProcessing(false)
       if (result?.error) {
         return setError({ category: result.error })
       }
-      moveToNextForm(["category"])
+      // setForm("compliance")
+      moveToNextForm(["compliance", category, true])
+      console.log("moveToNextForm")
       setIsOnboarding(true)
+      console.log("setIsOnboarding")
       setIsOpen(false)
+      console.log("setIsOpen")
       return
     }
     setError({ category: "Something went wrong" })
@@ -72,7 +76,7 @@ export default function CategoryDetail({
             <h3 className="text-white text-lg font-bold">Get started</h3>
             <p className="text-md text-[#999999]">
               For regulatory compliance, we’ll require the following
-              informations from our VAS providers.
+              informations from our {category.category_code} providers.
             </p>
           </div>
 

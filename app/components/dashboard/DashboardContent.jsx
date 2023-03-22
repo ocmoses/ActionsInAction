@@ -7,6 +7,7 @@ import OnboardingLayout from "./OnboardingLayout"
 import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
 import RemoteEndpoints from "@/app/modules/endpoints"
+import Axios from "@/app/modules/axios"
 import { useState, useEffect, useRef } from "react"
 import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -41,7 +42,8 @@ export default function GetStarted({ type }) {
 
   const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
     useProcessing()
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
+  const [{ errors, setError, success, setSuccess, clearErrors }] =
+    useErrors(null)
   useEffect(() => {
     setCategoriesData(categories)
     setAllowedCategories(AllowedCategories(categories))
@@ -124,29 +126,29 @@ export default function GetStarted({ type }) {
     clearErrors()
     setIsSaving(true)
     try {
-      const result = await Axios.post(RemoteEndpoints.START_CONTRACT, {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_APIKEY,
-        },
-        timeout: process.TIMEOUT,
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer",
-        data: { partner_uuid: partner?.uuid },
-      }).catch((error) => {
+      const result = await Axios.post(
+        RemoteEndpoints.START_CONTRACT,
+        { partner_uuid: partner?.uuid },
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+          },
+          timeout: process.TIMEOUT,
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer",
+        }
+      ).catch((error) => {
         console.log(error)
         setIsSaving(false)
         return setError({ dashboard: "Something went wrong" })
       })
       setIsSaving(false)
+      console.log({ result })
       if (result) {
         const { success, data } = result
         console.log({ data })
         if (success) {
-          return {
-            success: true,
-            error: null,
-            data: url,
-          }
+          setSuccess("Your application was submited successfully")
         } else {
           return setError({ dashboard: data.message })
         }
@@ -180,7 +182,7 @@ export default function GetStarted({ type }) {
           <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
             <div className="w-full pt-[72px]">
               {user?.first_name && (
-                <h2 className="text-4xl font-bold text-white text-center md:text-start">
+                <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
                   Hello, {user.first_name}
                 </h2>
               )}
@@ -229,6 +231,11 @@ export default function GetStarted({ type }) {
                   <FormErrors error={errors["getStarted"]} />
                 </div>
               )}
+              {success && (
+                <div className="my-6">
+                  <FormErrors success={success} align="center" />
+                </div>
+              )}
               {partnerCategories && (
                 <PartnerCategories
                   partner={partner}
@@ -238,27 +245,31 @@ export default function GetStarted({ type }) {
                   categories={categoriesData}
                 />
               )}
-
-              {partner?.categories?.length > 0 && !partner?.edittable && (
-                <div className="flex flex-col my-12 justify-center items-center">
-                  {errors?.dashboard && (
-                    <div className="my-6">
-                      <FormErrors error={errors.dashboard} />
-                    </div>
-                  )}
-                  {isSaving ? (
-                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                  ) : (
-                    <Button
-                      onClick={finishApplication}
-                      label="Finish Application"
-                      paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                      textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                    />
-                  )}
-                </div>
-              )}
-
+              {partner?.categories?.length > 0 &&
+                !partner?.edittable &&
+                !partner?.status === "open" && (
+                  <div className="flex flex-col my-12 justify-center items-center">
+                    {errors?.dashboard && (
+                      <div className="my-6">
+                        <FormErrors error={errors.dashboard} />
+                      </div>
+                    )}
+                    {isSaving ? (
+                      <TailSpinPreloader
+                        width={40}
+                        height={40}
+                        fill="#efb703"
+                      />
+                    ) : (
+                      <Button
+                        onClick={finishApplication}
+                        label="Finish Application"
+                        paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                        textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                      />
+                    )}
+                  </div>
+                )}
               {partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (
                   <div
@@ -310,23 +321,23 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {!showProgress && (
-                <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
-                  {!partner?.edittable &&
-                    partnerActiveCategories &&
-                    partnerActiveCategories?.length > 0 &&
-                    partnerActiveCategories.map((category) => (
-                      <CategoryCard
-                        key={category.uuid}
-                        category={category}
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                        tmpCat={tmpCat}
-                        setTmpCat={setTmpCat}
-                      />
-                    ))}
-                </div>
-              )}
+              {/* {!partner?.edittable && !showProgress && ( */}
+              <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
+                {!partner?.edittable &&
+                  partnerActiveCategories &&
+                  partnerActiveCategories?.length > 0 &&
+                  partnerActiveCategories.map((category) => (
+                    <CategoryCard
+                      key={category.uuid}
+                      category={category}
+                      isOpen={isOpen}
+                      setIsOpen={setIsOpen}
+                      tmpCat={tmpCat}
+                      setTmpCat={setTmpCat}
+                    />
+                  ))}
+              </div>
+              {/*  )} */}
             </div>
             <div className="flex flex-col">
               <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">

@@ -130,7 +130,7 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            {params && params[0] === "partner"
+            {params && params[0] === "dashboard"
               ? "Please login to proceed"
               : "Welcome back! please enter your great details"}
           </p>

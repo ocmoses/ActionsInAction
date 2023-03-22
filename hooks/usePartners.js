@@ -85,15 +85,17 @@ const usePartners = () => {
   const setCurrentCategory = (category, partner) => {
     console.log({ category })
     console.log({ partner })
-    const currentCategory = partner?.categories?.find(
-      (c) => c.uuid === category.uuid
-    )
-    console.log({ currentCategory })
     const baseCategory = categories?.find(
       (c) => c.uuid === currentCategory.category_uuid
     )
     console.log({ baseCategory })
-    currentCategory.validation = baseCategory.validation
+    const currentCategory = category
+    // const currentCategory = partner?.categories?.find(
+    //   (c) => c.uuid === category.uuid
+    // )
+    console.log({ currentCategory })
+
+    // currentCategory.validation = baseCategory.validation
     currentCategory.category_name = baseCategory.category_name
     currentCategory.category_code = baseCategory.category_code
     setCategory(currentCategory)

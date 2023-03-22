@@ -26,7 +26,7 @@ export default function CategoryDetail({
       partner_uuid: partner?.uuid ?? "",
       category_uuid: category.uuid,
     })
-
+    console.log({ result })
     if (result) {
       setProcessing(false)
       if (result?.error) {
@@ -34,8 +34,11 @@ export default function CategoryDetail({
       }
       // setForm("compliance")
       moveToNextForm(["compliance", category, true])
+      console.log("moveToNextForm")
       setIsOnboarding(true)
+      console.log("setIsOnboarding")
       setIsOpen(false)
+      console.log("setIsOpen")
       return
     }
     setError({ category: "Something went wrong" })

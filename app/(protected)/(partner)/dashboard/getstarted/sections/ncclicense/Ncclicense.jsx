@@ -43,16 +43,28 @@ function Ncclicense() {
   })
   const { title, subtitle, hand, fields } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
+    const Category =
+      partner.master &&
+      partner.sections[partner.master.category_uuid]?.ncclicense &&
+      category.category_uuid !== partner.master.category_uuid
+        ? partner.master
+        : category
+    setIsMasterData(
+      partner.master &&
+        partner.sections[partner.master.category_uuid]?.ncclicense &&
+        category.category_uuid !== partner.master.category_uuid
+    )
     if (category)
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        vas_license_id: category?.vas_license_id ?? "",
-        ncc_issue_date: category?.ncc_issue_date ?? "",
-        ncc_expiry_date: category?.ncc_expiry_date ?? "",
-        ncc_doc: category?.ncc_doc ?? {},
-        ncc_file: category?.ncc_file ?? "",
+        vas_license_id: Category?.vas_license_id ?? "",
+        ncc_issue_date: Category?.ncc_issue_date ?? "",
+        ncc_expiry_date: Category?.ncc_expiry_date ?? "",
+        ncc_doc: Category?.ncc_doc ?? {},
+        ncc_file: Category?.ncc_file ?? "",
       })
   }, [category])
   useEffect(() => {
@@ -145,6 +157,7 @@ function Ncclicense() {
           onChange={handleFormChange}
           onBlur={() => Validate("vas_license_id")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -157,6 +170,7 @@ function Ncclicense() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
+              disabled={isMasterData}
             />
           </div>
           <div className="">
@@ -169,6 +183,7 @@ function Ncclicense() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
+              disabled={isMasterData}
             />
           </div>
         </div>
@@ -180,6 +195,7 @@ function Ncclicense() {
             value={data.ncc_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 

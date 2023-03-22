@@ -17,6 +17,7 @@ function FileInput({
   errors,
   min,
   max,
+  disabled,
 }) {
   const [startDate, setStartDate] = useState()
 
@@ -56,6 +57,7 @@ function FileInput({
           tabIndex={9999999}
           fixedHeight
           onBlur={onBlur}
+          disabled={disabled}
         />
         <label
           htmlFor={id}

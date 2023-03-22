@@ -27,8 +27,8 @@ function Login({ params }) {
   const { clearStore } = useLogout()
 
   const [data, setData] = useState({
-    email: process.env.NODE_ENV === "production" ? "" : "test@gmail.com",
-    password: process.env.NODE_ENV === "production" ? "" : "Todoo45@222",
+    email: process.env.NODE_ENV === "production" ? "" : "bodegbolu@gmail.com",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
   const [notVerified, setNotVerified] = useState(null)
   useEffect(() => {
@@ -130,7 +130,9 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            Welcome back! please enter your great details
+            {params && params[0] === "partner"
+              ? "Please login to proceed"
+              : "Welcome back! please enter your great details"}
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}{" "}
@@ -147,7 +149,7 @@ function Login({ params }) {
               {success && <FormErrors success={success} />}
             </>
           </div>
-          <>
+          <div className="w-[300px] max-w-[100%]">
             <TextInput
               id="email"
               label="Email address"
@@ -182,7 +184,7 @@ function Login({ params }) {
             ) : (
               <Button label="Continue" />
             )}
-          </>
+          </div>
         </div>
       </form>
     </>

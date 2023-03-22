@@ -50,18 +50,29 @@ export default function ReviewBox() {
       "accountinfo",
     ]
     if (category) {
-      const Cats = {}
-      Stages.map((stage) => {
-        Cats[stage] =
-          partner?.master &&
-          partner.sections[partner?.master.category_uuid] &&
-          partner.sections[partner?.master.category_uuid][stage] &&
-          category.category_uuid !== partner?.master.category_uuid
-            ? partner?.master
-            : category
+      // const Cats = {}
+      // Stages.map((stage) => {
+      //   Cats[stage] =
+      //     partner?.master &&
+      //     partner.sections[partner?.master.category_uuid] &&
+      //     partner.sections[partner?.master.category_uuid][stage] &&
+      //     category.category_uuid !== partner?.master.category_uuid
+      //       ? partner?.master
+      //       : category
+      // })
+      // setCategory(Cats)
+      setCategory((oldState) => {
+        Stages.map((stage) => {
+          oldState[stage] =
+            partner?.master &&
+            partner.sections[partner?.master.category_uuid] &&
+            partner.sections[partner?.master.category_uuid][stage] &&
+            category.category_uuid !== partner?.master.category_uuid
+              ? partner?.master
+              : category
+        })
+        return oldState
       })
-      setCategory(Cats)
-
       setIsMaster((oldState) => {
         Stages.map((stage) => {
           oldState[stage] =
@@ -69,6 +80,8 @@ export default function ReviewBox() {
             partner.sections[partner?.master.category_uuid] &&
             partner.sections[partner?.master.category_uuid][stage] &&
             category.category_uuid !== partner?.master.category_uuid
+              ? true
+              : false
         })
         return oldState
       })

@@ -14,14 +14,14 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { scrollToTop, ValidateField } from "@/app/modules/utilities"
+import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { category, registerPartner, checkUpdateStatus, nextStage } =
+  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category)
+  const { nextstage: NextStage } = nextStage(category, partner)
   const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
@@ -33,16 +33,50 @@ function CompanyDetail() {
     company_state: "",
     company_postcode: "",
   })
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
+    const Category =
+      partner.master &&
+      partner.sections[partner.master.category_uuid]?.companydetail &&
+      category.category_uuid !== partner.master.category_uuid
+        ? partner.master
+        : category
+    setIsMasterData(
+      partner.master &&
+        partner.sections[partner.master.category_uuid]?.companydetail &&
+        category.category_uuid !== partner.master.category_uuid
+    )
+    let tin_data = null
+    let cac_data = null
+    if (Category?.tin_data) {
+      tin_data = isString(Category.tin_data)
+        ? JSON.parse(Category.tin_data)
+        : Category.tin_data
+    }
+    if (Category?.cac_data) {
+      cac_data = isString(Category.cac_data)
+        ? JSON.parse(Category.cac_data)
+        : Category.cac_data
+    }
+    console.log({ tin_data })
+    console.log({ cac_data })
     setData({
-      partner_uuid: category?.partner_uuid,
+      partner_uuid: Category?.partner_uuid,
       category_uuid: category?.category_uuid,
-      company_name: category?.company_name ?? "",
-      country: category?.country ?? "NG",
-      company_address: category?.company_address ?? "",
-      company_city: category?.company_city ?? "",
-      company_state: category?.company_state ?? "",
-      company_postcode: category?.company_postcode ?? "",
+      company_name: cac_data?.company_name
+        ? cac_data?.company_name
+        : Category?.company_name
+        ? Category?.company_name
+        : "",
+      country: Category?.country ?? "NG",
+      company_address: cac_data?.address
+        ? cac_data?.address
+        : Category?.company_address
+        ? Category?.company_address
+        : "",
+      company_city: Category?.company_city ?? "",
+      company_state: Category?.company_state ?? "",
+      company_postcode: Category?.company_postcode ?? "",
     })
   }, [category])
 
@@ -79,8 +113,9 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm(["companydetail"])
+    if (NextStage === "review")
+      return moveToNextForm(["review", category, true])
+    moveToNextForm([NextStage, category, true])
   }
   const [selectField, setSelectField] = useState(null)
   useEffect(() => {
@@ -118,6 +153,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
+          disabled={isMasterData || data.company_name}
         />
         <SelectInput
           id="country"
@@ -128,6 +164,7 @@ function CompanyDetail() {
             setSelectField("country")
           }}
           errors={errors}
+          disabled={isMasterData}
         >
           {COUNTRIES.map((c) => (
             <SelectInputOption key={c.value} value={c.value} label={c.title} />
@@ -141,6 +178,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_address")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="relative ">
@@ -151,6 +189,7 @@ function CompanyDetail() {
               onChange={handleFormChange}
               onBlur={() => Validate("company_city")}
               errors={errors}
+              disabled={isMasterData}
             />
           </div>
           <div className="relative ">
@@ -163,6 +202,7 @@ function CompanyDetail() {
                 setSelectField("company_state")
               }}
               errors={errors}
+              disabled={isMasterData}
             >
               <SelectInputOption value="" label="" />
               {states.map((s) => (
@@ -182,16 +222,19 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_postcode")}
           errors={errors}
+          disabled={isMasterData}
         />
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <ButtonNext
-              label={checkUpdateStatus("companydetail") ? "Update" : "Next"}
-            />
-          )}
-        </div>
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <ButtonNext
+                label={checkUpdateStatus("companydetail") ? "Update" : "Next"}
+              />
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

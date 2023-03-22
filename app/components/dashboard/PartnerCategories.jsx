@@ -1,13 +1,25 @@
 import UserPercentage from "@/app/components/UserPercentage"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 
 export default function PartnerCategories({
   partner,
   type,
   partnerCategories,
   onClick,
+  categories,
 }) {
+  const [allCats, setAllCats] = useState([])
+  useEffect(() => {
+    if (categories?.length > 0) {
+      const Categories = {}
+      categories.map((cat) => {
+        Categories[cat.uuid] = cat
+      })
+      setAllCats(Categories)
+    }
+  }, [categories])
   return (
     <>
       <div
@@ -22,8 +34,13 @@ export default function PartnerCategories({
             category.category_name && (
               <div
                 onClick={() =>
-                  category.status === "open" ? onClick(category.uuid) : {}
+                  category.status === "open"
+                    ? onClick(category.uuid)
+                    : process.env.NODE_ENV === "production"
+                    ? {}
+                    : onClick(category.uuid)
                 }
+                // onClick={() => onClick(category.uuid)}
                 key={category.uuid}
                 className={`flex flex-col ${
                   category.status === "open" ?? "cursor - pointer"
@@ -32,20 +49,33 @@ export default function PartnerCategories({
                 {/* {console.log({ category })} */}
                 <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
                   <div className="flex justify-center items-center">
-                    <UserPercentage
-                      size={
-                        type === "getstarted" || partnerCategories.length < 2
-                          ? 86
-                          : 54
-                      }
-                      thickness={2}
-                      textsize={
-                        type === "getstarted" || partnerCategories.length < 2
-                          ? 20
-                          : 15
-                      }
-                      percent={category.percentage}
-                    />
+                    {category.status === "open" ? (
+                      <UserPercentage
+                        size={
+                          type === "getstarted" || partnerCategories.length < 2
+                            ? 86
+                            : 54
+                        }
+                        thickness={2}
+                        textsize={
+                          type === "getstarted" || partnerCategories.length < 2
+                            ? 20
+                            : 15
+                        }
+                        percent={category.percentage}
+                      />
+                    ) : (
+                      <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
+                        {allCats[category.category_uuid]?.icon && (
+                          <Image
+                            src={allCats[category.category_uuid].icon}
+                            alt=""
+                            width={28}
+                            height={28}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col gap-0 justify-center items-center sm:items-start h-full">
                     <span className="text-sm text-[#999999]">
@@ -71,12 +101,13 @@ export default function PartnerCategories({
                       }
                       noicon="yes"
                       textsizecss="!text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
-                      paddingClass="px-3 py-1"
+                      paddingclass="px-3 py-1"
                     />
                   ) : (
                     <div className="flex justify-center">
                       <div className="flex gap-2 bg-[#2D200A] text-[#F9D89A] rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden">
                         <Image
+                          alt=""
                           src="/assets/icons/review.svg"
                           width={16}
                           height={16}

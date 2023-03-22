@@ -102,7 +102,7 @@ export const forms = {
       telephone: "Telephone",
       designation: "Designation",
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Repeat password",
     },
   },
   companydetail: {
@@ -135,6 +135,7 @@ export const forms = {
     subtitle: "",
     hand: "",
     fields: {
+      company_type: "Company type",
       rc_no: "RC Number",
       tin_no: "Tax identification number",
       tin_doc: "TIN Document",
@@ -143,6 +144,7 @@ export const forms = {
       company_type: "Company type",
     },
     required: {
+      company_type: "Company type",
       rc_no: "RC Number",
       tin_no: "Tax identification number",
       company_type: "Company type",
@@ -178,12 +180,14 @@ export const forms = {
     subtitle: "",
     hand: "",
     fields: {
+      nlrc_license_type: "License type",
       nlrc_license_id: "NLRC License ID",
       nlrc_issue_date: "Issuing date",
       nlrc_expiry_date: "Expiry date",
       nlrc_doc: "NLRC Document",
     },
     required: {
+      nlrc_license_type: "License type",
       nlrc_license_id: "NLRC License ID",
       nlrc_issue_date: "Issuing date",
       nlrc_expiry_date: "Expiry date",
@@ -199,17 +203,17 @@ export const forms = {
       shortcode: "Short code",
       shortcode_issue_date: "Issue date",
       shortcode_expiry_date: "Expiry date",
-      shortcode_price_issue_date: "Princing Issue date",
-      shortcode_price_expiry_date: "Pricing Expiry date",
       shortcode_doc: "Short code document",
-      shortcode_pricing_doc: "NCC Pricing approval",
+      pricing_issue_date: "Princing Issue date",
+      pricing_expiry_date: "Pricing Expiry date",
+      pricing_doc: "NCC Pricing approval",
     },
     required: {
       shortcode: "Short code",
       shortcode_issue_date: "Issue date",
       shortcode_expiry_date: "Expiry date",
-      shortcode_price_issue_date: "Princing Issue date",
-      shortcode_price_expiry_date: "Pricing Expiry date",
+      pricing_issue_date: "Princing Issue date",
+      pricing_expiry_date: "Pricing Expiry date",
     },
   },
   indemnity: {
@@ -241,9 +245,10 @@ export const forms = {
       account_name: "Account name",
       account_no: "Account number",
       bank: "Bank",
-      audited_account_1: "Audited account 1",
-      audited_account_2: "Audited account 2",
-      audited_account_3: "Audited account 3",
+      audited_account_1_doc: "Audited account 1",
+      audited_account_2_doc: "Audited account 2",
+      audited_account_3_doc: "Audited account 3",
+      job_evidence_doc: "Audited account 3",
     },
     required: {
       account_name: "Account name",
@@ -342,155 +347,215 @@ export const complianceRequirements = {
     company_name: {
       title: "Company name",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     country: {
       title: "Country",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     company_address: {
       title: "Company address",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     company_city: {
       title: "Company city",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     company_state: {
       title: "Company state",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     company_postcode: {
       title: "Company postcode",
       categories: [],
+      type: "form",
     },
   },
   compliance: {
+    company_type: {
+      title: "Company type",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
     rc_no: {
       title: "RC Number",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     tin_no: {
       title: "Tax identification number",
       categories: ["VAS", "RMS", "AGR", "MKP"],
-    },
-    company_type: {
-      title: "Company type",
-      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     tin_doc: {
       title: "TIN Document",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     memart_doc: {
       title: "Memart certificate",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
     },
     cac_doc: {
       title: "CAC Registration Certificate",
       categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    valid_tin: {
+      title: "Valid TIN",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    valid_cac: {
+      title: "Valid CAC",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    cac_data: {
+      title: "CAC Registration Certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    tin_data: {
+      title: "CAC Registration Certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
     },
   },
   ncclicense: {
     vas_license_id: {
       title: "VAS License ID",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     ncc_issue_date: {
       title: "Issuing date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     ncc_expiry_date: {
       title: "Expiry date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     ncc_doc: {
       title: "NCC VAS License document",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
   },
   nlrclicense: {
+    nlrc_license_type: {
+      title: "NLRC License type",
+      categories: ["AGR"],
+      type: "form",
+    },
     nlrc_license_id: {
       title: "NLRC License ID",
       categories: ["AGR"],
+      type: "form",
     },
     nlrc_issue_date: {
       title: "Issuing date",
       categories: ["AGR"],
+      type: "form",
     },
     nlrc_expiry_date: {
       title: "Expiry date",
       categories: ["AGR"],
+      type: "form",
     },
     nlrc_doc: {
       title: "NLRC Document",
       categories: ["AGR"],
+      type: "form",
     },
   },
   shortcode: {
     shortcode_doc: {
       title: "Short code document",
       categories: ["VAS", "AGR"],
+      type: "form",
     },
     shortcode: {
       title: "Short code",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     shortcode_issue_date: {
       title: "Issue date",
       categories: ["VAS", "AGR"],
+      type: "form",
     },
     shortcode_expiry_date: {
       title: "Expiry date",
       categories: ["VAS", "AGR"],
+      type: "form",
     },
 
     shortcode_price_issue_date: {
       title: "Princing Issue date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     shortcode_price_expiry_date: {
       title: "Pricing Expiry date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     shortcode_pricing_doc: {
       title: "NCC Pricing approval",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
   },
   indemnity: {
     indemnity_no: {
       title: "Professional indemnity insurance number",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     indemnity_issue_date: {
       title: "Issuing date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     indemnity_expiry_date: {
       title: "Expiry date",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     indemnity_doc: {
       title: "Professional indemnity insurance Document",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
   },
   accountinfo: {
     audited_account_1_doc: {
       title: "Audited account 1",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     audited_account_2_doc: {
       title: "Audited account 2",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     audited_account_3_doc: {
       title: "Audited account 3",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
     job_evidence_doc: {
       title: "Evidence of 3 Jobs done",
       categories: ["VAS", "RMS", "AGR"],
+      type: "form",
     },
   },
 }

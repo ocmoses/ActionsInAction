@@ -183,27 +183,29 @@ export default function Accountinfo() {
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader
-              width={40}
-              iconClass="mt-6"
-              height={40}
-              fill="#efb703"
-            />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("indemnity")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader
+                width={40}
+                iconClass="mt-6"
+                height={40}
+                fill="#efb703"
               />
-              <ButtonNext type="submit" label="Next" />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <ButtonPrev
+                  onClick={() => moveToPrevForm("indemnity")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                />
+                <ButtonNext type="submit" label="Next" />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

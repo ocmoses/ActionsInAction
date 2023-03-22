@@ -350,6 +350,41 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
+export const checkNextForm = (nextSection, category) => {
+  // console.log("checkNextForm", { category })
+  return nextSection
+}
+export const getNextStage = (category, partner) => {
+  // console.log({ category })
+  // console.log({ partner })
+  if (!category?.profile_stage) return null
+  const progress = category.profile_stage
+  const validation = category.validation
+  let nextstage = null
+  const Stages = [
+    "userinfo",
+    "category",
+    "compliance",
+    "companydetail",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ]
+
+  Stages.map((stage) => {
+    if (
+      !nextstage &&
+      (!progress[stage] || parseInt(progress[stage]) === 0) &&
+      (validation[stage] == "r" || validation[stage] == "o")
+    ) {
+      if (!partner.sections[category]) nextstage = stage
+    }
+  })
+  if (!nextstage) nextstage = "review"
+  return { nextstage }
+}
 export const AllowedCategories = (category_codes) => {
   // category_codes = ["VAS"]
   const combi = categoryCombination.filter((srv) =>
@@ -365,36 +400,85 @@ export const AllowedCategories = (category_codes) => {
 // Filter partner info hook
 export const filterPartner = (partnerInfo, Categories) => {
   const partnercategories = Categories?.data ? Categories?.data : Categories
-  const categories = partnercategories.sort((s1, s2) =>
+  const categories = partnercategories?.sort((s1, s2) =>
     s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
   )
-
-  const masterCategory = {}
   const registeredCategories = []
+  const sections = {}
+  let masterset = false
   let edittable = false
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
-      partnerInfo?.categories?.map((category) => {
-        const category_code = categories?.find(
-          (c) => c.uuid === category.category_uuid
-        )?.category_code
-        if (category.status === "open") edittable = true
-        if (category_code) {
-          category.category_code = category_code
-          registeredCategories.push(category_code)
-        }
+      partnerInfo?.categories?.map((category, index) => {
+        if (category) {
+          const sysCategory = categories?.find(
+            (c) => c.uuid === category.category_uuid
+          )
+          category.position = index + 1
+          if (category.status === "open") edittable = true
+          if (sysCategory) {
+            category.category_code = sysCategory.category_code
+            category.validation = sysCategory.validation
+            registeredCategories.push(sysCategory.category_code)
+          }
+          const validation = category.validation
+          sections[category.category_uuid] = {
+            status: category.status,
+            status_date: category.status_date,
+          }
+          // Build master category
+          for (const section in complianceRequirements) {
+            if (validation && validation[section]) {
+              if (validation[section] === "r" || validation[section] === "o") {
+                for (const key in complianceRequirements[section]) {
+                  if (
+                    typeof sections[category.category_uuid][section] ===
+                    "undefined"
+                  ) {
+                    sections[category.category_uuid][section] = {
+                      fields: {},
+                      status: null,
+                      completed: false,
+                    }
+                  }
+                  sections[category.category_uuid][section].fields[key] =
+                    category[key]
+                }
+                sections[category.category_uuid][section].completed =
+                  category.profile_stage[section] === "1"
+                sections[category.category_uuid][section].status =
+                  validation[section]
+              }
+            }
+          }
 
-        // Build master category
-        for (const master in complianceRequirements) {
-          for (const key in complianceRequirements[master]) {
-            masterCategory[key] = category[key]
-              ? category[key]
-              : masterCategory[key]
+          if (!masterset && category.status !== "open") {
+            sections[category.category_uuid].master = true
+            category.master = true
+            partnerInfo.master = category
+            masterset = true
+          }
+        }
+      })
+      partnerInfo?.categories?.map((category) => {
+        if (category) {
+          if (
+            partnerInfo.master &&
+            category.category_uuid !== partnerInfo.master.category_uuid
+          ) {
+            const profile_stage = {
+              ...category.profile_stage,
+            }
+            for (const pstage in partnerInfo.master.profile_stage) {
+              if (partnerInfo.master.profile_stage[pstage])
+                profile_stage[pstage] = partnerInfo.master.profile_stage[pstage]
+            }
+            category.profile_stage = profile_stage
           }
         }
       })
     }
-    partnerInfo.master = masterCategory
+    partnerInfo.sections = sections
     partnerInfo.edittable = edittable
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }

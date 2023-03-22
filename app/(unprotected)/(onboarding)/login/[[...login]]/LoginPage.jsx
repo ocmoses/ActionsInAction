@@ -129,7 +129,9 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            Welcome back! please enter your great details
+            {params && params[0] === "partner"
+              ? "Please login to proceed"
+              : "Welcome back! please enter your great details"}
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}{" "}
@@ -146,7 +148,7 @@ function Login({ params }) {
               {success && <FormErrors success={success} />}
             </>
           </div>
-          <>
+          <div className="w-[300px] max-w-[100%]">
             <TextInput
               id="email"
               label="Email address"
@@ -181,7 +183,7 @@ function Login({ params }) {
             ) : (
               <Button label="Continue" />
             )}
-          </>
+          </div>
         </div>
       </form>
     </>

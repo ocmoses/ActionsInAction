@@ -355,6 +355,7 @@ export const checkNextForm = (nextSection, category) => {
   return nextSection
 }
 export const getNextStage = (category, partner) => {
+  console.log({ category })
   console.log({ partner })
   if (!category?.profile_stage) return null
   const progress = category.profile_stage
@@ -378,7 +379,7 @@ export const getNextStage = (category, partner) => {
       (!progress[stage] || parseInt(progress[stage]) === 0) &&
       (validation[stage] == "r" || validation[stage] == "o")
     ) {
-      nextstage = stage
+      if (!partner.sections[category]) nextstage = stage
     }
   })
   if (!nextstage) nextstage = "review"
@@ -405,6 +406,7 @@ export const filterPartner = (partnerInfo, Categories) => {
 
   const registeredCategories = []
   const sections = {}
+  let masterset = false
   let edittable = false
   if (partnerInfo) {
     if (partnerInfo.categories?.length > 0) {
@@ -420,30 +422,49 @@ export const filterPartner = (partnerInfo, Categories) => {
           registeredCategories.push(sysCategory.category_code)
         }
         const validation = category.validation
-        console.log({ category })
+        sections[category.category_uuid] = {
+          status: category.status,
+          status_date: category.status_date,
+        }
         // Build master category
         for (const section in complianceRequirements) {
-          for (const key in complianceRequirements[section]) {
-            if (typeof sections[category.category_uuid] === "undefined")
-              sections[category.category_uuid] = {
-                status: category.status,
-                status_date: category.status_date,
-                master: category.status !== "open",
+          if (validation[section] === "r" || validation[section] === "o") {
+            for (const key in complianceRequirements[section]) {
+              if (
+                typeof sections[category.category_uuid][section] === "undefined"
+              ) {
+                sections[category.category_uuid][section] = {
+                  fields: {},
+                  status: null,
+                  completed: false,
+                }
               }
-            if (
-              typeof sections[category.category_uuid][section] === "undefined"
-            )
-              sections[category.category_uuid][section] = {
-                fields: {},
-                status: null,
-                completed: false,
-              }
-            sections[category.category_uuid][section].fields[key] =
-              category[key]
+              sections[category.category_uuid][section].fields[key] =
+                category[key]
+            }
+            sections[category.category_uuid][section].completed =
+              category.profile_stage[section] === "1"
+            sections[category.category_uuid][section].status =
+              validation[section]
           }
-          sections[category.category_uuid][section].completed =
-            category.profile_stage[section] === "1"
-          sections[category.category_uuid][section].status = validation[section]
+        }
+        if (!masterset && category.status !== "open") {
+          sections[category.category_uuid].master = true
+          category.master = true
+          partnerInfo.master = category
+          masterset = true
+        }
+      })
+      partnerInfo?.categories?.map((category) => {
+        if (category.category_uuid !== partnerInfo.master.category_uuid) {
+          const profile_stage = {
+            ...category.profile_stage,
+          }
+          for (const pstage in partnerInfo.master.profile_stage) {
+            if (partnerInfo.master.profile_stage[pstage])
+              profile_stage[pstage] = partnerInfo.master.profile_stage[pstage]
+          }
+          category.profile_stage = profile_stage
         }
       })
     }
@@ -451,7 +472,6 @@ export const filterPartner = (partnerInfo, Categories) => {
     partnerInfo.edittable = edittable
     partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }
-  console.log({ partnerInfo })
   return partnerInfo
 }
 export const ValidateField = (field, stage, data, category) => {

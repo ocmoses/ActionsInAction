@@ -77,11 +77,24 @@ function Shortcode() {
     setActiveform(null)
     scrollToTop("onboardinglayout")
   }, [])
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
     if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.shortcode &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.shortcode &&
+          category.category_uuid !== partner.master.category_uuid
+      )
       const Shortcodes = []
-      if (category?.shortcodes?.length > 0) {
-        category.shortcodes.map((sc) => {
+      if (Category?.shortcodes?.length > 0) {
+        Category.shortcodes.map((sc) => {
           sc.shortcode.shortcode_file = ""
           sc.shortcode_pricing.pricing_file = ""
           // Shortcodes.push(sc)
@@ -96,7 +109,7 @@ function Shortcode() {
         })
       }
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
         shortcodes: Shortcodes ?? [],
       })
@@ -113,7 +126,6 @@ function Shortcode() {
       Util.isEmpty(data.shortcodes)
     )
       return setError({ shortcode: `Please provide shortcode data` })
-    console.log(data.shortcodes)
     data.shortcodes.map((shortcodePrice) => {
       if (
         fieldRequired("shortcode", "shortcode", category) &&
@@ -504,32 +516,37 @@ function Shortcode() {
                         </div>
                       )}
                     </div>
+
                     <div className="flex justify-end items-center gap-2">
                       <button
                         onClick={() => editShortcode(index)}
                         className={`rounded-full text-sm px-2 h-6 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
                       >
-                        <span>Edit</span>
+                        <span>{!isMasterData ? "Edit" : "View"}</span>
                       </button>
-                      <div
-                        onClick={() => deleteShortcode(index)}
-                        className="flex justify-center items-center rounded-full text-sm w-6 h-6 text-red-600 hover:text-red-600/60 bg-transparent border border-red-600 hover:border-red/60 transition ease-in-out 5000 cursor-pointer"
-                      >
-                        x
-                      </div>
+                      {!isMasterData && (
+                        <div
+                          onClick={() => deleteShortcode(index)}
+                          className="flex justify-center items-center rounded-full text-sm w-6 h-6 text-red-600 hover:text-red-600/60 bg-transparent border border-red-600 hover:border-red/60 transition ease-in-out 5000 cursor-pointer"
+                        >
+                          x
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
               </>
             )}
-            <div className="mt-3 flex justify-end">
-              <button
-                onClick={addShortcode}
-                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
-              >
-                <span>Add shortcodes</span>
-              </button>
-            </div>
+            {!isMasterData && (
+              <div className="mt-3 flex justify-end">
+                <button
+                  onClick={addShortcode}
+                  className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+                >
+                  <span>Add shortcodes</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -553,6 +570,7 @@ function Shortcode() {
               onChange={handleShortcodeFormChange}
               errors={errors}
               margin="mb-6"
+              disabled={isMasterData}
             />
           </FileInputWrapper>
           <div className="md:grid md:grid-cols-2 md:gap-4">
@@ -566,6 +584,7 @@ function Shortcode() {
                 errors={errors}
                 min={new Date(min_start_date)}
                 max={yesterday}
+                disabled={isMasterData}
               />
             </div>
             <div className=" ">
@@ -578,6 +597,7 @@ function Shortcode() {
                 errors={errors}
                 min={tomorrow}
                 max={new Date(max_end_date)}
+                disabled={isMasterData}
               />
             </div>
           </div>
@@ -590,14 +610,16 @@ function Shortcode() {
                   className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20"
                 >
                   <span>{sc}</span>
-                  <div
-                    onClick={() => {
-                      removeShtcde(index)
-                    }}
-                    className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
-                  >
-                    x
-                  </div>
+                  {!isMasterData && (
+                    <div
+                      onClick={() => {
+                        removeShtcde(index)
+                      }}
+                      className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
+                    >
+                      x
+                    </div>
+                  )}
                 </span>
               ))}
           </div>
@@ -609,6 +631,7 @@ function Shortcode() {
             onChange={handleShortcodeChange}
             errors={errors}
             margin="mb-2"
+            disabled={isMasterData}
           />
           <p className="text-[12px] text-[#999999] mb-2">
             Enter multiple comma-separated shortcodes and press "Enter" to apply
@@ -619,7 +642,7 @@ function Shortcode() {
               onClick={cancelShortcode}
               className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
             >
-              <span>Cancel</span>
+              <span>Close</span>
             </button>
             <button
               type="button"
@@ -638,12 +661,14 @@ function Shortcode() {
         >
           <p className="mb-0 text-[#999999]">
             Your shortcodes{" "}
-            <span
-              className="text-[##FFCB03] cursor-pointer"
-              onClick={goBackToShortcode}
-            >
-              Edit
-            </span>
+            {!isMasterData && (
+              <span
+                className="text-[##FFCB03] cursor-pointer"
+                onClick={goBackToShortcode}
+              >
+                Edit
+              </span>
+            )}
           </p>
 
           <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
@@ -654,14 +679,16 @@ function Shortcode() {
                   className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20"
                 >
                   <span>{sc}</span>
-                  <div
-                    onClick={() => {
-                      removePricingShtcde(index)
-                    }}
-                    className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
-                  >
-                    x
-                  </div>
+                  {!isMasterData && (
+                    <div
+                      onClick={() => {
+                        removePricingShtcde(index)
+                      }}
+                      className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
+                    >
+                      x
+                    </div>
+                  )}
                 </span>
               ))}
           </div>
@@ -680,6 +707,7 @@ function Shortcode() {
                 errors={errors}
                 min={new Date(min_start_date)}
                 max={yesterday}
+                disabled={isMasterData}
               />
             </div>
             <div className=" ">
@@ -692,6 +720,7 @@ function Shortcode() {
                 errors={errors}
                 min={tomorrow}
                 max={new Date(max_end_date)}
+                disabled={isMasterData}
               />
             </div>
           </div>
@@ -709,6 +738,7 @@ function Shortcode() {
               onChange={handlePricingFormChange}
               errors={errors}
               margin="mb-6"
+              disabled={isMasterData}
             />
           </FileInputWrapper>
           <div className="mt-3 flex justify-end gap-2">
@@ -719,13 +749,15 @@ function Shortcode() {
             >
               <span>Back</span>
             </button>
-            <button
-              type="button"
-              onClick={saveShortcode}
-              className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
-            >
-              <span>Save shortcodes</span>
-            </button>
+            {!isMasterData && (
+              <button
+                type="button"
+                onClick={saveShortcode}
+                className={`rounded-full text-sm px-4 py-1 flex justify-between items-center text-white bg-transparent border border-white hover:border-white/60 transition ease-in-out 5000`}
+              >
+                <span>Save shortcodes</span>
+              </button>
+            )}
           </div>
         </div>
 

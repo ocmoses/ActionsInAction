@@ -57,28 +57,40 @@ function Compliance() {
   })
   const { title, subtitle, hand, fields } = forms["compliance"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
     if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.compliance &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.compliance &&
+          category.category_uuid !== partner.master.category_uuid
+      )
+
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        rc_no: category?.rc_no ?? "",
-        tin_no: category?.tin_no ?? "",
-        tin_doc: category?.tin_doc ?? {},
-        memart_doc: category?.memart_doc ?? {},
-        cac_doc: category?.cac_doc ?? {},
+        rc_no: Category?.rc_no ?? "",
+        tin_no: Category?.tin_no ?? "",
+        tin_doc: Category?.tin_doc ?? {},
+        memart_doc: Category?.memart_doc ?? {},
+        cac_doc: Category?.cac_doc ?? {},
         tin_file: "",
         memart_file: "",
         cac_file: "",
-        company_type: category?.company_type ?? "co",
-        tin_data: category?.tin_data ?? {},
-        cac_data: category?.cac_data ?? {},
-        valid_cac: category?.valid_cac ?? "no",
-        valid_tin: category?.valid_tin ?? "no",
+        company_type: Category?.company_type ?? "co",
+        tin_data: Category?.tin_data ?? {},
+        cac_data: Category?.cac_data ?? {},
+        valid_cac: Category?.valid_cac ?? "no",
+        valid_tin: Category?.valid_tin ?? "no",
       })
-      setLastTINChecked(category?.tin_no)
-      setLastCACChecked(category?.rc_no)
+      setLastTINChecked(Category?.tin_no)
+      setLastCACChecked(Category?.rc_no)
     }
   }, [category])
 
@@ -410,7 +422,7 @@ function Compliance() {
         <SelectInput
           id="company_type"
           label="Company type"
-          disabled={checkingTIN || checkingCAC}
+          disabled={isMasterData || checkingTIN || checkingCAC}
           value={data.company_type}
           onChange={(e) => {
             handleFormChange(e)
@@ -439,7 +451,7 @@ function Compliance() {
                 <TextInput
                   id="tin_no"
                   label="Tax identification number"
-                  disabled={checkingTIN || checkingCAC}
+                  disabled={isMasterData || checkingTIN || checkingCAC}
                   value={data.tin_no}
                   onChange={handleFormChange}
                   onBlur={(e) => {
@@ -480,7 +492,9 @@ function Compliance() {
                 <TextInput
                   id="rc_no"
                   label="RC Number"
-                  disabled={!data.tin_no || checkingTIN || checkingCAC}
+                  disabled={
+                    isMasterData || !data.tin_no || checkingTIN || checkingCAC
+                  }
                   value={data.rc_no}
                   onChange={handleFormChange}
                   onBlur={verifyCAC}
@@ -516,6 +530,7 @@ function Compliance() {
                     value={data.tin_doc}
                     onChange={handleFormChange}
                     errors={errors}
+                    disabled={isMasterData}
                   />
                   <FileInput
                     id="memart_file"
@@ -524,6 +539,7 @@ function Compliance() {
                     value={data.memart_doc}
                     onChange={handleFormChange}
                     errors={errors}
+                    disabled={isMasterData}
                   />
                   <FileInput
                     id="cac_file"
@@ -532,6 +548,7 @@ function Compliance() {
                     value={data.cac_doc}
                     onChange={handleFormChange}
                     errors={errors}
+                    disabled={isMasterData}
                   />
                 </FileInputWrapper>
 

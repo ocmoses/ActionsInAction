@@ -21,9 +21,10 @@ export default function PartnerCategories({
           (category) =>
             category.category_name && (
               <div
-                onClick={() =>
-                  category.status === "open" ? onClick(category.uuid) : {}
-                }
+                // onClick={() =>
+                //   category.status === "open" ? onClick(category.uuid) : {}
+                // }
+                onClick={() => onClick(category.uuid)}
                 key={category.uuid}
                 className={`flex flex-col ${
                   category.status === "open" ?? "cursor - pointer"

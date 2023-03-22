@@ -127,7 +127,7 @@ export default function RegisterValidation({ params }) {
         // }
         // app.toggleGetstartedLink(false)
         // return router.push(PageRoutes.dashboard)
-        return router.push(PageRoutes.login)
+        return router.replace(`${PageRoutes.login}/partner`)
       } else {
         console.log(7)
         setProcessing(false)

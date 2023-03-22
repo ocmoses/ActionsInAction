@@ -16,6 +16,7 @@ const doLogin = async (body, req, res) => {
   })
   if (response) {
     const result = await response.json()
+    console.log({ result })
     const { data, success } = result
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })
@@ -57,7 +58,7 @@ export default async function handler(req, res) {
     User.categories = categories
     return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
-    // console.log({ error })
+    console.log({ error })
     return res.status(200).json({
       success: false,
       error:

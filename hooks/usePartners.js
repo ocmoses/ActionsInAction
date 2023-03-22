@@ -83,7 +83,6 @@ const usePartners = () => {
     // console.log({ categories })
   }
   const setCurrentCategory = (category, partner) => {
-    consolidateCategory()
     const currentCategory = partner?.categories?.find(
       (c) => c.uuid === category.uuid
     )
@@ -94,6 +93,7 @@ const usePartners = () => {
     currentCategory.category_name = baseCategory.category_name
     currentCategory.category_code = baseCategory.category_code
     setCategory(currentCategory)
+    console.log({ currentCategory })
     setValidationRules(currentCategory)
   }
   const checkUpdateStatus = (stage) => {

@@ -114,7 +114,10 @@ function UserInfo({ designations }) {
       return setError({
         password: "Your password must be at least, 8 characters",
       })
-
+    if (data["password"] !== data.password_confirmed)
+      return setError({
+        password: "Password confirmation mismatch",
+      })
     if (data["telephone"].length < 6 || data["telephone"].length > 11)
       return setError({ telephone: "Your telephone is not valid" })
 
@@ -267,7 +270,7 @@ function UserInfo({ designations }) {
             <TextInput
               id="password_confirmed"
               type="password"
-              label="Repeat your password"
+              label="Confirm your password"
               value={data.password_confirmed}
               onChange={handleFormChange}
               errors={errors}

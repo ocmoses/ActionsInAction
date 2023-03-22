@@ -190,7 +190,7 @@ export default function GetStarted({ type }) {
                 <div>
                   {!partner?.categories?.length ? (
                     <>
-                      <p className="mb-12">
+                      <p className="mb-12 text-[#999999] max-w-[500px]">
                         Welcome to the MTN Partner Portal, {user.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.
@@ -210,7 +210,7 @@ export default function GetStarted({ type }) {
                 <div>
                   {partner?.is_login === "no" ? (
                     <>
-                      <p className="mb-12">
+                      <p className="mb-12 text-[#999999] max-w-[500px]">
                         Welcome to the MTN Partner Portal, {user.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.

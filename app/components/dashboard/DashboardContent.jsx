@@ -124,23 +124,21 @@ export default function GetStarted({ type }) {
     clearErrors()
     setIsSaving(true)
     try {
-      const response = await fetch(RemoteEndpoints.START_CONTRACT, {
-        method: "POST",
+      const result = await Axios.post(RemoteEndpoints.START_CONTRACT, {
         headers: {
           apikey: process.env.NEXT_PUBLIC_APIKEY,
         },
         timeout: process.TIMEOUT,
         redirect: "follow", // manual, *follow, error
         referrerPolicy: "no-referrer",
-        body: JSON.stringify({ partner_uuid: partner?.uuid }),
+        data: { partner_uuid: partner?.uuid },
       }).catch((error) => {
         console.log(error)
         setIsSaving(false)
         return setError({ dashboard: "Something went wrong" })
       })
       setIsSaving(false)
-      if (response) {
-        const result = await response.json()
+      if (result) {
         const { success, data } = result
         console.log({ data })
         if (success) {

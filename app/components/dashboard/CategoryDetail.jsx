@@ -32,7 +32,8 @@ export default function CategoryDetail({
       if (result?.error) {
         return setError({ category: result.error })
       }
-      moveToNextForm(["category", category])
+      setForm("compliance")
+      // moveToNextForm(["compliance", category, true])
       setIsOnboarding(true)
       setIsOpen(false)
       return
@@ -72,7 +73,7 @@ export default function CategoryDetail({
             <h3 className="text-white text-lg font-bold">Get started</h3>
             <p className="text-md text-[#999999]">
               For regulatory compliance, we’ll require the following
-              informations from our VAS providers.
+              informations from our {category.category_code} providers.
             </p>
           </div>
 

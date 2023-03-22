@@ -501,7 +501,16 @@ function Compliance() {
                   errors={errors}
                   margin="mb-1"
                 />
-
+                {errors?.rc_no && (
+                  <div className="mb-1">
+                    <span
+                      onClick={() => Retry("cac")}
+                      className="cursor-pointer text-white text-[13px] my-3 inline-flex px-4 py-1 rounded-full border border-white/20 border-white/50 by-transparent hover:bg-white/20"
+                    >
+                      Retry
+                    </span>
+                  </div>
+                )}
                 <div className="mb-6">
                   <p className="mb-0 mx-0 text-[12px] text-[#999999]">
                     RC number must include "RC". <br />

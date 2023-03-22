@@ -59,6 +59,7 @@ function SetPassword({ params: { params } }) {
       }),
     })
     const result = await response.json()
+    console.log({ result })
     const { data: loginData } = result
     if (!loginData) {
       setProcessing(false)

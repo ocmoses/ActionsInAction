@@ -56,7 +56,11 @@ export default function OnboardingLayout({
                         <div key={menu}>
                           {(validForms[menu] === "r" ||
                             validForms[menu] === "o") && (
-                            <ProfileTabItem menu={menu} form={form} />
+                            <ProfileTabItem
+                              menu={menu}
+                              form={form}
+                              category={category}
+                            />
                           )}
                         </div>
                       )

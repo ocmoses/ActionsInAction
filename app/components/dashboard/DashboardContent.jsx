@@ -9,6 +9,7 @@ import useUsers from "@/hooks/useUsers"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import { useState, useEffect, useRef } from "react"
 import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -117,20 +118,27 @@ export default function GetStarted({ type }) {
       behavior: "smooth",
     })
   }
-
+  const [isSaving, setIsSaving] = useState(false)
   const finishApplication = async () => {
+    if (isSaving) return
+    clearErrors()
+    setIsSaving(true)
     try {
-      const response = await fetch(
-        RemoteEndpoints.START_CONTRACT,
-        { partner_uuid: partner?.uuid },
-        {
-          timeout: process.TIMEOUT,
+      const response = await fetch(RemoteEndpoints.START_CONTRACT, {
+        method: "POST",
+        headers: {
           apikey: process.env.NEXT_PUBLIC_APIKEY,
-        }
-      ).catch((error) => {
+        },
+        timeout: process.TIMEOUT,
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify({ partner_uuid: partner?.uuid }),
+      }).catch((error) => {
         console.log(error)
+        setIsSaving(false)
         return setError({ dashboard: "Something went wrong" })
       })
+      setIsSaving(false)
       if (response) {
         const result = await response.json()
         const { success, data } = result
@@ -151,6 +159,7 @@ export default function GetStarted({ type }) {
       }
     } catch (err) {
       console.log({ err })
+      setIsSaving(false)
       return setError({ dashboard: "Something went wrong" })
     }
   }
@@ -208,13 +217,22 @@ export default function GetStarted({ type }) {
               )}
 
               {partner?.categories?.length > 0 && !partner?.edittable && (
-                <div className="flex my-12 justify-center items-center">
-                  <Button
-                    onClick={finishApplication}
-                    label="Finish Application"
-                    paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                    textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                  />
+                <div className="flex flex-col my-12 justify-center items-center">
+                  {errors?.dashboard && (
+                    <div className="my-6">
+                      <FormErrors error={errors.dashboard} />
+                    </div>
+                  )}
+                  {isSaving ? (
+                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                  ) : (
+                    <Button
+                      onClick={finishApplication}
+                      label="Finish Application"
+                      paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                      textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                    />
+                  )}
                 </div>
               )}
 

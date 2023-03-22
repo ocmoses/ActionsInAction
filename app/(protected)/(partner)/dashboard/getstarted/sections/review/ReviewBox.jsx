@@ -22,6 +22,27 @@ export default function ReviewBox() {
     (category.validation[section] === "r" ||
       category.validation[section] === "o")
 
+  // const [isMasterData, setIsMasterData] = useState({})
+  // useEffect(() => {
+  //   if (category) {
+  //     const Category =
+  //       partner.master &&
+  //       partner.sections[partner.master.category_uuid]?.nlrclicense &&
+  //       category.category_uuid !== partner.master.category_uuid
+  //         ? partner.master
+  //         : category
+
+  //     setIsMasterData(
+  //       partner.master &&
+  //         partner.sections[partner.master.category_uuid]?.nlrclicense &&
+  //         category.category_uuid !== partner.master.category_uuid
+  //     )
+  //     setData({
+
+  //     })
+  //   }
+  // }, [category])
+
   const [showModal, setShowModal] = useState(false)
   const [filePath, setFilePath] = useState("")
   const saveForm = async () => {

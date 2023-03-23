@@ -29,7 +29,7 @@ export default function OnboardingLayout({
       validForms.review = "r"
     }
   }, [validForms])
-
+  console.log({ form })
   return (
     <>
       <div

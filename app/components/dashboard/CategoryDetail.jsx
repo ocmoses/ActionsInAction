@@ -14,7 +14,8 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, setCategory, registerPartner } = usePartners()
+  const { partner, setCategory, registerPartner, nextStage } = usePartners()
+  const { nextstage: NextStage } = nextStage(category, partner)
 
   const { processing, setProcessing, moveToNextForm } = useProcessing()
 
@@ -26,21 +27,22 @@ export default function CategoryDetail({
       partner_uuid: partner?.uuid ?? "",
       category_uuid: category.uuid,
     })
-    console.log({ result })
+    console.log("result 1")
     if (result) {
+      console.log("result 2")
       setProcessing(false)
       if (result?.error) {
+        console.log("result 3")
         return setError({ category: result.error })
       }
-      // setForm("compliance")
-      moveToNextForm(["compliance", true])
-      console.log("moveToNextForm")
+      console.log("result 4")
+      setForm(NextStage)
+      console.log("result 5")
       setIsOnboarding(true)
-      console.log("setIsOnboarding")
-      setIsOpen(false)
-      console.log("setIsOpen")
-      return
+      console.log("result 6")
+      return setIsOpen(false)
     }
+    console.log("result 7")
     setError({ category: "Something went wrong" })
   }
 

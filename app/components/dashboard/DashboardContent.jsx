@@ -106,11 +106,11 @@ export default function GetStarted({ type }) {
       //  CHECK IF MASTER DATA EXISTS
       console.log(partner)
       const { nextstage: NextStage } = nextStage(category, partner)
+      console.log({ NextStage })
       setCurrentCategory(category, partner)
       setIsOnboarding(true)
       setIsOpen(false)
-      if (NextStage === "review") return moveToNextForm(["review", true])
-      moveToNextForm([NextStage, true])
+      return setForm(NextStage)
     }
   }
   const scrollpage = () => {

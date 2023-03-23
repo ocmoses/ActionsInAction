@@ -21,7 +21,6 @@ function CompanyDetail() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
   const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category, partner)
   const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
@@ -107,8 +106,10 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
+    const { nextstage: NextStage } = nextStage(category, partner)
+    return setForm(NextStage)
     if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm([NextStage, true])
+    return moveToNextForm([NextStage])
   }
   const [selectField, setSelectField] = useState(null)
   useEffect(() => {

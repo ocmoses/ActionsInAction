@@ -343,8 +343,6 @@ export const checkNextForm = (nextSection, category) => {
   return nextSection
 }
 export const getNextStage = (category, partner) => {
-  // console.log({ category })
-  // console.log({ partner })
   if (!category?.profile_stage) return null
   const progress = category.profile_stage
   const validation = category.validation
@@ -364,13 +362,16 @@ export const getNextStage = (category, partner) => {
   Stages.map((stage) => {
     if (
       !nextstage &&
-      (!progress[stage] || parseInt(progress[stage]) === 0) &&
-      (validation[stage] == "r" || validation[stage] == "o")
+      (validation[stage] == "r" || validation[stage] == "o") &&
+      (!progress[stage] || parseInt(progress[stage]) === 0)
     ) {
-      if (!partner.sections[category]) nextstage = stage
+      if (!partner.sections[category.category_uuid][stage].completed) {
+        nextstage = stage
+      }
     }
   })
   if (!nextstage) nextstage = "review"
+  console.log({ nextstage })
   return { nextstage }
 }
 export const AllowedCategories = (category_codes) => {

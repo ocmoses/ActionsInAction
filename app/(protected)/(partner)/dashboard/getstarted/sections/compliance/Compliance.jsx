@@ -28,7 +28,6 @@ function Compliance() {
     useProcessing()
   const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
     usePartners()
-  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [retryTIN, setRetryTIN] = useState(false)
   const [checkingTIN, setCheckingTIN] = useState(false)
@@ -392,8 +391,11 @@ function Compliance() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
     }
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm([NextStage, true])
+
+    const { nextstage: NextStage } = nextStage(category, partner)
+    return setForm(NextStage)
+    // if (NextStage === "review") return moveToNextForm(["review", true])
+    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

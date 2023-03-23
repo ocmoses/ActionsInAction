@@ -17,7 +17,7 @@ export default function CategoryDetail({
   const { partner, setCategory, registerPartner, nextStage } = usePartners()
   const { nextstage: NextStage } = nextStage(category, partner)
 
-  const { processing, setProcessing, moveToNextForm } = useProcessing()
+  const { processing, setProcessing, setForm } = useProcessing()
 
   const selectCategory = async (category) => {
     clearErrors()

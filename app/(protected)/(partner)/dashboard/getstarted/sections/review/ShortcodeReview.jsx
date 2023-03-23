@@ -1,7 +1,6 @@
 import { outputDate } from "@/app/modules/utilities"
 import Image from "next/image"
 export default function ShortcodeReview({ shortcode, PreviewFile }) {
-  console.log({ shortcode })
   return shortcode.map((sc) => {
     return (
       <div

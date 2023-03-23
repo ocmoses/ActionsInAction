@@ -100,9 +100,10 @@ function Compliance() {
     scrollToTop("onboardinglayout")
   }, [])
 
-  useEffect(() => {
-    if (data.valid_tin === "yes") verifyCAC()
-  }, [data.valid_tin])
+  // useEffect(() => {
+  //   if (data.valid_tin === "yes") verifyCAC()
+  // }, [data.valid_tin])
+
   const verifyTIN = async (tin_no) => {
     setLastCACChecked("")
     setRetryTIN(false)
@@ -327,9 +328,11 @@ function Compliance() {
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no)
   }, [retryTIN])
-  useEffect(() => {
-    if (retryCAC) verifyCAC()
-  }, [retryCAC])
+
+  // useEffect(() => {
+  //   if (retryCAC) verifyCAC()
+  // }, [retryCAC])
+
   const Retry = (type) => {
     if (type === "tin") {
       setLastTINChecked("")
@@ -497,7 +500,7 @@ function Compliance() {
                   }
                   value={data.rc_no}
                   onChange={handleFormChange}
-                  onBlur={verifyCAC}
+                  // onBlur={verifyCAC}
                   errors={errors}
                   margin="mb-1"
                 />
@@ -571,13 +574,13 @@ function Compliance() {
                       />
                     ) : (
                       <div className="flex items-center gap-4">
-                        <ButtonPrev
+                        {/* <ButtonPrev
                           onClick={() => moveToPrevForm("compliance")}
                           type="button"
                           label="Back"
                           outline="yes"
                           outlinecolor="border-white"
-                        />
+                        /> */}
                         <ButtonNext
                           type="submit"
                           label={

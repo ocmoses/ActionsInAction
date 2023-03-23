@@ -194,13 +194,13 @@ export default function Accountinfo() {
               />
             ) : (
               <div className="flex items-center gap-4">
-                <ButtonPrev
+                {/* <ButtonPrev
                   onClick={() => moveToPrevForm("indemnity")}
                   type="button"
                   label="Back"
                   outline="yes"
                   outlinecolor="border-white"
-                />
+                /> */}
                 <ButtonNext type="submit" label="Next" />
               </div>
             )}

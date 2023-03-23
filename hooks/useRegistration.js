@@ -73,7 +73,6 @@ const useRegistration = () => {
     }
     setProcessing(true)
     if (CONFIG[section].method === "PUT") userdata["_method"] = "PUT"
-    console.log({ userdata })
     const response = await Axios.post(CONFIG[section].url, userdata, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -97,8 +96,6 @@ const useRegistration = () => {
       setProcessing(false)
       return { success: false, error: data.message, data: null }
     }
-    partners.updatePartner(data.partner)
-    // setUpdateStatus(section, true)
     return { success: true, error: null, data: data }
   }
   return { register, updateCategory }

@@ -3,31 +3,75 @@ import "client-only"
 
 import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
-import useLogout from "@/hooks/useLogout"
+import Axios from "@/app/modules/axios"
+import RemoteEndpoints from "@/app/modules/endpoints"
 import useApp from "@/hooks/useApp"
 import useUsers from "@/hooks/useUsers"
+import usePartners from "@/hooks/usePartners"
 
 import { PageRoutes } from "@/app/modules/menu"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { Util } from "@/app/modules/utilities"
 
-export default function RegisterValidation({ url, err, params }) {
+export default function RegisterValidation({ params }) {
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
   const [data, setData] = useState(null)
-  const { clearStore } = useLogout()
+  const validating = useRef(false)
   const router = useRouter()
   const app = useApp()
   const users = useUsers()
+  const { resendEmail } = usePartners()
 
+  const ValidateEmailAndUser = async (params) => {
+    setProcessing(true)
+    try {
+      let response = null
+
+      const url = `${PageRoutes.setpassword}/${params.type}/${params.user_uuid}`
+      response = await Axios.post(
+        RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
+        { user_uuid: params.user_uuid },
+        {
+          timeout: process.TIMEOUT,
+        }
+      ).catch((e) => {
+        setProcessing(false)
+        return setError({
+          validate: `${e.message}. Please check you connection`,
+        })
+      })
+      if (response) {
+        const { success, data } = response
+        if (success) {
+          return router.push(url)
+        } else {
+          setProcessing(false)
+          return setError({
+            validate: `${data.message}`,
+          })
+        }
+      } else {
+        setProcessing(false)
+        return setError({
+          validate: "Cannot reach the server. Please check your connection",
+        })
+      }
+    } catch (err) {
+      setProcessing(false)
+      return setError({
+        validate: "Something went wrong",
+      })
+    }
+  }
   const ValidateNewUser = async () => {
     setProcessing(true)
     try {
       clearErrors()
-      clearStore()
+      // clearStore()
       const response = await fetch(NextEndPoints.VALIDATE_USER, {
         method: "POST",
         body: JSON.stringify({
@@ -36,13 +80,18 @@ export default function RegisterValidation({ url, err, params }) {
         }),
       })
       if (response) {
+        // setValidating(true)
+        validating.current = true
         const result = await response.json()
-        const { data: loginData, error } = result
+        const { data: loginData } = result
+
         if (!loginData) {
           setProcessing(false)
           return setError({ validate: "Authentication failed" })
         }
+
         if (loginData.error) {
+          setProcessing(false)
           users.setTmpUser(loginData.data)
           if (loginData.data && loginData.data.email_verified === "yes") {
             return setError({
@@ -61,9 +110,15 @@ export default function RegisterValidation({ url, err, params }) {
         }
         const categories = loginData?.categories
 
-        app.setStoreStates(serverSession, categories)
+        app.setStoreStates(serverSession, categories, "validation")
         setData(serverSession)
-        return router.push(PageRoutes.getstarted)
+        // if (params.type === "new") {
+        //   app.toggleGetstartedLink(true)
+        //   return router.push(PageRoutes.getstarted)
+        // }
+        // app.toggleGetstartedLink(false)
+        return router.push(PageRoutes.dashboard)
+        // return router.replace(`${PageRoutes.login}/dashboard`)
       } else {
         setProcessing(false)
         return setError({
@@ -77,23 +132,22 @@ export default function RegisterValidation({ url, err, params }) {
     }
   }
   useEffect(() => {
-    if (err) setError({ validate: err.message ?? err.messsage })
     if (params?.type === "new") {
-      if (!processing) ValidateNewUser()
+      ValidateNewUser()
     } else {
-      if (url) router.push(url)
+      ValidateEmailAndUser(params)
     }
   }, [])
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
         <div>
-          {((!data && !errors?.validate) || (data && errors?.validate)) && (
+          {!errors?.validate && (
             <div className="flex h-full w-full justify-center items-center">
               <TailSpinPreloader width={120} height={120} fill="#efb703" />
             </div>
           )}
-          {!data && errors?.validate && (
+          {errors?.validate && (
             <div className="flex flex-col gap-6 h-[400px] w-full text-red-500 text-[15px] justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -111,13 +165,24 @@ export default function RegisterValidation({ url, err, params }) {
               </svg>
 
               <p className="text-center max-w-md">{errors.validate}</p>
-              <div className="font-mtn-extralight font-mtn text-center text-white/50 mb-16 p-0">
-                <span
-                  className="cursor-pointer text-sm text-white hover:text-gray-300"
+              <div className="flex justify-between gap-3 font-mtn-extralight font-mtn text-center text-white/50 mb-16 p-0">
+                <div
+                  className="cursor-pointer text-[12px] text-white hover:text-gray-300 px-4 py-1 border border-white/30 rounded-full"
                   onClick={() => router.push(PageRoutes.login)}
                 >
                   LOGIN TO PROCEED
-                </span>
+                </div>
+                {users?.tmpuser?.email !== "" &&
+                  users?.tmpuser?.email_verified !== "yes" && (
+                    <div
+                      className="cursor-pointer text-[12px] text-white hover:text-gray-300 px-4 py-1 border border-white/30 rounded-full"
+                      onClick={() =>
+                        resendEmail(users?.tmpuser?.email, params.type)
+                      }
+                    >
+                      RESEND VERIFICATION EMAIL
+                    </div>
+                  )}
               </div>
             </div>
           )}

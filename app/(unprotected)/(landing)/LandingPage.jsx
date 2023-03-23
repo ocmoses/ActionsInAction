@@ -4,17 +4,40 @@ import Typewriter from "typewriter-effect"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
-import { useEffect, useState } from "react"
 import Link from "next/link"
+import ScrollToTop from "react-scroll-to-top"
+import { useEffect, useState } from "react"
+import { scrollToTop } from "@/app/modules/utilities"
+import { PageRoutes } from "@/app/modules/menu"
 
 function LandingPage() {
   const { setRouteloading } = useApp()
   const [faq, setFaq] = useState([
-    { id: "1", faq: "What is the MTN Partner Portal" },
-    { id: "2", faq: "What do I need to register?" },
-    { id: "3", faq: "How long does the documentation verification take?" },
-    { id: "4", faq: "How do I reset my password?" },
-    { id: "5", faq: "Who can sign up on MTN Partner Portal?" },
+    {
+      id: "1",
+      faq: "What is the MTN Partner Portal for?",
+      ans: "The MTN Partner Portal is designed for developers, content creators/providers, licensed VAS aggregators, and e-commerce vendors.",
+    },
+    {
+      id: "2",
+      faq: "What do I need to register?",
+      ans: "They are specific requirements needed to partner with us. Kindly click on this link to get the detailed requirement.",
+    },
+    {
+      id: "3",
+      faq: "How long does the documentation verification take?",
+      ans: "In less than a week, all documents submitted will be verified. To check the status of your document verification, click here.",
+    },
+    {
+      id: "4",
+      faq: "How do I reset my password?",
+      ans: "Kindly log in to your dashboard and click on the reset button. A password reset email will be shared.",
+    },
+    {
+      id: "5",
+      faq: "Is there a limit to the number of products or services I can promote on the MTN Partner Portal?",
+      ans: "The number of products or services that can be promoted on the platform would depend on the terms and conditions of the contract. Partners should check the terms and conditions page on the MTN Partner Portal website for more details.",
+    },
   ])
   const [openFaq, setOpenFaq] = useState("")
   const toggleFaq = (id) => {
@@ -37,6 +60,12 @@ function LandingPage() {
 
   return (
     <>
+      <ScrollToTop
+        smooth
+        color="#FFCB03"
+        className="flex justify-center items-center !border !border-white/40 !bg-[#111111] hover:!bg-[#313131]"
+        style={{ zIndex: 11111 }}
+      />
       <main className="flex items-start px-8 xl:px-0 m-0 pb-2xl w-full relative bg-[url('/assets/pic/hero-bg.png')] bg-contain  sm:bg-right-top bg-no-repeat">
         <div className="w-full h-full mx-auto max-w-[1158px] relative">
           <Navbar />
@@ -91,6 +120,7 @@ function LandingPage() {
               {/* BUTTONS */}
               <div className="flex flex-col sm:flex-row w-full justify-center items-center gap-4 mt-8">
                 <Button
+                  href={PageRoutes.register}
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon
@@ -163,7 +193,7 @@ function LandingPage() {
                   Worry less about how to reach your customers. Reach millions
                   of people and bring life to your business goals.
                 </p>
-                <Button label="Get started" />
+                <Button href={PageRoutes.register} label="Get started" />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -181,9 +211,9 @@ function LandingPage() {
                       Data analytics and insights
                     </p>
                     <p className="text-[22px] leading-[29px] text-white/60">
-                      Insights into the behaviours that make up campaign
-                      interactions and how those attributes impact the path to
-                      conversion.
+                      Get access to valuable data analytics that will help
+                      inform your business decisions that will help grow your
+                      business like a Pro.
                     </p>
                   </div>
                 </div>
@@ -213,12 +243,12 @@ function LandingPage() {
                   <div className="px-10 py-8 flex items-center h-fit">
                     <div>
                       <p className="font-mtn-bold text-white text-[30px]">
-                        Audience analysis
+                        Campaign analysis
                       </p>
                       <p className="text-[21px] leading-[29px] text-white/60">
-                        Get access to a 360-degree view of your audiences by
-                        analysing data signals across user attributes and
-                        behaviours.
+                        Insights into the behaviours that make up campaign
+                        interactions and how those attributes impact the path to
+                        conversion.
                       </p>
                     </div>
                   </div>
@@ -267,7 +297,8 @@ function LandingPage() {
                   Customized payment channel
                 </h4>
                 <p className="text-[18px] leading-[24px] text-white/60 max-w-[260px] font-mtn-extralight">
-                  Create plans from 1MB to Unlimited, depending on your use case
+                  Create plans from 1MB to Unlimited, depending on your use
+                  case.
                 </p>
               </div>
               <div className="rounded-3xl p-8 border border-white/10 w-full">
@@ -300,7 +331,7 @@ function LandingPage() {
                 </h4>
                 <p className="text-[18px] leading-[24px] text-white/60 max-w-[260px] font-mtn-extralight">
                   See payments & history, manage refunds, & discounts and
-                  promotions. All in one place
+                  promotions. All in one place.
                 </p>
               </div>
             </div>
@@ -315,7 +346,7 @@ function LandingPage() {
                   Don’t know where to start with A/B testing? Get access to
                   tools that help you create personalised experiences
                 </p>
-                <Button label="Get started" />
+                <Button href={PageRoutes.register} label="Get started" />
               </div>
               <Image
                 className="mb-4 sm:w-[50%] lg:w-auto"
@@ -342,7 +373,7 @@ function LandingPage() {
                       the tools you are already familiar with. Enjoy a seamless
                       onboarding experience integrating our service.
                     </p>
-                    <Button label="Get started" />
+                    <Button href={PageRoutes.register} label="Get started" />
                   </div>
                 </div>
               </div>
@@ -376,7 +407,7 @@ function LandingPage() {
                 height={617}
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 justify-start sm:justify-between items-start max-w-[917px] mx-auto -mt-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-start sm:justify-between items-start max-w-[917px] mx-auto -mt-6 mb-12">
               <div className="flex justify-start items-start flex-col gap-4">
                 <Image
                   className="w-full"
@@ -386,7 +417,7 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
                     Read the documentation
                   </p>
@@ -404,12 +435,14 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
-                    Read the documentation
+                    Discover the right Metrics
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Explore our guides, API references and code examples
+                    Learn to monitor system performance by selecting relevant
+                    metrics, collecting and analyzing data that matters most to
+                    you.
                   </p>
                 </div>
               </div>
@@ -422,21 +455,26 @@ function LandingPage() {
                   width={286}
                   height={147}
                 />
-                <div className="p-4">
+                <div className="p-4 w-full">
                   <p className="text-white text-[16px] leading-[24px]">
-                    Read the documentation
+                    Write Custom Codes
                   </p>
                   <p className="text-white/60 text-[14px] leading-[20px]">
-                    Explore our guides, API references and code examples
+                    Build custom code tailored to your unique needs, integrating
+                    with existing systems and creating powerful new
+                    functionality from scratch.
                   </p>
                 </div>
               </div>
             </div>
             <div className="flex justify-center items-center pt-6 mb-[100px]">
-              <Button label="Get started" />
+              <Button href={PageRoutes.register} label="Get started" />
             </div>
             {/* Support */}
-            <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 pt-6 mb-[100px]">
+            <div
+              id="supportsection"
+              className="flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 pt-6 mb-[100px]"
+            >
               <div className="flex flex-col flex-1 max-w-[400px] ">
                 <h3 className="text-mtn text-[20px] font-mtn font-semibold mb-4">
                   Support
@@ -450,14 +488,14 @@ function LandingPage() {
                 <div className="flex flex-col gap-2 w-full">
                   {faq.map((f) => (
                     <div key={f.id} className="rounded-lg bg-[#1B1B1B] p-4">
-                      <div className="flex flex-row justify-between items-center px-2 py-2">
+                      <div
+                        className="flex flex-row justify-between items-center px-2 py-2 cursor-pointer"
+                        onClick={() => toggleFaq(f.id)}
+                      >
                         <span className="text-white text-[16px] leading-[22px]">
                           {f.faq}
                         </span>
-                        <div
-                          className="cursor-pointer"
-                          onClick={() => toggleFaq(f.id)}
-                        >
+                        <div>
                           {openFaq === f.id ? (
                             <Image
                               src="/assets/illustrations/icon-minus.png"
@@ -483,10 +521,7 @@ function LandingPage() {
                         } rounded-lg bg-black px-3 py-4`}
                       >
                         <p className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]">
-                          The MTN partner portal is a platform specifically
-                          created to help businesses, content creators, licensed
-                          VAS aggregators, and e-commerce vendors reach millions
-                          of people and grow their businesses seamlessly.
+                          {f.ans}
                         </p>
                       </div>
                     </div>
@@ -513,7 +548,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Identity APIs
@@ -521,7 +556,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Customer APIs
@@ -529,7 +564,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Messaging APIs
@@ -544,7 +579,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       My Account
@@ -552,7 +587,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Documentation
@@ -561,7 +596,7 @@ function LandingPage() {
 
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Support
@@ -569,7 +604,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Insights
@@ -577,7 +612,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="/onboarding/register"
+                      href={PageRoutes.register}
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Become a partner
@@ -592,7 +627,7 @@ function LandingPage() {
                 <ul className="flex flex-col gap-4">
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       About MTN
@@ -600,7 +635,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Community
@@ -608,7 +643,7 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       Contact Us
@@ -616,7 +651,8 @@ function LandingPage() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="javascript:;"
+                      onClick={(e) => scrollToTop("supportsection")}
                       className="text-[#7C7D7F] hover:text-white/70"
                     >
                       FAQ
@@ -662,19 +698,19 @@ function LandingPage() {
             {/* Footer nav */}
             <div className="flex justify-between gap-4 w-full max-w-[521px]">
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Contact Us
               </Link>
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Copyright and Privacy
               </Link>
               <Link
-                href="#"
+                href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
               >
                 Terms & Conditions

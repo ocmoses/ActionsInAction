@@ -1,28 +1,104 @@
-import { outputDate } from "@/app/modules/utilities"
+import { outputDate, scrollToTop } from "@/app/modules/utilities"
 import ReviewTitle from "@/app/components/dashboard/ReviewTitle"
 import Button from "@/app/components/form/Button"
 import usePartners from "@/hooks/usePartners"
+import useErrors from "@/hooks/useErrors"
+import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import Image from "next/image"
 import ShortcodeReview from "./ShortcodeReview"
 import FilePreviewModal from "@/app/components/FilePreviewModal"
-import { useState } from "react"
+import { TailSpinPreloader } from "@/app/components/Icons"
+import { useState, useEffect } from "react"
 
-export default function ReviewBox() {
+export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   const { setForm, moveToNextForm } = useProcessing()
-  const { category } = usePartners()
-  console.log({ category })
+  const { partner, category, registerPartner } = usePartners()
+  const [{ errors, setError, clearErrors }] = useErrors()
   const showSection = (section) =>
     category?.validation &&
     category.validation[section] &&
     (category.validation[section] === "r" ||
       category.validation[section] === "o")
 
+  const [isMaster, setIsMaster] = useState({
+    compliance: false,
+    companydetail: false,
+    ncclicense: false,
+    nlrclicense: false,
+    shortcode: false,
+    indemnity: false,
+    accountinfo: false,
+  })
+  const [complianceCategory, setComplianceCategory] = useState(null)
+  const [companydetailCategory, setCompanydetailCategory] = useState(null)
+  const [ncclicenseCategory, setNcclicenseCategory] = useState(null)
+  const [nlrclicenseCategory, setNlrclicenseCategory] = useState(null)
+  const [shortcodeCategory, setShortcodeCategory] = useState(null)
+  const [indemnityCategory, setIndemnityCategory] = useState(null)
+  const [accountinfoCategory, setAccountinfoCategory] = useState(null)
+  useEffect(() => {
+    const Stages = [
+      "compliance",
+      "companydetail",
+      "ncclicense",
+      "shortcode",
+      "indemnity",
+      "accountinfo",
+    ]
+    if (category) {
+      setIsMaster((oldState) => {
+        Stages.map((stage) => {
+          oldState[stage] =
+            partner?.master &&
+            partner.sections[partner?.master.category_uuid] &&
+            partner.sections[partner?.master.category_uuid][stage] &&
+            category.category_uuid !== partner?.master.category_uuid
+              ? true
+              : false
+        })
+        return oldState
+      })
+    }
+  }, [category])
+
+  useEffect(() => {
+    setComplianceCategory(isMaster.compliance ? partner?.master : category)
+    setCompanydetailCategory(
+      isMaster.companydetail ? partner?.master : category
+    )
+    setNcclicenseCategory(isMaster.ncclicense ? partner?.master : category)
+    setNlrclicenseCategory(isMaster.nlrclicense ? partner?.master : category)
+    setShortcodeCategory(isMaster.shortcode ? partner?.master : category)
+    setIndemnityCategory(isMaster.indemnity ? partner?.master : category)
+    setAccountinfoCategory(isMaster.accountinfo ? partner?.master : category)
+  }, [isMaster])
+
   const [showModal, setShowModal] = useState(false)
   const [filePath, setFilePath] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
+  const saveForm = async () => {
+    clearErrors()
+    if (isSaving) return
+    setIsSaving(true)
+    const result = await registerPartner("complete_registration", {
+      partner_uuid: category.partner_uuid,
+      category_uuid: category.category_uuid,
+      user_uuid: category.user_uuid,
+      action_completed: "category_registration",
+    })
 
+    if (result) {
+      scrollToTop("onboardinglayout")
+      if (result?.error) {
+        setIsSaving(false)
+        return setError({ review: result.error })
+      }
+    }
+    setForm("complete")
+  }
   const PreviewFile = (url) => {
     if (url) {
       setFilePath(url)
@@ -35,40 +111,41 @@ export default function ReviewBox() {
     setShowModal(false)
   }
 
+  const moveTo = (section, category) => {
+    moveToNextForm([section, true])
+    scrollToTop("onboardinglayout")
+  }
   return (
     <>
       {showModal && (
         <FilePreviewModal filePath={filePath} closeModal={handleCloseModal} />
       )}
+
+      {errors && (
+        <div className="mb-6">
+          <FormErrors error={errors["compliance"]} />{" "}
+        </div>
+      )}
+
       {/* Company info */}
-      {showSection("companydetail") && (
+      {showSection("companydetail") && companydetailCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.companydetail}
               title="Company information"
-              onClick={() => moveToNextForm(["companydetail", true])}
+              onClick={() => moveTo("companydetail")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="pb-3">
-                <div className="sm:grid mb-2 sm:mb-0 sm:grid-cols-5">
-                  <div className="mb-2 sm:mb-0 sm:col-span-2">
+                <div className="grid">
+                  <div className="">
                     <div className="text-[#999999] text-[12px] truncate">
                       Company name
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.company_name}
-                    </div>
-                  </div>
-
-                  <div className="mb-2 sm:mb-0 sm:col-span-3">
-                    <div className="text-[#999999] text-[12px] truncate">
-                      Company type
-                    </div>
-                    <div className="flex justify-between gap-3">
-                      <div className="text-white text-[14px]">
-                        {category.category_name}
-                      </div>
+                      {companydetailCategory?.company_name}
                     </div>
                   </div>
                 </div>
@@ -81,9 +158,10 @@ export default function ReviewBox() {
                       Country
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.country &&
-                        COUNTRIES.find((c) => c.value === category.country)
-                          ?.title}
+                      {companydetailCategory?.country &&
+                        COUNTRIES.find(
+                          (c) => c.value === companydetailCategory?.country
+                        )?.title}
                     </div>
                   </div>
 
@@ -92,7 +170,7 @@ export default function ReviewBox() {
                       Address
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.company_address}
+                      {companydetailCategory?.company_address}
                     </div>
                   </div>
                 </div>
@@ -105,7 +183,7 @@ export default function ReviewBox() {
                       City
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.company_city}
+                      {companydetailCategory?.company_city}
                     </div>
                   </div>
 
@@ -114,11 +192,12 @@ export default function ReviewBox() {
                       State
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.company_state &&
+                      {companydetailCategory?.company_state &&
                         STATES.find(
                           (c) =>
-                            c.country_code === category.country &&
-                            c.state_code === category.company_state
+                            c.country_code === companydetailCategory?.country &&
+                            c.state_code ===
+                              companydetailCategory?.company_state
                         )?.state_name}
                     </div>
                   </div>
@@ -132,7 +211,7 @@ export default function ReviewBox() {
                       Postal codes
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.company_postcode}
+                      {companydetailCategory?.company_postcode}
                     </div>
                   </div>
 
@@ -147,12 +226,13 @@ export default function ReviewBox() {
         </div>
       )}
       {/* Compliance detail */}
-      {showSection("compliance") && (
+      {showSection("compliance") && complianceCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.compliance}
               title="Compliance details"
-              onClick={() => moveToNextForm(["compliance", true])}
+              onClick={() => moveTo("compliance")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -163,7 +243,7 @@ export default function ReviewBox() {
                       RC. number
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.rc_no}{" "}
+                      {complianceCategory?.rc_no}{" "}
                     </div>
                   </div>
 
@@ -172,7 +252,7 @@ export default function ReviewBox() {
                       Tax identification number
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.tin_no}{" "}
+                      {complianceCategory?.tin_no}{" "}
                     </div>
                   </div>
                 </div>
@@ -186,7 +266,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.cac_doc?.file_path ?? null)
+                        PreviewFile(
+                          complianceCategory?.cac_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -196,7 +278,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.cac_doc?.file_name}
+                      {complianceCategory?.cac_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -209,7 +291,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.memart_doc?.file_path ?? null)
+                        PreviewFile(
+                          complianceCategory?.memart_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -219,7 +303,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.memart_doc?.file_name}
+                      {complianceCategory?.memart_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -232,7 +316,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.tin_doc?.file_path ?? null)
+                        PreviewFile(
+                          complianceCategory?.tin_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -242,7 +328,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.tin_doc?.file_name}
+                      {complianceCategory?.tin_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -252,12 +338,13 @@ export default function ReviewBox() {
         </div>
       )}
       {/* NCC VAS Licence */}
-      {showSection("ncclicense") && (
+      {showSection("ncclicense") && ncclicenseCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.ncclicense}
               title="NCC VAS Licence"
-              onClick={() => moveToNextForm(["ncclicense", true])}
+              onClick={() => moveTo("ncclicense")}
             />
 
             <div className="md:col-span-3 divide-y divide-slate-400/25">
@@ -268,7 +355,7 @@ export default function ReviewBox() {
                       VAS License ID
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.vas_license_id}
+                      {ncclicenseCategory?.vas_license_id}
                     </div>
                   </div>
                 </div>
@@ -280,7 +367,7 @@ export default function ReviewBox() {
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.ncc_issue_date)}
+                      {outputDate(ncclicenseCategory?.ncc_issue_date)}
                     </div>
                   </div>
 
@@ -289,7 +376,7 @@ export default function ReviewBox() {
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.ncc_expiry_date)}
+                      {outputDate(ncclicenseCategory?.ncc_expiry_date)}
                     </div>
                   </div>
                 </div>
@@ -302,7 +389,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.ncc_doc?.file_path ?? null)
+                        PreviewFile(
+                          ncclicenseCategory?.ncc_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -312,7 +401,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.ncc_doc?.file_name}
+                      {ncclicenseCategory?.ncc_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -322,12 +411,13 @@ export default function ReviewBox() {
         </div>
       )}
       {/* NLRC Licence */}
-      {showSection("nlrclicense") && (
+      {showSection("nlrclicense") && nlrclicenseCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.nlrclicense}
               title="NLRC"
-              onClick={() => moveToNextForm(["nlrclicense", true])}
+              onClick={() => moveTo("nlrclicense")}
             />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="pb-3">
@@ -337,7 +427,7 @@ export default function ReviewBox() {
                       NLRC License number
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.nlrc_license_id}{" "}
+                      {nlrclicenseCategory?.nlrc_license_id}{" "}
                     </div>
                   </div>
                 </div>
@@ -349,7 +439,7 @@ export default function ReviewBox() {
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.nlrc_issue_date)}
+                      {outputDate(nlrclicenseCategory?.nlrc_issue_date)}
                     </div>
                   </div>
 
@@ -358,7 +448,7 @@ export default function ReviewBox() {
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.nlrc_expiry_date)}
+                      {outputDate(nlrclicenseCategory?.nlrc_expiry_date)}
                     </div>
                   </div>
                 </div>
@@ -371,7 +461,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.nlrc_doc?.file_path ?? null)
+                        PreviewFile(
+                          nlrclicenseCategory?.nlrc_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -381,7 +473,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.nlrc_doc?.file_name}
+                      {nlrclicenseCategory?.nlrc_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -391,17 +483,18 @@ export default function ReviewBox() {
         </div>
       )}
       {/* Shortcode */}
-      {showSection("shortcode") && (
+      {showSection("shortcode") && shortcodeCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.shortcode}
               title="Shortcode"
-              onClick={() => moveToNextForm(["shortcode", true])}
+              onClick={() => moveTo("shortcode")}
             />
-            {category.shortcode?.length > 0 && (
-              <div className="md:col-span-3 divide-y divide-slate-400/25">
+            {shortcodeCategory?.shortcodes?.length > 0 && (
+              <div className="md:col-span-3">
                 <ShortcodeReview
-                  shortcode={category.shortcode}
+                  shortcode={shortcodeCategory?.shortcodes}
                   PreviewFile={PreviewFile}
                 />
               </div>
@@ -410,12 +503,13 @@ export default function ReviewBox() {
         </div>
       )}
       {/* Indemnity Licence */}
-      {showSection("indemnity") && (
+      {showSection("indemnity") && indemnityCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.indemnity}
               title="Professional indemnity insurance"
-              onClick={() => moveToNextForm(["indemnity", true])}
+              onClick={() => moveTo("indemnity")}
             />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="pb-3">
@@ -425,7 +519,7 @@ export default function ReviewBox() {
                       Indemnity issue number
                     </div>
                     <div className="text-white text-[14px]">
-                      {category.indemnity_no}{" "}
+                      {indemnityCategory?.indemnity_no}{" "}
                     </div>
                   </div>
                 </div>
@@ -437,7 +531,7 @@ export default function ReviewBox() {
                       Issuing date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.indemnity_issue_date)}
+                      {outputDate(indemnityCategory?.indemnity_issue_date)}
                     </div>
                   </div>
 
@@ -446,7 +540,7 @@ export default function ReviewBox() {
                       Expiry date
                     </div>
                     <div className="text-white text-[14px]">
-                      {outputDate(category.indemnity_expiry_date)}
+                      {outputDate(indemnityCategory?.indemnity_expiry_date)}
                     </div>
                   </div>
                 </div>
@@ -459,7 +553,9 @@ export default function ReviewBox() {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(category.indemnity_doc?.file_path ?? null)
+                        PreviewFile(
+                          indemnityCategory?.indemnity_doc?.file_path ?? null
+                        )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -469,7 +565,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.indemnity_doc?.file_name}
+                      {indemnityCategory?.indemnity_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -479,12 +575,13 @@ export default function ReviewBox() {
         </div>
       )}
       {/* Account info */}
-      {showSection("accountinfo") && (
+      {showSection("accountinfo") && accountinfoCategory && (
         <div className="bg-[#111111] rounded-[8px] p-[24px] mb-4">
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
+              isMaster={isMaster.accountinfo}
               title="Audited accounts"
-              onClick={() => moveToNextForm(["accountinfo", true])}
+              onClick={() => moveTo("accountinfo")}
             />
             <div className="md:col-span-3 divide-y divide-slate-400/25">
               <div className="py-3">
@@ -496,7 +593,8 @@ export default function ReviewBox() {
                     <div
                       onClick={() =>
                         PreviewFile(
-                          category.audited_account_1_doc?.file_path ?? null
+                          accountinfoCategory?.audited_account_1_doc
+                            ?.file_path ?? null
                         )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
@@ -507,7 +605,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.audited_account_1_doc?.file_name}
+                      {accountinfoCategory?.audited_account_1_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -521,7 +619,8 @@ export default function ReviewBox() {
                     <div
                       onClick={() =>
                         PreviewFile(
-                          category.audited_account_2_doc?.file_path ?? null
+                          accountinfoCategory?.audited_account_2_doc
+                            ?.file_path ?? null
                         )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
@@ -532,7 +631,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.audited_account_2_doc?.file_name}
+                      {accountinfoCategory?.audited_account_2_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -546,7 +645,8 @@ export default function ReviewBox() {
                     <div
                       onClick={() =>
                         PreviewFile(
-                          category.audited_account_3_doc?.file_path ?? null
+                          accountinfoCategory?.audited_account_3_doc
+                            ?.file_path ?? null
                         )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
@@ -557,7 +657,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.audited_account_3_doc?.file_name}
+                      {accountinfoCategory?.audited_account_3_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -571,7 +671,8 @@ export default function ReviewBox() {
                     <div
                       onClick={() =>
                         PreviewFile(
-                          category.job_evidence_doc?.file_path ?? null
+                          accountinfoCategory?.job_evidence_doc?.file_path ??
+                            null
                         )
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
@@ -582,7 +683,7 @@ export default function ReviewBox() {
                         width={14}
                         height={16}
                       />
-                      {category.job_evidence_doc?.file_name}
+                      {accountinfoCategory?.job_evidence_doc?.file_name}
                     </div>
                   </div>
                 </div>
@@ -591,18 +692,42 @@ export default function ReviewBox() {
           </div>
         </div>
       )}
-      <div className="max-w-[400px] mx-auto text-center mt-10 text-[#666666] text-[12px]">
-        By clicking submit application, I/We confirm that the information
-        provided are accurate and truthful.
-      </div>
-      <div className="mt-3 pb-12 flex justify-center items-start w-full">
-        <Button
-          onClick={() => {
-            setForm("complete")
-          }}
-          label="Submit application"
-        />
-      </div>
+
+      {category.status === "open" && (
+        <>
+          <div className="max-w-[400px] mx-auto text-center mt-10 text-[#666666] text-[12px]">
+            By clicking submit application, I/We confirm that the information
+            provided are accurate and truthful.
+          </div>
+          <div className="mt-3 pb-12 flex justify-center items-start w-full">
+            {isSaving ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <Button
+                onClick={saveForm}
+                label="Submit category"
+                paddingclass="pl-12 pr-4 py-3"
+                textsizecss="inline-flex text-[14px] whitespace-nowrap"
+              />
+            )}
+          </div>
+        </>
+      )}
+      {category.status === "pending" && (
+        <div className="mt-3 pb-12 flex flex-col space-y-1 justify-center items-center w-full">
+          <p className="text-[24px] text-[#999999]">In review</p>
+          <p
+            onClick={() => {
+              setIsOnboarding(false)
+              setTmpCat(null)
+              setForm(null)
+            }}
+            className="text-[14px] text-#666666] hover:text-[#999999] cursor-pointer"
+          >
+            Close
+          </p>
+        </div>
+      )}
     </>
   )
 }

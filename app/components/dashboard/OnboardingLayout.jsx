@@ -3,15 +3,15 @@ import NavbarOnboarding from "@/app/components/dashboard/NavbarOnboarding"
 import ProfileTabItem from "@/app/components/ProfileTabItem"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
-import CompanyDetail from "./sections/companydetail/CompanyDetail"
-import Compliance from "./sections/compliance/Compliance"
-import Ncclicense from "./sections/ncclicense/Ncclicense"
-import Nlrclicense from "./sections/nlrclicense/Nlrclicense"
-import Indemnity from "./sections/indemnity/Indemnity"
-import Accountinfo from "./sections/accountinfo/Accountinfo"
-import Shortcode from "./sections/shortcode/Shortcode"
-import Review from "./sections/review/Review"
-import Complete from "./sections/complete/Complete"
+import CompanyDetail from "@/app/(protected)/(partner)/dashboard/getstarted/sections/companydetail/CompanyDetail"
+import Compliance from "@/app/(protected)/(partner)/dashboard/getstarted/sections/compliance/Compliance"
+import Ncclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/ncclicense/Ncclicense"
+import Nlrclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/nlrclicense/Nlrclicense"
+import Indemnity from "@/app/(protected)/(partner)/dashboard/getstarted/sections/indemnity/Indemnity"
+import Accountinfo from "@/app/(protected)/(partner)/dashboard/getstarted/sections/accountinfo/Accountinfo"
+import Shortcode from "@/app/(protected)/(partner)/dashboard/getstarted/sections/shortcode/Shortcode"
+import Review from "@/app/(protected)/(partner)/dashboard/getstarted/sections/review/Review"
+import Complete from "@/app/(protected)/(partner)/dashboard/getstarted/sections/complete/Complete"
 import { profileMenu } from "@/app/modules/constants"
 import { useEffect } from "react"
 
@@ -29,7 +29,6 @@ export default function OnboardingLayout({
       validForms.review = "r"
     }
   }, [validForms])
-
   return (
     <>
       <div
@@ -56,7 +55,11 @@ export default function OnboardingLayout({
                         <div key={menu}>
                           {(validForms[menu] === "r" ||
                             validForms[menu] === "o") && (
-                            <ProfileTabItem menu={menu} form={form} />
+                            <ProfileTabItem
+                              menu={menu}
+                              form={form}
+                              category={category}
+                            />
                           )}
                         </div>
                       )
@@ -75,7 +78,12 @@ export default function OnboardingLayout({
               {form === "indemnity" && <Indemnity />}
               {form === "shortcode" && <Shortcode />}
               {form === "accountinfo" && <Accountinfo />}
-              {form === "review" && <Review />}
+              {form === "review" && (
+                <Review
+                  setIsOnboarding={setIsOnboarding}
+                  setTmpCat={setTmpCat}
+                />
+              )}
               {form === "complete" && (
                 <Complete
                   setIsOnboarding={setIsOnboarding}

@@ -297,18 +297,6 @@ export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
       path: "/",
       sameSite: "strict",
     })
-    // if (User.partner.uuid) {
-    //   const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
-    //   setCookie("partnerid", encryptedPartnerid, {
-    //     req,
-    //     res,
-    //     maxAge: maxAge ?? 60 * 60 * 24 * 365, // would expire after 15 minutes
-    //     httpOnly: true,
-    //     signed: true,
-    //     path: "/",
-    //     sameSite: "strict",
-    //   })
-    // }
   }
   return { User, authToken }
 }

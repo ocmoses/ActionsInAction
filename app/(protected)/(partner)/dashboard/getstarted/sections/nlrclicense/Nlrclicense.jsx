@@ -239,13 +239,13 @@ function NlrcLicense() {
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : (
               <div className="flex items-center gap-4">
-                <ButtonPrev
+                {/* <ButtonPrev
                   onClick={() => moveToPrevForm("nlrclicense")}
                   type="button"
                   label="Back"
                   outline="yes"
                   outlinecolor="border-white"
-                />
+                /> */}
                 <ButtonNext
                   type="submit"
                   label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}

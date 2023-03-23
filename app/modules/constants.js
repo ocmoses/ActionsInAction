@@ -10,14 +10,25 @@ import {
 } from "@/app/components/Icons"
 
 export const persistStore = true
+/*
+Dev: 
+FE: 10.1.29.123
+API/backend: 10.1.29.122
 
+Stage/Test
+FE/BE/API: 10.1.44.40
+
+Main/Prod
+FE: https://partner.mtn.ng
+BE/API: https://partner.mtn.ng
+*/
 const environment = {
+  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
   STAGING: "http://10.1.44.40/api",
-  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
+  PROD: "https://partner.mtn.ng/api",
 }
 export const apiURL = environment.STAGING
-// export const apiURL = process.env.APIURI
 
 export const EmailType = {
   EXISTING: "existing",

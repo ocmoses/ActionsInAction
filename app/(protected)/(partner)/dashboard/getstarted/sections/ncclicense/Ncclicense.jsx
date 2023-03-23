@@ -13,13 +13,29 @@ import useProcessing from "@/hooks/useProcessing"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, validateExpiryDate } from "@/app/modules/utilities"
+import { forms, validities } from "@/app/modules/constants"
+import {
+  scrollToTop,
+  validateExpiryDate,
+  getValidityRange,
+  ValidateField,
+  fieldRequired,
+  fieldName,
+} from "@/app/modules/utilities"
 
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
+  const { min_start_date, max_end_date, yesterday, tomorrow } =
+    getValidityRange(validities.ncc)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -27,19 +43,33 @@ function Ncclicense() {
     vas_license_id: "",
     ncc_issue_date: "",
     ncc_expiry_date: "",
-    ncc_doc: "",
+    ncc_doc: {},
+    ncc_file: "",
   })
-  const { title, subtitle, hand, required, validity } = forms["ncclicense"]
+  const { title, subtitle, hand, fields } = forms["ncclicense"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
+    const Category =
+      partner.master &&
+      partner.sections[partner.master.category_uuid]?.ncclicense &&
+      category.category_uuid !== partner.master.category_uuid
+        ? partner.master
+        : category
+    setIsMasterData(
+      partner.master &&
+        partner.sections[partner.master.category_uuid]?.ncclicense &&
+        category.category_uuid !== partner.master.category_uuid
+    )
     if (category)
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        vas_license_id: category?.vas_license_id ?? "",
-        ncc_issue_date: category?.ncc_issue_date ?? "",
-        ncc_expiry_date: category?.ncc_expiry_date ?? "",
-        ncc_doc: category?.ncc_doc ?? "",
+        vas_license_id: Category?.vas_license_id ?? "",
+        ncc_issue_date: Category?.ncc_issue_date ?? "",
+        ncc_expiry_date: Category?.ncc_expiry_date ?? "",
+        ncc_doc: Category?.ncc_doc ?? {},
+        ncc_file: Category?.ncc_file ?? "",
       })
   }, [category])
   useEffect(() => {
@@ -51,38 +81,57 @@ function Ncclicense() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        if (field !== "ncc_doc") {
+          const error = ValidateField(field, "ncclicense", data, category)
+          if (error) {
+            scrollToTop("onboardinglayout")
+            return setError({
+              [field]: error,
+            })
+          }
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
     if (
-      category?.validation.ncclicense === "r" &&
-      !data.ncc_doc &&
-      !data.ncc_doc.length &&
+      fieldRequired("ncc_doc", "ncclicense", category) &&
+      Util.isEmpty(data.ncc_doc) &&
       !data.ncc_file
     ) {
       scrollToTop("onboardinglayout")
-      return setError({ ncclicense: `NCC document is required` })
+      return setError({
+        ncc_file: `${fieldName("ncc_doc", "ncclicense")} is required`,
+      })
+    }
+    if (data.ncc_issue_date && data.ncc_expiry_date) {
+      const expiryError = validateExpiryDate(
+        data.ncc_issue_date,
+        data.ncc_expiry_date,
+        validities.ncc
+      )
+      if (expiryError) return setError({ ncc_issue_date: expiryError })
     }
 
-    const expiryError = validateExpiryDate(
-      data.ncc_issue_date,
-      data.ncc_expiry_date,
-      validity
-    )
-    if (expiryError) return setError({ ncclicense: expiryError })
     const result = await registerPartner("ncclicense", data)
     if (result) {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ ncclicense: result.error })
     }
-    moveToNextForm(["ncclicense"])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.ncclicense = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      console.log({ NextStage })
+      return setForm(NextStage)
+    }
+    // const { nextstage: NextStage } = nextStage(category, partner)
+    // return setForm(NextStage)
+    if (NextStage === "review") return moveToNextForm(["review", true])
+    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -98,6 +147,15 @@ function Ncclicense() {
       [e.target.id]: e.target.value,
     }))
   }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "ncclicense", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
+  }
+
   return (
     <div
       id="onboardingform"
@@ -113,7 +171,9 @@ function Ncclicense() {
           label="VAS License ID"
           value={data.vas_license_id}
           onChange={handleFormChange}
+          onBlur={() => Validate("vas_license_id")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -122,7 +182,11 @@ function Ncclicense() {
               label="Issue date"
               value={data.ncc_issue_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("ncc_issue_date")}
               errors={errors}
+              min={new Date(min_start_date)}
+              max={yesterday}
+              disabled={isMasterData}
             />
           </div>
           <div className="">
@@ -131,7 +195,11 @@ function Ncclicense() {
               label="Expiry date"
               value={data.ncc_expiry_date}
               onChange={handleDateChange}
+              onBlur={() => Validate("ncc_expiry_date")}
               errors={errors}
+              min={tomorrow}
+              max={new Date(max_end_date)}
+              disabled={isMasterData}
             />
           </div>
         </div>
@@ -143,25 +211,31 @@ function Ncclicense() {
             value={data.ncc_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("ncclicense")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
-              />
-              <ButtonNext type="submit" label="Next" />
-            </div>
-          )}
-        </div>
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <div className="flex items-center gap-4">
+                {/* <ButtonPrev
+                  onClick={() => moveToPrevForm("ncclicense")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                /> */}
+                <ButtonNext
+                  type="submit"
+                  label={checkUpdateStatus("ncclicense") ? "Update" : "Next"}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

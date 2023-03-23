@@ -9,6 +9,7 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
+import { NextEndPoints } from "@/app/modules/endpoints"
 import { createRef, useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { CountrySelector } from "@/app/components/countrycode/selector"
@@ -17,6 +18,7 @@ import { forms } from "@/app/modules/constants"
 import { Util } from "@/utils/utility"
 import { scrollToTop } from "@/app/modules/utilities"
 import useApp from "@/hooks/useApp"
+import axios from "axios"
 
 function UserInfo({ designations }) {
   const { setRouteloading } = useApp()
@@ -28,16 +30,20 @@ function UserInfo({ designations }) {
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
 
   const [data, setData] = useState({
-    first_name: "",
-    last_name: "",
+    first_name: process.env.NODE_ENV === "production" ? "" : "Prince",
+    last_name: process.env.NODE_ENV === "production" ? "" : "Test",
     email: "",
-    company_name: "",
-    designation: "",
+    company_name: process.env.NODE_ENV === "production" ? "" : "Mtn Nigeria",
+    designation:
+      process.env.NODE_ENV === "production"
+        ? ""
+        : "21d3cc28-91ef-11ed-bd03-acde48001122",
     countrycode: "234",
     country: "NG",
-    telephone: "",
-    password: "",
-    password_confirmed: "",
+    telephone: process.env.NODE_ENV === "production" ? "" : "080234561",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+    password_confirmed:
+      process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
 
   useEffect(() => {
@@ -52,6 +58,42 @@ function UserInfo({ designations }) {
     else clearErrors()
   }, [designations])
 
+  const [checkingEmail, setCheckingEmail] = useState(false)
+  const [lastEmailChecked, setLastEmailChecked] = useState(null)
+  const checkIsFreeEmail = async (email) => {
+    removeError("email")
+    if (!Util.validateEmail(data["email"]))
+      return setError({ email: "Your email address is not valid" })
+    if (process.env.NODE_ENV === "development") return
+    if (errors?.email && email === lastEmailChecked) return
+    try {
+      setCheckingEmail(true)
+      const response = await axios
+        .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
+        .catch((err) => {
+          setError({ email: "An error occured while verifying your email" })
+        })
+      setCheckingEmail(false)
+      if (response) {
+        const { data } = response
+        setLastEmailChecked(email)
+        if (!data)
+          setError({ email: "Something went wrong while verifying your email" })
+        const { is_free, error } = data
+        if (error) setError({ email: error })
+        if (is_free)
+          setError({
+            email:
+              "Free email service account is not allowed. Please use a corporate email",
+          })
+      } else {
+        setError({ email: "Something went wrong while verifying your email" })
+      }
+    } catch (error) {
+      setError({ email: "An error occured while verifying your email" })
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -65,19 +107,23 @@ function UserInfo({ designations }) {
       }
       if (error) return scrollToTop("onboardinglayout")
     }
-    if (!Util.validateEmail(data["email"])) {
-      setError({ email: "Your email address is not valid" })
-      return
-    }
-    if (data["password"].length < 8) {
-      setError({ password: "Your password must be at least, 8 characters" })
-      return
-    }
+    if (!Util.validateEmail(data["email"]))
+      return setError({ email: "Your email address is not valid" })
 
-    if (data["telephone"].length < 6 || data["telephone"].length > 11) {
-      setError({ telephone: "Your telephone is not valid" })
-      return
-    }
+    const isFreeEmail = await checkIsFreeEmail(data["email"])
+    if (isFreeEmail) return setError({ email: isFreeEmail })
+    // return setError({ userinfo: "Submitted" })
+
+    if (data["password"].length < 8)
+      return setError({
+        password: "Your password must be at least, 8 characters",
+      })
+    if (data["password"] !== data.password_confirmed)
+      return setError({
+        password_confirmed: "Password confirmation mismatch",
+      })
+    if (data["telephone"].length < 6 || data["telephone"].length > 11)
+      return setError({ telephone: "Your telephone is not valid" })
 
     const result = await registerPartner("userinfo", data)
     if (result) {
@@ -85,8 +131,11 @@ function UserInfo({ designations }) {
       if (result?.error) return setError({ userinfo: result.error })
     }
   }
-  const handleFormChange = (e) => {
-    removeError(e.target.id)
+
+  const handleFormChange = async (e) => {
+    const input = e.target.id
+    removeError(input)
+
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
@@ -151,8 +200,18 @@ function UserInfo({ designations }) {
           label="Email"
           value={data.email}
           onChange={handleFormChange}
+          onBlur={(e) => checkIsFreeEmail(e.target.value)}
           errors={errors}
+          margin="mb-1"
         />
+        <div className="text-white mb-6">
+          {checkingEmail && (
+            <p className="px-0 pt-2 m-0 text-[12px] flex justify-start gap-3 items-center">
+              <TailSpinPreloader width={24} height={24} fill="#efb703" />{" "}
+              Checking your email address...
+            </p>
+          )}
+        </div>
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector
@@ -200,25 +259,32 @@ function UserInfo({ designations }) {
               />
             ))}
         </SelectInput>
-        <TextInput
-          id="password"
-          type="password"
-          label="Choose a password"
-          value={data.password}
-          onChange={handleFormChange}
-          errors={errors}
-        />
-        <div className=" font-mtn-extralight text-white/70 text-start -mt-6 mb-6 p-2">
-          Must include at least 8 characters, an uppercase letter, and a number
+        <div className="md:grid md:grid-cols-2 md:gap-4">
+          <div className="relative ">
+            <TextInput
+              id="password"
+              type="password"
+              label="Choose a password"
+              value={data.password}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
+          <div className="relative ">
+            <TextInput
+              id="password_confirmed"
+              type="password"
+              label="Confirm your password"
+              value={data.password_confirmed}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+          </div>
         </div>
-        {/* <TextInput
-          id="password_confirmed"
-          type="password"
-          label="Repeat your password"
-          value={data.password_confirmed}
-          onChange={handleFormChange}
-          errors={errors}
-        /> */}
+        <div className=" font-mtn-extralight text-white/70 text-start -mt-6 mb-6 p-2">
+          Must be at least 8 characters, includes uppercase and lowercase
+          letter, a number and a special character
+        </div>
         <div
           className=" text-white/70 text-start mb-12 p-2"
           style={{

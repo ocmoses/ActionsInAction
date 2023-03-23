@@ -14,28 +14,48 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, setCategory, registerPartner } = usePartners()
+  const { partner, updatePartner, setCategory, registerPartner, nextStage } =
+    usePartners()
+  const { processing, setProcessing, setForm } = useProcessing()
 
-  const { processing, setProcessing, moveToNextForm } = useProcessing()
-
-  const selectCategory = async (category) => {
+  const selectCategory = async (sysCategory) => {
     clearErrors()
-    setCategory(category)
+    console.log({ category })
     const result = await registerPartner("category", {
       user_uuid: partner?.user_uuid ?? "",
       partner_uuid: partner?.uuid ?? "",
-      category_uuid: category.uuid,
+      category_uuid: sysCategory.uuid,
     })
-
     if (result) {
       setProcessing(false)
       if (result?.error) {
         return setError({ category: result.error })
       }
-      moveToNextForm(["category"])
-      setIsOnboarding(true)
-      setIsOpen(false)
-      return
+      if (result.data?.partner) {
+        const newcategory = { ...result?.data?.category }
+        updatePartner(result?.data?.partner)
+        newcategory.profile_stage.category = "1"
+        const { nextstage: NextStage } = nextStage(newcategory, partner)
+        setCategory(newcategory)
+        console.log({ NextStage })
+        setForm(NextStage ?? "compliance")
+        setIsOnboarding(true)
+        return setIsOpen(false)
+      }
+
+      // if (result.data?.partner) {
+      //   updatePartner(result?.data?.partner)
+      //   const newcategory = result.data?.partner.categories.find(
+      //     (c) => c.category_uuid === category.category_uuid
+      //   )
+      //   newcategory.profile_stage.category = "1"
+      //   const { nextstage: NextStage } = nextStage(newcategory, partner)
+      //   console.log({ NextStage })
+      //   setCategory(newcategory)
+      //   setForm(NextStage ?? "compliance")
+      //   setIsOnboarding(true)
+      //   return setIsOpen(false)
+      // }
     }
     setError({ category: "Something went wrong" })
   }
@@ -72,7 +92,7 @@ export default function CategoryDetail({
             <h3 className="text-white text-lg font-bold">Get started</h3>
             <p className="text-md text-[#999999]">
               For regulatory compliance, we’ll require the following
-              informations from our VAS providers.
+              informations from our {category.category_code} providers.
             </p>
           </div>
 

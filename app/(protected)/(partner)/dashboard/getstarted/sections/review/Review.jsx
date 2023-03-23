@@ -5,7 +5,7 @@ import useProcessing from "@/hooks/useProcessing"
 import { useEffect } from "react"
 import { forms } from "@/app/modules/constants"
 
-export default function Review() {
+export default function Review({ setIsOnboarding, setTmpCat }) {
   const { setProcessing, setForm } = useProcessing()
 
   const { title, subtitle, hand } = forms["review"]
@@ -22,7 +22,7 @@ export default function Review() {
         hand={hand}
         align="center"
       />
-      <ReviewBox />
+      <ReviewBox setIsOnboarding={setIsOnboarding} setTmpCat={setTmpCat} />
     </div>
   )
 }

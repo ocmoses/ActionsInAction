@@ -11,8 +11,8 @@ const app = {
   allforms: [
     "userinfo",
     "category",
-    "companydetail",
     "compliance",
+    "companydetail",
     "ncclicense",
     "nlrclicense",
     "shortcode",
@@ -22,6 +22,7 @@ const app = {
   formValidation: {},
   activeCategory: {},
   tmpUserUUID: null,
+  showGetstartedLink: false,
   increaseCount: action((state, key) => {
     return state.count++
   }),
@@ -37,8 +38,8 @@ const app = {
     state.allforms = [
       "userinfo",
       "category",
-      "companydetail",
       "compliance",
+      "companydetail",
       "ncclicense",
       "nlrclicense",
       "shortcode",
@@ -48,12 +49,16 @@ const app = {
     state.formValidation = {}
     state.activeCategory = {}
     state.tmpUserUUID = null
+    state.showGetstartedLink = false
   }),
   setRouteloading: action((state, status) => {
     state.routeloading = status ?? false
   }),
   setTmpUserUUID: action((state, uuid) => {
     state.tmpUserUUID = uuid
+  }),
+  toggleGetstartedLink: action((state, status) => {
+    state.showGetstartedLink = status ?? false
   }),
   isLoading: action((state, key) => {
     return state.loading && state.loading[key] !== "undefined"
@@ -96,51 +101,32 @@ const app = {
   }),
   moveToNextForm: thunk((actions, current, helpers) => {
     const states = helpers.getStoreState()
-    const validation = states.partners?.category
+
     if (!current || current?.length < 1) {
       actions.setForm(null)
     } else {
       const currentForm = current[0]
       const useCurrent = current?.length > 1 ? true : false
-
       const index = states.app?.formSteps?.indexOf(currentForm)
       if (useCurrent) {
+        // MOVE TO SELECTED FORM
         actions.setForm(currentForm)
       } else {
         if (index === states.app?.formSteps?.length - 1) {
+          // If next for is last then move to preview
           actions.setForm("review")
         } else {
-          actions.setForm(
+          // move to next form in stack
+          const nextSection =
             states.app?.formSteps?.length && states.app?.formSteps[index + 1]
               ? states.app?.formSteps[index + 1]
               : null
-          )
+
+          actions.setForm(nextSection)
         }
       }
     }
   }),
-  // moveToNextFormX: action((state, current) => {
-  //   if (!current || current?.length < 1) {
-  //     state.form = null
-  //   } else {
-  //     const currentForm = current[0]
-  //     const useCurrent = current?.length > 1 ? true : false
-
-  //     const index = state.formSteps?.indexOf(currentForm)
-  //     if (useCurrent) {
-  //       state.form = currentForm
-  //     } else {
-  //       if (index === state.formSteps?.length - 1) {
-  //         state.form = "review"
-  //       } else {
-  //         state.form =
-  //           state.formSteps?.length && state.formSteps[index + 1]
-  //             ? state.formSteps[index + 1]
-  //             : null
-  //       }
-  //     }
-  //   }
-  // }),
   moveToPrevForm: action((state, current) => {
     if (!current) {
       state.form = null

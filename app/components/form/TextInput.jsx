@@ -5,6 +5,7 @@ import FormErrors from "@/app/components/FormErrors"
 export default function TextInput({
   id,
   label,
+  disabled,
   value,
   onChange,
   onKeyUp,
@@ -26,15 +27,16 @@ export default function TextInput({
         className={
           (border ? border + " " : "border-1 ") +
           (bg ? bg + " " : "bg-[#212121] ") +
-          "relative px-3 py-3 pb-2 z-0  w-full group  border-[#333333] rounded-[10px]"
+          "relative z-0  w-full group  border-[#333333] rounded-[10px]"
         }
       >
         <input
           type={Type}
           id={id}
           name={id}
+          disabled={disabled}
           value={value}
-          className="block px-3 py-3 pb-2 w-full text-xl text-gray-200 bg-transparent autofill:!bg-inherit active:!bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-0  peer"
+          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent autofill:!bg-inherit active:!bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-mtn peer"
           placeholder={label}
           autoComplete="new-password"
           onChange={onChange}
@@ -47,7 +49,7 @@ export default function TextInput({
         />
         <label
           htmlFor={id}
-          className="absolute text-lg top-0 left-6 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
+          className="absolute text-lg top-0 left-5 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
         >
           {label}
         </label>

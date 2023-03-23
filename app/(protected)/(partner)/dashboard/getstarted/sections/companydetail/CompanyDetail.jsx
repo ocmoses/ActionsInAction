@@ -14,14 +14,20 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import { forms } from "@/app/modules/constants"
-import { scrollToTop } from "@/app/modules/utilities"
+import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities"
 
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { category, registerPartner } = usePartners()
-
-  const { title, subtitle, hand, required } = forms["companydetail"]
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
+  const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -32,16 +38,44 @@ function CompanyDetail() {
     company_state: "",
     company_postcode: "",
   })
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
+    const Category =
+      partner.master &&
+      partner.sections[partner.master.category_uuid]?.companydetail &&
+      category.category_uuid !== partner.master.category_uuid
+        ? partner.master
+        : category
+    setIsMasterData(
+      partner.master &&
+        partner.sections[partner.master.category_uuid]?.companydetail &&
+        category.category_uuid !== partner.master.category_uuid
+    )
+    let tin_data = null
+    let cac_data = null
+    if (Category?.tin_data) {
+      tin_data = isString(Category.tin_data)
+        ? JSON.parse(Category.tin_data)
+        : Category.tin_data
+    }
+    if (Category?.cac_data) {
+      cac_data = isString(Category.cac_data)
+        ? JSON.parse(Category.cac_data)
+        : Category.cac_data
+    }
     setData({
-      partner_uuid: category?.partner_uuid,
+      partner_uuid: Category?.partner_uuid,
       category_uuid: category?.category_uuid,
-      company_name: category?.company_name ?? "",
-      country: category?.country ?? "NG",
-      company_address: category?.company_address ?? "",
-      company_city: category?.company_city ?? "",
-      company_state: category?.company_state ?? "",
-      company_postcode: category?.company_postcode ?? "",
+      company_name: tin_data?.Name
+        ? tin_data?.Name
+        : Category?.company_name
+        ? Category?.company_name
+        : "",
+      country: Category?.country ?? "NG",
+      company_address: Category?.company_address ?? "",
+      company_city: Category?.company_city ?? "",
+      company_state: Category?.company_state ?? "",
+      company_postcode: Category?.company_postcode ?? "",
     })
   }, [category])
 
@@ -61,15 +95,16 @@ function CompanyDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    let error = false
-    if (!Util.isEmpty(required)) {
-      for (const field in required) {
-        if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        const error = ValidateField(field, "companydetail", data, category)
+        if (error) {
+          scrollToTop("onboardinglayout")
+          return setError({
+            [field]: error,
+          })
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
     }
 
     const result = await registerPartner("companydetail", data)
@@ -77,14 +112,39 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
-    moveToNextForm(["companydetail"])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.companydetail = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      console.log({ NextStage })
+      return setForm(NextStage)
+    }
+    // if (NextStage === "review") return moveToNextForm(["review", true])
+    // return moveToNextForm([NextStage])
   }
+  const [selectField, setSelectField] = useState(null)
+  useEffect(() => {
+    removeError(selectField)
+    Validate(selectField)
+  }, [selectField, data])
+
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    const field = e.target.id
     setData((prevState) => ({
       ...prevState,
-      [e.target.id]: e.target.value,
+      [field]: e.target.value,
     }))
+  }
+  const Validate = (field) => {
+    removeError(field)
+    const error = ValidateField(field, "companydetail", data, category)
+    if (error)
+      return setError({
+        [field]: error,
+      })
   }
   return (
     <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
@@ -99,14 +159,20 @@ function CompanyDetail() {
           label="Company name"
           value={data.company_name}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_name")}
           errors={errors}
+          disabled={isMasterData}
         />
         <SelectInput
           id="country"
           label="Select Country"
           value={data.country}
-          onChange={handleFormChange}
+          onChange={(e) => {
+            handleFormChange(e)
+            setSelectField("country")
+          }}
           errors={errors}
+          disabled={isMasterData}
         >
           {COUNTRIES.map((c) => (
             <SelectInputOption key={c.value} value={c.value} label={c.title} />
@@ -118,7 +184,9 @@ function CompanyDetail() {
           label="Company address"
           value={data.company_address}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_address")}
           errors={errors}
+          disabled={isMasterData}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="relative ">
@@ -127,7 +195,9 @@ function CompanyDetail() {
               label="City"
               value={data.company_city}
               onChange={handleFormChange}
+              onBlur={() => Validate("company_city")}
               errors={errors}
+              disabled={isMasterData}
             />
           </div>
           <div className="relative ">
@@ -135,8 +205,12 @@ function CompanyDetail() {
               id="company_state"
               label="State"
               value={data.company_state}
-              onChange={handleFormChange}
+              onChange={(e) => {
+                handleFormChange(e)
+                setSelectField("company_state")
+              }}
               errors={errors}
+              disabled={isMasterData}
             >
               <SelectInputOption value="" label="" />
               {states.map((s) => (
@@ -154,15 +228,21 @@ function CompanyDetail() {
           label="Company postcode"
           value={data.company_postcode}
           onChange={handleFormChange}
+          onBlur={() => Validate("company_postcode")}
           errors={errors}
+          disabled={isMasterData}
         />
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <ButtonNext label="Next" />
-          )}
-        </div>
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <ButtonNext
+                label={checkUpdateStatus("companydetail") ? "Update" : "Next"}
+              />
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

@@ -1,9 +1,9 @@
 export const PartnerMenu = [
-  {
-    label: "Get started",
-    icon: "",
-    route: "/dashboard/getstarted",
-  },
+  // {
+  //   label: "Get started",
+  //   icon: "",
+  //   route: "/dashboard/getstarted",
+  // },
   {
     label: "Dashboard",
     icon: "",
@@ -56,6 +56,7 @@ export const AdminMenu = [
 export const PageRoutes = {
   home: "/",
   login: "/login",
+  register: "/onboarding/register",
   partnerwelcome: "/onboarding/register/partnerwelcome",
   passwordreset: "/onboarding/register/resetpassword",
   setpassword: "/onboarding/setpassword",

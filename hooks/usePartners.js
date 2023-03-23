@@ -11,7 +11,7 @@ import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData } from "@/app/modules/utilities"
+import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -27,8 +27,8 @@ const usePartners = () => {
 
   const { category, categories } = states.partners
   const { setPartners, updatePartner, setCategory } = actions.partners
-  const { setUser, setTmpUser } = actions.users
-  const { user } = states.users
+  const { setTmpUser } = actions.users
+  // const { user } = states.users
   const users = useUsers()
   const [validation, setValidation] = useState({
     required: [],
@@ -36,11 +36,10 @@ const usePartners = () => {
     allForms: [],
   })
   const setValidationRules = (category) => {
-    // console.log({ category })
-    // console.log("validation", category)
     const required = []
     const optional = []
     const allForms = { required: [], optional: [], all: [] }
+    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -56,12 +55,16 @@ const usePartners = () => {
         }
       }
     }
+    // console.log({ allForms })
     const validated = { required, optional, allForms }
     setValidation(validated)
+    // console.log(category)
+    // console.log(validated)
     actions.app.setFormSteps(validated)
     actions.app.setActiveCategory(category?.uuid)
     return validated
   }
+
   const completeOnboarding = (category) => {
     const currentCategory = categories?.find((c) => c.uuid === category.uuid)
     category.validation = currentCategory.validation
@@ -76,17 +79,28 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
+  const consolidateCategory = () => {
+    // console.log({ categories })
+  }
   const setCurrentCategory = (category, partner) => {
-    const currentCategory = partner?.categories?.find(
-      (c) => c.uuid === category.uuid
-    )
+    console.log({ category })
+    console.log({ partner })
     const baseCategory = categories?.find(
-      (c) => c.uuid === currentCategory.category_uuid
+      (c) => c.uuid === category.category_uuid
     )
-    currentCategory.validation = baseCategory.validation
-    currentCategory.category_name = baseCategory.category_name
-    setCategory(currentCategory)
-    setValidationRules(currentCategory)
+    console.log({ baseCategory })
+    // const currentCategory = category
+    // const currentCategory = partner?.categories?.find(
+    //   (c) => c.uuid === category.uuid
+    // )
+    // console.log({ currentCategory })
+
+    // currentCategory.validation = baseCategory.validation
+    category.category_name = baseCategory.category_name
+    category.category_code = baseCategory.category_code
+    setCategory(category)
+
+    setValidationRules(category)
   }
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage
@@ -127,34 +141,11 @@ const usePartners = () => {
     if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
-  const lastStage = async (category) => {
-    if (!category?.profile_stage) return null
-    const progress = category.profile_stage
-    const validation = category.validation
-    console.log({ progress, validation })
-    const Stages = [
-      "userinfo",
-      "companyinfo",
-      "category",
-      "companydetail",
-      "compliance",
-      "ncclicense",
-      "nlrclicense",
-      "shortcode",
-      "indemnity",
-      "accountinfo",
-    ]
-
-    Stages.map((stage) => {
-      if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
-    })
-    if (!nextstage) nextstage = PageRoutes.dashboard
-    return { percent, nextstage }
+  const nextStage = (category, partner) => {
+    return getNextStage(category, partner)
   }
 
   const registerPartner = async (frm, userdata) => {
-    console.log({ userdata })
-    console.log({ category })
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
@@ -234,14 +225,12 @@ const usePartners = () => {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
           User: setpassword,
         }
-        app.setStoreStates(serverSession, categories)
-        if (userdata.type === "existing" || userdata.type === "new")
-          router.push(PageRoutes.getstarted)
-        else router.push(PageRoutes.getstarted)
-        break
+        app.setStoreStates(serverSession, categories, "partner store")
+        if (userdata.type === "new") return router.push(PageRoutes.getstarted)
+        return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        userdata.password_confirmed = userdata.password
+        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -305,7 +294,6 @@ const usePartners = () => {
         }
         setCurrentCategory(categoryData.category, categoryData.partner)
         updatePartner(categoryData.partner)
-        setUpdateStatus("category", true)
         return { success: true, error: null, data: categoryData }
       case "companydetail":
         return updateCategory("companydetail", userdata)
@@ -321,125 +309,42 @@ const usePartners = () => {
         return updateCategory("indemnity", userdata)
       case "accountinfo":
         return updateCategory("accountinfo", userdata)
+      case "complete_registration":
+        setProcessing(true)
+        const regResponse = await Axios.post(
+          RemoteEndpoints.REGISTRATION_COMPLETION,
+          userdata,
+          {
+            timeout: process.NEXT_PUBLIC_TIMEOUT,
+          }
+        ).catch((e) => {
+          setProcessing(false)
+          return {
+            success: false,
+            error: `${e.message}. Please check you connection`,
+            data: null,
+          }
+        })
+        if (!regResponse) {
+          setProcessing(false)
+          return { success: false, error: "Something went wrong", data: null }
+        }
+
+        const { success: regSuccess, data: regData } = regResponse
+        if (!regSuccess) {
+          setProcessing(false)
+          return { success: false, error: regData.message, data: null }
+        }
+        updatePartner(regData.partner)
+        return { success: true, error: null, data: null }
     }
   }
-  // const registerPartnerRefactored = async (frm, userdata) => {
-  //   console.log({ userdata })
-  //   switch (frm) {
-  //     // Existing partner flows
-  //     case "partnerwelcome":
-  //       setProcessing(true)
-  //       const { success: partnerwelcomeSuccess, data: partnerwelcome } =
-  //         await fetchData(RemoteEndpoints.WELCOMEBACK, {
-  //           method: "POST",
-  //           cache: "no-store",
-  //           body: JSON.stringify({
-  //             partnerid: userdata.partnerid,
-  //             email_type: userdata.email_type,
-  //           }),
-  //         })
-  //       if (!partnerwelcomeSuccess) {
-  //         setProcessing(false)
-  //         return { success: false, error: partnerwelcome.message, data: null }
-  //       }
 
-  //       users.setTmpUser(partnerwelcome.user)
-  //       // setPartners(partnerwelcome.partners)
-  //       router.push(
-  //         `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
-  //       )
-  //       break
-  //     case "setpassword":
-  //       setProcessing(true)
-  //       const { data: setpassword, error: setpasswordError } = await fetchData(
-  //         RemoteEndpoints.RESETPASSWORD,
-  //         {
-  //           method: "PUT",
-  //           cache: "no-store",
-  //           body: JSON.stringify({
-  //             user_uuid: user?.uuid ?? tmpUserUUID,
-  //             password: userdata.password,
-  //             password_confirmed: userdata.password,
-  //           }),
-  //         }
-  //       )
-  //       if (setpasswordError) {
-  //         setProcessing(false)
-  //         return { success: false, error: setpasswordError, data: null }
-  //       }
-  //       setTmpUserUUID(null)
-  //       const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
-  //       const serverSession = {
-  //         status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
-  //         User: setpassword,
-  //       }
-  //       app.setStoreStates(serverSession, categories)
-  //       if (userdata.type === "existing" || userdata.type === "new")
-  //         router.push(PageRoutes.getstarted)
-  //       else router.push(PageRoutes.getstarted)
-  //       break
-  //     case "userinfo":
-  //       setProcessing(true)
-  //       const { success, error, data } = await fetchData(
-  //         RemoteEndpoints.USERINFO,
-  //         {
-  //           method: "POST",
-  //           cache: "no-store",
-  //           body: JSON.stringify({
-  //             first_name: userdata.first_name,
-  //             last_name: userdata.last_name,
-  //             company_name: userdata.company_name,
-  //             email: userdata.email,
-  //             countrycode: userdata.countrycode,
-  //             country: userdata.country,
-  //             telephone: userdata.telephone,
-  //             designation: userdata.designation,
-  //             password: userdata.password,
-  //             password_confirmed: userdata.password,
-  //           }),
-  //         }
-  //       )
-  //       if (error) {
-  //         setProcessing(false)
-  //         return { success, error, data }
-  //       }
-  //       const User = userData(data)
-  //       users.setTmpUser(User.user)
-  //       router.push(`/onboarding/verify/${User.user.uuid}/new`)
-  //       break
-  //     case "category":
-  //       const categoryResponse = updateCategory("category", userdata)
-  //       if (categoryResponse.error) {
-  //         setProcessing(false)
-  //         return categoryResponse
-  //       }
-  //       const { data: categoryData } = categoryResponse
-  //       setCurrentCategory(categoryData.category, categoryData.partner)
-  //       updatePartner(categoryData.partner)
-  //       // setUpdateStatus("category", true)
-  //       return categoryResponse
-  //       break
-  //     case "companydetail":
-  //       return updateCategory("companydetail", userdata)
-  //     case "compliance":
-  //       return updateCategory("compliance", userdata)
-  //     case "ncclicense":
-  //       return updateCategory("ncclicense", userdata)
-  //     case "nlrclicense":
-  //       return updateCategory("nlrclicense", userdata)
-  //     case "shortcode":
-  //       return updateCategory("shortcode", userdata)
-  //     case "indemnity":
-  //       return updateCategory("indemnity", userdata)
-  //     case "accountinfo":
-  //       return updateCategory("accountinfo", userdata)
-  //   }
-  // }
   // const setUpdateStatus = (stage) => {}
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 
-    const { error: resendEmailError } = await fetchData(
+    const { data: resendEmailData, error: resendEmailError } = await fetchData(
       RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
       {
         method: "POST",
@@ -455,7 +360,7 @@ const usePartners = () => {
       return setError({ verify: resendEmailError })
     }
 
-    setSuccess("Email sent successfully")
+    setSuccess(resendEmailData.message)
   }
 
   return {
@@ -465,9 +370,8 @@ const usePartners = () => {
     updatePartner,
     registerPartner,
     checkRegStatus,
-    // setUpdateStatus,
     checkUpdateStatus,
-    lastStage,
+    nextStage,
     resendEmail,
     validation,
     setValidation,

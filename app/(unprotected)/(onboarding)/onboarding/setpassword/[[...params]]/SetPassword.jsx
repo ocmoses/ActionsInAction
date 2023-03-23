@@ -54,7 +54,7 @@ function SetPassword({ params: { params } }) {
       body: JSON.stringify({
         user_uuid: data.user_uuid,
         password: data.password,
-        password_confirmed: data.password,
+        password_confirmed: data.password_confirmed,
         type: data.type,
       }),
     })
@@ -72,12 +72,12 @@ function SetPassword({ params: { params } }) {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
     }
-    app.setStoreStates(serverSession, loginData?.categories)
-    const redirect =
-      data.type === "existing" || data.type === "new"
-        ? PageRoutes.getstarted
-        : PageRoutes.getstarted
-    return router.push(redirect)
+    app.setStoreStates(serverSession, loginData?.categories, "setpassword")
+    // const redirect =
+    //   data.type === "existing"
+    //     ? PageRoutes.getstarted
+    //     : PageRoutes.dashboard
+    return router.push(PageRoutes.dashboard)
   }
 
   const handleSubmit = async (e) => {
@@ -92,16 +92,16 @@ function SetPassword({ params: { params } }) {
         }
       }
       if (error) return
-      if (data["password"].length < 8) {
+      if (data.password.length < 8) {
         setError({ password: "Your password must be at least, 8 characters" })
         return
       }
+      if (data.password !== data.password_confirmed)
+        return setError({
+          password_confirmed: "Password confirmation mismatch",
+        })
     }
     handleReset()
-    // const result = await registerPartner("setpassword", data)
-    // if (result) {
-    //   if (result?.error) setError({ setpassword: result.error })
-    // }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -131,6 +131,14 @@ function SetPassword({ params: { params } }) {
           Must be at least 8 characters, includes uppercase and lowercase
           letter, a number and a special character
         </div>
+        <TextInput
+          id="password_confirmed"
+          type="password"
+          label="Confirm your password"
+          value={data.password_confirmed}
+          onChange={handleFormChange}
+          errors={errors}
+        />
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (

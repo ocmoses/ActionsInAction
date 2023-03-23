@@ -1,4 +1,6 @@
 import { action, computed, thunk } from "easy-peasy"
+import { filterPartner } from "@/app/modules/utilities"
+
 const partners = {
   partnerID: null,
   partners: null,
@@ -17,7 +19,7 @@ const partners = {
     state.partnerCategories = null
   }),
   setPartner: action((state, partner) => {
-    state.partner = partner
+    state.partner = filterPartner(partner)
   }),
   setPartners: action((state, partners) => {
     state.partners = partners
@@ -26,13 +28,12 @@ const partners = {
     state.partnerID = partnerID
   }),
   updatePartner: action((state, partner) => {
+    filterPartner(partner, state.categories)
     state.partner = { ...state.partner, ...partner }
     const category = state.category
-    // console.log({ category })
-    // console.log("partner.categories", partner?.categories)
 
     const currentCategory = partner?.categories?.find(
-      (c) => c.uuid === category.uuid
+      (c) => c.category_uuid === category.category_uuid
     )
     // console.log("state.categories", state.categories)
     const baseCategory = state.categories?.find(
@@ -40,6 +41,7 @@ const partners = {
     )
     currentCategory.validation = baseCategory.validation
     currentCategory.category_name = baseCategory.category_name
+
     state.category = currentCategory
 
     const Partners = state.partners?.filter((p) => {

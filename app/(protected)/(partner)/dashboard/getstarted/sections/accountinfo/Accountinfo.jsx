@@ -8,47 +8,70 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
+import { Util } from "@/utils/utility"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { forms } from "@/app/modules/constants"
+import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
 
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { category, registerPartner } = usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
 
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
-    audited_account_1_doc: null,
+    audited_account_1_doc: {},
     audited_account_1_file: null,
-    audited_account_2_doc: null,
+    audited_account_2_doc: {},
     audited_account_2_file: null,
-    audited_account_3_doc: null,
+    audited_account_3_doc: {},
     audited_account_3_file: null,
-    job_evidence_4_doc: null,
-    job_evidence_4_file: null,
+    job_evidence_doc: {},
+    job_evidence_file: null,
   })
   const { title, subtitle, hand, required } = forms["accountinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-
+  const [isMasterData, setIsMasterData] = useState(false)
   useEffect(() => {
-    if (category)
+    if (category) {
+      const Category =
+        partner.master &&
+        partner.sections[partner.master.category_uuid]?.accountinfo &&
+        category.category_uuid !== partner.master.category_uuid
+          ? partner.master
+          : category
+
+      setIsMasterData(
+        partner.master &&
+          partner.sections[partner.master.category_uuid]?.accountinfo &&
+          category.category_uuid !== partner.master.category_uuid
+      )
       setData({
-        partner_uuid: category?.partner_uuid ?? "",
+        partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        audited_account_1_doc: category?.audited_account_1_doc ?? "",
+        audited_account_1_doc: Category?.audited_account_1_doc ?? {},
         audited_account_1_file: null,
-        audited_account_2_doc: category?.audited_account_2_doc ?? "",
+        audited_account_2_doc: Category?.audited_account_2_doc ?? {},
         audited_account_2_file: null,
-        audited_account_3_doc: category?.audited_account_3_doc ?? "",
+        audited_account_3_doc: Category?.audited_account_3_doc ?? {},
         audited_account_3_file: null,
-        job_evidence_doc: category?.job_evidence_doc ?? "",
+        job_evidence_doc: Category?.job_evidence_doc ?? {},
         job_evidence_file: null,
       })
+    }
   }, [category])
 
   useEffect(() => {
+    clearErrors()
     setForm("accountinfo")
     setProcessing(false)
   }, [])
@@ -56,11 +79,71 @@ export default function Accountinfo() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
+    if (
+      fieldRequired("audited_account_1_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_1_doc) &&
+      !data.audited_account_1_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_1_file: `${fieldName(
+          "audited_account_1_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("audited_account_2_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_2_doc) &&
+      !data.audited_account_2_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_2_file: `${fieldName(
+          "audited_account_2_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("audited_account_3_doc", "accountinfo", category) &&
+      Util.isEmpty(data.audited_account_3_doc) &&
+      !data.audited_account_3_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        audited_account_3_file: `${fieldName(
+          "audited_account_3_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
+    if (
+      fieldRequired("job_evidence_doc", "accountinfo", category) &&
+      Util.isEmpty(data.job_evidence_doc) &&
+      !data.job_evidence_file
+    ) {
+      scrollToTop("onboardinglayout")
+      return setError({
+        job_evidence_file: `${fieldName(
+          "job_evidence_doc",
+          "accountinfo"
+        )} is required`,
+      })
+    }
     const result = await registerPartner("accountinfo", data)
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }
-    moveToNextForm(["accountinfo"])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.accountinfo = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      return setForm(NextStage)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -75,7 +158,7 @@ export default function Accountinfo() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["accountinfo"]} />}
+          {errors && <FormErrors error={errors?.accountinfo} />}
         </div>
         <FileInputWrapper>
           <FileInput
@@ -85,6 +168,7 @@ export default function Accountinfo() {
             value={data.audited_account_1_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="audited_account_2_file"
@@ -93,6 +177,7 @@ export default function Accountinfo() {
             value={data.audited_account_2_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="audited_account_3_file"
@@ -101,6 +186,7 @@ export default function Accountinfo() {
             value={data.audited_account_3_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
           <FileInput
             id="job_evidence_file"
@@ -109,30 +195,36 @@ export default function Accountinfo() {
             value={data.job_evidence_doc}
             onChange={handleFormChange}
             errors={errors}
+            disabled={isMasterData}
           />
         </FileInputWrapper>
 
-        <div className="mt-6">
-          {processing ? (
-            <TailSpinPreloader
-              width={40}
-              iconClass="mt-6"
-              height={40}
-              fill="#efb703"
-            />
-          ) : (
-            <div className="flex items-center gap-4">
-              <ButtonPrev
-                onClick={() => moveToPrevForm("indemnity")}
-                type="button"
-                label="Back"
-                outline="yes"
-                outlinecolor="border-white"
+        {!isMasterData && (
+          <div className="mt-6">
+            {processing ? (
+              <TailSpinPreloader
+                width={40}
+                iconClass="mt-6"
+                height={40}
+                fill="#efb703"
               />
-              <ButtonNext type="submit" label="Next" />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                {/* <ButtonPrev
+                  onClick={() => moveToPrevForm("accountinfo")}
+                  type="button"
+                  label="Back"
+                  outline="yes"
+                  outlinecolor="border-white"
+                /> */}
+                <ButtonNext
+                  type="submit"
+                  label={checkUpdateStatus("accountinfo") ? "Update" : "Next"}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

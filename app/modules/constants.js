@@ -12,86 +12,69 @@ import {
 export const persistStore = true
 
 const environment = {
-  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
   STAGING: "http://10.1.44.40/api",
+  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
 }
 export const apiURL = environment.STAGING
+// export const apiURL = process.env.APIURI
 
 export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
-export const partnerFields = {
-  partnerid: "",
-  // userinfo
-  first_name: "",
-  last_name: "",
-  email: "",
-  countrycode: "234",
-  telephone: "",
-  password: "",
-  password_confirmed: "",
-
-  //  companyinfo
-  company_name: "",
-  company_role: "",
-
-  // category
-  category_id: [],
-
-  // companyinfo
-  company_name: "",
-  country: "NG",
-  company_address: "",
-  company_city: "",
-  company_state: "",
-  company_postcode: "",
-
-  // compliance
-  rc_no: "",
-  tin_no: "",
-  tin_doc: "",
-  memart_doc: "",
-  cac_doc: "",
-
-  // ncclicense
-  vas_license_id: "",
-  ncc_issue_date: "",
-  ncc_expiry_date: "",
-  ncc_doc: "",
-
-  // nlrclicense
-  nlrc_license_id: "",
-  nlrc_issue_date: "",
-  nlrc_expiry_date: "",
-  nlrc_doc: "",
-
-  // shortcode
-  shortcode: "",
-  shortcode_issue_date: "",
-  shortcode_expiry_date: "",
-  shortcode_price_issue_date: "",
-  shortcode_price_expiry_date: "",
-  shortcode_doc: "",
-  shortcode_approval_doc: "",
-
-  // indemnity
-  indemnity_no: "",
-  indemnity_issue_date: "",
-  indemnity_expiry_date: "",
-  indemnity_doc: "",
-
-  // accountinfo
-  account_name: "",
-  account_no: "",
-  bank: "",
-  audited_account_1: "",
-  audited_account_2: "",
-  audited_account_3: "",
-  progress: {},
+export const validities = {
+  ncc: "5 years",
+  nlrc_lottery: "10 years",
+  nlrc_sport_betting: "5 years",
+  nlrc_mobile_lottery: "5 years",
+  shortcode: "1 years",
+  shortcode_2: "2 years",
+  shortcode_pricing: "1 years",
+  shortcode_pricing_2: "2 years",
+  indemnity: "1 years",
 }
+export const categoryCombination = [
+  ["VAS", "RMS"],
+  ["VAS", "MKP"],
+  ["RMS", "MKP"],
+  ["AGR", "MKP"],
+]
+export const company_type = [
+  {
+    value: "co",
+    label: "Limited Company",
+  },
 
+  { value: "bn", label: "Business Name" },
+  {
+    value: "it",
+    label: "Incorporated Trustee",
+  },
+]
+export const license_type = [
+  {
+    value: "National lottery",
+    label: "National lottery",
+    description: "General lottery licence",
+  },
+
+  {
+    value: "Mobile lottery/gaming",
+    label: "Mobile lottery/gaming",
+    description: "SMS, USSD, Mobile apps",
+  },
+  {
+    value: "Sports betting permit",
+    label: "Sports betting permit",
+    description: "For sports betting service providers",
+  },
+  {
+    value: "Promotional lottery(CSPS)",
+    label: "Promotional lottery(CSPS)",
+    description: "Promotional scheme with an element of chance",
+  },
+]
 export const forms = {
   userinfo: {
     form: "userinfo",
@@ -108,7 +91,7 @@ export const forms = {
       countrycode: "Country code",
       telephone: "Telephone",
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       first_name: "First name",
@@ -119,26 +102,8 @@ export const forms = {
       telephone: "Telephone",
       designation: "Designation",
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
-  },
-  companyinfo: {
-    form: "companyinfo",
-    title: "Your company and role",
-    label: "Company information",
-    subtitle: "it'll only take a few minutes",
-    hand: "",
-    fields: { company_name: "Company name", company_role: "Company role" },
-    required: { company_name: "Company name", company_role: "Company role" },
-  },
-  category: {
-    form: "category",
-    title: "Choose a service category",
-    label: "Service category",
-    subtitle: "You'll be able to add more later",
-    hand: "",
-    fields: { category_id: "Category ID" },
-    required: { category_id: "Category ID" },
   },
   companydetail: {
     form: "companydetail",
@@ -170,15 +135,19 @@ export const forms = {
     subtitle: "",
     hand: "",
     fields: {
+      company_type: "Company type",
       rc_no: "RC Number",
       tin_no: "Tax identification number",
       tin_doc: "TIN Document",
       memart_doc: "Memart certificate",
       cac_doc: "CAC Registration Certificate",
+      company_type: "Company type",
     },
     required: {
+      company_type: "Company type",
       rc_no: "RC Number",
       tin_no: "Tax identification number",
+      company_type: "Company type",
       // tin_doc: 'TIN Document',
       // memart_doc: 'Memart certificate',
       // cac_doc: 'CAC Registration Certificate'
@@ -200,9 +169,9 @@ export const forms = {
       vas_license_id: "VAS License ID",
       ncc_issue_date: "Issuing date",
       ncc_expiry_date: "Expiry date",
-      // vas_doc: 'NCC VAS License'
+      // ncc_doc: 'NCC VAS License'
     },
-    validity: "5 years",
+    validity: "1 years",
   },
   nlrclicense: {
     form: "nlrclicense",
@@ -211,18 +180,18 @@ export const forms = {
     subtitle: "",
     hand: "",
     fields: {
+      nlrc_license_type: "License type",
       nlrc_license_id: "NLRC License ID",
       nlrc_issue_date: "Issuing date",
       nlrc_expiry_date: "Expiry date",
       nlrc_doc: "NLRC Document",
     },
     required: {
+      nlrc_license_type: "License type",
       nlrc_license_id: "NLRC License ID",
       nlrc_issue_date: "Issuing date",
       nlrc_expiry_date: "Expiry date",
-      // nlrc_doc: 'NLRC Document'
     },
-    validity: null,
   },
   shortcode: {
     form: "shortcode",
@@ -234,21 +203,18 @@ export const forms = {
       shortcode: "Short code",
       shortcode_issue_date: "Issue date",
       shortcode_expiry_date: "Expiry date",
-      shortcode_price_issue_date: "Princing Issue date",
-      shortcode_price_expiry_date: "Pricing Expiry date",
       shortcode_doc: "Short code document",
-      shortcode_approval_doc: "NCC Pricing approval",
+      pricing_issue_date: "Princing Issue date",
+      pricing_expiry_date: "Pricing Expiry date",
+      pricing_doc: "NCC Pricing approval",
     },
     required: {
       shortcode: "Short code",
       shortcode_issue_date: "Issue date",
       shortcode_expiry_date: "Expiry date",
-      shortcode_price_issue_date: "Princing Issue date",
-      shortcode_price_expiry_date: "Pricing Expiry date",
-      // shortcode_doc: 'Short code document',
-      // shortcode_approval_doc: 'NCC Pricing approval'
+      pricing_issue_date: "Princing Issue date",
+      pricing_expiry_date: "Pricing Expiry date",
     },
-    validity: null,
   },
   indemnity: {
     form: "indemnity",
@@ -266,7 +232,6 @@ export const forms = {
       indemnity_no: "Professional indemnity insurance number",
       indemnity_issue_date: "Issuing date",
       indemnity_expiry_date: "Expiry date",
-      // indemnity_doc: 'Professional indemnity insurance Document'
     },
     validity: null,
   },
@@ -280,9 +245,10 @@ export const forms = {
       account_name: "Account name",
       account_no: "Account number",
       bank: "Bank",
-      audited_account_1: "Audited account 1",
-      audited_account_2: "Audited account 2",
-      audited_account_3: "Audited account 3",
+      audited_account_1_doc: "Audited account 1",
+      audited_account_2_doc: "Audited account 2",
+      audited_account_3_doc: "Audited account 3",
+      job_evidence_doc: "Audited account 3",
     },
     required: {
       account_name: "Account name",
@@ -314,11 +280,11 @@ export const forms = {
     hand: "",
     fields: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
   },
   confirmcompanyinfo: {
@@ -376,77 +342,226 @@ export const forms = {
     hand: "",
   },
 }
-const fieldNames = {
-  userinfo: {
-    first_name: "First name",
-    last_name: "Last name",
-    email: "Email",
-    countrycode: "Country code",
-    telephone: "Telephone",
-    password: "Password",
-    password_confirmed: "Repeat password",
-  },
-  companyinfo: {
-    company_name: "Company name",
-    company_role: "Company role",
-  },
-  category: {
-    category_id: "Category ID",
-  },
+export const complianceRequirements = {
   companydetail: {
-    company_name: "Company name",
-    country: "Country",
-    company_address: "Company address",
-    company_city: "Company city",
-    company_state: "Company state",
-    company_postcode: "Company postcode",
+    company_name: {
+      title: "Company name",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    country: {
+      title: "Country",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    company_address: {
+      title: "Company address",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    company_city: {
+      title: "Company city",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    company_state: {
+      title: "Company state",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    company_postcode: {
+      title: "Company postcode",
+      categories: [],
+      type: "form",
+    },
   },
   compliance: {
-    rc_no: "RC Number",
-    tin_no: "Tax identification number",
-    tin_doc: "TIN Document",
-    memart_doc: "Memart certificate",
-    cac_doc: "CAC Registration Certificate",
+    company_type: {
+      title: "Company type",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    rc_no: {
+      title: "RC Number",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    tin_no: {
+      title: "Tax identification number",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    tin_doc: {
+      title: "TIN Document",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    memart_doc: {
+      title: "Memart certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    cac_doc: {
+      title: "CAC Registration Certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "form",
+    },
+    valid_tin: {
+      title: "Valid TIN",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    valid_cac: {
+      title: "Valid CAC",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    cac_data: {
+      title: "CAC Registration Certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
+    tin_data: {
+      title: "CAC Registration Certificate",
+      categories: ["VAS", "RMS", "AGR", "MKP"],
+      type: "hidden",
+    },
   },
   ncclicense: {
-    vas_license_id: "VAS License ID",
-    ncc_issue_date: "Issuing date",
-    ncc_expiry_date: "Expiry date",
-    ncc_doc: "NCC VAS License",
+    vas_license_id: {
+      title: "VAS License ID",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    ncc_issue_date: {
+      title: "Issuing date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    ncc_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    ncc_doc: {
+      title: "NCC VAS License document",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
   },
   nlrclicense: {
-    nlrc_license_id: "NLRC License ID",
-    nlrc_issue_date: "Issuing date",
-    nlrc_expiry_date: "Expiry date",
-    nlrc_doc: "NLRC Document",
+    nlrc_license_type: {
+      title: "NLRC License type",
+      categories: ["AGR"],
+      type: "form",
+    },
+    nlrc_license_id: {
+      title: "NLRC License ID",
+      categories: ["AGR"],
+      type: "form",
+    },
+    nlrc_issue_date: {
+      title: "Issuing date",
+      categories: ["AGR"],
+      type: "form",
+    },
+    nlrc_expiry_date: {
+      title: "Expiry date",
+      categories: ["AGR"],
+      type: "form",
+    },
+    nlrc_doc: {
+      title: "NLRC Document",
+      categories: ["AGR"],
+      type: "form",
+    },
   },
   shortcode: {
-    shortcode: "Short code",
-    shortcode_issue_date: "Issue date",
-    shortcode_expiry_date: "Expiry date",
-    shortcode_price_issue_date: "Princing Issue date",
-    shortcode_price_expiry_date: "Pricing Expiry date",
-    shortcode_doc: "Short code document",
-    shortcode_approval_doc: "NCC Pricing approval",
+    shortcode_doc: {
+      title: "Short code document",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+    shortcode: {
+      title: "Short code",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    shortcode_issue_date: {
+      title: "Issue date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+    shortcode_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+
+    shortcode_price_issue_date: {
+      title: "Princing Issue date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    shortcode_price_expiry_date: {
+      title: "Pricing Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    shortcode_pricing_doc: {
+      title: "NCC Pricing approval",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
   },
   indemnity: {
-    indemnity_no: "Professional indemnity insurance number",
-    indemnity_issue_date: "Issuing date",
-    indemnity_expiry_date: "Expiry date",
-    indemnity_doc: "Professional indemnity insurance Document",
+    indemnity_no: {
+      title: "Professional indemnity insurance number",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    indemnity_issue_date: {
+      title: "Issuing date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    indemnity_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    indemnity_doc: {
+      title: "Professional indemnity insurance Document",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
   },
   accountinfo: {
-    account_name: "Account name",
-    account_no: "Account number",
-    bank: "Bank",
-    audited_account_1: "Audited account 1",
-    audited_account_2: "Audited account 2",
-    audited_account_3: "Audited account 3",
+    audited_account_1_doc: {
+      title: "Audited account 1",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    audited_account_2_doc: {
+      title: "Audited account 2",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    audited_account_3_doc: {
+      title: "Audited account 3",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    job_evidence_doc: {
+      title: "Evidence of 3 Jobs done",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
   },
 }
 export const profileMenu = [
-  "companydetail",
   "compliance",
+  "companydetail",
   "ncclicense",
   "nlrclicense",
   "shortcode",

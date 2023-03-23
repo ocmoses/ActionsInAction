@@ -4,16 +4,16 @@ import { createHttpOnlyCookie } from "@/app/modules/utilities"
 import { getCategories } from "@/app/modules/categories"
 
 const doLogin = async (body, req, res) => {
-  const response = await fetch(RemoteEndPoints.LOGIN, {
-    method: "POST",
+  const response = await fetch(RemoteEndPoints.RESETPASSWORD, {
+    method: "PUT",
     headers: {
+      apikey: `${process.env.APIKEY}`,
       "Content-Type": "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
     body: JSON.stringify(body),
   })
-  console.log("URL", RemoteEndPoints.LOGIN)
   if (response) {
     const result = await response.json()
     console.log({ result })
@@ -39,7 +39,7 @@ const doLogin = async (body, req, res) => {
       }
     }
   } else {
-    return { success: false, error: "An error was encountered", data: null }
+    return { success: false, error: "AN error was encountered", data: null }
   }
 }
 export default async function handler(req, res) {
@@ -49,16 +49,13 @@ export default async function handler(req, res) {
       return
     }
     const body = JSON.parse(req.body)
-    console.log("URL", RemoteEndPoints.LOGIN)
-    const loginData = await doLogin(body, req, res)
-    console.log({ loginData })
-    const categoriesData = await getCategories(process.env.APIKEY)
-    console.log({ categoriesData })
+
+    const loginData = doLogin(body, req, res)
+    const categoriesData = getCategories(process.env.APIKEY)
 
     // Wait for the promises to resolve
     const [User, categories] = await Promise.all([loginData, categoriesData])
     User.categories = categories
-    // console.log("Login User", User)
     return res.status(200).json({ success: true, error: null, data: User })
   } catch (error) {
     console.log({ error })

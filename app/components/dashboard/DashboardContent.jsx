@@ -2,13 +2,15 @@
 import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
 import CategoryCard from "@/app/components/dashboard/CategoryCard"
 import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
-import UserPercentage from "@/app/components/UserPercentage"
-import Button from "@/app/components/form/Button"
+import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
 import OnboardingLayout from "./OnboardingLayout"
-
+import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
+import RemoteEndpoints from "@/app/modules/endpoints"
+import Axios from "@/app/modules/axios"
 import { useState, useEffect, useRef } from "react"
-import { Util } from "@/app/modules/utilities"
+import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
+import { TailSpinPreloader } from "@/app/components/Icons"
 
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -16,12 +18,19 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import Image from "next/image"
 
-export default function GetStarted({ data }) {
+export default function GetStarted({ type }) {
   const {
     session: { user },
   } = useUsers()
-  const { categories, partner, setValidationRules, setCurrentCategory } =
-    usePartners()
+  const {
+    partner,
+    category,
+    categories,
+    updatePartner,
+    setValidationRules,
+    setCurrentCategory,
+    nextStage,
+  } = usePartners()
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -29,18 +38,16 @@ export default function GetStarted({ data }) {
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
-  const {
-    setForm,
-    setProcessing,
-    setFormSteps,
-    moveToNextForm,
-    setActiveCategory,
-  } = useProcessing()
-  const [{ errors, clearErrors }] = useErrors(null)
+  const [allowedCategories, setAllowedCategories] = useState(false)
+
+  const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
+    useProcessing()
+  const [{ errors, setError, success, setSuccess, clearErrors }] =
+    useErrors(null)
   useEffect(() => {
     setCategoriesData(categories)
+    setAllowedCategories(AllowedCategories(categories))
   }, [categories])
-
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -61,6 +68,7 @@ export default function GetStarted({ data }) {
   useEffect(() => {
     const partnerCat = []
     const partnerActiveCat = []
+    filterPartner(partner, categoriesData)
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((category) => {
@@ -69,25 +77,21 @@ export default function GetStarted({ data }) {
             (c) => c.uuid === category.category_uuid
           )
           partnerCat.push({
+            ...category,
             category_name: mainCategory?.category_name,
-            uuid: category.uuid,
-            user_uuid: category.user_uuid,
-            partner_uuid: category.partner_uuid,
-            uuid: category.uuid,
-            percentage: category.percentage,
             validation: mainCategory?.validation,
           })
         })
       }
     }
     const newCatArray = categoriesData?.filter(
-      (category) => !partnerActiveCat.includes(category.uuid)
+      (category) =>
+        !partnerActiveCat.includes(category.uuid) &&
+        partner.allowedCategories.includes(category.category_code)
     )
-    setPartnerActiveCategories(
-      partnerActiveCat.length ? newCatArray : categoriesData
-    )
+    setPartnerActiveCategories(newCatArray)
     setPartnerCategories(partnerCat)
-  }, [partner, categoriesData])
+  }, [partner, categoriesData, category])
 
   const toggleProgress = () => {
     setShowProgress((oldState) => !oldState)
@@ -98,11 +102,14 @@ export default function GetStarted({ data }) {
   const continueRegistration = (uuid) => {
     clearErrors()
     const category = partner?.categories?.find((cat) => cat.uuid === uuid)
+
     if (category) {
+      //  CHECK IF MASTER DATA EXISTS
+      const { nextstage: NextStage } = nextStage(category, partner)
       setCurrentCategory(category, partner)
-      moveToNextForm(["category"])
       setIsOnboarding(true)
       setIsOpen(false)
+      return setForm(NextStage)
     }
   }
   const scrollpage = () => {
@@ -110,6 +117,48 @@ export default function GetStarted({ data }) {
       top: 0,
       behavior: "smooth",
     })
+  }
+  const [isSaving, setIsSaving] = useState(false)
+  const finishApplication = async () => {
+    if (isSaving) return
+    clearErrors()
+    setIsSaving(true)
+    try {
+      const result = await Axios.post(
+        RemoteEndpoints.START_CONTRACT,
+        { partner_uuid: partner?.uuid },
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+          },
+          timeout: process.TIMEOUT,
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer",
+        }
+      ).catch((error) => {
+        console.log(error)
+        setIsSaving(false)
+        return setError({ dashboard: "Something went wrong" })
+      })
+      setIsSaving(false)
+      if (result) {
+        const { success, data } = result
+        if (success) {
+          updatePartner(data?.partner)
+          setSuccess("Your application was submited successfully")
+        } else {
+          return setError({ dashboard: data.message })
+        }
+      } else {
+        return setError({
+          dashboard: "Cannot reach the server. Please check your connection",
+        })
+      }
+    } catch (err) {
+      console.log({ err })
+      setIsSaving(false)
+      return setError({ dashboard: "Something went wrong" })
+    }
   }
   return (
     <>
@@ -130,76 +179,94 @@ export default function GetStarted({ data }) {
           <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
             <div className="w-full pt-[72px]">
               {user?.first_name && (
-                <h2 className="text-4xl font-bold text-white text-center md:text-start">
+                <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
                   Hello, {user.first_name}
                 </h2>
               )}
-              <p className="text-[#999999] text-center md:text-start">
-                Choose a partner category that best suits your service
-              </p>
-              {errors && errors["category"] && (
-                <div className="mb-6">
-                  <FormErrors error={errors["getStarted"]} />
-                </div>
-              )}
-              {partnerCategories && (
-                <div
-                  className={`flex flex-col gap-4 max-w-[837px] mt-16 w3-animate-opacity
-           `}
-                >
-                  {partnerCategories.map(
-                    (progress) =>
-                      progress.category_name && (
-                        <div
-                          onClick={() => continueRegistration(progress.uuid)}
-                          key={progress.uuid}
-                          className="flex flex-col cursor-pointer items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl"
-                        >
-                          <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
-                            <div className="flex justify-center items-center">
-                              <UserPercentage
-                                size={86}
-                                thickness={2}
-                                textsize={20}
-                                percent={progress.percentage}
-                              />
-                            </div>
-                            <div className="flex flex-col gap-0 justify-center items-center sm:items-start h-full">
-                              <span className="text-sm text-[#999999]">
-                                In progress
-                              </span>
-                              <span className="text-white text-center md:text-left font-bold">
-                                {progress.category_name}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="sm:hidden md:flex gap-6 justify-center md:justify-end items-center">
-                            {progress.percentage < 100 ? (
-                              <Button
-                                label="Finish up"
-                                noicon="yes"
-                                textsizecss="text-[13px] md:text-sm"
-                              />
-                            ) : (
-                              <div className="flex justify-center">
-                                <Button
-                                  onClick={() =>
-                                    continueRegistration(progress.uuid)
-                                  }
-                                  label="Detail"
-                                  outline="yes"
-                                  noicon="yes"
-                                  textsizecss="text-[13px] md:text-sm"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )
+              {partner?.onboarding_type === "new" && (
+                <div>
+                  {!partner?.categories?.length ? (
+                    <>
+                      <p className="mb-12 text-[#999999] max-w-[500px]">
+                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Explore advanced analytics, reporting, and dedicated
+                        support to grow your business today.
+                      </p>
+                      <p className="text-[#999999] text-center md:text-start">
+                        Choose a partner category that best suits your service
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#999999] text-center md:text-start">
+                      {partner?.contract_status === "not_started"
+                        ? "Complete your setup to get started!"
+                        : "Your application is currently being reviewed"}
+                    </p>
                   )}
                 </div>
               )}
+              {partner?.onboarding_type === "migrated" && (
+                <>
+                  {partner?.is_login === "no" ? (
+                    <>
+                      <p className="mb-12 text-[#999999] max-w-[500px]">
+                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Explore advanced analytics, reporting, and dedicated
+                        support to grow your business today.
+                      </p>
+                      <p className="text-[#999999] text-center md:text-start">
+                        Review your details to get started
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#999999] text-center md:text-start">
+                      {partner?.contract_status === "not_started"
+                        ? "Complete your setup to get started!"
+                        : "Your application is currently being reviewed"}
+                    </p>
+                  )}
+                </>
+              )}
 
+              {partnerCategories && (
+                <PartnerCategories
+                  partner={partner}
+                  partnerCategories={partnerCategories}
+                  type={type}
+                  onClick={continueRegistration}
+                  categories={categoriesData}
+                />
+              )}
+              {success && (
+                <div className="my-6">
+                  <FormErrors success={success} align="center" />
+                </div>
+              )}
+              {partner?.categories?.length > 0 &&
+                !partner?.edittable &&
+                partner?.contract_status === "not_started" && (
+                  <div className="flex flex-col my-12 justify-center items-center">
+                    {errors?.dashboard && (
+                      <div className="my-6">
+                        <FormErrors error={errors.dashboard} />
+                      </div>
+                    )}
+                    {isSaving ? (
+                      <TailSpinPreloader
+                        width={40}
+                        height={40}
+                        fill="#efb703"
+                      />
+                    ) : (
+                      <Button
+                        onClick={finishApplication}
+                        label="Finish Application"
+                        paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                        textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                      />
+                    )}
+                  </div>
+                )}
               {partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (
                   <div
@@ -253,18 +320,22 @@ export default function GetStarted({ data }) {
                 )}
               {!showProgress && (
                 <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
-                  {partnerActiveCategories &&
-                    partnerActiveCategories?.length > 0 &&
-                    partnerActiveCategories.map((category) => (
-                      <CategoryCard
-                        key={category.uuid}
-                        category={category}
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                        tmpCat={tmpCat}
-                        setTmpCat={setTmpCat}
-                      />
-                    ))}
+                  {
+                    // !partner?.edittable &&
+                    partnerActiveCategories &&
+                      partnerActiveCategories?.length > 0 &&
+                      partnerActiveCategories.map((category) => (
+                        <CategoryCard
+                          key={category.uuid}
+                          category={category}
+                          isOpen={isOpen}
+                          setIsOpen={setIsOpen}
+                          tmpCat={tmpCat}
+                          setTmpCat={setTmpCat}
+                          disabled={partner?.edittable}
+                        />
+                      ))
+                  }
                 </div>
               )}
             </div>
@@ -293,7 +364,7 @@ export default function GetStarted({ data }) {
                   </div>
                   <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
                     <Image
-                      src={"/assets/icons/graphics-1.png"}
+                      src={"/assets/icons/graphics-2.png"}
                       height={147}
                       width={259}
                       className="w-full"
@@ -304,14 +375,15 @@ export default function GetStarted({ data }) {
                         Discover the right Metrics
                       </h4>
                       <p className="text-sm text-[#999999] text-center lg:text-start">
-                        Talk to our partner portal team and learn more about
-                        what you can do
+                        Learn to monitor system performance by selecting
+                        relevant metrics, collecting and analyzing data that
+                        matters most to you.
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-col gap-0  items-center lg:items-start justify-start max-w-md">
                     <Image
-                      src={"/assets/icons/graphics-1.png"}
+                      src={"/assets/icons/graphics-3.png"}
                       height={147}
                       width={259}
                       className="w-full"
@@ -322,8 +394,9 @@ export default function GetStarted({ data }) {
                         Write Custom Codes
                       </h4>
                       <p className="text-sm text-[#999999] text-center lg:text-start">
-                        Talk to our partner portal team and learn more about
-                        what you can do
+                        Build custom code tailored to your unique needs,
+                        integrating with existing systems and creating powerful
+                        new functionality from scratch.
                       </p>
                     </div>
                   </div>

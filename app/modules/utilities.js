@@ -1,6 +1,11 @@
 import CryptoJS from "crypto-js"
 import { setCookie } from "cookies-next"
 import moment from "moment"
+import { NextEndPoints } from "./endpoints"
+import {
+  categoryCombination,
+  complianceRequirements,
+} from "@/app/modules/constants"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -59,15 +64,7 @@ export function inputDate(date) {
     ("0" + d.getDate()).slice(-2)
   )
 }
-export const validateExpiryDate = (issue_date, expiry_date, validity) => {
-  console.log({ issue_date })
-  console.log({ expiry_date })
-  console.log({ validity })
-  const today = moment().format("YYYY-MM-DD")
-  if (moment(issue_date).isSame(today))
-    return "Issue date entry cannot be today's date"
-  if (moment(issue_date).isSameOrAfter(expiry_date))
-    return "Expiry date cannot be earlier than or equal to issue date"
+export const getValidityTerm = (validity) => {
   if (validity) {
     const Validity = validity.split(" ")
     const period = parseInt(Validity[0])
@@ -131,8 +128,20 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
         term = "seconds"
         break
     }
-    console.log({ period })
-    console.log({ term })
+    return { period, term }
+  }
+  return null
+}
+export const validateExpiryDate = (issue_date, expiry_date, validity) => {
+  const today = moment().format("YYYY-MM-DD")
+  if (moment(issue_date).isSameOrAfter(today))
+    return "Issue date entry cannot be today or later"
+  if (moment(expiry_date).isSameOrBefore(today))
+    return "Expiry date entry cannot be today or earlier"
+  if (moment(issue_date).isSameOrAfter(expiry_date))
+    return "Expiry date cannot be earlier than or equal to issue date"
+  if (validity) {
+    const { period, term } = getValidityTerm(validity)
     if (period) {
       const expected_end_date = moment(issue_date)
         .add(period, term)
@@ -143,6 +152,33 @@ export const validateExpiryDate = (issue_date, expiry_date, validity) => {
           "Expiry date cannot be beyond " +
           moment(expected_end_date).format("DD/MM/YYYY")
         )
+    }
+  }
+  return null
+}
+export const getValidityRange = (validity) => {
+  const today = moment().format("YYYY-MM-DD")
+  if (validity) {
+    const { period, term } = getValidityTerm(validity)
+    if (period) {
+      const min_start_date = moment(today)
+        .subtract(period, term)
+        .format("YYYY MM DD")
+
+      const max_end_date = moment(today).add(period, term).format("YYYY MM DD")
+      var Yesterday = new Date()
+      var Today = new Date()
+      var Tomorrow = new Date()
+      Yesterday.setDate(Yesterday.getDate() - 1)
+      Today.setDate(Today.getDate())
+      Tomorrow.setDate(Tomorrow.getDate() + 1)
+      return {
+        min_start_date,
+        max_end_date,
+        yesterday: Yesterday,
+        today: Today,
+        tomorrow: Tomorrow,
+      }
     }
   }
   return null
@@ -162,7 +198,6 @@ export async function proxyFetch(url, options) {
     return { success: null, error: err.message, data: null }
   }
 }
-
 export const isArray = (data) => {
   return Array.isArray(data)
 }
@@ -204,43 +239,39 @@ export const Util = {
   },
 }
 export const scrollToTop = (id) => {
-  var contentBody = document.getElementById(id ?? "partnerdashboard")
-  if (contentBody) {
-    contentBody.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
-  }
+  var element = document.getElementById(id ?? "partnerdashboard")
+  if (element) element.scrollIntoView({ behavior: "smooth" })
 }
 export async function logout() {
-  const response = await fetch("/api/users/logout")
+  const response = await fetch(NextEndPoints.LOGOUT)
   await response.json()
   return { success: true }
 }
-export function userData(data, partnerID) {
-  if (!data?.partner && data?.partners?.length > 0) {
-    if (partnerID) {
-      const Partner = data.partners.find((p) => p.uuid === partnerID)
-      if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
-    } else {
-      data.partner = { ...data.partners[0] }
+export function userData(data, partnerID, categories) {
+  if (data?.partners?.length > 0) {
+    data?.partners.map((p) => {
+      p = filterPartner(p, categories)
+    })
+    if (!data?.partner && data?.partners?.length > 0) {
+      if (partnerID) {
+        const Partner = data.partners.find((p) => p.uuid === partnerID)
+        if (!Util.isEmpty(Partner)) data.partner = { ...Partner }
+      } else {
+        data.partner = { ...data.partners[0] }
+      }
     }
   }
-  // delete data.profile_status
-  // delete data.percent_complete
-  // delete data.profile_stage
   delete data.login_token
   return {
-    // partners,
     partnerID,
     ...data,
   }
 }
-export const createHttpOnlyCookie = (data, req, res, partnerID) => {
+export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
   const authToken = data?.login_token?.access_token
   // const maxAge = data?.login_token?.expires_in
   const maxAge = 60 * 60 * 24
-  const User = userData(data, partnerID)
+  const User = userData(data, partnerID, categories)
   // console.log({ User })
   if (authToken) {
     // SET COOKIES
@@ -266,18 +297,6 @@ export const createHttpOnlyCookie = (data, req, res, partnerID) => {
       path: "/",
       sameSite: "strict",
     })
-    // if (User.partner.uuid) {
-    //   const encryptedPartnerid = Encrypt(`${User.partner.uuid}`)
-    //   setCookie("partnerid", encryptedPartnerid, {
-    //     req,
-    //     res,
-    //     maxAge: maxAge ?? 60 * 60 * 24 * 365, // would expire after 15 minutes
-    //     httpOnly: true,
-    //     signed: true,
-    //     path: "/",
-    //     sameSite: "strict",
-    //   })
-    // }
   }
   return { User, authToken }
 }
@@ -292,7 +311,6 @@ export const sanitizeSegments = (segments) => {
 }
 export const getInitials = (fullname) => {
   if (!fullname) return ""
-  console.log({ fullname })
   const Names = fullname.split(" ")
   const firstName = Names[0] ?? ""
   const lastName = Names[1] ?? ""
@@ -300,4 +318,192 @@ export const getInitials = (fullname) => {
     lastName ? lastName[0] : ""
   }`
   return initials
+}
+export const getFileSize = (size) => {
+  if (size < 1024) return { size, unit: "kb" }
+  if (size >= 1024 && size < 1024 * 1024)
+    return { size: size / 1024, unit: "mb" }
+  if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024, unit: "gb" }
+  if (size >= 1024 * 1024 * 1024 && size < 1024 * 1024 * 1024 * 1024)
+    return { size: size / 1024 / 1024 / 1024, unit: "tb" }
+}
+export const getFileSizeText = (size) => {
+  if (size < 1024) return `${Math.ceil(size * 100) / 100}B`
+  if (size < 1024 * 1024) return `${Math.ceil((size / 1024) * 100) / 100}KB`
+  if (size < 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024) * 100) / 100}MB`
+  if (size < 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024) * 100) / 100}GB`
+  if (size < 1024 * 1024 * 1024 * 1024 * 1024)
+    return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
+}
+
+export const getNextStage = (category, partner) => {
+  if (!category?.profile_stage) return { nextstage: null }
+  if (!category?.validation) return { nextstage: null }
+  const progress = category.profile_stage
+  const validation = category.validation
+  let nextstage = null
+  const Stages = [
+    "userinfo",
+    "category",
+    "compliance",
+    "companydetail",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ]
+
+  Stages.map((stage) => {
+    if (!nextstage && validation[stage]) {
+      if (
+        (validation[stage] == "r" || validation[stage] == "o") &&
+        (!progress[stage] || parseInt(progress[stage]) === 0)
+      ) {
+        // nextstage = stage
+        if (
+          !(
+            partner.master &&
+            partner.master.category_uuid !== category.category_uuid &&
+            partner.sections[partner.master.category_uuid] &&
+            partner.sections[partner.master.category_uuid][stage]?.completed
+          )
+        ) {
+          nextstage = stage
+        }
+      }
+    }
+  })
+  if (!nextstage) nextstage = "review"
+  return { nextstage }
+}
+export const AllowedCategories = (category_codes) => {
+  // category_codes = ["VAS"]
+  const combi = categoryCombination.filter((srv) =>
+    category_codes?.every((r) => srv.includes(r))
+  )
+  const Combination = []
+  combi.map((c) => {
+    Combination.push(...c)
+  })
+  const possible = [...new Set(Combination)]
+  return possible.filter((p) => !category_codes?.includes(p))
+}
+// Filter partner info hook
+export const filterPartner = (partnerInfo, Categories) => {
+  if (partnerInfo) {
+    const categories = Categories?.data ? Categories?.data : Categories
+    const partnercategories = partnerInfo?.categories?.sort((s1, s2) =>
+      s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
+    )
+
+    const registeredCategories = []
+    const sections = {}
+    let masterset = false
+    let edittable = false
+    partnerInfo.master = null
+    const PartnerCategories = []
+    if (partnercategories) {
+      if (partnercategories?.length > 0) {
+        partnercategories?.map((category, index) => {
+          if (category) {
+            const sysCategory = categories?.find(
+              (c) => c.uuid === category.category_uuid
+            )
+            category.position = index + 1
+            if (category.status === "open") edittable = true
+            if (sysCategory) {
+              category.category_code = sysCategory.category_code
+              category.validation = sysCategory.validation
+              registeredCategories.push(sysCategory.category_code)
+            }
+            const validation = category.validation
+            sections[category.category_uuid] = {
+              status: category.status,
+              status_date: category.status_date,
+            }
+            // Build master category
+            for (const section in complianceRequirements) {
+              if (validation && validation[section]) {
+                if (
+                  validation[section] === "r" ||
+                  validation[section] === "o"
+                ) {
+                  for (const key in complianceRequirements[section]) {
+                    if (
+                      typeof sections[category.category_uuid][section] ===
+                      "undefined"
+                    ) {
+                      sections[category.category_uuid][section] = {
+                        fields: {},
+                        status: null,
+                        completed: false,
+                      }
+                    }
+                    sections[category.category_uuid][section].fields[key] =
+                      category[key]
+                  }
+                  sections[category.category_uuid][section].completed =
+                    category.profile_stage[section] === "1"
+                  sections[category.category_uuid][section].status =
+                    validation[section]
+                }
+              }
+            }
+
+            if (!masterset && category.status !== "open") {
+              sections[category.category_uuid].master = true
+              category.master = true
+              partnerInfo.master = category
+              masterset = true
+            }
+          }
+          PartnerCategories.push(category)
+        })
+        partnerInfo.categories = PartnerCategories
+        partnerInfo?.categories?.map((category) => {
+          if (category) {
+            if (
+              partnerInfo.master &&
+              category.category_uuid !== partnerInfo.master.category_uuid
+            ) {
+              const profile_stage = {
+                ...category.profile_stage,
+              }
+              for (const pstage in partnerInfo.master.profile_stage) {
+                if (partnerInfo.master.profile_stage[pstage])
+                  profile_stage[pstage] =
+                    partnerInfo.master.profile_stage[pstage]
+              }
+              category.profile_stage = profile_stage
+            }
+          }
+        })
+      }
+      partnerInfo.sections = sections
+      partnerInfo.edittable = edittable
+      partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
+    }
+  }
+  return partnerInfo
+}
+export const ValidateField = (field, stage, data, category) => {
+  const value = data[field]
+  fieldRequired(field, stage, category)
+  if (!value && fieldRequired(field, stage, category))
+    return `${fieldName(field, stage)} is required`
+}
+export const fieldRequired = (field, stage, category) => {
+  const categories = complianceRequirements[stage][field]?.categories
+  return (
+    category.category_code &&
+    categories?.length > 0 &&
+    categories?.includes(category.category_code)
+  )
+}
+export const fieldName = (field, stage) => {
+  return complianceRequirements[stage][field].title
 }

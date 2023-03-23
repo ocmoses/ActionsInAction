@@ -85,8 +85,5 @@ server {
 #	location / {
 #		try_files $uri $uri/ =404;
 #	}
-<<<<<<< HEAD
 #}
-=======
 #}
->>>>>>> c953d9b409aabdc999ab69bc4f80f1b6eeddd504

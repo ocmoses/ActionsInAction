@@ -11,7 +11,7 @@ import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import Image from "next/image"
-import { outputDate } from "app/modules/utilities"
+import { outputDate, getNextStage } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -32,8 +32,6 @@ function Shortcode() {
     usePartners()
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.shortcode)
-
-  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -145,8 +143,10 @@ function Shortcode() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
+    const { nextstage: NextStage } = nextStage(category, partner)
+    return setForm(NextStage)
     if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm([NextStage, true])
+    return moveToNextForm([NextStage])
   }
   const handleShortcodeFormChange = (e) => {
     removeError(e.target.id)

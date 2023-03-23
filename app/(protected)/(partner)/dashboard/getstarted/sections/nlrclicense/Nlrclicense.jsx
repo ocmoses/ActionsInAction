@@ -33,8 +33,6 @@ function NlrcLicense() {
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.nlrc_lottery)
 
-  const { nextstage: NextStage } = nextStage(category, partner)
-
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -120,9 +118,10 @@ function NlrcLicense() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ nlrclicense: result.error })
     }
-
+    const { nextstage: NextStage } = nextStage(category, partner)
+    return setForm(NextStage)
     if (NextStage === "review") return moveToNextForm(["review", true])
-    moveToNextForm([NextStage, true])
+    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

@@ -17,7 +17,7 @@ import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner } = usePartners()
+  const { partner, category, registerPartner, nextStage } = usePartners()
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -127,7 +127,11 @@ export default function Accountinfo() {
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }
-    moveToNextForm(["accountinfo"])
+
+    const { nextstage: NextStage } = nextStage(category, partner)
+    return setForm(NextStage)
+    if (NextStage === "review") return moveToNextForm(["review", true])
+    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

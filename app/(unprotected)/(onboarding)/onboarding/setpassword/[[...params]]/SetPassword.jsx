@@ -54,12 +54,11 @@ function SetPassword({ params: { params } }) {
       body: JSON.stringify({
         user_uuid: data.user_uuid,
         password: data.password,
-        password_confirmed: data.password,
+        password_confirmed: data.password_confirmed,
         type: data.type,
       }),
     })
     const result = await response.json()
-    console.log({ result })
     const { data: loginData } = result
     if (!loginData) {
       setProcessing(false)
@@ -93,10 +92,14 @@ function SetPassword({ params: { params } }) {
         }
       }
       if (error) return
-      if (data["password"].length < 8) {
+      if (data.password.length < 8) {
         setError({ password: "Your password must be at least, 8 characters" })
         return
       }
+      if (data.password !== data.password_confirmed)
+        return setError({
+          password_confirmed: "Password confirmation mismatch",
+        })
     }
     handleReset()
   }
@@ -128,6 +131,14 @@ function SetPassword({ params: { params } }) {
           Must be at least 8 characters, includes uppercase and lowercase
           letter, a number and a special character
         </div>
+        <TextInput
+          id="password_confirmed"
+          type="password"
+          label="Confirm your password"
+          value={data.password_confirmed}
+          onChange={handleFormChange}
+          errors={errors}
+        />
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (

@@ -30,16 +30,20 @@ function UserInfo({ designations }) {
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
 
   const [data, setData] = useState({
-    first_name: "",
-    last_name: "",
+    first_name: process.env.NODE_ENV === "production" ? "" : "Prince",
+    last_name: process.env.NODE_ENV === "production" ? "" : "Test",
     email: "",
-    company_name: "",
-    designation: "",
+    company_name: process.env.NODE_ENV === "production" ? "" : "Mtn Nigeria",
+    designation:
+      process.env.NODE_ENV === "production"
+        ? ""
+        : "21d3cc28-91ef-11ed-bd03-acde48001122",
     countrycode: "234",
     country: "NG",
-    telephone: "",
-    password: "",
-    password_confirmed: "",
+    telephone: process.env.NODE_ENV === "production" ? "" : "080234561",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+    password_confirmed:
+      process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
 
   useEffect(() => {
@@ -116,7 +120,7 @@ function UserInfo({ designations }) {
       })
     if (data["password"] !== data.password_confirmed)
       return setError({
-        password: "Password confirmation mismatch",
+        password_confirmed: "Password confirmation mismatch",
       })
     if (data["telephone"].length < 6 || data["telephone"].length > 11)
       return setError({ telephone: "Your telephone is not valid" })

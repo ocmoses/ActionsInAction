@@ -96,8 +96,6 @@ const useRegistration = () => {
       setProcessing(false)
       return { success: false, error: data.message, data: null }
     }
-    partners.updatePartner(data.partner)
-    // setUpdateStatus(section, true)
     return { success: true, error: null, data: data }
   }
   return { register, updateCategory }

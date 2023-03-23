@@ -127,7 +127,7 @@ export default function Accountinfo() {
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }
-    moveToNextForm(["accountinfo", category])
+    moveToNextForm(["accountinfo"])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

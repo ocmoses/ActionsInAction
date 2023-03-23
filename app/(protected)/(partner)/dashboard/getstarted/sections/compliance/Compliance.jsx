@@ -52,7 +52,7 @@ function Compliance() {
     company_type: "co",
     tin_data: {},
     cac_data: {},
-    valid_cac: "no",
+    valid_cac: "yes",
     valid_tin: "no",
   })
   const { title, subtitle, hand, fields } = forms["compliance"]
@@ -86,7 +86,7 @@ function Compliance() {
         company_type: Category?.company_type ?? "co",
         tin_data: Category?.tin_data ?? {},
         cac_data: Category?.cac_data ?? {},
-        valid_cac: Category?.valid_cac ?? "no",
+        valid_cac: Category?.valid_cac ?? "yes",
         valid_tin: Category?.valid_tin ?? "no",
       })
       setLastTINChecked(Category?.tin_no)
@@ -100,9 +100,9 @@ function Compliance() {
     scrollToTop("onboardinglayout")
   }, [])
 
-  useEffect(() => {
-    if (data.valid_tin === "yes") verifyCAC()
-  }, [data.valid_tin])
+  // useEffect(() => {
+  //   if (data.valid_tin === "yes") verifyCAC()
+  // }, [data.valid_tin])
   const verifyTIN = async (tin_no) => {
     setLastCACChecked("")
     setRetryTIN(false)
@@ -115,7 +115,7 @@ function Compliance() {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ tin_no: "Your TIN is required" })
     }
@@ -124,7 +124,7 @@ function Compliance() {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ tin_no: "Your TIN must include an hyphen ('-')" })
     }
@@ -138,7 +138,7 @@ function Compliance() {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({
             tin_no: "An error occured while verifying your TIN (TIN-001)",
@@ -152,7 +152,7 @@ function Compliance() {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({ tin_no: error })
         }
@@ -160,7 +160,7 @@ function Compliance() {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({
             tin_no: "Something went wrong while verifying your TIN (TIN-002)",
@@ -170,7 +170,7 @@ function Compliance() {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({
             tin_no:
@@ -188,7 +188,7 @@ function Compliance() {
         setData((prvState) => ({
           ...prvState,
           valid_tin: "no",
-          valid_cac: "no",
+          // valid_cac: "no",
         }))
         return setError({
           tin_no: "Something went wrong while verifying your TIN (TIN-004)",
@@ -200,7 +200,7 @@ function Compliance() {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({
         tin_no: "An error occured while verifying your TIN (TIN-005)",
@@ -217,21 +217,21 @@ function Compliance() {
     if (!data.rc_no) {
       setData((prvState) => ({
         ...prvState,
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ rc_no: "Your CAC is required" })
     }
     if (data.valid_tin !== "yes") {
       setData((prvState) => ({
         ...prvState,
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ rc_no: "Please provide a valid TIN to continue" })
     }
     if (!data.company_type) {
       setData((prvState) => ({
         ...prvState,
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ rc_no: "Your company type is required" })
     }
@@ -252,7 +252,7 @@ function Compliance() {
           setCheckingCAC(false)
           setData((prvState) => ({
             ...prvState,
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({
             rc_no: "An error occured while verifying your CAC (CAC-001)",
@@ -267,7 +267,7 @@ function Compliance() {
         if (error) {
           setData((prvState) => ({
             ...prvState,
-            valid_cac: "no",
+            // valid_cac: "no",
           }))
           return setError({ rc_no: error })
         }
@@ -281,7 +281,7 @@ function Compliance() {
       } else {
         setData((prvState) => ({
           ...prvState,
-          valid_cac: "no",
+          // valid_cac: "no",
         }))
         return setError({
           rc_no:
@@ -293,7 +293,7 @@ function Compliance() {
       console.log({ error })
       setData((prvState) => ({
         ...prvState,
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({
         rc_no: "An error occured while verifying your CAC (CAC-003)",
@@ -308,7 +308,7 @@ function Compliance() {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return setError({ company_type: "Your company type is required" })
     }
@@ -317,7 +317,7 @@ function Compliance() {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        valid_cac: "no",
+        // valid_cac: "no",
       }))
       return
     }
@@ -327,9 +327,11 @@ function Compliance() {
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no)
   }, [retryTIN])
+
   useEffect(() => {
     if (retryCAC) verifyCAC()
   }, [retryCAC])
+
   const Retry = (type) => {
     if (type === "tin") {
       setLastTINChecked("")
@@ -390,9 +392,8 @@ function Compliance() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
     }
-    if (NextStage === "review")
-      return moveToNextForm(["review", category, true])
-    moveToNextForm([NextStage, category, true])
+    if (NextStage === "review") return moveToNextForm(["review", true])
+    moveToNextForm([NextStage, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -497,7 +498,7 @@ function Compliance() {
                   }
                   value={data.rc_no}
                   onChange={handleFormChange}
-                  onBlur={verifyCAC}
+                  // onBlur={verifyCAC}
                   errors={errors}
                   margin="mb-1"
                 />

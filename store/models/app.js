@@ -107,8 +107,7 @@ const app = {
       actions.setForm(null)
     } else {
       const currentForm = current[0]
-      const category = current[1]
-      const useCurrent = current?.length > 2 ? true : false
+      const useCurrent = current?.length > 1 ? true : false
       const index = states.app?.formSteps?.indexOf(currentForm)
       if (useCurrent) {
         // MOVE TO SELECTED FORM
@@ -124,9 +123,6 @@ const app = {
               ? states.app?.formSteps[index + 1]
               : null
 
-          const nextform = checkNextForm(nextSection, category)
-
-          console.log({ nextform })
           actions.setForm(nextSection)
         }
       }

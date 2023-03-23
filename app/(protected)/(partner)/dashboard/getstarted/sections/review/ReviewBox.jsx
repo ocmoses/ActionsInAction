@@ -111,7 +111,7 @@ export default function ReviewBox() {
   }
 
   const moveTo = (section, category) => {
-    moveToNextForm([section, category, true])
+    moveToNextForm([section, true])
     scrollToTop("onboardinglayout")
   }
   return (

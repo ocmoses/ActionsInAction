@@ -33,7 +33,7 @@ export default function CategoryDetail({
         return setError({ category: result.error })
       }
       // setForm("compliance")
-      moveToNextForm(["compliance", category, true])
+      moveToNextForm(["compliance", true])
       console.log("moveToNextForm")
       setIsOnboarding(true)
       console.log("setIsOnboarding")

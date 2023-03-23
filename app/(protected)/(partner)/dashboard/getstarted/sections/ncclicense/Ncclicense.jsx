@@ -113,9 +113,8 @@ function Ncclicense() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ ncclicense: result.error })
     }
-    if (NextStage === "review")
-      return moveToNextForm(["review", category, true])
-    moveToNextForm([NextStage, category, true])
+    if (NextStage === "review") return moveToNextForm(["review", true])
+    moveToNextForm([NextStage, true])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

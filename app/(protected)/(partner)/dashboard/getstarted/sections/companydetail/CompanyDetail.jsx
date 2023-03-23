@@ -19,8 +19,14 @@ import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities"
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
-    usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
   const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
@@ -106,10 +112,18 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
-    const { nextstage: NextStage } = nextStage(category, partner)
-    return setForm(NextStage)
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    return moveToNextForm([NextStage])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.companydetail = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      console.log({ NextStage })
+      return setForm(NextStage)
+    }
+    // if (NextStage === "review") return moveToNextForm(["review", true])
+    // return moveToNextForm([NextStage])
   }
   const [selectField, setSelectField] = useState(null)
   useEffect(() => {
@@ -147,7 +161,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
-          disabled={isMasterData || data.company_name}
+          disabled={isMasterData}
         />
         <SelectInput
           id="country"

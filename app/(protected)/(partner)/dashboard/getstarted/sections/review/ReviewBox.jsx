@@ -10,9 +10,10 @@ import { STATES } from "@/app/modules/states"
 import Image from "next/image"
 import ShortcodeReview from "./ShortcodeReview"
 import FilePreviewModal from "@/app/components/FilePreviewModal"
+import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect } from "react"
 
-export default function ReviewBox() {
+export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   const { setForm, moveToNextForm } = useProcessing()
   const { partner, category, registerPartner } = usePartners()
   const [{ errors, setError, clearErrors }] = useErrors()
@@ -77,11 +78,11 @@ export default function ReviewBox() {
 
   const [showModal, setShowModal] = useState(false)
   const [filePath, setFilePath] = useState("")
-  const [saving, setSaving] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const saveForm = async () => {
     clearErrors()
-    if (saving) return
-    setSaving(true)
+    if (isSaving) return
+    setIsSaving(true)
     const result = await registerPartner("complete_registration", {
       partner_uuid: category.partner_uuid,
       category_uuid: category.category_uuid,
@@ -92,7 +93,7 @@ export default function ReviewBox() {
     if (result) {
       scrollToTop("onboardinglayout")
       if (result?.error) {
-        setSaving(false)
+        setIsSaving(false)
         return setError({ review: result.error })
       }
     }
@@ -491,7 +492,7 @@ export default function ReviewBox() {
               onClick={() => moveTo("shortcode")}
             />
             {shortcodeCategory?.shortcodes?.length > 0 && (
-              <div className="md:col-span-3 divide-y divide-slate-400/25">
+              <div className="md:col-span-3">
                 <ShortcodeReview
                   shortcode={shortcodeCategory?.shortcodes}
                   PreviewFile={PreviewFile}
@@ -691,13 +692,42 @@ export default function ReviewBox() {
           </div>
         </div>
       )}
-      <div className="max-w-[400px] mx-auto text-center mt-10 text-[#666666] text-[12px]">
-        By clicking submit application, I/We confirm that the information
-        provided are accurate and truthful.
-      </div>
-      <div className="mt-3 pb-12 flex justify-center items-start w-full">
-        <Button onClick={saveForm} label="Submit application" />
-      </div>
+
+      {category.status === "open" && (
+        <>
+          <div className="max-w-[400px] mx-auto text-center mt-10 text-[#666666] text-[12px]">
+            By clicking submit application, I/We confirm that the information
+            provided are accurate and truthful.
+          </div>
+          <div className="mt-3 pb-12 flex justify-center items-start w-full">
+            {isSaving ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <Button
+                onClick={saveForm}
+                label="Submit category"
+                paddingclass="pl-12 pr-4 py-3"
+                textsizecss="inline-flex text-[14px] whitespace-nowrap"
+              />
+            )}
+          </div>
+        </>
+      )}
+      {category.status === "pending" && (
+        <div className="mt-3 pb-12 flex flex-col space-y-1 justify-center items-center w-full">
+          <p className="text-[24px] text-[#999999]">In review</p>
+          <p
+            onClick={() => {
+              setIsOnboarding(false)
+              setTmpCat(null)
+              setForm(null)
+            }}
+            className="text-[14px] text-#666666] hover:text-[#999999] cursor-pointer"
+          >
+            Close
+          </p>
+        </div>
+      )}
     </>
   )
 }

@@ -16,8 +16,9 @@ const useApp = () => {
         serverSession.User.user.status = "authenticated"
         actions.users.setUser(serverSession.User.user)
         if (serverSession?.User?.partners?.length) {
-          const PartnersAccounts = serverSession.User.partners.map((partner) =>
-            filterPartner(partner, categories)
+          const PartnersAccounts = []
+          serverSession.User.partners.map((partner) =>
+            PartnersAccounts.push(filterPartner(partner, categories))
           )
           actions.partners.setPartners(PartnersAccounts)
         }
@@ -31,15 +32,15 @@ const useApp = () => {
             categories
           )
           actions.partners.setPartner(partnerInfo)
-          actions.partners.setPartnerCategories(
-            serverSession?.User?.partner.categories
-          )
+          actions.partners.setPartnerCategories(partnerInfo?.categories)
         } else {
           if (serverSession?.User?.partners?.length) {
-            actions.partners.setPartner(serverSession?.User?.partners[0])
-            actions.partners.setPartnerCategories(
-              serverSession?.User?.partners[0].categories
+            const ptr = filterPartner(
+              serverSession?.User?.partners[0],
+              categories
             )
+            actions.partners.setPartner(ptr)
+            actions.partners.setPartnerCategories(ptr?.categories)
           }
         }
 

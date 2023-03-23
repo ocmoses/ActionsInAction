@@ -26,8 +26,14 @@ import {
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
-    usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
 
   const [retryTIN, setRetryTIN] = useState(false)
   const [checkingTIN, setCheckingTIN] = useState(false)
@@ -103,6 +109,16 @@ function Compliance() {
   //   if (data.valid_tin === "yes") verifyCAC()
   // }, [data.valid_tin])
   const verifyTIN = async (tin_no) => {
+    if (process.env.NODE_ENV !== "production") {
+      setData((prvState) => ({
+        ...prvState,
+        rc_no: "14386692",
+        tin_data: {},
+        valid_tin: "yes",
+        valid_cac: "yes",
+      }))
+      return
+    }
     setLastCACChecked("")
     setRetryTIN(false)
     if (tin_no === lastTINChecked) return
@@ -385,17 +401,22 @@ function Compliance() {
       scrollToTop("onboardinglayout")
       return setError({ cac_file: `CAC certificate is required` })
     }
-
     const result = await registerPartner("compliance", data)
     if (result) {
+      console.log({ category })
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
+      if (result.data?.partner) {
+        updatePartner(result?.data?.partner)
+        const newcategory = result.data?.partner.categories.find(
+          (c) => c.category_uuid === category.category_uuid
+        )
+        newcategory.profile_stage.compliance = "1"
+        const { nextstage: NextStage } = nextStage(newcategory, partner)
+        console.log({ NextStage })
+        return setForm(NextStage)
+      }
     }
-
-    const { nextstage: NextStage } = nextStage(category, partner)
-    return setForm(NextStage)
-    // if (NextStage === "review") return moveToNextForm(["review", true])
-    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

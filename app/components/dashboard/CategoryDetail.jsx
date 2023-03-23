@@ -14,35 +14,49 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, setCategory, registerPartner, nextStage } = usePartners()
-  const { nextstage: NextStage } = nextStage(category, partner)
-
+  const { partner, updatePartner, setCategory, registerPartner, nextStage } =
+    usePartners()
   const { processing, setProcessing, setForm } = useProcessing()
 
-  const selectCategory = async (category) => {
+  const selectCategory = async (sysCategory) => {
     clearErrors()
-    setCategory(category)
+    console.log({ category })
     const result = await registerPartner("category", {
       user_uuid: partner?.user_uuid ?? "",
       partner_uuid: partner?.uuid ?? "",
-      category_uuid: category.uuid,
+      category_uuid: sysCategory.uuid,
     })
-    console.log("result 1")
     if (result) {
-      console.log("result 2")
       setProcessing(false)
       if (result?.error) {
-        console.log("result 3")
         return setError({ category: result.error })
       }
-      console.log("result 4")
-      setForm(NextStage)
-      console.log("result 5")
-      setIsOnboarding(true)
-      console.log("result 6")
-      return setIsOpen(false)
+      if (result.data?.partner) {
+        const newcategory = { ...result?.data?.category }
+        updatePartner(result?.data?.partner)
+        newcategory.profile_stage.category = "1"
+        const { nextstage: NextStage } = nextStage(newcategory, partner)
+        setCategory(newcategory)
+        console.log({ NextStage })
+        setForm(NextStage ?? "compliance")
+        setIsOnboarding(true)
+        return setIsOpen(false)
+      }
+
+      // if (result.data?.partner) {
+      //   updatePartner(result?.data?.partner)
+      //   const newcategory = result.data?.partner.categories.find(
+      //     (c) => c.category_uuid === category.category_uuid
+      //   )
+      //   newcategory.profile_stage.category = "1"
+      //   const { nextstage: NextStage } = nextStage(newcategory, partner)
+      //   console.log({ NextStage })
+      //   setCategory(newcategory)
+      //   setForm(NextStage ?? "compliance")
+      //   setIsOnboarding(true)
+      //   return setIsOpen(false)
+      // }
     }
-    console.log("result 7")
     setError({ category: "Something went wrong" })
   }
 

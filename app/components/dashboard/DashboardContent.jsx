@@ -26,11 +26,11 @@ export default function GetStarted({ type }) {
     partner,
     category,
     categories,
+    updatePartner,
     setValidationRules,
     setCurrentCategory,
     nextStage,
   } = usePartners()
-  // console.log({ partner })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -102,11 +102,10 @@ export default function GetStarted({ type }) {
   const continueRegistration = (uuid) => {
     clearErrors()
     const category = partner?.categories?.find((cat) => cat.uuid === uuid)
+
     if (category) {
       //  CHECK IF MASTER DATA EXISTS
-      console.log(partner)
       const { nextstage: NextStage } = nextStage(category, partner)
-      console.log({ NextStage })
       setCurrentCategory(category, partner)
       setIsOnboarding(true)
       setIsOpen(false)
@@ -142,11 +141,10 @@ export default function GetStarted({ type }) {
         return setError({ dashboard: "Something went wrong" })
       })
       setIsSaving(false)
-      console.log({ result })
       if (result) {
         const { success, data } = result
-        console.log({ data })
         if (success) {
+          updatePartner(data?.partner)
           setSuccess("Your application was submited successfully")
         } else {
           return setError({ dashboard: data.message })
@@ -200,7 +198,9 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      Complete your setup to get started!
+                      {partner?.contract_status === "not_started"
+                        ? "Complete your setup to get started!"
+                        : "Your application is currently being reviewed"}
                     </p>
                   )}
                 </div>
@@ -220,23 +220,14 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      {partner?.edittable
+                      {partner?.contract_status === "not_started"
                         ? "Complete your setup to get started!"
-                        : "In review"}
+                        : "Your application is currently being reviewed"}
                     </p>
                   )}
                 </>
               )}
-              {errors && errors["category"] && (
-                <div className="mb-6">
-                  <FormErrors error={errors["getStarted"]} />
-                </div>
-              )}
-              {success && (
-                <div className="my-6">
-                  <FormErrors success={success} align="center" />
-                </div>
-              )}
+
               {partnerCategories && (
                 <PartnerCategories
                   partner={partner}
@@ -246,9 +237,14 @@ export default function GetStarted({ type }) {
                   categories={categoriesData}
                 />
               )}
+              {success && (
+                <div className="my-6">
+                  <FormErrors success={success} align="center" />
+                </div>
+              )}
               {partner?.categories?.length > 0 &&
                 !partner?.edittable &&
-                !partner?.status === "open" && (
+                partner?.contract_status === "not_started" && (
                   <div className="flex flex-col my-12 justify-center items-center">
                     {errors?.dashboard && (
                       <div className="my-6">
@@ -322,23 +318,26 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {/* {!partner?.edittable && !showProgress && ( */}
-              <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
-                {!partner?.edittable &&
-                  partnerActiveCategories &&
-                  partnerActiveCategories?.length > 0 &&
-                  partnerActiveCategories.map((category) => (
-                    <CategoryCard
-                      key={category.uuid}
-                      category={category}
-                      isOpen={isOpen}
-                      setIsOpen={setIsOpen}
-                      tmpCat={tmpCat}
-                      setTmpCat={setTmpCat}
-                    />
-                  ))}
-              </div>
-              {/*  )} */}
+              {!showProgress && (
+                <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
+                  {
+                    // !partner?.edittable &&
+                    partnerActiveCategories &&
+                      partnerActiveCategories?.length > 0 &&
+                      partnerActiveCategories.map((category) => (
+                        <CategoryCard
+                          key={category.uuid}
+                          category={category}
+                          isOpen={isOpen}
+                          setIsOpen={setIsOpen}
+                          tmpCat={tmpCat}
+                          setTmpCat={setTmpCat}
+                          disabled={partner?.edittable}
+                        />
+                      ))
+                  }
+                </div>
+              )}
             </div>
             <div className="flex flex-col">
               <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">

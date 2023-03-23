@@ -90,7 +90,7 @@ export const forms = {
       countrycode: "Country code",
       telephone: "Telephone",
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       first_name: "First name",
@@ -101,7 +101,7 @@ export const forms = {
       telephone: "Telephone",
       designation: "Designation",
       password: "Password",
-      password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
   },
   companydetail: {
@@ -279,11 +279,11 @@ export const forms = {
     hand: "",
     fields: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
   },
   confirmcompanyinfo: {

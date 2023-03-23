@@ -338,12 +338,10 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
-export const checkNextForm = (nextSection, category) => {
-  // console.log("checkNextForm", { category })
-  return nextSection
-}
+
 export const getNextStage = (category, partner) => {
   if (!category?.profile_stage) return { nextstage: null }
+  if (!category?.validation) return { nextstage: null }
   const progress = category.profile_stage
   const validation = category.validation
   let nextstage = null
@@ -360,18 +358,26 @@ export const getNextStage = (category, partner) => {
   ]
 
   Stages.map((stage) => {
-    if (
-      !nextstage &&
-      (validation[stage] == "r" || validation[stage] == "o") &&
-      (!progress[stage] || parseInt(progress[stage]) === 0)
-    ) {
-      if (!partner.sections[category.category_uuid][stage].completed) {
-        nextstage = stage
+    if (!nextstage && validation[stage]) {
+      if (
+        (validation[stage] == "r" || validation[stage] == "o") &&
+        (!progress[stage] || parseInt(progress[stage]) === 0)
+      ) {
+        // nextstage = stage
+        if (
+          !(
+            partner.master &&
+            partner.master.category_uuid !== category.category_uuid &&
+            partner.sections[partner.master.category_uuid] &&
+            partner.sections[partner.master.category_uuid][stage]?.completed
+          )
+        ) {
+          nextstage = stage
+        }
       }
     }
   })
   if (!nextstage) nextstage = "review"
-  console.log({ nextstage })
   return { nextstage }
 }
 export const AllowedCategories = (category_codes) => {
@@ -388,88 +394,99 @@ export const AllowedCategories = (category_codes) => {
 }
 // Filter partner info hook
 export const filterPartner = (partnerInfo, Categories) => {
-  const partnercategories = Categories?.data ? Categories?.data : Categories
-  const categories = partnercategories?.sort((s1, s2) =>
-    s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
-  )
-  const registeredCategories = []
-  const sections = {}
-  let masterset = false
-  let edittable = false
   if (partnerInfo) {
-    if (partnerInfo.categories?.length > 0) {
-      partnerInfo?.categories?.map((category, index) => {
-        if (category) {
-          const sysCategory = categories?.find(
-            (c) => c.uuid === category.category_uuid
-          )
-          category.position = index + 1
-          if (category.status === "open") edittable = true
-          if (sysCategory) {
-            category.category_code = sysCategory.category_code
-            category.validation = sysCategory.validation
-            registeredCategories.push(sysCategory.category_code)
-          }
-          const validation = category.validation
-          sections[category.category_uuid] = {
-            status: category.status,
-            status_date: category.status_date,
-          }
-          // Build master category
-          for (const section in complianceRequirements) {
-            if (validation && validation[section]) {
-              if (validation[section] === "r" || validation[section] === "o") {
-                for (const key in complianceRequirements[section]) {
-                  if (
-                    typeof sections[category.category_uuid][section] ===
-                    "undefined"
-                  ) {
-                    sections[category.category_uuid][section] = {
-                      fields: {},
-                      status: null,
-                      completed: false,
+    const categories = Categories?.data ? Categories?.data : Categories
+    const partnercategories = partnerInfo?.categories?.sort((s1, s2) =>
+      s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
+    )
+
+    const registeredCategories = []
+    const sections = {}
+    let masterset = false
+    let edittable = false
+    partnerInfo.master = null
+    const PartnerCategories = []
+    if (partnercategories) {
+      if (partnercategories?.length > 0) {
+        partnercategories?.map((category, index) => {
+          if (category) {
+            const sysCategory = categories?.find(
+              (c) => c.uuid === category.category_uuid
+            )
+            category.position = index + 1
+            if (category.status === "open") edittable = true
+            if (sysCategory) {
+              category.category_code = sysCategory.category_code
+              category.validation = sysCategory.validation
+              registeredCategories.push(sysCategory.category_code)
+            }
+            const validation = category.validation
+            sections[category.category_uuid] = {
+              status: category.status,
+              status_date: category.status_date,
+            }
+            // Build master category
+            for (const section in complianceRequirements) {
+              if (validation && validation[section]) {
+                if (
+                  validation[section] === "r" ||
+                  validation[section] === "o"
+                ) {
+                  for (const key in complianceRequirements[section]) {
+                    if (
+                      typeof sections[category.category_uuid][section] ===
+                      "undefined"
+                    ) {
+                      sections[category.category_uuid][section] = {
+                        fields: {},
+                        status: null,
+                        completed: false,
+                      }
                     }
+                    sections[category.category_uuid][section].fields[key] =
+                      category[key]
                   }
-                  sections[category.category_uuid][section].fields[key] =
-                    category[key]
+                  sections[category.category_uuid][section].completed =
+                    category.profile_stage[section] === "1"
+                  sections[category.category_uuid][section].status =
+                    validation[section]
                 }
-                sections[category.category_uuid][section].completed =
-                  category.profile_stage[section] === "1"
-                sections[category.category_uuid][section].status =
-                  validation[section]
               }
             }
-          }
 
-          if (!masterset && category.status !== "open") {
-            sections[category.category_uuid].master = true
-            category.master = true
-            partnerInfo.master = category
-            masterset = true
-          }
-        }
-      })
-      partnerInfo?.categories?.map((category) => {
-        if (category) {
-          if (
-            partnerInfo.master &&
-            category.category_uuid !== partnerInfo.master.category_uuid
-          ) {
-            const profile_stage = {
-              ...category.profile_stage,
+            if (!masterset && category.status !== "open") {
+              sections[category.category_uuid].master = true
+              category.master = true
+              partnerInfo.master = category
+              masterset = true
             }
-            for (const pstage in partnerInfo.master.profile_stage) {
-              if (partnerInfo.master.profile_stage[pstage])
-                profile_stage[pstage] = partnerInfo.master.profile_stage[pstage]
-            }
-            category.profile_stage = profile_stage
           }
-        }
-      })
+          PartnerCategories.push(category)
+        })
+        partnerInfo.categories = PartnerCategories
+        partnerInfo?.categories?.map((category) => {
+          if (category) {
+            if (
+              partnerInfo.master &&
+              category.category_uuid !== partnerInfo.master.category_uuid
+            ) {
+              const profile_stage = {
+                ...category.profile_stage,
+              }
+              for (const pstage in partnerInfo.master.profile_stage) {
+                if (partnerInfo.master.profile_stage[pstage])
+                  profile_stage[pstage] =
+                    partnerInfo.master.profile_stage[pstage]
+              }
+              category.profile_stage = profile_stage
+            }
+          }
+        })
+      }
+      partnerInfo.sections = sections
+      partnerInfo.edittable = edittable
+      partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
     }
-    partnerInfo.sections = sections
-    partnerInfo.edittable = edittable
-    partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
   }
   return partnerInfo
 }

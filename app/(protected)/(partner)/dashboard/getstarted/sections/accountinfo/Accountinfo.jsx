@@ -17,7 +17,14 @@ import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner, nextStage } = usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -64,6 +71,7 @@ export default function Accountinfo() {
   }, [category])
 
   useEffect(() => {
+    clearErrors()
     setForm("accountinfo")
     setProcessing(false)
   }, [])
@@ -127,11 +135,15 @@ export default function Accountinfo() {
     if (result) {
       if (result?.error) return setError({ accountinfo: result.error })
     }
-
-    const { nextstage: NextStage } = nextStage(category, partner)
-    return setForm(NextStage)
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    return moveToNextForm([NextStage])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.accountinfo = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      return setForm(NextStage)
+    }
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -146,7 +158,7 @@ export default function Accountinfo() {
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
-          {errors && <FormErrors error={errors["accountinfo"]} />}
+          {errors && <FormErrors error={errors?.accountinfo} />}
         </div>
         <FileInputWrapper>
           <FileInput
@@ -199,13 +211,16 @@ export default function Accountinfo() {
             ) : (
               <div className="flex items-center gap-4">
                 {/* <ButtonPrev
-                  onClick={() => moveToPrevForm("indemnity")}
+                  onClick={() => moveToPrevForm("accountinfo")}
                   type="button"
                   label="Back"
                   outline="yes"
                   outlinecolor="border-white"
                 /> */}
-                <ButtonNext type="submit" label="Next" />
+                <ButtonNext
+                  type="submit"
+                  label={checkUpdateStatus("accountinfo") ? "Update" : "Next"}
+                />
               </div>
             )}
           </div>

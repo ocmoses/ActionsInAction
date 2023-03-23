@@ -328,9 +328,9 @@ function Compliance() {
     if (retryTIN) verifyTIN(data.tin_no)
   }, [retryTIN])
 
-  useEffect(() => {
-    if (retryCAC) verifyCAC()
-  }, [retryCAC])
+  // useEffect(() => {
+  //   if (retryCAC) verifyCAC()
+  // }, [retryCAC])
 
   const Retry = (type) => {
     if (type === "tin") {
@@ -572,13 +572,13 @@ function Compliance() {
                       />
                     ) : (
                       <div className="flex items-center gap-4">
-                        <ButtonPrev
+                        {/* <ButtonPrev
                           onClick={() => moveToPrevForm("compliance")}
                           type="button"
                           label="Back"
                           outline="yes"
                           outlinecolor="border-white"
-                        />
+                        /> */}
                         <ButtonNext
                           type="submit"
                           label={

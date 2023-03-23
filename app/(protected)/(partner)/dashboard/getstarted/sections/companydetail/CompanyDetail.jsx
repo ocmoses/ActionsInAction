@@ -19,9 +19,14 @@ import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities"
 function CompanyDetail() {
   const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
-  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
-    usePartners()
-  const { nextstage: NextStage } = nextStage(category, partner)
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
   const { title, subtitle, hand, fields } = forms["companydetail"]
   const [data, setData] = useState({
     partner_uuid: "",
@@ -58,22 +63,16 @@ function CompanyDetail() {
         ? JSON.parse(Category.cac_data)
         : Category.cac_data
     }
-    console.log({ tin_data })
-    console.log({ cac_data })
     setData({
       partner_uuid: Category?.partner_uuid,
       category_uuid: category?.category_uuid,
-      company_name: cac_data?.company_name
-        ? cac_data?.company_name
+      company_name: tin_data?.Name
+        ? tin_data?.Name
         : Category?.company_name
         ? Category?.company_name
         : "",
       country: Category?.country ?? "NG",
-      company_address: cac_data?.address
-        ? cac_data?.address
-        : Category?.company_address
-        ? Category?.company_address
-        : "",
+      company_address: Category?.company_address ?? "",
       company_city: Category?.company_city ?? "",
       company_state: Category?.company_state ?? "",
       company_postcode: Category?.company_postcode ?? "",
@@ -113,9 +112,18 @@ function CompanyDetail() {
       scrollToTop("onboardinglayout")
       return setError({ companydetail: result.error })
     }
-    if (NextStage === "review")
-      return moveToNextForm(["review", category, true])
-    moveToNextForm([NextStage, category, true])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.companydetail = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      console.log({ NextStage })
+      return setForm(NextStage)
+    }
+    // if (NextStage === "review") return moveToNextForm(["review", true])
+    // return moveToNextForm([NextStage])
   }
   const [selectField, setSelectField] = useState(null)
   useEffect(() => {
@@ -153,7 +161,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
-          disabled={isMasterData || data.company_name}
+          disabled={isMasterData}
         />
         <SelectInput
           id="country"

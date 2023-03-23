@@ -26,9 +26,14 @@ import {
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
-    usePartners()
-  const { nextstage: NextStage } = nextStage(category, partner)
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.ncc)
 
@@ -113,9 +118,20 @@ function Ncclicense() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ ncclicense: result.error })
     }
-    if (NextStage === "review")
-      return moveToNextForm(["review", category, true])
-    moveToNextForm([NextStage, category, true])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.ncclicense = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      console.log({ NextStage })
+      return setForm(NextStage)
+    }
+    // const { nextstage: NextStage } = nextStage(category, partner)
+    // return setForm(NextStage)
+    if (NextStage === "review") return moveToNextForm(["review", true])
+    return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -205,13 +221,13 @@ function Ncclicense() {
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : (
               <div className="flex items-center gap-4">
-                <ButtonPrev
+                {/* <ButtonPrev
                   onClick={() => moveToPrevForm("ncclicense")}
                   type="button"
                   label="Back"
                   outline="yes"
                   outlinecolor="border-white"
-                />
+                /> */}
                 <ButtonNext
                   type="submit"
                   label={checkUpdateStatus("ncclicense") ? "Update" : "Next"}

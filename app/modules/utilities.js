@@ -343,7 +343,7 @@ export const checkNextForm = (nextSection, category) => {
   return nextSection
 }
 export const getNextStage = (category, partner) => {
-  if (!category?.profile_stage) return null
+  if (!category?.profile_stage) return { nextstage: null }
   const progress = category.profile_stage
   const validation = category.validation
   let nextstage = null

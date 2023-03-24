@@ -117,8 +117,7 @@ function Login({ params }) {
                 lineHeight: "40px",
               }}
             >
-              Y’ello
-              {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
+              Y’ello{tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
             </span>
             <Image
               src="/assets/icons/yello-hand.svg"

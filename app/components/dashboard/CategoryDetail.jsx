@@ -14,32 +14,55 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, setCategory, registerPartner } = usePartners()
+  const {
+    partner,
+    updatePartner,
+    setCategory,
+    setCurrentCategory,
+    registerPartner,
+    nextStage,
+  } = usePartners()
+  const { processing, setProcessing, setForm } = useProcessing()
 
-  const { processing, setProcessing, moveToNextForm } = useProcessing()
-
-  const selectCategory = async (category) => {
+  const selectCategory = async (sysCategory) => {
     clearErrors()
-    setCategory(category)
+    console.log({ category })
     const result = await registerPartner("category", {
       user_uuid: partner?.user_uuid ?? "",
       partner_uuid: partner?.uuid ?? "",
-      category_uuid: category.uuid,
+      category_uuid: sysCategory.uuid,
     })
-    console.log({ result })
     if (result) {
       setProcessing(false)
       if (result?.error) {
         return setError({ category: result.error })
       }
-      // setForm("compliance")
-      moveToNextForm(["compliance", category, true])
-      console.log("moveToNextForm")
-      setIsOnboarding(true)
-      console.log("setIsOnboarding")
-      setIsOpen(false)
-      console.log("setIsOpen")
-      return
+      if (result.data?.partner) {
+        const newcategory = { ...result?.data?.category }
+        updatePartner(result?.data?.partner)
+        newcategory.profile_stage.category = "1"
+        const { nextstage: NextStage } = nextStage(newcategory, partner)
+        setCategory(newcategory)
+        // setCurrentCategory(newcategory, partner)
+        console.log({ NextStage })
+        setForm(NextStage ?? "compliance")
+        setIsOnboarding(true)
+        return setIsOpen(false)
+      }
+
+      // if (result.data?.partner) {
+      //   updatePartner(result?.data?.partner)
+      //   const newcategory = result.data?.partner.categories.find(
+      //     (c) => c.category_uuid === category.category_uuid
+      //   )
+      //   newcategory.profile_stage.category = "1"
+      //   const { nextstage: NextStage } = nextStage(newcategory, partner)
+      //   console.log({ NextStage })
+      //   setCategory(newcategory)
+      //   setForm(NextStage ?? "compliance")
+      //   setIsOnboarding(true)
+      //   return setIsOpen(false)
+      // }
     }
     setError({ category: "Something went wrong" })
   }

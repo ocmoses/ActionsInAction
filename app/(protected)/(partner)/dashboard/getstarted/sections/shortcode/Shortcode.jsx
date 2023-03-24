@@ -11,7 +11,7 @@ import FormErrors from "@/app/components/FormErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import Image from "next/image"
-import { outputDate } from "app/modules/utilities"
+import { outputDate, getNextStage } from "app/modules/utilities"
 import { useState, useEffect } from "react"
 import { Util } from "@/utils/utility"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -28,12 +28,16 @@ import {
 function Shortcode() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
     useProcessing()
-  const { partner, category, registerPartner, checkUpdateStatus, nextStage } =
-    usePartners()
+  const {
+    partner,
+    category,
+    registerPartner,
+    updatePartner,
+    checkUpdateStatus,
+    nextStage,
+  } = usePartners()
   const { min_start_date, max_end_date, yesterday, tomorrow } =
     getValidityRange(validities.shortcode)
-
-  const { nextstage: NextStage } = nextStage(category, partner)
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -145,9 +149,15 @@ function Shortcode() {
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ shortcode: result.error })
     }
-    if (NextStage === "review")
-      return moveToNextForm(["review", category, true])
-    moveToNextForm([NextStage, category, true])
+    if (result.data?.partner) {
+      updatePartner(result?.data?.partner)
+      const newcategory = result.data?.partner.categories.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      newcategory.profile_stage.shortcode = "1"
+      const { nextstage: NextStage } = nextStage(newcategory, partner)
+      return setForm(NextStage)
+    }
   }
   const handleShortcodeFormChange = (e) => {
     removeError(e.target.id)
@@ -695,7 +705,6 @@ function Shortcode() {
           <p className="my-3 text-[#999999]">
             Pricing detail for your short codes
           </p>
-          {console.log({ formdata })}
           <div className="md:grid md:grid-cols-2 md:gap-4">
             <div className="">
               <DatePicker
@@ -760,30 +769,31 @@ function Shortcode() {
             )}
           </div>
         </div>
-
-        <div className="mt-8">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            !activeform && (
-              <div className="flex items-center gap-4">
-                <ButtonPrev
+        {!isMasterData && (
+          <div className="mt-8">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              !activeform && (
+                <div className="flex items-center gap-4">
+                  {/* <ButtonPrev
                   onClick={() => moveToPrevForm("shortcode")}
                   type="button"
                   label="Back"
                   outline="yes"
                   outlinecolor="border-white"
-                />
+                /> */}
 
-                <ButtonNext
-                  onClick={handleSubmit}
-                  type="button"
-                  label={checkUpdateStatus("shortcode") ? "Update" : "Next"}
-                />
-              </div>
-            )
-          )}
-        </div>
+                  <ButtonNext
+                    onClick={handleSubmit}
+                    type="button"
+                    label={checkUpdateStatus("shortcode") ? "Update" : "Next"}
+                  />
+                </div>
+              )
+            )}
+          </div>
+        )}
       </form>
     </div>
   )

@@ -3,7 +3,12 @@ import useProcessing from "@/hooks/useProcessing"
 import useErrors from "@/hooks/useErrors"
 import usePartners from "@/hooks/usePartners"
 
-export default function CategoryCard({ category, setIsOpen, setTmpCat }) {
+export default function CategoryCard({
+  category,
+  setIsOpen,
+  setTmpCat,
+  disabled,
+}) {
   const [{ clearErrors }] = useErrors(null)
 
   const selectCategory = (category) => {
@@ -13,8 +18,12 @@ export default function CategoryCard({ category, setIsOpen, setTmpCat }) {
   }
   return (
     <div
-      onClick={() => selectCategory(category)}
-      className="flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] text-white px-6 py-4 bg-[#111111] block cursor-pointer hover:bg-white/10 hover:shadow-2xl rounded-lg"
+      onClick={() => (!disabled ? selectCategory(category) : {})}
+      className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] text-white px-6 py-4 block ${
+        disabled
+          ? "bg-white/40"
+          : "cursor-pointer bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
+      } rounded-lg`}
     >
       <div>
         <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">

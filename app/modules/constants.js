@@ -10,19 +10,31 @@ import {
 } from "@/app/components/Icons"
 
 export const persistStore = true
+/*
+Dev: 
+FE: 10.1.29.123
+API/backend: 10.1.29.122
 
+Stage/Test
+FE/BE/API: 10.1.44.40
+
+Main/Prod
+FE: https://partner.mtn.ng
+BE/API: https://partner.mtn.ng
+*/
 const environment = {
+  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
   STAGING: "http://10.1.44.40/api",
   PROD: "https://partner.mtn.ng/api",
-  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
 }
-export const apiURL = environment.PROD
+export const apiURL = environment.STAGING
 
 export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
+
 export const validities = {
   ncc: "5 years",
   nlrc_lottery: "10 years",
@@ -91,7 +103,7 @@ export const forms = {
       countrycode: "Country code",
       telephone: "Telephone",
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       first_name: "First name",
@@ -102,7 +114,7 @@ export const forms = {
       telephone: "Telephone",
       designation: "Designation",
       password: "Password",
-      password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
   },
   companydetail: {
@@ -280,11 +292,11 @@ export const forms = {
     hand: "",
     fields: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
     required: {
       password: "Password",
-      // password_confirmed: "Repeat password",
+      password_confirmed: "Password confirmation",
     },
   },
   confirmcompanyinfo: {

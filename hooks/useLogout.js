@@ -1,5 +1,5 @@
 "use client"
-import { logout } from "@/app/modules/utilities"
+import { logout, logoutAdmin } from "@/app/modules/utilities"
 import { PageRoutes } from "@/app/modules/menu"
 
 import usePartners from "@/hooks/usePartners"
@@ -27,14 +27,20 @@ export default function useLogout() {
     clearPersistStore()
   }
   const Logout = async () => {
-    console.log("Logout")
     actions.app.startLoading("logout")
     await logout()
     clearStore()
     actions.app.endLoading("logout")
     router.push(PageRoutes.home)
   }
+  const LogoutAdmin = async () => {
+    actions.app.startLoading("logout")
+    await logoutAdmin()
+    clearStore()
+    actions.app.endLoading("logout")
+    router.push(PageRoutes.backoffice)
+  }
 
-  return { Logout, clearStore }
+  return { Logout, logoutAdmin, clearStore }
 }
 useLogout

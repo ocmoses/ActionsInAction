@@ -43,7 +43,7 @@ export default function CategoryDetail({
         newcategory.profile_stage.category = "1"
         const { nextstage: NextStage } = nextStage(newcategory, partner)
         setCategory(newcategory)
-        setCurrentCategory(newcategory, partner)
+        // setCurrentCategory(newcategory, partner)
         console.log({ NextStage })
         setForm(NextStage ?? "compliance")
         setIsOnboarding(true)

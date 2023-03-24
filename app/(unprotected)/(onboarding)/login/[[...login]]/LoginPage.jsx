@@ -14,12 +14,13 @@ import { useRouter } from "next/navigation"
 import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
+import useUsers from "@/hooks/useUsers"
 
 function Login({ params }) {
   const router = useRouter()
   const app = useApp()
   const { resendEmail } = usePartners()
-
+  const { tmpuser, setTmpUser } = useUsers()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -27,7 +28,14 @@ function Login({ params }) {
   const { clearStore } = useLogout()
 
   const [data, setData] = useState({
-    email: process.env.NODE_ENV === "production" ? "" : "bodegbolu@gmail.com",
+    email:
+      process.env.NODE_ENV === "production"
+        ? tmpuser?.email
+          ? tmpuser?.email
+          : ""
+        : tmpuser?.email
+        ? tmpuser?.email
+        : "bodegbolu@gmail.com",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
   const [notVerified, setNotVerified] = useState(null)
@@ -77,7 +85,7 @@ function Login({ params }) {
       }
       return setError({ login: loginData.error })
     }
-
+    setTmpUser(null)
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
@@ -110,6 +118,11 @@ function Login({ params }) {
               }}
             >
               Y’ello
+              {tmpuser?.email && (
+                <span>
+                  , {tmpuser?.first_name} {tmpuser?.last_name}
+                </span>
+              )}
             </span>
             <Image
               src="/assets/icons/yello-hand.svg"
@@ -130,8 +143,8 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            {params && params[0] === "dashboard"
-              ? "Please login to proceed"
+            {tmpuser?.email
+              ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
               : "Welcome back! please enter your great details"}
           </p>
           <div className="mb-6">
@@ -149,23 +162,24 @@ function Login({ params }) {
               {success && <FormErrors success={success} />}
             </>
           </div>
-          <div className="w-[300px] max-w-[100%]">
-            <TextInput
-              id="email"
-              label="Email address"
-              value={data.email}
-              onChange={handleFormChange}
-              errors={errors}
-            />
-            <TextInput
-              id="password"
-              label="Password"
-              type="Password"
-              value={data.password}
-              onChange={handleFormChange}
-              errors={errors}
-            />
-
+          <div className="w-full">
+            <div className="flex flex-col">
+              <TextInput
+                id="email"
+                label="Email address"
+                value={data.email}
+                onChange={handleFormChange}
+                errors={errors}
+              />
+              <TextInput
+                id="password"
+                label="Password"
+                type="Password"
+                value={data.password}
+                onChange={handleFormChange}
+                errors={errors}
+              />
+            </div>
             <Link
               href={`${PageRoutes.passwordreset}/reset`}
               className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"

@@ -19,7 +19,7 @@ const partners = {
     state.partnerCategories = null
   }),
   setPartner: action((state, partner) => {
-    state.partner = partner
+    state.partner = filterPartner(partner)
   }),
   setPartners: action((state, partners) => {
     state.partners = partners
@@ -33,7 +33,7 @@ const partners = {
     const category = state.category
 
     const currentCategory = partner?.categories?.find(
-      (c) => c.uuid === category.uuid
+      (c) => c.category_uuid === category.category_uuid
     )
     // console.log("state.categories", state.categories)
     const baseCategory = state.categories?.find(

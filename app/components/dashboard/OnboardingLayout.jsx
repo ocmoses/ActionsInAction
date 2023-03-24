@@ -29,7 +29,6 @@ export default function OnboardingLayout({
       validForms.review = "r"
     }
   }, [validForms])
-
   return (
     <>
       <div
@@ -79,7 +78,12 @@ export default function OnboardingLayout({
               {form === "indemnity" && <Indemnity />}
               {form === "shortcode" && <Shortcode />}
               {form === "accountinfo" && <Accountinfo />}
-              {form === "review" && <Review />}
+              {form === "review" && (
+                <Review
+                  setIsOnboarding={setIsOnboarding}
+                  setTmpCat={setTmpCat}
+                />
+              )}
               {form === "complete" && (
                 <Complete
                   setIsOnboarding={setIsOnboarding}

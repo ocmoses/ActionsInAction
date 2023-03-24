@@ -27,8 +27,6 @@ export default function RegisterValidation({ params }) {
   const { resendEmail } = usePartners()
 
   const ValidateEmailAndUser = async (params) => {
-    console.log("ValidateEmailAndUser")
-    console.log("params.type", params.type)
     setProcessing(true)
     try {
       let response = null
@@ -71,7 +69,6 @@ export default function RegisterValidation({ params }) {
   }
   const ValidateNewUser = async () => {
     setProcessing(true)
-    console.log("ValidateNewUser")
     try {
       clearErrors()
       // clearStore()
@@ -82,27 +79,21 @@ export default function RegisterValidation({ params }) {
           type: params.type,
         }),
       })
-      console.log(1)
       if (response) {
-        console.log(2)
         // setValidating(true)
         validating.current = true
         const result = await response.json()
         const { data: loginData } = result
-        console.log({ loginData })
 
         if (!loginData) {
-          console.log(3)
           setProcessing(false)
           return setError({ validate: "Authentication failed" })
         }
 
         if (loginData.error) {
-          console.log(4)
           setProcessing(false)
           users.setTmpUser(loginData.data)
           if (loginData.data && loginData.data.email_verified === "yes") {
-            console.log(5)
             return setError({
               validate: `Your email ${Util.obscureEmail(
                 loginData.data.email
@@ -111,6 +102,7 @@ export default function RegisterValidation({ params }) {
           }
           return setError({ validate: loginData.error })
         }
+        console.log({ loginData })
         // const serverSession = {
         //   status: loginData?.data?.user?.uuid
         //     ? "authenticated"
@@ -127,9 +119,9 @@ export default function RegisterValidation({ params }) {
         // }
         // app.toggleGetstartedLink(false)
         // return router.push(PageRoutes.dashboard)
-        return router.replace(`${PageRoutes.login}/dashboard`)
+        users.setTmpUser(loginData?.data?.user)
+        return router.replace(`${PageRoutes.login}`)
       } else {
-        console.log(7)
         setProcessing(false)
         return setError({
           validate: "Cannot reach the server. Please check your connection",

@@ -8,6 +8,7 @@ import Link from "next/link"
 import ScrollToTop from "react-scroll-to-top"
 import { useEffect, useState } from "react"
 import { scrollToTop } from "@/app/modules/utilities"
+import { apiURL } from "@/app/modules/constants"
 import { PageRoutes } from "@/app/modules/menu"
 
 function LandingPage() {
@@ -125,17 +126,17 @@ function LandingPage() {
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon
                 />
-                <Button
+                {/* <Button
                   label="Discover more"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 bg-black/50 hover:bg-white/20 text-white border-2 border-white"
                   outline="yes"
                   outlinecolor="border-white/80"
                   noicon
-                />
+                /> */}
               </div>
             </div>
             {/* PARTNER LOGOS */}
-            <div className="pt-16 lg:pt-[200px]">
+            {/* <div className="pt-16 lg:pt-[200px]">
               <p className="flex justify-center text-[16px] sm:text-[20px] text-white/40 mb-4 md:mb-10">
                 Our Partners Who Love Us
               </p>
@@ -177,7 +178,7 @@ function LandingPage() {
                   alt=""
                 />
               </div>
-            </div>
+            </div> */}
             {/* Largest mobile phone user community */}
             <div className="w-full lg:max-w-[1158px]  pt-16 lg:pt-[150px] mb-20">
               <h3 className="text-mtn text-[20px] font-mtn font-semibold mb-6">
@@ -530,7 +531,7 @@ function LandingPage() {
               </div>
             </div>
             {/* Footer */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 justify-between items-start gap-6 pt-6 mb-[100px] w-full">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 justify-between items-start gap-6 pt-6 mb-[100px] w-full">
               <div className="w-full col-span-1 sm:col-span-3 md:col-span-1 pb-6">
                 <Image
                   priority
@@ -686,7 +687,7 @@ function LandingPage() {
                   className="text-white min-w-[24px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
                 />
               </div>
-            </div>
+            </div> */}
             {/* Copyrights */}
             <div className="flex flex-col max-w-[771px] text-[12px] leading-[19px] text-[#A2A2A2] mb-[70px]">
               © 2022 MTN. All Rights Reserved
@@ -696,7 +697,7 @@ function LandingPage() {
               44774
             </div>
             {/* Footer nav */}
-            <div className="flex justify-between gap-4 w-full max-w-[521px]">
+            {/* <div className="flex justify-between gap-4 w-full max-w-[521px]">
               <Link
                 href="javascript:;"
                 className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
@@ -715,7 +716,10 @@ function LandingPage() {
               >
                 Terms & Conditions
               </Link>
-            </div>
+            </div> */}
+            <p className="text-[12px] absolute z-0 bottom-0 right-0 pb-3 pr-3">
+              STAGE: {apiURL}
+            </p>
           </div>
         </div>
       </main>

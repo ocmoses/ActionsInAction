@@ -35,6 +35,7 @@ export const validities = {
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 }
+
 export const categoryCombination = [
   ["VAS", "RMS"],
   ["VAS", "MKP"],

@@ -30,7 +30,7 @@ function Navbar() {
           alt="MTN Nigeria Logo"
           className=" text-white min-w-[76px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
         />
-        <NavLinks />
+        {/* <NavLinks /> */}
       </div>
       {!session && (
         <div className="flex justify-end">

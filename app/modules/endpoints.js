@@ -14,10 +14,15 @@ export const NextEndPoints = {
   EMAIL_VALIDATOR: "/api/next/external/mailvalidator",
   TIN_CHECK: "/api/next/external/tin",
   CAC_CHECK: "/api/next/external/cac",
+  LOGIN_ADMIN: "/api/next/users/login-admin",
+  LOGOUT_ADMIN: "/api/next/users/logout-admin",
 }
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v1/auth/login`,
+  LOGOUT: `${apiURL}/v1/auth/logout`,
+  LOGIN_ADMIN: `${apiURL}/v2/auth/login`,
+  LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
   AUTH_USER: `${apiURL}/v1/auth/authenticated-user`,
   GET_USER_INFO_VALIDATED: `${apiURL}/v1/auth/partner-info/validate`,
   WELCOMEBACK: `${apiURL}/v1/existing-partner/welcome-back`,

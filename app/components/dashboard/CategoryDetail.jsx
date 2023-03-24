@@ -14,8 +14,14 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { partner, updatePartner, setCategory, registerPartner, nextStage } =
-    usePartners()
+  const {
+    partner,
+    updatePartner,
+    setCategory,
+    setCurrentCategory,
+    registerPartner,
+    nextStage,
+  } = usePartners()
   const { processing, setProcessing, setForm } = useProcessing()
 
   const selectCategory = async (sysCategory) => {
@@ -37,6 +43,7 @@ export default function CategoryDetail({
         newcategory.profile_stage.category = "1"
         const { nextstage: NextStage } = nextStage(newcategory, partner)
         setCategory(newcategory)
+        setCurrentCategory(newcategory, partner)
         console.log({ NextStage })
         setForm(NextStage ?? "compliance")
         setIsOnboarding(true)

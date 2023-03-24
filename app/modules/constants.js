@@ -23,6 +23,7 @@ export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
+
 export const validities = {
   ncc: "5 years",
   nlrc_lottery: "10 years",

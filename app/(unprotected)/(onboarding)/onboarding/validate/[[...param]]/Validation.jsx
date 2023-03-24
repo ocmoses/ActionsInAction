@@ -102,23 +102,25 @@ export default function RegisterValidation({ params }) {
           }
           return setError({ validate: loginData.error })
         }
-        const serverSession = {
-          status: loginData?.data?.user?.uuid
-            ? "authenticated"
-            : "unauthenticated",
-          User: loginData?.data,
-        }
-        const categories = loginData?.categories
+        console.log({ loginData })
+        // const serverSession = {
+        //   status: loginData?.data?.user?.uuid
+        //     ? "authenticated"
+        //     : "unauthenticated",
+        //   User: loginData?.data,
+        // }
+        // const categories = loginData?.categories
 
-        app.setStoreStates(serverSession, categories, "validation")
-        setData(serverSession)
+        // app.setStoreStates(serverSession, categories, "validation")
+        // setData(serverSession)
         // if (params.type === "new") {
         //   app.toggleGetstartedLink(true)
         //   return router.push(PageRoutes.getstarted)
         // }
         // app.toggleGetstartedLink(false)
-        return router.push(PageRoutes.dashboard)
-        // return router.replace(`${PageRoutes.login}/dashboard`)
+        // return router.push(PageRoutes.dashboard)
+        users.setTmpUser(loginData?.data?.user)
+        return router.replace(`${PageRoutes.login}`)
       } else {
         setProcessing(false)
         return setError({

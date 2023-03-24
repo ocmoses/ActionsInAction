@@ -120,7 +120,7 @@ function Login({ params }) {
               Y’ello
               {tmpuser?.email && (
                 <span>
-                  , {tmpuser?.first_name} {tmpuser?.last_name}
+                  , {tmpuser?.first_name}
                 </span>
               )}
             </span>

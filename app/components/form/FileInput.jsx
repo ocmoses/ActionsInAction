@@ -145,7 +145,7 @@ function FileInput({
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
-                        <span className=" overflow-hidden text-red-600 text-[13px]">
+                        <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>
                       </div>
@@ -178,7 +178,7 @@ function FileInput({
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
-                        <span className="truncate overflow-hidden text-red-600 text-[13px]">
+                        <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>
                       </div>

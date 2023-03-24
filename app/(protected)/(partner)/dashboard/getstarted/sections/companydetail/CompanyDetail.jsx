@@ -163,7 +163,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
-          disabled={isMasterData || tinData.Name}
+          disabled={isMasterData || tinData?.Name}
         />
         <SelectInput
           id="country"

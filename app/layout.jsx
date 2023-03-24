@@ -11,6 +11,7 @@ import { getCategories } from "@/app/modules/categories"
 const getServerSession = async () => {
   try {
     const nextCookies = cookies()
+    // User session
     const token = nextCookies.has("auth-token")
       ? nextCookies.get("auth-token")?.value
       : null
@@ -21,7 +22,58 @@ const getServerSession = async () => {
       ? nextCookies.get("user_id")?.value
       : null
 
-    if (user_id) {
+    // Admin session
+    const adminToken = nextCookies.has("token")
+      ? nextCookies.get("token")?.value
+      : null
+    const uuid = nextCookies.has("uuid") ? nextCookies.get("uuid")?.value : null
+
+    if (uuid) {
+      // GET USER INFO
+      const token = token ? Decrypt(adminToken) : null
+      try {
+        const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
+          headers: {
+            apikey: `${process.env.APIKEY}`,
+            "Content-Type": "application/json",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }).catch((error) => {
+          return {
+            success: false,
+            error: error.message,
+            data: null,
+          }
+        })
+        if (response) {
+          const { success, data } = await response.json()
+          if (response?.ok) {
+            const User = userData(data)
+            return { success, error: null, data: User }
+          } else {
+            if (data) {
+              return { success: false, error: data.error, data: null }
+            } else {
+              return {
+                success: false,
+                error: "Something went wrong",
+                data: null,
+              }
+            }
+          }
+        } else {
+          return {
+            success: false,
+            error: "Error reaching the server. Please check your connection",
+            data: null,
+          }
+        }
+      } catch (error) {
+        return { success: false, error: error.message, data: null }
+      }
+    } else if (user_id) {
       // GET USER INFO
       const authToken = token ? Decrypt(token) : null
       const partnerID = partnerid ? Decrypt(partnerid) : null
@@ -113,7 +165,6 @@ export default async function RootLayout({ children }) {
     User: sessionData?.data ?? null,
     error: sessionData?.error ?? null,
   }
-  // console.log({ serverSession })
   return (
     <html lang="en">
       <head />

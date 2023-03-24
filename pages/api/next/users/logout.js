@@ -1,4 +1,5 @@
-import { apiURL } from "@/app/modules/constants"
+import RemoteEndPoints from "@/app/modules/endpoints"
+
 import { Decrypt } from "@/app/modules/utilities"
 import { deleteCookie, getCookie, hasCookie } from "cookies-next"
 
@@ -7,7 +8,7 @@ export default async function handler(req, res) {
     const token = getCookie("auth-token", { req, res })
     const decrypted = token ? Decrypt(token) : null
 
-    const response = await fetch(`${apiURL}/v1/auth/logout`, {
+    const response = await fetch(RemoteEndPoints.LOGOUT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

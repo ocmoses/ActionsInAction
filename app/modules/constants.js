@@ -21,7 +21,7 @@ const environment = {
   STAGING: "http://10.1.44.40/api",
   PROD: "https://partner.mtn.ng/api",
 }
-export const apiURL = environment.PROD
+export const apiURL = environment.INHOUSE
 
 export const validities = {
   ncc: "5 years",

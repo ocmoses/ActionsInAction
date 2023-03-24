@@ -39,6 +39,7 @@ function CompanyDetail() {
     company_postcode: "",
   })
   const [isMasterData, setIsMasterData] = useState(false)
+  const [tinData, setTinData] = useState(null)
   useEffect(() => {
     const Category =
       partner.master &&
@@ -57,11 +58,13 @@ function CompanyDetail() {
       tin_data = isString(Category.tin_data)
         ? JSON.parse(Category.tin_data)
         : Category.tin_data
+      setTinData(tin_data)
     }
     if (Category?.cac_data) {
       cac_data = isString(Category.cac_data)
         ? JSON.parse(Category.cac_data)
         : Category.cac_data
+      setTinData(cac_data)
     }
     setData({
       partner_uuid: Category?.partner_uuid,
@@ -119,7 +122,6 @@ function CompanyDetail() {
       )
       newcategory.profile_stage.companydetail = "1"
       const { nextstage: NextStage } = nextStage(newcategory, partner)
-      console.log({ NextStage })
       return setForm(NextStage)
     }
     // if (NextStage === "review") return moveToNextForm(["review", true])
@@ -161,7 +163,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || tinData.Name}
         />
         <SelectInput
           id="country"

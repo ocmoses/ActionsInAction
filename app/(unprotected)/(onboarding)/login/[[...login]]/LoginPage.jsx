@@ -118,11 +118,7 @@ function Login({ params }) {
               }}
             >
               Y’ello
-              {tmpuser?.email && (
-                <span>
-                  , {tmpuser?.first_name} {tmpuser?.last_name}
-                </span>
-              )}
+              {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
             </span>
             <Image
               src="/assets/icons/yello-hand.svg"

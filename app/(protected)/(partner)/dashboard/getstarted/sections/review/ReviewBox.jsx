@@ -144,7 +144,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Company name
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.company_name}
                     </div>
                   </div>
@@ -157,7 +157,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Country
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.country &&
                         COUNTRIES.find(
                           (c) => c.value === companydetailCategory?.country
@@ -169,7 +169,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Address
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.company_address}
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       City
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.company_city}
                     </div>
                   </div>
@@ -191,7 +191,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       State
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.company_state &&
                         STATES.find(
                           (c) =>
@@ -210,14 +210,14 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Postal codes
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {companydetailCategory?.company_postcode}
                     </div>
                   </div>
 
                   <div className="mb-2 sm:mb-0 sm:col-span-3">
                     <div className="text-[#999999] text-[12px] truncate"></div>
-                    <div className="text-white text-[14px]"></div>
+                    <div className="whitespace-normal text-white text-[14px]"></div>
                   </div>
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       RC. number
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {complianceCategory?.rc_no}{" "}
                     </div>
                   </div>
@@ -251,7 +251,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Tax identification number
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {complianceCategory?.tin_no}{" "}
                     </div>
                   </div>
@@ -354,7 +354,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       VAS License ID
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {ncclicenseCategory?.vas_license_id}
                     </div>
                   </div>
@@ -366,7 +366,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {outputDate(ncclicenseCategory?.ncc_issue_date)}
                     </div>
                   </div>
@@ -375,7 +375,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {outputDate(ncclicenseCategory?.ncc_expiry_date)}
                     </div>
                   </div>
@@ -426,7 +426,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       NLRC License number
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {nlrclicenseCategory?.nlrc_license_id}{" "}
                     </div>
                   </div>
@@ -438,7 +438,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {outputDate(nlrclicenseCategory?.nlrc_issue_date)}
                     </div>
                   </div>
@@ -447,7 +447,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {outputDate(nlrclicenseCategory?.nlrc_expiry_date)}
                     </div>
                   </div>
@@ -518,7 +518,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Indemnity issue number
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {indemnityCategory?.indemnity_no}{" "}
                     </div>
                   </div>
@@ -530,7 +530,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Issuing date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="text-white text-[14px] ">
                       {outputDate(indemnityCategory?.indemnity_issue_date)}
                     </div>
                   </div>
@@ -539,7 +539,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     <div className="text-[#999999] text-[12px] truncate">
                       Expiry date
                     </div>
-                    <div className="text-white text-[14px]">
+                    <div className="whitespace-normal text-white text-[14px]">
                       {outputDate(indemnityCategory?.indemnity_expiry_date)}
                     </div>
                   </div>

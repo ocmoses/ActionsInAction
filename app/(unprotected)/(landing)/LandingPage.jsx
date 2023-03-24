@@ -718,7 +718,7 @@ function LandingPage() {
               </Link>
             </div>
             <p className="text-[12px] absolute z-0 bottom-0 right-0 pb-3 pr-3">
-              PROD: {apiURL}
+              STAGE: {apiURL}
             </p>
           </div>
         </div>

@@ -28,7 +28,7 @@ const environment = {
   STAGING: "http://10.1.44.40/api",
   PROD: "https://partner.mtn.ng/api",
 }
-export const apiURL = environment.STAGING
+export const apiURL = environment.PROD
 
 export const EmailType = {
   EXISTING: "existing",

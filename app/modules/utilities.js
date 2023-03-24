@@ -247,6 +247,11 @@ export async function logout() {
   await response.json()
   return { success: true }
 }
+export async function logoutAdmin() {
+  const response = await fetch(NextEndPoints.LOGOUT_ADMIN)
+  await response.json()
+  return { success: true }
+}
 export function userData(data, partnerID, categories) {
   if (data?.partners?.length > 0) {
     data?.partners.map((p) => {
@@ -266,6 +271,36 @@ export function userData(data, partnerID, categories) {
     partnerID,
     ...data,
   }
+}
+export const set_admin_token = (user, req, res) => {
+  if (!user) return null
+  const message = data?.message
+  const maxAge = 60 * 60 * 24
+  if (token) {
+    // SET COOKIES
+    const encryptedAuthToken = Encrypt(token)
+    const encryptedUserId = Encrypt(`${user.uuid}`)
+    setCookie("token", encryptedAuthToken, {
+      req,
+      res,
+      maxAge: maxAge ?? 60 * 60 * 24, // would expire after 15 minutes
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      sameSite: "strict",
+    })
+
+    setCookie("uuid", encryptedUserId, {
+      req,
+      res,
+      maxAge: maxAge ?? 60 * 60 * 24, // would expire after 15 minutes
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      sameSite: "strict",
+    })
+  }
+  return token
 }
 export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
   const authToken = data?.login_token?.access_token

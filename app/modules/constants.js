@@ -25,10 +25,10 @@ BE/API: https://partner.mtn.ng
 const environment = {
   INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
   DEV: "http://10.1.29.122/api",
-  STAGING: "http://10.1.44.40/api",
+  STAGE: "http://10.1.44.40/api",
   PROD: "https://partner.mtn.ng/api",
 }
-export const apiURL = environment.PROD
+export const apiURL = environment.STAGE
 
 export const EmailType = {
   EXISTING: "existing",
@@ -46,6 +46,7 @@ export const validities = {
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 }
+
 export const categoryCombination = [
   ["VAS", "RMS"],
   ["VAS", "MKP"],

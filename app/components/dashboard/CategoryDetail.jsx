@@ -20,7 +20,6 @@ export default function CategoryDetail({
 
   const selectCategory = async (sysCategory) => {
     clearErrors()
-    console.log({ category })
     const result = await registerPartner("category", {
       user_uuid: partner?.user_uuid ?? "",
       partner_uuid: partner?.uuid ?? "",
@@ -43,7 +42,10 @@ export default function CategoryDetail({
         return setIsOpen(false)
       }
     }
-    setError({ category: "Something went wrong" })
+    setError({
+      category:
+        "Unable to reach the server. Please check your connection and retry",
+    })
   }
 
   return (

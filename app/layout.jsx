@@ -58,7 +58,8 @@ const getServerSession = async () => {
             } else {
               return {
                 success: false,
-                error: "Something went wrong",
+                error:
+                  "Error. No data was returned from the server. Please try again",
                 data: null,
               }
             }
@@ -109,7 +110,7 @@ const getServerSession = async () => {
             } else {
               return {
                 success: false,
-                error: "Something went wrong",
+                error: "No data was return from the server. Please try again",
                 data: null,
               }
             }

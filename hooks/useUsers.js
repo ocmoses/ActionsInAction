@@ -28,6 +28,7 @@ export default function useUsers() {
     const serverSession = {
       status: userdata?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: userdata?.data,
+      type: "user",
     }
     app.setStoreStates(serverSession, userdata?.categories, "login")
 

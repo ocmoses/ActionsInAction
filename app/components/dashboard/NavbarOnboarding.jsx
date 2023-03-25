@@ -67,7 +67,8 @@ export default function NavbarOnboarding({
           onClick={cancelOnboarding}
           className="hidden sm:flex text-[12px] px-3 py-1 border hover:border-white/50 hover:text-white/50 border-white rounded-full cursor-pointer"
         >
-          Save and exit
+          Exit
+          {/* Save and exit */}
         </span>
       </div>
     </header>

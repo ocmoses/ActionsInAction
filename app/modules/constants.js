@@ -112,6 +112,8 @@ export const forms = {
     title: "Tell us a bit more about your organisation",
     label: "Company information",
     subtitle: "",
+    listdesc: "",
+    listdesc: "Company Name, Partner Type, Company Address, etc    ",
     hand: "",
     fields: {
       company_name: "Company name",
@@ -135,6 +137,7 @@ export const forms = {
     title: "Provide your company's compliance details",
     label: "Company compliance detail",
     subtitle: "",
+    listdesc: "Company Reg. No, TIN No, CAC Reg Certificate, etc",
     hand: "",
     fields: {
       company_type: "Company type",
@@ -160,6 +163,7 @@ export const forms = {
     title: "Provide your company's NCC license details",
     label: "NCC license detail",
     subtitle: "",
+    listdesc: "VAS License Number, VAS License Issue Date, etc",
     hand: "",
     fields: {
       vas_license_id: "VAS License ID",
@@ -180,6 +184,8 @@ export const forms = {
     title: "Provide your company's NLRC license details",
     label: "NLRC license detail",
     subtitle: "",
+    listdesc:
+      "License type, NLRC License ID, Issuing date, Expiry date, NLRC Document",
     hand: "",
     fields: {
       nlrc_license_type: "License type",
@@ -200,6 +206,7 @@ export const forms = {
     title: "Provide your company's short code details",
     label: "Shortcode detail",
     subtitle: "",
+    listdesc: "Short Code Issue Date, NCC Pricing Approval Issue Date, etc",
     hand: "",
     fields: {
       shortcode: "Short code",
@@ -223,6 +230,8 @@ export const forms = {
     title: "Provide your company's indemnity insurance",
     label: "Indemnity insurance information",
     subtitle: "",
+    listdesc:
+      "Indemnity insurance number, Issuing date, Expiry date, Insurance Document",
     hand: "",
     fields: {
       indemnity_no: "Professional indemnity insurance number",
@@ -242,6 +251,7 @@ export const forms = {
     title: "Provide your company’s audited accounts",
     label: "Company's audited accounts detail",
     subtitle: "",
+    listdesc: "Compny's Audited account, Evidence of job done",
     hand: "",
     fields: {
       account_name: "Account name",
@@ -250,7 +260,7 @@ export const forms = {
       audited_account_1_doc: "Audited account 1",
       audited_account_2_doc: "Audited account 2",
       audited_account_3_doc: "Audited account 3",
-      job_evidence_doc: "Audited account 3",
+      job_evidence_doc: "Evidence of job done",
     },
     required: {
       account_name: "Account name",
@@ -267,6 +277,7 @@ export const forms = {
     title: "Enter your email",
     label: "Enter your email",
     subtitle: "",
+    listdesc: "",
     hand: "👋",
     fields: {
       partnerid: "Email",
@@ -279,6 +290,7 @@ export const forms = {
     form: "setpassword",
     title: "Setup your password",
     subtitle: "",
+    listdesc: "",
     hand: "",
     fields: {
       password: "Password",
@@ -293,6 +305,7 @@ export const forms = {
     form: "confirmcompanyinfo",
     title: "Confirm your company information",
     subtitle: "",
+    listdesc: "",
     hand: "",
     fields: {
       company_name: "Company name",
@@ -315,6 +328,7 @@ export const forms = {
     form: "contactperson",
     title: "Contact person",
     subtitle: "",
+    listdesc: "",
     hand: "",
     fields: {
       first_name: "First name",
@@ -335,12 +349,14 @@ export const forms = {
     form: "updatereview",
     title: "Review your details",
     subtitle: "",
+    listdesc: "",
     hand: "",
   },
   review: {
     form: "review",
     title: "Review your application",
     subtitle: "",
+    listdesc: "",
     hand: "",
   },
 }

@@ -4,11 +4,13 @@ import { persistStore } from "@/app/modules/constants"
 import app from "./models/app"
 import users from "./models/users"
 import partners from "./models/partners"
+import admins from "./models/admins"
 
 export const model = {
   app,
   users,
   partners,
+  admins,
 }
 const store = persistStore ? createStore(persist(model)) : createStore(model)
 

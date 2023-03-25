@@ -33,18 +33,17 @@ export default function PartnerCategories({
           (category) =>
             category.category_name && (
               <div
-                onClick={() =>
-                  category.status === "open"
-                    ? onClick(category.uuid)
-                    : process.env.NODE_ENV === "production"
-                    ? {}
-                    : onClick(category.uuid)
-                }
-                // onClick={() => onClick(category.uuid)}
+                // onClick={() =>
+                //   category.status === "open" ||
+                //   partner?.contract_status === "not_started"
+                //     ? onClick(category.uuid)
+                //     : process.env.NODE_ENV === "production"
+                //     ? {}
+                //     : onClick(category.uuid)
+                // }
+                onClick={() => onClick(category.uuid)}
                 key={category.uuid}
-                className={`flex flex-col ${
-                  category.status === "open" ?? "cursor - pointer"
-                } items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl`}
+                className={`flex flex-col cursor-pointer items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl`}
               >
                 {/* {console.log({ category })} */}
                 <div className="flex flex-col justify-start sm:flex-row sm:justify-center gap-6 items-center">
@@ -104,7 +103,7 @@ export default function PartnerCategories({
                       paddingclass="px-3 py-1"
                     />
                   ) : (
-                    <div className="flex justify-center">
+                    <div className={`flex justify-center`}>
                       <div className="flex gap-2 bg-[#2D200A] text-[#F9D89A] rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden">
                         <Image
                           alt=""

@@ -38,7 +38,7 @@ export default function useLogout() {
     await logoutAdmin()
     clearStore()
     actions.app.endLoading("logout")
-    router.push(PageRoutes.backoffice)
+    router.push(PageRoutes.adminlogin)
   }
 
   return { Logout, logoutAdmin, clearStore }

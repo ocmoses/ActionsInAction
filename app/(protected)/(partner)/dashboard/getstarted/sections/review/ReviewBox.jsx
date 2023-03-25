@@ -133,6 +133,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.companydetail}
+              visible={partner?.contract_status === "not_started"}
               title="Company information"
               onClick={() => moveTo("companydetail")}
             />
@@ -231,6 +232,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.compliance}
+              visible={partner?.contract_status === "not_started"}
               title="Compliance details"
               onClick={() => moveTo("compliance")}
             />
@@ -343,6 +345,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.ncclicense}
+              visible={partner?.contract_status === "not_started"}
               title="NCC VAS Licence"
               onClick={() => moveTo("ncclicense")}
             />
@@ -416,6 +419,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.nlrclicense}
+              visible={partner?.contract_status === "not_started"}
               title="NLRC"
               onClick={() => moveTo("nlrclicense")}
             />
@@ -488,6 +492,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.shortcode}
+              visible={partner?.contract_status === "not_started"}
               title="Shortcode"
               onClick={() => moveTo("shortcode")}
             />
@@ -508,6 +513,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.indemnity}
+              visible={partner?.contract_status === "not_started"}
               title="Professional indemnity insurance"
               onClick={() => moveTo("indemnity")}
             />
@@ -580,6 +586,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           <div className="md:grid md:grid-cols-4 gap-12">
             <ReviewTitle
               isMaster={isMaster.accountinfo}
+              visible={partner?.contract_status === "not_started"}
               title="Audited accounts"
               onClick={() => moveTo("accountinfo")}
             />
@@ -715,14 +722,18 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
       )}
       {category.status === "pending" && (
         <div className="mt-3 pb-12 flex flex-col space-y-1 justify-center items-center w-full">
-          <p className="text-[24px] text-[#999999]">In review</p>
+          <p className="text-[24px] text-[#999999]">
+            {partner?.contract_status === "not_started"
+              ? "Pending"
+              : "In review"}
+          </p>
           <p
             onClick={() => {
               setIsOnboarding(false)
               setTmpCat(null)
               setForm(null)
             }}
-            className="text-[14px] text-#666666] hover:text-[#999999] cursor-pointer"
+            className="flex rounded-full border border-white/10 hover:border-white/30 px-4 py-1 text-[14px] text-#666666] hover:text-[#999999] cursor-pointer"
           >
             Close
           </p>

@@ -14,14 +14,8 @@ export default function CategoryDetail({
   validation,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const {
-    partner,
-    updatePartner,
-    setCategory,
-    setCurrentCategory,
-    registerPartner,
-    nextStage,
-  } = usePartners()
+  const { partner, updatePartner, setCategory, registerPartner, nextStage } =
+    usePartners()
   const { processing, setProcessing, setForm } = useProcessing()
 
   const selectCategory = async (sysCategory) => {
@@ -43,92 +37,90 @@ export default function CategoryDetail({
         newcategory.profile_stage.category = "1"
         const { nextstage: NextStage } = nextStage(newcategory, partner)
         setCategory(newcategory)
-        // setCurrentCategory(newcategory, partner)
         console.log({ NextStage })
         setForm(NextStage ?? "compliance")
         setIsOnboarding(true)
         return setIsOpen(false)
       }
-
-      // if (result.data?.partner) {
-      //   updatePartner(result?.data?.partner)
-      //   const newcategory = result.data?.partner.categories.find(
-      //     (c) => c.category_uuid === category.category_uuid
-      //   )
-      //   newcategory.profile_stage.category = "1"
-      //   const { nextstage: NextStage } = nextStage(newcategory, partner)
-      //   console.log({ NextStage })
-      //   setCategory(newcategory)
-      //   setForm(NextStage ?? "compliance")
-      //   setIsOnboarding(true)
-      //   return setIsOpen(false)
-      // }
     }
     setError({ category: "Something went wrong" })
   }
 
   return (
-    <div className="pt-[56px] pb-0 px-[40px] h-full">
-      <div className="flex flex-col h-full justify-start gap-6 scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] scrollbar-w-[2px]">
-        <div className="flex flex-col flex-1 gap-8 justify-start items-start mb-auto pr-4">
-          <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
-            {category.icon && (
-              <Image
-                src={category.icon}
-                alt=""
-                width={24}
-                height={24}
-                className="text-[#FFCB03]"
+    <div className="p-0 h-full pt-[50px]">
+      <div className="h-full overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] !scrollbar-w-[4px]">
+        <div className="w-full px-6">
+          <div className="flex flex-col flex-1 gap-8 justify-start items-start mb-auto">
+            <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
+              {category.icon && (
+                <Image
+                  src={category.icon}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="text-[#FFCB03]"
+                />
+              )}
+            </div>
+            {errors && errors["category"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["category"]} />
+              </div>
+            )}
+            <div className="">
+              <h1 className="text-white text-xl font-bold">
+                {category.category_name}
+              </h1>
+              <p className="text-md text-[#999999]">
+                {category.short_description}
+              </p>
+            </div>
+            <div className="">
+              <h3 className="text-white text-lg font-bold">Get started</h3>
+              <p className="text-md text-[#999999]">
+                For regulatory compliance, we’ll require the following
+                informations from our{" "}
+                {category.category_code === "AGR" ? (
+                  <>aggrigators</>
+                ) : (
+                  <>{category.category_code} providers.</>
+                )}
+              </p>
+            </div>
+            <div className="max-w-[95%] mb-6">
+              <ul className="">
+                {validation?.list?.length > 0 &&
+                  validation?.list?.map((list) => (
+                    <li
+                      key={list.label}
+                      className="flex justify-start items-start gap-4 mb-2"
+                    >
+                      <div className="flex justify-center items-center p-1 rounded-full bg-white/10">
+                        <CircleOkCheckmarkIcon iconClass="text-[#FFCB03] w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-white font-bold text-[14px]">
+                          {list.label}
+                        </span>
+                        <span className="text-[#999999] font-extralight text-[12px] text-ellipsis overflow-hidden max-w-[95%]">
+                          {list.listdesc}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+          <div className="">
+            {processing ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <Button
+                onClick={() => selectCategory(category)}
+                label={`Get started`}
               />
             )}
           </div>
-          {errors && errors["category"] && (
-            <div className="mb-6">
-              <FormErrors error={errors["category"]} />
-            </div>
-          )}
-          <div className="">
-            <h1 className="text-white text-xl font-bold">
-              {category.category_name}
-            </h1>
-            <p className="text-md text-[#999999]">
-              {category.short_description}
-            </p>
-          </div>
-          <div className="">
-            <h3 className="text-white text-lg font-bold">Get started</h3>
-            <p className="text-md text-[#999999]">
-              For regulatory compliance, we’ll require the following
-              informations from our {category.category_code} providers.
-            </p>
-          </div>
-
-          <div className="">
-            <ul className="flex flex-col gap-4">
-              {validation?.required?.length > 0 &&
-                validation?.required?.map((required) => (
-                  <li
-                    key={required}
-                    className="flex justify-start items-center gap-4"
-                  >
-                    <div className="flex justify-center items-center p-1 rounded-full bg-white/10">
-                      <CircleOkCheckmarkIcon iconClass="text-[#FFCB03] w-4 h-4" />
-                    </div>
-                    <span className="text-white font-bold">{required}</span>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        </div>
-        <div className="">
-          {processing ? (
-            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-          ) : (
-            <Button
-              onClick={() => selectCategory(category)}
-              label={`Get started`}
-            />
-          )}
         </div>
       </div>
     </div>

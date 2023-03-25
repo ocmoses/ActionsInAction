@@ -19,10 +19,10 @@ export default function CategoryCard({
   return (
     <div
       onClick={() => (!disabled ? selectCategory(category) : {})}
-      className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] text-white px-6 py-4 block ${
+      className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] px-6 py-4 block ${
         disabled
-          ? "bg-white/40"
-          : "cursor-pointer bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
+          ? "cursor-not-allowed bg-white/10 text-white/70"
+          : "cursor-pointer text-white bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
       } rounded-lg`}
     >
       <div>

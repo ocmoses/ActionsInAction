@@ -21,7 +21,7 @@ export const NextEndPoints = {
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v1/auth/login`,
   LOGOUT: `${apiURL}/v1/auth/logout`,
-  LOGIN_ADMIN: `${apiURL}/v2/auth/login`,
+  LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
   AUTH_USER: `${apiURL}/v1/auth/authenticated-user`,
   GET_USER_INFO_VALIDATED: `${apiURL}/v1/auth/partner-info/validate`,

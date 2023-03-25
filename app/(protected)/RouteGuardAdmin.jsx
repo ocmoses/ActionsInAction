@@ -2,11 +2,12 @@
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 import { useEffect } from "react"
-import useUsers from "@/hooks/useUsers"
+import { PageRoutes } from "@/app/modules/menu"
+import useAdmins from "@/hooks/useAdmins"
 import useLogout from "@/hooks/useLogout"
 
 export default function RouteGuard({ children }) {
-  const { session } = useUsers()
+  const { session } = useAdmins()
   const router = useRouter()
   const segments = useSelectedLayoutSegments()
   const dologout = useLogout()
@@ -15,7 +16,8 @@ export default function RouteGuard({ children }) {
       if (session?.status === "unauthenticated") {
         const currentUrl = window.location.pathname
         if (session?.user?.uuid) dologout.clearStore()
-        if (currentUrl !== "/") router.push(`/backoffice/login${currentUrl}`)
+        if (currentUrl !== "/")
+          router.push(`${PageRoutes.adminlogin}${currentUrl}`)
       }
     }
   }, [session, router])

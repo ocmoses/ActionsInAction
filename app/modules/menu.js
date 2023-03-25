@@ -64,5 +64,6 @@ export const PageRoutes = {
   dashboard: "/dashboard",
   getstarted: "/dashboard/getstarted",
   companyinfo: "/dashboard/getstarted/onboarding/companyinfo",
-  backoffice: "/backoffice/login",
+  adminlogin: "/backoffice/login",
+  admindashboard: "/admin/dashboard",
 }

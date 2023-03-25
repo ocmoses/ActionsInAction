@@ -272,14 +272,17 @@ export function userData(data, partnerID, categories) {
     ...data,
   }
 }
-export const set_admin_token = (user, req, res) => {
-  if (!user) return null
-  const message = data?.message
+export const set_admin_token = (token, uuid, req, res) => {
+  if (!token || !uuid) return null
+  console.log({ token })
   const maxAge = 60 * 60 * 24
   if (token) {
     // SET COOKIES
-    const encryptedAuthToken = Encrypt(token)
-    const encryptedUserId = Encrypt(`${user.uuid}`)
+    // const encryptedAuthToken = Encrypt(token)
+    // const encryptedUserId = Encrypt(uuid)
+    // const decryptedAuthToken = Decrypt(encryptedAuthToken)
+    const encryptedAuthToken = token
+    const encryptedUserId = uuid
     setCookie("token", encryptedAuthToken, {
       req,
       res,
@@ -299,8 +302,9 @@ export const set_admin_token = (user, req, res) => {
       path: "/",
       sameSite: "strict",
     })
+    return encryptedAuthToken
   }
-  return token
+  return null
 }
 export const createHttpOnlyCookie = (data, req, res, partnerID, categories) => {
   const authToken = data?.login_token?.access_token

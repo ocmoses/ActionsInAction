@@ -37,13 +37,18 @@ const usePartners = () => {
   })
   const setValidationRules = (category) => {
     const required = []
+    const list = []
     const optional = []
-    const allForms = { required: [], optional: [], all: [] }
+    const allForms = { required: [], optional: [], all: [], list: [] }
     // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
           if (forms[validate] && category.validation[validate] === "r") {
+            list.push({
+              label: forms[validate].label,
+              listdesc: forms[validate].listdesc,
+            })
             required.push(forms[validate].label)
             allForms.required.push(validate)
             allForms.all.push(validate)
@@ -56,10 +61,8 @@ const usePartners = () => {
       }
     }
     // console.log({ allForms })
-    const validated = { required, optional, allForms }
+    const validated = { required, optional, allForms, list }
     setValidation(validated)
-    // console.log(category)
-    // console.log(validated)
     actions.app.setFormSteps(validated)
     actions.app.setActiveCategory(category?.uuid)
     return validated
@@ -224,6 +227,7 @@ const usePartners = () => {
         const serverSession = {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
           User: setpassword,
+          type: "user",
         }
         app.setStoreStates(serverSession, categories, "partner store")
         if (userdata.type === "new") return router.push(PageRoutes.getstarted)

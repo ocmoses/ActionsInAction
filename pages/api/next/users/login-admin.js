@@ -12,36 +12,41 @@ const doLogin = async (body, req, res) => {
     referrerPolicy: "no-referrer",
     body: JSON.stringify(body),
   })
-  if (response) {
-    const result = await response.json()
-    // console.log({ result })
-    const { data, success } = result
-    const message = data?.message
-    if (data) {
-      const user = data?.user
-      const authToken = data?.token
-      const token = set_admin_token(authToken, req, res)
 
-      if (!token)
-        return {
-          success: false,
-          error: "Invalid request. We cannot create a session",
-          data: user,
-        }
-      return { success: true, error: null, data: user }
-    } else {
-      if (message) {
-        return { success: false, error: message, data: null }
-      } else {
-        return {
-          success: false,
-          error: `${response.status} ${response.statusText}`,
-        }
-      }
+  if (!response)
+    return {
+      success: false,
+      error: "Unable to fetch data. Please check your connection",
+      data: null,
     }
-  } else {
-    return { success: false, error: "An error was encountered", data: null }
-  }
+
+  const result = await response.json()
+  if (!result)
+    return {
+      success: false,
+      error: "Unable to fetch data. Please check your connection",
+      data: null,
+    }
+  const { success, data } = result
+
+  if (!success) return { success: false, error: data.message, data: null }
+  const { token, user } = data
+  if (!user)
+    return {
+      success: false,
+      error: "Unable to fetch data. Please check your connection",
+      data: null,
+    }
+  const authtoken = set_admin_token(token, user.uuid, req, res)
+  console.log({ token })
+  console.log({ authtoken })
+  if (!authtoken)
+    return {
+      success: false,
+      error: "Invalid request. We cannot create a session",
+      data: { user, token: authtoken },
+    }
+  return { success: true, error: null, data: { user, token: authtoken } }
 }
 export default async function handler(req, res) {
   try {
@@ -52,12 +57,20 @@ export default async function handler(req, res) {
     const body = JSON.parse(req.body)
     const categoriesData = await getCategories(process.env.APIKEY)
     const loginData = await doLogin(body, req, res)
-
-    // Wait for the promises to resolve
-    const [user, categories] = await Promise.all([loginData, categoriesData])
-    return res
-      .status(200)
-      .json({ success: true, error: null, data: { user, categories } })
+    const [User, categories] = await Promise.all([loginData, categoriesData])
+    if (User.error)
+      return res
+        .status(200)
+        .json({ success: false, error: User.error, data: null })
+    if (categories.error)
+      return res
+        .status(200)
+        .json({ success: false, error: User.error, data: null })
+    return res.status(200).json({
+      success: true,
+      error: null,
+      data: { user: User.data, categories: categories.data },
+    })
   } catch (error) {
     console.log({ error })
     return res.status(200).json({

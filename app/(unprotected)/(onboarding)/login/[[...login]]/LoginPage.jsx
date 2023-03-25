@@ -89,6 +89,7 @@ function Login({ params }) {
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
+      type: "user",
     }
     app.setStoreStates(serverSession, loginData?.categories, "login")
 

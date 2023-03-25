@@ -733,7 +733,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
               setTmpCat(null)
               setForm(null)
             }}
-            className="flex rounded-full border border-white/10 hover:border-white/30 px-4 py-1 text-[14px] text-#666666] hover:text-[#999999] cursor-pointer"
+            className="flex rounded-full border border-[#666666] hover:border-white/30 px-4 py-1 text-[14px] text-[#666666] hover:text-[#999999] cursor-pointer"
           >
             Close
           </p>

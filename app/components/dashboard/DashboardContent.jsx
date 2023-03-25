@@ -11,7 +11,6 @@ import Axios from "@/app/modules/axios"
 import { useState, useEffect, useRef } from "react"
 import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
-
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
@@ -31,6 +30,7 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners()
+
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -42,12 +42,15 @@ export default function GetStarted({ type }) {
 
   const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
     useProcessing()
+
   const [{ errors, setError, success, setSuccess, clearErrors }] =
     useErrors(null)
+
   useEffect(() => {
     setCategoriesData(categories)
     setAllowedCategories(AllowedCategories(categories))
   }, [categories])
+
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -65,6 +68,7 @@ export default function GetStarted({ type }) {
     setShowProgress(false)
     setProcessing(false)
   }, [])
+
   useEffect(() => {
     const partnerCat = []
     const partnerActiveCat = []
@@ -119,6 +123,8 @@ export default function GetStarted({ type }) {
     })
   }
   const [isSaving, setIsSaving] = useState(false)
+  const [contractStarted, setContractStarted] = useState(false)
+
   const finishApplication = async () => {
     if (isSaving) return
     clearErrors()
@@ -144,6 +150,7 @@ export default function GetStarted({ type }) {
       if (result) {
         const { success, data } = result
         if (success) {
+          setContractStarted(true)
           updatePartner(data?.partner)
           setSuccess("Your application was submited successfully")
         } else {
@@ -267,15 +274,19 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {partnerActiveCategories?.length > 0 && (
-                <div className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto">
-                  Dear {user.first_name}, please note that you can choose
-                  multiple service categories. However, you will be required to
-                  complete a selected category to enable you move to the
-                  next category
-                </div>
-              )}
-              {partnerCategories?.length > 0 &&
+              {!contractStarted &&
+                partner?.contract_status === "not_started" &&
+                partnerActiveCategories?.length > 0 && (
+                  <div className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto">
+                    Dear {user.first_name}, please note that you can choose
+                    multiple service categories. However, you will be required
+                    to complete a selected category to enable you move to the
+                    next category
+                  </div>
+                )}
+              {!contractStarted &&
+                partner?.contract_status === "not_started" &&
+                partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (
                   <div
                     ref={CategoryBox}
@@ -326,25 +337,27 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              {!showProgress && (
-                <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">
-                  {partnerActiveCategories &&
-                    partnerActiveCategories?.length > 0 &&
-                    partnerActiveCategories.map((category) => (
-                      <CategoryCard
-                        key={category.uuid}
-                        category={category}
-                        isOpen={isOpen}
-                        setIsOpen={setIsOpen}
-                        tmpCat={tmpCat}
-                        setTmpCat={setTmpCat}
-                        disabled={partner?.edittable}
-                      />
-                    ))}
-                </div>
-              )}
+              {!contractStarted &&
+                partner?.contract_status === "not_started" &&
+                !showProgress && (
+                  <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">
+                    {partnerActiveCategories &&
+                      partnerActiveCategories?.length > 0 &&
+                      partnerActiveCategories.map((category) => (
+                        <CategoryCard
+                          key={category.uuid}
+                          category={category}
+                          isOpen={isOpen}
+                          setIsOpen={setIsOpen}
+                          tmpCat={tmpCat}
+                          setTmpCat={setTmpCat}
+                          disabled={partner?.edittable}
+                        />
+                      ))}
+                  </div>
+                )}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col mt-12">
               <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
                 Learn how to use
               </h3>

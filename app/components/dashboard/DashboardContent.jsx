@@ -267,12 +267,20 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+              {partnerActiveCategories?.length > 0 && (
+                <div className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto">
+                  Dear {user.first_name}, please note that you can choose
+                  multiple service categories. However, you will be required to
+                  complete a selected category to enable you move to the
+                  next category
+                </div>
+              )}
               {partnerCategories?.length > 0 &&
                 partnerActiveCategories?.length > 0 && (
                   <div
                     ref={CategoryBox}
                     onClick={toggleProgress}
-                    className="my-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
+                    className="mb-16 flex gap-3 items-center justify-center text-sm cursor-pointer"
                   >
                     {showProgress && (
                       <>
@@ -319,23 +327,20 @@ export default function GetStarted({ type }) {
                   </div>
                 )}
               {!showProgress && (
-                <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] my-16 w3-animate-opacity">
-                  {
-                    // !partner?.edittable &&
-                    partnerActiveCategories &&
-                      partnerActiveCategories?.length > 0 &&
-                      partnerActiveCategories.map((category) => (
-                        <CategoryCard
-                          key={category.uuid}
-                          category={category}
-                          isOpen={isOpen}
-                          setIsOpen={setIsOpen}
-                          tmpCat={tmpCat}
-                          setTmpCat={setTmpCat}
-                          disabled={partner?.edittable}
-                        />
-                      ))
-                  }
+                <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">
+                  {partnerActiveCategories &&
+                    partnerActiveCategories?.length > 0 &&
+                    partnerActiveCategories.map((category) => (
+                      <CategoryCard
+                        key={category.uuid}
+                        category={category}
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        tmpCat={tmpCat}
+                        setTmpCat={setTmpCat}
+                        disabled={partner?.edittable}
+                      />
+                    ))}
                 </div>
               )}
             </div>

@@ -19,11 +19,11 @@ export default function CategorySideDrawer({
     >
       <section
         className={
-          " w-screen max-w-[380px] right-0 pr-[60px] absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+          " w-screen max-w-[380px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
           (isOpen ? " translate-x-0 " : " translate-x-full ")
         }
       >
-        <article className="relative w-screen max-w-md pb-10 h-full">
+        <article className="relative w-screen max-w-[380px] pb-10 h-full">
           <div
             onClick={closeDrawer}
             className="absolute z-50 text-[#999999] cursor-pointer hover:text-white top-[30px] right-[40px]"

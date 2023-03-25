@@ -17,7 +17,6 @@ export const getCategories = async (apikey) => {
         data: null,
       }
     })
-    console.log({ response })
     if (response) {
       const result = await response.json()
 

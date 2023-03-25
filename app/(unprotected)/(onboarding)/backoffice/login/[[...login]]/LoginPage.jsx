@@ -14,13 +14,12 @@ import { useRouter } from "next/navigation"
 import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
+import useAdmins from "@/hooks/useAdmins"
 
 function Login({ params }) {
   const router = useRouter()
   const app = useApp()
-  const { resendEmail } = usePartners()
-  const { tmpuser, setTmpUser } = useUsers()
+  const admin = useAdmins()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -28,22 +27,13 @@ function Login({ params }) {
   const { clearStore } = useLogout()
 
   const [data, setData] = useState({
-    email:
-      process.env.NODE_ENV === "production"
-        ? tmpuser?.email
-          ? tmpuser?.email
-          : ""
-        : tmpuser?.email
-        ? tmpuser?.email
-        : "bodegbolu@gmail.com",
+    username: process.env.NODE_ENV === "production" ? "" : "olabodg",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   })
-  const [notVerified, setNotVerified] = useState(null)
   useEffect(() => {
     setForm(null)
     setProcessing(false)
     clearErrors()
-    setNotVerified(null)
   }, [])
   const handleFormChange = (e) => {
     removeError(e.target.id)
@@ -55,52 +45,40 @@ function Login({ params }) {
   const handleLogin = async (e) => {
     e.preventDefault()
     clearErrors()
-    setNotVerified(null)
-    if (!data.email) {
-      return setError({ email: `Please enter your email address` })
+    if (!data.username) {
+      return setError({ username: `Please enter your AD username` })
     }
     if (!data.password) {
-      return setError({ password: `Please enter your password` })
+      return setError({ password: `Please enter your AD password` })
     }
     clearStore()
     setProcessing(true)
-    const response = await fetch(NextEndPoints.LOGIN, {
+    const response = await fetch(NextEndPoints.LOGIN_ADMIN, {
       method: "POST",
       body: JSON.stringify({
-        email: data.email,
+        username: data.username,
         password: data.password,
-        endpoint: RemoteEndPoints.LOGIN,
       }),
     })
     const result = await response.json()
-    const { data: loginData, error: loginError } = result
-    if (!loginData) {
+    console.log({ result })
+    const { data: Data, error } = result
+    if (error) {
       setProcessing(false)
-      return setError({ login: loginError /*"Authentication failed"*/ })
+      return setError({ login: error })
     }
-    if (!loginData.success) {
-      setProcessing(false)
-      if (loginData.data?.email_verified === "no") {
-        setNotVerified(loginData.data)
-      }
-      return setError({ login: loginData.error })
-    }
-    setTmpUser(null)
-    const serverSession = {
-      status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User: loginData?.data,
-    }
-    app.setStoreStates(serverSession, loginData?.categories, "login")
-
+    admin.setToken(Data?.user.token)
+    admin.setAdmin(Data?.user.user)
+    // const serverSession = {
+    //   status: Data?.user?.uuid ? "authenticated" : "unauthenticated",
+    //   User: Data?.user.user,
+    //   type: "admin",
+    // }
+    // app.setStoreStates(serverSession, Data?.categories, "admin")
     const redirect =
-      params &&
-      params?.length &&
-      params[0] !== "login" &&
-      params[1] !== "getstarted"
+      params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard
-    if (params?.includes("getstarted")) app.toggleGetstartedLink(true)
-    else app.toggleGetstartedLink(false)
+        : PageRoutes.admindashboard
     return router.replace(redirect)
   }
 
@@ -118,7 +96,6 @@ function Login({ params }) {
               }}
             >
               Y’ello
-              {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
             </span>
             <Image
               src="/assets/icons/yello-hand.svg"
@@ -139,31 +116,17 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            {tmpuser?.email
-              ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
-              : "Welcome back! please enter your great details"}
+            Welcome back! please enter your great details
           </p>
           <div className="mb-6">
-            {!success && errors && <FormErrors error={errors["login"]} />}{" "}
-            {!success && notVerified && (
-              <span
-                className="text-[#999999] cursor-pointer hover:text-white/70"
-                onClick={() => resendEmail(notVerified?.email, "new")}
-              >
-                Click here to resend verification link
-              </span>
-            )}
-            <>
-              {errors && <FormErrors error={errors["verify"]} />}
-              {success && <FormErrors success={success} />}
-            </>
+            {!success && errors && <FormErrors error={errors["login"]} />}
           </div>
           <div className="w-full">
             <div className="flex flex-col">
               <TextInput
-                id="email"
-                label="Email address"
-                value={data.email}
+                id="username"
+                label="AD Username"
+                value={data.username}
                 onChange={handleFormChange}
                 errors={errors}
               />
@@ -176,7 +139,7 @@ function Login({ params }) {
                 errors={errors}
               />
             </div>
-            <Link
+            {/* <Link
               href={`${PageRoutes.passwordreset}/reset`}
               className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
               style={{
@@ -188,7 +151,7 @@ function Login({ params }) {
               }}
             >
               Reset your password?
-            </Link>
+            </Link> */}
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : (

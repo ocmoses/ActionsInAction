@@ -2,10 +2,10 @@
 import { useState, useEffect, Suspense } from "react"
 import { getInitials } from "@/app/modules/utilities"
 import useProcessing from "@/hooks/useProcessing"
-import useAdminPartners from "@/hooks/admin/useAdminPartners"
+import useAdminPartners from "@/hooks/useAdminPartners"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
-import UserPercentage from "@/app/components/UserPercentage"
+import FormErrors from "@/app/components/FormErrors"
 import { PhoneIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 
@@ -54,7 +54,7 @@ export default function Compliance() {
                   <th>Company</th>
                   <th>Submitted on</th>
                   <th>Contributors</th>
-                  <th>Progress</th>
+                  {/* <th>Progress</th> */}
                 </tr>
 
                 {/* row 1 */}
@@ -87,7 +87,7 @@ export default function Compliance() {
                               </div>
                               <div className="flex items-center gap-4 text-sm text-white/80">
                                 <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "}
-                                {partner.telephone}
+                                {partner.email}
                               </div>
                             </div>
                           </div>
@@ -112,12 +112,12 @@ export default function Compliance() {
                               ))}
                           </div>
                         </td>
-                        <td>Purple</td>
-                        <th>
+                        <td></td>
+                        {/* <th>
                           <button className="btn btn-ghost btn-xs">
                             details
                           </button>
-                        </th>
+                        </th> */}
                       </tr>
                     ))}
                 </Suspense>

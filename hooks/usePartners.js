@@ -172,7 +172,12 @@ const usePartners = () => {
         })
         if (!responsePartnerwelcome) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successPartnerwelcome, data: partnerwelcome } =
@@ -213,7 +218,12 @@ const usePartners = () => {
         })
         if (!responseSetpassword) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successSetpassword, data: setpassword } =
@@ -254,7 +264,12 @@ const usePartners = () => {
         })
         if (!responseUserinfo) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successUserinfo, data: userinfo } = responseUserinfo
@@ -287,7 +302,12 @@ const usePartners = () => {
         })
         if (!responseCategory) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successCategory, data: categoryData } =
@@ -331,7 +351,11 @@ const usePartners = () => {
         })
         if (!regResponse) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error: ". Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: regSuccess, data: regData } = regResponse

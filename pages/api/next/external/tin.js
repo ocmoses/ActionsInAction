@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         criteriaValue: tin,
       }),
     }).catch((err) => {
-      return "Something went wrong"
+      return "Something went wrong. Please check your connection and try again"
     })
     const result = await response.json()
     if (!result)
@@ -43,7 +43,10 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, error: null, data: result })
   } catch (error) {
     console.log({ error })
-    res.status(200).json({ success: false, error: "Something went wrong" })
+    res.status(200).json({
+      success: false,
+      error: "Something went wrong. Please check your connection and try again",
+    })
     return
   }
 }

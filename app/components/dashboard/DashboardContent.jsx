@@ -144,7 +144,10 @@ export default function GetStarted({ type }) {
       ).catch((error) => {
         console.log(error)
         setIsSaving(false)
-        return setError({ dashboard: "Something went wrong" })
+        return setError({
+          dashboard:
+            "Unable to reach the server. Please check your connection and retry",
+        })
       })
       setIsSaving(false)
       if (result) {
@@ -164,7 +167,10 @@ export default function GetStarted({ type }) {
     } catch (err) {
       console.log({ err })
       setIsSaving(false)
-      return setError({ dashboard: "Something went wrong" })
+      return setError({
+        dashboard:
+          "Something went wrong. Please check your connection and try again",
+      })
     }
   }
   return (

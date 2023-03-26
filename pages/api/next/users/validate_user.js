@@ -61,8 +61,7 @@ export default async function handler(req, res) {
   } catch (error) {
     return res.status(200).json({
       success: false,
-      error:
-        "Something went wrong. You may need to check your internet connection",
+      error: "Something went wrong. Please check your connection and try again",
     })
   }
 }

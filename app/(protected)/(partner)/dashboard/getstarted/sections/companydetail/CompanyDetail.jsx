@@ -69,16 +69,31 @@ function CompanyDetail() {
     setData({
       partner_uuid: Category?.partner_uuid,
       category_uuid: category?.category_uuid,
-      company_name: tin_data?.Name
-        ? tin_data?.Name
-        : Category?.company_name
-        ? Category?.company_name
-        : "",
+      company_name:
+        process.env.NODE_ENV === "production"
+          ? tin_data?.Name
+            ? tin_data?.Name
+            : Category?.company_name
+            ? Category?.company_name
+            : ""
+          : "MTN Nigeria",
       country: Category?.country ?? "NG",
-      company_address: Category?.company_address ?? "",
-      company_city: Category?.company_city ?? "",
-      company_state: Category?.company_state ?? "",
-      company_postcode: Category?.company_postcode ?? "",
+      company_address:
+        process.env.NODE_ENV === "production"
+          ? Category?.company_address ?? " "
+          : "Falomo, Ikoyi, Lagos",
+      company_city:
+        process.env.NODE_ENV === "production"
+          ? Category?.company_city ?? ""
+          : "Ikoyi",
+      company_state:
+        process.env.NODE_ENV === "production"
+          ? Category?.company_state ?? ""
+          : "Lagos",
+      company_postcode:
+        process.env.NODE_ENV === "production"
+          ? Category?.company_postcode ?? ""
+          : "123456",
     })
   }, [category])
 

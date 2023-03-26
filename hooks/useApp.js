@@ -56,6 +56,8 @@ const useApp = () => {
       }
     }
     if (serverSession?.type === "admin") {
+      actions.admins.setToken(serverSession?.token)
+      actions.admins.setAdmin(serverSession?.User)
     }
   }
 

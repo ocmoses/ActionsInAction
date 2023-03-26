@@ -34,7 +34,9 @@ const useFetch = (initialUrl, options) => {
             if (success) {
               setData(data)
             } else {
-              errors.push("Something went wrong")
+              errors.push(
+                "Something went wrong. Please check your connection and try again"
+              )
             }
           } else if (response.status === 404) {
             errors.push("An error 404 was encountered. Please contact us")
@@ -68,7 +70,9 @@ const useFetch = (initialUrl, options) => {
             }
           }
         } else {
-          errors.push("Something went wrong")
+          errors.push(
+            "Something went wrong. Please check your connection and try again"
+          )
         }
       } catch (e) {}
       setLoading(false)

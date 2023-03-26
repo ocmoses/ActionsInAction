@@ -80,8 +80,14 @@ function Compliance() {
       setData({
         partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        rc_no: Category?.rc_no ?? "",
-        tin_no: Category?.tin_no ?? "",
+        rc_no:
+          process.env.NODE_ENV === "production"
+            ? Category?.rc_no ?? ""
+            : "12345678",
+        tin_no:
+          process.env.NODE_ENV === "production"
+            ? Category?.tin_no ?? ""
+            : "654326",
         tin_doc: Category?.tin_doc ?? {},
         memart_doc: Category?.memart_doc ?? {},
         cac_doc: Category?.cac_doc ?? {},
@@ -91,8 +97,14 @@ function Compliance() {
         company_type: Category?.company_type ?? "co",
         tin_data: Category?.tin_data ?? {},
         cac_data: Category?.cac_data ?? {},
-        valid_cac: Category?.valid_cac ?? "yes",
-        valid_tin: Category?.valid_tin ?? "no",
+        valid_cac:
+          process.env.NODE_ENV === "production"
+            ? Category?.valid_cac ?? "yes"
+            : "yes",
+        valid_tin:
+          process.env.NODE_ENV === "production"
+            ? Category?.valid_tin ?? "no"
+            : "yes",
       })
       setLastTINChecked(Category?.tin_no)
       setLastCACChecked(Category?.rc_no)

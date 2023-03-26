@@ -9,36 +9,36 @@ export const PartnerMenu = [
     icon: "",
     route: "/dashboard",
   },
-  {
-    label: "Services",
-    icon: "",
-    route: "",
-  },
-  {
-    label: "Payment",
-    icon: "",
-    route: "",
-  },
-  {
-    label: "Users",
-    icon: "",
-    route: "",
-  },
-  {
-    label: "Reports",
-    icon: "",
-    route: "",
-  },
-  {
-    label: "Audit log",
-    icon: "",
-    route: "",
-  },
-  {
-    label: "Settings",
-    icon: "",
-    route: "",
-  },
+  // {
+  //   label: "Services",
+  //   icon: "",
+  //   route: "",
+  // },
+  // {
+  //   label: "Payment",
+  //   icon: "",
+  //   route: "",
+  // },
+  // {
+  //   label: "Users",
+  //   icon: "",
+  //   route: "",
+  // },
+  // {
+  //   label: "Reports",
+  //   icon: "",
+  //   route: "",
+  // },
+  // {
+  //   label: "Audit log",
+  //   icon: "",
+  //   route: "",
+  // },
+  // {
+  //   label: "Settings",
+  //   icon: "",
+  //   route: "",
+  // },
 ]
 export const AdminMenu = [
   {

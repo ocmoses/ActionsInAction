@@ -5,6 +5,7 @@ import { ArrowRightCircle } from "@/app/components/Icons"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
 import { useEffect } from "react"
+import Link from "next/link"
 
 export default function Register() {
   const { setRouteloading } = useApp()
@@ -16,11 +17,11 @@ export default function Register() {
 
   const registerUserInfo = () => {
     setRouteloading(true)
-    router.push(PageRoutes.registerUserinfo)
+    // router.push(PageRoutes.registerUserinfo)
   }
   const partnerWelcome = () => {
     setRouteloading(true)
-    router.push(PageRoutes.partnerwelcome)
+    // router.push(PageRoutes.partnerwelcome)
   }
   return (
     <div className="mx-auto w3-animate-opacity pb-20">
@@ -30,7 +31,8 @@ export default function Register() {
       <p className="font-hairline font-mtn-extralight text-xl mb-8 text-white">
         How would you like to join our platform?
       </p>
-      <div
+      <Link
+        href={PageRoutes.registerUserinfo}
         onClick={registerUserInfo}
         className="flex flex-col gap-8 group p-2 mb-8 cursor-pointer"
       >
@@ -53,8 +55,9 @@ export default function Register() {
             className="absolute bottom-0 w-[110px] md:w-[175px] h-auto right-0 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />
         </div>
-      </div>
-      <div
+      </Link>
+      <Link
+        href={PageRoutes.partnerwelcome}
         onClick={partnerWelcome}
         className="flex flex-col gap-8 group p-2  cursor-pointer"
       >
@@ -77,7 +80,7 @@ export default function Register() {
             className="absolute -bottom-8 w-[110px] md:w-[175px] h-auto -right-8 group-hover:scale-[120%] origin-bottom-right transition-none md:transition-transform ease-in-out duration-1000 cursor-pointer"
           />
         </div>
-      </div>
+      </Link>
     </div>
   )
 }

@@ -47,7 +47,12 @@ const useRegistration = () => {
     })
     if (!result) {
       setProcessing(false)
-      return { success: false, error: "Something went wrong", data: null }
+      return {
+        success: false,
+        error:
+          "Something went wrong. Please check your connection and try again",
+        data: null,
+      }
     }
     console.log({ result })
     const { success, data } = result
@@ -88,7 +93,12 @@ const useRegistration = () => {
     })
     if (!response) {
       setProcessing(false)
-      return { success: false, error: "Something went wrong", data: null }
+      return {
+        success: false,
+        error:
+          "Something went wrong. Please check your connection and try again",
+        data: null,
+      }
     }
     const { success, data } = response
 

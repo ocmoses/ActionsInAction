@@ -1,7 +1,7 @@
 "use client"
 import RouteGuardAdmin from "../RouteGuardAdmin"
 import { useState } from "react"
-import NavbarDashboard from "@/app/components/dashboard/NavbarDashboard"
+import NavbarAdminDashboard from "@/app/components/dashboard/NavbarAdminDashboard"
 import AdminMenuBar from "@/app/components/dashboard/AdminMenuBar"
 import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
 import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
@@ -16,7 +16,7 @@ function Layout({ children }) {
         id="admindashboard"
         className="mx-auto flex flex-col h-full min-h-screen w-screen bg-[#111111]"
       >
-        <NavbarDashboard
+        <NavbarAdminDashboard
           open={open}
           setOpen={setOpen}
           setMenuOpen={setMenuOpen}

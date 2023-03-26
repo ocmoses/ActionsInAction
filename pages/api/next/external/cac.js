@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         country_code: "NG",
       }),
     }).catch((err) => {
-      return "Something went wrong"
+      return "Something went wrong. Please check your connection and try again"
     })
     console.log({
       clientid: process.env.BLUSALT_CLIENTID,
@@ -52,7 +52,10 @@ export default async function handler(req, res) {
     res.status(200).json({ success: true, error: null, data: result.data })
   } catch (error) {
     console.log({ error })
-    res.status(200).json({ success: false, error: "Something went wrong" })
+    res.status(200).json({
+      success: false,
+      error: "Something went wrong. Please check your connection and try again",
+    })
     return
   }
 }

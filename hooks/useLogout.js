@@ -41,6 +41,6 @@ export default function useLogout() {
     router.push(PageRoutes.adminlogin)
   }
 
-  return { Logout, logoutAdmin, clearStore }
+  return { Logout, LogoutAdmin, logoutAdmin, clearStore }
 }
 useLogout

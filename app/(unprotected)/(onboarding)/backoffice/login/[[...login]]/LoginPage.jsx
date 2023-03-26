@@ -69,12 +69,7 @@ function Login({ params }) {
     }
     admin.setToken(Data?.user.token)
     admin.setAdmin(Data?.user.user)
-    // const serverSession = {
-    //   status: Data?.user?.uuid ? "authenticated" : "unauthenticated",
-    //   User: Data?.user.user,
-    //   type: "admin",
-    // }
-    // app.setStoreStates(serverSession, Data?.categories, "admin")
+
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`

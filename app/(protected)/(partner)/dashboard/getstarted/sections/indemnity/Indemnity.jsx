@@ -67,9 +67,18 @@ function Indemnity() {
       setData({
         partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
-        indemnity_no: Category?.indemnity_no ?? "",
-        indemnity_issue_date: Category?.indemnity_issue_date ?? "",
-        indemnity_expiry_date: Category?.indemnity_expiry_date ?? "",
+        indemnity_no:
+          process.env.NODE_ENV === "production"
+            ? Category?.indemnity_no ?? ""
+            : "123456789",
+        indemnity_issue_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.indemnity_issue_date ?? ""
+            : "2023-01-20",
+        indemnity_expiry_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.indemnity_expiry_date ?? ""
+            : "2023-06-20",
         indemnity_doc: Category?.indemnity_doc ?? {},
         indemnity_file: Category?.indemnity_file ?? "",
       })

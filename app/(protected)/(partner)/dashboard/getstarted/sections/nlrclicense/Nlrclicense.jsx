@@ -69,10 +69,22 @@ function NlrcLicense() {
       setData({
         partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
-        nlrc_license_type: Category?.nlrc_license_type ?? "",
-        nlrc_license_id: Category?.nlrc_license_id ?? "",
-        nlrc_issue_date: Category?.nlrc_issue_date ?? "",
-        nlrc_expiry_date: Category?.nlrc_expiry_date ?? "",
+        nlrc_license_type:
+          process.env.NODE_ENV === "production"
+            ? Category?.nlrc_license_type ?? ""
+            : "National lottery",
+        nlrc_license_id:
+          process.env.NODE_ENV === "production"
+            ? Category?.nlrc_license_id ?? ""
+            : "1234567",
+        nlrc_issue_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.nlrc_issue_date ?? ""
+            : "2022-03-20",
+        nlrc_expiry_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.nlrc_expiry_date ?? ""
+            : "2024-03-20",
         nlrc_doc: Category?.nlrc_doc ?? {},
         nlrc_file: Category?.nlrc_file ?? "",
       })

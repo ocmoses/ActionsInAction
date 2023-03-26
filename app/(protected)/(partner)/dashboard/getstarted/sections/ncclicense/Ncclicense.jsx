@@ -65,9 +65,18 @@ function Ncclicense() {
       setData({
         partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
-        vas_license_id: Category?.vas_license_id ?? "",
-        ncc_issue_date: Category?.ncc_issue_date ?? "",
-        ncc_expiry_date: Category?.ncc_expiry_date ?? "",
+        vas_license_id:
+          process.env.NODE_ENV === "production"
+            ? Category?.vas_license_id ?? ""
+            : "12345678",
+        ncc_issue_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.ncc_issue_date ?? ""
+            : "2022-03-20",
+        ncc_expiry_date:
+          process.env.NODE_ENV === "production"
+            ? Category?.ncc_expiry_date ?? ""
+            : "2024-03-20",
         ncc_doc: Category?.ncc_doc ?? {},
         ncc_file: Category?.ncc_file ?? "",
       })

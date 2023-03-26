@@ -377,9 +377,62 @@ export const getFileSizeText = (size) => {
   if (size < 1024 * 1024 * 1024 * 1024 * 1024)
     return `${Math.ceil((size / 1024 / 1024 / 1024 / 1024) * 100) / 100}TB`
 }
-
 export const getNextStage = (category, partner) => {
   if (!category?.profile_stage) return { nextstage: null }
+  console.log({ category })
+  if (!category?.validation) return { nextstage: null }
+  const progress = category.profile_stage
+  const validation = category.validation
+  let nextstage = null
+  const Stages = [
+    // "category",
+    "compliance",
+    "companydetail",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ]
+  const filled = []
+  const required = []
+  Stages.map((stage) => {
+    if (
+      validation[stage] &&
+      (validation[stage] == "r" || validation[stage] == "o")
+    ) {
+      required.push(stage)
+      if (
+        partner?.master &&
+        partner.master.profile_stage[stage] &&
+        parseInt(partner.master.profile_stage[stage]) === 1
+      ) {
+        if (!filled.includes(stage)) filled.push(stage)
+      } else if (progress[stage] && parseInt(progress[stage]) === 1) {
+        if (!filled.includes(stage)) filled.push(stage)
+      }
+    }
+  })
+  if (filled.length === 0) {
+    nextstage = "compliance"
+  } else {
+    required.map((stage) => {
+      if (!nextstage && !filled.includes(stage)) {
+        nextstage = stage
+      }
+    })
+  }
+  if (!nextstage) nextstage = "review"
+
+  console.log({ filled })
+  console.log({ required })
+  console.log({ nextstage })
+  return { nextstage }
+}
+
+export const getNextStageBKP = (category, partner) => {
+  if (!category?.profile_stage) return { nextstage: null }
+  console.log({ category })
   if (!category?.validation) return { nextstage: null }
   const progress = category.profile_stage
   const validation = category.validation
@@ -399,21 +452,65 @@ export const getNextStage = (category, partner) => {
   Stages.map((stage) => {
     if (!nextstage && validation[stage]) {
       if (
-        (validation[stage] == "r" || validation[stage] == "o") &&
-        (!progress[stage] || parseInt(progress[stage]) === 0)
-      ) {
-        // nextstage = stage
-        if (
-          !(
-            partner.master &&
-            partner.master.category_uuid !== category.category_uuid &&
-            partner.sections[partner.master.category_uuid] &&
-            partner.sections[partner.master.category_uuid][stage]?.completed
-          )
-        ) {
-          nextstage = stage
-        }
-      }
+        !partner?.master &&
+        (category.validation[stage] == "r" ||
+          category.validation[stage] == "o") &&
+        (!category.profile_stage[stage] ||
+          parseInt(category.profile_stage[stage]) === 0)
+      )
+        nextstage = stage
+      else if (
+        partner.master &&
+        partner.master.category_uuid !== category.category_uuid &&
+        (category.validation[stage] == "r" ||
+          category.validation[stage] == "o") &&
+        (!category.profile_stage[stage] ||
+          parseInt(category.profile_stage[stage]) === 0) &&
+        (!partner.master.profile_stage[stage] ||
+          parseInt(partner.master.profile_stage[stage]) === 0)
+      )
+        nextstage = stage
+      else if (
+        (category.validation[stage] == "r" ||
+          category.validation[stage] == "o") &&
+        (!category.profile_stage[stage] ||
+          parseInt(category.profile_stage[stage]) === 0)
+      )
+        nextstage = stage
+
+      // if (
+      //   ((!partner?.master && (!category.profile_stage[stage] ||
+      //     parseInt(category.profile_stage[stage]) === 0)) &&
+
+      //     (partner.master &&
+      //       partner.master.category_uuid !== category.category_uuid &&
+      //       (category.validation[stage] == "r" ||
+      //         category.validation[stage] == "o") &&
+      //       (!partner.master.profile_stage[stage] ||
+      //         parseInt(partner.master.profile_stage[stage]) === 0)
+
+      //         )) &&
+      //   (!category.profile_stage[stage] ||
+      //     parseInt(category.profile_stage[stage]) === 0)
+      // ) {
+      //   nextstage = stage
+      //   console.log("found nextstage", nextstage)
+      // }
+      // if (
+      //   (validation[stage] == "r" || validation[stage] == "o") &&
+      //   (!progress[stage] || parseInt(progress[stage]) === 0)
+      // ) {
+      //   if (
+      //     !(
+      //       partner.master &&
+      //       partner.master.category_uuid !== category.category_uuid &&
+      //       partner.sections[partner.master.category_uuid] &&
+      //       partner.sections[partner.master.category_uuid][stage]?.completed
+      //     )
+      //   ) {
+      //     nextstage = stage
+      //   }
+      // }
     }
   })
   if (!nextstage) nextstage = "review"

@@ -19,7 +19,8 @@ export const fetchData = async (url, opt) => {
         } else {
           return {
             success: false,
-            error: "Sorry! Something went wrong. No data was returned",
+            error:
+              "Sorry! Something went wrong. Please check your connection and try again",
             data: null,
           }
         }
@@ -42,5 +43,9 @@ export const fetchData = async (url, opt) => {
       data: null,
     }
   }
-  return { success: false, error: "Something went wrong", data: null }
+  return {
+    success: false,
+    error: "Something went wrong. Please check your connection and try again",
+    data: null,
+  }
 }

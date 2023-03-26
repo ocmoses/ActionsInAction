@@ -86,23 +86,13 @@ const usePartners = () => {
     // console.log({ categories })
   }
   const setCurrentCategory = (category, partner) => {
-    console.log({ category })
-    console.log({ partner })
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
     )
-    console.log({ baseCategory })
-    // const currentCategory = category
-    // const currentCategory = partner?.categories?.find(
-    //   (c) => c.uuid === category.uuid
-    // )
-    // console.log({ currentCategory })
-
-    // currentCategory.validation = baseCategory.validation
     category.category_name = baseCategory.category_name
     category.category_code = baseCategory.category_code
+    category.validation = baseCategory.validation
     setCategory(category)
-
     setValidationRules(category)
   }
   const checkUpdateStatus = (stage) => {
@@ -363,8 +353,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: regData.message, data: null }
         }
-        updatePartner(regData.partner)
-        return { success: true, error: null, data: null }
+
+        return { success: true, error: null, data: regData }
     }
   }
 

@@ -11,6 +11,7 @@ export default function RouteGuard({ children }) {
   const segments = useSelectedLayoutSegments()
   const dologout = useLogout()
   useEffect(() => {
+    console.log({ session })
     if (session) {
       if (session?.status === "unauthenticated") {
         const currentUrl = window.location.pathname

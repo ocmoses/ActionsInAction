@@ -15,7 +15,8 @@ import { useState, useEffect } from "react"
 
 export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   const { setForm, moveToNextForm } = useProcessing()
-  const { partner, category, registerPartner } = usePartners()
+  const { partner, category, setCategory, updatePartner, registerPartner } =
+    usePartners()
   const [{ errors, setError, clearErrors }] = useErrors()
   const showSection = (section) =>
     category?.validation &&
@@ -96,8 +97,16 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
         setIsSaving(false)
         return setError({ review: result.error })
       }
+
+      console.log("result?.data?.partner", result?.data?.partner)
+      console.log({ category })
+      setCategory(category)
+      updatePartner(result?.data?.partner)
+      setForm("complete")
     }
-    setForm("complete")
+    return setError({
+      review: "Something went wrong. Please check your connection",
+    })
   }
   const PreviewFile = (url) => {
     if (url) {
@@ -699,7 +708,6 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           </div>
         </div>
       )}
-
       {category.status === "open" && (
         <>
           <div className="max-w-[400px] mx-auto text-center mt-10 text-[#666666] text-[12px]">
@@ -710,12 +718,19 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
             {isSaving ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : (
-              <Button
-                onClick={saveForm}
-                label="Submit category"
-                paddingclass="pl-12 pr-4 py-3"
-                textsizecss="inline-flex text-[14px] whitespace-nowrap"
-              />
+              <>
+                {errors?.category && (
+                  <div className="mb-6">
+                    <FormErrors error={errors.review} />
+                  </div>
+                )}
+                <Button
+                  onClick={saveForm}
+                  label="Submit category"
+                  paddingclass="pl-12 pr-4 py-3"
+                  textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                />
+              </>
             )}
           </div>
         </>

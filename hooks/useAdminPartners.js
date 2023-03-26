@@ -27,7 +27,11 @@ export default function useAdminPartners() {
     const result = await response.json()
     console.log({ result })
     if (result?.success) return { partners: result.data?.partners }
-    return { error: result?.data.message ?? "Something went wrong" }
+    return {
+      error:
+        result?.data.message ??
+        "Something went wrong. Please check your connection and try again",
+    }
   }
 
   return {

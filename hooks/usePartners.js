@@ -86,23 +86,13 @@ const usePartners = () => {
     // console.log({ categories })
   }
   const setCurrentCategory = (category, partner) => {
-    console.log({ category })
-    console.log({ partner })
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
     )
-    console.log({ baseCategory })
-    // const currentCategory = category
-    // const currentCategory = partner?.categories?.find(
-    //   (c) => c.uuid === category.uuid
-    // )
-    // console.log({ currentCategory })
-
-    // currentCategory.validation = baseCategory.validation
     category.category_name = baseCategory.category_name
     category.category_code = baseCategory.category_code
+    category.validation = baseCategory.validation
     setCategory(category)
-
     setValidationRules(category)
   }
   const checkUpdateStatus = (stage) => {
@@ -172,7 +162,12 @@ const usePartners = () => {
         })
         if (!responsePartnerwelcome) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successPartnerwelcome, data: partnerwelcome } =
@@ -213,7 +208,12 @@ const usePartners = () => {
         })
         if (!responseSetpassword) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successSetpassword, data: setpassword } =
@@ -254,7 +254,12 @@ const usePartners = () => {
         })
         if (!responseUserinfo) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successUserinfo, data: userinfo } = responseUserinfo
@@ -287,7 +292,12 @@ const usePartners = () => {
         })
         if (!responseCategory) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error:
+              "Something went wrong. Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: successCategory, data: categoryData } =
@@ -331,7 +341,11 @@ const usePartners = () => {
         })
         if (!regResponse) {
           setProcessing(false)
-          return { success: false, error: "Something went wrong", data: null }
+          return {
+            success: false,
+            error: ". Please check your connection and try again",
+            data: null,
+          }
         }
 
         const { success: regSuccess, data: regData } = regResponse
@@ -339,8 +353,8 @@ const usePartners = () => {
           setProcessing(false)
           return { success: false, error: regData.message, data: null }
         }
-        updatePartner(regData.partner)
-        return { success: true, error: null, data: null }
+
+        return { success: true, error: null, data: regData }
     }
   }
 

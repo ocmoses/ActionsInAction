@@ -64,7 +64,6 @@ export default function OnboardingLayout({
                         </div>
                       )
                     })}
-                    {/* <ProfileTabItem menu={"review"} form={"review"} /> */}
                   </div>
                 )}
             </div>

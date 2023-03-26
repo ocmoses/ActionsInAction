@@ -80,9 +80,9 @@ export default function PartnerCategories({
                     <span className="text-sm text-[#999999]">
                       {category.status === "open"
                         ? "In progress"
-                        : category.status === "pending"
-                        ? "In review"
-                        : ""}
+                        : partner?.contract_status === "not_started"
+                        ? "Pending review"
+                        : "In review"}
                     </span>
 
                     <span className="text-white text-center md:text-left font-bold">
@@ -111,7 +111,11 @@ export default function PartnerCategories({
                           width={16}
                           height={16}
                         />
-                        <span>In review</span>
+                        <span>
+                          {partner?.contract_status === "not_started"
+                            ? "Pending review"
+                            : "In review"}
+                        </span>
                       </div>
                     </div>
                   )}

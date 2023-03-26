@@ -1,11 +1,11 @@
 "use client"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import { getInitials } from "@/app/modules/utilities"
+import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
 import useAdminPartners from "@/hooks/useAdminPartners"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { PhoneIcon } from "@heroicons/react/24/solid"
 import moment from "moment"
 
 export default function Dashboard() {
@@ -14,13 +14,16 @@ export default function Dashboard() {
   const { setForm, setProcessing } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const [Partners, setPartners] = useState([])
+  const [fetchingPartners, setFetchingPartners] = useState(false)
 
   useEffect(() => {
     setProcessing(false)
     const get_all_Partner = async () => {
+      if (fetchingPartners) return
+      setFetchingPartners(true)
       const allPartners = await getAllPartners()
-      console.log(allPartners.partners)
       setPartners(allPartners.partners)
+      setFetchingPartners(false)
       if (allPartners.error) setError({ compliance: allPartners.error })
     }
     get_all_Partner()
@@ -41,26 +44,30 @@ export default function Dashboard() {
           )}
 
           <div className="overflow-x-auto w-full mt-10">
-            <table className="table w-full transparent">
-              <tbody>
-                {/* head */}
-                <tr className="border-b border-b-white/40 text-12">
-                  <td className="bg-transparent">
-                    <label>
-                      <input type="checkbox" className="checkbox" />
-                    </label>
-                  </td>
-                  <th>Partner</th>
-                  <th>Categories</th>
-                  <th>Submitted on</th>
-                  <th>Contributors</th>
-                  {/* <th>Progress</th> */}
-                </tr>
+            {fetchingPartners && (
+              <div className="flex justify-center items-center">
+                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+              </div>
+            )}
+            {!fetchingPartners && (
+              <table className="table w-full transparent">
+                <tbody>
+                  {/* head */}
+                  <tr className="border-b border-b-white/40 text-12">
+                    {/* <td className="bg-transparent">
+                      <label>
+                        <input type="checkbox" className="checkbox" />
+                      </label>
+                    </td> */}
+                    <th>Partner</th>
+                    <th>Categories</th>
+                    <th>Submitted on</th>
+                    <th>Contributors</th>
+                    {/* <th>Progress</th> */}
+                  </tr>
 
-                {/* row 1 */}
-                <Suspense
-                  fallback={<p className="text-white p-4">Loading...</p>}
-                >
+                  {/* row 1 */}
+
                   {Partners &&
                     Partners?.map((partner) => (
                       <tr
@@ -68,14 +75,14 @@ export default function Dashboard() {
                         className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/20"
                         onClick={() => goToPartnerDetail(partner.uuid)}
                       >
-                        <th>
+                        {/* <th>
                           <label>
                             <input
                               type="checkbox"
                               className="checkbox border-2 border-white/20 focus:border-mtn hover:border-mtn checked:border-mtn focus:font-mtn bg-transparent focus:bg-transparent focus:ring-mtn"
                             />
                           </label>
-                        </th>
+                        </th> */}
                         <td>
                           <div className="flex items-center space-x-3">
                             <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
@@ -97,7 +104,10 @@ export default function Dashboard() {
                             {partner?.categories?.length > 0 &&
                               partner?.categories.map((category) => (
                                 <div className="flex gap-2 items-center">
-                                  <div className="w-[100px] z-0 relative h-[15px] border border-white/20 flex text-mtn text-[10px] bg-black items-center justify-center">
+                                  <div
+                                    key={category.uuid}
+                                    className="w-[100px] z-0 relative h-[15px] border border-white/20 flex text-mtn text-[10px] bg-black items-center justify-center"
+                                  >
                                     <div
                                       className={`left-0 top-0 z-10 absolute h-[15px] bg-[#FFCB03]`}
                                       style={{
@@ -127,10 +137,11 @@ export default function Dashboard() {
                         </th> */}
                       </tr>
                     ))}
-                </Suspense>
-                {/* row 2 */}
-              </tbody>
-            </table>
+
+                  {/* row 2 */}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

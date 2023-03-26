@@ -27,6 +27,7 @@ export default function UserAvartar() {
   }, [session])
 
   useEffect(() => {
+    console.log({ session })
     setShowMenu(false)
   }, [])
 

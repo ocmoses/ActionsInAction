@@ -7,7 +7,7 @@ import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
 import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
 
 function Layout({ children }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (

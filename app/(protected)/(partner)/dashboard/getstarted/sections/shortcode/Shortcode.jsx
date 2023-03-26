@@ -50,18 +50,23 @@ function Shortcode() {
 
   const [formdata, setFormdata] = useState({
     shortcode: {
-      shortcodes: [], // ARRAY OR STRING
+      shortcodes: process.env.NODE_ENV === "production" ? [] : ["777", "966"], // ARRAY OR STRING
       shortcode_doc: {}, //FILE
       shortcode_file: null, //FILE
-      shortcode_issue_date: "", //DATE
-      shortcode_expiry_date: "", //DATE
+      shortcode_issue_date:
+        process.env.NODE_ENV === "production" ? "" : "2022-01-20", //DATE
+      shortcode_expiry_date:
+        process.env.NODE_ENV === "production" ? "" : "2023-06-20", //DATE
     },
     shortcode_pricing: {
-      pricing_shortcodes: [], // ARRAY OR STRING
+      pricing_shortcodes:
+        process.env.NODE_ENV === "production" ? [] : ["777", "966"], // ARRAY OR STRING
       pricing_doc: {},
       pricing_file: null,
-      pricing_issue_date: "", //DATE
-      pricing_expiry_date: "", //DATE
+      pricing_issue_date:
+        process.env.NODE_ENV === "production" ? "" : "2022-01-20", //DATE
+      pricing_expiry_date:
+        process.env.NODE_ENV === "production" ? "" : "2023-06-20", //DATE
     },
   })
   const { title, subtitle, hand, required } = forms["shortcode"]
@@ -295,18 +300,23 @@ function Shortcode() {
   const addShortcode = () => {
     setFormdata({
       shortcode: {
-        shortcodes: [], // ARRAY OR STRING
-        shortcode_doc: null, //FILE
+        shortcodes: process.env.NODE_ENV === "production" ? [] : ["777", "966"], // ARRAY OR STRING
+        shortcode_doc: {}, //FILE
         shortcode_file: null, //FILE
-        shortcode_issue_date: "", //DATE
-        shortcode_expiry_date: "", //DATE
+        shortcode_issue_date:
+          process.env.NODE_ENV === "production" ? "" : "2022-06-20", //DATE
+        shortcode_expiry_date:
+          process.env.NODE_ENV === "production" ? "" : "2023-06-20", //DATE
       },
       shortcode_pricing: {
-        pricing_shortcodes: [], // ARRAY OR STRING
-        pricing_doc: null,
+        pricing_shortcodes:
+          process.env.NODE_ENV === "production" ? [] : ["777", "966"], // ARRAY OR STRING
+        pricing_doc: {},
         pricing_file: null,
-        pricing_issue_date: "", //DATE
-        pricing_expiry_date: "", //DATE
+        pricing_issue_date:
+          process.env.NODE_ENV === "production" ? "" : "2022-06-20", //DATE
+        pricing_expiry_date:
+          process.env.NODE_ENV === "production" ? "" : "2023-06-20", //DATE
       },
     })
     const index = data.shortcodes.length

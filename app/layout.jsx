@@ -27,54 +27,72 @@ const getServerSession = async () => {
       ? nextCookies.get("token")?.value
       : null
     const uuid = nextCookies.has("uuid") ? nextCookies.get("uuid")?.value : null
-
+    console.log({ uuid })
     if (uuid) {
+      console.log({ uuidfound: uuid })
       // GET USER INFO
-      const token = token ? Decrypt(adminToken) : null
-      try {
-        const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
-          headers: {
-            apikey: `${process.env.APIKEY}`,
-            "Content-Type": "application/json",
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }).catch((error) => {
-          return {
-            success: false,
-            error: error.message,
-            data: null,
-          }
-        })
-        if (response) {
-          const { success, data } = await response.json()
-          if (response?.ok) {
-            const User = userData(data)
-            return { success, error: null, data: User }
-          } else {
-            if (data) {
-              return { success: false, error: data.error, data: null }
-            } else {
-              return {
-                success: false,
-                error:
-                  "Error. No data was returned from the server. Please try again",
-                data: null,
-              }
-            }
-          }
-        } else {
-          return {
-            success: false,
-            error: "Error reaching the server. Please check your connection",
-            data: null,
-          }
-        }
-      } catch (error) {
-        return { success: false, error: error.message, data: null }
+      const Decrypttoken = token ? Decrypt(adminToken) : null
+      return {
+        success: true,
+        error: null,
+        data: {
+          created_at: "2023-02-27T07:01:59.000000Z",
+          department: "Charging VAS and Financial Services NG",
+          email: "olabode.gbolu@mtn.com",
+          id: 2,
+          role: "super-admin",
+          updated_at: "2023-02-27T07:01:59.000000Z",
+          username: "olabodg",
+          uuid: "806d6188-b664-11ed-84a8-f23324f5673",
+        },
+        type: "admin",
+        token: adminToken,
       }
+      // try {
+      //   const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
+      //     headers: {
+      //       apikey: `${process.env.APIKEY}`,
+      //       "Content-Type": "application/json",
+      //       redirect: "follow",
+      //       referrerPolicy: "no-referrer",
+      //       Authorization: `Bearer ${authToken}`,
+      //     },
+      //   }).catch((error) => {
+      //     return {
+      //       success: false,
+      //       error: error.message,
+      //       data: null,
+      //     }
+      //   })
+      //   if (response) {
+      //     const { success, data } = await response.json()
+      //     if (response?.ok) {
+      //       const User = userData(data)
+      //       return { success, error: null, data: User }
+      //     } else {
+      //       if (data) {
+      //         return { success: false, error: data.error, data: null }
+      //       } else {
+      //         return {
+      //           success: false,
+      //           error:
+      //             "Error. No data was returned from the server. Please try again",
+      //           data: null,
+      //         }
+      //       }
+      //     }
+      //   } else {
+      //     return {
+      //       success: false,
+      //       error: "Error reaching the server. Please check your connection",
+      //       data: null,
+      //     }
+      //   }
+      // } catch (error) {
+      //   return { success: false, error: error.message, data: null }
+      // }
     } else if (user_id) {
+      console.log({ user_idfound: user_id })
       // GET USER INFO
       const authToken = token ? Decrypt(token) : null
       const partnerID = partnerid ? Decrypt(partnerid) : null
@@ -103,7 +121,7 @@ const getServerSession = async () => {
               User.partnerID = partnerID
               User.partner = User.partners.find((p) => p.uuid === partnerID)
             }
-            return { success, error: null, data: User }
+            return { success, error: null, data: User, type: "user" }
           } else {
             if (data) {
               return { success: false, error: data.error, data: null }
@@ -129,6 +147,7 @@ const getServerSession = async () => {
       return { success: true, error: null, data: null }
     }
   } catch (err) {
+    console.log({ err })
     return {
       success: false,
       error: "Error reaching the server. Please check your connection",
@@ -145,6 +164,7 @@ export default async function RootLayout({ children }) {
     resultGetServerSession,
     resultGetCategories,
   ])
+  console.log({ sessionData })
   const categories = {
     success: categoriesData.success,
     data: null,
@@ -165,7 +185,10 @@ export default async function RootLayout({ children }) {
     status: sessionData?.data ? "authenticated" : "unauthenticated",
     User: sessionData?.data ?? null,
     error: sessionData?.error ?? null,
+    type: sessionData?.type,
+    token: sessionData?.type === "admin" ? sessionData?.token : "",
   }
+  console.log({ serverSession })
   return (
     <html lang="en">
       <head />

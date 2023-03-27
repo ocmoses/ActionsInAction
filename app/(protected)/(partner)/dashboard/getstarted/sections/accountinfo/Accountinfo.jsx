@@ -168,7 +168,9 @@ export default function Accountinfo() {
             value={data.audited_account_1_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
           <FileInput
             id="audited_account_2_file"
@@ -177,7 +179,9 @@ export default function Accountinfo() {
             value={data.audited_account_2_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
           <FileInput
             id="audited_account_3_file"
@@ -186,7 +190,9 @@ export default function Accountinfo() {
             value={data.audited_account_3_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
           <FileInput
             id="job_evidence_file"
@@ -195,11 +201,13 @@ export default function Accountinfo() {
             value={data.job_evidence_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
         </FileInputWrapper>
 
-        {!isMasterData && (
+        {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
             {processing ? (
               <TailSpinPreloader

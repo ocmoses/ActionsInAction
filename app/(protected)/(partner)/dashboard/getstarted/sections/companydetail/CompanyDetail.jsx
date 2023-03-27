@@ -178,7 +178,11 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_name")}
           errors={errors}
-          disabled={isMasterData || tinData?.Name}
+          disabled={
+            isMasterData ||
+            tinData?.Name ||
+            partner?.contract_status !== "not_started"
+          }
         />
         <SelectInput
           id="country"
@@ -189,7 +193,7 @@ function CompanyDetail() {
             setSelectField("country")
           }}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         >
           {COUNTRIES.map((c) => (
             <SelectInputOption key={c.value} value={c.value} label={c.title} />
@@ -203,7 +207,7 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_address")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="relative ">
@@ -214,7 +218,9 @@ function CompanyDetail() {
               onChange={handleFormChange}
               onBlur={() => Validate("company_city")}
               errors={errors}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
           <div className="relative ">
@@ -227,7 +233,9 @@ function CompanyDetail() {
                 setSelectField("company_state")
               }}
               errors={errors}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             >
               <SelectInputOption value="" label="" />
               {states.map((s) => (
@@ -247,9 +255,9 @@ function CompanyDetail() {
           onChange={handleFormChange}
           onBlur={() => Validate("company_postcode")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         />
-        {!isMasterData && (
+        {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />

@@ -690,11 +690,11 @@ function LandingPage() {
             </div> */}
             {/* Copyrights */}
             <div className="flex flex-col max-w-[771px] text-[12px] leading-[19px] text-[#A2A2A2] mb-[70px]">
-              © 2022 MTN. All Rights Reserved
-              <br />
+              © 2023 MTN Nigeria Communications PLC, All rights reserved.
+              {/* <br />
               MTN(PTY) LTD is an authorised Financial Service Provider
               underwritten by GuardriskInsurance Company. FSPlicense number:
-              44774
+              44774 */}
             </div>
             {/* Footer nav */}
             {/* <div className="flex justify-between gap-4 w-full max-w-[521px]">
@@ -717,9 +717,9 @@ function LandingPage() {
                 Terms & Conditions
               </Link>
             </div> */}
-            <p className="text-[12px] absolute z-0 bottom-0 right-0 pb-3 pr-3">
-              STAGE: {apiURL}
-            </p>
+            {/* <p className="text-[12px] absolute z-0 bottom-0 right-0 pb-3 pr-3">
+              PROD: {apiURL}
+            </p> */}
           </div>
         </div>
       </main>

@@ -182,7 +182,7 @@ function Ncclicense() {
           onChange={handleFormChange}
           onBlur={() => Validate("vas_license_id")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -195,7 +195,9 @@ function Ncclicense() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
           <div className="">
@@ -208,7 +210,9 @@ function Ncclicense() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
         </div>
@@ -220,11 +224,13 @@ function Ncclicense() {
             value={data.ncc_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
         </FileInputWrapper>
 
-        {!isMasterData && (
+        {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />

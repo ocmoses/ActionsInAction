@@ -186,7 +186,7 @@ function Indemnity() {
           onChange={handleFormChange}
           onBlur={() => Validate("indemnity_no")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -199,7 +199,9 @@ function Indemnity() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
           <div className="">
@@ -212,7 +214,9 @@ function Indemnity() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
         </div>
@@ -224,11 +228,13 @@ function Indemnity() {
             value={data.indemnity_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
         </FileInputWrapper>
 
-        {!isMasterData && (
+        {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />

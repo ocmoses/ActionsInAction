@@ -9,6 +9,7 @@ import useErrors from "@/hooks/useErrors"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useUsers from "@/hooks/useUsers"
+import freeemails from "@/app/modules/freeemails.json"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { createRef, useEffect, useState } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -25,7 +26,6 @@ function UserInfo({ designations }) {
 
   const { processing, setProcessing, setForm } = useProcessing()
   const { partner, registerPartner } = usePartners()
-  const { user } = useUsers()
   const { title, subtitle, hand, required } = forms["userinfo"]
   const [{ errors, setError, removeError, clearErrors }] = useErrors({})
 
@@ -64,33 +64,46 @@ function UserInfo({ designations }) {
     removeError("email")
     if (!Util.validateEmail(data["email"]))
       return setError({ email: "Your email address is not valid" })
-    if (process.env.NODE_ENV === "development") return
-    if (errors?.email && email === lastEmailChecked) return
-    try {
-      setCheckingEmail(true)
-      const response = await axios
-        .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
-        .catch((err) => {
-          setError({ email: "An error occured while verifying your email" })
+    if (process.env.NEXT_PUBLIC_VALIDATOR === "JSON") {
+      const Email = email.split("@")
+
+      if (freeemails.includes(Email[1])) {
+        setError({
+          email:
+            "Free email service account is not allowed. Please use a corporate email",
         })
-      setCheckingEmail(false)
-      if (response) {
-        const { data } = response
-        setLastEmailChecked(email)
-        if (!data)
-          setError({ email: "Something went wrong while verifying your email" })
-        const { is_free, error } = data
-        if (error) setError({ email: error })
-        if (is_free)
-          setError({
-            email:
-              "Free email service account is not allowed. Please use a corporate email",
-          })
-      } else {
-        setError({ email: "Something went wrong while verifying your email" })
       }
-    } catch (error) {
-      setError({ email: "An error occured while verifying your email" })
+    } else {
+      if (process.env.NODE_ENV === "development") return
+      if (errors?.email && email === lastEmailChecked) return
+      try {
+        setCheckingEmail(true)
+        const response = await axios
+          .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
+          .catch((err) => {
+            setError({ email: "An error occured while verifying your email" })
+          })
+        setCheckingEmail(false)
+        if (response) {
+          const { data } = response
+          setLastEmailChecked(email)
+          if (!data)
+            setError({
+              email: "Something went wrong while verifying your email",
+            })
+          const { is_free, error } = data
+          if (error) setError({ email: error })
+          if (is_free)
+            setError({
+              email:
+                "Free email service account is not allowed. Please use a corporate email",
+            })
+        } else {
+          setError({ email: "Something went wrong while verifying your email" })
+        }
+      } catch (error) {
+        setError({ email: "An error occured while verifying your email" })
+      }
     }
   }
 

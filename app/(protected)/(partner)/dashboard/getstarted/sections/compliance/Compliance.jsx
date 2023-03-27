@@ -458,7 +458,12 @@ function Compliance() {
         <SelectInput
           id="company_type"
           label="Company type"
-          disabled={isMasterData || checkingTIN || checkingCAC}
+          disabled={
+            isMasterData ||
+            checkingTIN ||
+            checkingCAC ||
+            partner?.contract_status !== "not_started"
+          }
           value={data.company_type}
           onChange={(e) => {
             handleFormChange(e)
@@ -487,7 +492,12 @@ function Compliance() {
                 <TextInput
                   id="tin_no"
                   label="Tax identification number"
-                  disabled={isMasterData || checkingTIN || checkingCAC}
+                  disabled={
+                    isMasterData ||
+                    checkingTIN ||
+                    checkingCAC ||
+                    partner?.contract_status !== "not_started"
+                  }
                   value={data.tin_no}
                   onChange={handleFormChange}
                   onBlur={(e) => {
@@ -529,7 +539,11 @@ function Compliance() {
                   id="rc_no"
                   label="RC Number"
                   disabled={
-                    isMasterData || !data.tin_no || checkingTIN || checkingCAC
+                    isMasterData ||
+                    !data.tin_no ||
+                    checkingTIN ||
+                    checkingCAC ||
+                    partner?.contract_status !== "not_started"
                   }
                   value={data.rc_no}
                   onChange={handleFormChange}
@@ -575,7 +589,9 @@ function Compliance() {
                     value={data.tin_doc}
                     onChange={handleFormChange}
                     errors={errors}
-                    disabled={isMasterData}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
                   />
                   <FileInput
                     id="memart_file"
@@ -584,7 +600,9 @@ function Compliance() {
                     value={data.memart_doc}
                     onChange={handleFormChange}
                     errors={errors}
-                    disabled={isMasterData}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
                   />
                   <FileInput
                     id="cac_file"
@@ -593,37 +611,42 @@ function Compliance() {
                     value={data.cac_doc}
                     onChange={handleFormChange}
                     errors={errors}
-                    disabled={isMasterData}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
                   />
                 </FileInputWrapper>
 
-                {!isMasterData && (
-                  <div className="mt-6">
-                    {processing ? (
-                      <TailSpinPreloader
-                        width={40}
-                        height={40}
-                        fill="#efb703"
-                      />
-                    ) : (
-                      <div className="flex items-center gap-4">
-                        {/* <ButtonPrev
+                {!isMasterData &&
+                  partner?.contract_status === "not_started" && (
+                    <div className="mt-6">
+                      {processing ? (
+                        <TailSpinPreloader
+                          width={40}
+                          height={40}
+                          fill="#efb703"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-4">
+                          {/* <ButtonPrev
                           onClick={() => moveToPrevForm("compliance")}
                           type="button"
                           label="Back"
                           outline="yes"
                           outlinecolor="border-white"
                         /> */}
-                        <ButtonNext
-                          type="submit"
-                          label={
-                            checkUpdateStatus("compliance") ? "Update" : "Next"
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                          <ButtonNext
+                            type="submit"
+                            label={
+                              checkUpdateStatus("compliance")
+                                ? "Update"
+                                : "Next"
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
               </>
             )}
           </>

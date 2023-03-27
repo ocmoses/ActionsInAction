@@ -200,7 +200,7 @@ function NlrcLicense() {
             setSelectField("nlrc_license_type")
           }}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         >
           <SelectInputOption value="" label="" />
           {license_type.map((ct) => (
@@ -218,7 +218,7 @@ function NlrcLicense() {
           onChange={handleFormChange}
           onBlur={() => Validate("nlrc_license_id")}
           errors={errors}
-          disabled={isMasterData}
+          disabled={isMasterData || partner?.contract_status !== "not_started"}
         />
         <div className="md:grid md:grid-cols-2 md:gap-4">
           <div className="">
@@ -231,7 +231,9 @@ function NlrcLicense() {
               errors={errors}
               min={new Date(min_start_date)}
               max={yesterday}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
           <div className="">
@@ -244,7 +246,9 @@ function NlrcLicense() {
               errors={errors}
               min={tomorrow}
               max={new Date(max_end_date)}
-              disabled={isMasterData}
+              disabled={
+                isMasterData || partner?.contract_status !== "not_started"
+              }
             />
           </div>
         </div>
@@ -256,11 +260,13 @@ function NlrcLicense() {
             value={data.nlrc_doc}
             onChange={handleFormChange}
             errors={errors}
-            disabled={isMasterData}
+            disabled={
+              isMasterData || partner?.contract_status !== "not_started"
+            }
           />
         </FileInputWrapper>
 
-        {!isMasterData && (
+        {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
             {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />

@@ -124,14 +124,14 @@ function LandingPage() {
                   href={PageRoutes.register}
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
-                  noicon
+                  noicon="yes"
                 />
                 {/* <Button
                   label="Discover more"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 bg-black/50 hover:bg-white/20 text-white border-2 border-white"
                   outline="yes"
                   outlinecolor="border-white/80"
-                  noicon
+                  noicon="yes"
                 /> */}
               </div>
             </div>
@@ -691,10 +691,6 @@ function LandingPage() {
             {/* Copyrights */}
             <div className="flex flex-col max-w-[771px] text-[12px] leading-[19px] text-[#A2A2A2] mb-[70px]">
               © 2023 MTN Nigeria Communications PLC, All rights reserved.
-              {/* <br />
-              MTN(PTY) LTD is an authorised Financial Service Provider
-              underwritten by GuardriskInsurance Company. FSPlicense number:
-              44774 */}
             </div>
             {/* Footer nav */}
             {/* <div className="flex justify-between gap-4 w-full max-w-[521px]">

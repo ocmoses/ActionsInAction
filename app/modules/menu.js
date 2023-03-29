@@ -49,7 +49,7 @@ export const AdminMenu = [
   {
     label: "Compliance",
     icon: "",
-    route: "/admin/dashboard/compliance",
+    route: "/admin/compliance",
   },
 ]
 

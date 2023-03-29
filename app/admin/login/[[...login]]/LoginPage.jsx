@@ -1,20 +1,18 @@
 "use client"
 import Image from "next/image"
-import Link from "next/link"
 import TextInput from "@/app/components/form/TextInput"
 import Button from "@/app/components/form/Button"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import useLogout from "@/hooks/useLogout"
 import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
-import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints"
+import { useState, useEffect } from "react"
+import { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 
 function Login({ params }) {
   const router = useRouter()
@@ -25,7 +23,6 @@ function Login({ params }) {
     {}
   )
   const { clearStore } = useLogout()
-
   const [data, setData] = useState({
     username: process.env.NODE_ENV === "production" ? "" : "olabodg",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
@@ -69,18 +66,17 @@ function Login({ params }) {
     }
     admin.setToken(Data?.user.token)
     admin.setAdmin(Data?.user.user)
-
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
         : PageRoutes.admindashboard
     return router.replace(redirect)
   }
-
+  console.log({ params })
   return (
     <>
-      <form method="POST" onSubmit={handleLogin}>
-        <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
+      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">
+        <form method="POST" onSubmit={handleLogin}>
           <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
             <span
               style={{
@@ -153,8 +149,8 @@ function Login({ params }) {
               <Button label="Continue" />
             )}
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </>
   )
 }

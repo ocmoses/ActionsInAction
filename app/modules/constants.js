@@ -15,14 +15,16 @@ export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
 }
-const environment = {
-  INHOUSE: "https://amazonpartner.com.ng/amazon/public/api",
-  DEV: "http://10.1.29.122/api",
-  STAGING: "http://10.1.44.40/api",
-  PROD: "https://partner.mtn.ng/api",
-}
-export const apiURL = process.env.APIURI
-// export const apiURL = environment.INHOUSE
+
+export const apiURL =
+  typeof window === "undefined"
+    ? process.env.APIURI
+    : process.env.NEXT_PUBLIC_APIURI
+
+export const apikey =
+  typeof window === "undefined"
+    ? process.env.APIKEY
+    : process.env.NEXT_PUBLIC_APIKEY
 
 export const validities = {
   ncc: "5 years",

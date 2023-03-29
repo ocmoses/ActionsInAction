@@ -9,30 +9,27 @@ import useLogout from "@/hooks/useLogout"
 export default function RouteGuard({ children }) {
   const { session } = useAdmins()
   const router = useRouter()
-  const segments = useSelectedLayoutSegments()
   const dologout = useLogout()
-
-  const pathname = window.location.pathname
+  // const segments = useSelectedLayoutSegments()
+  // console.log({ segments })
   const [isLoginPage, setIsLoginPage] = useState(false)
 
   useEffect(() => {
-    setIsLoginPage(pathname.startsWith("/admin/login") ? true : false)
-  }, [session, pathname])
-  useEffect(() => {
-    if (session) {
+    const path_name = window.location.pathname
+    const pathname = !path_name.includes("/admin/login") ? path_name : ""
+    setIsLoginPage(path_name.includes("/admin/login"))
+    const redirect = `${PageRoutes.adminlogin}${pathname}`
+    if (!session || session?.status !== "authenticated") {
       if (!isLoginPage && session?.status === "unauthenticated") {
-        const pathname = window.location.pathname
-        const currentUrl = !pathname.startsWith("/admin/login") ? pathname : ""
         if (session?.user?.uuid) dologout.clearStore()
-        console.log(
-          'currentUrl.startsWith("/admin/login")',
-          pathname.startsWith("/admin/login")
-        )
-        console.log({ pathname })
-        console.log({ currentUrl })
-        if (pathname !== "/") {
-          router.push(`${PageRoutes.adminlogin}${pathname}`)
+        if (pathname && pathname !== "/") {
+          router.push(redirect)
         }
+      }
+    } else {
+      if (path_name.includes("/admin/login")) {
+        const path = path_name.replace("/admin/login", "")
+        router.push(path ? path : "/admin/dashboard")
       }
     }
   }, [session, router])

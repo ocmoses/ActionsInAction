@@ -5,7 +5,7 @@ import MenuIcon from "@/public/assets/icons/menu.svg"
 import useUsers from "@/hooks/useUsers"
 import ProfileIcons from "@/app/components/ProfileIcons"
 
-function NavbarDashboard({ open, setOpen, setMenuOpen }) {
+export default function NavbarDashboard({ open, setOpen, setMenuOpen }) {
   const { session } = useUsers()
   return (
     <header
@@ -31,9 +31,7 @@ function NavbarDashboard({ open, setOpen, setMenuOpen }) {
             <Image src={MenuIcon} width={24} height={24} alt="" />
           </span>
         </div>
-        <div className="hidden md:flex flex-grow justify-start text-[#666666] px-3 py-2">
-          {/* Search for transactions, users, pages... */}
-        </div>
+        <div className="hidden md:flex flex-grow justify-start text-[#666666] px-3 py-2"></div>
       </div>
       <div className="flex justify-end text-white px-2 gap-2 items-center">
         {session && session.status === "authenticated" && <ProfileIcons />}
@@ -47,5 +45,3 @@ function NavbarDashboard({ open, setOpen, setMenuOpen }) {
     </header>
   )
 }
-
-export default NavbarDashboard

@@ -1,6 +1,5 @@
 import useProcessing from "@/hooks/useProcessing"
 import RemoteEndpoints from "@/app/modules/endpoints"
-import { Decrypt } from "@/app/modules/utilities"
 
 import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
@@ -14,16 +13,17 @@ export default function useAdminPartners() {
   const admins = useAdmins()
 
   const getAllPartners = async () => {
-    const decryptedToken = admins.token
+    setProcessing(true)
     const response = await fetch(RemoteEndpoints.ALL_PARTNERS, {
       cache: "no-store",
       next: { revalidate: 0 },
       headers: {
-        token: `${decryptedToken}`,
+        token: admins.token,
         "Content-Type": "application/json",
       },
     })
     const result = await response.json()
+    setProcessing(false)
     if (result?.success) return { partners: result.data?.partners.data }
     return {
       error:

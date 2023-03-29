@@ -4,14 +4,13 @@ import { deleteCookie, getCookie, hasCookie } from "cookies-next"
 
 export default async function handler(req, res) {
   try {
-    const token = getCookie("auth-token", { req, res })
-    const decrypted = token ? Decrypt(token) : null
+    const token = getCookie("token", { req, res })
 
     const response = await fetch(RemoteEndPoints.LOGOUT_ADMIN, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        token: decrypted,
+        token: token,
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",

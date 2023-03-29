@@ -19,17 +19,15 @@ export default function useAdminPartners() {
       cache: "no-store",
       next: { revalidate: 0 },
       headers: {
-        // apikey: process.env.NEXT_PUBLIC_APIKEY,
         token: `${decryptedToken}`,
         "Content-Type": "application/json",
       },
     })
     const result = await response.json()
-    console.log({ result })
-    if (result?.success) return { partners: result.data?.partners }
+    if (result?.success) return { partners: result.data?.partners.data }
     return {
       error:
-        result?.data.message ??
+        result?.data?.message ??
         "Something went wrong. Please check your connection and try again",
     }
   }

@@ -1,4 +1,8 @@
-FROM node:16.8.0
+FROM ubuntu:20.04
+RUN apt install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | -E bash -
+RUN apt install -y nodejs
+
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install

@@ -5,7 +5,7 @@ RUN npm install
 COPY . ./
 RUN npm run build
 
-RUN apt-update && apt-apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
+RUN apt-get update && apt-get install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
 RUN curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
     | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \

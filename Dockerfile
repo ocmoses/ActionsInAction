@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
-RUN apt install -y curl
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | -E bash -
+RUN apt update && apt install curl -y
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt install -y nodejs
 
 WORKDIR /app
@@ -15,8 +15,9 @@ RUN curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
 RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
 http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" \
     | tee /etc/apt/sources.list.d/nginx.list
-RUN echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+RUN echo  "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
     | tee /etc/apt/preferences.d/99nginx
+
 RUN apt update && apt install nginx -y
 RUN apt install vim -y && apt install net-tools && apt install telnet
 COPY default /etc/nginx/conf.d

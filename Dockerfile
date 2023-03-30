@@ -20,7 +20,7 @@ RUN echo  "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority
 
 RUN apt update && apt install nginx -y
 RUN apt install vim -y && apt install net-tools -y && apt install telnet -y
-COPY default /etc/nginx/conf.d
+COPY default.conf /etc/nginx/conf.d
 #COPY default /etc/nginx/sites-enabled
 #RUN service nginx restart
 

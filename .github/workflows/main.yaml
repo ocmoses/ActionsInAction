@@ -47,7 +47,7 @@ jobs:
       - name: 'dev nginx conf'
         if: github.ref == 'refs/heads/dev'
         run: |
-          cp dev_default/default default
+          cp dev_default/default.conf default.conf
         
       - name: Login to dev image repository
         if: github.ref == 'refs/heads/dev'

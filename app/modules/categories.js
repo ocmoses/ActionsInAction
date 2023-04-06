@@ -13,32 +13,31 @@ export const getCategories = async (apikey) => {
     }).catch(() => {
       return {
         success: false,
-        error: "Error reaching the server. Please check your connection",
+        error:
+          "Error reaching the server. Please check your connection and try again",
         data: null,
       }
     })
-    if (response) {
-      const result = await response.json()
-
-      const { data, success } = result
-      if (success) {
-        return { success, error: null, data }
-      } else {
-        if (data) {
-          return { success, error: data.message, data: null }
-        } else {
-          return {
-            success: false,
-            error: `${response.status} ${response.statusText}`,
-          }
-        }
-      }
-    } else {
-      console.log({ result })
+    if (!response)
       return {
         success: false,
-        error: "Error reaching the server. Please check your connection",
+        error:
+          "Error reaching the server. Please check your connection and try again",
         data: null,
+      }
+    const result = await response.json()
+
+    const { data, success } = result
+    if (success) {
+      return { success, error: null, data }
+    } else {
+      if (data) {
+        return { success, error: data.message, data: null }
+      } else {
+        return {
+          success: false,
+          error: `${response.status} ${response.statusText}`,
+        }
       }
     }
   } catch (err) {

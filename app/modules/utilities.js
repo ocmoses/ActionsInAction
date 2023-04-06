@@ -358,6 +358,12 @@ export const getInitials = (fullname) => {
   }`
   return initials
 }
+export const getPartnerInitials = (company_name) => {
+  if (!company_name) return ""
+  const Names = company_name.split(" ")
+  const firstName = Names[0] ?? ""
+  return `${firstName ? firstName[0] : ""}`
+}
 export const getFileSize = (size) => {
   if (size < 1024) return { size, unit: "kb" }
   if (size >= 1024 && size < 1024 * 1024)
@@ -379,7 +385,6 @@ export const getFileSizeText = (size) => {
 }
 export const getNextStage = (category, partner) => {
   if (!category?.profile_stage) return { nextstage: null }
-  console.log({ category })
   if (!category?.validation) return { nextstage: null }
   const progress = category.profile_stage
   const validation = category.validation
@@ -424,100 +429,9 @@ export const getNextStage = (category, partner) => {
   }
   if (!nextstage) nextstage = "review"
 
-  console.log({ filled })
-  console.log({ required })
-  console.log({ nextstage })
-  return { nextstage }
-}
-
-export const getNextStageBKP = (category, partner) => {
-  if (!category?.profile_stage) return { nextstage: null }
-  console.log({ category })
-  if (!category?.validation) return { nextstage: null }
-  const progress = category.profile_stage
-  const validation = category.validation
-  let nextstage = null
-  const Stages = [
-    "userinfo",
-    "category",
-    "compliance",
-    "companydetail",
-    "ncclicense",
-    "nlrclicense",
-    "shortcode",
-    "indemnity",
-    "accountinfo",
-  ]
-
-  Stages.map((stage) => {
-    if (!nextstage && validation[stage]) {
-      if (
-        !partner?.master &&
-        (category.validation[stage] == "r" ||
-          category.validation[stage] == "o") &&
-        (!category.profile_stage[stage] ||
-          parseInt(category.profile_stage[stage]) === 0)
-      )
-        nextstage = stage
-      else if (
-        partner.master &&
-        partner.master.category_uuid !== category.category_uuid &&
-        (category.validation[stage] == "r" ||
-          category.validation[stage] == "o") &&
-        (!category.profile_stage[stage] ||
-          parseInt(category.profile_stage[stage]) === 0) &&
-        (!partner.master.profile_stage[stage] ||
-          parseInt(partner.master.profile_stage[stage]) === 0)
-      )
-        nextstage = stage
-      else if (
-        (category.validation[stage] == "r" ||
-          category.validation[stage] == "o") &&
-        (!category.profile_stage[stage] ||
-          parseInt(category.profile_stage[stage]) === 0)
-      )
-        nextstage = stage
-
-      // if (
-      //   ((!partner?.master && (!category.profile_stage[stage] ||
-      //     parseInt(category.profile_stage[stage]) === 0)) &&
-
-      //     (partner.master &&
-      //       partner.master.category_uuid !== category.category_uuid &&
-      //       (category.validation[stage] == "r" ||
-      //         category.validation[stage] == "o") &&
-      //       (!partner.master.profile_stage[stage] ||
-      //         parseInt(partner.master.profile_stage[stage]) === 0)
-
-      //         )) &&
-      //   (!category.profile_stage[stage] ||
-      //     parseInt(category.profile_stage[stage]) === 0)
-      // ) {
-      //   nextstage = stage
-      //   console.log("found nextstage", nextstage)
-      // }
-      // if (
-      //   (validation[stage] == "r" || validation[stage] == "o") &&
-      //   (!progress[stage] || parseInt(progress[stage]) === 0)
-      // ) {
-      //   if (
-      //     !(
-      //       partner.master &&
-      //       partner.master.category_uuid !== category.category_uuid &&
-      //       partner.sections[partner.master.category_uuid] &&
-      //       partner.sections[partner.master.category_uuid][stage]?.completed
-      //     )
-      //   ) {
-      //     nextstage = stage
-      //   }
-      // }
-    }
-  })
-  if (!nextstage) nextstage = "review"
   return { nextstage }
 }
 export const AllowedCategories = (category_codes) => {
-  // category_codes = ["VAS"]
   const combi = categoryCombination.filter((srv) =>
     category_codes?.every((r) => srv.includes(r))
   )
@@ -528,7 +442,6 @@ export const AllowedCategories = (category_codes) => {
   const possible = [...new Set(Combination)]
   return possible.filter((p) => !category_codes?.includes(p))
 }
-// Filter partner info hook
 export const filterPartner = (partnerInfo, Categories) => {
   if (partnerInfo) {
     const categories = Categories?.data ? Categories?.data : Categories
@@ -552,7 +465,9 @@ export const filterPartner = (partnerInfo, Categories) => {
             category.position = index + 1
             if (category.status === "open") edittable = true
             if (sysCategory) {
+              category.category_name = sysCategory.category_name
               category.category_code = sysCategory.category_code
+              category.icon = sysCategory.icon
               category.validation = sysCategory.validation
               registeredCategories.push(sysCategory.category_code)
             }
@@ -579,6 +494,11 @@ export const filterPartner = (partnerInfo, Categories) => {
                         completed: false,
                       }
                     }
+                    if (section === "shortcode")
+                      sections[category.category_uuid][section].fields[
+                        "shortcodes"
+                      ] = category["shortcodes"]
+
                     sections[category.category_uuid][section].fields[key] =
                       category[key]
                   }
@@ -625,6 +545,45 @@ export const filterPartner = (partnerInfo, Categories) => {
     }
   }
   return partnerInfo
+}
+export const filterCategory = (category, partner) => {
+  if (!category) return category
+  if (!partner) return category
+  const validations = []
+  for (const validation in category.validation) {
+    if (
+      category.validation[validation] === "r" ||
+      category.validation[validation] === "o"
+    )
+      validations.push(validation)
+  }
+  console.log({ validations })
+  if (
+    partner?.master &&
+    partner?.master?.category_uuid !== category.category_uuid
+  ) {
+    const completed = {}
+    const sections = partner.sections
+    for (const cuuid in sections) {
+      for (const section in sections[cuuid]) {
+        console.log({ section })
+        if (
+          cuuid !== category.category_uuid &&
+          validations.includes(section) &&
+          sections[cuuid][section].completed
+        )
+          completed[section] = sections[cuuid][section].fields
+      }
+    }
+    if (!Util.isEmpty(completed)) {
+      for (const section in completed) {
+        for (const field in completed[section]) {
+          category[field] = completed[section][field]
+        }
+      }
+    }
+  }
+  return category
 }
 export const ValidateField = (field, stage, data, category) => {
   const value = data[field]

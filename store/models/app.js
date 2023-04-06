@@ -23,6 +23,8 @@ const app = {
   activeCategory: {},
   tmpUserUUID: null,
   showGetstartedLink: false,
+  is_previewing_doc: false,
+  doc_preview_path: "",
   increaseCount: action((state, key) => {
     return state.count++
   }),
@@ -50,12 +52,20 @@ const app = {
     state.activeCategory = {}
     state.tmpUserUUID = null
     state.showGetstartedLink = false
+    state.is_previewing_doc = false
+    state.doc_preview_path = ""
   }),
   setRouteloading: action((state, status) => {
     state.routeloading = status ?? false
   }),
   setTmpUserUUID: action((state, uuid) => {
     state.tmpUserUUID = uuid
+  }),
+  setIsPreviewingDoc: action((state, status) => {
+    state.is_previewing_doc = status ?? false
+  }),
+  setPreviewingPath: action((state, path) => {
+    state.doc_preview_path = path ?? ""
   }),
   toggleGetstartedLink: action((state, status) => {
     state.showGetstartedLink = status ?? false

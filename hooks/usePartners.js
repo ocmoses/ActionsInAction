@@ -82,6 +82,7 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
+
   const consolidateCategory = () => {
     // console.log({ categories })
   }

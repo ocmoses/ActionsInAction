@@ -172,6 +172,7 @@ export default async function RootLayout({ children }) {
             {children}
           </Session>
         </Providers>
+        <div id="modalPortal"></div>
       </body>
     </html>
   )

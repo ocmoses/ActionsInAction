@@ -10,14 +10,12 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import { useState, useEffect } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
-import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 
 function Login({ params }) {
   const router = useRouter()
-  const app = useApp()
-  const admin = useAdmins()
+  const { setToken, setAdmin } = useAdmins()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -58,21 +56,19 @@ function Login({ params }) {
       }),
     })
     const result = await response.json()
-    console.log({ result })
     const { data: Data, error } = result
     if (error) {
       setProcessing(false)
       return setError({ login: error })
     }
-    admin.setToken(Data?.user.token)
-    admin.setAdmin(Data?.user.user)
+    setToken(Data?.user.token)
+    setAdmin(Data?.user.user)
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
         : PageRoutes.admindashboard
     return router.replace(redirect)
   }
-  console.log({ params })
   return (
     <>
       <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">

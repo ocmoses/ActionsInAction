@@ -1,24 +1,28 @@
 "use client"
 import { useState, useEffect } from "react"
-import { getInitials } from "@/app/modules/utilities"
+import { getPartnerInitials } from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
-import useAdminPartners from "@/hooks/useAdminPartners"
+import useAdmins from "@/hooks/useAdmins"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import moment from "moment"
 import { useRouter } from "next/navigation"
+import useApp from "@/hooks/useApp"
 
 export default function Dashboard() {
-  const { getAllPartners } = useAdminPartners()
+  const { getAllPartners } = useAdmins()
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const [Partners, setPartners] = useState([])
   const [fetchingPartners, setFetchingPartners] = useState(false)
   const router = useRouter()
+  const { setRouteloading } = useApp()
 
   useEffect(() => {
     setProcessing(false)
+    setRouteloading(false)
+    clearErrors()
     const get_all_Partner = async () => {
       if (fetchingPartners) return
       setFetchingPartners(true)
@@ -30,6 +34,7 @@ export default function Dashboard() {
     get_all_Partner()
   }, [])
   const goToPartnerDetail = (uuid) => {
+    setRouteloading(true)
     router.push(`admin/compliance/${uuid}`)
   }
   return (
@@ -89,7 +94,9 @@ export default function Dashboard() {
                         <td>
                           <div className="flex items-center space-x-3">
                             <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                              <span>{getInitials(partner.company_name)}</span>
+                              <span>
+                                {getPartnerInitials(partner.company_name)}
+                              </span>
                             </div>
                             <div>
                               <div className="font-bold">

@@ -4,12 +4,23 @@ const admins = {
   admin: null,
   session: { status: "unauthenticated" },
   token: null,
+  categories: [],
+  stages: [
+    "companydetail",
+    "compliance",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ],
 
   clear: action((state) => {
     state.admins = null
     state.admin = null
     state.session = { status: "unauthenticated" }
     state.token = null
+    state.categories = []
   }),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   fullname: computed((state) => {
@@ -25,6 +36,9 @@ const admins = {
   }),
   updateAdmin: action((state, admin) => {
     state.admin = { ...state.admin, ...admin }
+  }),
+  setCategories: action((state, categories) => {
+    state.categories = categories
   }),
 }
 export default admins

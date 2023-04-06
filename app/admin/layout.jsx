@@ -9,7 +9,7 @@ import useAdmins from "@/hooks/useAdmins"
 
 function Layout({ children }) {
   const { isLoggedIn } = useAdmins()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (

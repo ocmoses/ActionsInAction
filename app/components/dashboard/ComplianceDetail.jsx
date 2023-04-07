@@ -72,7 +72,7 @@ export default function ComplianceDetail({
           <Accountinfo category={category} stage={activeStage} />
         )}
       </div>
-      <div className="flex flex-wrap text-[#999999] text-[12px] pb-24">
+      <div className="flex flex-wrap text-[#999999] text-[12px] px-4 pt-4 pb-24">
         SPRM: SUPPLIER & RELATIONSHIP MANAGEMENT, RICO: RISK & COMPLIANCE, LEGA:
         LEGAL, INSU: INSURANCE
       </div>

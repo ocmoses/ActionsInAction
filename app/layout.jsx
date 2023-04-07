@@ -3,11 +3,12 @@ import Providers from "@/app/Providers"
 import Session from "@/app/Session"
 import ResponsiveLabel from "@/app/components/ResponsiveLabel"
 import RouteLoader from "@/app/components/RouteLoader"
-import { userData, Decrypt } from "@/app/modules/utilities"
 import RemoteEndpoints from "@/app/modules/endpoints"
+import { userData, Decrypt } from "@/app/modules/utilities"
 import { cookies } from "next/headers"
 import { getCategories } from "@/app/modules/categories"
 import { apikey } from "@/app/modules/constants"
+import GlobalError from "./global-error"
 
 const getServerSession = async () => {
   try {
@@ -143,6 +144,7 @@ export default async function RootLayout({ children }) {
     data: null,
     error: null,
   }
+  console.log({ categoriesData })
   if (categoriesData) {
     if (categoriesData?.success) {
       categories.data = categoriesData.data
@@ -159,21 +161,33 @@ export default async function RootLayout({ children }) {
     type: sessionData?.type,
     token: sessionData?.type === "admin" ? sessionData?.token : "",
   }
+  const error = categoriesData?.error
+    ? categoriesData?.error
+    : sessionData?.error
+    ? sessionData?.error
+    : null
+  console.log({ error })
   return (
-    <html lang="en">
-      <head />
-      <body>
-        <div id="portals" className="relative"></div>
-        {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
+    <>
+      {error ? (
+        <GlobalError error={error} />
+      ) : (
+        <html lang="en">
+          <head />
+          <body>
+            <div id="portals" className="relative"></div>
+            {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
 
-        <Providers>
-          <Session serverSession={serverSession} categories={categories}>
-            {<RouteLoader />}
-            {children}
-          </Session>
-        </Providers>
-        <div id="modalPortal"></div>
-      </body>
-    </html>
+            <Providers>
+              <Session serverSession={serverSession} categories={categories}>
+                {<RouteLoader />}
+                {children}
+              </Session>
+            </Providers>
+            <div id="modalPortal"></div>
+          </body>
+        </html>
+      )}
+    </>
   )
 }

@@ -1,14 +1,13 @@
 "use client"
 import Navbar from "@/app/components/Navbar"
-import Button from "@/app/components/form/Button"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
-import Link from "next/link"
 import Footer from "@/app/components/public/Footer"
 import { useEffect, useState } from "react"
 import { PageRoutes } from "@/app/modules/menu"
 import DiscoverGridBox from "@/app/components/public/DiscoverGridBox"
 import DiscoverComplianceList from "@/app/components/public/DiscoverComplianceList"
+import DiscoverEarningTodayGrid from "@/app/components/public/DiscoverEarningTodayGrid"
 
 export default function Discover() {
   const { setRouteloading } = useApp()
@@ -428,55 +427,85 @@ export default function Discover() {
               and reach a large audience. Here are some tips on how to make
               money as an MTN Partner:
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-[66px] gap-[32px]">
-              <DiscoverGridBox
-                image={
-                  <Image
-                    src="/assets/icons/user-group.svg"
-                    width={41.38}
-                    height={41.38}
-                    alt=""
-                  />
-                }
-                text="Access to a large user base of MTN subscribers"
-              />
-              <DiscoverGridBox
-                image={
-                  <Image
-                    className="h-auto"
-                    src="/assets/icons/seamless.svg"
-                    width={40}
-                    height={40}
-                    alt=""
-                  />
-                }
-                text="Seamless integration with MTN services"
-              />
-              <DiscoverGridBox
-                image={
-                  <Image
-                    className="h-auto"
-                    src="/assets/icons/cloud.svg"
-                    width={36.88}
-                    height={33.03}
-                    alt=""
-                  />
-                }
-                text="Access to powerful APIs and tools"
-              />
-              <DiscoverGridBox
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-[66px] gap-[32px]">
+              <DiscoverEarningTodayGrid
                 image={
                   <Image
                     className="h-auto"
                     src="/assets/icons/chart.svg"
-                    width={37.68}
+                    width={38}
                     height={40}
                     alt=""
                   />
                 }
-                text="Insights and analytics dashboard"
+                text="Use the insights and analytics"
+                subtext="Using the insights and analytics dashboard to understand your audience and optimize your products and services."
+                span="1"
+              />
+              <DiscoverEarningTodayGrid
+                image={
+                  <Image
+                    className="h-auto"
+                    src="/assets/icons/api.svg"
+                    width={41}
+                    height={41}
+                    alt=""
+                  />
+                }
+                text="Powerful APIs and tools"
+                subtext="Take advantage of the powerful APIs and tools to create innovative products and services."
+                span="1"
+              />
+              <DiscoverEarningTodayGrid
+                image={
+                  <Image
+                    className="h-auto"
+                    src="/assets/icons/mobilead.svg"
+                    width={41}
+                    height={41}
+                    alt=""
+                  />
+                }
+                text="MTN mobile ad network"
+                subtext="Utilize the MTN mobile ad network to run targeted ad campaigns at potential customers who are already on the MTN network."
+                span="1"
+              />
+              <DiscoverEarningTodayGrid
+                image={
+                  <Image
+                    className="h-auto"
+                    src="/assets/icons/paymentchannel.svg"
+                    width={41}
+                    height={41}
+                    alt=""
+                  />
+                }
+                text="Payment channel"
+                subtext="Use the MTN Partner Portal to create your own payment channel
+                using MTN."
+                span="1"
+              />
+              <DiscoverEarningTodayGrid
+                image={
+                  <Image
+                    className="h-auto"
+                    src="/assets/icons/sandbox.svg"
+                    width={41}
+                    height={41}
+                    alt=""
+                  />
+                }
+                text="Sandbox environment"
+                subtext="Use the MTN Partner Portal's sandbox environment to test software products before launch, ensuring functionality and customer satisfaction, which can lead to monetization opportunities and business growth."
+                span="2"
               />
             </div>
+            <p className="mt-20 text-white/70 text-sm">
+              By following these tips, you can leverage the resources provided
+              by MTN to grow your business and maximize your revenue potential.
+              If you have any questions or need further assistance, please
+              contact our support team.
+            </p>
           </div>
         </div>
         <div className="w-full mt-20 mx-auto lg:max-w-[1158px] relative">

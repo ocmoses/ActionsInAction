@@ -24,7 +24,7 @@ export default function LandingPage() {
     {
       id: "3",
       faq: "How long does the documentation verification take?",
-      ans: "In less than a week, all documents submitted will be verified. To check the status of your document verification, click here.",
+      ans: "In 14 days, all documents submitted will be verified. To check the status of your document verification, click here.",
     },
     {
       id: "4",

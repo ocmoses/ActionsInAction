@@ -31,21 +31,19 @@ const partners = {
     filterPartner(partner, state.categories)
     state.partner = { ...state.partner, ...partner }
     const category = state.category
-    console.log({ statecategory: category })
 
-    const currentCategory = partner?.categories?.find(
-      (c) => c.category_uuid === category.category_uuid
-    )
-    console.log({ statecurrentCategory: currentCategory })
-    console.log("state.categories", state.categories)
-    const baseCategory = state.categories?.find(
-      (c) => c.uuid === currentCategory.category_uuid
-    )
-    console.log({ statebaseCategory: baseCategory })
-    currentCategory.validation = baseCategory.validation
-    currentCategory.category_name = baseCategory.category_name
+    if (category) {
+      const currentCategory = partner?.categories?.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      const baseCategory = state.categories?.find(
+        (c) => c.uuid === currentCategory.category_uuid
+      )
+      currentCategory.validation = baseCategory.validation
+      currentCategory.category_name = baseCategory.category_name
 
-    state.category = currentCategory
+      state.category = currentCategory
+    }
 
     const Partners = state.partners?.filter((p) => {
       p.uuid !== partner?.uuid

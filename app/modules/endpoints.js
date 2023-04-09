@@ -16,6 +16,8 @@ export const NextEndPoints = {
   CAC_CHECK: "/api/next/external/cac",
   LOGIN_ADMIN: "/api/next/users/login-admin",
   LOGOUT_ADMIN: "/api/next/users/logout-admin",
+  AUTH_USER: "/api/next/users/auth-admin",
+  AUTH_ADMIN: "/api/next/users/auth-admin",
 }
 
 const RemoteEndpoints = {
@@ -42,10 +44,11 @@ const RemoteEndpoints = {
   SHORTCODE: `${apiURL}/v1/auth/register/shortcode`,
   INDEMNITY: `${apiURL}/v1/auth/register/indemnity`,
   ACCOUNTINFO: `${apiURL}/v1/auth/register/accountinfo`,
-
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
   START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,
   ALL_PARTNERS: `${apiURL}/v2/admin/partners`,
+  ADMIN_AUTH_USER: `${apiURL}/v2/admin/authenticated-admin`,
+  ADMIN_PARTNETINFO: `${apiURL}/v2/admin/partner-info`,
 }
 export default RemoteEndpoints

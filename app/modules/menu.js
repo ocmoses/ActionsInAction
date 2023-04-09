@@ -49,7 +49,7 @@ export const AdminMenu = [
   {
     label: "Compliance",
     icon: "",
-    route: "/admin/dashboard/compliance",
+    route: "/admin/compliance",
   },
 ]
 
@@ -64,6 +64,8 @@ export const PageRoutes = {
   dashboard: "/dashboard",
   getstarted: "/dashboard/getstarted",
   companyinfo: "/dashboard/getstarted/onboarding/companyinfo",
-  adminlogin: "/backoffice/login",
+
+  // admin
+  adminlogin: "/admin/login",
   admindashboard: "/admin/dashboard",
 }

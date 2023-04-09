@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 
-export default function Portal({ children }) {
+export default function Portal({ children, portid }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -10,6 +10,6 @@ export default function Portal({ children }) {
   }, [])
 
   return mounted
-    ? createPortal(children, document.querySelector("#portals"))
+    ? createPortal(children, document.querySelector(`#${portid ?? "portals"}`))
     : null
 }

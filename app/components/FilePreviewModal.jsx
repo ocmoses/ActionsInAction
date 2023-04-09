@@ -12,9 +12,9 @@ function FilePreviewModal({ file, filePath, closeModal }) {
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg overflow-hidden h-[95%] w-[95%] max-w-[1158px] mx-auto">
-        <div className="flex items-center justify-between px-4 py-3  bg-[#030303]">
-          <h2 className="text-lg font-bold text-[#FFCB03]">File Preview</h2>
+      <div className="bg-white rounded-lg overflow-hidden h-full w-[95%] max-w-[1158px] mx-auto">
+        <div className="flex items-center justify-between px-4 py-2  bg-[#030303]">
+          <h2 className="text-[14px] font-bold text-[#FFCB03]">File Preview</h2>
           <button
             className="text-red-500 hover:text-white focus:outline-none"
             onClick={closeModal}
@@ -35,7 +35,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
             </svg>
           </button>
         </div>
-        <div className="px-4 py-2 w-full h-full">
+        <div className="px-4 py-2 w-full h-[95%]">
           {isPdf && (
             <embed
               className="preview"

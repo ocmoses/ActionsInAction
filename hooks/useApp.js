@@ -1,6 +1,7 @@
 "use client"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { Util, isObject, filterPartner } from "@/app/modules/utilities"
+import { useState } from "react"
 
 const useApp = () => {
   const states = useStoreState((state) => state)
@@ -9,9 +10,23 @@ const useApp = () => {
   const appStates = states.app
   const appActions = actions.app
 
+  const previewFiles = (url) => {
+    if (url) {
+      actions.app.setPreviewingPath(url)
+      actions.app.setIsPreviewingDoc(true)
+    } else {
+      actions.app.setPreviewingPath("")
+      actions.app.setIsPreviewingDoc(false)
+    }
+  }
+  function handleCloseModal() {
+    actions.app.setPreviewingPath("")
+    actions.app.setIsPreviewingDoc(false)
+  }
+
   const setStoreStates = (serverSession, categories, source) => {
+    if (categories?.error) setError({ global: categories.error })
     if (serverSession?.type === "user") {
-      if (categories?.error) setError({ global: categories.error })
       if (serverSession?.status === "authenticated") {
         if (serverSession?.User?.user.uuid) {
           serverSession.User.user.status = "authenticated"
@@ -58,10 +73,17 @@ const useApp = () => {
     if (serverSession?.type === "admin") {
       actions.admins.setToken(serverSession?.token)
       actions.admins.setAdmin(serverSession?.User)
+      actions.admins.setCategories(categories?.data)
     }
   }
 
-  return { ...appStates, ...appActions, setStoreStates }
+  return {
+    ...appStates,
+    ...appActions,
+    setStoreStates,
+    previewFiles,
+    handleCloseModal,
+  }
 }
 
 export default useApp

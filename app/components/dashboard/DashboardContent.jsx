@@ -16,6 +16,7 @@ import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import Image from "next/image"
+import { scrollToTop } from "@/app/modules/utilities"
 
 export default function GetStarted({ type }) {
   const {
@@ -271,23 +272,52 @@ export default function GetStarted({ type }) {
                         fill="#efb703"
                       />
                     ) : (
-                      <Button
-                        onClick={finishApplication}
-                        label="Finish Application"
-                        paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                        textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                      />
+                      // <Button
+                      //   onClick={finishApplication}
+                      //   label="Finish Application"
+                      //   paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
+                      //   textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                      // />
+                      <div className="flex flex-col items-center justify-start gap-3 w-full sm:flex sm:flex-row sm:items-center sm:justify-center sm:gap-6 sm:w-auto">
+                        {!contractStarted &&
+                          partner?.contract_status === "not_started" &&
+                          partnerCategories?.length > 0 &&
+                          partnerActiveCategories?.length > 0 && (
+                            <>
+                              {" "}
+                              <Button
+                                href="javascript:;"
+                                onClick={(e) => scrollToTop("categoryselect")}
+                                label="Add another category"
+                                paddingclass="pl-4 pr-3 py-2 w-full animate-pulse hover:animate-none animate-pulse"
+                                textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                                outline="yes"
+                                icon="no"
+                              />
+                              <span className="text-white">OR</span>
+                            </>
+                          )}
+                        <Button
+                          onClick={finishApplication}
+                          label="Finish Application"
+                          paddingclass="pl-6 pr-3 py-2 w-full animate-pulse hover:animate-none animate-pulse"
+                          textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                        />
+                      </div>
                     )}
                   </div>
                 )}
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 partnerActiveCategories?.length > 0 && (
-                  <div className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto">
+                  <div
+                    id="categoryselect"
+                    className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
+                  >
                     Dear {user.first_name}, please note that you can choose
                     multiple service categories. However, you will be required
                     to complete a selected category to enable you move to the
-                    next category
+                    next category
                   </div>
                 )}
               {!contractStarted &&

@@ -557,7 +557,6 @@ export const filterCategory = (category, partner) => {
     )
       validations.push(validation)
   }
-  console.log({ validations })
   if (
     partner?.master &&
     partner?.master?.category_uuid !== category.category_uuid
@@ -566,7 +565,6 @@ export const filterCategory = (category, partner) => {
     const sections = partner.sections
     for (const cuuid in sections) {
       for (const section in sections[cuuid]) {
-        console.log({ section })
         if (
           cuuid !== category.category_uuid &&
           validations.includes(section) &&
@@ -582,6 +580,20 @@ export const filterCategory = (category, partner) => {
         }
       }
     }
+  }
+
+  const approvals = category.compliance_approvals
+  // const feedbacks = category.compliance_feedbacks
+  category.approvedFields = {}
+  if (approvals.length > 0) {
+    approvals.map((approval) => {
+      if (approval?.admin_department) {
+        if (!category.approvedFields[approval?.admin_department])
+          category.approvedFields[approval?.admin_department] = {}
+        category.approvedFields[approval?.admin_department][approval?.field] =
+          approval?.status
+      }
+    })
   }
   return category
 }

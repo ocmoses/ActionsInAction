@@ -37,6 +37,7 @@ export default function Dashboard() {
     setRouteloading(true)
     router.push(`admin/compliance/${uuid}`)
   }
+  console.log({ Partners })
   return (
     <>
       <div id="compliance" className="flex flex-cols">

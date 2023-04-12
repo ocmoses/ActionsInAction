@@ -169,25 +169,29 @@ export default async function RootLayout({ children }) {
   console.log({ error })
   return (
     <>
-      {error ? (
+      {/* {error ? (
         <GlobalError error={error} />
-      ) : (
-        <html lang="en">
-          <head />
-          <body>
-            <div id="portals" className="relative"></div>
-            {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
+      ) : ( */}
+      <html lang="en">
+        <head />
+        <body>
+          <div id="portals" className="relative"></div>
+          {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
 
-            <Providers>
-              <Session serverSession={serverSession} categories={categories}>
-                {<RouteLoader />}
-                {children}
-              </Session>
-            </Providers>
-            <div id="modalPortal"></div>
-          </body>
-        </html>
-      )}
+          <Providers>
+            <Session
+              serverSession={serverSession}
+              categories={categories}
+              error={error}
+            >
+              {<RouteLoader />}
+              {children}
+            </Session>
+          </Providers>
+          <div id="modalPortal"></div>
+        </body>
+      </html>
+      {/* )} */}
     </>
   )
 }

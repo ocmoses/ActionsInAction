@@ -13,14 +13,6 @@ export default function Companydetail({ category, stage }) {
             type="text"
           />
         )}
-        {approvalFields.country?.approval && (
-          <ComplianceLabel
-            category={category}
-            stage={stage}
-            field="country"
-            type="text"
-          />
-        )}
         {approvalFields.company_address?.approval && (
           <ComplianceLabel
             category={category}
@@ -42,7 +34,15 @@ export default function Companydetail({ category, stage }) {
             category={category}
             stage={stage}
             field="company_state"
-            type="text"
+            type="company_state"
+          />
+        )}
+        {approvalFields.country?.approval && (
+          <ComplianceLabel
+            category={category}
+            stage={stage}
+            field="country"
+            type="country"
           />
         )}
         {approvalFields.company_postcode?.approval && (

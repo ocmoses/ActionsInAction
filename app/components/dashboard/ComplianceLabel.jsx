@@ -5,11 +5,16 @@ import {
   company_type,
   license_type,
 } from "@/app/modules/constants"
+import { COUNTRIES } from "@/app/modules/countries"
+import { STATES } from "@/app/modules/states"
 import Confirm from "@/app/components/Confirm"
 import moment from "moment"
+import useErrors from "@/hooks/useErrors"
 import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
+import Image from "next/image"
+import { filterPartner } from "@/app/modules/utilities"
 
 export default function ComplianceLabel({
   field,
@@ -19,11 +24,26 @@ export default function ComplianceLabel({
   type,
 }) {
   const { previewFiles } = useApp()
-  const { admin, ApproveField, activeApproval, setActiveApproval, deptBadge } =
-    useAdmins()
+  const {
+    admin,
+    ApproveField,
+    activeApproval,
+    setActiveApproval,
+    deptBadge,
+    approving,
+    setApproving,
+    categories,
+    setPartner,
+  } = useAdmins()
   const [approve, setApprove] = useState(false)
   const [reject, setReject] = useState(false)
   const [Feedbacks, setFeedbacks] = useState({})
+  const [{ setError, clearErrors }] = useErrors(null)
+
+  useEffect(() => {
+    setApproving(false)
+    clearErrors()
+  }, [])
 
   useEffect(() => {
     setFeedbacks({
@@ -43,7 +63,9 @@ export default function ComplianceLabel({
     }
   }
   const handleApproveField = async (status, feedback) => {
-    const data = {
+    if (approving) return
+    setApproving(true)
+    const Data = {
       partner_uuid: category.partner_uuid,
       user_uuid: category.user_uuid,
       category_uuid: category.category_uuid,
@@ -52,9 +74,25 @@ export default function ComplianceLabel({
       status: status,
       field: field,
     }
+    clearErrors()
 
-    const response = await ApproveField(data)
+    const response = await ApproveField(Data)
     console.log({ response })
+    setApproving(false)
+    if (!response)
+      return setError({
+        approval: "No respond received. Please check your connection",
+      })
+    const { success, data, error } = response
+    if (!success)
+      return setError({
+        approval: error,
+      })
+
+    const partnerInfo = data?.partner
+    filterPartner(partnerInfo, categories)
+    setPartner(partnerInfo)
+    cancel()
   }
   const approveField = async () => {
     await handleApproveField(
@@ -70,7 +108,6 @@ export default function ComplianceLabel({
     setApprove(false)
     setReject(false)
   }
-
   return (
     <div
       className={`w-full p-3 ${
@@ -142,6 +179,46 @@ export default function ComplianceLabel({
                             company_type?.find(
                               (t) => t.value === category[field]
                             )?.label}
+                        </span>
+                      )}
+                      {type === "license_type" && (
+                        <span className="text-white text-[14px] font-bold">
+                          {category[field] &&
+                            company_type?.find(
+                              (t) => t.value === category[field]
+                            )?.label}
+                        </span>
+                      )}
+
+                      {type === "company_state" && (
+                        <span className="text-white text-[14px] font-bold">
+                          {category[field] &&
+                            STATES?.find(
+                              (s) =>
+                                s.state_code === category[field] &&
+                                s.country_code === category.country
+                            )?.state_name}
+                        </span>
+                      )}
+                      {type === "country" && (
+                        <span className="text-white text-[14px] font-bold flex items-center gap-3">
+                          <Image
+                            alt={`${category[field]}`}
+                            src={`/assets/flags/${
+                              category[field]?.toLowerCase() ?? "ng"
+                            }.svg`}
+                            className={"inline mr-2 h-4 rounded-sm h-auto"}
+                            width={24}
+                            height={15}
+                            priority
+                          />
+                          <span>
+                            {" "}
+                            {category[field] &&
+                              COUNTRIES?.find(
+                                (c) => c.value === category[field]
+                              )?.title}
+                          </span>
                         </span>
                       )}
                       {type === "date" && field in category && (

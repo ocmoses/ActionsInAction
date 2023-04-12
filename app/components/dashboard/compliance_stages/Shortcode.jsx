@@ -1,119 +1,99 @@
-import moment from "moment"
+import ComplianceLabel from "../ComplianceLabel"
+import { approvalFields } from "@/app/modules/constants"
 
 export default function Nlrclicense({ category, stage }) {
   return (
     category && (
-      <>
+      <div className="flex flex-col items-start gap-6 w-full">
         {category.shortcodes.length > 0 &&
-          category.shortcodes.map((shtcd) => (
-            <div key={shtcd.uuid} className="flex items-start gap-3">
-              <div className="text-[#999999] w-18 h-18">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"
-                  />
-                </svg>
-              </div>
-              <div className="flex flex-col items-start gap-4">
-                {/* SHORTCODES */}
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">Shortcodes</span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode?.shortcodes?.length > 0 &&
-                      shtcd.shortcode?.shortcodes?.join(", ")}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">
-                    Shortcode Document
-                  </span>
-                  <span
-                    onClick={() =>
-                      previewFiles(
-                        shtcd.shortcode?.shortcode_doc?.file_path ?? ""
-                      )
-                    }
-                    className="text-white text-[14px] font-bold cursor-pointer"
-                  >
-                    {shtcd.shortcode?.shortcode_doc?.file_name}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">Issue date</span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode?.shortcode_issue_date &&
-                      moment(shtcd.shortcode?.shortcode_issue_date).format(
-                        "DD / MMM / YYYY"
-                      )}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0 mb-6">
-                  <span className="text-[12px] text-[#999999]">
-                    Expiry date
-                  </span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode?.shortcode_expiry_date &&
-                      moment(shtcd.shortcode?.shortcode_expiry_date).format(
-                        "DD / MMM / YYYY"
-                      )}
-                  </span>
-                </div>
-                {/* PRICING */}
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">Shortcodes</span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode_pricing?.pricing_shortcodes?.length > 0 &&
-                      shtcd.shortcode?.shortcodes?.join(", ")}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">
-                    Shortcode Document
-                  </span>
-                  <span
-                    onClick={() =>
-                      previewFiles(
-                        shtcd.shortcode?.shortcode_doc?.file_path ?? ""
-                      )
-                    }
-                    className="text-white text-[14px] font-bold cursor-pointer"
-                  >
-                    {shtcd.shortcode?.shortcode_doc?.file_name}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">Issue date</span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode?.shortcode_issue_date &&
-                      moment(shtcd.shortcode?.shortcode_issue_date).format(
-                        "DD / MMM / YYYY"
-                      )}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0">
-                  <span className="text-[12px] text-[#999999]">
-                    Expiry date
-                  </span>
-                  <span className="text-white text-[14px] font-bold">
-                    {shtcd.shortcode?.shortcode_expiry_date &&
-                      moment(shtcd.shortcode?.shortcode_expiry_date).format(
-                        "DD / MMM / YYYY"
-                      )}
-                  </span>
-                </div>
-              </div>
+          category.shortcodes.map((shtcd, index) => (
+            <div
+              key={shtcd.uuid}
+              className={`flex flex-col items-start gap-4 w-full ${
+                category.shortcodes.length > 0 &&
+                index < category.shortcodes.length - 1 &&
+                "border-b-2 border-b-white/40 pb-10 mb-6"
+              } `}
+            >
+              {shtcd.shortcode?.shortcodes?.length > 0 && (
+                <>
+                  {approvalFields.nlrc_license_type?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcodes"
+                      type="shortcodes"
+                    />
+                  )}
+                  {approvalFields.shortcode_doc?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_doc"
+                      type="shortcode_doc"
+                    />
+                  )}
+                  {approvalFields.shortcode_issue_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_issue_date"
+                      type="shortcode_issue_date"
+                    />
+                  )}
+                  {approvalFields.shortcode_expiry_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_expiry_date"
+                      type="shortcode_expiry_date"
+                    />
+                  )}
+                  {approvalFields.pricing_shortcodes?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="pricing_shortcodes"
+                      type="pricing_shortcodes"
+                    />
+                  )}
+                  {approvalFields.pricing_issue_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_pricing_doc"
+                      type="shortcode_pricing_doc"
+                    />
+                  )}
+                  {approvalFields.pricing_issue_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="pricing_issue_date"
+                      type="pricing_issue_date"
+                    />
+                  )}
+                  {approvalFields.nlrc_license_type?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="pricing_expiry_date"
+                      type="pricing_expiry_date"
+                    />
+                  )}
+                </>
+              )}
             </div>
           ))}
-      </>
+      </div>
     )
   )
 }

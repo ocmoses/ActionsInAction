@@ -7,6 +7,7 @@ const doLogin = async (body, req, res) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
@@ -38,8 +39,6 @@ const doLogin = async (body, req, res) => {
       data: null,
     }
   const authtoken = set_admin_token(token, user.uuid, req, res)
-  console.log({ token })
-  console.log({ authtoken })
   if (!authtoken)
     return {
       success: false,

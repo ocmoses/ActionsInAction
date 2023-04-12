@@ -10,7 +10,7 @@ export default function Compliance({ category, stage }) {
             category={category}
             stage={stage}
             field="company_type"
-            type="text"
+            type="company_type"
           />
         )}
         {approvalFields.rc_no?.approval && (

@@ -50,5 +50,6 @@ const RemoteEndpoints = {
   ALL_PARTNERS: `${apiURL}/v2/admin/partners`,
   ADMIN_AUTH_USER: `${apiURL}/v2/admin/authenticated-admin`,
   ADMIN_PARTNETINFO: `${apiURL}/v2/admin/partner-info`,
+  REJECTION_RESONS: `${apiURL}/v2/admin/rejection-reasons`,
 }
 export default RemoteEndpoints

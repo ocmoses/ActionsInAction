@@ -17,6 +17,8 @@ const admins = {
   activeApproval: null,
   rejectionReasons: null,
   activeCategory: null,
+  approving: false,
+  partner: null,
 
   clear: action((state) => {
     state.admins = null
@@ -27,6 +29,8 @@ const admins = {
     state.activeApproval = null
     state.rejectionReasons = null
     state.activeCategory = null
+    state.approving = false
+    state.partner = null
   }),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   fullname: computed((state) => {
@@ -37,6 +41,9 @@ const admins = {
   }),
   setRejectionReasons: action((state, reasons) => {
     state.rejectionReasons = reasons
+  }),
+  setApproving: action((state, status) => {
+    state.approving = status ?? false
   }),
   setToken: action((state, token) => {
     state.token = token
@@ -54,6 +61,9 @@ const admins = {
   }),
   setActiveCategory: action((state, category) => {
     state.activeCategory = category
+  }),
+  setPartner: action((state, partner) => {
+    state.partner = partner
   }),
 }
 export default admins

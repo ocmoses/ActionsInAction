@@ -24,7 +24,7 @@ import useApp from "@/hooks/useApp"
 export default function Compliance({ params }) {
   const router = useRouter()
   const { processing, setProcessing } = useProcessing()
-  const [partner, setPartner] = useState({})
+  // const [partner, setPartner] = useState({})
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const {
     categories,
@@ -35,6 +35,8 @@ export default function Compliance({ params }) {
     getRejectionReasons,
     activeCategory,
     setActiveCategory,
+    partner,
+    setPartner,
   } = useAdmins()
 
   const [category, setCategory] = useState()

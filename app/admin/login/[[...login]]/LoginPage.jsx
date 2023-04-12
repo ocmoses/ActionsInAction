@@ -15,7 +15,7 @@ import { useRouter, useSelectedLayoutSegments } from "next/navigation"
 
 function Login({ params }) {
   const router = useRouter()
-  const { setToken, setAdmin } = useAdmins()
+  const { setToken, setAdmin, setCategories } = useAdmins()
   const { processing, setProcessing, setForm } = useProcessing()
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -61,8 +61,10 @@ function Login({ params }) {
       setProcessing(false)
       return setError({ login: error })
     }
+    console.log({ Data })
     setToken(Data?.user.token)
     setAdmin(Data?.user.user)
+    setCategories(Data?.categories)
     const redirect =
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`

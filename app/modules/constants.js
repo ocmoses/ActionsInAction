@@ -878,7 +878,7 @@ export const approvalFields = {
     title: "Country",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: false,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   company_address: {
     title: "Company address",

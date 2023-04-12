@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { Util } from "@/app/modules/utilities"
+import useAdmins from "@/hooks/useAdmins"
 
 export default function Confirm({
   yestext,
@@ -8,21 +10,23 @@ export default function Confirm({
   type,
   feedback,
 }) {
-  const [reason, setReason] = useState("")
+  const [reason, setReason] = useState(null)
   const [showReason, setShowReason] = useState(false)
+  const { rejectionReasons } = useAdmins()
+
   const Reject = () => {
     console.log({ reason })
     onYes(reason)
   }
-  const handleSetReason = (reason) => {
-    setReason(reason)
+  const handleSetReason = (_reason) => {
+    setReason(_reason)
     setShowReason(false)
   }
   return (
     <div
-      className={`flex justify-between items-end gap-4 border border-${
-        type === "approve" ? "white/30" : "red-600"
-      } p-3 mb-3 w-full bg-[${type === "approve" ? "#0d5923" : "#212121"}]`}
+      className={`flex justify-between items-end gap-4 rounded-lg shadow-lg border border-${
+        type === "approve" ? "green-600" : "red-600"
+      } p-3 mb-3 w-full bg-[#212121]`}
     >
       <div className="flex flex-1 gap-4">
         {type === "approve" && (
@@ -43,7 +47,9 @@ export default function Confirm({
                 />
               </svg>
             </span>
-            <span className="text-mtn">Are you sure you want to approve?</span>
+            <span className="text-[#999999]">
+              Are you sure you want to approve?
+            </span>
           </>
         )}
         {type === "reject" && (
@@ -52,12 +58,14 @@ export default function Confirm({
               Reason for rejection
             </span>
             <div className="flex flex-col relative z-50">
-              <span
+              <div
                 onClick={() => setShowReason(true)}
-                className=" rounded-full border border-white/20 px-3 py-1 text-white cursor-pointer"
+                className="text-[13px] leading-[85%] rounded-full border border-white/20 px-3 py-2 text-white cursor-pointer"
               >
-                {reason !== "" ? reason : "Select a reason"}
-              </span>
+                {!Util.isEmpty(reason)
+                  ? reason?.rejection_reason
+                  : "Select a reason for rejection"}
+              </div>
               <div
                 style={{
                   display: showReason ? "block" : "none",
@@ -65,88 +73,31 @@ export default function Confirm({
                 onMouseLeave={() => setShowReason(false)}
                 className="absolute bg-[#212121] text-[#999999] flex flex-col border border-white/20 rounded-xl max-h-[300px] overflow-y-auto w-full"
               >
-                <span
-                  onClick={() => handleSetReason("Invalid document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Invalid document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing information")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing information
-                </span>
-                <span
-                  onClick={() => handleSetReason("Invalid document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Invalid document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing information")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing information
-                </span>
-                <span
-                  onClick={() => handleSetReason("Invalid document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Invalid document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing information")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing information
-                </span>
-                <span
-                  onClick={() => handleSetReason("Invalid document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Invalid document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing document")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing document
-                </span>
-                <span
-                  onClick={() => handleSetReason("Missing information")}
-                  className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
-                >
-                  Missing information
-                </span>
+                {rejectionReasons?.length > 0 &&
+                  rejectionReasons.map((_reason) => (
+                    <span
+                      key={_reason.uuid}
+                      onClick={() => handleSetReason(_reason)}
+                      className="flex px-3 py-2 cursor-pointer hover:bg-white/20 text-[#999999] text-[12px]"
+                    >
+                      {_reason.rejection_reason}
+                    </span>
+                  ))}
               </div>
             </div>
           </div>
         )}
       </div>
+
       <div className="flex-none">
         {onYes && (
           <button
             onClick={type === "approve" ? onYes : Reject}
-            className="bg-mtn-600 hover:bg-mtn-300 mr-2 px-4 py-1 rounded-full text-[11px] text-black"
+            className={`${
+              type === "approve"
+                ? "bg-green-600 hover:bg-green-300"
+                : "bg-red-600 hover:bg-red-300"
+            } mr-2 px-4 py-1 rounded-full text-[11px] text-black`}
           >
             {yestext ?? "Yes"}
           </button>

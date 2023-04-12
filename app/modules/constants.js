@@ -36,7 +36,12 @@ export const validities = {
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 }
-
+export const departments = [
+  { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
+  { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
+  { code: "LEGA", name: "LEGAL", approval: true },
+  { code: "INSU", name: "INSURANCE", approval: true },
+]
 export const categoryCombination = [
   ["VAS", "RMS"],
   ["VAS", "MKP"],
@@ -504,10 +509,60 @@ export const complianceRequirements = {
     },
   },
   shortcodes: {
+    // shortcodes: {
+    //   title: "Shortcodes",
+    //   categories: ["VAS", "AGR"],
+    //   type: "form",
+    // },
+
+    // shortcode: {
     shortcodes: {
-      title: "Shortcodes",
+      title: "Short codes",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_doc: {
+      title: "Short code document",
       categories: ["VAS", "AGR"],
       type: "form",
+      approval: true,
+    },
+    shortcode_issue_date: {
+      title: "Issue date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_shortcodes: {
+      title: "Approved pricing shortcode",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_issue_date: {
+      title: "Pricing approval Issue date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_expiry_date: {
+      title: "Pricing approval Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_doc: {
+      title: "NCC Pricing approval",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
     },
   },
   shortcode: {
@@ -516,7 +571,7 @@ export const complianceRequirements = {
       categories: ["VAS", "AGR"],
       type: "form",
     },
-    shortcode: {
+    shortcodes: {
       title: "Short code",
       categories: ["VAS", "RMS", "AGR"],
       type: "form",
@@ -531,13 +586,18 @@ export const complianceRequirements = {
       categories: ["VAS", "AGR"],
       type: "form",
     },
-
-    shortcode_price_issue_date: {
+    pricing_shortcodes: {
+      title: "Approved pricing shortcode",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_pricing_issue_date: {
       title: "Pricing Issue date",
       categories: ["VAS", "RMS", "AGR"],
       type: "form",
     },
-    shortcode_price_expiry_date: {
+    shortcode_pricing_expiry_date: {
       title: "Pricing Expiry date",
       categories: ["VAS", "RMS", "AGR"],
       type: "form",
@@ -744,12 +804,12 @@ export const compliance = {
       type: "form",
     },
 
-    shortcode_price_issue_date: {
+    shortcode_pricing_issue_date: {
       title: "Pricing Issue date",
       categories: ["VAS", "RMS", "AGR"],
       type: "form",
     },
-    shortcode_price_expiry_date: {
+    shortcode_pricing_expiry_date: {
       title: "Pricing Expiry date",
       categories: ["VAS", "RMS", "AGR"],
       type: "form",
@@ -811,7 +871,7 @@ export const approvalFields = {
     title: "Company name",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   country: {
     title: "Country",
@@ -823,211 +883,211 @@ export const approvalFields = {
     title: "Company address",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   company_city: {
     title: "Company city",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: false,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   company_state: {
     title: "Company state",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: false,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // compliance: {
   company_type: {
     title: "Company type",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   rc_no: {
     title: "RC Number",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   tin_no: {
     title: "Tax identification number",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   tin_doc: {
     title: "TIN Document",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM", "R&C", "ISR", "LEGAL"],
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   memart_doc: {
     title: "Memart certificate",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   cac_doc: {
     title: "CAC Registration Certificate",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // ncclicense: {
   vas_license_id: {
     title: "VAS License ID",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   ncc_issue_date: {
     title: "Issuing date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   ncc_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   ncc_doc: {
     title: "NCC VAS License document",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // nlrclicense: {
   nlrc_license_type: {
     title: "NLRC License type",
     categories: ["AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   nlrc_license_id: {
     title: "NLRC License ID",
     categories: ["AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   nlrc_issue_date: {
     title: "Issuing date",
     categories: ["AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   nlrc_expiry_date: {
     title: "Expiry date",
     categories: ["AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   nlrc_doc: {
     title: "NLRC Document",
     categories: ["AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // shortcode: {
   shortcodes: {
     title: "Short codes",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   shortcode_doc: {
     title: "Short code document",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   shortcode_issue_date: {
     title: "Issue date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   shortcode_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   pricing_shortcodes: {
     title: "Approved pricing shortcode",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   pricing_issue_date: {
     title: "Pricing approval Issue date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   pricing_expiry_date: {
     title: "Pricing approval Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   pricing_doc: {
     title: "NCC Pricing approval",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // indemnity: {
   indemnity_no: {
     title: "Professional indemnity insurance number",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   indemnity_issue_date: {
     title: "Issuing date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   indemnity_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   indemnity_doc: {
     title: "Professional indemnity insurance Document",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   // accountinfo: {
   audited_account_1_doc: {
     title: "Audited account 1",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   audited_account_2_doc: {
     title: "Audited account 2",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   audited_account_3_doc: {
     title: "Audited account 3",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
   job_evidence_doc: {
     title: "Evidence of 3 Jobs done",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: true,
+    approval: ["SPRM", "RICO", "LEGA", "INSU"],
   },
 }
 export const profileMenu = [

@@ -2,6 +2,7 @@ import Image from "next/image"
 import { forms } from "@/app/modules/constants"
 import FilePreviewModal from "@/app/components/FilePreviewModal"
 import useApp from "@/hooks/useApp"
+import useAdmins from "@/hooks/useAdmins"
 
 export default function ComplianceDrawer({
   children,
@@ -10,7 +11,9 @@ export default function ComplianceDrawer({
   setOpenDrawer,
   openDrawer,
 }) {
+  const { setActiveApproval } = useAdmins()
   const closeDrawer = () => {
+    setActiveApproval(null)
     setOpenDrawer(false)
   }
 
@@ -42,7 +45,7 @@ export default function ComplianceDrawer({
               <div className="flex justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
                 <div className="flex-1 flex justity-start gap-3 items-center ">
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
-                    {category.icon && (
+                    {category?.icon && (
                       <Image
                         src={category.icon}
                         alt=""

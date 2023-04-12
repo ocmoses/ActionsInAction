@@ -14,6 +14,9 @@ const admins = {
     "indemnity",
     "accountinfo",
   ],
+  activeApproval: null,
+  rejectionReasons: null,
+  activeCategory: null,
 
   clear: action((state) => {
     state.admins = null
@@ -21,10 +24,19 @@ const admins = {
     state.session = { status: "unauthenticated" }
     state.token = null
     state.categories = []
+    state.activeApproval = null
+    state.rejectionReasons = null
+    state.activeCategory = null
   }),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   fullname: computed((state) => {
     return state.admin?.uuid !== null ? `${state.admin?.username}` : null
+  }),
+  setActiveApproval: action((state, field) => {
+    state.activeApproval = field
+  }),
+  setRejectionReasons: action((state, reasons) => {
+    state.rejectionReasons = reasons
   }),
   setToken: action((state, token) => {
     state.token = token
@@ -39,6 +51,9 @@ const admins = {
   }),
   setCategories: action((state, categories) => {
     state.categories = categories
+  }),
+  setActiveCategory: action((state, category) => {
+    state.activeCategory = category
   }),
 }
 export default admins

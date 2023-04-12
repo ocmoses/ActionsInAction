@@ -26,10 +26,19 @@ export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing()
   const [partner, setPartner] = useState({})
   const [{ errors, setError, clearErrors }] = useErrors(null)
-  const { categories, allCategories, token, getStages } = useAdmins()
+  const {
+    categories,
+    allCategories,
+    token,
+    getStages,
+    rejectionReasons,
+    getRejectionReasons,
+    activeCategory,
+    setActiveCategory,
+  } = useAdmins()
 
   const [category, setCategory] = useState()
-  const [activeCategory, setActiveCategory] = useState()
+  // const [activeCategory, setActiveCategory] = useState()
   const [Stages, setStages] = useState()
   const [activeStage, setActiveStage] = useState()
   const [openDrawer, setOpenDrawer] = useState(false)
@@ -45,6 +54,9 @@ export default function Compliance({ params }) {
     setRouteloading(false)
   }, [])
   useEffect(() => {
+    if (!rejectionReasons) getRejectionReasons()
+  }, [rejectionReasons])
+  useEffect(() => {
     if (partner && category) {
       const _activeCategory = partner?.categories?.find(
         (c) => c.category_uuid === category
@@ -53,9 +65,8 @@ export default function Compliance({ params }) {
       const _stages = getStages(_activeCategory)
       setCategory(_activeCategory.category_uuid)
       setStages(_stages)
-
-      console.log({ partner })
     }
+    console.log({ partner })
   }, [partner, category])
   useEffect(() => {
     clearErrors()
@@ -84,7 +95,7 @@ export default function Compliance({ params }) {
             partnerInfo
           )
           setCategory(_category.category_uuid)
-          setActiveCategory(_category)
+          setActiveCategory(filterCategory(_category, partner))
         }
         return
       }
@@ -96,6 +107,7 @@ export default function Compliance({ params }) {
     if (params?.params?.length > 0) getPartnerInfo(params.params[0])
   }, [params])
 
+  // console.log({ activeCategory })
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("admin/dashboard/")} className="mb-12">
@@ -187,7 +199,7 @@ export default function Compliance({ params }) {
                   className="flex flex-col gap-3 p-4 rounded-xl border border-transparent hover:bg-white/10 hover:border hover:border-white/20 max-w-[280px] cursor-pointer"
                 >
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
-                    {activeCategory.icon && (
+                    {activeCategory?.icon && (
                       <Image
                         src={activeCategory.icon}
                         alt=""

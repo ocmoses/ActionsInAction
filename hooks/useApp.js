@@ -71,6 +71,7 @@ const useApp = () => {
       }
     }
     if (serverSession?.type === "admin") {
+      console.log("categories?.data", categories?.data)
       actions.admins.setToken(serverSession?.token)
       actions.admins.setAdmin(serverSession?.User)
       actions.admins.setCategories(categories?.data)

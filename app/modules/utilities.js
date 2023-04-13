@@ -583,7 +583,7 @@ export const filterCategory = (category, partner) => {
   }
 
   const approvals = category.compliance_approvals
-  // const feedbacks = category.compliance_feedbacks
+  const feedbacks = category.compliance_feedbacks
   category.approvedFields = {}
   if (approvals.length > 0) {
     approvals.map((approval) => {
@@ -593,6 +593,14 @@ export const filterCategory = (category, partner) => {
         category.approvedFields[approval?.admin_department][approval?.field] =
           approval?.status
       }
+    })
+  }
+  category.feedbacks = {}
+  if (feedbacks.length > 0) {
+    feedbacks.map((feedback) => {
+      if (!category.feedbacks[feedback?.category_stage])
+        category.feedbacks[feedback?.category_stage] = []
+      category.feedbacks[feedback?.category_stage].push(feedback)
     })
   }
   return category

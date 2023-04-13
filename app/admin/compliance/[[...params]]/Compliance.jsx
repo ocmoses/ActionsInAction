@@ -25,6 +25,8 @@ export default function Compliance({ params }) {
   const router = useRouter()
   const { processing, setProcessing } = useProcessing()
   // const [partner, setPartner] = useState({})
+  // const [Stages, setStages] = useState()
+  // const [activeCategory, setActiveCategory] = useState()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const {
     categories,
@@ -37,20 +39,15 @@ export default function Compliance({ params }) {
     setActiveCategory,
     partner,
     setPartner,
+    Stages,
+    setStages,
   } = useAdmins()
 
   const [category, setCategory] = useState()
-  // const [activeCategory, setActiveCategory] = useState()
-  const [Stages, setStages] = useState()
   const [activeStage, setActiveStage] = useState()
   const [openDrawer, setOpenDrawer] = useState(false)
-
   const { setRouteloading } = useApp()
 
-  const handleOpenDrawer = (stage) => {
-    setActiveStage(stage)
-    setOpenDrawer(true)
-  }
   useEffect(() => {
     setProcessing(false)
     setRouteloading(false)
@@ -64,8 +61,8 @@ export default function Compliance({ params }) {
         (c) => c.category_uuid === category
       )
       setActiveCategory(filterCategory(_activeCategory, partner))
-      const _stages = getStages(_activeCategory)
       setCategory(_activeCategory.category_uuid)
+      const _stages = getStages(_activeCategory)
       setStages(_stages)
     }
     console.log({ partner })
@@ -109,7 +106,11 @@ export default function Compliance({ params }) {
     if (params?.params?.length > 0) getPartnerInfo(params.params[0])
   }, [params])
 
-  // console.log({ activeCategory })
+  const handleOpenDrawer = (stage) => {
+    setActiveStage(stage)
+    setOpenDrawer(true)
+  }
+  console.log({ Stages })
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("admin/dashboard/")} className="mb-12">

@@ -101,7 +101,7 @@ export default function ComplianceLabel({
     )
   }
   const rejectField = async (reason) => {
-    await handleApproveField("rejected", reason)
+    await handleApproveField("rejected", reason.rejection_reason)
   }
   const cancel = () => {
     setActiveApproval(null)

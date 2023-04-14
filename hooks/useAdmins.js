@@ -142,31 +142,6 @@ export default function useAdmins() {
     if (!success) return { success: false, error: data.message }
     return { success: true, data, error: null }
   }
-  const deptBadge = (dept, field, category) => {
-    let bg = "bg-white/60"
-    let text = `Pending approval for ${dept.name}`
-    if (
-      dept.code in category?.approvedFields &&
-      field in category?.approvedFields[dept.code]
-    ) {
-      if (category?.approvedFields[dept.code][field] === "approved") {
-        bg = "bg-green-600"
-        text = `${dept.name} APPROVED`
-      }
-      if (category?.approvedFields[dept.code][field] === "rejected") {
-        bg = "bg-red-600"
-        text = `${dept.name} REJECTED`
-      }
-    }
-    return (
-      <span
-        className={`flex justify-center items-center ${bg} cursor-help w-4 h-4 font-extrabold p-2 m-1 text-[13px] text-black`}
-        title={text}
-      >
-        {dept.code[0]}
-      </span>
-    )
-  }
   return {
     ...states,
     ...actions,
@@ -176,6 +151,5 @@ export default function useAdmins() {
     getStages,
     ApproveField,
     getRejectionReasons,
-    deptBadge,
   }
 }

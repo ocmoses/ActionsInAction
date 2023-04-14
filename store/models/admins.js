@@ -20,6 +20,7 @@ const admins = {
   approving: false,
   partner: null,
   Stages: null,
+  activeStage: null,
 
   clear: action((state) => {
     state.admins = null
@@ -33,6 +34,7 @@ const admins = {
     state.approving = false
     state.partner = null
     state.Stages = null
+    state.activeStage = null
   }),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   fullname: computed((state) => {
@@ -69,6 +71,9 @@ const admins = {
   }),
   setStages: action((state, Stages) => {
     state.Stages = Stages
+  }),
+  setActiveStage: action((state, stage) => {
+    state.activeStage = stage
   }),
 }
 export default admins

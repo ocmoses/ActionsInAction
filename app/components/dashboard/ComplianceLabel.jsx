@@ -15,6 +15,7 @@ import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { filterPartner } from "@/app/modules/utilities"
+import DeptBadge from "./compliance/DeptBadge"
 
 export default function ComplianceLabel({
   field,
@@ -29,7 +30,6 @@ export default function ComplianceLabel({
     ApproveField,
     activeApproval,
     setActiveApproval,
-    deptBadge,
     approving,
     setApproving,
     categories,
@@ -157,178 +157,170 @@ export default function ComplianceLabel({
             </div>
             <div className="flex justify-between items-start gap-3 w-full">
               <div className="flex gap-3 items-start">
-                <div className="grid grid-cols-2 gap-2 items-center">
+                <div className="grid grid-cols-2 gap-2 items-center pt-[3px]">
                   {departments?.length > 0 &&
-                    departments.map((dept) => deptBadge(dept, field, category))}
+                    departments.map((dept) => (
+                      <DeptBadge
+                        key={dept.code}
+                        dept={dept}
+                        field={field}
+                        category={category}
+                      />
+                    ))}
                 </div>
                 <div className="flex flex-col gap-0 w-full">
-                  <span className="text-[12px] text-[#999999]">
+                  <span className="text-[12px] m-0 text-[#999999]">
                     {stage in complianceRequirements &&
                       complianceRequirements[stage][field]?.title}
                   </span>
-                  <div>
-                    <div className="flex justify-between gap-1 flex-1">
-                      {type === "text" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category[field] && category[field]}
-                        </span>
-                      )}
-                      {type === "company_type" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category[field] &&
-                            company_type?.find(
-                              (t) => t.value === category[field]
-                            )?.label}
-                        </span>
-                      )}
-                      {type === "license_type" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category[field] &&
-                            company_type?.find(
-                              (t) => t.value === category[field]
-                            )?.label}
-                        </span>
-                      )}
+                  {type === "text" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category[field] && category[field]}
+                    </span>
+                  )}
+                  {type === "company_type" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category[field] &&
+                        company_type?.find((t) => t.value === category[field])
+                          ?.label}
+                    </span>
+                  )}
+                  {type === "license_type" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category[field] &&
+                        company_type?.find((t) => t.value === category[field])
+                          ?.label}
+                    </span>
+                  )}
 
-                      {type === "company_state" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category[field] &&
-                            STATES?.find(
-                              (s) =>
-                                s.state_code === category[field] &&
-                                s.country_code === category.country
-                            )?.state_name}
-                        </span>
-                      )}
-                      {type === "country" && (
-                        <span className="text-white text-[14px] font-bold flex items-center gap-3">
-                          <Image
-                            alt={`${category[field]}`}
-                            src={`/assets/flags/${
-                              category[field]?.toLowerCase() ?? "ng"
-                            }.svg`}
-                            className={"inline mr-2 h-4 rounded-sm h-auto"}
-                            width={24}
-                            height={15}
-                            priority
-                          />
-                          <span>
-                            {" "}
-                            {category[field] &&
-                              COUNTRIES?.find(
-                                (c) => c.value === category[field]
-                              )?.title}
-                          </span>
-                        </span>
-                      )}
-                      {type === "date" && field in category && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category[field] &&
-                            moment(category[field]).format("DD / MMM / YYYY")}
-                        </span>
-                      )}
-                      {type === "file" && category[field]?.file_path && (
-                        <span
-                          onClick={() =>
-                            previewFiles(category[field]?.file_path ?? "")
-                          }
-                          className="text-white text-[14px] font-bold cursor-pointer"
-                        >
-                          {category[field]?.file_name}
-                        </span>
-                      )}
+                  {type === "company_state" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category[field] &&
+                        STATES?.find(
+                          (s) =>
+                            s.state_code === category[field] &&
+                            s.country_code === category.country
+                        )?.state_name}
+                    </span>
+                  )}
+                  {type === "country" && (
+                    <span className="text-white text-[14px] font-bold flex items-center gap-3">
+                      <Image
+                        alt={`${category[field]}`}
+                        src={`/assets/flags/${
+                          category[field]?.toLowerCase() ?? "ng"
+                        }.svg`}
+                        className={"inline mr-2 h-4 rounded-sm h-auto"}
+                        width={24}
+                        height={15}
+                        priority
+                      />
+                      <span>
+                        {" "}
+                        {category[field] &&
+                          COUNTRIES?.find((c) => c.value === category[field])
+                            ?.title}
+                      </span>
+                    </span>
+                  )}
+                  {type === "date" && field in category && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category[field] &&
+                        moment(category[field]).format("DD / MMM / YYYY")}
+                    </span>
+                  )}
+                  {type === "file" && category[field]?.file_path && (
+                    <span
+                      onClick={() =>
+                        previewFiles(category[field]?.file_path ?? "")
+                      }
+                      className="text-white text-[14px] font-bold cursor-pointer"
+                    >
+                      {category[field]?.file_name}
+                    </span>
+                  )}
 
-                      {type === "shortcodes" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode?.shortcodes?.length >
-                            0 &&
-                            category_shortcode.shortcode?.shortcodes?.join(
-                              ", "
-                            )}
-                        </span>
-                      )}
-                      {type === "shortcode_doc" && (
-                        <span
-                          onClick={() =>
-                            previewFiles(
-                              category_shortcode.shortcode?.shortcode_doc
-                                ?.file_path ?? ""
-                            )
-                          }
-                          className="text-white text-[14px] font-bold cursor-pointer"
-                        >
-                          {
-                            category_shortcode.shortcode?.shortcode_doc
-                              ?.file_name
-                          }
-                        </span>
-                      )}
-                      {type === "shortcode_issue_date" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode?.shortcode_issue_date &&
-                            moment(
-                              category_shortcode.shortcode?.shortcode_issue_date
-                            ).format("DD / MMM / YYYY")}
-                        </span>
-                      )}
-                      {type === "shortcode_expiry_date" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode
-                            ?.shortcode_expiry_date &&
-                            moment(
-                              category_shortcode.shortcode
-                                ?.shortcode_expiry_date
-                            ).format("DD / MMM / YYYY")}
-                        </span>
-                      )}
-                      {/* PRICING */}
-                      {type === "pricing_shortcodes" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode_pricing
-                            ?.pricing_shortcodes?.length > 0 &&
-                            category_shortcode.shortcode_pricing?.pricing_shortcodes?.join(
-                              ", "
-                            )}
-                        </span>
-                      )}
-                      {type === "shortcode_pricing_doc" && (
-                        <span
-                          onClick={() =>
-                            previewFiles(
-                              category_shortcode.shortcode_pricing?.pricing_doc
-                                ?.file_path ?? ""
-                            )
-                          }
-                          className="text-white text-[14px] font-bold cursor-pointer"
-                        >
-                          {
-                            category_shortcode.shortcode_pricing?.pricing_doc
-                              ?.file_name
-                          }
-                        </span>
-                      )}
-                      {type === "pricing_issue_date" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode_pricing
-                            ?.pricing_issue_date &&
-                            moment(
-                              category_shortcode.shortcode_pricing
-                                ?.pricing_issue_date
-                            ).format("DD / MMM / YYYY")}
-                        </span>
-                      )}
-                      {type === "pricing_expiry_date" && (
-                        <span className="text-white text-[14px] font-bold">
-                          {category_shortcode.shortcode_pricing
-                            ?.pricing_expiry_date &&
-                            moment(
-                              category_shortcode.shortcode_pricing
-                                ?.pricing_expiry_date
-                            ).format("DD / MMM / YYYY")}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  {type === "shortcodes" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode?.shortcodes?.length > 0 &&
+                        category_shortcode.shortcode?.shortcodes?.join(", ")}
+                    </span>
+                  )}
+                  {type === "shortcode_doc" && (
+                    <span
+                      onClick={() =>
+                        previewFiles(
+                          category_shortcode.shortcode?.shortcode_doc
+                            ?.file_path ?? ""
+                        )
+                      }
+                      className="text-white text-[14px] font-bold cursor-pointer"
+                    >
+                      {category_shortcode.shortcode?.shortcode_doc?.file_name}
+                    </span>
+                  )}
+                  {type === "shortcode_issue_date" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode?.shortcode_issue_date &&
+                        moment(
+                          category_shortcode.shortcode?.shortcode_issue_date
+                        ).format("DD / MMM / YYYY")}
+                    </span>
+                  )}
+                  {type === "shortcode_expiry_date" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode?.shortcode_expiry_date &&
+                        moment(
+                          category_shortcode.shortcode?.shortcode_expiry_date
+                        ).format("DD / MMM / YYYY")}
+                    </span>
+                  )}
+                  {/* PRICING */}
+                  {type === "pricing_shortcodes" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode_pricing?.pricing_shortcodes
+                        ?.length > 0 &&
+                        category_shortcode.shortcode_pricing?.pricing_shortcodes?.join(
+                          ", "
+                        )}
+                    </span>
+                  )}
+                  {type === "shortcode_pricing_doc" && (
+                    <span
+                      onClick={() =>
+                        previewFiles(
+                          category_shortcode.shortcode_pricing?.pricing_doc
+                            ?.file_path ?? ""
+                        )
+                      }
+                      className="text-white text-[14px] font-bold cursor-pointer"
+                    >
+                      {
+                        category_shortcode.shortcode_pricing?.pricing_doc
+                          ?.file_name
+                      }
+                    </span>
+                  )}
+                  {type === "pricing_issue_date" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode_pricing
+                        ?.pricing_issue_date &&
+                        moment(
+                          category_shortcode.shortcode_pricing
+                            ?.pricing_issue_date
+                        ).format("DD / MMM / YYYY")}
+                    </span>
+                  )}
+                  {type === "pricing_expiry_date" && (
+                    <span className="text-white text-[14px] font-bold">
+                      {category_shortcode.shortcode_pricing
+                        ?.pricing_expiry_date &&
+                        moment(
+                          category_shortcode.shortcode_pricing
+                            ?.pricing_expiry_date
+                        ).format("DD / MMM / YYYY")}
+                    </span>
+                  )}
                 </div>
               </div>
               {!activeApproval &&

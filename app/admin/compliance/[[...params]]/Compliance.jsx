@@ -41,10 +41,11 @@ export default function Compliance({ params }) {
     setPartner,
     Stages,
     setStages,
+    activeStage,
+    setActiveStage,
   } = useAdmins()
 
   const [category, setCategory] = useState()
-  const [activeStage, setActiveStage] = useState()
   const [openDrawer, setOpenDrawer] = useState(false)
   const { setRouteloading } = useApp()
 
@@ -178,7 +179,7 @@ export default function Compliance({ params }) {
                   label=""
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  classes="!py-2 !px-3 cursor-pointer !min-w-[200px]"
+                  classes="!py-2 !px-3 cursor-pointer min-w-[200px] overflow-visible"
                   fontsize="14px"
                   style={{ width: "240px" }}
                 >

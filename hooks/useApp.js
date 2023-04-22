@@ -1,7 +1,6 @@
 "use client"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { Util, isObject, filterPartner } from "@/app/modules/utilities"
-import { useState } from "react"
 
 const useApp = () => {
   const states = useStoreState((state) => state)
@@ -12,20 +11,20 @@ const useApp = () => {
 
   const previewFiles = (url) => {
     if (url) {
-      actions.app.setPreviewingPath(url)
-      actions.app.setIsPreviewingDoc(true)
+      appActions.setPreviewingPath(url)
+      appActions.setIsPreviewingDoc(true)
     } else {
-      actions.app.setPreviewingPath("")
-      actions.app.setIsPreviewingDoc(false)
+      appActions.setPreviewingPath("")
+      appActions.setIsPreviewingDoc(false)
     }
   }
   function handleCloseModal() {
-    actions.app.setPreviewingPath("")
-    actions.app.setIsPreviewingDoc(false)
+    appActions.setPreviewingPath("")
+    appActions.setIsPreviewingDoc(false)
   }
 
   const setStoreStates = (serverSession, categories, source) => {
-    if (categories?.error) setError({ global: categories.error })
+    if (categories?.error) appActions.setError({ global: categories.error })
     if (serverSession?.type === "user") {
       if (serverSession?.status === "authenticated") {
         if (serverSession?.User?.user.uuid) {
@@ -66,12 +65,12 @@ const useApp = () => {
             actions.partners.setPartnerID(serverSession?.User?.partnerID)
 
           actions.partners.setCategories(categories.data)
-          if (categories.error) actions.app.setError(categories.error)
+          if (categories.error) appActions.setError(categories.error)
         }
       }
     }
     if (serverSession?.type === "admin") {
-      console.log("categories?.data", categories?.data)
+      // console.log("categories?.data", categories?.data)
       actions.admins.setToken(serverSession?.token)
       actions.admins.setAdmin(serverSession?.User)
       actions.admins.setCategories(categories?.data)

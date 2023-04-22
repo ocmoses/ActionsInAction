@@ -67,8 +67,64 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcode_pricing_doc"
-                      type="shortcode_pricing_doc"
+                      field="pricing_issue_date"
+                      type="pricing_issue_date"
+                    />
+                  )}
+                  {approvalFields.nlrc_license_type?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="pricing_expiry_date"
+                      type="pricing_expiry_date"
+                    />
+                  )}
+
+                  {/*  */}
+                  {approvalFields.nlrc_license_type?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcodes"
+                      type="shortcodes"
+                    />
+                  )}
+                  {approvalFields.shortcode_doc?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_doc"
+                      type="shortcode_doc"
+                    />
+                  )}
+                  {approvalFields.shortcode_issue_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_issue_date"
+                      type="shortcode_issue_date"
+                    />
+                  )}
+                  {approvalFields.shortcode_expiry_date?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="shortcode_expiry_date"
+                      type="shortcode_expiry_date"
+                    />
+                  )}
+                  {approvalFields.pricing_shortcodes?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field="pricing_shortcodes"
+                      type="pricing_shortcodes"
                     />
                   )}
                   {approvalFields.pricing_issue_date?.approval && (
@@ -89,6 +145,7 @@ export default function Nlrclicense({ category, stage }) {
                       type="pricing_expiry_date"
                     />
                   )}
+                  {/*  */}
                 </>
               )}
             </div>

@@ -2,14 +2,21 @@ export default function DeptBadge({ dept, field, category }) {
   let bg = "bg-white/40"
   let text = `Pending approval for ${dept.name}`
   if (
-    dept.code in category?.approvedFields &&
-    field in category?.approvedFields[dept.code]
+    category?.approvedFields[category.category_uuid] &&
+    dept.code in category?.approvedFields[category.category_uuid] &&
+    field in category?.approvedFields[category.category_uuid][dept.code]
   ) {
-    if (category?.approvedFields[dept.code][field] === "approved") {
+    if (
+      category?.approvedFields[category.category_uuid][dept.code][field] ===
+      "approved"
+    ) {
       bg = "bg-green-600"
       text = `${dept.name} APPROVED`
     }
-    if (category?.approvedFields[dept.code][field] === "rejected") {
+    if (
+      category?.approvedFields[category.category_uuid][dept.code][field] ===
+      "rejected"
+    ) {
       bg = "bg-red-600"
       text = `${dept.name} REJECTED`
     }

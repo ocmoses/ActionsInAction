@@ -5,6 +5,8 @@ import { NextEndPoints } from "./endpoints"
 import {
   categoryCombination,
   complianceRequirements,
+  approvalFields,
+  fieldCounts,
 } from "@/app/modules/constants"
 
 export const Decrypt = (data) => {
@@ -234,7 +236,7 @@ export const Util = {
   },
   validateEmail: (email) => {
     return email.match(
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     )
   },
 }
@@ -442,18 +444,164 @@ export const AllowedCategories = (category_codes) => {
   const possible = [...new Set(Combination)]
   return possible.filter((p) => !category_codes?.includes(p))
 }
+export const getApprovalStages = (partner) => {
+  if (!partner) return
+  const status = {}
+  if (partner.categories?.length > 0) {
+    partner.categories?.map((category) => {
+      if (category) {
+        const cuuid = category.category_uuid
+        // console.log({ cuuid })
+        status[cuuid] = {
+          approved: 0,
+          rejected: 0,
+          count: 0,
+          status: "pending",
+        }
+        for (const stage in complianceRequirements) {
+          if (!status[cuuid][stage])
+            status[cuuid][stage] = {
+              approved: 0,
+              rejected: 0,
+              count: 0,
+              status: "pending",
+            }
+          for (const field in complianceRequirements[stage]) {
+            if (partner.approvalStages[cuuid])
+              if (
+                field in approvalFields &&
+                approvalFields[field].approval &&
+                cuuid in partner.approvalStages &&
+                stage in partner.approvalStages[cuuid]
+              ) {
+                for (const _dept in partner.approvalStages[cuuid][stage]) {
+                  if (!status[cuuid][stage][_dept])
+                    status[cuuid][stage][_dept] = {
+                      approved: 0,
+                      rejected: 0,
+                      count: 0,
+                      status: "pending",
+                    }
+                  if (
+                    partner.approvalStages[cuuid] &&
+                    partner.approvalStages[cuuid][stage] &&
+                    _dept in partner.approvalStages[cuuid][stage]
+                  ) {
+                    status[cuuid].count++
+                    status[cuuid][stage].count++
+                    status[cuuid][stage][_dept].count++
+
+                    if (field in partner.approvalStages[cuuid][stage][_dept]) {
+                      if (
+                        partner.approvalStages[cuuid][stage][_dept][field] ===
+                        "rejected"
+                      ) {
+                        status[cuuid].rejected++
+                        status[cuuid][stage].rejected++
+                        status[cuuid][stage][_dept].rejected++
+                      }
+                      if (
+                        partner.approvalStages[cuuid][stage][_dept][field] ===
+                        "approved"
+                      ) {
+                        status[cuuid].approved++
+                        status[cuuid][stage].approved++
+                        status[cuuid][stage][_dept].approved++
+                      }
+                    }
+                  }
+
+                  // CUUID
+                  if (
+                    status[cuuid].approved === 0 &&
+                    status[cuuid].rejected === 0
+                  )
+                    status[cuuid].status = "pending"
+                  if (
+                    (status[cuuid].approved > 0 ||
+                      status[cuuid].rejected > 0) &&
+                    status[cuuid].rejected === 0
+                  )
+                    status[cuuid].status = "processing"
+
+                  if (status[cuuid].approved === status[cuuid].count)
+                    status[cuuid].status = "approved"
+
+                  if (status[cuuid].rejected > 0)
+                    status[cuuid].status = "rejected"
+
+                  // STAGE
+                  if (
+                    status[cuuid][stage].approved === 0 &&
+                    status[cuuid][stage].rejected === 0
+                  )
+                    status[cuuid][stage].status = "pending"
+                  if (
+                    (status[cuuid][stage].approved > 0 ||
+                      status[cuuid][stage].rejected > 0) &&
+                    status[cuuid][stage].rejected === 0
+                  )
+                    status[cuuid][stage].status = "processing"
+
+                  if (
+                    status[cuuid][stage].approved === status[cuuid][stage].count
+                  )
+                    status[cuuid][stage].status = "approved"
+
+                  if (status[cuuid][stage].rejected > 0)
+                    status[cuuid][stage].status = "rejected"
+                  // DEPT
+                  if (
+                    status[cuuid][stage][_dept].approved === 0 &&
+                    status[cuuid][stage][_dept].rejected === 0
+                  )
+                    status[cuuid][stage][_dept].status = "pending"
+                  if (
+                    (status[cuuid][stage][_dept].approved > 0 ||
+                      status[cuuid][stage][_dept].rejected > 0) &&
+                    status[cuuid][stage][_dept].rejected === 0
+                  )
+                    status[cuuid][stage][_dept].status = "processing"
+
+                  if (
+                    status[cuuid][stage][_dept].approved ===
+                    status[cuuid][stage][_dept].count
+                  )
+                    status[cuuid][stage][_dept].status = "approved"
+
+                  if (status[cuuid][stage][_dept].rejected > 0)
+                    status[cuuid][stage][_dept].status = "rejected"
+                }
+              }
+          }
+        }
+      }
+    })
+  }
+  console.log({ fieldCounts })
+  console.log({ status: JSON.stringify(status) })
+  return status
+}
+
 export const filterPartner = (partnerInfo, Categories) => {
   if (partnerInfo) {
     const categories = Categories?.data ? Categories?.data : Categories
     const partnercategories = partnerInfo?.categories?.sort((s1, s2) =>
       s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
     )
-
+    if (!(categories?.length > 0)) return partnerInfo
     const registeredCategories = []
     const sections = {}
     let masterset = false
     let edittable = false
     partnerInfo.master = null
+    partnerInfo.approvalStages = {}
+    partnerInfo.approvalCount = {}
+    partnerInfo.statuscounts = {
+      approved: 0,
+      rejected: 0,
+      pending: 0,
+    }
     const PartnerCategories = []
     if (partnercategories) {
       if (partnercategories?.length > 0) {
@@ -510,6 +658,61 @@ export const filterPartner = (partnerInfo, Categories) => {
               }
             }
 
+            // APPROVALS
+            const approvals = category.compliance_approvals
+            const cuuid = category.category_uuid
+            if (approvals?.length > 0) {
+              approvals.map((approval) => {
+                if (approval?.admin_department) {
+                  const dept = approval?.admin_department
+                  if (!partnerInfo.approvalStages[cuuid])
+                    partnerInfo.approvalStages[cuuid] = {}
+
+                  if (
+                    !partnerInfo.approvalStages[cuuid][approval?.category_stage]
+                  )
+                    partnerInfo.approvalStages[cuuid][
+                      approval?.category_stage
+                    ] = {}
+
+                  if (
+                    !partnerInfo.approvalStages[cuuid][
+                      approval?.category_stage
+                    ][dept]
+                  )
+                    partnerInfo.approvalStages[cuuid][approval?.category_stage][
+                      dept
+                    ] = {}
+                  partnerInfo.approvalStages[cuuid][approval?.category_stage][
+                    dept
+                  ][approval?.field] = approval?.status
+
+                  if (!partnerInfo.approvalCount[approval?.category_stage]) {
+                    partnerInfo.approvalCount[approval?.category_stage] = {
+                      approved: 0,
+                      rejected: 0,
+                      pending: 0,
+                    }
+                    if (approval?.status === "approved") {
+                      partnerInfo.approvalCount[approval?.category_stage]
+                        .approved++
+                      partnerInfo.statuscounts.approved++
+                    } else if (approval?.status === "rejected") {
+                      partnerInfo.approvalCount[approval?.category_stage]
+                        .rejected++
+                      partnerInfo.statuscounts.rejected++
+                    } else {
+                      partnerInfo.approvalCount[approval?.category_stage]
+                        .pending++
+                      partnerInfo.statuscounts.pending++
+                    }
+                  }
+                }
+              })
+            }
+
+            // END APPROVALS]
+
             if (!masterset && category.status !== "open") {
               sections[category.category_uuid].master = true
               category.master = true
@@ -542,13 +745,15 @@ export const filterPartner = (partnerInfo, Categories) => {
       partnerInfo.sections = sections
       partnerInfo.edittable = edittable
       partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
+      partnerInfo.compliance_status = getApprovalStages(partnerInfo)
     }
   }
   return partnerInfo
 }
-export const filterCategory = (category, partner) => {
+export const filterCategory = (category, partnerInfo) => {
   if (!category) return category
-  if (!partner) return category
+  if (!partnerInfo) return category
+  // return category
   const validations = []
   for (const validation in category.validation) {
     if (
@@ -558,11 +763,11 @@ export const filterCategory = (category, partner) => {
       validations.push(validation)
   }
   if (
-    partner?.master &&
-    partner?.master?.category_uuid !== category.category_uuid
+    partnerInfo?.master &&
+    partnerInfo?.master?.category_uuid !== category.category_uuid
   ) {
     const completed = {}
-    const sections = partner.sections
+    const sections = partnerInfo.sections
     for (const cuuid in sections) {
       for (const section in sections[cuuid]) {
         if (
@@ -585,18 +790,43 @@ export const filterCategory = (category, partner) => {
   const approvals = category.compliance_approvals
   const feedbacks = category.compliance_feedbacks
   category.approvedFields = {}
-  if (approvals.length > 0) {
+  category.approvedStages = {}
+  if (approvals?.length > 0) {
     approvals.map((approval) => {
       if (approval?.admin_department) {
-        if (!category.approvedFields[approval?.admin_department])
-          category.approvedFields[approval?.admin_department] = {}
-        category.approvedFields[approval?.admin_department][approval?.field] =
-          approval?.status
+        if (!category.approvedFields[category.category_uuid])
+          category.approvedFields[category.category_uuid] = {}
+
+        if (
+          !category.approvedFields[category.category_uuid][
+            approval?.admin_department
+          ]
+        )
+          category.approvedFields[category.category_uuid][
+            approval?.admin_department
+          ] = {}
+        category.approvedFields[category.category_uuid][
+          approval?.admin_department
+        ][approval?.field] = approval?.status
+
+        if (!category.approvedStages[category.category_uuid])
+          category.approvedStages[category.category_uuid] = {}
+        if (
+          !category.approvedStages[category.category_uuid][
+            approval?.category_stage
+          ]
+        )
+          category.approvedStages[category.category_uuid][
+            approval?.category_stage
+          ] = {}
+        category.approvedStages[category.category_uuid][
+          approval?.category_stage
+        ][approval?.field] = approval?.status
       }
     })
   }
   category.feedbacks = {}
-  if (feedbacks.length > 0) {
+  if (feedbacks?.length > 0) {
     feedbacks.map((feedback) => {
       if (!category.feedbacks[feedback?.category_stage])
         category.feedbacks[feedback?.category_stage] = []
@@ -604,6 +834,47 @@ export const filterCategory = (category, partner) => {
     })
   }
   return category
+}
+
+export const getstages = (category, categories) => {
+  if (!category || !categories) return
+  const baseCategory = categories?.find(
+    (c) => c.uuid === category.category_uuid
+  )
+  if (!baseCategory) return
+  category.category_name = baseCategory.category_name
+  category.category_code = baseCategory.category_code
+  category.icon = baseCategory.icon
+  category.validation = baseCategory.validation
+
+  const stages = [
+    "companydetail",
+    "compliance",
+    "ncclicense",
+    "nlrclicense",
+    "shortcode",
+    "indemnity",
+    "accountinfo",
+  ]
+  const filled = []
+  const forms = []
+  if (!stages?.length) return
+  stages.map((stage) => {
+    if (
+      category?.profile_stage &&
+      stage in category?.profile_stage &&
+      category?.profile_stage[stage] === "1"
+    )
+      filled.push(stage)
+    if (
+      (typeof category?.validation !== "undefined" &&
+        stage in category?.validation &&
+        category?.validation[stage] === "r") ||
+      category?.validation[stage] === "o"
+    )
+      forms.push(stage)
+  })
+  return { forms, filled }
 }
 export const ValidateField = (field, stage, data, category) => {
   const value = data[field]

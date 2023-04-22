@@ -16,7 +16,7 @@ export default function UserAvartar() {
 
   const getInitials = () => {
     const userName =
-      session.admin?.username !== "undefined" ? session.admin.username : ""
+      session?.admin?.username !== "undefined" ? session?.admin?.username : ""
     setInitial(`${userName ? userName[0].toUpperCase() : ""}`)
   }
   useEffect(() => {

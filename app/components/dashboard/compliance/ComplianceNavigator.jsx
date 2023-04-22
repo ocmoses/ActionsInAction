@@ -1,7 +1,7 @@
 export default function ComplianceNavigator({ next, previous, navlabels }) {
   return (
     <>
-      <div className="flex justify-between items-center gap-6 mx-2 mb-2">
+      <div className="flex flex-none h-fit justify-between items-center gap-6 mx-2 mb-2">
         <div
           onClick={previous}
           className="flex items-center gap-2 group cursor-pointer"

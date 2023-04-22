@@ -37,11 +37,11 @@ export default function ComplianceDrawer({
         {activeStage && (
           <section
             className={
-              " w-screen max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >
-            <article className="relative w-screen max-w-[480px] h-full border-l border-l-white/40">
+            <div className="relative justity-between flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40">
               <div className="flex justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
                 <div className="flex-1 flex justity-start gap-3 items-center ">
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
@@ -78,8 +78,8 @@ export default function ComplianceDrawer({
                   </svg>
                 </div>
               </div>
-              {children}
-            </article>
+              <div className="flex flex-col h-full">{children}</div>
+            </div>
           </section>
         )}
         <section

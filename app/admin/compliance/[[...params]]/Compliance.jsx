@@ -15,26 +15,23 @@ import {
   filterCategory,
   filterPartner,
 } from "@/app/modules/utilities"
-import { forms } from "@/app/modules/constants"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import useApp from "@/hooks/useApp"
-// import moment from "moment"
+import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
 
 export default function Compliance({ params }) {
   const router = useRouter()
   const { processing, setProcessing } = useProcessing()
-  // const [partner, setPartner] = useState({})
-  // const [Stages, setStages] = useState()
-  // const [activeCategory, setActiveCategory] = useState()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const {
+    admin,
     categories,
     allCategories,
     token,
     getStages,
-    rejectionReasons,
-    getRejectionReasons,
+    // rejectionReasons,
+    // getRejectionReasons,
     activeCategory,
     setActiveCategory,
     partner,
@@ -52,10 +49,8 @@ export default function Compliance({ params }) {
   useEffect(() => {
     setProcessing(false)
     setRouteloading(false)
+    console.log(admin)
   }, [])
-  useEffect(() => {
-    if (!rejectionReasons) getRejectionReasons()
-  }, [rejectionReasons])
   useEffect(() => {
     if (partner && category) {
       const _activeCategory = partner?.categories?.find(
@@ -63,7 +58,7 @@ export default function Compliance({ params }) {
       )
       setActiveCategory(filterCategory(_activeCategory, partner))
       setCategory(_activeCategory.category_uuid)
-      const _stages = getStages(_activeCategory)
+      const _stages = getStages(_activeCategory, categories)
       setStages(_stages)
     }
     console.log({ partner })
@@ -87,6 +82,7 @@ export default function Compliance({ params }) {
       setProcessing(false)
       if (result?.success) {
         const partnerInfo = result.data?.partner
+        console.log({ partnerInfo })
         filterPartner(partnerInfo, categories)
         setPartner(partnerInfo)
         if (partnerInfo?.categories?.length > 0) {
@@ -95,7 +91,7 @@ export default function Compliance({ params }) {
             partnerInfo
           )
           setCategory(_category.category_uuid)
-          setActiveCategory(filterCategory(_category, partner))
+          setActiveCategory(_category)
         }
         return
       }
@@ -111,7 +107,7 @@ export default function Compliance({ params }) {
     setActiveStage(stage)
     setOpenDrawer(true)
   }
-  console.log({ Stages })
+  // console.log({ Stages })
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("admin/dashboard/")} className="mb-12">
@@ -194,7 +190,13 @@ export default function Compliance({ params }) {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
+          <ComplianceCategories
+            partner={partner}
+            Stages={Stages}
+            activeCategory={activeCategory}
+            onclick={handleOpenDrawer}
+          />
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
             {Stages?.forms?.length > 0 &&
               Stages?.forms?.map((stage) => (
                 <div
@@ -225,7 +227,7 @@ export default function Compliance({ params }) {
                   </div>
                 </div>
               ))}
-          </div>
+          </div> */}
           <ComplianceDrawer
             activeStage={activeStage}
             category={activeCategory}

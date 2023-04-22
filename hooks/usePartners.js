@@ -9,9 +9,15 @@ import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
+import {
+  proxyFetch,
+  userData,
+  getNextStage,
+  getstages,
+} from "@/app/modules/utilities"
+// import { getRejectionReasons } from "@/app/modules/fetchData"
 import { forms } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -20,12 +26,30 @@ const usePartners = () => {
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
+  const rejectionReasons = app.rejectionReasons
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
   const { category, categories } = states.partners
+  const [allCategories, setAllCategories] = useState([])
+
+  useEffect(() => {
+    const Categories = {}
+    if (categories?.length > 0) {
+      categories.map((category) => {
+        Categories[category.uuid] = category
+      })
+    }
+    setAllCategories(Categories)
+  }, [categories])
+
+  useEffect(() => {
+    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
+    if (!rejectionReasons) app.getRejectionReasons()
+  }, [rejectionReasons])
+
   const { setPartners, updatePartner, setCategory } = actions.partners
   const { setTmpUser } = actions.users
   // const { user } = states.users
@@ -83,9 +107,6 @@ const usePartners = () => {
     return { success, error, data }
   }
 
-  const consolidateCategory = () => {
-    // console.log({ categories })
-  }
   const setCurrentCategory = (category, partner) => {
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
@@ -137,6 +158,10 @@ const usePartners = () => {
   }
   const nextStage = (category, partner) => {
     return getNextStage(category, partner)
+  }
+  const getStages = (category, categories) => {
+    if (!category) return
+    return getstages(category, categories)
   }
 
   const registerPartner = async (frm, userdata) => {
@@ -397,6 +422,10 @@ const usePartners = () => {
     setValidationRules,
     completeOnboarding,
     setCurrentCategory,
+    getStages,
+    allCategories,
+    rejectionReasons,
+    // getRejectionReasons,
   }
 }
 export default usePartners

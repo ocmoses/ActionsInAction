@@ -15,7 +15,6 @@ const admins = {
     "accountinfo",
   ],
   activeApproval: null,
-  rejectionReasons: null,
   activeCategory: null,
   approving: false,
   partner: null,
@@ -29,7 +28,6 @@ const admins = {
     state.token = null
     state.categories = []
     state.activeApproval = null
-    state.rejectionReasons = null
     state.activeCategory = null
     state.approving = false
     state.partner = null
@@ -42,9 +40,6 @@ const admins = {
   }),
   setActiveApproval: action((state, field) => {
     state.activeApproval = field
-  }),
-  setRejectionReasons: action((state, reasons) => {
-    state.rejectionReasons = reasons
   }),
   setApproving: action((state, status) => {
     state.approving = status ?? false

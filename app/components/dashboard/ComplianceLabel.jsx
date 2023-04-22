@@ -4,6 +4,7 @@ import {
   departments,
   company_type,
   license_type,
+  fieldCounts,
 } from "@/app/modules/constants"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
@@ -111,7 +112,7 @@ export default function ComplianceLabel({
   return (
     <div
       className={`w-full p-3 ${
-        activeApproval === field && " rounded-xl bg-[#313131]"
+        activeApproval === field ? " rounded-xl bg-[#313131]" : ""
       }`}
     >
       {approve && (
@@ -159,14 +160,19 @@ export default function ComplianceLabel({
               <div className="flex gap-3 items-start">
                 <div className="grid grid-cols-2 gap-2 items-center pt-[3px]">
                   {departments?.length > 0 &&
-                    departments.map((dept) => (
-                      <DeptBadge
-                        key={dept.code}
-                        dept={dept}
-                        field={field}
-                        category={category}
-                      />
-                    ))}
+                    departments.map((dept) => {
+                      console.log({ dept, fieldCounts: fieldCounts[stage] })
+                      return (
+                        dept.code in fieldCounts[stage] && (
+                          <DeptBadge
+                            key={dept.code}
+                            dept={dept}
+                            field={field}
+                            category={category}
+                          />
+                        )
+                      )
+                    })}
                 </div>
                 <div className="flex flex-col gap-0 w-full">
                   <span className="text-[12px] m-0 text-[#999999]">
@@ -188,7 +194,7 @@ export default function ComplianceLabel({
                   {type === "license_type" && (
                     <span className="text-white text-[14px] font-bold">
                       {category[field] &&
-                        company_type?.find((t) => t.value === category[field])
+                        license_type?.find((t) => t.value === category[field])
                           ?.label}
                     </span>
                   )}
@@ -324,9 +330,16 @@ export default function ComplianceLabel({
                 </div>
               </div>
               {!activeApproval &&
+                admin.department_code in fieldCounts[stage] &&
                 !(
-                  admin.department_code in category?.approvedFields &&
-                  field in category?.approvedFields[admin.department_code]
+                  admin?.department_code &&
+                  category?.approvedFields[category.category_uuid] &&
+                  admin.department_code in
+                    category?.approvedFields[category.category_uuid] &&
+                  field in
+                    category?.approvedFields[category.category_uuid][
+                      admin.department_code
+                    ]
                 ) && (
                   <div className="flex gap-3 items-center justify-end">
                     <div

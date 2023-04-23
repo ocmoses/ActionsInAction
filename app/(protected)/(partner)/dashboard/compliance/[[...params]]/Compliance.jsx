@@ -5,12 +5,12 @@ import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import { filterCategory, getApprovalStages } from "@/app/modules/utilities"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
-import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
+import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories"
 import { useRouter } from "next/navigation"
 
 export default function Compliance({ params }) {
@@ -35,7 +35,11 @@ export default function Compliance({ params }) {
     setRouteloading(false)
     console.log({ selectedCategory })
   }, [])
-
+  useEffect(() => {
+    let html = document.getElementsByTagName("html")
+    if (openDrawer) html[0].style["overflow-y"] = "hidden"
+    else html[0].style["overflow-y"] = "auto"
+  }, [openDrawer])
   useEffect(() => {
     if (partner && params.params?.length > 0) {
       console.log({ partner })

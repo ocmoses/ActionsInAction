@@ -21,6 +21,14 @@ export default function Compliance({ category, stage }) {
             type="text"
           />
         )}
+        {approvalFields.cac_doc?.approval && (
+          <ComplianceLabel
+            category={category}
+            stage={stage}
+            field="cac_doc"
+            type="file"
+          />
+        )}
         {approvalFields.tin_no?.approval && (
           <ComplianceLabel
             category={category}
@@ -42,14 +50,6 @@ export default function Compliance({ category, stage }) {
             category={category}
             stage={stage}
             field="memart_doc"
-            type="file"
-          />
-        )}
-        {approvalFields.cac_doc?.approval && (
-          <ComplianceLabel
-            category={category}
-            stage={stage}
-            field="cac_doc"
             type="file"
           />
         )}

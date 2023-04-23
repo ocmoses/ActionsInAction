@@ -1,7 +1,7 @@
 import ComplianceLabel from "../ComplianceLabel"
 import { approvalFields } from "@/app/modules/constants"
 
-export default function Nlrclicense({ category, stage }) {
+export default function Shortcode({ category, stage }) {
   return (
     category && (
       <div className="flex flex-col items-start gap-6 w-full">
@@ -17,12 +17,12 @@ export default function Nlrclicense({ category, stage }) {
             >
               {shtcd.shortcode?.shortcodes?.length > 0 && (
                 <>
-                  {approvalFields.nlrc_license_type?.approval && (
+                  {approvalFields.shortcodes?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcodes"
+                      field={`shortcodes-${shtcd.uuid}`}
                       type="shortcodes"
                     />
                   )}
@@ -31,7 +31,7 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcode_doc"
+                      field={`shortcode_doc-${shtcd.uuid}`}
                       type="shortcode_doc"
                     />
                   )}
@@ -40,7 +40,7 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcode_issue_date"
+                      field={`shortcode_issue_date-${shtcd.uuid}`}
                       type="shortcode_issue_date"
                     />
                   )}
@@ -49,7 +49,7 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcode_expiry_date"
+                      field={`shortcode_expiry_date-${shtcd.uuid}`}
                       type="shortcode_expiry_date"
                     />
                   )}
@@ -58,7 +58,7 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="pricing_shortcodes"
+                      field={`pricing_shortcodes-${shtcd.uuid}`}
                       type="pricing_shortcodes"
                     />
                   )}
@@ -67,7 +67,7 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="pricing_issue_date"
+                      field={`pricing_issue_date-${shtcd.uuid}`}
                       type="pricing_issue_date"
                     />
                   )}
@@ -76,76 +76,19 @@ export default function Nlrclicense({ category, stage }) {
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="pricing_expiry_date"
+                      field={`pricing_expiry_date-${shtcd.uuid}`}
                       type="pricing_expiry_date"
                     />
                   )}
-
-                  {/*  */}
-                  {approvalFields.nlrc_license_type?.approval && (
+                  {approvalFields.pricing_doc?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
                       stage={stage}
-                      field="shortcodes"
-                      type="shortcodes"
+                      field={`pricing_doc-${shtcd.uuid}`}
+                      type="pricing_doc"
                     />
                   )}
-                  {approvalFields.shortcode_doc?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="shortcode_doc"
-                      type="shortcode_doc"
-                    />
-                  )}
-                  {approvalFields.shortcode_issue_date?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="shortcode_issue_date"
-                      type="shortcode_issue_date"
-                    />
-                  )}
-                  {approvalFields.shortcode_expiry_date?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="shortcode_expiry_date"
-                      type="shortcode_expiry_date"
-                    />
-                  )}
-                  {approvalFields.pricing_shortcodes?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="pricing_shortcodes"
-                      type="pricing_shortcodes"
-                    />
-                  )}
-                  {approvalFields.pricing_issue_date?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="pricing_issue_date"
-                      type="pricing_issue_date"
-                    />
-                  )}
-                  {approvalFields.nlrc_license_type?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field="pricing_expiry_date"
-                      type="pricing_expiry_date"
-                    />
-                  )}
-                  {/*  */}
                 </>
               )}
             </div>

@@ -4,7 +4,7 @@ import Image from "next/image"
 import useAdmins from "@/hooks/useAdmins"
 import useRoles from "@/hooks/useRoles"
 import CategoryStageStatus from "@/app/components/dashboard/compliance/CategoryStageStatus"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function ComplianceCategories({
   Stages,

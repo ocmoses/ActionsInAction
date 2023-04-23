@@ -685,14 +685,22 @@ export const filterPartner = (partnerInfo, Categories) => {
                     if (
                       !partnerInfo.approvalStages[cuuid][
                         approval?.category_stage
-                      ][dept][approval?.field].rejections
+                      ][dept].rejections
                     )
                       partnerInfo.approvalStages[cuuid][
                         approval?.category_stage
-                      ][dept][approval?.field].rejections = []
+                      ][dept].rejections = {}
+                    if (
+                      !partnerInfo.approvalStages[cuuid][
+                        approval?.category_stage
+                      ][dept].rejections[approval?.field]
+                    )
+                      partnerInfo.approvalStages[cuuid][
+                        approval?.category_stage
+                      ][dept].rejections[approval?.field] = []
                     partnerInfo.approvalStages[cuuid][approval?.category_stage][
                       dept
-                    ][approval?.field].rejections.push(approval?.feedback)
+                    ].rejections[approval?.field].push(approval?.feedback)
                   }
                   if (!partnerInfo.approvalCount[approval?.category_stage]) {
                     partnerInfo.approvalCount[approval?.category_stage] = {

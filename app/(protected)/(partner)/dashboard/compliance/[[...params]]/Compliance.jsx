@@ -7,7 +7,7 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { filterCategory, getApprovalStages } from "@/app/modules/utilities"
+import { filterCategory, partnerApprovals } from "@/app/modules/utilities"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
 import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories"
@@ -25,8 +25,9 @@ export default function Compliance({ params }) {
     setStages,
     activeStage,
     setActiveStage,
+    partner,
+    categories,
   } = usePartners()
-  const { partner, categories } = usePartners()
   const [openDrawer, setOpenDrawer] = useState(false)
   const { setRouteloading } = useApp()
 
@@ -47,8 +48,12 @@ export default function Compliance({ params }) {
       const _selectedCategory = partner?.categories?.find(
         (c) => c.category_uuid === _category
       )
-      setSelectedCategory(filterCategory(_selectedCategory, partner))
-      const _stages = getStages(_selectedCategory, categories)
+      const _filtered_selectedCategory = filterCategory(
+        _selectedCategory,
+        partner
+      )
+      setSelectedCategory(_filtered_selectedCategory)
+      const _stages = getStages(_filtered_selectedCategory, categories)
       setStages(_stages)
     }
   }, [partner, params, selectedCategory])
@@ -57,6 +62,12 @@ export default function Compliance({ params }) {
     setActiveStage(stage)
     setOpenDrawer(true)
   }
+
+  // useEffect(() => {
+  //   const approvals = partnerApprovals(partner, selectedCategory)
+  //   console.log({ approvals, selectedCategory })
+  //   setApprovals(approvals)
+  // }, [partner, selectedCategory])
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("dashboard/")} className="mb-12">

@@ -26,6 +26,24 @@ export const apikey =
     ? process.env.APIKEY
     : process.env.NEXT_PUBLIC_APIKEY
 
+export const onboarding_type = {
+  new: "Registration",
+  migrated: "Migration",
+}
+
+export const status_type = {
+  processing: "Processing",
+  not_started: "Pending",
+}
+export const stages = [
+  "companydetail",
+  "compliance",
+  "ncclicense",
+  "nlrclicense",
+  "shortcode",
+  "indemnity",
+  "accountinfo",
+]
 export const validities = {
   ncc: "5 years",
   nlrc_lottery: "10 years",
@@ -872,38 +890,38 @@ export const approvalFields = {
     title: "Company name",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   country: {
     title: "Country",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   company_address: {
     title: "Company address",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   company_city: {
     title: "Company city",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   company_state: {
     title: "Company state",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   // compliance: {
   company_type: {
     title: "Company type",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SYSTEM"],
+    approval: ["SPRM"],
   },
   rc_no: {
     title: "RC Number",
@@ -915,13 +933,13 @@ export const approvalFields = {
     title: "Tax identification number",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM"],
+    approval: ["SPRM", "RICO"],
   },
   tin_doc: {
     title: "TIN Document",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
-    approval: ["SPRM"],
+    approval: ["SPRM", "RICO"],
   },
   memart_doc: {
     title: "Memart certificate",
@@ -1002,19 +1020,19 @@ export const approvalFields = {
     title: "Short code document",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
   },
   shortcode_issue_date: {
     title: "Issue date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
   },
   shortcode_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
   },
   pricing_shortcodes: {
     title: "Approved pricing shortcode",
@@ -1088,7 +1106,7 @@ export const approvalFields = {
     title: "Evidence of 3 Jobs done",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: [],
+    approval: ["SPRM"],
   },
 }
 const counts = {}
@@ -1110,7 +1128,10 @@ for (const stage in complianceRequirements) {
       departments.map((dept) => {
         if (approvalFields[field]?.approval.includes(dept.code)) {
           if (!counts[stage][dept.code]) counts[stage][dept.code] = { count: 0 }
+          if (!counts[stage][dept.code].fields)
+            counts[stage][dept.code].fields = []
           counts[stage][dept.code].count++
+          counts[stage][dept.code].fields.push(field)
         }
       })
     }

@@ -1,6 +1,7 @@
 "use client"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { Util, isObject, filterPartner } from "@/app/modules/utilities"
+import { stages, departments } from "@/app/modules/constants"
 
 const useApp = () => {
   const states = useStoreState((state) => state)
@@ -76,7 +77,6 @@ const useApp = () => {
       actions.admins.setCategories(categories?.data)
     }
   }
-
   return {
     ...appStates,
     ...appActions,

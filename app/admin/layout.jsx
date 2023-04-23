@@ -23,7 +23,7 @@ function Layout({ children }) {
           setOpen={setOpen}
           setMenuOpen={setMenuOpen}
         />
-        <div className="flex h-full scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
+        <div className="flex h-full grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
           {isLoggedIn && (
             <div
               className={` ${

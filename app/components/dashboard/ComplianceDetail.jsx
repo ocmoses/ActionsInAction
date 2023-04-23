@@ -46,8 +46,8 @@ export default function ComplianceDetail({ activeStage, category }) {
     setActiveStage(navigation[prev])
   }
   return (
-    <div className="flex flex-col justify-between w-full bg-yellow-600 mb-4">
-      <div className="flex-none flex justify-start items-start gap-6 mb-auto border-b border-b-white/20 px-6">
+    <div className="flex flex-col justify-start items-between w-full h-full">
+      <div className="grow-0 flex justify-start items-start gap-6 mb-auto border-b border-b-white/20 px-6">
         <div
           onClick={() => setView("overview")}
           className={`text-[14px] py-3 border-b-2 cursor-pointer ${
@@ -69,9 +69,9 @@ export default function ComplianceDetail({ activeStage, category }) {
           Activities
         </div>
       </div>
-      <div className="flex flex-1 overflow-y-auto flex-col">
+      <div className="flex flex-col grow h-14 py-4">
         <div
-          className="flex-col flex-1 w-full h-full overflow-y-auto gap-4 justify-start items-start p-6"
+          className="flex-col w-full h-full overflow-y-auto gap-4 justify-start items-start p-4"
           style={{ display: view === "activities" ? "none" : "flex" }}
         >
           {activeStage === "companydetail" && (
@@ -97,7 +97,7 @@ export default function ComplianceDetail({ activeStage, category }) {
           )}
         </div>
         {view === "activities" && (
-          <div className="relative flex flex-1 h-full flex-col">
+          <div className="relative flex flex-col w-full h-full overflow-y-auto p-4">
             <Activities
               type="admin"
               stage={activeStage}
@@ -106,10 +106,7 @@ export default function ComplianceDetail({ activeStage, category }) {
           </div>
         )}
       </div>
-      {/* <div
-        className="flex-none flex flex-initial flex-col justify-end
-        "
-      > */}
+
       <ComplianceNavigator
         next={nextStage}
         previous={prevStage}
@@ -129,7 +126,6 @@ export default function ComplianceDetail({ activeStage, category }) {
               </div>
             ))}
         </div> */}
-      {/* </div> */}
     </div>
   )
 }

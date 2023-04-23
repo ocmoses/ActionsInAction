@@ -425,7 +425,6 @@ const usePartners = () => {
     getStages,
     allCategories,
     rejectionReasons,
-    // getRejectionReasons,
   }
 }
 export default usePartners

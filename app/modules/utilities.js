@@ -933,10 +933,11 @@ export const getStatuses = (status, counts) => {
   return { bg, textcolor, iconcolor, icon, text }
 }
 export const partnerApprovals = (partner, category) => {
+  if (!category) return
   const Approvals = partner?.approvalStages[category.category_uuid]
   let stageApprovals = {}
   let stageFields = {}
-  console.log({ Approvals })
+  // console.log({ Approvals })
   stages.map((stage) => {
     stageApprovals[stage] =
       Approvals && Approvals[stage] ? Approvals[stage] : {}

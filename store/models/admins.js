@@ -1,19 +1,13 @@
 import { action, computed, thunk } from "easy-peasy"
+import { stages } from "@/app/modules/constants"
+
 const admins = {
   admins: null,
   admin: null,
   session: { status: "unauthenticated" },
   token: null,
   categories: [],
-  stages: [
-    "companydetail",
-    "compliance",
-    "ncclicense",
-    "nlrclicense",
-    "shortcode",
-    "indemnity",
-    "accountinfo",
-  ],
+  stages: stages,
   activeApproval: null,
   activeCategory: null,
   approving: false,

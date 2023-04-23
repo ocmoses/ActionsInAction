@@ -8,6 +8,7 @@ import FormErrors from "@/app/components/FormErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import SelectInput from "@/app/components/form/SelectInput"
 import SelectInputOption from "@/app/components/form/SelectInputOption"
+import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
 import { useState, useEffect, Suspense } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import {
@@ -30,8 +31,6 @@ export default function Compliance({ params }) {
     allCategories,
     token,
     getStages,
-    // rejectionReasons,
-    // getRejectionReasons,
     activeCategory,
     setActiveCategory,
     partner,
@@ -52,6 +51,12 @@ export default function Compliance({ params }) {
     console.log(admin)
   }, [])
   useEffect(() => {
+    let html = document.getElementsByTagName("html")
+    if (openDrawer) html[0].style["overflow-y"] = "hidden"
+    else html[0].style["overflow-y"] = "auto"
+  }, [openDrawer])
+
+  useEffect(() => {
     if (partner && category) {
       const _activeCategory = partner?.categories?.find(
         (c) => c.category_uuid === category
@@ -61,7 +66,6 @@ export default function Compliance({ params }) {
       const _stages = getStages(_activeCategory, categories)
       setStages(_stages)
     }
-    console.log({ partner })
   }, [partner, category])
   useEffect(() => {
     clearErrors()
@@ -107,7 +111,6 @@ export default function Compliance({ params }) {
     setActiveStage(stage)
     setOpenDrawer(true)
   }
-  // console.log({ Stages })
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("admin/dashboard/")} className="mb-12">
@@ -170,8 +173,25 @@ export default function Compliance({ params }) {
               </div>
             </div>
             {partner?.categories?.length > 0 && (
-              <div>
-                <SelectInput
+              <div className="py-3">
+                <DropdownMenu
+                  options={partner?.categories.map((cat) => ({
+                    key: cat.category_uuid,
+                    value: cat.category_uuid,
+                    label: allCategories[cat.category_uuid]?.category_name,
+                  }))}
+                  defaultvalue={{
+                    value: partner?.categories[0]?.category_uuid,
+                    label: partner?.categories[0]?.category_name,
+                  }}
+                  onselect={(option) => {
+                    setCategory(option.value)
+                  }}
+                  align="right"
+                  optionwidth={240}
+                />
+
+                {/* <SelectInput
                   label=""
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -186,7 +206,7 @@ export default function Compliance({ params }) {
                       label={allCategories[cat.category_uuid]?.category_name}
                     />
                   ))}
-                </SelectInput>
+                </SelectInput> */}
               </div>
             )}
           </div>
@@ -196,38 +216,6 @@ export default function Compliance({ params }) {
             activeCategory={activeCategory}
             onclick={handleOpenDrawer}
           />
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
-            {Stages?.forms?.length > 0 &&
-              Stages?.forms?.map((stage) => (
-                <div
-                  key={stage}
-                  onClick={() => handleOpenDrawer(stage)}
-                  className="flex flex-col gap-3 p-4 rounded-xl border border-transparent hover:bg-white/10 hover:border hover:border-white/20 max-w-[280px] cursor-pointer"
-                >
-                  <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
-                    {activeCategory?.icon && (
-                      <Image
-                        src={activeCategory.icon}
-                        alt=""
-                        width={18}
-                        height={18}
-                      />
-                    )}
-                  </div>
-                  <div className="text-white text-[16px]">
-                    {forms[stage].shortname}
-                  </div>
-                  <div className="text-[#999999] text-[13px]">
-                    {forms[stage].listdesc}
-                  </div>
-                  <div className="mt-6">
-                    <div className="text-[#999999] text-[11px] inline-flex rounded-2xl bg-white/20 py-[3px] pl-[10px] pr-[14px]">
-                      Pending
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div> */}
           <ComplianceDrawer
             activeStage={activeStage}
             category={activeCategory}

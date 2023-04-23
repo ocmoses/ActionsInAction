@@ -4,6 +4,7 @@ import {
   company_type,
   license_type,
 } from "@/app/modules/constants"
+import { partnerApprovals } from "@/app/modules/utilities"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
 import moment from "moment"
@@ -22,6 +23,7 @@ export default function ComplianceLabel({
 }) {
   const { previewFiles } = useApp()
   const {
+    partner,
     ApproveField,
     activeApproval,
     setActiveApproval,
@@ -30,6 +32,7 @@ export default function ComplianceLabel({
     categories,
     setPartner,
   } = usePartners()
+
   const [Feedbacks, setFeedbacks] = useState({})
   const [{ setError, clearErrors }] = useErrors(null)
 
@@ -42,8 +45,14 @@ export default function ComplianceLabel({
       approvals: category.compliance_approvals,
       feedbacks: category.compliance_feedbacks,
     })
-    console.log({ approvals: category.compliance_approvals })
   }, [category])
+
+  const [Approvals, setApprovals] = useState({})
+  useEffect(() => {
+    const approvals = partnerApprovals(partner, category)
+    console.log({ approvals })
+    setApprovals(approvals)
+  }, [partner, category])
 
   return (
     <div

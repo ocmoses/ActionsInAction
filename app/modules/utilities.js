@@ -7,7 +7,10 @@ import {
   complianceRequirements,
   approvalFields,
   fieldCounts,
+  stages,
+  departments,
 } from "@/app/modules/constants"
+import Image from "next/image"
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -276,7 +279,7 @@ export function userData(data, partnerID, categories) {
 }
 export const set_admin_token = (token, uuid, req, res) => {
   if (!token || !uuid) return null
-  console.log({ token })
+  // console.log({ token })
   const maxAge = 60 * 60 * 24
   if (token) {
     // SET COOKIES
@@ -391,16 +394,7 @@ export const getNextStage = (category, partner) => {
   const progress = category.profile_stage
   const validation = category.validation
   let nextstage = null
-  const Stages = [
-    // "category",
-    "compliance",
-    "companydetail",
-    "ncclicense",
-    "nlrclicense",
-    "shortcode",
-    "indemnity",
-    "accountinfo",
-  ]
+  const Stages = stages
   const filled = []
   const required = []
   Stages.map((stage) => {
@@ -578,8 +572,8 @@ export const getApprovalStages = (partner) => {
       }
     })
   }
-  console.log({ fieldCounts })
-  console.log({ status: JSON.stringify(status) })
+  // console.log({ fieldCounts })
+  // console.log({ status: JSON.stringify(status) })
   return status
 }
 
@@ -835,7 +829,252 @@ export const filterCategory = (category, partnerInfo) => {
   }
   return category
 }
+export const getStatuses = (status, counts) => {
+  let bg =
+    status === "approved"
+      ? "bg-[#18291F]"
+      : status === "processing" || status === "corrected"
+      ? "bg-[#2D200A]"
+      : status === "rejected"
+      ? "bg-[#361513]"
+      : "bg-white/10"
+  let textcolor =
+    status === "approved"
+      ? "text-[#97CDAD]"
+      : status === "processing" || status === "corrected"
+      ? "text-[#F9D89A]"
+      : status === "rejected"
+      ? "text-[#FF9897]"
+      : "text-white"
+  let iconcolor =
+    status === "approved"
+      ? "text-[#2C9958]"
+      : status === "processing" || status === "corrected"
+      ? "text-[#F3AF33]"
+      : status === "rejected"
+      ? "text-[#FE2E2D]"
+      : "text-[#999999]"
+  let icon =
+    status === "approved" ? (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-[12px] h-[12px]"
+      >
+        <path
+          fillRule="evenodd"
+          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+          clipRule="evenodd"
+        />
+      </svg>
+    ) : status === "processing" || status === "corrected" ? (
+      <Image src="/assets/icons/processing.svg" width={12} height={12} alt="" />
+    ) : status === "rejected" ? (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-[12px] h-[12px]"
+      >
+        <path
+          fillRule="evenodd"
+          d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+          clipRule="evenodd"
+        />
+      </svg>
+    ) : (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-[12px] h-[12px]"
+      >
+        <path
+          fillRule="evenodd"
+          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+          clipRule="evenodd"
+        />
+      </svg>
+    )
+  // let currected = counts?.corrected > 0
+  let text =
+    status === "approved"
+      ? "Approved"
+      : status === "processing"
+      ? "In review"
+      : status === "rejected"
+      ? `${counts?.rejected} ${counts?.rejected > 1 ? "issues" : "issue"}`
+      : status === "corrected"
+      ? `${counts?.corrected} ${counts?.corrected > 1 ? "actions" : "action"}`
+      : "Pending"
 
+  return { bg, textcolor, iconcolor, icon, text }
+}
+export const partnerApprovals = (partner, category) => {
+  const Approvals = partner?.approvalStages[category.category_uuid]
+  let stageApprovals = {}
+  let stageFields = {}
+  stages.map((stage) => {
+    // console.log({ stage, Approvals })
+    stageApprovals[stage] =
+      Approvals && Approvals[stage] ? Approvals[stage] : {}
+    stageFields[stage] =
+      fieldCounts && fieldCounts[stage] ? fieldCounts[stage] : {}
+    if (stage === "shortcodex") {
+      let Fields = {}
+      category?.shortcodes?.map((shortcode) => {
+        for (const dpt in stageFields[stage]) {
+          if (dpt !== "count") {
+            if (!Fields[dpt]) Fields[dpt] = []
+            // console.log({ "stageFields[stage][dpt]": stageFields[stage][dpt] })
+            if (stageFields[stage][dpt]?.fields) {
+              stageFields[stage][dpt].fields.map((f) => {
+                // console.log({ f })
+                // console.log({
+                //   "`${f}-${shortcode.uuid}`": `${f}-${shortcode.uuid}`,
+                // })
+                if (!f.split("-")?.length === 1)
+                  Fields[dpt].push(`${f}-${shortcode.uuid}`)
+              })
+              // stageFields[stage][dpt].fields = Fields[dpt]
+            }
+          }
+        }
+        // console.log({ Fields })
+      })
+
+      for (const _dpt in stageFields[stage]) {
+        if (_dpt !== "count") {
+          // stageFields[stage][_dpt].fields = Fields[_dpt]
+
+          // console.log({ _dpt, "Fields[_dpt]": Fields[_dpt] })
+          stageFields[stage][_dpt].fields =
+            Fields[_dpt] && Fields[_dpt].length > 0 ? [...Fields[_dpt]] : []
+          // console.log({
+          //   _dpt,
+          //   "stageFields[stage][_dpt].fields": stageFields[stage][_dpt].fields,
+          // })
+        }
+      }
+    }
+  })
+  // console.log({ stageFields: stageFields })
+  // console.log({ category })
+  const StageApprovals = {}
+  if (!Util.isEmpty(stageFields)) {
+    for (const _stage in stageFields) {
+      if (!StageApprovals[_stage])
+        StageApprovals[_stage] = {
+          counts: {
+            pending: 0,
+            approved: 0,
+            rejected: 0,
+            corrected: 0,
+            count: 0,
+          },
+        }
+
+      for (const _dept in stageFields[_stage]) {
+        if (stageFields[_stage][_dept]?.fields?.length > 0) {
+          stageFields[_stage][_dept].fields.map((field) => {
+            if (!StageApprovals[_stage][_dept])
+              StageApprovals[_stage][_dept] = {
+                counts: {
+                  pending: 0,
+                  approved: 0,
+                  rejected: 0,
+                  corrected: 0,
+                  count: 0,
+                },
+              }
+            if (
+              Approvals &&
+              _stage in Approvals &&
+              Approvals[_stage] &&
+              _dept in Approvals[_stage] &&
+              Approvals[_stage][_dept] &&
+              field in Approvals[_stage][_dept]
+            ) {
+              // console.log({
+              //   StageApprovalsStageApprovals: StageApprovals[_stage],
+              // })
+              StageApprovals[_stage][_dept][field] =
+                Approvals[_stage][_dept][field]
+              switch (Approvals[_stage][_dept][field]) {
+                case "approved":
+                  StageApprovals[_stage].counts.approved++
+                  StageApprovals[_stage][_dept].counts.approved++
+                  break
+                case "rejected":
+                  StageApprovals[_stage].counts.rejected++
+                  StageApprovals[_stage][_dept].counts.rejected++
+                  break
+                case "corrected":
+                  StageApprovals[_stage].counts.corrected++
+                  StageApprovals[_stage][_dept].counts.corrected++
+                  break
+              }
+            } else {
+              StageApprovals[_stage][_dept][field] = "pending"
+              StageApprovals[_stage].counts.pending++
+              StageApprovals[_stage][_dept].counts.pending++
+            }
+            StageApprovals[_stage].counts.count++
+            StageApprovals[_stage][_dept].counts.count++
+          })
+          if (
+            StageApprovals[_stage][_dept]?.counts?.approved ===
+            StageApprovals[_stage][_dept]?.counts?.count
+          )
+            StageApprovals[_stage][_dept].counts.status = "approved"
+          else if (
+            StageApprovals[_stage][_dept]?.counts?.pending ===
+            StageApprovals[_stage][_dept]?.counts?.count
+          )
+            StageApprovals[_stage][_dept].counts.status = "pending"
+          else if (
+            StageApprovals[_stage][_dept]?.counts?.rejected ===
+              StageApprovals[_stage][_dept]?.counts?.count ||
+            StageApprovals[_stage][_dept]?.counts?.rejected > 0
+          )
+            StageApprovals[_stage][_dept].counts.status = "rejected"
+          else if (
+            StageApprovals[_stage][_dept]?.counts?.corrected ===
+              StageApprovals[_stage][_dept]?.counts?.count ||
+            StageApprovals[_stage][_dept]?.counts?.corrected > 0
+          )
+            StageApprovals[_stage][_dept].counts.status = "corrected"
+          else StageApprovals[_stage][_dept].counts.status = "processing"
+        }
+      }
+      if (
+        StageApprovals[_stage]?.counts.approved ===
+        StageApprovals[_stage]?.counts.count
+      )
+        StageApprovals[_stage].counts.status = "approved"
+      else if (
+        StageApprovals[_stage]?.counts.pending ===
+        StageApprovals[_stage]?.counts.count
+      )
+        StageApprovals[_stage].counts.status = "pending"
+      else if (
+        StageApprovals[_stage]?.counts.rejected ===
+          StageApprovals[_stage]?.counts.count ||
+        StageApprovals[_stage]?.counts.rejected > 0
+      )
+        StageApprovals[_stage].counts.status = "rejected"
+      else if (
+        StageApprovals[_stage]?.counts.corrected ===
+          StageApprovals[_stage]?.counts.count ||
+        StageApprovals[_stage]?.counts.corrected > 0
+      )
+        StageApprovals[_stage].counts.status = "corrected"
+      else StageApprovals[_stage].counts.status = "processing"
+    }
+  }
+  return StageApprovals
+}
 export const getstages = (category, categories) => {
   if (!category || !categories) return
   const baseCategory = categories?.find(
@@ -847,15 +1086,6 @@ export const getstages = (category, categories) => {
   category.icon = baseCategory.icon
   category.validation = baseCategory.validation
 
-  const stages = [
-    "companydetail",
-    "compliance",
-    "ncclicense",
-    "nlrclicense",
-    "shortcode",
-    "indemnity",
-    "accountinfo",
-  ]
   const filled = []
   const forms = []
   if (!stages?.length) return

@@ -41,8 +41,8 @@ export default function ComplianceDrawer({
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >
-            <div className="relative justity-between flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40">
-              <div className="flex justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
+            <div className="relative flex-none flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40">
+              <div className="flex flex-none justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
                 <div className="flex-1 flex justity-start gap-3 items-center ">
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
                     {category?.icon && (
@@ -54,9 +54,14 @@ export default function ComplianceDrawer({
                       />
                     )}
                   </div>
-                  <span className=" text-white text-[16px]">
-                    {forms[activeStage].shortname}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className=" text-white text-[16px]">
+                      {forms[activeStage].shortname}
+                    </span>
+                    <span className=" text-[#999999] text-[12px]">
+                      {category?.category_name}
+                    </span>
+                  </div>
                 </div>
                 <div
                   onClick={closeDrawer}
@@ -78,7 +83,7 @@ export default function ComplianceDrawer({
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-col h-full">{children}</div>
+              {children}
             </div>
           </section>
         )}

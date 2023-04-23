@@ -46,7 +46,34 @@ export default function useAdmins() {
       })
       const result = await response.json()
       setProcessing(false)
-      if (result?.success) return { partners: result.data?.partners.data }
+      if (result?.success) {
+        const PartnersByStatus = {}
+        const PartnersByType = {}
+        const allPartners = result.data?.partners.data
+        const listStatus = []
+        const listTypes = []
+        allPartners.map((partner) => {
+          if (!PartnersByStatus[partner.contract_status]) {
+            PartnersByStatus[partner.contract_status] = []
+            listStatus.push(partner.contract_status)
+          }
+          if (!PartnersByType[partner.onboarding_type]) {
+            PartnersByType[partner.onboarding_type] = []
+            listTypes.push(partner.onboarding_type)
+          }
+          PartnersByStatus[partner.contract_status].push(partner)
+          PartnersByType[partner.onboarding_type].push(partner)
+        })
+        return {
+          partners: {
+            all: allPartners,
+            by_status: PartnersByStatus,
+            by_type: PartnersByType,
+          },
+          listStatus,
+          listTypes,
+        }
+      }
       return {
         error:
           result?.data?.message ??

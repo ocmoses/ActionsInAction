@@ -42,6 +42,7 @@ export default function ComplianceLabel({
       approvals: category.compliance_approvals,
       feedbacks: category.compliance_feedbacks,
     })
+    console.log({ approvals: category.compliance_approvals })
   }, [category])
 
   return (
@@ -51,7 +52,7 @@ export default function ComplianceLabel({
       }`}
     >
       {stage in complianceRequirements &&
-        field in complianceRequirements[stage] && (
+        field.split("-")[0] in complianceRequirements[stage] && (
           <div className="flex relative items-start gap-3 w-full">
             {activeApproval && activeApproval !== field && (
               <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
@@ -78,7 +79,7 @@ export default function ComplianceLabel({
                 <div className="flex flex-col gap-0 w-full">
                   <span className="text-[12px] m-0 text-[#999999]">
                     {stage in complianceRequirements &&
-                      complianceRequirements[stage][field]?.title}
+                      complianceRequirements[stage][field.split("-")[0]]?.title}
                   </span>
                   {type === "text" && (
                     <span className="text-white/80 text-[14px] font-bold">

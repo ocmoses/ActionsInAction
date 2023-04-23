@@ -296,7 +296,6 @@ export default function GetStarted({ type }) {
                           partnerCategories?.length > 0 &&
                           partnerActiveCategories?.length > 0 && (
                             <>
-                              {" "}
                               <Button
                                 href="javascript:;"
                                 onClick={(e) => scrollToTop("categoryselect")}

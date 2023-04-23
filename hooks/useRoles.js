@@ -4,7 +4,7 @@ const useRoles = () => {
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
-  const isSuperadmin = () => true
+  const isSuperadmin = () => false
   return { ...states, ...actions, isSuperadmin }
 }
 

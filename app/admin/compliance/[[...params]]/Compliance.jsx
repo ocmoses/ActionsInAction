@@ -50,6 +50,7 @@ export default function Compliance({ params }) {
     setRouteloading(false)
     console.log(admin)
   }, [])
+
   useEffect(() => {
     let html = document.getElementsByTagName("html")
     if (openDrawer) html[0].style["overflow-y"] = "hidden"
@@ -67,6 +68,7 @@ export default function Compliance({ params }) {
       setStages(_stages)
     }
   }, [partner, category])
+
   useEffect(() => {
     clearErrors()
     const getPartnerInfo = async (uuid) => {

@@ -19,7 +19,8 @@ export default function ComplianceCategories({
         Stages?.forms?.map(
           (stage) =>
             (isSuperadmin() ||
-              (admin.department_code in fieldCounts[stage] &&
+              (admin &&
+                admin.department_code in fieldCounts[stage] &&
                 "fields" in fieldCounts[stage][admin.department_code])) && (
               <div
                 key={stage}

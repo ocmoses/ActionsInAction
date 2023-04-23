@@ -17,7 +17,8 @@ export default function ComplianceCategories({
 
   useEffect(() => {
     const approvals = partnerApprovals(partner, activeCategory)
-    csetPartnerApprovals(approvals)
+    console.log({ approvals })
+    setPartnerApprovals(approvals)
   }, [partner, activeCategory])
 
   return (

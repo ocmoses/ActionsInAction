@@ -681,6 +681,19 @@ export const filterPartner = (partnerInfo, Categories) => {
                     dept
                   ][approval?.field] = approval?.status
 
+                  if (approval?.status === "rejected") {
+                    if (
+                      !partnerInfo.approvalStages[cuuid][
+                        approval?.category_stage
+                      ][dept][approval?.field].rejections
+                    )
+                      partnerInfo.approvalStages[cuuid][
+                        approval?.category_stage
+                      ][dept][approval?.field].rejections = []
+                    partnerInfo.approvalStages[cuuid][approval?.category_stage][
+                      dept
+                    ][approval?.field].rejections.push(approval?.feedback)
+                  }
                   if (!partnerInfo.approvalCount[approval?.category_stage]) {
                     partnerInfo.approvalCount[approval?.category_stage] = {
                       approved: 0,
@@ -915,8 +928,8 @@ export const partnerApprovals = (partner, category) => {
   const Approvals = partner?.approvalStages[category.category_uuid]
   let stageApprovals = {}
   let stageFields = {}
+  console.log({ Approvals })
   stages.map((stage) => {
-    // console.log({ stage, Approvals })
     stageApprovals[stage] =
       Approvals && Approvals[stage] ? Approvals[stage] : {}
     stageFields[stage] =
@@ -1003,10 +1016,10 @@ export const partnerApprovals = (partner, category) => {
               StageApprovals[_stage][_dept][field] =
                 Approvals[_stage][_dept][field]
 
-              console.log({
-                "fieldapproval: Approvals[_stage][_dept][field]":
-                  Approvals[_stage][_dept][field],
-              })
+              // console.log({
+              //   "fieldapproval: Approvals[_stage][_dept][field]":
+              //     Approvals[_stage][_dept][field],
+              // })
               switch (Approvals[_stage][_dept][field]) {
                 case "approved":
                   StageApprovals[_stage].counts.approved++

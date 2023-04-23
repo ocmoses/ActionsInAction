@@ -1,4 +1,5 @@
 import { forms, fieldCounts } from "@/app/modules/constants"
+import { partnerApprovals } from "@/app/modules/utilities"
 import Image from "next/image"
 import useAdmins from "@/hooks/useAdmins"
 import useRoles from "@/hooks/useRoles"
@@ -13,12 +14,12 @@ export default function ComplianceCategories({
 }) {
   const { admin } = useAdmins()
   const { isSuperadmin } = useRoles()
-  const [partnerApprovals, setPartnerApprovals] = useState({})
+  const [Approvals, setApprovals] = useState({})
 
   useEffect(() => {
     const approvals = partnerApprovals(partner, activeCategory)
     console.log({ approvals })
-    setPartnerApprovals(approvals)
+    setApprovals(approvals)
   }, [partner, activeCategory])
 
   return (

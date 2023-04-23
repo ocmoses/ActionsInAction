@@ -88,7 +88,7 @@ export default function PartnerCategories({
                     </span>
 
                     <span className="text-white text-center md:text-left font-bold">
-                      {category.category_name} {category.status}
+                      {category.category_name}
                     </span>
                   </div>
                 </div>

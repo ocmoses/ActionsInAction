@@ -984,6 +984,7 @@ export const partnerApprovals = (partner, category) => {
                   pending: 0,
                   approved: 0,
                   rejected: 0,
+                  rejections: [],
                   corrected: 0,
                   count: 0,
                 },
@@ -1001,6 +1002,11 @@ export const partnerApprovals = (partner, category) => {
               // })
               StageApprovals[_stage][_dept][field] =
                 Approvals[_stage][_dept][field]
+
+              console.log({
+                "fieldapproval: Approvals[_stage][_dept][field]":
+                  Approvals[_stage][_dept][field],
+              })
               switch (Approvals[_stage][_dept][field]) {
                 case "approved":
                   StageApprovals[_stage].counts.approved++
@@ -1009,6 +1015,7 @@ export const partnerApprovals = (partner, category) => {
                 case "rejected":
                   StageApprovals[_stage].counts.rejected++
                   StageApprovals[_stage][_dept].counts.rejected++
+                  // StageApprovals[_stage][_dept].rejections[field].push()
                   break
                 case "corrected":
                   StageApprovals[_stage].counts.corrected++

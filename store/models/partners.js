@@ -8,7 +8,10 @@ const partners = {
   category: null,
   categories: null,
   partnerCategories: null,
-
+  Stages: null,
+  selectedCategory: null,
+  Stages: null,
+  activeStage: null,
   clear: action((state) => {
     state.partnerID = null
     state.partners = null
@@ -17,6 +20,10 @@ const partners = {
     state.categories = null
     state.partnerCategory = null
     state.partnerCategories = null
+    state.Stages = null
+    state.selectedCategory = null
+    state.Stages = null
+    state.activeStage = null
   }),
   setPartner: action((state, partner) => {
     state.partner = filterPartner(partner)
@@ -62,6 +69,15 @@ const partners = {
   activeCategory: computed((state) => {
     if (!state.category || !state.categories) return null
     return state.categories.find((cat) => cat.uuid === state.category.uuid)
+  }),
+  setSelectedCategory: action((state, category) => {
+    state.selectedCategory = category
+  }),
+  setStages: action((state, Stages) => {
+    state.Stages = Stages
+  }),
+  setActiveStage: action((state, stage) => {
+    state.activeStage = stage
   }),
 }
 export default partners

@@ -20,14 +20,18 @@ export default function UserAvartar() {
       session.user?.first_name !== "undefined" ? session.user.first_name : ""
     const lastName =
       session.user?.last_name !== "undefined" ? session.user.last_name : ""
-    setInitial(`${firstName ? firstName[0] : ""}${lastName ? lastName[0] : ""}`)
+    setInitial(
+      `${firstName ? firstName[0].toUpperCase() : ""}${
+        lastName ? lastName[0].toUpperCase() : ""
+      }`
+    )
   }
   useEffect(() => {
     getInitials()
   }, [session])
 
   useEffect(() => {
-    console.log({ session })
+    // console.log({ session })
     setShowMenu(false)
   }, [])
 

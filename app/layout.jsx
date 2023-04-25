@@ -8,7 +8,6 @@ import { userData, Decrypt } from "@/app/modules/utilities"
 import { cookies } from "next/headers"
 import { getCategories } from "@/app/modules/categories"
 import { apikey } from "@/app/modules/constants"
-import GlobalError from "./global-error"
 
 const getServerSession = async () => {
   try {

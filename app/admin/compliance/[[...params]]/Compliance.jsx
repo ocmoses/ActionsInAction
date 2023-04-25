@@ -6,8 +6,6 @@ import useAdmins from "@/hooks/useAdmins"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
 import { useState, useEffect, Suspense } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
@@ -15,11 +13,17 @@ import {
   getPartnerInitials,
   filterCategory,
   filterPartner,
+  filterFields,
+  filterComplianceRequirements,
+  filterApprovalFields,
+  partnerApprovals,
 } from "@/app/modules/utilities"
+
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import useApp from "@/hooks/useApp"
 import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
+import Link from "next/link"
 
 export default function Compliance({ params }) {
   const router = useRouter()
@@ -48,7 +52,6 @@ export default function Compliance({ params }) {
   useEffect(() => {
     setProcessing(false)
     setRouteloading(false)
-    console.log(admin)
   }, [])
 
   useEffect(() => {
@@ -59,6 +62,11 @@ export default function Compliance({ params }) {
 
   useEffect(() => {
     if (partner && category) {
+      filterFields(partner)
+      filterComplianceRequirements(partner)
+      filterApprovalFields(partner)
+      // const Approvals = partnerApprovals(partner, category)
+      console.log({ partner })
       const _activeCategory = partner?.categories?.find(
         (c) => c.category_uuid === category
       )
@@ -88,7 +96,6 @@ export default function Compliance({ params }) {
       setProcessing(false)
       if (result?.success) {
         const partnerInfo = result.data?.partner
-        console.log({ partnerInfo })
         filterPartner(partnerInfo, categories)
         setPartner(partnerInfo)
         if (partnerInfo?.categories?.length > 0) {
@@ -115,8 +122,8 @@ export default function Compliance({ params }) {
   }
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
-      <div onClick={() => router.push("admin/dashboard/")} className="mb-12">
-        <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
+      <Link href="/admin/dashboard/">
+        <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -133,7 +140,7 @@ export default function Compliance({ params }) {
           </svg>
           Applications
         </span>
-      </div>
+      </Link>
       {errors?.compliance && (
         <div className="my-6">
           <FormErrors error={errors.compliance} />
@@ -146,7 +153,7 @@ export default function Compliance({ params }) {
       )}
       {!processing && partner && (
         <>
-          <div className="grin grid-cols-1 space-y-3 sm:flex justify-between items-center space-x-3 mb-20">
+          <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
             <div className="flex items-center space-x-3">
               <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-mtn text-white text-[12px] mr-2">
                 <span className="text-[24px]">
@@ -157,7 +164,7 @@ export default function Compliance({ params }) {
                 <div className="font-bold text-[30px] text-white mb-1">
                   {partner?.company_name}
                 </div>
-                <div className="flex items-center gap-2 text-[16px] text-white/80">
+                <div className="flex items-center gap-0 text-[16px] text-white/80">
                   {partner?.categories?.length > 0 && (
                     <Image
                       alt={`${partner?.categories[0].country}`}
@@ -174,6 +181,7 @@ export default function Compliance({ params }) {
                 </div>
               </div>
             </div>
+
             {partner?.categories?.length > 0 && (
               <div className="py-3">
                 <DropdownMenu
@@ -192,25 +200,24 @@ export default function Compliance({ params }) {
                   align="right"
                   optionwidth={240}
                 />
-
-                {/* <SelectInput
-                  label=""
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  classes="!py-2 !px-3 cursor-pointer min-w-[200px] overflow-visible"
-                  fontsize="14px"
-                  style={{ width: "240px" }}
-                >
-                  {partner?.categories.map((cat) => (
-                    <SelectInputOption
-                      key={cat.category_uuid}
-                      value={cat.category_uuid}
-                      label={allCategories[cat.category_uuid]?.category_name}
-                    />
-                  ))}
-                </SelectInput> */}
               </div>
             )}
+          </div>
+          <div className="flex gap-3 items-center text-[#999999] my-12">
+            <div className="flex justify-center items-center w-[30px] h-[30px] text-[#FFCB03] rounded-full bg-white/10">
+              {activeCategory?.icon && (
+                <Image
+                  src={activeCategory.icon}
+                  alt=""
+                  width={14}
+                  height={14}
+                />
+              )}
+            </div>
+            <span className="font-mtn-extralight text-[18px] ">
+              {" "}
+              {activeCategory?.category_name}
+            </span>
           </div>
           <ComplianceCategories
             partner={partner}

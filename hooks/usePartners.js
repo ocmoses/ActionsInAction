@@ -12,13 +12,15 @@ import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
+  Util,
+  isArray,
   proxyFetch,
   userData,
   getNextStage,
   getstages,
 } from "@/app/modules/utilities"
 // import { getRejectionReasons } from "@/app/modules/fetchData"
-import { forms } from "@/app/modules/constants"
+import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
 const usePartners = () => {
@@ -406,7 +408,43 @@ const usePartners = () => {
 
     setSuccess(resendEmailData.message)
   }
+  const [stageStatus, setStageStatus] = useState(null)
 
+  const updateStageStatus = (category, stage) => {
+    if (!category || !stage) return
+    const status =
+      states.partners.partner.approvalStages[category.category_uuid][stage]
+    const fields = {}
+    if (status) {
+      for (const dept in status) {
+        for (const field in status[dept]) {
+          if (field !== "rejections" && !isArray(status[dept][field])) {
+            if (!fields[field]) fields[field] = []
+            fields[field].push(status[dept][field])
+          }
+        }
+      }
+    }
+    const counts = {}
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        counts[field] = {
+          approved: 0,
+          rejected: 0,
+          corrected: 0,
+          pending: 0,
+        }
+        if (fields[field].length > 0) {
+          fields[field].map((f) => {
+            counts[field][f]++
+          })
+        }
+      }
+    }
+    console.log({ fields })
+    console.log({ counts })
+    console.log({ fieldCounts })
+  }
   return {
     ...states.partners,
     ...actions.partners,
@@ -425,6 +463,8 @@ const usePartners = () => {
     getStages,
     allCategories,
     rejectionReasons,
+    stageStatus,
+    updateStageStatus,
   }
 }
 export default usePartners

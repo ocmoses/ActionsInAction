@@ -11,7 +11,7 @@ export default function Activities({ type, stage, feedbacks }) {
             <div className="flex justify-center items-center bg-white/40 w-[24px] h-[24px] rounded-full">
               {feedback.admin_user.username[0].toUpperCase()}
             </div>
-            <div className="text-white/70 text-[14px]">
+            <div className="text-white/70 text-[13px]">
               <div>
                 <span className="text-white">
                   {feedback.admin_user.username}{" "}
@@ -31,7 +31,7 @@ export default function Activities({ type, stage, feedbacks }) {
                 >
                   {feedback.status === "approved" ? "Approved" : "Rejected"}
                 </span>{" "}
-                <span className="text-white/70 font-mtn-extralight">
+                <span className="text-white/70 font-mtn-extralight text-[12px]">
                   {moment(feedback.created_at).format(
                     "MMM Do, YYYY [at] h:mm:ss a"
                   )}

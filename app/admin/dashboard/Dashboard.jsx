@@ -1,6 +1,8 @@
 "use client"
 import { useState, useEffect } from "react"
 import { getPartnerInitials } from "@/app/modules/utilities"
+import { onboarding_type, status_type } from "@/app/modules/constants"
+
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
 import useAdmins from "@/hooks/useAdmins"
@@ -9,12 +11,20 @@ import FormErrors from "@/app/components/FormErrors"
 import moment from "moment"
 import { useRouter } from "next/navigation"
 import useApp from "@/hooks/useApp"
+import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
 
 export default function Dashboard() {
   const { getAllPartners } = useAdmins()
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const [Partners, setPartners] = useState([])
+  const [allPartners, setAllPartners] = useState([])
+  const [status, setStatus] = useState("processing")
+  const [type, setType] = useState("all")
+
+  const [listTypeArray, setListTypeArray] = useState([])
+  const [listStatusArray, setListStatusArray] = useState([])
+  const [listOptions, setListOptions] = useState([])
   const [fetchingPartners, setFetchingPartners] = useState(false)
   const router = useRouter()
   const { setRouteloading } = useApp()
@@ -26,24 +36,90 @@ export default function Dashboard() {
     const get_all_Partner = async () => {
       if (fetchingPartners) return
       setFetchingPartners(true)
-      const allPartners = await getAllPartners()
-      setPartners(allPartners.partners)
+      const All_Partners = await getAllPartners()
+      console.log({ partners: All_Partners.partners })
+      setAllPartners(All_Partners.partners)
+      setListTypeArray(All_Partners.listTypes)
+      setListStatusArray(All_Partners.listStatus)
       setFetchingPartners(false)
-      if (allPartners.error) setError({ compliance: allPartners.error })
+      if (All_Partners.error) setError({ compliance: All_Partners.error })
     }
     get_all_Partner()
   }, [])
+
+  useEffect(() => {
+    console.log({ allPartners })
+    if (allPartners?.all?.length > 0) {
+      const filterStatus = allPartners.all.filter((partner) => {
+        return status === "all" || partner.contract_status === status
+      })
+      const typeStatus = filterStatus.filter((partner) => {
+        return type === "all" || partner.onboarding_type === type
+      })
+      setPartners(typeStatus)
+    }
+  }, [allPartners, status, type])
+  useEffect(() => {
+    const listTypeOptions = []
+    listTypeOptions.push({ value: "all", label: "All type" })
+    listTypeArray?.length > 0 &&
+      listTypeArray.map((type) =>
+        listTypeOptions.push({ value: type, label: onboarding_type[type] })
+      )
+    const listStatusOptions = []
+    listStatusOptions.push({ value: "all", label: "All status" })
+    listStatusArray?.length > 0 &&
+      listStatusArray.map((status) =>
+        listStatusOptions.push({ value: status, label: status_type[status] })
+      )
+
+    setListOptions({
+      type: listTypeOptions,
+      status: listStatusOptions,
+    })
+  }, [listTypeArray, listStatusArray])
+
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true)
     router.push(`admin/compliance/${uuid}`)
   }
+  console.log({ Partners })
   return (
     <>
-      <div id="compliance" className="flex flex-cols">
+      <div id="compliance" className="flex flex-cols pb-12">
         <div className="w-full pt-[72px] px-12 mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center md:text-start">
-            Applicants
-          </h2>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
+              <h2>Applicants</h2>
+              <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
+                {Partners?.length}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 grow-0">
+              <DropdownMenu
+                options={listOptions.status}
+                defaultvalue={{
+                  value: "processing",
+                  label: status_type.processing,
+                }}
+                onselect={(option) => {
+                  setStatus(option.value)
+                }}
+                align="right"
+              />
+              <DropdownMenu
+                options={listOptions.type}
+                defaultvalue={{
+                  value: "all",
+                  label: "All",
+                }}
+                onselect={(option) => {
+                  setType(option.value)
+                }}
+                align="right"
+              />
+            </div>
+          </div>
 
           {errors && errors["compliance"] && (
             <div className="mb-6">
@@ -61,16 +137,24 @@ export default function Dashboard() {
               <table className="table w-full transparent">
                 <tbody>
                   {/* head */}
-                  <tr className="border-b border-b-white/40 text-12">
+                  <tr className="border-b border-b-white/40 text-11">
                     {/* <td className="bg-transparent">
                       <label>
                         <input type="checkbox" className="checkbox" />
                       </label>
                     </td> */}
-                    <th>Partner</th>
-                    <th>Categories</th>
-                    <th>Submitted on</th>
-                    <th>Contributors</th>
+                    <th>
+                      <span className="text-[13px]">Company</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Categories</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Submitted on</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Contributors</span>
+                    </th>
                     {/* <th>Progress</th> */}
                   </tr>
 
@@ -99,7 +183,7 @@ export default function Dashboard() {
                               </span>
                             </div>
                             <div>
-                              <div className="font-bold">
+                              <div className="font-bold text-white">
                                 {partner.company_name}
                               </div>
                               <div className="flex items-center gap-4 text-sm text-white/80">
@@ -110,13 +194,13 @@ export default function Dashboard() {
                           </div>
                         </td>
                         <td>
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-0">
                             {partner?.categories?.length > 0 &&
                               partner?.categories.map((category) => (
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-1 items-center">
                                   <div
                                     key={category.uuid}
-                                    className="w-[100px] z-0 relative h-[15px] border border-white/20 flex text-mtn text-[10px] bg-black items-center justify-center"
+                                    className="flex items-center rounded-full overflow-hidden w-[100px] z-0 relative h-[15px] border border-white/20 flex text-mtn text-[12px] bg-black items-center justify-center"
                                   >
                                     <div
                                       className={`left-0 top-0 z-10 absolute h-[15px] bg-[#FFCB03]`}
@@ -125,7 +209,7 @@ export default function Dashboard() {
                                         backgroundColor: "#FFCB03",
                                       }}
                                     ></div>
-                                    <div className="left-1 top-0 z-20 absolute text-white h-[15px] bg-transparent">
+                                    <div className="left-1 top-[-3px] z-20 px-2 absolute text-white h-[15px] bg-transparent">
                                       {category.category_percentage}%
                                     </div>
                                   </div>

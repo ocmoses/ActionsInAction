@@ -9,7 +9,12 @@ import useUsers from "@/hooks/useUsers"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import Axios from "@/app/modules/axios"
 import { useState, useEffect, useRef } from "react"
-import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
+import {
+  Util,
+  AllowedCategories,
+  filterPartner,
+  filterCategory,
+} from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
 import usePartners from "@/hooks/usePartners"
@@ -17,6 +22,7 @@ import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import Image from "next/image"
 import { scrollToTop } from "@/app/modules/utilities"
+import CallToAction from "./partners/CallToAction"
 
 export default function GetStarted({ type }) {
   const {
@@ -76,11 +82,13 @@ export default function GetStarted({ type }) {
     filterPartner(partner, categoriesData)
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
-        partner.categories.map((category) => {
+        partner.categories.map((_category) => {
+          const category = filterCategory(_category, partner)
           partnerActiveCat.push(category.uuid)
           const mainCategory = categoriesData.find(
             (c) => c.uuid === category.category_uuid
           )
+
           partnerCat.push({
             ...category,
             category_name: mainCategory?.category_name,
@@ -212,9 +220,14 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      {partner?.contract_status === "not_started"
-                        ? "Complete your setup to get started!"
-                        : "Your application is currently being reviewed"}
+                      {partner?.contract_status === "not_started" ? (
+                        "Complete your setup to get started!"
+                      ) : (
+                        <CallToAction
+                          message="Your application is currently being reviewed"
+                          label="Take action"
+                        />
+                      )}
                     </p>
                   )}
                 </div>
@@ -234,9 +247,14 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      {partner?.contract_status === "not_started"
-                        ? "Complete your setup to get started!"
-                        : "Your application is currently being reviewed"}
+                      {partner?.contract_status === "not_started" ? (
+                        "Complete your setup to get started!"
+                      ) : (
+                        <CallToAction
+                          message="Your application is currently being reviewed"
+                          label="Take action"
+                        />
+                      )}
                     </p>
                   )}
                 </>
@@ -247,7 +265,7 @@ export default function GetStarted({ type }) {
                   partner={partner}
                   partnerCategories={partnerCategories}
                   type={type}
-                  onClick={continueRegistration}
+                  onclick={continueRegistration}
                   categories={categoriesData}
                 />
               )}
@@ -272,19 +290,12 @@ export default function GetStarted({ type }) {
                         fill="#efb703"
                       />
                     ) : (
-                      // <Button
-                      //   onClick={finishApplication}
-                      //   label="Finish Application"
-                      //   paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                      //   textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                      // />
                       <div className="flex flex-col items-center justify-start gap-3 w-full sm:flex sm:flex-row sm:items-center sm:justify-center sm:gap-6 sm:w-auto">
                         {!contractStarted &&
                           partner?.contract_status === "not_started" &&
                           partnerCategories?.length > 0 &&
                           partnerActiveCategories?.length > 0 && (
                             <>
-                              {" "}
                               <Button
                                 href="javascript:;"
                                 onClick={(e) => scrollToTop("categoryselect")}

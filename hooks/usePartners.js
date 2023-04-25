@@ -9,10 +9,18 @@ import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
-import { forms } from "@/app/modules/constants"
+import {
+  Util,
+  isArray,
+  proxyFetch,
+  userData,
+  getNextStage,
+  getstages,
+} from "@/app/modules/utilities"
+// import { getRejectionReasons } from "@/app/modules/fetchData"
+import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
 const usePartners = () => {
@@ -20,12 +28,30 @@ const usePartners = () => {
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
+  const rejectionReasons = app.rejectionReasons
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
   const { category, categories } = states.partners
+  const [allCategories, setAllCategories] = useState([])
+
+  useEffect(() => {
+    const Categories = {}
+    if (categories?.length > 0) {
+      categories.map((category) => {
+        Categories[category.uuid] = category
+      })
+    }
+    setAllCategories(Categories)
+  }, [categories])
+
+  useEffect(() => {
+    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
+    if (!rejectionReasons) app.getRejectionReasons()
+  }, [rejectionReasons])
+
   const { setPartners, updatePartner, setCategory } = actions.partners
   const { setTmpUser } = actions.users
   // const { user } = states.users
@@ -83,9 +109,6 @@ const usePartners = () => {
     return { success, error, data }
   }
 
-  const consolidateCategory = () => {
-    // console.log({ categories })
-  }
   const setCurrentCategory = (category, partner) => {
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
@@ -137,6 +160,10 @@ const usePartners = () => {
   }
   const nextStage = (category, partner) => {
     return getNextStage(category, partner)
+  }
+  const getStages = (category, categories) => {
+    if (!category) return
+    return getstages(category, categories)
   }
 
   const registerPartner = async (frm, userdata) => {
@@ -381,7 +408,43 @@ const usePartners = () => {
 
     setSuccess(resendEmailData.message)
   }
+  const [stageStatus, setStageStatus] = useState(null)
 
+  const updateStageStatus = (category, stage) => {
+    if (!category || !stage) return
+    const status =
+      states.partners.partner.approvalStages[category.category_uuid][stage]
+    const fields = {}
+    if (status) {
+      for (const dept in status) {
+        for (const field in status[dept]) {
+          if (field !== "rejections" && !isArray(status[dept][field])) {
+            if (!fields[field]) fields[field] = []
+            fields[field].push(status[dept][field])
+          }
+        }
+      }
+    }
+    const counts = {}
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        counts[field] = {
+          approved: 0,
+          rejected: 0,
+          corrected: 0,
+          pending: 0,
+        }
+        if (fields[field].length > 0) {
+          fields[field].map((f) => {
+            counts[field][f]++
+          })
+        }
+      }
+    }
+    console.log({ fields })
+    console.log({ counts })
+    console.log({ fieldCounts })
+  }
   return {
     ...states.partners,
     ...actions.partners,
@@ -397,6 +460,11 @@ const usePartners = () => {
     setValidationRules,
     completeOnboarding,
     setCurrentCategory,
+    getStages,
+    allCategories,
+    rejectionReasons,
+    stageStatus,
+    updateStageStatus,
   }
 }
 export default usePartners

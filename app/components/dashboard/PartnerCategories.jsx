@@ -1,15 +1,18 @@
 import UserPercentage from "@/app/components/UserPercentage"
 import Button from "@/app/components/form/Button"
 import Image from "next/image"
+import { PageRoutes } from "@/app/modules/menu"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function PartnerCategories({
   partner,
   type,
   partnerCategories,
-  onClick,
+  onclick,
   categories,
 }) {
+  const router = useRouter()
   const [allCats, setAllCats] = useState([])
   useEffect(() => {
     if (categories?.length > 0) {
@@ -20,6 +23,7 @@ export default function PartnerCategories({
       setAllCats(Categories)
     }
   }, [categories])
+
   return (
     <>
       <div
@@ -33,15 +37,13 @@ export default function PartnerCategories({
           (category) =>
             category.category_name && (
               <div
-                // onClick={() =>
-                //   category.status === "open" ||
-                //   partner?.contract_status === "not_started"
-                //     ? onClick(category.uuid)
-                //     : process.env.NODE_ENV === "production"
-                //     ? {}
-                //     : onClick(category.uuid)
-                // }
-                onClick={() => onClick(category.uuid)}
+                onClick={() =>
+                  category.status === "open"
+                    ? onclick(category.uuid)
+                    : router.push(
+                        `${PageRoutes.partnerCompliance}/${category.category_uuid}`
+                      )
+                }
                 key={category.uuid}
                 className={`flex flex-col cursor-pointer items-center md:flex-row justify-between gap-6 cursor bg-[#111111] p-[24px] border border-white/10 rounded-xl`}
               >
@@ -86,7 +88,7 @@ export default function PartnerCategories({
                     </span>
 
                     <span className="text-white text-center md:text-left font-bold">
-                      {category.category_name} {category.status}
+                      {category.category_name}
                     </span>
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import Image from "next/image"
 import { forms } from "@/app/modules/constants"
 import FilePreviewModal from "@/app/components/FilePreviewModal"
 import useApp from "@/hooks/useApp"
+import useAdmins from "@/hooks/useAdmins"
 
 export default function ComplianceDrawer({
   children,
@@ -10,7 +11,9 @@ export default function ComplianceDrawer({
   setOpenDrawer,
   openDrawer,
 }) {
+  const { setActiveApproval } = useAdmins()
   const closeDrawer = () => {
+    setActiveApproval(null)
     setOpenDrawer(false)
   }
 
@@ -34,15 +37,15 @@ export default function ComplianceDrawer({
         {activeStage && (
           <section
             className={
-              " w-screen max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >
-            <article className="relative w-screen max-w-[480px] h-full border-l border-l-white/40">
-              <div className="flex justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
+            <div className="relative flex-none flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40">
+              <div className="flex flex-none justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
                 <div className="flex-1 flex justity-start gap-3 items-center ">
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
-                    {category.icon && (
+                    {category?.icon && (
                       <Image
                         src={category.icon}
                         alt=""
@@ -51,9 +54,14 @@ export default function ComplianceDrawer({
                       />
                     )}
                   </div>
-                  <span className=" text-white text-[16px]">
-                    {forms[activeStage].shortname}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className=" text-white text-[16px]">
+                      {forms[activeStage].shortname}
+                    </span>
+                    <span className=" text-[#999999] text-[12px]">
+                      {category?.category_name}
+                    </span>
+                  </div>
                 </div>
                 <div
                   onClick={closeDrawer}
@@ -76,7 +84,7 @@ export default function ComplianceDrawer({
                 </div>
               </div>
               {children}
-            </article>
+            </div>
           </section>
         )}
         <section

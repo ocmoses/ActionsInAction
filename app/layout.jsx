@@ -8,7 +8,6 @@ import { userData, Decrypt } from "@/app/modules/utilities"
 import { cookies } from "next/headers"
 import { getCategories } from "@/app/modules/categories"
 import { apikey } from "@/app/modules/constants"
-import GlobalError from "./global-error"
 
 const getServerSession = async () => {
   try {
@@ -169,25 +168,29 @@ export default async function RootLayout({ children }) {
   console.log({ error })
   return (
     <>
-      {error ? (
+      {/* {error ? (
         <GlobalError error={error} />
-      ) : (
-        <html lang="en">
-          <head />
-          <body>
-            <div id="portals" className="relative"></div>
-            {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
+      ) : ( */}
+      <html lang="en">
+        <head />
+        <body>
+          <div id="portals" className="relative"></div>
+          {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
 
-            <Providers>
-              <Session serverSession={serverSession} categories={categories}>
-                {<RouteLoader />}
-                {children}
-              </Session>
-            </Providers>
-            <div id="modalPortal"></div>
-          </body>
-        </html>
-      )}
+          <Providers>
+            <Session
+              serverSession={serverSession}
+              categories={categories}
+              error={error}
+            >
+              {<RouteLoader />}
+              {children}
+            </Session>
+          </Providers>
+          <div id="modalPortal"></div>
+        </body>
+      </html>
+      {/* )} */}
     </>
   )
 }

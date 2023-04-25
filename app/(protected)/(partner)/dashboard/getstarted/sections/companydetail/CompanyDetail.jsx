@@ -165,7 +165,6 @@ function CompanyDetail() {
   }
   return (
     <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
-      {/* <div className="p-2 text-white">{JSON.stringify(category)}</div> */}
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">

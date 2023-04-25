@@ -14,7 +14,11 @@ import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
+import {
+  filterPartner,
+  partnerApprovals,
+  filterComplianceRequirements,
+} from "@/app/modules/utilities"
 import DeptBadge from "./compliance/DeptBadge"
 import useRoles from "@/hooks/useRoles"
 
@@ -46,6 +50,7 @@ export default function ComplianceLabel({
   useEffect(() => {
     setApproving(false)
     clearErrors()
+    // filterComplianceRequirements(partner)
   }, [])
 
   const Approve = (status) => {
@@ -183,7 +188,7 @@ export default function ComplianceLabel({
       icon = <span className="text-blue-600 w-2 h-2">{correctedIcon}</span>
     }
   }
-
+  console.log({ field, complianceRequirements })
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
@@ -213,7 +218,7 @@ export default function ComplianceLabel({
           />
         )}
         {stage in complianceRequirements &&
-          `${field}` in complianceRequirements[stage] && (
+          field in complianceRequirements[stage] && (
             <div className="flex relative items-start gap-3 w-full">
               {activeApproval && activeApproval !== field && (
                 <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>

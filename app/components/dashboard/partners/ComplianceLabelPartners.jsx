@@ -3,15 +3,16 @@ import {
   company_type,
   license_type,
 } from "@/app/modules/constants"
-import { partnerApprovals } from "@/app/modules/utilities"
 import FieldStatus from "@/app/components/dashboard/compliance/FieldStatus"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
 import moment from "moment"
 import useApp from "@/hooks/useApp"
 import usePartners from "@/hooks/usePartners"
-import { useState, useEffect } from "react"
 import Image from "next/image"
+import RejectionReasons from "@/app/components/dashboard/compliance/RejectionReason"
+import { partnerApprovals, Util } from "@/app/modules/utilities"
+import { COUNTRIES } from "@/app/modules/countries"
+import { STATES } from "@/app/modules/states"
+import { useState, useEffect } from "react"
 
 export default function ComplianceLabel({
   field,
@@ -29,13 +30,15 @@ export default function ComplianceLabel({
   useEffect(() => {
     const approvals = partnerApprovals(partner, category)
     setApprovals(approvals)
-    console.log({ Approvals })
     setFeedbacks({
       approvals: category.compliance_approvals,
       feedbacks: category.compliance_feedbacks,
     })
-  }, [category])
-
+  }, [field, stage, category])
+  const updateField = () => {
+    console.log(field)
+  }
+  console.log({ Approvals })
   return (
     <div
       className={`w-full p-3 border border-[#212121] rounded-[8px] ${
@@ -222,41 +225,36 @@ export default function ComplianceLabel({
                     )}
                   </div>
                 </div>
-                {Approvals?.counts?.status && Approvals?.counts?.status && (
-                  <div className="flex flex-col gap-0 items-end">
-                    <div className="grow-0">
-                      <FieldStatus status={Approvals.counts.status[field]} />
+                {!Util.isEmpty(Approvals) &&
+                  Approvals?.counts?.status &&
+                  Approvals?.counts?.status && (
+                    <div className="flex flex-col gap-0 items-end">
+                      <div className="grow-0">
+                        <FieldStatus status={Approvals.counts.status[field]} />
+                      </div>
+                      {Approvals.counts.status[field] === "approved" && (
+                        <span className="text-[#999999] text-[12px]">
+                          {moment(
+                            Approvals.fieldDates.vas_license_id[0]
+                          ).format("MMM D, YYYY [at] h:mm:ss a")}
+                        </span>
+                      )}
                     </div>
-                    {Approvals.counts.status[field] === "approved" && (
-                      <span className="text-[#999999] text-[12px]">
-                        {moment(Approvals.fieldDates.vas_license_id[0]).format(
-                          "MMM D, YYYY [at] h:mm:ss a"
-                        )}
-                      </span>
-                    )}
-                  </div>
-                )}
+                  )}
               </div>
             </div>
-            {Approvals?.counts?.status &&
-              Approvals?.counts?.status[field] === "rejected" && (
-                <div className="flex gap-4 w-full p-[16px] mt-3 bg-white/10 rounded-[8px]">
-                  <div className="flex items-center justify-center w-[24px] h-[24px] bg-white/20 rounded-full"></div>
-                  <div className="flex flex-col items-start gap-3 w-full">
-                    <div className="flex w-full text-[13px] text-white">
-                      {console.log({
-                        field,
-                        reason: Approvals.counts.rejections[field],
-                      })}
-                      Rejection reasons
-                    </div>
-                    <div className="inline-flex grow-0 cursor-pointer hover:bg-white/20 text-[12px] text-white rounded-full px-[12px] border border-white/80 py-1">
-                      Update{" "}
-                      {stage in complianceRequirements &&
-                        complianceRequirements[stage][field]?.title}
-                    </div>
-                  </div>
-                </div>
+            {Approvals &&
+              Approvals.counts?.status &&
+              Approvals.counts?.status[field] === "rejected" && (
+                <RejectionReasons
+                  title={
+                    stage in complianceRequirements &&
+                    complianceRequirements[stage][field]?.title
+                  }
+                  field={field}
+                  approvals={Approvals}
+                  onclick={updateField}
+                />
               )}
           </>
         )}

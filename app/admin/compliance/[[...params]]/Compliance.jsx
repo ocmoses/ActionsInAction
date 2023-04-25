@@ -77,6 +77,27 @@ export default function Compliance({ params }) {
     }
   }, [partner, category])
 
+  const [DDCategories, setDDCategories] = useState([])
+  useEffect(() => {
+    let _cuuids = []
+    if (allCategories) {
+      if (partner?.approvalStages) {
+        const dept = admin?.department_code
+        for (const cuuid in partner?.approvalStages) {
+          for (const stage in partner?.approvalStages[cuuid]) {
+            if (dept in partner?.approvalStages[cuuid][stage])
+              if (!_cuuids.includes(cuuid)) _cuuids.push(cuuid)
+          }
+        }
+      }
+      const _ddcategories = partner?.categories.filter((cat) =>
+        _cuuids.includes(cat.category_uuid)
+      )
+      console.log({ _ddcategories })
+      setDDCategories(_ddcategories ?? [])
+    }
+  }, [partner, allCategories, admin])
+
   useEffect(() => {
     clearErrors()
     const getPartnerInfo = async (uuid) => {
@@ -182,10 +203,10 @@ export default function Compliance({ params }) {
               </div>
             </div>
 
-            {partner?.categories?.length > 0 && (
+            {DDCategories?.length > 1 && (
               <div className="py-3">
                 <DropdownMenu
-                  options={partner?.categories.map((cat) => ({
+                  options={DDCategories.map((cat) => ({
                     key: cat.category_uuid,
                     value: cat.category_uuid,
                     label: allCategories[cat.category_uuid]?.category_name,

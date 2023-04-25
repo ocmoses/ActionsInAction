@@ -5,7 +5,9 @@ import { NextEndPoints } from "./endpoints"
 import {
   categoryCombination,
   complianceRequirements,
+  shortcodeComplianceRequqirements,
   approvalFields,
+  shortcodeApprovalFields,
   fieldCounts,
   stages,
 } from "@/app/modules/constants"
@@ -760,9 +762,7 @@ export const filterPartner = (partnerInfo, Categories) => {
 
                     partnerInfo.approvalStages[cuuid][
                       approval?.category_stage
-                    ].rejections[approval?.field].push({
-                      [approval?.uuid]: approval?.feedback,
-                    })
+                    ].rejections[approval?.field].push(approval)
 
                     if (
                       !partnerInfo.approvalStages[cuuid][
@@ -784,9 +784,7 @@ export const filterPartner = (partnerInfo, Categories) => {
 
                     partnerInfo.approvalStages[cuuid][approval?.category_stage][
                       dept
-                    ].rejections[approval?.field].push({
-                      [approval?.uuid]: approval?.feedback,
-                    })
+                    ].rejections[approval?.field].push(approval)
                   }
 
                   // // APPROVED
@@ -1165,9 +1163,8 @@ export const filterFields = (partner) => {
               i < fieldCounts.shortcode[dept].fields.length;
               i++
             ) {
-              const field = fieldCounts.shortcode[dept].fields[i].includes(uuid)
-                ? fieldCounts.shortcode[dept].fields[i]
-                : fieldCounts.shortcode[dept].fields[i] + "-" + uuid
+              const field =
+                fieldCounts.shortcode[dept].fields[i].split("-")[0] + "-" + uuid
               fieldCounts.shortcode[dept].fields[i] = field
             }
           }
@@ -1182,20 +1179,19 @@ export const filterComplianceRequirements = (partner) => {
   const shortcodes = partner?.master?.shortcodes
   if (
     shortcodes?.length > 0 &&
-    !Util.isEmpty(complianceRequirements?.shortcode)
+    !Util.isEmpty(shortcodeComplianceRequqirements?.shortcode)
   ) {
+    complianceRequirements.shortcode = {}
+
     shortcodes.map((shortcode) => {
       if (shortcode.shortcode_uuid || shortcode.uuid) {
         const uuid = shortcode.shortcode_uuid
           ? shortcode.shortcode_uuid
           : shortcode.uuid
 
-        for (const field in complianceRequirements.shortcode) {
-          if (!field.includes(uuid)) {
-            complianceRequirements.shortcode[`${field}-${uuid}`] =
-              complianceRequirements.shortcode[field]
-            delete complianceRequirements.shortcode[field]
-          }
+        for (const field in shortcodeComplianceRequqirements.shortcode) {
+          complianceRequirements.shortcode[`${field}-${uuid}`] =
+            shortcodeComplianceRequqirements.shortcode[field]
         }
       }
     })
@@ -1222,10 +1218,12 @@ export const filterApprovalFields = (partner) => {
           ? shortcode.shortcode_uuid
           : shortcode.uuid
         for (const field in approvalFields) {
-          if (fields.includes(field) && !field.includes(uuid)) {
-            approvalFields[`${field}-${uuid}`] = approvalFields[field]
-            delete approvalFields[field]
-          }
+          fields.map((f) => {
+            if (field.startsWith(f)) delete approvalFields[field]
+          })
+        }
+        for (const field in shortcodeApprovalFields) {
+          approvalFields[`${field}-${uuid}`] = shortcodeApprovalFields[field]
         }
       }
     })
@@ -1455,9 +1453,7 @@ export const partnerApprovals = (partner, category) => {
           )
         }
       }
-      // console.log({ stage, deptField })
     }
-    // console.log({ fields })
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         fields[field] = fields[field].sort((s1, s2) =>

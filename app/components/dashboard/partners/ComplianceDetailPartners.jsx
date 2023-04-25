@@ -12,7 +12,8 @@ import Activities from "@/app/components/dashboard/compliance/Activities"
 import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator"
 
 export default function ComplianceDetailPartners({ activeStage, category }) {
-  const { getStages, categories, setActiveStage } = usePartners()
+  const { updateStageStatus, getStages, categories, setActiveStage } =
+    usePartners()
   const Stages = getStages(category, categories)
 
   const [view, setView] = useState("overview")
@@ -20,6 +21,13 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
   const [navlabels, setNavLabels] = useState({ prev: null, next: null })
   const navigation = Stages.forms
 
+  useEffect(() => {
+    updateStageStatus(category, activeStage)
+    // console.log({
+    //   rejections:
+    //     partner.approvalStages[category.category_uuid][stage]?.rejections,
+    // })
+  }, [])
   useEffect(() => {
     setFeedbacks(category.feedbacks[activeStage])
   }, [activeStage, category])

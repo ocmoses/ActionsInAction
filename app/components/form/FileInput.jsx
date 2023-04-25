@@ -71,13 +71,6 @@ function FileInput({
     const filesize = file["size"]
     const fsize = filesize / 1024 / 1024
     const max = maxFileSize / 1024 / 1024
-    // console.log("Uploaded file", file)
-    // console.log("filesize", filesize)
-    // console.log("fsize", fsize.toFixed(2))
-    // console.log("max", max.toFixed(2))
-    // console.log("max2", Math.round(max * 100) / 100)
-    // console.log("fsize2", Math.ceil(fsize * 100) / 100)
-    // console.log("maxFileSize", maxFileSize)
 
     if (validImageTypes.includes(fileType)) {
       if (filesize > maxFileSize) {

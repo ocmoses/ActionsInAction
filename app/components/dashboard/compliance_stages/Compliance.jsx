@@ -10,7 +10,7 @@ export default function Compliance({ category, stage }) {
             category={category}
             stage={stage}
             field="company_type"
-            type="text"
+            type="company_type"
           />
         )}
         {approvalFields.rc_no?.approval && (
@@ -19,6 +19,14 @@ export default function Compliance({ category, stage }) {
             stage={stage}
             field="rc_no"
             type="text"
+          />
+        )}
+        {approvalFields.cac_doc?.approval && (
+          <ComplianceLabel
+            category={category}
+            stage={stage}
+            field="cac_doc"
+            type="file"
           />
         )}
         {approvalFields.tin_no?.approval && (
@@ -42,14 +50,6 @@ export default function Compliance({ category, stage }) {
             category={category}
             stage={stage}
             field="memart_doc"
-            type="file"
-          />
-        )}
-        {approvalFields.cac_doc?.approval && (
-          <ComplianceLabel
-            category={category}
-            stage={stage}
-            field="cac_doc"
             type="file"
           />
         )}

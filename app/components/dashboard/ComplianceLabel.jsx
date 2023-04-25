@@ -1,6 +1,5 @@
 import {
   complianceRequirements,
-  approvalFields,
   departments,
   company_type,
   license_type,
@@ -15,7 +14,7 @@ import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { filterPartner } from "@/app/modules/utilities"
+import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
 import DeptBadge from "./compliance/DeptBadge"
 import useRoles from "@/hooks/useRoles"
 
@@ -37,10 +36,12 @@ export default function ComplianceLabel({
     setApproving,
     categories,
     setPartner,
+    partner,
   } = useAdmins()
   const [approve, setApprove] = useState(false)
   const [reject, setReject] = useState(false)
   const [{ setError, clearErrors }] = useErrors(null)
+  const Approvals = partnerApprovals(partner, category)
 
   useEffect(() => {
     setApproving(false)
@@ -57,6 +58,7 @@ export default function ComplianceLabel({
       setApprove(true)
     }
   }
+
   const handleApproveField = async (status, feedback) => {
     if (approving) return
     setApproving(true)
@@ -92,7 +94,7 @@ export default function ComplianceLabel({
   const approveField = async () => {
     await handleApproveField(
       "approved",
-      `${approvalFields[field.split("-")[0]].title} approved`
+      `${complianceRequirements[stage][field].title} approved`
     )
   }
   const rejectField = async (reason) => {
@@ -159,56 +161,34 @@ export default function ComplianceLabel({
       if (
         dept.code in fieldCounts[stage] &&
         "fields" in fieldCounts[stage][dept.code] &&
-        fieldCounts[stage][dept.code].fields.includes(field.split("-")[0])
+        fieldCounts[stage][dept.code].fields.includes(field)
       )
         Departments.push(dept)
       DeptCode.push(dept.code)
     })
   let icon
   if (
-    category?.approvedFields[category.category_uuid] &&
-    admin.department_code in category?.approvedFields[category.category_uuid] &&
-    field in
-      category?.approvedFields[category.category_uuid][admin.department_code]
+    Approvals &&
+    Approvals[stage] &&
+    admin.department_code in Approvals[stage] &&
+    field in Approvals[stage][admin.department_code]
   ) {
-    if (
-      category?.approvedFields[category.category_uuid][admin.department_code][
-        field
-      ] === "approved"
-    ) {
+    if (Approvals[stage][admin.department_code][field] === "approved") {
       icon = <span className="text-green-600 w-2 h-2">{checkedIcon}</span>
     }
-    if (
-      category?.approvedFields[category.category_uuid][admin.department_code][
-        field
-      ] === "rejected"
-    ) {
+    if (Approvals[stage][admin.department_code][field] === "rejected") {
       icon = <span className="text-red-600 w-2 h-2">{rejectIcon}</span>
     }
-    if (
-      category?.approvedFields[category.category_uuid][admin.department_code][
-        field
-      ] === "corrected"
-    ) {
+    if (Approvals[stage][admin.department_code][field] === "corrected") {
       icon = <span className="text-blue-600 w-2 h-2">{correctedIcon}</span>
     }
   }
-  // console.log({
-  //   "fieldCounts[stage][admin.department_code].fields":
-  //     fieldCounts[stage][admin.department_code]?.fields,
-  // })
-  // console.log({ field: field })
-  // console.log({ field0: field.split("-")[0] })
-  //   console.log({
-  //     "complianceRequirements[stage]": complianceRequirements[stage],
-  //   })
+
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
         "fields" in fieldCounts[stage][admin.department_code] &&
-        fieldCounts[stage][admin.department_code].fields.includes(
-          field.split("-")[0]
-        ))) && (
+        fieldCounts[stage][admin.department_code].fields.includes(field))) && (
       <div
         className={`w-full p-3 ${
           activeApproval === field ? " rounded-xl bg-[#313131]" : ""
@@ -233,7 +213,7 @@ export default function ComplianceLabel({
           />
         )}
         {stage in complianceRequirements &&
-          `${field.split("-")[0]}` in complianceRequirements[stage] && (
+          `${field}` in complianceRequirements[stage] && (
             <div className="flex relative items-start gap-3 w-full">
               {activeApproval && activeApproval !== field && (
                 <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
@@ -277,8 +257,7 @@ export default function ComplianceLabel({
                   <div className="flex flex-col gap-0 w-full">
                     <span className="text-[12px] m-0 text-[#999999]">
                       {stage in complianceRequirements &&
-                        complianceRequirements[stage][field.split("-")[0]]
-                          ?.title}
+                        complianceRequirements[stage][field]?.title}
                     </span>
                     <div className="flex gap-2 items-start">
                       {type === "text" && (
@@ -302,7 +281,6 @@ export default function ComplianceLabel({
                             )?.label}
                         </span>
                       )}
-
                       {type === "company_state" && (
                         <span className="text-white text-[14px] font-bold">
                           {category[field] &&
@@ -448,7 +426,7 @@ export default function ComplianceLabel({
                   admin.department_code in fieldCounts[stage] &&
                   "fields" in fieldCounts[stage][admin.department_code] &&
                   fieldCounts[stage][admin.department_code].fields.includes(
-                    field.split("-")[0]
+                    field
                   ) &&
                   (!(
                     admin?.department_code &&

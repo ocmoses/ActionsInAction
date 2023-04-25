@@ -239,6 +239,7 @@ export default function useAdmins() {
     if (!success) return { success: false, error: data.message }
     return { success: true, data, error: null }
   }
+
   return {
     ...states,
     ...actions,
@@ -248,6 +249,5 @@ export default function useAdmins() {
     getStages,
     ApproveField,
     rejectionReasons,
-    // getRejectionReasons,
   }
 }

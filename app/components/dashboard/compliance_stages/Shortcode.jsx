@@ -17,7 +17,7 @@ export default function Shortcode({ category, stage }) {
             >
               {shtcd.shortcode?.shortcodes?.length > 0 && (
                 <>
-                  {approvalFields.shortcodes?.approval && (
+                  {approvalFields[`shortcodes-${shtcd.uuid}`]?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -26,7 +26,7 @@ export default function Shortcode({ category, stage }) {
                       type="shortcodes"
                     />
                   )}
-                  {approvalFields.shortcode_doc?.approval && (
+                  {approvalFields[`shortcode_doc-${shtcd.uuid}`]?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -35,7 +35,8 @@ export default function Shortcode({ category, stage }) {
                       type="shortcode_doc"
                     />
                   )}
-                  {approvalFields.shortcode_issue_date?.approval && (
+                  {approvalFields[`shortcode_issue_date-${shtcd.uuid}`]
+                    ?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -44,7 +45,8 @@ export default function Shortcode({ category, stage }) {
                       type="shortcode_issue_date"
                     />
                   )}
-                  {approvalFields.shortcode_expiry_date?.approval && (
+                  {approvalFields[`shortcode_expiry_date-${shtcd.uuid}`]
+                    ?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -53,7 +55,8 @@ export default function Shortcode({ category, stage }) {
                       type="shortcode_expiry_date"
                     />
                   )}
-                  {approvalFields.pricing_shortcodes?.approval && (
+                  {approvalFields[`pricing_shortcodes-${shtcd.uuid}`]
+                    ?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -62,7 +65,8 @@ export default function Shortcode({ category, stage }) {
                       type="pricing_shortcodes"
                     />
                   )}
-                  {approvalFields.pricing_issue_date?.approval && (
+                  {approvalFields[`pricing_issue_date-${shtcd.uuid}`]
+                    ?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -71,7 +75,8 @@ export default function Shortcode({ category, stage }) {
                       type="pricing_issue_date"
                     />
                   )}
-                  {approvalFields.nlrc_license_type?.approval && (
+                  {approvalFields[`pricing_expiry_date-${shtcd.uuid}`]
+                    ?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}
@@ -80,7 +85,7 @@ export default function Shortcode({ category, stage }) {
                       type="pricing_expiry_date"
                     />
                   )}
-                  {approvalFields.pricing_doc?.approval && (
+                  {approvalFields[`pricing_doc-${shtcd.uuid}`]?.approval && (
                     <ComplianceLabel
                       category={category}
                       category_shortcode={shtcd}

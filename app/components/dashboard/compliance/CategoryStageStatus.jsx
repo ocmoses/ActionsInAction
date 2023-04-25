@@ -10,14 +10,16 @@ export default function CategoryStageStatus({ stage, category, partner }) {
   const { admin } = useAdmins()
 
   const Approvals = partnerApprovals(partner, category)
-  // console.log({ ApprovalsStatus: Approvals })
+  console.log({ stage, Approvals })
   let dept
   let counts
-  if (!isSuperadmin() && admin && admin.department_code) {
-    dept = admin.department_code
-    counts = Approvals[stage][dept]?.counts
-  } else {
-    counts = Approvals[stage].counts
+  if (Approvals) {
+    if (!isSuperadmin() && admin && admin.department_code) {
+      dept = admin.department_code
+      counts = Approvals[stage][dept]?.counts
+    } else {
+      counts = Approvals[stage].counts
+    }
   }
 
   const { bg, textcolor, iconcolor, icon, text } = getStatuses(

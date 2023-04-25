@@ -3,10 +3,11 @@ import Providers from "@/app/Providers"
 import Session from "@/app/Session"
 import ResponsiveLabel from "@/app/components/ResponsiveLabel"
 import RouteLoader from "@/app/components/RouteLoader"
+import RemoteEndpoints from "@/app/modules/endpoints"
 import { userData, Decrypt } from "@/app/modules/utilities"
-import { apiURL } from "@/app/modules/constants"
 import { cookies } from "next/headers"
 import { getCategories } from "@/app/modules/categories"
+import { apikey } from "@/app/modules/constants"
 
 const getServerSession = async () => {
   try {
@@ -21,126 +22,100 @@ const getServerSession = async () => {
     const user_id = nextCookies.has("user_id")
       ? nextCookies.get("user_id")?.value
       : null
-
     // Admin session
     const adminToken = nextCookies.has("token")
       ? nextCookies.get("token")?.value
       : null
     const uuid = nextCookies.has("uuid") ? nextCookies.get("uuid")?.value : null
-    console.log({ uuid })
     if (uuid) {
-      console.log({ uuidfound: uuid })
       // GET USER INFO
-      const Decrypttoken = token ? Decrypt(adminToken) : null
-      return {
-        success: true,
-        error: null,
-        data: {
-          created_at: "2023-02-27T07:01:59.000000Z",
-          department: "Charging VAS and Financial Services NG",
-          email: "olabode.gbolu@mtn.com",
-          id: 2,
-          role: "super-admin",
-          updated_at: "2023-02-27T07:01:59.000000Z",
-          username: "olabodg",
-          uuid: "806d6188-b664-11ed-84a8-f23324f5673",
-        },
-        type: "admin",
-        token: adminToken,
-      }
-      // try {
-      //   const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
-      //     headers: {
-      //       apikey: `${process.env.APIKEY}`,
-      //       "Content-Type": "application/json",
-      //       redirect: "follow",
-      //       referrerPolicy: "no-referrer",
-      //       Authorization: `Bearer ${authToken}`,
-      //     },
-      //   }).catch((error) => {
-      //     return {
-      //       success: false,
-      //       error: error.message,
-      //       data: null,
-      //     }
-      //   })
-      //   if (response) {
-      //     const { success, data } = await response.json()
-      //     if (response?.ok) {
-      //       const User = userData(data)
-      //       return { success, error: null, data: User }
-      //     } else {
-      //       if (data) {
-      //         return { success: false, error: data.error, data: null }
-      //       } else {
-      //         return {
-      //           success: false,
-      //           error:
-      //             "Error. No data was returned from the server. Please try again",
-      //           data: null,
-      //         }
-      //       }
-      //     }
-      //   } else {
-      //     return {
-      //       success: false,
-      //       error: "Error reaching the server. Please check your connection",
-      //       data: null,
-      //     }
-      //   }
-      // } catch (error) {
-      //   return { success: false, error: error.message, data: null }
-      // }
-    } else if (user_id) {
-      console.log({ user_idfound: user_id })
-      // GET USER INFO
-      const authToken = token ? Decrypt(token) : null
-      const partnerID = partnerid ? Decrypt(partnerid) : null
       try {
-        const response = await fetch(`${apiURL}/v1/auth/authenticated-user`, {
+        const response = await fetch(RemoteEndpoints.ADMIN_AUTH_USER, {
           headers: {
-            apikey: `${process.env.APIKEY}`,
+            apikey,
             "Content-Type": "application/json",
             redirect: "follow",
             referrerPolicy: "no-referrer",
-            Authorization: `Bearer ${authToken}`,
+            token: adminToken,
           },
         }).catch((error) => {
-          console.log("getServerSession error", error)
+          console.log({ error })
           return {
             success: false,
             error: error.message,
             data: null,
           }
         })
-        if (response) {
-          const { success, data } = await response.json()
-          if (response?.ok) {
-            const User = userData(data)
-            if (partnerID && User.partners?.length > 0) {
-              User.partnerID = partnerID
-              User.partner = User.partners.find((p) => p.uuid === partnerID)
-            }
-            return { success, error: null, data: User, type: "user" }
-          } else {
-            if (data) {
-              return { success: false, error: data.error, data: null }
-            } else {
-              return {
-                success: false,
-                error: "No data was return from the server. Please try again",
-                data: null,
-              }
-            }
-          }
-        } else {
+        if (!response)
           return {
             success: false,
             error: "Error reaching the server. Please check your connection",
             data: null,
           }
+        const { success, data } = await response.json()
+        if (response?.ok)
+          return {
+            success,
+            error: null,
+            data: data.user,
+            type: "admin",
+            token: adminToken,
+          }
+        if (data?.message)
+          return { success: false, error: data.message, data: null }
+        return {
+          success: false,
+          error: "No data was return from the server. Please try again",
+          data: null,
         }
       } catch (error) {
+        return { success: false, error: error.message, data: null }
+      }
+    } else if (user_id) {
+      // GET USER INFO
+      const authToken = token ? Decrypt(token) : null
+      const partnerID = partnerid ? Decrypt(partnerid) : null
+      try {
+        const response = await fetch(RemoteEndpoints.AUTH_USER, {
+          headers: {
+            apikey,
+            "Content-Type": "application/json",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }).catch((error) => {
+          return {
+            success: false,
+            error: error.message,
+            data: null,
+          }
+        })
+        if (!response)
+          return {
+            success: false,
+            error: "Error reaching the server. Please check your connection",
+            data: null,
+          }
+        const { success, data } = await response.json()
+        if (response?.ok) {
+          const User = userData(data)
+          if (partnerID && User.partners?.length > 0) {
+            User.partnerID = partnerID
+            User.partner = User.partners.find((p) => p.uuid === partnerID)
+          }
+          return { success, error: null, data: User, type: "user" }
+        } else {
+          if (data?.message)
+            return { success: false, error: data.error, data: null }
+          return {
+            success: false,
+            error: "No data was return from the server. Please try again",
+            data: null,
+          }
+        }
+      } catch (error) {
+        console.log({ error })
         return { success: false, error: error.message, data: null }
       }
     } else {
@@ -158,19 +133,17 @@ const getServerSession = async () => {
 export default async function RootLayout({ children }) {
   const resultGetServerSession = getServerSession()
   const resultGetCategories = getCategories(process.env.APIKEY)
-
   // Wait for the promises to resolve
   const [sessionData, categoriesData] = await Promise.all([
     resultGetServerSession,
     resultGetCategories,
   ])
-  console.log({ sessionData })
   const categories = {
     success: categoriesData.success,
     data: null,
     error: null,
   }
-
+  console.log({ categoriesData })
   if (categoriesData) {
     if (categoriesData?.success) {
       categories.data = categoriesData.data
@@ -180,7 +153,6 @@ export default async function RootLayout({ children }) {
   } else {
     categories.error = "Error fetching categories"
   }
-
   const serverSession = {
     status: sessionData?.data ? "authenticated" : "unauthenticated",
     User: sessionData?.data ?? null,
@@ -188,21 +160,37 @@ export default async function RootLayout({ children }) {
     type: sessionData?.type,
     token: sessionData?.type === "admin" ? sessionData?.token : "",
   }
-  console.log({ serverSession })
+  const error = categoriesData?.error
+    ? categoriesData?.error
+    : sessionData?.error
+    ? sessionData?.error
+    : null
+  console.log({ error })
   return (
-    <html lang="en">
-      <head />
-      <body>
-        <div id="portals" className="relative"></div>
-        {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
+    <>
+      {/* {error ? (
+        <GlobalError error={error} />
+      ) : ( */}
+      <html lang="en">
+        <head />
+        <body>
+          <div id="portals" className="relative"></div>
+          {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
 
-        <Providers>
-          <Session serverSession={serverSession} categories={categories}>
-            {<RouteLoader />}
-            {children}
-          </Session>
-        </Providers>
-      </body>
-    </html>
+          <Providers>
+            <Session
+              serverSession={serverSession}
+              categories={categories}
+              error={error}
+            >
+              {<RouteLoader />}
+              {children}
+            </Session>
+          </Providers>
+          <div id="modalPortal"></div>
+        </body>
+      </html>
+      {/* )} */}
+    </>
   )
 }

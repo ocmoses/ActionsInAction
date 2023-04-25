@@ -1,5 +1,5 @@
 export default function ButtonPrev(props) {
-  const noicon = props.noicon ? true : false
+  const noicon = props.noicon && props.noicon === "yes" ? true : false
   return (
     <button
       className={`rounded-full ${

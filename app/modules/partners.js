@@ -237,9 +237,9 @@
 //           shortcode: userdata.shortcode ?? "",
 //           shortcode_issue_date: userdata.shortcode_issue_date ?? "",
 //           shortcode_expiry_date: userdata.shortcode_expiry_date ?? "",
-//           shortcode_price_issue_date: userdata.shortcode_price_issue_date ?? "",
-//           shortcode_price_expiry_date:
-//             userdata.shortcode_price_expiry_date ?? "",
+//           shortcode_pricing_issue_date: userdata.shortcode_pricing_issue_date ?? "",
+//           shortcode_pricing_expiry_date:
+//             userdata.shortcode_pricing_expiry_date ?? "",
 //           shortcode_doc: userdata.shortcode_doc ?? "",
 //           shortcode_approval_doc: userdata.shortcode_approval_doc ?? "",
 //         }),

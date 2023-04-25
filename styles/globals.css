@@ -13,26 +13,28 @@
     @apply bg-[#030303];
     @apply min-h-screen;
   }
-  .scrollbar::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  /* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #fed428 #e1e1e0;
   }
 
-  .scrollbar::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: #212121;
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 8px;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: #111111;
-    border-radius: 100vh;
-    border: 0px solid #f6f7ed;
-    cursor: pointer !important;
+  *::-webkit-scrollbar-track {
+    background: #e1e1e0;
   }
 
-  /* .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #c0a0b9;
-  } */
+  *::-webkit-scrollbar-thumb {
+    background-color: #fed428;
+    border-radius: 9px;
+    border: 2px solid #cca000;
+  }
+
   .layout-center {
     @apply flex md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-start;
   }
@@ -49,11 +51,16 @@
     line-height: 24px;
     letter-spacing: 0em;
   }
-  -z-1 {
+  .-z-1 {
     z-index: -1 !important;
   }
-  -z-2 {
+  .-z-2 {
     z-index: -2 !important;
+  }
+  .ellipsis {
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    overflow: hidden !important;
   }
   .border-1 {
     border-width: 1px !important;

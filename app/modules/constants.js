@@ -139,7 +139,6 @@ export const forms = {
     label: "Company information",
     shortname: "Company information",
     subtitle: "",
-    listdesc: "",
     listdesc: "Company Name, Partner Type, Company Address, etc    ",
     hand: "",
     fields: {
@@ -181,9 +180,6 @@ export const forms = {
       rc_no: "RC Number",
       tin_no: "Tax identification number",
       company_type: "Company type",
-      // tin_doc: 'TIN Document',
-      // memart_doc: 'Memart certificate',
-      // cac_doc: 'CAC Registration Certificate'
     },
   },
   ncclicense: {
@@ -672,6 +668,51 @@ export const complianceRequirements = {
     },
   },
 }
+export const shortcodeComplianceRequqirements = {
+  shortcode: {
+    shortcode_doc: {
+      title: "Short code document",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+    shortcodes: {
+      title: "Short code",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    shortcode_issue_date: {
+      title: "Issue date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+    shortcode_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+    },
+    pricing_shortcodes: {
+      title: "Approved pricing shortcode",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_issue_date: {
+      title: "Pricing Issue date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    pricing_expiry_date: {
+      title: "Pricing Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+    pricing_doc: {
+      title: "NCC Pricing approval",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+    },
+  },
+}
 export const compliance = {
   companydetail: {
     company_name: {
@@ -1107,6 +1148,57 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM"],
+  },
+}
+export const shortcodeApprovalFields = {
+  // shortcode: {
+  shortcodes: {
+    title: "Short codes",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA"],
+  },
+  shortcode_doc: {
+    title: "Short code document",
+    categories: ["VAS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+  },
+  shortcode_issue_date: {
+    title: "Issue date",
+    categories: ["VAS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+  },
+  shortcode_expiry_date: {
+    title: "Expiry date",
+    categories: ["VAS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+  },
+  pricing_shortcodes: {
+    title: "Approved pricing shortcode",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA"],
+  },
+  pricing_issue_date: {
+    title: "Pricing approval Issue date",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA"],
+  },
+  pricing_expiry_date: {
+    title: "Pricing approval Expiry date",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA"],
+  },
+  pricing_doc: {
+    title: "NCC Pricing approval",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM", "LEGA"],
   },
 }
 const counts = {}

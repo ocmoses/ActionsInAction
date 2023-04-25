@@ -7,16 +7,16 @@ export default function Shortcode({ category, stage }) {
       <div className="flex flex-col items-start gap-6 w-full">
         {category.shortcodes.length > 0 &&
           category.shortcodes.map((shtcd, index) => (
-            <div
-              key={shtcd.uuid}
-              className={`flex flex-col items-start gap-4 w-full ${
-                category.shortcodes.length > 0 &&
-                index < category.shortcodes.length - 1 &&
-                "border-b-2 border-b-white/40 pb-10 mb-6"
-              } `}
-            >
+            <>
               {shtcd.shortcode?.shortcodes?.length > 0 && (
-                <>
+                <div
+                  key={shtcd.uuid}
+                  className={`flex flex-col items-start gap-4 w-full ${
+                    category.shortcodes.length > 0 &&
+                    index < category.shortcodes.length - 1 &&
+                    ""
+                  } `}
+                >
                   {approvalFields[`shortcodes-${shtcd.uuid}`]?.approval && (
                     <ComplianceLabel
                       category={category}
@@ -94,9 +94,9 @@ export default function Shortcode({ category, stage }) {
                       type="pricing_doc"
                     />
                   )}
-                </>
+                </div>
               )}
-            </div>
+            </>
           ))}
       </div>
     )

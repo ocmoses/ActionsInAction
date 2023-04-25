@@ -8,6 +8,7 @@ const doLogin = async (body, req, res, categories) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",

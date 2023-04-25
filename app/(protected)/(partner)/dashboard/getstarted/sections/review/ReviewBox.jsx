@@ -98,8 +98,6 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
         return setError({ review: result.error })
       }
 
-      console.log("result?.data?.partner", result?.data?.partner)
-      console.log({ category })
       setCategory(category)
       updatePartner(result?.data?.partner)
       setForm("complete")

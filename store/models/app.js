@@ -1,4 +1,6 @@
 import { action, thunk } from "easy-peasy"
+import RemoteEndpoints from "@/app/modules/endpoints"
+
 const app = {
   count: 0,
   errors: {},
@@ -23,9 +25,12 @@ const app = {
   activeCategory: {},
   tmpUserUUID: null,
   showGetstartedLink: false,
+  is_previewing_doc: false,
+  doc_preview_path: "",
   increaseCount: action((state, key) => {
     return state.count++
   }),
+  rejectionReasons: null,
   clear: action((state) => {
     state.count = 0
     state.errors = {}
@@ -50,12 +55,134 @@ const app = {
     state.activeCategory = {}
     state.tmpUserUUID = null
     state.showGetstartedLink = false
+    state.is_previewing_doc = false
+    state.doc_preview_path = ""
+    state.rejectionReasons = null
+  }),
+  setRejectionReasons: action((state, reasons) => {
+    state.rejectionReasons = reasons
+  }),
+  getRejectionReasons: thunk(async (actions, current, helpers) => {
+    const states = helpers.getStoreState()
+    const result = {
+      success: true,
+      data: [
+        {
+          id: 1,
+          uuid: "27cc7734-d479-11ed-ba7c-acde48001122",
+          rejection_reason: "Incomplete Information",
+          created_at: "2023-04-06T13:46:00.000000Z",
+          updated_at: "2023-04-06T13:46:00.000000Z",
+        },
+        {
+          id: 2,
+          uuid: "27cc905c-d479-11ed-ba7c-acde48001122",
+          rejection_reason: "Incorrect Information",
+          created_at: "2023-04-06T13:46:00.000000Z",
+          updated_at: "2023-04-06T13:46:00.000000Z",
+        },
+        {
+          id: 3,
+          uuid: "4b9f8002-d479-11ed-ba7c-acde48001122",
+          rejection_reason: "Inconsistent Information",
+          created_at: "2023-04-06T13:47:17.000000Z",
+          updated_at: "2023-04-06T13:47:17.000000Z",
+        },
+        {
+          id: 4,
+          uuid: "252ac1ba-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Invalid, Near Expiry or Expired Document",
+          created_at: "2023-04-12T14:48:25.000000Z",
+          updated_at: "2023-04-12T14:48:25.000000Z",
+        },
+        {
+          id: 5,
+          uuid: "252ad0a6-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Poor Quality (Contents Not Clear)",
+          created_at: "2023-04-12T14:48:25.000000Z",
+          updated_at: "2023-04-12T14:48:25.000000Z",
+        },
+        {
+          id: 6,
+          uuid: "252ad98e-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Non-Compliance with Guidelines",
+          created_at: "2023-04-12T14:49:42.000000Z",
+          updated_at: "2023-04-12T14:49:42.000000Z",
+        },
+        {
+          id: 7,
+          uuid: "252ae172-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Suspected Fraud",
+          created_at: "2023-04-12T14:50:16.000000Z",
+          updated_at: "2023-04-12T14:50:16.000000Z",
+        },
+        {
+          id: 8,
+          uuid: "252aec26-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Inappropriate Content",
+          created_at: "2023-04-12T14:50:41.000000Z",
+          updated_at: "2023-04-12T14:50:41.000000Z",
+        },
+        {
+          id: 9,
+          uuid: "75cfb5b2-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Failure to meet legal & regulatory requirements.",
+          created_at: "2023-04-12T14:51:44.000000Z",
+          updated_at: "2023-04-12T14:51:44.000000Z",
+        },
+        {
+          id: 10,
+          uuid: "75cfbf12-d939-11ed-ba7c-acde48001122",
+          rejection_reason:
+            "No signature, date, contact name and position provided by the signatory to the document.",
+          created_at: "2023-04-12T14:51:44.000000Z",
+          updated_at: "2023-04-12T14:51:44.000000Z",
+        },
+        {
+          id: 11,
+          uuid: "75cfc6a6-d939-11ed-ba7c-acde48001122",
+          rejection_reason: "Others",
+          created_at: "2023-04-12T14:53:26.000000Z",
+          updated_at: "2023-04-12T14:53:26.000000Z",
+        },
+      ],
+    }
+    // const response = await fetch(RemoteEndpoints.REJECTION_RESONS, {
+    //   cache: "no-store",
+    //   next: { revalidate: 86400 },
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    // const result = await response.json()
+    if (result?.success) {
+      const reasons = result?.data
+      actions.setRejectionReasons(reasons)
+      // console.log({ reasons })
+      return { reasons }
+    }
+    return actions.setError({
+      app:
+        result?.data?.message ??
+        "Something went wrong. Please check your connection and try again",
+    })
+    // return {
+    //   error:
+    //     result?.data?.message ??
+    //     "Something went wrong. Please check your connection and try again",
+    // }
   }),
   setRouteloading: action((state, status) => {
     state.routeloading = status ?? false
   }),
   setTmpUserUUID: action((state, uuid) => {
     state.tmpUserUUID = uuid
+  }),
+  setIsPreviewingDoc: action((state, status) => {
+    state.is_previewing_doc = status ?? false
+  }),
+  setPreviewingPath: action((state, path) => {
+    state.doc_preview_path = path ?? ""
   }),
   toggleGetstartedLink: action((state, status) => {
     state.showGetstartedLink = status ?? false

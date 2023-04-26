@@ -5,7 +5,6 @@ export default function RejectionReasons({ title, field, approvals, onclick }) {
     s1.created_at > s2.created_at ? -1 : s1.created_at < s2.created_at ? 1 : 0
   )
   const rejections = fielddata[0]
-  console.log({ rejections })
   return (
     fielddata.length > 0 && (
       <div className="flex gap-4 w-full p-[16px] mt-3 bg-white/10 rounded-[8px]">

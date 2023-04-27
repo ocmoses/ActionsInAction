@@ -52,7 +52,7 @@ export default function UserPercentage({
                 fontSize: `${config.textsize}px`,
               }}
             >
-              {percent ?? 0}%
+              {percent ?? 0} %
             </span>
           )}
         </div>

@@ -38,7 +38,8 @@ export default function PartnerCategories({
             category.category_name && (
               <div
                 onClick={() =>
-                  category.status === "open"
+                  category.status === "open" ||
+                  partner?.contract_status === "not_started"
                     ? onclick(category.uuid)
                     : router.push(
                         `${PageRoutes.partnerCompliance}/${category.category_uuid}`
@@ -63,7 +64,10 @@ export default function PartnerCategories({
                             ? 20
                             : 15
                         }
-                        percent={category.percentage}
+                        percent={
+                          partner?.sections[category.category_uuid].percent
+                        }
+                        // percent={category.percentage}
                       />
                     ) : (
                       <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">

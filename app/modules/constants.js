@@ -35,6 +35,11 @@ export const status_type = {
   processing: "Processing",
   not_started: "Pending",
 }
+export const statusOptions = [
+  { value: "all", label: "All" },
+  { value: "processing", label: "Processing" },
+  { value: "not_started", label: "Pending" },
+]
 export const stages = [
   "companydetail",
   "compliance",
@@ -44,6 +49,8 @@ export const stages = [
   "indemnity",
   "accountinfo",
 ]
+export const categoryCompletionPercentage = 100
+
 export const validities = {
   ncc: "5 years",
   nlrc_lottery: "10 years",

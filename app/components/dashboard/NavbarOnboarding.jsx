@@ -7,7 +7,7 @@ export default function NavbarOnboarding({
   setIsOnboarding,
   scrollpage,
 }) {
-  const { category } = usePartners()
+  const { partner, category } = usePartners()
 
   const cancelOnboarding = () => {
     setIsOnboarding(false)
@@ -54,13 +54,13 @@ export default function NavbarOnboarding({
               size={22}
               thickness={2}
               textsize={8}
-              percent={category?.percentage ?? 0}
+              percent={partner?.sections[category?.category_uuid].percent ?? 0}
               hidelabel={true}
             />
           )}
           <span className="flex text-white text-[12px] flex-nowrap">
-            {category?.percentage ?? 0}%
-            <span className="hidden sm:flex"> completed</span>
+            {partner?.sections[category?.category_uuid].percent ?? 0}%
+            <span className="hidden sm:flex"> &nbsp;completed</span>
           </span>
         </div>
         <span

@@ -3,8 +3,8 @@ import RemoteEndpoints from "@/app/modules/endpoints"
 import useApp from "@/hooks/useApp"
 import { useEffect, useState } from "react"
 import { filterCategory, getstages } from "@/app/modules/utilities"
-// import { getRejectionReasons } from "@/app/modules/fetchData"
 import { useStoreActions, useStoreState } from "easy-peasy"
+import { filterPartner } from "@/app/modules/utilities"
 
 export default function useAdmins() {
   const states = useStoreState((action) => action.admins)
@@ -33,45 +33,49 @@ export default function useAdmins() {
     // console.log({ category, categories })
     return getstages(category, categories)
   }
-  const getAllPartners = async () => {
+  const getAllPartners = async (page, perPage, contractStatus) => {
     try {
+      const params = []
+      if (page) params.push(`page=${page}`)
+      if (perPage) params.push(`per_page=${perPage}`)
+      if (contractStatus) params.push(`contract_status=${contractStatus}`)
+
       setProcessing(true)
-      const response = await fetch(RemoteEndpoints.ALL_PARTNERS, {
-        cache: "no-store",
-        next: { revalidate: 120 },
-        headers: {
-          token: states.token,
-          "Content-Type": "application/json",
-        },
-      })
+      const response = await fetch(
+        `${RemoteEndpoints.ALL_PARTNERS}?${
+          params.length > 0 ? params.join("&") : ""
+        }`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+          },
+        }
+      )
       const result = await response.json()
       setProcessing(false)
       if (result?.success) {
-        const PartnersByStatus = {}
-        const PartnersByType = {}
-        const allPartners = result.data?.partners.data
-        const listStatus = []
-        const listTypes = []
-        allPartners.map((partner) => {
-          if (!PartnersByStatus[partner.contract_status]) {
-            PartnersByStatus[partner.contract_status] = []
-            listStatus.push(partner.contract_status)
-          }
-          if (!PartnersByType[partner.onboarding_type]) {
-            PartnersByType[partner.onboarding_type] = []
-            listTypes.push(partner.onboarding_type)
-          }
-          PartnersByStatus[partner.contract_status].push(partner)
-          PartnersByType[partner.onboarding_type].push(partner)
-        })
+        const partners = result.data?.partners.data
+        const navigation = {
+          current_page: result?.data?.partners?.current_page,
+          first_page_url: result?.data?.partners?.first_page_url,
+          from: result?.data?.partners?.from,
+          last_page: result?.data?.partners?.last_page,
+          last_page_url: result?.data?.partners?.last_page_url,
+          links: result?.data?.partners?.links,
+          next_page_url: result?.data?.partners?.next_page_url,
+          path: result?.data?.partners?.path,
+          per_page: result?.data?.partners?.per_page,
+          prev_page_url: result?.data?.partners?.prev_page_url,
+          to: result?.data?.partners?.to,
+          total: result?.data?.partners?.total,
+        }
+
         return {
-          partners: {
-            all: allPartners,
-            by_status: PartnersByStatus,
-            by_type: PartnersByType,
-          },
-          listStatus,
-          listTypes,
+          partners,
+          navigation,
         }
       }
       return {
@@ -87,112 +91,6 @@ export default function useAdmins() {
       }
     }
   }
-  // const getRejectionReasons = async () => {
-  //   const result = {
-  //     success: true,
-  //     data: [
-  //       {
-  //         id: 1,
-  //         uuid: "27cc7734-d479-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Incomplete Information",
-  //         created_at: "2023-04-06T13:46:00.000000Z",
-  //         updated_at: "2023-04-06T13:46:00.000000Z",
-  //       },
-  //       {
-  //         id: 2,
-  //         uuid: "27cc905c-d479-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Incorrect Information",
-  //         created_at: "2023-04-06T13:46:00.000000Z",
-  //         updated_at: "2023-04-06T13:46:00.000000Z",
-  //       },
-  //       {
-  //         id: 3,
-  //         uuid: "4b9f8002-d479-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Inconsistent Information",
-  //         created_at: "2023-04-06T13:47:17.000000Z",
-  //         updated_at: "2023-04-06T13:47:17.000000Z",
-  //       },
-  //       {
-  //         id: 4,
-  //         uuid: "252ac1ba-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Invalid, Near Expiry or Expired Document",
-  //         created_at: "2023-04-12T14:48:25.000000Z",
-  //         updated_at: "2023-04-12T14:48:25.000000Z",
-  //       },
-  //       {
-  //         id: 5,
-  //         uuid: "252ad0a6-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Poor Quality (Contents Not Clear)",
-  //         created_at: "2023-04-12T14:48:25.000000Z",
-  //         updated_at: "2023-04-12T14:48:25.000000Z",
-  //       },
-  //       {
-  //         id: 6,
-  //         uuid: "252ad98e-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Non-Compliance with Guidelines",
-  //         created_at: "2023-04-12T14:49:42.000000Z",
-  //         updated_at: "2023-04-12T14:49:42.000000Z",
-  //       },
-  //       {
-  //         id: 7,
-  //         uuid: "252ae172-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Suspected Fraud",
-  //         created_at: "2023-04-12T14:50:16.000000Z",
-  //         updated_at: "2023-04-12T14:50:16.000000Z",
-  //       },
-  //       {
-  //         id: 8,
-  //         uuid: "252aec26-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Inappropriate Content",
-  //         created_at: "2023-04-12T14:50:41.000000Z",
-  //         updated_at: "2023-04-12T14:50:41.000000Z",
-  //       },
-  //       {
-  //         id: 9,
-  //         uuid: "75cfb5b2-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Failure to meet legal & regulatory requirements.",
-  //         created_at: "2023-04-12T14:51:44.000000Z",
-  //         updated_at: "2023-04-12T14:51:44.000000Z",
-  //       },
-  //       {
-  //         id: 10,
-  //         uuid: "75cfbf12-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason:
-  //           "No signature, date, contact name and position provided by the signatory to the document.",
-  //         created_at: "2023-04-12T14:51:44.000000Z",
-  //         updated_at: "2023-04-12T14:51:44.000000Z",
-  //       },
-  //       {
-  //         id: 11,
-  //         uuid: "75cfc6a6-d939-11ed-ba7c-acde48001122",
-  //         rejection_reason: "Others",
-  //         created_at: "2023-04-12T14:53:26.000000Z",
-  //         updated_at: "2023-04-12T14:53:26.000000Z",
-  //       },
-  //     ],
-  //   }
-  //   setProcessing(true)
-  //   // const response = await fetch(RemoteEndpoints.REJECTION_RESONS, {
-  //   //   cache: "no-store",
-  //   //   next: { revalidate: 86400 },
-  //   //   headers: {
-  //   //     token: states.token,
-  //   //     "Content-Type": "application/json",
-  //   //   },
-  //   // })
-  //   // const result = await response.json()
-  //   setProcessing(false)
-  //   if (result?.success) {
-  //     const reasons = result?.data
-  //     actions.setRejectionReasons(reasons)
-  //     return { reasons }
-  //   }
-  //   return {
-  //     error:
-  //       result?.data?.message ??
-  //       "Something went wrong. Please check your connection and try again",
-  //   }
-  // }
   const ApproveField = async (formdata) => {
     var headers = new Headers()
     headers.append("token", states.token)

@@ -10,6 +10,7 @@ import {
   shortcodeApprovalFields,
   fieldCounts,
   stages,
+  categoryCompletionPercentage,
 } from "@/app/modules/constants"
 import Image from "next/image"
 
@@ -589,7 +590,7 @@ export const filterApprovalsFeedbacks = (category) => {
     "pricing_doc",
   ]
   const approvals = category.compliance_approvals
-  if (approvals.length > 0) {
+  if (approvals?.length > 0) {
     category.compliance_approvals = approvals.filter(
       (approval) =>
         !(
@@ -599,7 +600,7 @@ export const filterApprovalsFeedbacks = (category) => {
     )
   }
   const feedbacks = category.compliance_feedbacks
-  if (feedbacks.length > 0) {
+  if (feedbacks?.length > 0) {
     category.compliance_feedbacks = feedbacks.filter(
       (feedback) =>
         !(
@@ -629,6 +630,7 @@ export const filterPartner = (partnerInfo, Categories) => {
       rejected: 0,
       pending: 0,
     }
+    console.log({ partnercategories })
     const PartnerCategories = []
     if (partnercategories) {
       if (partnercategories?.length > 0) {
@@ -787,53 +789,6 @@ export const filterPartner = (partnerInfo, Categories) => {
                     ].rejections[approval?.field].push(approval)
                   }
 
-                  // // APPROVED
-                  // if (approval?.status === "approved") {
-                  //   if (
-                  //     !partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ].approvedate
-                  //   )
-                  //     partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ].approvedate = {}
-
-                  //   if (
-                  //     !partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ].approvedate[approval?.field]
-                  //   )
-                  //     partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ].approvedate[approval?.field] = []
-
-                  //   partnerInfo.approvalStages[cuuid][
-                  //     approval?.category_stage
-                  //   ].approvedate[approval?.field].push(approval?.feedback)
-
-                  //   if (
-                  //     !partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ][dept].approvedate
-                  //   )
-                  //     partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ][dept].approvedate = {}
-
-                  //   if (
-                  //     !partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ][dept].approvedate[approval?.field]
-                  //   )
-                  //     partnerInfo.approvalStages[cuuid][
-                  //       approval?.category_stage
-                  //     ][dept].approvedate[approval?.field] = []
-
-                  //   partnerInfo.approvalStages[cuuid][approval?.category_stage][
-                  //     dept
-                  //   ].approvedate[approval?.field].push(approval?.feedback)
-                  // }
-                  // ///END APPROVED
                   if (!partnerInfo.approvalCount[approval?.category_stage]) {
                     partnerInfo.approvalCount[approval?.category_stage] = {
                       approved: 0,
@@ -889,10 +844,45 @@ export const filterPartner = (partnerInfo, Categories) => {
           }
         })
       }
+      partnerInfo.Percent = 0
+      let Percent = 0
+      let sectionCount = 0
+      if (!Util.isEmpty(sections)) {
+        const count = {}
+        const completed = {}
+        for (const cuuid in sections) {
+          sections[cuuid].percent = 0
+          if (!count[cuuid]) count[cuuid] = 0
+          if (!completed[cuuid]) completed[cuuid] = 0
+          for (const stage in sections[cuuid]) {
+            if (
+              stage !== "master" &&
+              stage !== "status" &&
+              stage !== "status_date" &&
+              stage !== "percent"
+            ) {
+              count[cuuid]++
+              if (sections[cuuid][stage].completed === true) completed[cuuid]++
+            }
+          }
+          if (completed[cuuid] > 0) {
+            sections[cuuid].percent = Math.ceil(
+              (completed[cuuid] / count[cuuid]) * categoryCompletionPercentage
+            )
+            Percent += sections[cuuid].percent
+          }
+          sectionCount++
+        }
+        console.log({ Percent, length: sectionCount })
+        partnerInfo.Percent =
+          Percent > 0 && sectionCount ? Math.ceil(Percent / sectionCount) : 0
+      }
       partnerInfo.sections = sections
       partnerInfo.edittable = edittable
       partnerInfo.allowedCategories = AllowedCategories(registeredCategories)
       partnerInfo.compliance_status = getApprovalStages(partnerInfo)
+
+      console.log({ partnerInfo })
     }
   }
   return partnerInfo

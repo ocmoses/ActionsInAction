@@ -31,13 +31,13 @@ export default function DropdownMenu({
   }, [showMenu])
   return (
     <div
-      className={`flex flex-col  relative !overflow-x-visible ${
+      className={`flex flex-col  relative !overflow-x-visible w-full ${
         align === "right" ? "items-end" : "items-center"
       }`}
     >
       <div
         onClick={() => setShowMenu(true)}
-        className="flex justify-between items-center gap-3 text-[14px] leading-[85%] rounded-full border border-white/20 pl-4 pr-3 py-2 bg-white/90 text-black cursor-pointer"
+        className="flex justify-between items-center w-full gap-3 text-[14px] leading-[85%] rounded-full border border-white/20 pl-4 pr-3 py-2 bg-white/90 text-black cursor-pointer"
       >
         <span>{selected?.label ?? "Select an option"}</span>
         <svg
@@ -69,7 +69,11 @@ export default function DropdownMenu({
             <span
               key={option.value}
               onClick={() => handleSelection(option)}
-              className="flex px-3 py-2 cursor-pointer text-white/70 hover:text-white/80 hover:bg-white/10 text-[14px]"
+              className={`flex px-3 py-2 cursor-pointer ${
+                selected?.value === option?.value
+                  ? "text-black bg-white/70"
+                  : "text-white/70 hover:text-white/80 hover:bg-white/10"
+              }  text-[14px]`}
             >
               {option.label}
             </span>

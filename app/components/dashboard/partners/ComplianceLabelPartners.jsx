@@ -25,11 +25,12 @@ export default function ComplianceLabel({
   const { partner, activeApproval } = usePartners()
 
   const [Feedbacks, setFeedbacks] = useState({})
-  const [Approvals, setApprovals] = useState({})
+  // const [Approvals, setApprovals] = useState({})
 
+  const Approvals = partnerApprovals(partner, category)
+  console.log({ Approvals })
   useEffect(() => {
-    const approvals = partnerApprovals(partner, category)
-    setApprovals(approvals)
+    // setApprovals(approvals)
     setFeedbacks({
       approvals: category.compliance_approvals,
       feedbacks: category.compliance_feedbacks,

@@ -412,8 +412,15 @@ const usePartners = () => {
 
   const updateStageStatus = (category, stage) => {
     if (!category || !stage) return
+    console.log({
+      "states.partners.partner.approvalStages":
+        states.partners.partner.approvalStages,
+    })
     const status =
-      states.partners.partner.approvalStages[category.category_uuid][stage]
+      states?.partners?.partner?.approvalStages &&
+      states.partners.partner.approvalStages[category.category_uuid]
+        ? states.partners.partner.approvalStages[category.category_uuid][stage]
+        : {}
     const fields = {}
     if (status) {
       for (const dept in status) {

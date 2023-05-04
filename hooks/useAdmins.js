@@ -58,6 +58,10 @@ export default function useAdmins() {
       setProcessing(false)
       if (result?.success) {
         const partners = result.data?.partners.data
+        if (partners.length > 0)
+          partners.map((partner) => {
+            filterPartner(partner, states.categories)
+          })
         const navigation = {
           current_page: result?.data?.partners?.current_page,
           first_page_url: result?.data?.partners?.first_page_url,

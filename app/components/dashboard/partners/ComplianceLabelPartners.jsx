@@ -233,11 +233,12 @@ export default function ComplianceLabel({
                       <div className="grow-0">
                         <FieldStatus status={Approvals.counts.status[field]} />
                       </div>
-                      {Approvals.counts.status[field] === "approved" && (
+                      {Approvals?.counts?.status[field] === "approved" && (
                         <span className="text-[#999999] text-[12px]">
-                          {moment(
-                            Approvals.fieldDates.vas_license_id[0]
-                          ).format("MMM D, YYYY [at] h:mm:ss a")}
+                          {Approvals?.fieldDates?.vas_license_id?.length > 0 &&
+                            moment(
+                              Approvals?.fieldDates?.vas_license_id[0]
+                            ).format("MMM D, YYYY [at] h:mm:ss a")}
                         </span>
                       )}
                     </div>

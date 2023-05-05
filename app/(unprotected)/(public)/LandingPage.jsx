@@ -39,6 +39,7 @@ export default function LandingPage() {
   ])
   const [openFaq, setOpenFaq] = useState("")
   const toggleFaq = (id) => {
+    console.log({ id, openFaq })
     if (id === openFaq) setOpenFaq("")
     else setOpenFaq(id)
   }
@@ -477,6 +478,7 @@ export default function LandingPage() {
                               priority
                               width={31}
                               height={31}
+                              className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           ) : (
                             <Image
@@ -485,6 +487,7 @@ export default function LandingPage() {
                               priority
                               width={31}
                               height={31}
+                              className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           )}
                         </div>

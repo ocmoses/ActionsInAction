@@ -143,7 +143,7 @@ export default async function RootLayout({ children }) {
     data: null,
     error: null,
   }
-  console.log({ categoriesData })
+  // console.log({ categoriesData })
   if (categoriesData) {
     if (categoriesData?.success) {
       categories.data = categoriesData.data
@@ -174,7 +174,7 @@ export default async function RootLayout({ children }) {
       <html lang="en">
         <head />
         <body>
-          <div id="portals" className="relative"></div>
+          <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
 
           <Providers>

@@ -448,10 +448,11 @@ const usePartners = () => {
         }
       }
     }
-    console.log({ fields })
-    console.log({ counts })
-    console.log({ fieldCounts })
+    // console.log({ fields })
+    // console.log({ counts })
+    // console.log({ fieldCounts })
   }
+
   return {
     ...states.partners,
     ...actions.partners,

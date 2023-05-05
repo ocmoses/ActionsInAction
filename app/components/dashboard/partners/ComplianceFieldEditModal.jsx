@@ -18,6 +18,7 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
               </span>
             )}
             {data.type === "text" && <Text data={data} />}
+            {data.type === "date" && <Date data={data} />}
           </div>
         </div>
       </div>

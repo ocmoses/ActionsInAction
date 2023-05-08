@@ -287,7 +287,7 @@ export const forms = {
     label: "Company's audited accounts detail",
     shortname: "Audited accounts",
     subtitle: "",
-    listdesc: "Compny's Audited account, Evidence of job done",
+    listdesc: "Company's Audited account, Evidence of job done",
     hand: "",
     fields: {
       account_name: "Account name",

@@ -170,6 +170,7 @@ export default function Dashboard() {
                           onClick={() => goToPartnerDetail(partner.uuid)}
                         >
                           <td>
+                            {console.log({ partner })}
                             <div className="flex items-center space-x-3">
                               <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                                 <span>
@@ -247,15 +248,16 @@ export default function Dashboard() {
                                 partner?.contributors.map(
                                   (contributor, index) => (
                                     <div
-                                      key={contributor.uuid}
+                                      key={contributor.admin_user?.uuid}
                                       className={`flex justify-center items-center tooltip tooltip-top tooltip-mtn w-[36px] h-[36px] text-[#FFCB03] rounded-full bg-white border border-[#999999] ${
                                         index > 0 && "ml-[-8px]"
                                       }`}
-                                      data-tip={contributor?.username.toUpperCase()}
+                                      data-tip={contributor?.username?.toUpperCase()}
                                     >
-                                      {contributor.username && (
+                                      {contributor?.username && (
                                         <span className="text-black font-bold">
-                                          {contributor.username[0].toUpperCase()}
+                                          {contributor?.username &&
+                                            contributor?.admin_user?.username[0].toUpperCase()}
                                         </span>
                                       )}
                                     </div>

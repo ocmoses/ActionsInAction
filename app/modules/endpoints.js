@@ -51,5 +51,8 @@ const RemoteEndpoints = {
   ADMIN_AUTH_USER: `${apiURL}/v2/admin/authenticated-admin`,
   ADMIN_PARTNETINFO: `${apiURL}/v2/admin/partner-info`,
   REJECTION_RESONS: `${apiURL}/v2/admin/rejection-reasons`,
+  COMPLIANCE_APPROVE: `${apiURL}/v2/admin/compliance/approve`,
+  PARTNER_UPDATE: `${apiURL}/v2/admin/compliance/partner-correction`,
+  PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
 }
 export default RemoteEndpoints

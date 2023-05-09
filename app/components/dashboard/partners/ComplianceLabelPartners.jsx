@@ -33,19 +33,33 @@ export default function ComplianceLabelPartners({
   const Approvals = partnerApprovals(partner, category)
 
   const updateField = () => {
+    let field_value = category[field]
+    console.log({ type })
+    console.log({ field })
+    console.log({ category })
+    console.log({ category_shortcode })
+    if (category_shortcode) {
+      switch (type) {
+        case "shortcode_doc":
+          field_value = category_shortcode.shortcode.shortcode_doc
+          break
+        case "pricing_doc":
+          field_value = category_shortcode.shortcode_pricing.pricing_doc
+          break
+      }
+    }
     //OPEN FIELD EDIT
-    console.log(field)
-    setShowModal(true)
-    console.log({ value: category[field] })
     setData({
       partner_uuid: partner.uuid,
       category_uuid: category.category_uuid,
       category_stage: stage,
-      field_value: category[field],
       category_shortcode,
+      field_value,
       type,
       field,
+      shortcode_uuid: category_shortcode?.shortcode_uuid ?? null,
     })
+    setShowModal(true)
   }
 
   return (

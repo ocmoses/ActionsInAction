@@ -142,10 +142,6 @@ function Indemnity() {
       console.log({ NextStage })
       return setForm(NextStage)
     }
-    // const { nextstage: NextStage } = nextStage(category, partner)
-    // return setForm(NextStage)
-    // if (NextStage === "review") return moveToNextForm(["review", true])
-    // return moveToNextForm([NextStage])
   }
   const handleFormChange = (e) => {
     removeError(e.target.id)

@@ -10,7 +10,7 @@ export default function CategoryStageStatus({ stage, category, partner }) {
   const { admin } = useAdmins()
 
   const Approvals = partnerApprovals(partner, category)
-  console.log({ stage, Approvals })
+  // console.log({ stage, Approvals })
   let dept
   let counts
   if (Approvals) {

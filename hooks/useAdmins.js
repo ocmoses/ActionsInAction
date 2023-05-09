@@ -26,11 +26,9 @@ export default function useAdmins() {
   }, [states.categories])
   useEffect(() => {
     if (!rejectionReasons) app.getRejectionReasons()
-    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
   }, [rejectionReasons])
 
   const getStages = (category, categories) => {
-    // console.log({ category, categories })
     return getstages(category, categories)
   }
   const getAllPartners = async (page, perPage, contractStatus) => {
@@ -120,7 +118,7 @@ export default function useAdmins() {
     }
 
     const response = await fetch(
-      "https://amazonpartner.com.ng/amazon/public/api/v2/admin/compliance/approve",
+      RemoteEndpoints.COMPLIANCE_APPROVE,
       requestOptions
     ).catch((error) => {
       console.log("error", error)

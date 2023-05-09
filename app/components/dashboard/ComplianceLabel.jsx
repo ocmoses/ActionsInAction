@@ -149,7 +149,7 @@ export default function ComplianceLabel({
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="w-6 h-6"
+      className="w-4 h-4"
     >
       <path
         strokeLinecap="round"
@@ -185,7 +185,7 @@ export default function ComplianceLabel({
       icon = <span className="text-red-600 w-2 h-2">{rejectIcon}</span>
     }
     if (Approvals[stage][admin.department_code][field] === "corrected") {
-      icon = <span className="text-blue-600 w-2 h-2">{correctedIcon}</span>
+      icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>
     }
   }
   console.log({ field, complianceRequirements })

@@ -12,7 +12,7 @@ export default function Button(props) {
           } flex justify-between items-center ${
             !outline
               ? "text-black bg-mtn hover:bg-mtn-400"
-              : "bg-black/50 text-white border-2 " +
+              : "bg-black/50 text-white border " +
                 (props.outlinecolor ?? "border-mtn") +
                 " hover:border-mtn-300"
           }  transition ease-in-out 5000`}

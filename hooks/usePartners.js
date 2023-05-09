@@ -178,7 +178,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -224,7 +224,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -270,7 +270,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -308,7 +308,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -357,7 +357,7 @@ const usePartners = () => {
           RemoteEndpoints.REGISTRATION_COMPLETION,
           userdata,
           {
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -448,10 +448,11 @@ const usePartners = () => {
         }
       }
     }
-    console.log({ fields })
-    console.log({ counts })
-    console.log({ fieldCounts })
+    // console.log({ fields })
+    // console.log({ counts })
+    // console.log({ fieldCounts })
   }
+
   return {
     ...states.partners,
     ...actions.partners,

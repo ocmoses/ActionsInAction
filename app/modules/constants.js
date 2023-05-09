@@ -207,7 +207,6 @@ export const forms = {
       vas_license_id: "VAS License ID",
       ncc_issue_date: "Issuing date",
       ncc_expiry_date: "Expiry date",
-      // ncc_doc: 'NCC VAS License'
     },
     validity: "1 years",
   },
@@ -283,11 +282,11 @@ export const forms = {
   },
   accountinfo: {
     form: "accountinfo",
-    title: "Provide your company’s audited accounts",
+    title: "Provide your company's audited accounts",
     label: "Company's audited accounts detail",
     shortname: "Audited accounts",
     subtitle: "",
-    listdesc: "Compny's Audited account, Evidence of job done",
+    listdesc: "Company's Audited account, Evidence of job done",
     hand: "",
     fields: {
       account_name: "Account name",
@@ -302,9 +301,6 @@ export const forms = {
       account_name: "Account name",
       account_no: "Account number",
       bank: "Bank",
-      // audited_account_1: "Audited account 1",
-      // audited_account_2: "Audited account 2",
-      // audited_account_3: "Audited account 3",
     },
   },
   // EXISTING PARTNERS

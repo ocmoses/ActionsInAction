@@ -12,7 +12,6 @@ import {
   filterFields,
   filterComplianceRequirements,
   filterApprovalFields,
-  partnerApprovals,
 } from "@/app/modules/utilities"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
@@ -64,7 +63,7 @@ export default function Compliance({ params }) {
       setSelectedCategory(_filtered_selectedCategory)
       const _stages = getStages(_filtered_selectedCategory, categories)
       setStages(_stages)
-      console.log({ partner })
+      // console.log({ partner })
     }
   }, [partner, params, selectedCategory])
 
@@ -72,6 +71,7 @@ export default function Compliance({ params }) {
     setActiveStage(stage)
     setOpenDrawer(true)
   }
+
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <div onClick={() => router.push("dashboard/")} className="mb-12">
@@ -148,21 +148,23 @@ export default function Compliance({ params }) {
             activeCategory={selectedCategory}
             onclick={handleOpenDrawer}
           />
-          <ComplianceDrawer
-            activeStage={activeStage}
-            category={selectedCategory}
-            setOpenDrawer={setOpenDrawer}
-            openDrawer={openDrawer}
-          >
-            {activeStage && openDrawer && (
-              <ComplianceDetailPartners
-                activeStage={activeStage}
-                category={selectedCategory}
-                setOpenDrawer={setOpenDrawer}
-                openDrawer={openDrawer}
-              />
-            )}
-          </ComplianceDrawer>
+          {activeStage && (
+            <ComplianceDrawer
+              activeStage={activeStage}
+              category={selectedCategory}
+              setOpenDrawer={setOpenDrawer}
+              openDrawer={openDrawer}
+            >
+              {activeStage && openDrawer && (
+                <ComplianceDetailPartners
+                  activeStage={activeStage}
+                  category={selectedCategory}
+                  setOpenDrawer={setOpenDrawer}
+                  openDrawer={openDrawer}
+                />
+              )}
+            </ComplianceDrawer>
+          )}
         </>
       )}
     </div>

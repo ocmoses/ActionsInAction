@@ -50,7 +50,6 @@ function FileInput({
           peekNextMonth
           showYearDropdown
           showMonthDropdown
-          // dropdownMode="select"
           dateFormatCalendar="MMMM"
           yearDropdownItemNumber={10}
           scrollableYearDropdown

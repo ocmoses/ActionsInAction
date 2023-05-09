@@ -6,7 +6,6 @@ import TextInput from "@/app/components/form/TextInput"
 import SelectInput from "@/app/components/form/SelectInput"
 import SelectInputOption from "@/app/components/form/SelectInputOption"
 import ButtonNext from "@/app/components/form/ButtonNext"
-import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import usePartners from "@/hooks/usePartners"
 import useProcessing from "@/hooks/useProcessing"
@@ -117,9 +116,6 @@ function Compliance() {
     scrollToTop("onboardinglayout")
   }, [])
 
-  // useEffect(() => {
-  //   if (data.valid_tin === "yes") verifyCAC()
-  // }, [data.valid_tin])
   const verifyTIN = async (tin_no) => {
     if (process.env.NODE_ENV !== "production") {
       setData((prvState) => ({
@@ -354,10 +350,6 @@ function Compliance() {
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no)
   }, [retryTIN])
-
-  // useEffect(() => {
-  //   if (retryCAC) verifyCAC()
-  // }, [retryCAC])
 
   const Retry = (type) => {
     if (type === "tin") {
@@ -616,7 +608,6 @@ function Compliance() {
                     }
                   />
                 </FileInputWrapper>
-
                 {!isMasterData &&
                   partner?.contract_status === "not_started" && (
                     <div className="mt-6">

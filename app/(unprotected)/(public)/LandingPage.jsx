@@ -19,12 +19,12 @@ export default function LandingPage() {
     {
       id: "2",
       faq: "What do I need to register?",
-      ans: "They are specific requirements needed to partner with us. Kindly click on this link to get the detailed requirement.",
+      ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
     },
     {
       id: "3",
       faq: "How long does the documentation verification take?",
-      ans: "In 14 days, all documents submitted will be verified. To check the status of your document verification, click here.",
+      ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
     },
     {
       id: "4",
@@ -497,9 +497,10 @@ export default function LandingPage() {
                           openFaq === f.id ? "flex" : "hidden"
                         } rounded-lg bg-black px-3 py-4`}
                       >
-                        <p className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]">
-                          {f.ans}
-                        </p>
+                        <p
+                          className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
+                          dangerouslySetInnerHTML={{ __html: f.ans }}
+                        ></p>
                       </div>
                     </div>
                   ))}

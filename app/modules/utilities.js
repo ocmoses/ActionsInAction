@@ -1003,7 +1003,7 @@ export const getStatuses = (status, counts) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"
@@ -1018,7 +1018,7 @@ export const getStatuses = (status, counts) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"
@@ -1031,7 +1031,7 @@ export const getStatuses = (status, counts) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"
@@ -1085,7 +1085,7 @@ export const getFieldStatus = (status) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"
@@ -1100,7 +1100,7 @@ export const getFieldStatus = (status) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"
@@ -1113,7 +1113,7 @@ export const getFieldStatus = (status) => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-[12px] h-[12px]"
+        className="w-[12px] min-w-[12px] h-[12px]"
       >
         <path
           fillRule="evenodd"

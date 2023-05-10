@@ -2,30 +2,23 @@ import { complianceRequirements } from "@/app/modules/constants"
 import Text from "@/app/components/dashboard/partners/fields/Text"
 import Date from "@/app/components/dashboard/partners/fields/Date"
 import File from "@/app/components/dashboard/partners/fields/File"
+import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes"
 
 export default function ComplianceFieldEditModal({ setShowModal, data }) {
   let type_of_file = ""
   switch (data.type) {
     case "shortcode_doc":
-      data.type = "file"
-      break
     case "pricing_doc":
       data.type = "file"
       break
-
-    // tin,
-    //   memart,
-    //   cac,
-    //   ncc,
-    //   nlrc,
-    //   shortcode,
-    //   indemnity,
-    //   audited_account_1,
-    //   audited_account_2,
-    //   audited_account_3,
-    //   job_evidence
+    case "shortcode_issue_date":
+    case "shortcode_expiry_date":
+    case "pricing_issue_date":
+    case "pricing_expiry_date":
+      data.type = "date"
+      break
   }
-
+  console.log({ "data.type": data.type })
   return (
     <>
       <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -49,6 +42,12 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
             {data.type === "date" && (
               <>
                 <Date data={data} setShowModal={setShowModal} />
+              </>
+            )}
+            {(data.type === "shortcodes" ||
+              data.type === "pricing_shortcodes") && (
+              <>
+                <Shortcodes data={data} setShowModal={setShowModal} />
               </>
             )}
             {data.type === "file" && (

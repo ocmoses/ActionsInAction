@@ -19,6 +19,7 @@ export default function Date({ data, setShowModal }) {
     useErrors(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [fileselected, setFileselected] = useState(false)
   useEffect(() => {
     clearErrors()
   }, [])
@@ -27,79 +28,78 @@ export default function Date({ data, setShowModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
-    // try {
-    setSaving(true)
-    setSaved(false)
+    try {
+      setSaving(true)
+      setSaved(false)
 
-    if (!formdata.file) {
+      if (!formdata.file) {
+        setSaving(false)
+        return setError({ update: "Please select a file to upload" })
+      }
+
+      var headers = new Headers()
+      headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY)
+
+      var Formdata = new FormData()
+      Formdata.append("partner_uuid", formdata.partner_uuid ?? "")
+      Formdata.append("category_uuid", formdata.category_uuid ?? "")
+      Formdata.append("category_stage", formdata.category_stage ?? "")
+      Formdata.append("file", formdata.file ?? "")
+      const _field = data.field.split("-")[0]
+      Formdata.append("type_of_file", _field.replace("_doc", "") ?? "")
+      Formdata.append("field", data.field)
+      Formdata.append("shortcode_uuid", data.shortcode_uuid ?? "")
+
+      var requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: Formdata,
+        redirect: "follow",
+      }
+
+      const response = await fetch(
+        RemoteEndpoints.PARTNER_FILE_UPDATE,
+        requestOptions
+      ).catch((e) => {
+        setSaving(false)
+        return setError({
+          update: e.message,
+        })
+      })
+      if (!response) {
+        setSaving(false)
+        return setError({
+          update:
+            "Something went wrong. Please check your connection and try again",
+        })
+      }
+      const results = await response.json()
+      const { success, data: Data } = results
+      if (!success) {
+        setSaving(false)
+        return setError({
+          update: Data.message,
+        })
+      }
       setSaving(false)
-      return setError({ update: "Please select a file to upload" })
-    }
-
-    var headers = new Headers()
-    headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY)
-    // headers.append("Content-Type", "application/x-www-form-urlencoded")
-
-    const _field = data.field.split("-")[0]
-
-    var Formdata = new FormData()
-    Formdata.append("partner_uuid", formdata.partner_uuid ?? "")
-    Formdata.append("category_uuid", formdata.category_uuid ?? "")
-    Formdata.append("category_stage", formdata.category_stage ?? "")
-    Formdata.append("file", formdata.file ?? "")
-    Formdata.append("type_of_file", _field.replace("_doc", "") ?? "")
-    Formdata.append("shortcode_uuid", data.shortcode_uuid ?? "")
-
-    var requestOptions = {
-      method: "POST",
-      headers: headers,
-      body: Formdata,
-      redirect: "follow",
-    }
-
-    const response = await fetch(
-      RemoteEndpoints.PARTNER_FILE_UPDATE,
-      requestOptions
-    ).catch((e) => {
+      setSaved(true)
+      setFileselected(false)
+      updatePartner(Data.partner)
+      filterFields(Data.partner)
+      filterComplianceRequirements(Data.partner)
+      filterApprovalFields(Data.partner)
+      return setSuccess("Detail updated successfully")
+    } catch (e) {
       setSaving(false)
       return setError({
         update: e.message,
       })
-    })
-    console.log({ response })
-    if (!response) {
-      setSaving(false)
-      return setError({
-        update:
-          "Something went wrong. Please check your connection and try again",
-      })
     }
-    const results = await response.json()
-    const { success, data: Data } = results
-    if (!success) {
-      setSaving(false)
-      return setError({
-        update: Data.message,
-      })
-    }
-    setSaving(false)
-    setSaved(true)
-    updatePartner(Data.partner)
-    filterFields(Data.partner)
-    filterComplianceRequirements(Data.partner)
-    filterApprovalFields(Data.partner)
-    return setSuccess("Detail updated successfully")
-    // } catch (e) {
-    //   setSaving(false)
-    //   return setError({
-    //     update: e.message,
-    //   })
-    // }
   }
   const handleChange = (e) => {
     removeError(data.field)
-    console.log({ value: e.target.value })
     setFormdata((prev) => ({ ...prev, file: e.target.value }))
+    setFileselected(true)
   }
   const [formdata, setFormdata] = useState({
     partner_uuid: data.partner_uuid,
@@ -138,14 +138,13 @@ export default function Date({ data, setShowModal }) {
               textsizecss="inline-flex text-[14px] whitespace-nowrap"
               paddingclass="pl-4 pr-3 py-1"
             />
-            {!saved && (
-              <Button
-                onClick={handleSubmit}
-                label={`${saved ? "Update" : "Save"}`}
-                textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                paddingclass="pl-4 pr-3 py-1"
-              />
-            )}
+            <Button
+              onClick={handleSubmit}
+              label={`${saved ? "Update" : "Save"}`}
+              textsizecss="inline-flex text-[14px] whitespace-nowrap"
+              paddingclass="pl-4 pr-3 py-1"
+              disabled={!fileselected}
+            />
           </>
         )}
       </div>

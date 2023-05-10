@@ -46,6 +46,18 @@ export default function ComplianceLabelPartners({
         case "pricing_doc":
           field_value = category_shortcode.shortcode_pricing.pricing_doc
           break
+        case "shortcode_issue_date":
+          field_value = category_shortcode.shortcode.shortcode_issue_date
+          break
+        case "shortcode_expiry_date":
+          field_value = category_shortcode.shortcode.shortcode_expiry_date
+          break
+        case "pricing_issue_date":
+          field_value = category_shortcode.shortcode_pricing.pricing_issue_date
+          break
+        case "pricing_expiry_date":
+          field_value = category_shortcode.shortcode_pricing.pricing_expiry_date
+          break
       }
     }
     //OPEN FIELD EDIT

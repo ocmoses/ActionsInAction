@@ -2,6 +2,8 @@ import { complianceRequirements } from "@/app/modules/constants"
 import Text from "@/app/components/dashboard/partners/fields/Text"
 import Date from "@/app/components/dashboard/partners/fields/Date"
 import File from "@/app/components/dashboard/partners/fields/File"
+import State from "@/app/components/dashboard/partners/fields/State"
+import Country from "@/app/components/dashboard/partners/fields/Country"
 import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes"
 
 export default function ComplianceFieldEditModal({ setShowModal, data }) {
@@ -42,6 +44,16 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
             {data.type === "date" && (
               <>
                 <Date data={data} setShowModal={setShowModal} />
+              </>
+            )}
+            {data.type === "company_state" && (
+              <>
+                <State data={data} setShowModal={setShowModal} />
+              </>
+            )}
+            {data.type === "country" && (
+              <>
+                <Country data={data} setShowModal={setShowModal} />
               </>
             )}
             {(data.type === "shortcodes" ||

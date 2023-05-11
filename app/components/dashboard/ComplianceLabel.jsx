@@ -14,11 +14,7 @@ import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import {
-  filterPartner,
-  partnerApprovals,
-  filterComplianceRequirements,
-} from "@/app/modules/utilities"
+import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
 import DeptBadge from "./compliance/DeptBadge"
 import useRoles from "@/hooks/useRoles"
 
@@ -50,7 +46,6 @@ export default function ComplianceLabel({
   useEffect(() => {
     setApproving(false)
     clearErrors()
-    // filterComplianceRequirements(partner)
   }, [])
 
   const Approve = (status) => {
@@ -79,7 +74,6 @@ export default function ComplianceLabel({
     clearErrors()
 
     const response = await ApproveField(Data)
-    // console.log({ response })
     setApproving(false)
     if (!response)
       return setError({
@@ -188,7 +182,6 @@ export default function ComplianceLabel({
       icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>
     }
   }
-  console.log({ field, complianceRequirements })
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
@@ -264,7 +257,7 @@ export default function ComplianceLabel({
                       {stage in complianceRequirements &&
                         complianceRequirements[stage][field]?.title}
                     </span>
-                    <div className="flex gap-2 items-start">
+                    <div className="flex gap-2 items-start justify-between w-full">
                       {type === "text" && (
                         <span className="text-white text-[14px] font-bold">
                           {category[field] && category[field]}

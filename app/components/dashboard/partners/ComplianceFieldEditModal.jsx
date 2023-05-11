@@ -4,6 +4,7 @@ import Date from "@/app/components/dashboard/partners/fields/Date"
 import File from "@/app/components/dashboard/partners/fields/File"
 import State from "@/app/components/dashboard/partners/fields/State"
 import Country from "@/app/components/dashboard/partners/fields/Country"
+import CompanyType from "@/app/components/dashboard/partners/fields/CompanyType"
 import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes"
 
 export default function ComplianceFieldEditModal({ setShowModal, data }) {
@@ -54,6 +55,11 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
             {data.type === "country" && (
               <>
                 <Country data={data} setShowModal={setShowModal} />
+              </>
+            )}
+            {data.type === "company_type" && (
+              <>
+                <CompanyType data={data} setShowModal={setShowModal} />
               </>
             )}
             {(data.type === "shortcodes" ||

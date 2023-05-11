@@ -112,7 +112,12 @@ export default function Compliance({ params }) {
             "Content-Type": "application/json",
           },
         }
-      )
+      ).catch((e) => {
+        setProcessing(false)
+        return setError({
+          compliance: e.message,
+        })
+      })
       const result = await response.json()
       setProcessing(false)
       if (result?.success) {
@@ -129,10 +134,12 @@ export default function Compliance({ params }) {
         }
         return
       }
-      return setError(
-        result?.data?.message ??
-          "Something went wrong. Please check your connection and try again"
-      )
+      setProcessing(false)
+      return setError({
+        compliance:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      })
     }
     if (params?.params?.length > 0) getPartnerInfo(params.params[0])
   }, [params])

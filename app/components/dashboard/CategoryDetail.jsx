@@ -90,7 +90,7 @@ export default function CategoryDetail({
                 For regulatory compliance, we'll require the following
                 informations from our{" "}
                 {category.category_code === "AGR" ? (
-                  <>aggrigators</>
+                  <>aggregators</>
                 ) : (
                   <>{category.category_code} providers.</>
                 )}

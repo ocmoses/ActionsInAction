@@ -94,50 +94,59 @@ export default function useAdmins() {
     }
   }
   const ApproveField = async (formdata) => {
-    var headers = new Headers()
-    headers.append("token", states.token)
-    headers.append("Content-Type", "application/x-www-form-urlencoded")
+    try {
+      var headers = new Headers()
+      headers.append("token", states.token)
+      headers.append("Content-Type", "application/x-www-form-urlencoded")
 
-    var urlEncoded = new URLSearchParams()
-    urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "")
-    urlEncoded.append("user_uuid", formdata.user_uuid ?? "")
-    urlEncoded.append("category_uuid", formdata.category_uuid ?? "")
-    urlEncoded.append("category_stage", formdata.category_stage ?? "")
-    urlEncoded.append("admin_user", states.admin.uuid ?? "")
-    urlEncoded.append("feedback", formdata.feedback ?? "")
-    urlEncoded.append("status", formdata.status ?? "")
-    urlEncoded.append("field", formdata.field ?? "")
-    urlEncoded.append("approval_uuid", formdata.approval_uuid ?? "")
-    urlEncoded.append("created_by", states.admin.uuid ?? "")
+      var urlEncoded = new URLSearchParams()
+      urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "")
+      urlEncoded.append("user_uuid", formdata.user_uuid ?? "")
+      urlEncoded.append("category_uuid", formdata.category_uuid ?? "")
+      urlEncoded.append("category_stage", formdata.category_stage ?? "")
+      urlEncoded.append("admin_user", states.admin.uuid ?? "")
+      urlEncoded.append("feedback", formdata.feedback ?? "")
+      urlEncoded.append("status", formdata.status ?? "")
+      urlEncoded.append("field", formdata.field ?? "")
+      urlEncoded.append("approval_uuid", formdata.approval_uuid ?? "")
+      urlEncoded.append("created_by", states.admin.uuid ?? "")
 
-    var requestOptions = {
-      method: "POST",
-      headers: headers,
-      body: urlEncoded,
-      redirect: "follow",
+      var requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: urlEncoded,
+        redirect: "follow",
+      }
+
+      const response = await fetch(
+        RemoteEndpoints.COMPLIANCE_APPROVE,
+        requestOptions
+      ).catch((error) => {
+        console.log("error", error)
+        return { success: false, error: error }
+      })
+      if (!response)
+        return {
+          success: false,
+          error: "Unable to send request. Please check your connection",
+        }
+      const result = await response.json()
+      if (!response)
+        return {
+          success: false,
+          error: "Unable to receive response. Please check your connection",
+        }
+      const { success, data } = result
+      if (!success) return { success: false, error: data.message }
+      return { success: true, data, error: null }
+    } catch (eror) {
+      return {
+        success: false,
+        error:
+          eror.message ??
+          "Something went wrong. Please check your connection and try again",
+      }
     }
-
-    const response = await fetch(
-      RemoteEndpoints.COMPLIANCE_APPROVE,
-      requestOptions
-    ).catch((error) => {
-      console.log("error", error)
-      return { success: false, error: error }
-    })
-    if (!response)
-      return {
-        success: false,
-        error: "Unable to send request. Please check your connection",
-      }
-    const result = await response.json()
-    if (!response)
-      return {
-        success: false,
-        error: "Unable to receive response. Please check your connection",
-      }
-    const { success, data } = result
-    if (!success) return { success: false, error: data.message }
-    return { success: true, data, error: null }
   }
 
   return {

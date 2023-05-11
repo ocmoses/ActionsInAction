@@ -46,6 +46,8 @@ export default function Shortcodes({ data, setShowModal }) {
       urlEncoded.append("category_uuid", formdata.category_uuid ?? "")
       urlEncoded.append("category_stage", formdata.category_stage ?? "")
       urlEncoded.append("field_value", formdata.field_value ?? "")
+      urlEncoded.append("field", data.field)
+      urlEncoded.append("shortcode_uuid", data.shortcode_uuid ?? "")
 
       var requestOptions = {
         method: "POST",
@@ -72,20 +74,20 @@ export default function Shortcodes({ data, setShowModal }) {
       }
       const results = await response.json()
       console.log({ results })
-      const { success, data } = results
+      const { success, data: Data } = results
       if (!success) {
-        console.log({ success, data })
+        console.log({ success, Data })
         setSaving(false)
         return setError({
-          update: data.message,
+          update: Data.message,
         })
       }
       setSaving(false)
       setSaved(true)
-      updatePartner(data.partner)
-      filterFields(data.partner)
-      filterComplianceRequirements(data.partner)
-      filterApprovalFields(data.partner)
+      updatePartner(Data.partner)
+      filterFields(Data.partner)
+      filterComplianceRequirements(Data.partner)
+      filterApprovalFields(Data.partner)
       return setSuccess("Detail updated successfully")
     } catch (e) {
       setSaving(false)
@@ -94,6 +96,7 @@ export default function Shortcodes({ data, setShowModal }) {
       })
     }
   }
+
   const formShortcodeArray = (shtcd) => {
     const input = shtcd
       ?.replaceAll(";", ",")
@@ -110,19 +113,22 @@ export default function Shortcodes({ data, setShowModal }) {
     }
     return string.filter((str) => str !== "undefined")
   }
+
   const handleKeyUp = (e) => {
     if (e.key === " " || e.key === "Enter") {
       processKeyUp()
     }
   }
+
   const processKeyUp = () => {
     removeError("shtcde")
     let content = []
     content = formShortcodeArray(shtcde)
+    console.log({ content })
     if (content && content.length > 0) {
       const duplicate = []
       content.map((c) => {
-        if (formdata.shortcodes.includes(c)) {
+        if (formdata.field_value.includes(c)) {
           duplicate.push(c)
         }
       })
@@ -132,20 +138,10 @@ export default function Shortcodes({ data, setShowModal }) {
         })
         return false
       }
-      //  9088, 65674 8765 098, 564 737 966
+
       setFormdata((prevState) => ({
         ...prevState,
-        shortcode: {
-          ...prevState.shortcode,
-          shortcodes: [...prevState.shortcode.shortcodes, ...content],
-        },
-        shortcode_pricing: {
-          ...prevState.pricing,
-          pricing_shortcodes: [
-            ...prevState.shortcode_pricing.pricing_shortcodes,
-            ...content,
-          ],
-        },
+        field_value: [...prevState.field_value, ...content],
       }))
 
       setShtcde("")
@@ -156,17 +152,12 @@ export default function Shortcodes({ data, setShowModal }) {
     setShtcde(e.target.value)
   }
   const removeShtcde = (index) => {
-    const shtcd = formdata.shortcodes[index]
-    const newArray = formdata.shortcodes.filter((sc, i) => i !== index)
-    const newPricingArray =
-      formdata.shortcode_pricing.pricing_shortcodes.filter((sc) => sc !== shtcd)
+    console.log({ index })
+    const shtcd = formdata.field_value[index]
+    console.log({ shtcd })
     setFormdata((prevState) => ({
       ...prevState,
-      shortcode: { ...prevState.shortcode, shortcodes: newArray },
-      shortcode_pricing: {
-        ...prevState.shortcode_pricing,
-        pricing_shortcodes: newPricingArray,
-      },
+      field_value: formdata.field_value.filter((sc) => sc !== shtcd),
     }))
   }
 
@@ -179,30 +170,28 @@ export default function Shortcodes({ data, setShowModal }) {
   })
 
   return (
-    <form method="POST" onSubmit={handleSubmit}>
+    <>
       <div className="mb-6">
         {success && <FormErrors success={success} />}
         {errors && <FormErrors error={errors.update} />}
       </div>
       <p className="mb-0 text-[#999999]">Enter applicable short codes</p>
       <div className="flex justify-start flex-wrap gap-4 mt-4 mb-4">
-        {formdata.shortcodes?.length > 0 &&
-          formdata.shortcodes.map((sc, index) => (
+        {formdata.field_value?.length > 0 &&
+          formdata.field_value.map((sc, index) => (
             <span
               key={`shortcode-${sc}-${index}`}
               className="flex justify-between gap-3 py-1 px-2 text-white font-bold rounded-lg border border-white/20"
             >
               <span>{sc}</span>
-              {!isMasterData && partner?.contract_status === "not_started" && (
-                <div
-                  onClick={() => {
-                    removeShtcde(index)
-                  }}
-                  className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
-                >
-                  x
-                </div>
-              )}
+              <div
+                onClick={() => {
+                  removeShtcde(index)
+                }}
+                className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
+              >
+                x
+              </div>
             </span>
           ))}
       </div>
@@ -214,7 +203,6 @@ export default function Shortcodes({ data, setShowModal }) {
         onChange={handleShortcodeChange}
         errors={errors}
         margin="mb-2"
-        disabled={isMasterData || partner?.contract_status !== "not_started"}
       />
       <p className="text-[12px] text-[#999999] mb-2">
         Enter multiple comma-separated shortcodes and press "Enter" to apply
@@ -236,6 +224,7 @@ export default function Shortcodes({ data, setShowModal }) {
             />
             {!saved && (
               <Button
+                type="button"
                 onClick={handleSubmit}
                 label={`${saved ? "Update" : "Save"}`}
                 textsizecss="inline-flex text-[14px] whitespace-nowrap"
@@ -245,6 +234,6 @@ export default function Shortcodes({ data, setShowModal }) {
           </>
         )}
       </div>
-    </form>
+    </>
   )
 }

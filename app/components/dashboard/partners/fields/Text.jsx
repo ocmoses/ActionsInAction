@@ -24,6 +24,7 @@ export default function Text({ data, setShowModal }) {
   useEffect(() => {
     clearErrors()
   }, [])
+  console.log({ data })
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -45,9 +46,7 @@ export default function Text({ data, setShowModal }) {
       urlEncoded.append("category_uuid", formdata.category_uuid ?? "")
       urlEncoded.append("category_stage", formdata.category_stage ?? "")
       urlEncoded.append("field_value", formdata.field_value ?? "")
-
-      const _field = data.field.split("-")[0]
-      urlEncoded.append("field", _field.replace("_doc", "") ?? "")
+      urlEncoded.append("field", data.field)
       urlEncoded.append("shortcode_uuid", data.shortcode_uuid ?? "")
 
       var requestOptions = {
@@ -74,21 +73,19 @@ export default function Text({ data, setShowModal }) {
         })
       }
       const results = await response.json()
-      console.log({ results })
-      const { success, data } = results
+      const { success, data: Data } = results
       if (!success) {
-        console.log({ success, data })
         setSaving(false)
         return setError({
-          update: data.message,
+          update: Data.message,
         })
       }
       setSaving(false)
       setSaved(true)
-      updatePartner(data.partner)
-      filterFields(data.partner)
-      filterComplianceRequirements(data.partner)
-      filterApprovalFields(data.partner)
+      updatePartner(Data.partner)
+      filterFields(Data.partner)
+      filterComplianceRequirements(Data.partner)
+      filterApprovalFields(Data.partner)
       return setSuccess("Detail updated successfully")
     } catch (e) {
       setSaving(false)

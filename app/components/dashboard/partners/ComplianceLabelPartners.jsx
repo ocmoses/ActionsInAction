@@ -40,11 +40,32 @@ export default function ComplianceLabelPartners({
     console.log({ category_shortcode })
     if (category_shortcode) {
       switch (type) {
+        case "shortcodes":
+          field_value = category_shortcode.shortcode.shortcodes
+          break
+        case "pricing_shortcodes":
+          field_value = category_shortcode.shortcode_pricing.pricing_shortcodes
+          break
         case "shortcode_doc":
           field_value = category_shortcode.shortcode.shortcode_doc
           break
         case "pricing_doc":
           field_value = category_shortcode.shortcode_pricing.pricing_doc
+          break
+        case "shortcode_issue_date":
+          field_value = category_shortcode.shortcode.shortcode_issue_date
+          break
+        case "shortcode_expiry_date":
+          field_value = category_shortcode.shortcode.shortcode_expiry_date
+          break
+        case "pricing_issue_date":
+          field_value = category_shortcode.shortcode_pricing.pricing_issue_date
+          break
+        case "pricing_expiry_date":
+          field_value = category_shortcode.shortcode_pricing.pricing_expiry_date
+          break
+        case "state":
+          field_value = category_shortcode.shortcode_pricing.pricing_expiry_date
           break
       }
     }
@@ -58,6 +79,7 @@ export default function ComplianceLabelPartners({
       type,
       field,
       shortcode_uuid: category_shortcode?.shortcode_uuid ?? null,
+      country: category.country,
     })
     setShowModal(true)
   }

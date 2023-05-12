@@ -23,9 +23,6 @@ export default function Shortcode({ category, stage }) {
                     }`
                   ]?.approval && (
                     <>
-                      <p>{`shortcodes-${
-                        shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
-                      }`}</p>
                       <ComplianceLabel
                         category={category}
                         category_shortcode={shtcd}

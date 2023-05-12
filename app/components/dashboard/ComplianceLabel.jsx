@@ -182,6 +182,7 @@ export default function ComplianceLabel({
       icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>
     }
   }
+  console.log({ complianceRequirements })
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
@@ -213,6 +214,7 @@ export default function ComplianceLabel({
         {stage in complianceRequirements &&
           field in complianceRequirements[stage] && (
             <div className="flex relative items-start gap-3 w-full">
+              {console.log({ field })}
               {activeApproval && activeApproval !== field && (
                 <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
               )}
@@ -253,6 +255,7 @@ export default function ComplianceLabel({
                     </div>
                   )}
                   <div className="flex flex-col gap-0 w-full">
+                    {console.log({ stage: complianceRequirements[stage] })}
                     <span className="text-[12px] m-0 text-[#999999]">
                       {stage in complianceRequirements &&
                         complianceRequirements[stage][field]?.title}

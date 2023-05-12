@@ -1209,7 +1209,7 @@ export const filterApprovalFields = (partner) => {
           : shortcode.uuid
         for (const field in approvalFields) {
           fields.map((f) => {
-            if (field.startsWith(f)) delete approvalFields[field]
+            if (field === f) delete approvalFields[field]
           })
         }
         for (const field in shortcodeApprovalFields) {
@@ -1218,7 +1218,6 @@ export const filterApprovalFields = (partner) => {
       }
     })
   }
-  // return fields
 }
 export const partnerApprovals = (partner, category) => {
   if (!category || !partner) return

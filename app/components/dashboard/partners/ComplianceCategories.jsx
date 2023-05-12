@@ -3,7 +3,6 @@ import Image from "next/image"
 import useAdmins from "@/hooks/useAdmins"
 import useRoles from "@/hooks/useRoles"
 import CategoryStageStatus from "@/app/components/dashboard/compliance/CategoryStageStatus"
-import { useEffect, useState } from "react"
 
 export default function ComplianceCategories({
   Stages,
@@ -16,7 +15,6 @@ export default function ComplianceCategories({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
-      {/* {console.log({ Stages })} */}
       {Stages?.forms?.length > 0 &&
         Stages?.forms?.map((stage) => (
           <div

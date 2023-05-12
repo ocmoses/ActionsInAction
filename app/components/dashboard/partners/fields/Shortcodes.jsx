@@ -6,7 +6,6 @@ import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
 import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
-import { complianceRequirements } from "@/app/modules/constants"
 import {
   filterFields,
   filterComplianceRequirements,

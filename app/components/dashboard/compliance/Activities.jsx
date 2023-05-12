@@ -2,6 +2,7 @@ import moment from "moment"
 import { complianceRequirements } from "@/app/modules/constants"
 
 export default function Activities({ type, stage, feedbacks }) {
+  console.log({ feedbacks })
   return (
     <div className="flex flex-col gap-6 flex-1 w-full h-full overflow-y-auto justify-start items-start p-6 pb-24">
       {type === "admin" &&
@@ -9,12 +10,13 @@ export default function Activities({ type, stage, feedbacks }) {
         feedbacks.map((feedback) => (
           <div key={feedback.uuid} className="flex gap-2 items-start">
             <div className="flex justify-center items-center bg-white/40 w-[24px] h-[24px] rounded-full">
-              {feedback.admin_user.username[0].toUpperCase()}
+              {feedback?.admin_user?.username &&
+                feedback?.admin_user?.username[0].toUpperCase()}
             </div>
             <div className="text-white/70 text-[13px]">
               <div>
                 <span className="text-white">
-                  {feedback.admin_user.username}{" "}
+                  {feedback?.admin_user?.username}{" "}
                 </span>
                 <span className="text-white/70 font-mtn-extralight">
                   updated{" "}

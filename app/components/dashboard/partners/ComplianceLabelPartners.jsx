@@ -32,12 +32,13 @@ export default function ComplianceLabelPartners({
 
   const Approvals = partnerApprovals(partner, category)
 
+  console.log({ type })
+  console.log({ field })
+  console.log({ category })
+  console.log({ category_shortcode })
+
   const updateField = () => {
     let field_value = category[field]
-    console.log({ type })
-    console.log({ field })
-    console.log({ category })
-    console.log({ category_shortcode })
     if (category_shortcode) {
       switch (type) {
         case "shortcodes":

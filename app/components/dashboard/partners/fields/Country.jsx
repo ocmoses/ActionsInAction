@@ -1,5 +1,3 @@
-// "use client"
-
 import RemoteEndpoints from "@/app/modules/endpoints"
 import Button from "@/app/components/form/Button"
 import { COUNTRIES } from "@/app/modules/countries"

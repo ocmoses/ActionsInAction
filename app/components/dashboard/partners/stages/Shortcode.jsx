@@ -1,7 +1,7 @@
 import ComplianceLabel from "@/app/components/dashboard/partners/ComplianceLabelPartners"
 import { approvalFields } from "@/app/modules/constants"
 
-export default function Nlrclicense({ category, stage }) {
+export default function Shortcode({ category, stage }) {
   return (
     category && (
       <div className="flex flex-col items-start gap-6 w-full">
@@ -22,15 +22,17 @@ export default function Nlrclicense({ category, stage }) {
                       shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
                     }`
                   ]?.approval && (
-                    <ComplianceLabel
-                      category={category}
-                      category_shortcode={shtcd}
-                      stage={stage}
-                      field={`shortcodes-${
-                        shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
-                      }`}
-                      type="shortcodes"
-                    />
+                    <>
+                      <ComplianceLabel
+                        category={category}
+                        category_shortcode={shtcd}
+                        stage={stage}
+                        field={`shortcodes-${
+                          shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
+                        }`}
+                        type="shortcodes"
+                      />
+                    </>
                   )}
                   {approvalFields[
                     `shortcode_doc-${

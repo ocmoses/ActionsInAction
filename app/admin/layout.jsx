@@ -1,22 +1,22 @@
-"use client"
-import RouteGuardAdmin from "./RouteGuardAdmin"
-import { useState } from "react"
-import NavbarAdminDashboard from "@/app/components/dashboard/NavbarAdminDashboard"
-import AdminMenuBar from "@/app/components/dashboard/AdminMenuBar"
-import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
-import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
-import useAdmins from "@/hooks/useAdmins"
+"use client";
+import RouteGuardAdmin from "./RouteGuardAdmin";
+import { useState } from "react";
+import NavbarAdminDashboard from "@/app/components/dashboard/NavbarAdminDashboard";
+import AdminMenuBar from "@/app/components/dashboard/AdminMenuBar";
+import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar";
+import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer";
+import useAdmins from "@/hooks/useAdmins";
 
 function Layout({ children }) {
-  const { isLoggedIn } = useAdmins()
-  const [open, setOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const { isLoggedIn } = useAdmins();
+  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <RouteGuardAdmin>
       <div
         id="admindashboard"
-        className="mx-auto flex flex-col h-full min-h-screen w-screen bg-[#111111]"
+        className="mx-auto flex grow flex-col h-screen  w-screen bg-[#111111]"
       >
         <NavbarAdminDashboard
           open={open}
@@ -35,7 +35,7 @@ function Layout({ children }) {
               </div>
             </div>
           )}
-          <div className="h-full min-h-full flex-1 relative border-l pb-[50px] border-l-white/20 bg-[#030303]">
+          <div className="h-full flex-1 relative pb-[50px] bg-[#030303]">
             {children}
           </div>
         </div>
@@ -44,6 +44,6 @@ function Layout({ children }) {
         </MainMenuSideDrawer>
       </div>
     </RouteGuardAdmin>
-  )
+  );
 }
-export default Layout
+export default Layout;

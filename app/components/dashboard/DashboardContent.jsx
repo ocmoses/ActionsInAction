@@ -14,6 +14,7 @@ import {
   AllowedCategories,
   filterPartner,
   filterCategory,
+  partnerApprovals,
 } from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
@@ -23,6 +24,7 @@ import FormErrors from "@/app/components/FormErrors"
 import Image from "next/image"
 import { scrollToTop } from "@/app/modules/utilities"
 import CallToAction from "./partners/CallToAction"
+import { fieldsCounts, fieldCounts } from "@/app/modules/constants"
 
 export default function GetStarted({ type }) {
   const {
@@ -37,6 +39,19 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners()
+
+  useEffect(() => {
+    fieldsCounts()
+    const _approvals = partnerApprovals(partner)
+    // setApproval(_approvals)
+    const _approvalStages = partner.approvalStages
+    // setApprovalStages(_approvalStages)
+    console.log({
+      _approvalStages,
+      fieldCounts,
+      _approvals,
+    })
+  }, [partner.approvalStages])
 
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])

@@ -1,4 +1,4 @@
-import { departments, forms } from "@/app/modules/constants"
+import { forms } from "@/app/modules/constants"
 import { useState, useEffect } from "react"
 import useAdmins from "@/hooks/useAdmins"
 import Companydetail from "@/app/components/dashboard/compliance_stages/Companydetail"
@@ -69,7 +69,7 @@ export default function ComplianceDetail({ activeStage, category }) {
           Activities
         </div>
       </div>
-      <div className="flex flex-col grow h-14 py-4">
+      <div className="flex flex-col grow h-14 py-4 bg-white/5">
         <div
           className="flex-col w-full h-full overflow-y-auto gap-4 justify-start items-start p-4"
           style={{ display: view === "activities" ? "none" : "flex" }}
@@ -106,26 +106,11 @@ export default function ComplianceDetail({ activeStage, category }) {
           </div>
         )}
       </div>
-
       <ComplianceNavigator
         next={nextStage}
         previous={prevStage}
         navlabels={navlabels}
       />
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t-2 border-t-white/30 bg-[#313131] text-[#999999] text-[12px] px-4 pt-4 pb-24">
-          {departments.length > 0 &&
-            departments.map((dept) => (
-              <div
-                key={dept.code}
-                className="flex gap-3 items-start justify-start"
-              >
-                <span className="flex justify-center items-center w-4 h-4 font-extrabold px-1 py-0 text-[14px] bg-[#FFCB03] text-black">
-                  {dept.code[0]}
-                </span>
-                <span className="text-[11px] leading-[89%]">{dept.name}</span>
-              </div>
-            ))}
-        </div> */}
     </div>
   )
 }

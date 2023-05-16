@@ -526,63 +526,57 @@ export const complianceRequirements = {
       type: "form",
     },
   },
-  shortcodes: {
-    // shortcodes: {
-    //   title: "Shortcodes",
-    //   categories: ["VAS", "AGR"],
-    //   type: "form",
-    // },
-
-    // shortcode: {
-    shortcodes: {
-      title: "Short codes",
-      categories: ["VAS", "RMS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    shortcode_doc: {
-      title: "Short code document",
-      categories: ["VAS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    shortcode_issue_date: {
-      title: "Issue date",
-      categories: ["VAS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    shortcode_expiry_date: {
-      title: "Expiry date",
-      categories: ["VAS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    pricing_shortcodes: {
-      title: "Approved pricing shortcode",
-      categories: ["VAS", "RMS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    pricing_issue_date: {
-      title: "Pricing approval Issue date",
-      categories: ["VAS", "RMS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    pricing_expiry_date: {
-      title: "Pricing approval Expiry date",
-      categories: ["VAS", "RMS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-    pricing_doc: {
-      title: "NCC Pricing approval",
-      categories: ["VAS", "RMS", "AGR"],
-      type: "form",
-      approval: true,
-    },
-  },
+  // shortcodes: {
+  //   // shortcode: {
+  //   shortcodes: {
+  //     title: "Short codes",
+  //     categories: ["VAS", "RMS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   shortcode_doc: {
+  //     title: "Short code document",
+  //     categories: ["VAS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   shortcode_issue_date: {
+  //     title: "Issue date",
+  //     categories: ["VAS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   shortcode_expiry_date: {
+  //     title: "Expiry date",
+  //     categories: ["VAS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   pricing_shortcodes: {
+  //     title: "Approved pricing shortcode",
+  //     categories: ["VAS", "RMS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   pricing_issue_date: {
+  //     title: "Pricing approval Issue date",
+  //     categories: ["VAS", "RMS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   pricing_expiry_date: {
+  //     title: "Pricing approval Expiry date",
+  //     categories: ["VAS", "RMS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  //   pricing_doc: {
+  //     title: "NCC Pricing approval",
+  //     categories: ["VAS", "RMS", "AGR"],
+  //     type: "form",
+  //     approval: true,
+  //   },
+  // },
   shortcode: {
     shortcode_doc: {
       title: "Short code document",
@@ -670,7 +664,7 @@ export const complianceRequirements = {
       type: "form",
     },
   },
-}
+};
 export const shortcodeComplianceRequqirements = {
   shortcode: {
     shortcode_doc: {
@@ -715,7 +709,7 @@ export const shortcodeComplianceRequqirements = {
       type: "form",
     },
   },
-}
+};
 export const compliance = {
   companydetail: {
     company_name: {
@@ -927,7 +921,7 @@ export const compliance = {
       type: "form",
     },
   },
-}
+};
 export const approvalFields = {
   // companydetail: {
   company_name: {
@@ -935,30 +929,35 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "companydetail",
   },
   country: {
     title: "Country",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "companydetail",
   },
   company_address: {
     title: "Company address",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "companydetail",
   },
   company_city: {
     title: "Company city",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "companydetail",
   },
   company_state: {
     title: "Company state",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "companydetail",
   },
   // compliance: {
   company_type: {
@@ -966,36 +965,42 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM"],
+    stage: "compliance",
   },
   rc_no: {
     title: "RC Number",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM", "RICO"],
+    stage: "compliance",
   },
   tin_no: {
     title: "Tax identification number",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM", "RICO"],
+    stage: "compliance",
   },
   tin_doc: {
     title: "TIN Document",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM", "RICO"],
+    stage: "compliance",
   },
   memart_doc: {
     title: "Memart certificate",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM", "RICO"],
+    stage: "compliance",
   },
   cac_doc: {
     title: "CAC Registration Certificate",
     categories: ["VAS", "RMS", "AGR", "MKP"],
     type: "form",
     approval: ["SPRM", "RICO"],
+    stage: "compliance",
   },
   // ncclicense: {
   vas_license_id: {
@@ -1003,24 +1008,28 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "ncclicense",
   },
   ncc_issue_date: {
     title: "Issuing date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "ncclicense",
   },
   ncc_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "ncclicense",
   },
   ncc_doc: {
     title: "NCC VAS License document",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "ncclicense",
   },
   // nlrclicense: {
   nlrc_license_type: {
@@ -1028,30 +1037,35 @@ export const approvalFields = {
     categories: ["AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "nlrclicense",
   },
   nlrc_license_id: {
     title: "NLRC License ID",
     categories: ["AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "nlrclicense",
   },
   nlrc_issue_date: {
     title: "Issuing date",
     categories: ["AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "nlrclicense",
   },
   nlrc_expiry_date: {
     title: "Expiry date",
     categories: ["AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "nlrclicense",
   },
   nlrc_doc: {
     title: "NLRC Document",
     categories: ["AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "nlrclicense",
   },
   // shortcode: {
   shortcodes: {
@@ -1059,48 +1073,56 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "shortcode",
   },
   shortcode_doc: {
     title: "Short code document",
     categories: ["VAS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    stage: "shortcode",
   },
   shortcode_issue_date: {
     title: "Issue date",
     categories: ["VAS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    stage: "shortcode",
   },
   shortcode_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    stage: "shortcode",
   },
   pricing_shortcodes: {
     title: "Approved pricing shortcode",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "shortcode",
   },
   pricing_issue_date: {
     title: "Pricing approval Issue date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "shortcode",
   },
   pricing_expiry_date: {
     title: "Pricing approval Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "shortcode",
   },
   pricing_doc: {
     title: "NCC Pricing approval",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "LEGA"],
+    stage: "shortcode",
   },
   // indemnity: {
   indemnity_no: {
@@ -1108,24 +1130,28 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "INSU"],
+    stage: "indemnity",
   },
   indemnity_issue_date: {
     title: "Issuing date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "INSU"],
+    stage: "indemnity",
   },
   indemnity_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "INSU"],
+    stage: "indemnity",
   },
   indemnity_doc: {
     title: "Professional indemnity insurance Document",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM", "INSU"],
+    stage: "indemnity",
   },
   // accountinfo: {
   audited_account_1_doc: {
@@ -1133,26 +1159,48 @@ export const approvalFields = {
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM"],
+    stage: "accountinfo",
   },
   audited_account_2_doc: {
     title: "Audited account 2",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM"],
+    stage: "accountinfo",
   },
   audited_account_3_doc: {
     title: "Audited account 3",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM"],
+    stage: "accountinfo",
   },
   job_evidence_doc: {
     title: "Evidence of 3 Jobs done",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
     approval: ["SPRM"],
+    stage: "accountinfo",
   },
+};
+const deptCategories = {};
+for (const field in approvalFields) {
+  if (approvalFields[field].approval.length > 0) {
+    approvalFields[field].approval.map((dept) => {
+      if (!(dept in deptCategories))
+        deptCategories[dept] = { categories: [], stages: [] };
+      if (approvalFields[field].categories.length > 0) {
+        approvalFields[field].categories.map((category) => {
+          if (!deptCategories[dept].categories.includes(category))
+            deptCategories[dept].categories.push(category);
+        });
+      }
+      if (!deptCategories[dept].stages.includes(approvalFields[field].stage))
+        deptCategories[dept].stages.push(approvalFields[field].stage);
+    });
+  }
 }
+export const DeptCategories = deptCategories;
 export const shortcodeApprovalFields = {
   // shortcode: {
   shortcodes: {
@@ -1203,36 +1251,44 @@ export const shortcodeApprovalFields = {
     type: "form",
     approval: ["SPRM", "LEGA"],
   },
-}
-const counts = {}
+};
+const counts = {};
 
 export const department = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
   { code: "LEGA", name: "LEGAL", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
-]
-for (const stage in complianceRequirements) {
-  if (!counts[stage]) counts[stage] = { count: 0 }
-  for (const field in complianceRequirements[stage]) {
-    if (
-      approvalFields[field]?.approval &&
-      approvalFields[field]?.type === "form"
-    ) {
-      counts[stage].count++
-      departments.map((dept) => {
-        if (approvalFields[field]?.approval.includes(dept.code)) {
-          if (!counts[stage][dept.code]) counts[stage][dept.code] = { count: 0 }
-          if (!counts[stage][dept.code].fields)
-            counts[stage][dept.code].fields = []
-          counts[stage][dept.code].count++
-          counts[stage][dept.code].fields.push(field)
-        }
-      })
+];
+export const fieldsCounts = () => {
+  for (const stage in complianceRequirements) {
+    if (!counts[stage]) counts[stage] = { count: 0 };
+    for (const field in complianceRequirements[stage]) {
+      if (
+        approvalFields[field]?.approval &&
+        approvalFields[field]?.type === "form"
+      ) {
+        departments.map((dept) => {
+          if (approvalFields[field]?.approval.includes(dept.code)) {
+            if (!counts[stage][dept.code])
+              counts[stage][dept.code] = { count: 0 };
+            if (!counts[stage][dept.code].fields)
+              counts[stage][dept.code].fields = [];
+            if (!counts[stage][dept.code].fields.includes(field)) {
+              counts[stage][dept.code].fields.push(field);
+              counts[stage][dept.code].count++;
+              counts[stage].count++;
+            }
+            // console.log({field})
+          }
+        });
+      }
     }
   }
-}
-export const fieldCounts = counts
+  return counts;
+  // console.log({counts})
+};
+export const fieldCounts = fieldsCounts();
 export const profileMenu = [
   "compliance",
   "companydetail",

@@ -4,6 +4,7 @@ import {
   company_type,
   license_type,
   fieldCounts,
+  fieldsCounts,
 } from "@/app/modules/constants"
 import { COUNTRIES } from "@/app/modules/countries"
 import { STATES } from "@/app/modules/states"
@@ -14,7 +15,12 @@ import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
+import {
+  filterPartner,
+  partnerApprovals,
+  filterFields,
+  filterComplianceRequirements,
+} from "@/app/modules/utilities"
 import DeptBadge from "./compliance/DeptBadge"
 import useRoles from "@/hooks/useRoles"
 
@@ -46,6 +52,7 @@ export default function ComplianceLabel({
   useEffect(() => {
     setApproving(false)
     clearErrors()
+    fieldsCounts()
   }, [])
 
   const Approve = (status) => {
@@ -166,6 +173,7 @@ export default function ComplianceLabel({
       DeptCode.push(dept.code)
     })
   let icon
+  let icon_color = "text-[#999999]"
   if (
     Approvals &&
     Approvals[stage] &&
@@ -174,22 +182,25 @@ export default function ComplianceLabel({
   ) {
     if (Approvals[stage][admin.department_code][field] === "approved") {
       icon = <span className="text-green-600 w-2 h-2">{checkedIcon}</span>
+      icon_color = "text-green-600"
     }
     if (Approvals[stage][admin.department_code][field] === "rejected") {
       icon = <span className="text-red-600 w-2 h-2">{rejectIcon}</span>
+      icon_color = "text-red-600"
     }
     if (Approvals[stage][admin.department_code][field] === "corrected") {
       icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>
+      icon_color = "text-mtn-600"
     }
   }
-  console.log({ complianceRequirements })
+  // console.log({ fieldCounts })
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
         "fields" in fieldCounts[stage][admin.department_code] &&
         fieldCounts[stage][admin.department_code].fields.includes(field))) && (
       <div
-        className={`w-full p-3 ${
+        className={`w-full p-3 border border-[#212121] rounded-[8px]  ${
           activeApproval === field ? " rounded-xl bg-[#313131]" : ""
         }`}
       >
@@ -211,15 +222,16 @@ export default function ComplianceLabel({
             onNo={cancel}
           />
         )}
+        {console.log({ type, field, stage })}
         {stage in complianceRequirements &&
           field in complianceRequirements[stage] && (
             <div className="flex relative items-start gap-3 w-full">
-              {console.log({ field })}
+              {/* {console.log({ field })} */}
               {activeApproval && activeApproval !== field && (
                 <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
               )}
 
-              <div className="text-[#999999] w-18 h-18">
+              <div className={`${icon_color} w-18 h-18`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -255,7 +267,6 @@ export default function ComplianceLabel({
                     </div>
                   )}
                   <div className="flex flex-col gap-0 w-full">
-                    {console.log({ stage: complianceRequirements[stage] })}
                     <span className="text-[12px] m-0 text-[#999999]">
                       {stage in complianceRequirements &&
                         complianceRequirements[stage][field]?.title}
@@ -299,7 +310,7 @@ export default function ComplianceLabel({
                             src={`/assets/flags/${
                               category[field]?.toLowerCase() ?? "ng"
                             }.svg`}
-                            className={"inline h-4 rounded-sm h-auto"}
+                            className={"inline rounded-sm h-auto"}
                             width={24}
                             height={15}
                             priority
@@ -382,7 +393,7 @@ export default function ComplianceLabel({
                             )}
                         </span>
                       )}
-                      {type === "shortcode_pricing_doc" && (
+                      {type === "pricing_doc" && (
                         <span
                           onClick={() =>
                             previewFiles(
@@ -418,7 +429,7 @@ export default function ComplianceLabel({
                             ).format("DD / MMM / YYYY")}
                         </span>
                       )}
-                      <span className="w-2 h-2 font-bold">{icon}</span>
+                      {/* <span className="w-2 h-2 font-bold">{icon}</span> */}
                     </div>
                   </div>
                 </div>

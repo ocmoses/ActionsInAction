@@ -68,7 +68,7 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
           Activities
         </div>
       </div>
-      <div className="flex flex-col grow h-14 py-4">
+      <div className="flex flex-col grow h-14 py-4 bg-white/5">
         <div
           className="flex-col w-full h-full overflow-y-auto gap-4 justify-start items-start p-4"
           style={{ display: view === "activities" ? "none" : "flex" }}

@@ -4,7 +4,7 @@ import { approvalFields } from "@/app/modules/constants"
 export default function Nlrclicense({ category, stage }) {
   return (
     category && (
-      <>
+      <div className="flex flex-col items-start gap-4 w-full rounded-xl p-3 mb-6 bg-[#030303]">
         {approvalFields.nlrc_license_type?.approval && (
           <ComplianceLabelPartners
             category={category}
@@ -45,7 +45,7 @@ export default function Nlrclicense({ category, stage }) {
             type="file"
           />
         )}
-      </>
+      </div>
     )
   )
 }

@@ -9,11 +9,7 @@ export default function Shortcode({ category, stage }) {
           category.shortcodes.map((shtcd, index) => (
             <div
               key={shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid}
-              className={`flex flex-col items-start gap-4 w-full ${
-                category.shortcodes.length > 0 &&
-                index < category.shortcodes.length - 1 &&
-                "border-b-2 border-b-white/40 pb-10 mb-6"
-              } `}
+              className="flex flex-col items-start gap-4 w-full rounded-xl p-3 mb-6 bg-[#030303]"
             >
               {shtcd.shortcode?.shortcodes?.length > 0 && (
                 <>

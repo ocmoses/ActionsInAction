@@ -4,7 +4,7 @@ import { approvalFields } from "@/app/modules/constants"
 export default function Companydetail({ category, stage }) {
   return (
     category && (
-      <>
+      <div className="flex flex-col items-start gap-4 w-full rounded-xl p-3 mb-6 bg-[#030303]">
         {approvalFields.company_name?.approval && (
           <ComplianceLabelPartners
             category={category}
@@ -53,7 +53,7 @@ export default function Companydetail({ category, stage }) {
             type="text"
           />
         )}
-      </>
+      </div>
     )
   )
 }

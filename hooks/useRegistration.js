@@ -24,10 +24,8 @@ const useRegistration = () => {
 
     for (const field in userdata) {
       if (isArray(userdata[field])) {
-        console.log("array field", field)
         userdata[field].map((d, i) => formData.append([field][i], d))
       } else {
-        console.log({ field })
         formData.append(field, userdata[field])
       }
     }
@@ -54,7 +52,6 @@ const useRegistration = () => {
         data: null,
       }
     }
-    console.log({ result })
     const { success, data } = result
     if (!success) {
       setProcessing(false)

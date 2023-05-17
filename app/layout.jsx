@@ -34,9 +34,10 @@ const getServerSession = async () => {
           headers: {
             apikey,
             "Content-Type": "application/json",
-            redirect: "follow",
+            // redirect: "follow",
             referrerPolicy: "no-referrer",
             token: adminToken,
+            Authorization: `bearer ${adminToken}`,
           },
         }).catch((error) => {
           console.log({ error })
@@ -80,9 +81,9 @@ const getServerSession = async () => {
           headers: {
             apikey,
             "Content-Type": "application/json",
-            redirect: "follow",
+            // redirect: "follow",
             referrerPolicy: "no-referrer",
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `bearer ${authToken}`,
           },
         }).catch((error) => {
           return {

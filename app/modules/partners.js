@@ -11,7 +11,6 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
 
     const cookieStore = cookies()
     const token = cookieStore.get("token")
-    console.log({ token })
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
         params.length > 0 ? params.join("&") : ""
@@ -21,16 +20,17 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         next: { revalidate: 120 },
         headers: {
           token: token?.value,
+          Authorization: `bearer ${token?.value}`,
           "Content-Type": "application/json",
         },
       }
     )
 
-    if (response.status === 401) {
-      return {
-        error: 401,
-      }
-    }
+    // if (response.status === 401) {
+    //   return {
+    //     error: 401,
+    //   }
+    // }
     const result = await response.json()
     if (result?.success) {
       const partners = result.data?.partners.data

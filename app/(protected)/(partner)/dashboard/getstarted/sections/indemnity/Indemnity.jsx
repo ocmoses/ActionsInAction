@@ -139,7 +139,6 @@ function Indemnity() {
       )
       newcategory.profile_stage.indemnity = "1"
       const { nextstage: NextStage } = nextStage(newcategory, partner)
-      console.log({ NextStage })
       return setForm(NextStage)
     }
   }

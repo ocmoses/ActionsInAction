@@ -15,12 +15,7 @@ import useApp from "@/hooks/useApp"
 import useAdmins from "@/hooks/useAdmins"
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import {
-  filterPartner,
-  partnerApprovals,
-  filterFields,
-  filterComplianceRequirements,
-} from "@/app/modules/utilities"
+import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
 import DeptBadge from "./compliance/DeptBadge"
 import useRoles from "@/hooks/useRoles"
 
@@ -193,12 +188,17 @@ export default function ComplianceLabel({
       icon_color = "text-mtn-600"
     }
   }
-  // console.log({ fieldCounts })
+
   return (
     (isSuperadmin() ||
       (admin.department_code in fieldCounts[stage] &&
         "fields" in fieldCounts[stage][admin.department_code] &&
-        fieldCounts[stage][admin.department_code].fields.includes(field))) && (
+        (fieldCounts[stage][admin.department_code].fields.includes(
+          field.split("-")[0]
+        ) ||
+          fieldCounts[stage][admin.department_code].fields.includes(
+            field
+          )))) && (
       <div
         className={`w-full p-3 border border-[#212121] rounded-[8px]  ${
           activeApproval === field ? " rounded-xl bg-[#313131]" : ""
@@ -222,11 +222,10 @@ export default function ComplianceLabel({
             onNo={cancel}
           />
         )}
-        {console.log({ type, field, stage })}
         {stage in complianceRequirements &&
-          field in complianceRequirements[stage] && (
+          (field in complianceRequirements[stage] ||
+            field.split("-")[0] in complianceRequirements[stage]) && (
             <div className="flex relative items-start gap-3 w-full">
-              {/* {console.log({ field })} */}
               {activeApproval && activeApproval !== field && (
                 <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
               )}
@@ -437,9 +436,12 @@ export default function ComplianceLabel({
                   !activeApproval &&
                   admin.department_code in fieldCounts[stage] &&
                   "fields" in fieldCounts[stage][admin.department_code] &&
-                  fieldCounts[stage][admin.department_code].fields.includes(
+                  (fieldCounts[stage][admin.department_code].fields.includes(
                     field
-                  ) &&
+                  ) ||
+                    fieldCounts[stage][admin.department_code].fields.includes(
+                      field.split("-")[0]
+                    )) &&
                   (!(
                     admin?.department_code &&
                     category?.approvedFields[category.category_uuid] &&

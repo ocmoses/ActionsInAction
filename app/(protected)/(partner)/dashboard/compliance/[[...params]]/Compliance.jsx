@@ -40,8 +40,8 @@ export default function Compliance({ params }) {
   const [openDrawer, setOpenDrawer] = useState(false)
   const { setRouteloading } = useApp()
 
-  const [ApprovalStages, setApprovalStages] = useState(null)
-  const [Approvals, setApproval] = useState(null)
+  // const [ApprovalStages, setApprovalStages] = useState(null)
+  // const [Approvals, setApproval] = useState(null)
 
   useEffect(() => {
     setProcessing(false)
@@ -50,14 +50,10 @@ export default function Compliance({ params }) {
 
   useEffect(() => {
     fieldsCounts()
-    const _approvals = partnerApprovals(partner)
-    setApproval(_approvals)
-    const _approvalStages = partner.approvalStages
-    setApprovalStages(_approvalStages)
-    console.log({
-      _approvalStages: _approvalStages,
-      fieldCounts,
-    })
+    // const _approvals = partnerApprovals(partner)
+    // setApproval(_approvals)
+    // const _approvalStages = partner.approvalStages
+    // setApprovalStages(_approvalStages)
   }, [partner.approvalStages])
 
   useEffect(() => {
@@ -88,7 +84,6 @@ export default function Compliance({ params }) {
   }, [partner, params, selectedCategory])
 
   const handleOpenDrawer = (stage) => {
-    console.log({ stage })
     setActiveStage(stage)
     setOpenDrawer(true)
   }

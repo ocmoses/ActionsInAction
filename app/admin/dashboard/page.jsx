@@ -1,5 +1,6 @@
-import Dashboard from './Dashboard'
-
-export default function DashboardPage() {
-  return <Dashboard />
+import Dashboard from "./Dashboard"
+import { getAllPartners } from "@/app/modules/partners"
+export default async function DashboardPage() {
+  const allPartners = await getAllPartners()
+  return <Dashboard allPartners={allPartners} />
 }

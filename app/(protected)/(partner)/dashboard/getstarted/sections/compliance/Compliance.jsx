@@ -84,7 +84,9 @@ function Compliance() {
             ? Category?.rc_no ?? ""
             : "12345678",
         tin_no:
-          process.env.NODE_ENV === "production" ? Category?.tin_no ?? "" : "",
+          process.env.NODE_ENV === "production"
+            ? Category?.tin_no ?? ""
+            : "654326",
         tin_doc: Category?.tin_doc ?? {},
         memart_doc: Category?.memart_doc ?? {},
         cac_doc: Category?.cac_doc ?? {},
@@ -101,7 +103,7 @@ function Compliance() {
         valid_tin:
           process.env.NODE_ENV === "production"
             ? Category?.valid_tin ?? "no"
-            : "",
+            : "yes",
       })
       setLastTINChecked(Category?.tin_no)
       setLastCACChecked(Category?.rc_no)
@@ -115,16 +117,16 @@ function Compliance() {
   }, [])
 
   const verifyTIN = async (tin_no) => {
-    // if (process.env.NODE_ENV !== "production") {
-    //   setData((prvState) => ({
-    //     ...prvState,
-    //     rc_no: "14386692",
-    //     tin_data: {},
-    //     valid_tin: "yes",
-    //     valid_cac: "yes",
-    //   }))
-    //   return
-    // }
+    if (process.env.NODE_ENV !== "production") {
+      setData((prvState) => ({
+        ...prvState,
+        rc_no: "14386692",
+        tin_data: {},
+        valid_tin: "yes",
+        valid_cac: "yes",
+      }))
+      return
+    }
     setLastCACChecked("")
     setRetryTIN(false)
     if (tin_no === lastTINChecked) return
@@ -141,14 +143,14 @@ function Compliance() {
       return setError({ tin_no: "Your TIN is required" })
     }
 
-    // if (!tin_no.includes("-")) {
-    //   setData((prvState) => ({
-    //     ...prvState,
-    //     valid_tin: "no",
-    //     // valid_cac: "no",
-    //   }))
-    //   return setError({ tin_no: "Your TIN must include an hyphen ('-')" })
-    // }
+    if (!tin_no.includes("-")) {
+      setData((prvState) => ({
+        ...prvState,
+        valid_tin: "no",
+        // valid_cac: "no",
+      }))
+      return setError({ tin_no: "Your TIN must include an hyphen ('-')" })
+    }
     try {
       setCheckingTIN(true)
       const response = await axios

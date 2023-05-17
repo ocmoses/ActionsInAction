@@ -12,6 +12,7 @@ import Activities from "@/app/components/dashboard/compliance/Activities"
 import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator"
 
 export default function ComplianceDetail({ activeStage, category }) {
+  console.log({ activeStage, category })
   const { getStages, categories, setActiveStage } = useAdmins()
 
   const [view, setView] = useState("overview")

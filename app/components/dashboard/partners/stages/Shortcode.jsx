@@ -2,7 +2,6 @@ import ComplianceLabelPartners from "@/app/components/dashboard/partners/Complia
 import { approvalFields } from "@/app/modules/constants"
 
 export default function Shortcode({ category, stage }) {
-  console.log({ category, stage })
   return (
     category && (
       <div className="flex flex-col items-start gap-6 w-full">
@@ -14,7 +13,6 @@ export default function Shortcode({ category, stage }) {
             >
               {shtcd.shortcode?.shortcodes?.length > 0 && (
                 <>
-                  {console.log({ shtcd })}
                   {approvalFields[
                     `shortcodes-${
                       shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid

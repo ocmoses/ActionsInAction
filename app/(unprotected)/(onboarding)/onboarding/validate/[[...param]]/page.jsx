@@ -6,6 +6,5 @@ export default async function ValidationPage({ params: { param } }) {
   const type = param && param[1] ? param[1] : null
   const Params = { user_uuid, type }
 
-  console.log("Params", { Params })
   return <Validation params={Params} />
 }

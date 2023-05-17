@@ -1,11 +1,11 @@
 "use client"
 import { useState, useEffect } from "react"
-import { getPartnerInitials, filterPartner } from "@/app/modules/utilities"
 import {
-  onboarding_type,
-  status_type,
-  statusOptions,
-} from "@/app/modules/constants"
+  getPartnerInitials,
+  filterPartner,
+  Util,
+} from "@/app/modules/utilities"
+import { status_type, statusOptions } from "@/app/modules/constants"
 
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
@@ -13,12 +13,12 @@ import useAdmins from "@/hooks/useAdmins"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import moment from "moment"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import useApp from "@/hooks/useApp"
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
 import Image from "next/image"
 
-export default function Dashboard() {
+export default function Dashboard({ allPartners }) {
   const { getAllPartners, allCategories, categories } = useAdmins()
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
@@ -28,26 +28,54 @@ export default function Dashboard() {
   const router = useRouter()
   const { setRouteloading } = useApp()
   const [navigation, setNavigation] = useState(null)
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(20)
-  const [contractStatus, setContractStatus] = useState("processing")
+  const [page, setPage] = useState(null)
+  const [perPage, setPerPage] = useState(null)
+  const [onboardingStatus, setOnboardingStatus] = useState(null)
+
+  const get_all_Partner = async () => {
+    if (fetchingPartners) return
+    setFetchingPartners(true)
+    const _onboardingStatus = onboardingStatus === "all" ? "" : onboardingStatus
+    const All_Partners = await getAllPartners(page, perPage, _onboardingStatus)
+    setPartners(All_Partners.partners)
+    setFetchingPartners(false)
+    if (All_Partners.error) setError({ compliance: All_Partners.error })
+    setNavigation(All_Partners.navigation)
+  }
 
   useEffect(() => {
-    setProcessing(false)
-    setRouteloading(false)
-    clearErrors()
-    const get_all_Partner = async () => {
-      if (fetchingPartners) return
-      setFetchingPartners(true)
-      const All_Partners = await getAllPartners(page, perPage, contractStatus)
-      setPartners(All_Partners.partners)
-      setFetchingPartners(false)
-      if (All_Partners.error) setError({ compliance: All_Partners.error })
-      setNavigation(All_Partners.navigation)
+    if ((onboardingStatus || perPage, page)) {
+      get_all_Partner()
     }
-    get_all_Partner()
-  }, [contractStatus, perPage])
-  console.log({ navigation })
+  }, [page, onboardingStatus, perPage])
+
+  // useEffect(() => {
+  //   if (onboardingStatus || perPage) {
+  //     setPage(1)
+  //   }
+  // }, [onboardingStatus, perPage])
+
+  useEffect(() => {
+    setProcessing(true)
+    if (allPartners) {
+      if (allPartners.partners?.length) {
+        allPartners.partners.map((partner) => {
+          filterPartner(partner, categories)
+        })
+      }
+      setPartners(allPartners.partners)
+      if (allPartners.error) {
+        setProcessing(false)
+        if (allPartners.error === 401) {
+          redirect(NextEndPoints.LOGIN_ADMIN)
+          return
+        }
+        setError({ compliance: allPartners.error })
+      }
+      setNavigation(allPartners.navigation)
+      setProcessing(false)
+    }
+  }, [allPartners])
 
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true)
@@ -65,10 +93,8 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="flex items-center gap-6 grow-0">
-              <div className="flex flex-col items-start">
-                <span className="text-[12px] text-[#999999]">
-                  Rows per page
-                </span>
+              <div className="flex items-center gap-2 rounded-full pl-3 bg-white/10">
+                <span className="text-[12px] text-[#999999]">Rows</span>
                 <DropdownMenu
                   options={[
                     { value: "5", label: "5" },
@@ -83,15 +109,14 @@ export default function Dashboard() {
                     label: "20",
                   }}
                   onselect={(option) => {
+                    setPage(1)
                     setPerPage(option.value)
                   }}
                   align="right"
                 />
               </div>
-              <div className="flex flex-col items-start">
-                <span className="text-[12px] text-[#999999]">
-                  Registration Status
-                </span>
+              <div className="flex items-center gap-2 rounded-full pl-3 bg-white/10">
+                <span className="text-[12px] text-[#999999]">Status</span>
                 <DropdownMenu
                   options={statusOptions}
                   defaultvalue={{
@@ -99,29 +124,12 @@ export default function Dashboard() {
                     label: status_type.processing,
                   }}
                   onselect={(option) => {
-                    setContractStatus(
-                      option.value === "all" ? "" : option.value
-                    )
+                    setPage(1)
+                    setOnboardingStatus(option.value)
                   }}
                   align="right"
                 />
               </div>
-              {/* <div className="flex flex-col items-start">
-                <span className="text-[12px] text-[#999999]">
-                  Onboarding mode
-                </span>
-                <DropdownMenu
-                  options={listOptions.type}
-                  defaultvalue={{
-                    value: "all",
-                    label: "All",
-                  }}
-                  onselect={(option) => {
-                    setType(option.value)
-                  }}
-                  align="right"
-                />
-              </div> */}
             </div>
           </div>
 
@@ -170,7 +178,6 @@ export default function Dashboard() {
                           onClick={() => goToPartnerDetail(partner.uuid)}
                         >
                           <td>
-                            {console.log({ partner })}
                             <div className="flex items-center space-x-3">
                               <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                                 <span>
@@ -277,7 +284,75 @@ export default function Dashboard() {
                   </tbody>
                 </table>
                 <div className="w-full flex justify-end">
-                  <div className="w-full flex justify-end">Pagination</div>
+                  {!Util.isEmpty(navigation) &&
+                    navigation.links?.length > 0 &&
+                    navigation.links.map((nav, index) => {
+                      let link = null
+                      if (index === 0) {
+                        if (nav.url) {
+                        }
+                        link = (
+                          <div className="flex p-2 text-white">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+                              />
+                            </svg>
+                          </div>
+                        )
+                      } else if (index === navigation.links.length - 1) {
+                        link = (
+                          <div className="flex p-2 text-white">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
+                              />
+                            </svg>
+                          </div>
+                        )
+                      } else {
+                        if (nav.url) {
+                          link = nav.active ? (
+                            <div className="flex p-2 text-white bg-white/30">
+                              {index}
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => setPage(index)}
+                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
+                            >
+                              {index}
+                            </div>
+                          )
+                        } else {
+                          link = (
+                            <div className="flex p-2 text-white">
+                              {nav.label}
+                            </div>
+                          )
+                        }
+                      }
+
+                      return link
+                    })}
                 </div>
               </>
             )}

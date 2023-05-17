@@ -32,10 +32,10 @@ export default function ComplianceLabelPartners({
 
   const Approvals = partnerApprovals(partner, category)
 
-  console.log({ type })
-  console.log({ field })
-  console.log({ category })
-  console.log({ category_shortcode })
+  // console.log({ type })
+  // console.log({ field })
+  // console.log({ category })
+  // console.log({ category_shortcode })
 
   const updateField = () => {
     let field_value = category[field]
@@ -88,7 +88,9 @@ export default function ComplianceLabelPartners({
     })
     setShowModal(true)
   }
-
+  {
+    console.log({ type, field, req: complianceRequirements[stage] })
+  }
   return (
     <>
       <div
@@ -97,8 +99,10 @@ export default function ComplianceLabelPartners({
         }`}
       >
         {stage in complianceRequirements &&
-          field in complianceRequirements[stage] && (
+          (field in complianceRequirements[stage] ||
+            field.split("-")[0] in complianceRequirements[stage]) && (
             <>
+              {/* {console.log({ type, field, req: complianceRequirements[stage] })} */}
               <div className="flex relative items-start gap-3 w-full">
                 {activeApproval && activeApproval !== field && (
                   <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
@@ -197,13 +201,16 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "shortcodes" && (
-                        <span className="text-white/80 text-[14px] font-bold">
-                          {category_shortcode.shortcode?.shortcodes?.length >
-                            0 &&
-                            category_shortcode.shortcode?.shortcodes?.join(
-                              ", "
-                            )}
-                        </span>
+                        <>
+                          <span className="text-white/80 text-[14px] font-bold">
+                            Here
+                            {category_shortcode.shortcode?.shortcodes?.length >
+                              0 &&
+                              category_shortcode.shortcode?.shortcodes?.join(
+                                ", "
+                              )}
+                          </span>
+                        </>
                       )}
                       {type === "shortcode_doc" && (
                         <span

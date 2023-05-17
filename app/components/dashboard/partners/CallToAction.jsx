@@ -1,6 +1,6 @@
 export default function CallToAction({ message, label, onclick }) {
   return (
-    <div className="flex justify-between gap-6 items-center p-[24px] border border-[#621E1E] rounded-lg">
+    <div className="flex justify-between gap-6 items-center px-[24px] py-[18px] border border-[#621E1E] rounded-lg">
       <div className="flex justify-start items-center gap-6">
         <div className="flex justify-center p-0 items-center bg-[#FE2E2D] text-black rounded-full">
           <svg

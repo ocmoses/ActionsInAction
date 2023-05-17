@@ -1531,9 +1531,6 @@ export const getFinalApproval = (partner) => {
       categoryApprovals[category.category_uuid] = approval
     })
   }
-  console.log({ categoryStatus })
-  console.log({ corrected, rejected, pending, approved, categoryStatus })
-  console.log({ categoryApprovals })
   const status = {}
   for (const cuuid in categoryStatus) {
     if (!status[cuuid])

@@ -6,6 +6,7 @@ import {
   Util,
 } from "@/app/modules/utilities"
 import { status_type, statusOptions } from "@/app/modules/constants"
+import { PageRoutes } from "@/app/modules/menu"
 
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
@@ -49,12 +50,6 @@ export default function Dashboard({ allPartners }) {
     }
   }, [page, onboardingStatus, perPage])
 
-  // useEffect(() => {
-  //   if (onboardingStatus || perPage) {
-  //     setPage(1)
-  //   }
-  // }, [onboardingStatus, perPage])
-
   useEffect(() => {
     setProcessing(true)
     if (allPartners) {
@@ -66,10 +61,10 @@ export default function Dashboard({ allPartners }) {
       setPartners(allPartners.partners)
       if (allPartners.error) {
         setProcessing(false)
-        if (allPartners.error === 401) {
-          redirect(NextEndPoints.LOGIN_ADMIN)
-          return
-        }
+        // if (allPartners.error === 401) {
+        //   redirect(PageRoutes.adminlogin)
+        //   return
+        // }
         setError({ compliance: allPartners.error })
       }
       setNavigation(allPartners.navigation)

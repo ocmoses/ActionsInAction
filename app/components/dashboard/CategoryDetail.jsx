@@ -57,11 +57,10 @@ export default function CategoryDetail({
     })
   }
   useEffect(() => {
-    console.log({ new_category })
     if (!Util.isEmpty(new_category)) {
       setCurrentCategory(new_category, partner)
       const { nextstage: NextStage } = nextStage(new_category, partner)
-      console.log({ NextStage })
+      // console.log({ NextStage })
       setForm(NextStage)
       setIsOnboarding(true)
       return setIsOpen(false)

@@ -27,13 +27,12 @@ export default async function handler(req, res) {
     }).catch((err) => {
       return "Something went wrong. Please check your connection and try again"
     })
-    console.log({
-      clientid: process.env.BLUSALT_CLIENTID,
-      appname: process.env.BLUSALT_APPNAME,
-      apikey: process.env.BLUSALT_APIKEY,
-    })
+    // console.log({
+    //   clientid: process.env.BLUSALT_CLIENTID,
+    //   appname: process.env.BLUSALT_APPNAME,
+    //   apikey: process.env.BLUSALT_APIKEY,
+    // })
     const result = await response.json()
-    console.log({ result })
     if (!result)
       return res.status(200).json({
         success: false,

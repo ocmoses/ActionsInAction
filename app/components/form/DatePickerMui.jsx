@@ -26,8 +26,6 @@ function FileInput({
     setStartDate(date)
     onChange({ target: { id, value: inputDate(date) } })
   }
-  console.log({ min })
-  console.log({ max })
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div

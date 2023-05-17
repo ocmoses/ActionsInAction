@@ -1262,7 +1262,7 @@ export const department = [
   { code: "INSU", name: "INSURANCE", approval: true },
 ]
 export const fieldsCounts = () => {
-  console.log({ complianceRequirements })
+  // console.log({ complianceRequirements })
   for (const stage in complianceRequirements) {
     if (!counts[stage]) counts[stage] = { count: 0 }
     for (const field in complianceRequirements[stage]) {

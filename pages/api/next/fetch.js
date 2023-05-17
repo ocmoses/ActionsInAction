@@ -12,7 +12,7 @@ const fetchPlus = async (url, options = {}, retries, req, res) => {
     "Content-Type": "application/json",
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
-    Authorization: `Bearer ${decrypted}`,
+    Authorization: `bearer ${decrypted}`,
   }
   const defaultOptions = {
     method: Opts?.method ?? "GET",

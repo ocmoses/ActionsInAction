@@ -407,7 +407,7 @@ function Compliance() {
     }
     const result = await registerPartner("compliance", data)
     if (result) {
-      console.log({ category })
+      // console.log({ category })
       scrollToTop("onboardinglayout")
       if (result?.error) return setError({ compliance: result.error })
       if (result.data?.partner) {
@@ -417,7 +417,7 @@ function Compliance() {
         )
         newcategory.profile_stage.compliance = "1"
         const { nextstage: NextStage } = nextStage(newcategory, partner)
-        console.log({ NextStage })
+        // console.log({ NextStage })
         return setForm(NextStage)
       }
     }

@@ -21,7 +21,6 @@ export default function TextInput({
   const TogglePassword = () => {
     setType((oldState) => (oldState === "text" ? "password" : "text"))
   }
-  console.log({ label })
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div

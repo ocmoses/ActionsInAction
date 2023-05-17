@@ -88,9 +88,7 @@ export default function ComplianceLabelPartners({
     })
     setShowModal(true)
   }
-  {
-    console.log({ type, field, req: complianceRequirements[stage] })
-  }
+
   return (
     <>
       <div
@@ -102,7 +100,6 @@ export default function ComplianceLabelPartners({
           (field in complianceRequirements[stage] ||
             field.split("-")[0] in complianceRequirements[stage]) && (
             <>
-              {/* {console.log({ type, field, req: complianceRequirements[stage] })} */}
               <div className="flex relative items-start gap-3 w-full">
                 {activeApproval && activeApproval !== field && (
                   <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>

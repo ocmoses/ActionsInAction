@@ -1,13 +1,14 @@
 "use client"
 import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer"
 import ComplianceDetail from "@/app/components/dashboard/ComplianceDetail"
+import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
 import useProcessing from "@/hooks/useProcessing"
 import useAdmins from "@/hooks/useAdmins"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect } from "react"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import {
   getPartnerInitials,
@@ -16,17 +17,16 @@ import {
   filterFields,
   filterComplianceRequirements,
   filterApprovalFields,
-  partnerApprovals,
+  getDeptCategoryStages,
+  getFinalApproval,
 } from "@/app/modules/utilities"
 
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import useApp from "@/hooks/useApp"
-import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
+import useRoles from "@/hooks/useRoles"
 import Link from "next/link"
 
 export default function Compliance({ params }) {
-  const router = useRouter()
   const { processing, setProcessing } = useProcessing()
   const [{ errors, setError, clearErrors }] = useErrors(null)
   const {
@@ -48,56 +48,12 @@ export default function Compliance({ params }) {
   const [category, setCategory] = useState()
   const [openDrawer, setOpenDrawer] = useState(false)
   const { setRouteloading } = useApp()
+  const { isSuperadmin } = useRoles()
 
   useEffect(() => {
     setProcessing(false)
     setRouteloading(false)
   }, [])
-
-  useEffect(() => {
-    let html = document.getElementsByTagName("html")
-    if (openDrawer) html[0].style["overflow-y"] = "hidden"
-    else html[0].style["overflow-y"] = "auto"
-  }, [openDrawer])
-
-  useEffect(() => {
-    if (partner && category) {
-      filterFields(partner)
-      filterComplianceRequirements(partner)
-      filterApprovalFields(partner)
-      // const Approvals = partnerApprovals(partner, category)
-      console.log({ partner })
-      const _activeCategory = partner?.categories?.find(
-        (c) => c.category_uuid === category
-      )
-      setActiveCategory(filterCategory(_activeCategory, partner))
-      setCategory(_activeCategory.category_uuid)
-      const _stages = getStages(_activeCategory, categories)
-      setStages(_stages)
-    }
-  }, [partner, category])
-
-  const [DDCategories, setDDCategories] = useState([])
-  useEffect(() => {
-    let _cuuids = []
-    if (allCategories) {
-      if (partner?.approvalStages) {
-        const dept = admin?.department_code
-        for (const cuuid in partner?.approvalStages) {
-          for (const stage in partner?.approvalStages[cuuid]) {
-            if (dept in partner?.approvalStages[cuuid][stage])
-              if (!_cuuids.includes(cuuid)) _cuuids.push(cuuid)
-          }
-        }
-      }
-      const _ddcategories = partner?.categories.filter((cat) =>
-        _cuuids.includes(cat.category_uuid)
-      )
-      console.log({ _ddcategories })
-      setDDCategories(_ddcategories ?? [])
-    }
-  }, [partner, allCategories, admin])
-
   useEffect(() => {
     clearErrors()
     const getPartnerInfo = async (uuid) => {
@@ -143,6 +99,56 @@ export default function Compliance({ params }) {
     }
     if (params?.params?.length > 0) getPartnerInfo(params.params[0])
   }, [params])
+  useEffect(() => {
+    let html = document.getElementsByTagName("html")
+    if (openDrawer) html[0].style["overflow-y"] = "hidden"
+    else html[0].style["overflow-y"] = "auto"
+  }, [openDrawer])
+
+  useEffect(() => {
+    if (partner && category) {
+      filterFields(partner)
+      filterComplianceRequirements(partner)
+      filterApprovalFields(partner)
+      const _activeCategory = partner?.categories?.find(
+        (c) => c.category_uuid === category
+      )
+      setActiveCategory(filterCategory(_activeCategory, partner))
+      setCategory(_activeCategory.category_uuid)
+      const _stages = getStages(_activeCategory, categories)
+      setStages(_stages)
+      console.log({ partner })
+    }
+  }, [partner, category])
+
+  useEffect(() => {
+    if (partner) {
+      const finalApproval = getFinalApproval(partner)
+      console.log({ finalApproval })
+    }
+  }, [partner])
+
+  const [DDCategories, setDDCategories] = useState([])
+  useEffect(() => {
+    let _cuuids = []
+    filterPartner(partner, categories)
+    if (allCategories) {
+      const _deptCategories = getDeptCategoryStages(admin, isSuperadmin)
+      if (partner?.approvalStages) {
+        const dept = admin?.department_code
+        for (const cuuid in partner?.approvalStages) {
+          for (const stage in partner?.approvalStages[cuuid]) {
+            if (dept in partner?.approvalStages[cuuid][stage])
+              if (!_cuuids.includes(cuuid)) _cuuids.push(cuuid)
+          }
+        }
+      }
+      const _ddcategories = partner?.categories.filter((cat) => {
+        return _deptCategories.categories.includes(cat.category_code)
+      })
+      setDDCategories(_ddcategories ?? [])
+    }
+  }, [partner, allCategories, admin])
 
   const handleOpenDrawer = (stage) => {
     setActiveStage(stage)
@@ -210,7 +216,7 @@ export default function Compliance({ params }) {
               </div>
             </div>
 
-            {DDCategories?.length > 1 && (
+            {DDCategories?.length > 0 && (
               <div className="py-3">
                 <DropdownMenu
                   options={DDCategories.map((cat) => ({

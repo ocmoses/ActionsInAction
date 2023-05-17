@@ -525,57 +525,57 @@ export const complianceRequirements = {
       type: "form",
     },
   },
-  // shortcodes: {
-  //   // shortcode: {
-  //   shortcodes: {
-  //     title: "Short codes",
-  //     categories: ["VAS", "RMS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   shortcode_doc: {
-  //     title: "Short code document",
-  //     categories: ["VAS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   shortcode_issue_date: {
-  //     title: "Issue date",
-  //     categories: ["VAS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   shortcode_expiry_date: {
-  //     title: "Expiry date",
-  //     categories: ["VAS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   pricing_shortcodes: {
-  //     title: "Approved pricing shortcode",
-  //     categories: ["VAS", "RMS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   pricing_issue_date: {
-  //     title: "Pricing approval Issue date",
-  //     categories: ["VAS", "RMS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   pricing_expiry_date: {
-  //     title: "Pricing approval Expiry date",
-  //     categories: ["VAS", "RMS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  //   pricing_doc: {
-  //     title: "NCC Pricing approval",
-  //     categories: ["VAS", "RMS", "AGR"],
-  //     type: "form",
-  //     approval: true,
-  //   },
-  // },
+  shortcodes: {
+    // shortcode: {
+    shortcodes: {
+      title: "Short codes",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_doc: {
+      title: "Short code document",
+      categories: ["VAS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_issue_date: {
+      title: "Issue date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    shortcode_expiry_date: {
+      title: "Expiry date",
+      categories: ["VAS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_shortcodes: {
+      title: "Approved pricing shortcode",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_issue_date: {
+      title: "Pricing approval Issue date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_expiry_date: {
+      title: "Pricing approval Expiry date",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+    pricing_doc: {
+      title: "NCC Pricing approval",
+      categories: ["VAS", "RMS", "AGR"],
+      type: "form",
+      approval: true,
+    },
+  },
   shortcode: {
     shortcode_doc: {
       title: "Short code document",
@@ -663,7 +663,7 @@ export const complianceRequirements = {
       type: "form",
     },
   },
-};
+}
 export const shortcodeComplianceRequqirements = {
   shortcode: {
     shortcode_doc: {
@@ -708,7 +708,7 @@ export const shortcodeComplianceRequqirements = {
       type: "form",
     },
   },
-};
+}
 export const compliance = {
   companydetail: {
     company_name: {
@@ -920,7 +920,7 @@ export const compliance = {
       type: "form",
     },
   },
-};
+}
 export const approvalFields = {
   // companydetail: {
   company_name: {
@@ -1181,25 +1181,8 @@ export const approvalFields = {
     approval: ["SPRM"],
     stage: "accountinfo",
   },
-};
-const deptCategories = {};
-for (const field in approvalFields) {
-  if (approvalFields[field].approval.length > 0) {
-    approvalFields[field].approval.map((dept) => {
-      if (!(dept in deptCategories))
-        deptCategories[dept] = { categories: [], stages: [] };
-      if (approvalFields[field].categories.length > 0) {
-        approvalFields[field].categories.map((category) => {
-          if (!deptCategories[dept].categories.includes(category))
-            deptCategories[dept].categories.push(category);
-        });
-      }
-      if (!deptCategories[dept].stages.includes(approvalFields[field].stage))
-        deptCategories[dept].stages.push(approvalFields[field].stage);
-    });
-  }
 }
-export const DeptCategories = deptCategories;
+
 export const shortcodeApprovalFields = {
   // shortcode: {
   shortcodes: {
@@ -1250,18 +1233,37 @@ export const shortcodeApprovalFields = {
     type: "form",
     approval: ["SPRM", "LEGA"],
   },
-};
-const counts = {};
+}
+const deptCategories = {}
+for (const field in approvalFields) {
+  if (approvalFields[field].approval.length > 0) {
+    approvalFields[field].approval.map((dept) => {
+      if (!(dept in deptCategories))
+        deptCategories[dept] = { categories: [], stages: [] }
+      if (approvalFields[field].categories.length > 0) {
+        approvalFields[field].categories.map((category) => {
+          if (!deptCategories[dept].categories.includes(category))
+            deptCategories[dept].categories.push(category)
+        })
+      }
+      if (!deptCategories[dept].stages.includes(approvalFields[field].stage))
+        deptCategories[dept].stages.push(approvalFields[field].stage)
+    })
+  }
+}
+export const DeptCategories = deptCategories
+const counts = {}
 
 export const department = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
   { code: "LEGA", name: "LEGAL", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
-];
+]
 export const fieldsCounts = () => {
+  console.log({ complianceRequirements })
   for (const stage in complianceRequirements) {
-    if (!counts[stage]) counts[stage] = { count: 0 };
+    if (!counts[stage]) counts[stage] = { count: 0 }
     for (const field in complianceRequirements[stage]) {
       if (
         approvalFields[field]?.approval &&
@@ -1270,24 +1272,24 @@ export const fieldsCounts = () => {
         departments.map((dept) => {
           if (approvalFields[field]?.approval.includes(dept.code)) {
             if (!counts[stage][dept.code])
-              counts[stage][dept.code] = { count: 0 };
+              counts[stage][dept.code] = { count: 0 }
             if (!counts[stage][dept.code].fields)
-              counts[stage][dept.code].fields = [];
+              counts[stage][dept.code].fields = []
             if (!counts[stage][dept.code].fields.includes(field)) {
-              counts[stage][dept.code].fields.push(field);
-              counts[stage][dept.code].count++;
-              counts[stage].count++;
+              counts[stage][dept.code].fields.push(field)
+              counts[stage][dept.code].count++
+              counts[stage].count++
             }
             // console.log({field})
           }
-        });
+        })
       }
     }
   }
-  return counts;
+  return counts
   // console.log({counts})
-};
-export const fieldCounts = fieldsCounts();
+}
+export const fieldCounts = fieldsCounts()
 export const profileMenu = [
   "compliance",
   "companydetail",

@@ -26,7 +26,6 @@ export default function Text({ data, setShowModal }) {
   useEffect(() => {
     clearErrors()
   }, [])
-  console.log({ data })
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()

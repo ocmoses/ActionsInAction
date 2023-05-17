@@ -39,7 +39,6 @@ export default function LandingPage() {
   ])
   const [openFaq, setOpenFaq] = useState("")
   const toggleFaq = (id) => {
-    console.log({ id, openFaq })
     if (id === openFaq) setOpenFaq("")
     else setOpenFaq(id)
   }

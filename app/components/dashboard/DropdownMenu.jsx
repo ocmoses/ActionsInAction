@@ -11,7 +11,6 @@ export default function DropdownMenu({
   const [selected, setSelected] = useState({})
   const [optionWidth, setOptionWidth] = useState(null)
   const handleSelection = (option) => {
-    console.log({ option })
     setSelected(option)
     onselect(option)
     setShowMenu(false)

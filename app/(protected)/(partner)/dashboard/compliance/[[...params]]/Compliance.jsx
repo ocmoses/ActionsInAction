@@ -80,7 +80,7 @@ export default function Compliance({ params }) {
       const _stages = getStages(_filtered_selectedCategory, categories)
       setStages(_stages)
     }
-    console.log({ partner })
+    // console.log({ partner })
   }, [partner, params, selectedCategory])
 
   const handleOpenDrawer = (stage) => {

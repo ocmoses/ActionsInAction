@@ -20,8 +20,6 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
   const [navlabels, setNavLabels] = useState({ prev: null, next: null })
   const navigation = Stages.forms
 
-  console.log({ activeStage, category })
-
   useEffect(() => {
     setFeedbacks(category.feedbacks[activeStage])
   }, [activeStage, category])

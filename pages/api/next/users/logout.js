@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${decrypted}`,
+        Authorization: `bearer ${decrypted}`,
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",

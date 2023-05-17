@@ -1,5 +1,6 @@
 "use client"
 import { useStoreActions, useStoreState } from "easy-peasy"
+import { NextEndPoints } from "@/app/modules/endpoints"
 
 export default function useUsers() {
   const states = useStoreState((action) => action.users)

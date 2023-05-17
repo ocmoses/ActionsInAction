@@ -21,7 +21,6 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
       data.type = "date"
       break
   }
-  console.log({ "data.type": data.type })
   return (
     <>
       <div className="fixed inset-0 z-10 overflow-y-auto">

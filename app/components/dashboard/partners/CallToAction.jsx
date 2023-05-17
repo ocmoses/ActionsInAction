@@ -19,13 +19,13 @@ export default function CallToAction({ message, label, onclick }) {
           </svg>
         </div>
         <div className="flex flex-col justify-center md:justify-start gap-3 px-2 py-3">
-          <p className="font-bold my-0">{message}</p>
+          <p className="my-0" dangerouslySetInnerHTML={{ __html: message }}></p>
         </div>
       </div>
       {label && (
         <p
           onClick={() => onclick}
-          className="text-[#999999] my-0 text-sm cursor-pointer hover:text-white/70"
+          className="text-[#999999] my-0 text-sm cursor-pointer whitespace-nowrap hover:text-white/70"
         >
           {label}
         </p>

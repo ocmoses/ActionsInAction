@@ -12,11 +12,15 @@ import {
   filterFields,
   filterComplianceRequirements,
   filterApprovalFields,
+  getStatuses,
+  partnerApprovals,
 } from "@/app/modules/utilities"
 import Image from "next/image"
 import useApp from "@/hooks/useApp"
 import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories"
 import { useRouter } from "next/navigation"
+
+import { fieldsCounts, fieldCounts } from "@/app/modules/constants"
 
 export default function Compliance({ params }) {
   const router = useRouter()
@@ -36,10 +40,22 @@ export default function Compliance({ params }) {
   const [openDrawer, setOpenDrawer] = useState(false)
   const { setRouteloading } = useApp()
 
+  // const [ApprovalStages, setApprovalStages] = useState(null)
+  // const [Approvals, setApproval] = useState(null)
+
   useEffect(() => {
     setProcessing(false)
     setRouteloading(false)
   }, [])
+
+  useEffect(() => {
+    fieldsCounts()
+    // const _approvals = partnerApprovals(partner)
+    // setApproval(_approvals)
+    // const _approvalStages = partner.approvalStages
+    // setApprovalStages(_approvalStages)
+  }, [partner.approvalStages])
+
   useEffect(() => {
     let html = document.getElementsByTagName("html")
     if (openDrawer) html[0].style["overflow-y"] = "hidden"
@@ -64,10 +80,10 @@ export default function Compliance({ params }) {
       const _stages = getStages(_filtered_selectedCategory, categories)
       setStages(_stages)
     }
+    console.log({ partner })
   }, [partner, params, selectedCategory])
 
   const handleOpenDrawer = (stage) => {
-    console.log({ stage })
     setActiveStage(stage)
     setOpenDrawer(true)
   }

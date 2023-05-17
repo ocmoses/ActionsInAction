@@ -32,10 +32,10 @@ export default function ComplianceLabelPartners({
 
   const Approvals = partnerApprovals(partner, category)
 
-  console.log({ type })
-  console.log({ field })
-  console.log({ category })
-  console.log({ category_shortcode })
+  // console.log({ type })
+  // console.log({ field })
+  // console.log({ category })
+  // console.log({ category_shortcode })
 
   const updateField = () => {
     let field_value = category[field]
@@ -79,12 +79,18 @@ export default function ComplianceLabelPartners({
       field_value,
       type,
       field,
-      shortcode_uuid: category_shortcode?.shortcode_uuid ?? null,
+      shortcode_uuid: category_shortcode?.shortcode_uuid
+        ? category_shortcode?.shortcode_uuid
+        : category_shortcode?.uuid
+        ? category_shortcode?.shortcode_uuid
+        : null,
       country: category.country,
     })
     setShowModal(true)
   }
-
+  {
+    console.log({ type, field, req: complianceRequirements[stage] })
+  }
   return (
     <>
       <div
@@ -93,8 +99,10 @@ export default function ComplianceLabelPartners({
         }`}
       >
         {stage in complianceRequirements &&
-          field in complianceRequirements[stage] && (
+          (field in complianceRequirements[stage] ||
+            field.split("-")[0] in complianceRequirements[stage]) && (
             <>
+              {/* {console.log({ type, field, req: complianceRequirements[stage] })} */}
               <div className="flex relative items-start gap-3 w-full">
                 {activeApproval && activeApproval !== field && (
                   <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
@@ -162,7 +170,7 @@ export default function ComplianceLabelPartners({
                             src={`/assets/flags/${
                               category[field]?.toLowerCase() ?? "ng"
                             }.svg`}
-                            className={"inline mr-2 h-4 rounded-sm h-auto"}
+                            className={"inline mr-2 rounded-sm h-auto"}
                             width={24}
                             height={15}
                             priority
@@ -177,7 +185,7 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "date" && field in category && (
-                        <span className="text-white/80 text-[14px] font-bold">
+                        <span className="text-white/80 text-[14px] font-bold whitespace-nowrap">
                           {category[field] &&
                             moment(category[field]).format("DD / MMM / YYYY")}
                         </span>
@@ -193,13 +201,16 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "shortcodes" && (
-                        <span className="text-white/80 text-[14px] font-bold">
-                          {category_shortcode.shortcode?.shortcodes?.length >
-                            0 &&
-                            category_shortcode.shortcode?.shortcodes?.join(
-                              ", "
-                            )}
-                        </span>
+                        <>
+                          <span className="text-white/80 text-[14px] font-bold">
+                            Here
+                            {category_shortcode.shortcode?.shortcodes?.length >
+                              0 &&
+                              category_shortcode.shortcode?.shortcodes?.join(
+                                ", "
+                              )}
+                          </span>
+                        </>
                       )}
                       {type === "shortcode_doc" && (
                         <span
@@ -218,7 +229,7 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "shortcode_issue_date" && (
-                        <span className="text-white/80 text-[14px] font-bold">
+                        <span className="text-white/80 text-[14px] font-bold whitespace-nowrap">
                           {category_shortcode.shortcode?.shortcode_issue_date &&
                             moment(
                               category_shortcode.shortcode?.shortcode_issue_date
@@ -226,7 +237,7 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "shortcode_expiry_date" && (
-                        <span className="text-white/80 text-[14px] font-bold">
+                        <span className="text-white/80 text-[14px] font-bold whitespace-nowrap">
                           {category_shortcode.shortcode
                             ?.shortcode_expiry_date &&
                             moment(
@@ -262,7 +273,7 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "pricing_issue_date" && (
-                        <span className="text-white/80 text-[14px] font-bold">
+                        <span className="text-white/80 text-[14px] font-bold whitespace-nowrap">
                           {category_shortcode.shortcode_pricing
                             ?.pricing_issue_date &&
                             moment(
@@ -272,7 +283,7 @@ export default function ComplianceLabelPartners({
                         </span>
                       )}
                       {type === "pricing_expiry_date" && (
-                        <span className="text-white/80 text-[14px] font-bold">
+                        <span className="text-white/80 text-[14px] font-bold whitespace-nowrap">
                           {category_shortcode.shortcode_pricing
                             ?.pricing_expiry_date &&
                             moment(
@@ -293,7 +304,7 @@ export default function ComplianceLabelPartners({
                           />
                         </div>
                         {Approvals?.counts?.status[field] === "approved" && (
-                          <span className="text-[#999999] text-[12px]">
+                          <span className="text-[#999999] text-[12px] whitespace-nowrap">
                             {Approvals?.fieldDates?.vas_license_id?.length >
                               0 &&
                               moment(

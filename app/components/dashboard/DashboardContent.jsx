@@ -14,6 +14,7 @@ import {
   AllowedCategories,
   filterPartner,
   filterCategory,
+  getFinalApproval,
 } from "@/app/modules/utilities"
 import { TailSpinPreloader } from "@/app/components/Icons"
 import useProcessing from "@/hooks/useProcessing"
@@ -38,6 +39,13 @@ export default function GetStarted({ type }) {
     nextStage,
   } = usePartners()
 
+  const [FinalApproval, setFinalApproval] = useState(false)
+  useEffect(() => {
+    const _finalApproval = getFinalApproval(partner)
+    console.log({ _finalApproval })
+    setFinalApproval(_finalApproval)
+  }, [partner])
+  console.log({ FinalApproval })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -45,17 +53,15 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false)
   const [tmpCat, setTmpCat] = useState(null)
   const [isOnboarding, setIsOnboarding] = useState(false)
-  const [allowedCategories, setAllowedCategories] = useState(false)
+  // const [allowedCategories, setAllowedCategories] = useState(false)
 
-  const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
-    useProcessing()
+  const { setForm, setProcessing, setActiveCategory } = useProcessing()
 
   const [{ errors, setError, success, setSuccess, clearErrors }] =
     useErrors(null)
 
   useEffect(() => {
     setCategoriesData(categories)
-    setAllowedCategories(AllowedCategories(categories))
   }, [categories])
 
   const [validation, setValidation] = useState({
@@ -223,10 +229,19 @@ export default function GetStarted({ type }) {
                       {partner?.contract_status === "not_started" ? (
                         "Complete your setup to get started!"
                       ) : (
-                        <CallToAction
-                          message="Your application is currently being reviewed"
-                          label="Take action"
-                        />
+                        <>
+                          {FinalApproval.partner ? (
+                            <CallToAction
+                              message="Sign contract"
+                              label="Take action"
+                            />
+                          ) : (
+                            <CallToAction
+                              message="Your application is currently being reviewed"
+                              label=""
+                            />
+                          )}
+                        </>
                       )}
                     </p>
                   )}
@@ -250,10 +265,22 @@ export default function GetStarted({ type }) {
                       {partner?.contract_status === "not_started" ? (
                         "Complete your setup to get started!"
                       ) : (
-                        <CallToAction
-                          message="Your application is currently being reviewed"
-                          label="Take action"
-                        />
+                        <>
+                          {console.log({
+                            "FinalApproval.partner": FinalApproval.partner,
+                          })}
+                          {FinalApproval.partner ? (
+                            <CallToAction
+                              message="Sign contract"
+                              label="Take action"
+                            />
+                          ) : (
+                            <CallToAction
+                              message="Your application is currently being reviewed"
+                              label=""
+                            />
+                          )}
+                        </>
                       )}
                     </p>
                   )}
@@ -267,6 +294,7 @@ export default function GetStarted({ type }) {
                   type={type}
                   onclick={continueRegistration}
                   categories={categoriesData}
+                  finalApproval={FinalApproval}
                 />
               )}
               {success && (

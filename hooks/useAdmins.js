@@ -1,10 +1,11 @@
 import useProcessing from "@/hooks/useProcessing"
-import RemoteEndpoints from "@/app/modules/endpoints"
 import useApp from "@/hooks/useApp"
 import { useEffect, useState } from "react"
 import { filterCategory, getstages } from "@/app/modules/utilities"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { filterPartner } from "@/app/modules/utilities"
+import { redirect } from "next/navigation"
+import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints"
 
 export default function useAdmins() {
   const states = useStoreState((action) => action.admins)
@@ -52,6 +53,11 @@ export default function useAdmins() {
           },
         }
       )
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
+      console.log({ response })
       const result = await response.json()
       setProcessing(false)
       if (result?.success) {
@@ -85,10 +91,11 @@ export default function useAdmins() {
           result?.data?.message ??
           "Something went wrong. Please check your connection and try again",
       }
-    } catch (eror) {
+    } catch (error) {
+      console.log({ error })
       return {
         error:
-          eror.message ??
+          error.message ??
           "Something went wrong. Please check your connection and try again",
       }
     }
@@ -139,11 +146,11 @@ export default function useAdmins() {
       const { success, data } = result
       if (!success) return { success: false, error: data.message }
       return { success: true, data, error: null }
-    } catch (eror) {
+    } catch (error) {
       return {
         success: false,
         error:
-          eror.message ??
+          error.message ??
           "Something went wrong. Please check your connection and try again",
       }
     }

@@ -2,25 +2,25 @@ import ComplianceLabel from "../ComplianceLabel"
 import { approvalFields } from "@/app/modules/constants"
 
 export default function Shortcode({ category, stage }) {
-  // console.log({ approvalFields })
+  console.log({ approvalFields, shortcodes: category.shortcodes })
 
   return (
     category && (
       <div className="flex flex-col items-start gap-6 w-full">
         {category.shortcodes.length > 0 &&
           category.shortcodes.map(
-            (shtcd, index) =>
+            (shtcd) =>
               shtcd.shortcode?.shortcodes?.length > 0 && (
                 <div
                   key={shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid}
                   className="flex flex-col items-start gap-4 w-full rounded-xl p-3 mb-6 bg-[#030303]"
                 >
-                  {approvalFields[
-                    `shortcodes-${
-                      shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
-                    }`
-                  ]?.approval && (
+                  {approvalFields.shortcodes?.approval && (
                     <>
+                      {console.log({
+                        shtcd,
+                        approvalfield: approvalFields.shortcodes?.approval,
+                      })}
                       <ComplianceLabel
                         category={category}
                         category_shortcode={shtcd}

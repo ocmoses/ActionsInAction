@@ -2,7 +2,6 @@ import moment from "moment"
 import { complianceRequirements } from "@/app/modules/constants"
 
 export default function Activities({ type, stage, feedbacks }) {
-  console.log({ feedbacks })
   return (
     <div className="flex flex-col gap-6 flex-1 w-full h-full overflow-y-auto justify-start items-start p-6 pb-24">
       {type === "admin" &&

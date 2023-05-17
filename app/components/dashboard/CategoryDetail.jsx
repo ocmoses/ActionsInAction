@@ -6,6 +6,8 @@ import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
 import { CircleOkCheckmarkIcon } from "@/app/components/Icons"
 import { TailSpinPreloader } from "@/app/components/Icons"
+import { useEffect, useState } from "react"
+import { Util } from "@/app/modules/utilities"
 
 export default function CategoryDetail({
   category,
@@ -18,13 +20,12 @@ export default function CategoryDetail({
     partner,
     category: partner_category,
     updatePartner,
-    setCategory,
     registerPartner,
     setCurrentCategory,
     nextStage,
   } = usePartners()
   const { processing, setProcessing, setForm } = useProcessing()
-
+  const [new_category, setNewCategory] = useState({})
   const selectCategory = async (sysCategory) => {
     clearErrors()
     const result = await registerPartner("category", {
@@ -39,14 +40,15 @@ export default function CategoryDetail({
       }
       if (result.data?.partner) {
         const newcategory = { ...result?.data?.category }
+        setNewCategory(newcategory)
         updatePartner(result?.data?.partner)
         newcategory.profile_stage.category = "1"
-        setCurrentCategory(newcategory, partner)
-        const { nextstage: NextStage } = nextStage(newcategory, partner)
-        console.log({ NextStage })
-        setForm(NextStage)
-        setIsOnboarding(true)
-        return setIsOpen(false)
+        // setCurrentCategory(newcategory, partner)
+        // const { nextstage: NextStage } = nextStage(newcategory, partner)
+        // console.log({ NextStage })
+        // setForm(NextStage)
+        // setIsOnboarding(true)
+        // return setIsOpen(false)
       }
     }
     setError({
@@ -54,7 +56,17 @@ export default function CategoryDetail({
         "Unable to reach the server. Please check your connection and retry",
     })
   }
-
+  useEffect(() => {
+    console.log({ new_category })
+    if (!Util.isEmpty(new_category)) {
+      setCurrentCategory(new_category, partner)
+      const { nextstage: NextStage } = nextStage(new_category, partner)
+      console.log({ NextStage })
+      setForm(NextStage)
+      setIsOnboarding(true)
+      return setIsOpen(false)
+    }
+  }, [new_category, partner])
   return (
     <div className="p-0 h-full pt-[50px]">
       <div className="h-full overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] !scrollbar-w-[4px]">

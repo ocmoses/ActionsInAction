@@ -20,6 +20,8 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
   const [navlabels, setNavLabels] = useState({ prev: null, next: null })
   const navigation = Stages.forms
 
+  console.log({ activeStage, category })
+
   useEffect(() => {
     setFeedbacks(category.feedbacks[activeStage])
   }, [activeStage, category])
@@ -111,20 +113,6 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
         previous={prevStage}
         navlabels={navlabels}
       />
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t-2 border-t-white/30 bg-[#313131] text-[#999999] text-[12px] px-4 pt-4 pb-24">
-        {departments.length > 0 &&
-          departments.map((dept) => (
-            <div
-              key={dept.code}
-              className="flex gap-3 items-start justify-start"
-            >
-              <span className="flex justify-center items-center w-4 h-4 font-extrabold px-1 py-0 text-[14px] bg-[#FFCB03] text-black">
-                {dept.code[0]}
-              </span>
-              <span className="text-[11px] leading-[89%]">{dept.name}</span>
-            </div>
-          ))}
-      </div> */}
     </div>
   )
 }

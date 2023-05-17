@@ -61,7 +61,6 @@ function Login({ params }) {
       setProcessing(false)
       return setError({ login: error })
     }
-    console.log({ Data })
     setToken(Data?.user.token)
     setAdmin(Data?.user.user)
     setCategories(Data?.categories)
@@ -69,6 +68,7 @@ function Login({ params }) {
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
         : PageRoutes.admindashboard
+
     return router.replace(redirect)
   }
   return (

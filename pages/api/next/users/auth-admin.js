@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       referrerPolicy: "no-referrer",
     })
     const result = await response.json()
-    console.log({ result })
+    // console.log({ result })
 
     res.status(200).json({ success: true, error: null, data: result })
   } catch (error) {

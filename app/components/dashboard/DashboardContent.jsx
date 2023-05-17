@@ -42,10 +42,10 @@ export default function GetStarted({ type }) {
   const [FinalApproval, setFinalApproval] = useState(false)
   useEffect(() => {
     const _finalApproval = getFinalApproval(partner)
-    console.log({ _finalApproval })
+    // console.log({ _finalApproval })
     setFinalApproval(_finalApproval)
   }, [partner])
-  console.log({ FinalApproval })
+  // console.log({ FinalApproval })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -232,7 +232,8 @@ export default function GetStarted({ type }) {
                         <>
                           {FinalApproval.partner ? (
                             <CallToAction
-                              message="Sign contract"
+                              message={`<p className="text-[#FF9897] text-[16px] leading-[22px]">Your contract is ready, click here to sign</p>
+                            <p className="text-[#999999] text-[14px] leading-[18px]">Describe the event and give further instructions if needed, include a call to action</p>`}
                               label="Take action"
                             />
                           ) : (
@@ -266,12 +267,10 @@ export default function GetStarted({ type }) {
                         "Complete your setup to get started!"
                       ) : (
                         <>
-                          {console.log({
-                            "FinalApproval.partner": FinalApproval.partner,
-                          })}
                           {FinalApproval.partner ? (
                             <CallToAction
-                              message="Sign contract"
+                              message={`<p className="text-[#FF9897] text-[16px] leading-[22px]">Your contract is ready, click here to sign</p>
+                            <p className="text-[#999999] text-[14px] leading-[18px]">Describe the event and give further instructions if needed, include a call to action</p>`}
                               label="Take action"
                             />
                           ) : (

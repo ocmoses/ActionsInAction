@@ -134,7 +134,7 @@ function Ncclicense() {
       )
       newcategory.profile_stage.ncclicense = "1"
       const { nextstage: NextStage } = nextStage(newcategory, partner)
-      console.log({ NextStage })
+      // console.log({ NextStage })
       return setForm(NextStage)
     }
     // const { nextstage: NextStage } = nextStage(category, partner)

@@ -11,6 +11,7 @@ export default function PartnerCategories({
   partnerCategories,
   onclick,
   categories,
+  finalApproval,
 }) {
   const router = useRouter()
   const [allCats, setAllCats] = useState([])
@@ -88,6 +89,8 @@ export default function PartnerCategories({
                         ? "In progress"
                         : partner?.contract_status === "not_started"
                         ? "Pending review"
+                        : finalApproval[category.category_uuid].status
+                        ? "Approved"
                         : "In review"}
                     </span>
 
@@ -110,16 +113,26 @@ export default function PartnerCategories({
                     />
                   ) : (
                     <div className={`flex justify-center`}>
-                      <div className="flex gap-2 bg-[#2D200A] text-[#F9D89A] rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden">
-                        <Image
-                          alt=""
-                          src="/assets/icons/review.svg"
-                          width={16}
-                          height={16}
-                        />
+                      <div
+                        className={`flex gap-2 ${
+                          finalApproval[category.category_uuid].status
+                            ? " bg-[#18291F] text-[#97CDAD]"
+                            : " bg-[#2D200A] text-[#F9D89A]"
+                        } rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden`}
+                      >
+                        {!finalApproval[category.category_uuid].status && (
+                          <Image
+                            alt=""
+                            src="/assets/icons/review.svg"
+                            width={16}
+                            height={16}
+                          />
+                        )}
                         <span>
                           {partner?.contract_status === "not_started"
                             ? "Pending review"
+                            : finalApproval[category.category_uuid].status
+                            ? "Approved"
                             : "In review"}
                         </span>
                       </div>

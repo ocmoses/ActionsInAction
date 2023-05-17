@@ -1,22 +1,33 @@
-import Image from "next/image"
-import { departments, fieldCounts } from "@/app/modules/constants"
+import { fieldsCounts, fieldCounts } from "@/app/modules/constants"
 import { getStatuses, partnerApprovals } from "@/app/modules/utilities"
 
 import useAdmins from "@/hooks/useAdmins"
 import useRoles from "@/hooks/useRoles"
+import { useEffect, useState } from "react"
 
 export default function CategoryStageStatus({ stage, category, partner }) {
   const { isSuperadmin } = useRoles()
   const { admin } = useAdmins()
+  const [ApprovalStages, setApprovalStages] = useState(null)
+  const [Approvals, setApproval] = useState(null)
 
-  const Approvals = partnerApprovals(partner, category)
-  // console.log({ stage, Approvals })
+  useEffect(() => {
+    fieldsCounts()
+    const _approvals = partnerApprovals(partner, category)
+    const _approvalStages = partner.approvalStages
+    setApproval(_approvals)
+    setApprovalStages(_approvalStages[category.category_uuid])
+  }, [partner.approvalStages, category])
+
   let dept
   let counts
   if (Approvals) {
     if (!isSuperadmin() && admin && admin.department_code) {
       dept = admin.department_code
-      counts = Approvals[stage][dept]?.counts
+      counts =
+        stage in Approvals && Approvals[stage][dept]?.counts
+          ? Approvals[stage][dept].counts
+          : null
     } else {
       counts = Approvals[stage].counts
     }

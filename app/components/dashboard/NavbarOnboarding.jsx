@@ -54,7 +54,7 @@ export default function NavbarOnboarding({
               size={22}
               thickness={2}
               textsize={8}
-              percent={partner?.sections[category?.category_uuid].percent ?? 0}
+              percent={partner?.sections[category?.category_uuid]?.percent ?? 0}
               hidelabel={true}
             />
           )}

@@ -1436,7 +1436,7 @@ export const partnerApprovals = (partner, category) => {
       rejected: 0,
       corrected: 0,
     }
-    if (StageApprovals.counts) {
+    if (StageApprovals?.counts) {
       for (const field in StageApprovals.counts.fields) {
         if (!shortcodeApprovalFieldsArray.includes(field)) {
           let pending = 0

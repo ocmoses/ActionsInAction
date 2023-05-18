@@ -8,6 +8,7 @@ import {
   shortcodeComplianceRequqirements,
   approvalFields,
   shortcodeApprovalFields,
+  shortcodeApprovalFieldsArray,
   fieldCounts,
   stages,
   categoryCompletionPercentage,
@@ -1167,13 +1168,14 @@ export const filterFields = (partner) => {
                     fieldCounts.shortcode[dept].fields[i] = field
                 }
               }
-              console.log({ dept, fields: fieldCounts.shortcode[dept] })
+
               for (const field in fieldCounts.shortcode[dept].fields) {
                 for (const f in shortcodeApprovalFields) {
                   if (field === f)
                     delete fieldCounts.shortcode[dept].fields[field]
                 }
               }
+              console.log({ dept, fields: fieldCounts.shortcode[dept] })
             }
           }
           s++
@@ -1307,73 +1309,75 @@ export const partnerApprovals = (partner, category) => {
       for (const _dept in stageFields[_stage]) {
         if (stageFields[_stage][_dept]?.fields?.length > 0) {
           stageFields[_stage][_dept].fields.map((field) => {
-            if (!StageApprovals[_stage][_dept])
-              StageApprovals[_stage][_dept] = {
-                counts: {
-                  pending: 0,
-                  approved: 0,
-                  rejected: 0,
-                  corrected: 0,
-                  count: 0,
-                  rejections:
-                    Approvals &&
-                    _stage in Approvals &&
-                    _dept in Approvals[_stage]
-                      ? Approvals[_stage][_dept]?.rejections
-                      : {},
-                },
+            if (!shortcodeApprovalFieldsArray.includes(field)) {
+              if (!StageApprovals[_stage][_dept])
+                StageApprovals[_stage][_dept] = {
+                  counts: {
+                    pending: 0,
+                    approved: 0,
+                    rejected: 0,
+                    corrected: 0,
+                    count: 0,
+                    rejections:
+                      Approvals &&
+                      _stage in Approvals &&
+                      _dept in Approvals[_stage]
+                        ? Approvals[_stage][_dept]?.rejections
+                        : {},
+                  },
+                }
+              if (
+                Approvals &&
+                _stage in Approvals &&
+                Approvals[_stage] &&
+                _dept in Approvals[_stage] &&
+                Approvals[_stage][_dept] &&
+                field in Approvals[_stage][_dept]
+              ) {
+                StageApprovals[_stage][_dept][field] =
+                  Approvals[_stage][_dept][field]
+
+                if (!StageApprovals[_stage].counts.fields[field])
+                  StageApprovals[_stage].counts.fields[field] = []
+                StageApprovals[_stage].counts.fields[field].push(
+                  Approvals[_stage][_dept][field]
+                )
+
+                if (!StageApprovals.counts.fields[field])
+                  StageApprovals.counts.fields[field] = []
+                StageApprovals.counts.fields[field].push(
+                  Approvals[_stage][_dept][field]
+                )
+                switch (Approvals[_stage][_dept][field]) {
+                  case "approved":
+                    StageApprovals[_stage].counts.approved++
+                    StageApprovals[_stage][_dept].counts.approved++
+                    break
+                  case "rejected":
+                    StageApprovals[_stage].counts.rejected++
+                    StageApprovals[_stage][_dept].counts.rejected++
+                    break
+                  case "corrected":
+                    StageApprovals[_stage].counts.corrected++
+                    StageApprovals[_stage][_dept].counts.corrected++
+                    break
+                }
+              } else {
+                StageApprovals[_stage][_dept][field] = "pending"
+                StageApprovals[_stage].counts.pending++
+                StageApprovals[_stage][_dept].counts.pending++
+
+                if (!StageApprovals[_stage].counts.fields[field])
+                  StageApprovals[_stage].counts.fields[field] = []
+                StageApprovals[_stage].counts.fields[field].push("pending")
+
+                if (!StageApprovals.counts.fields[field])
+                  StageApprovals.counts.fields[field] = []
+                StageApprovals.counts.fields[field].push("pending")
               }
-            if (
-              Approvals &&
-              _stage in Approvals &&
-              Approvals[_stage] &&
-              _dept in Approvals[_stage] &&
-              Approvals[_stage][_dept] &&
-              field in Approvals[_stage][_dept]
-            ) {
-              StageApprovals[_stage][_dept][field] =
-                Approvals[_stage][_dept][field]
-
-              if (!StageApprovals[_stage].counts.fields[field])
-                StageApprovals[_stage].counts.fields[field] = []
-              StageApprovals[_stage].counts.fields[field].push(
-                Approvals[_stage][_dept][field]
-              )
-
-              if (!StageApprovals.counts.fields[field])
-                StageApprovals.counts.fields[field] = []
-              StageApprovals.counts.fields[field].push(
-                Approvals[_stage][_dept][field]
-              )
-              switch (Approvals[_stage][_dept][field]) {
-                case "approved":
-                  StageApprovals[_stage].counts.approved++
-                  StageApprovals[_stage][_dept].counts.approved++
-                  break
-                case "rejected":
-                  StageApprovals[_stage].counts.rejected++
-                  StageApprovals[_stage][_dept].counts.rejected++
-                  break
-                case "corrected":
-                  StageApprovals[_stage].counts.corrected++
-                  StageApprovals[_stage][_dept].counts.corrected++
-                  break
-              }
-            } else {
-              StageApprovals[_stage][_dept][field] = "pending"
-              StageApprovals[_stage].counts.pending++
-              StageApprovals[_stage][_dept].counts.pending++
-
-              if (!StageApprovals[_stage].counts.fields[field])
-                StageApprovals[_stage].counts.fields[field] = []
-              StageApprovals[_stage].counts.fields[field].push("pending")
-
-              if (!StageApprovals.counts.fields[field])
-                StageApprovals.counts.fields[field] = []
-              StageApprovals.counts.fields[field].push("pending")
+              StageApprovals[_stage].counts.count++
+              StageApprovals[_stage][_dept].counts.count++
             }
-            StageApprovals[_stage].counts.count++
-            StageApprovals[_stage][_dept].counts.count++
           })
           if (
             StageApprovals[_stage][_dept]?.counts?.approved ===
@@ -1433,24 +1437,26 @@ export const partnerApprovals = (partner, category) => {
       corrected: 0,
     }
     for (const field in StageApprovals.counts.fields) {
-      let pending = 0
-      let approved = 0
-      let rejected = 0
-      let corrected = 0
-      let total = StageApprovals.counts.fields[field].length
-      let status = pending
-      StageApprovals.counts.fields[field].map((status) => {
-        if (status === "pending") pending++
-        if (status === "approved") approved++
-        if (status === "rejected") rejected++
-        if (status === "corrected") corrected++
-      })
-      if (rejected === 0 && (approved > 0 || corrected > 0))
-        status = "processing"
-      if (rejected > 0) status = "rejected"
-      if (pending === total) status = "pending"
-      if (approved === total) status = "approved"
-      StageApprovals.counts.status[field] = status
+      if (!shortcodeApprovalFieldsArray.includes(field)) {
+        let pending = 0
+        let approved = 0
+        let rejected = 0
+        let corrected = 0
+        let total = StageApprovals.counts.fields[field].length
+        let status = pending
+        StageApprovals.counts.fields[field].map((status) => {
+          if (status === "pending") pending++
+          if (status === "approved") approved++
+          if (status === "rejected") rejected++
+          if (status === "corrected") corrected++
+        })
+        if (rejected === 0 && (approved > 0 || corrected > 0))
+          status = "processing"
+        if (rejected > 0) status = "rejected"
+        if (pending === total) status = "pending"
+        if (approved === total) status = "approved"
+        StageApprovals.counts.status[field] = status
+      }
     }
   }
   const ApprovalDates = partner?.approvalDate[category.category_uuid]
@@ -1482,6 +1488,7 @@ export const partnerApprovals = (partner, category) => {
       }
     }
   }
+  console.log({ StageApprovals: StageApprovals })
   StageApprovals.fieldDates = fields
   return StageApprovals
 }

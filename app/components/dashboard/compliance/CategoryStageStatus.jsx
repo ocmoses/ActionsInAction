@@ -32,7 +32,7 @@ export default function CategoryStageStatus({ stage, category, partner }) {
       counts = Approvals[stage].counts
     }
   }
-
+  console.log({ stage, counts })
   const { bg, textcolor, iconcolor, icon, text } = getStatuses(
     counts?.status,
     counts

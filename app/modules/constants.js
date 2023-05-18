@@ -1234,6 +1234,16 @@ export const shortcodeApprovalFields = {
     approval: ["SPRM", "LEGA"],
   },
 }
+export const shortcodeApprovalFieldsArray = [
+  "shortcodes",
+  "shortcode_doc",
+  "shortcode_issue_date",
+  "shortcode_expiry_date",
+  "pricing_shortcodes",
+  "pricing_issue_date",
+  "pricing_expiry_date",
+  "pricing_doc",
+]
 const deptCategories = {}
 for (const field in approvalFields) {
   if (approvalFields[field].approval.length > 0) {
@@ -1261,7 +1271,6 @@ export const department = [
   { code: "INSU", name: "INSURANCE", approval: true },
 ]
 export const fieldsCounts = () => {
-  // console.log({ complianceRequirements })
   for (const stage in complianceRequirements) {
     if (!counts[stage]) counts[stage] = { count: 0 }
     for (const field in complianceRequirements[stage]) {
@@ -1280,14 +1289,13 @@ export const fieldsCounts = () => {
               counts[stage][dept.code].count++
               counts[stage].count++
             }
-            // console.log({field})
+            console.log({ field })
           }
         })
       }
     }
   }
   return counts
-  // console.log({counts})
 }
 export const fieldCounts = fieldsCounts()
 export const profileMenu = [

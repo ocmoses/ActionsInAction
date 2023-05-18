@@ -50,7 +50,7 @@ export default function useAdmins() {
           headers: {
             token: states.token,
             "Content-Type": "application/json",
-            Authorization: `bearer ${states.value}`,
+            Authorization: `bearer ${states.token}`,
           },
         }
       )

@@ -3,6 +3,7 @@ import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
 import CategoryCard from "@/app/components/dashboard/CategoryCard"
 import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
 import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
+import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement"
 import OnboardingLayout from "./OnboardingLayout"
 import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
@@ -60,6 +61,11 @@ export default function GetStarted({ type }) {
   const [{ errors, setError, success, setSuccess, clearErrors }] =
     useErrors(null)
 
+  const [showModal, setShowModal] = useState(false)
+  const showAgreement = (status) => {
+    console.log({ showModal })
+    setShowModal(status)
+  }
   useEffect(() => {
     setCategoriesData(categories)
   }, [categories])
@@ -234,6 +240,7 @@ export default function GetStarted({ type }) {
                             <CallToAction
                               message="Your contract is ready, click here to sign"
                               description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
                               label="Take action"
                               color="text-[#FF9897]"
                               desccolor="text-[#999999]"
@@ -308,6 +315,7 @@ export default function GetStarted({ type }) {
                             <CallToAction
                               message="Your contract is ready, click here to sign"
                               description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
                               label="Take action"
                               color="text-[#FF9897]"
                               desccolor="text-[#999999]"
@@ -585,6 +593,11 @@ export default function GetStarted({ type }) {
             </CategorySideDrawer>
           </div>
         </div>
+      )}
+      {showModal && (
+        <Portal>
+          <PartnerAgreement showAgreement={showAgreement} partner={partner} />
+        </Portal>
       )}
     </>
   )

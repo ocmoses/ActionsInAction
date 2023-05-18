@@ -88,9 +88,7 @@ export default function ComplianceLabelPartners({
     })
     setShowModal(true)
   }
-  {
-    console.log({ type, field, req: complianceRequirements[stage] })
-  }
+
   return (
     <>
       <div
@@ -102,7 +100,6 @@ export default function ComplianceLabelPartners({
           (field in complianceRequirements[stage] ||
             field.split("-")[0] in complianceRequirements[stage]) && (
             <>
-              {/* {console.log({ type, field, req: complianceRequirements[stage] })} */}
               <div className="flex relative items-start gap-3 w-full">
                 {activeApproval && activeApproval !== field && (
                   <div className="absolute cursor-not-allowed top-[-10px] right-[-10px] bottom-[-10px] left-[-10px] z-20 bg-transparent"></div>
@@ -300,7 +297,7 @@ export default function ComplianceLabelPartners({
                       <div className="flex flex-col gap-0 items-end">
                         <div className="grow-0">
                           <FieldStatus
-                            status={Approvals.counts.status[field]}
+                            status={Approvals?.counts.status[field]}
                           />
                         </div>
                         {Approvals?.counts?.status[field] === "approved" && (
@@ -317,8 +314,8 @@ export default function ComplianceLabelPartners({
                 </div>
               </div>
               {Approvals &&
-                Approvals.counts?.status &&
-                Approvals.counts?.status[field] === "rejected" && (
+                Approvals?.counts?.status &&
+                Approvals?.counts?.status[field] === "rejected" && (
                   <RejectionReasons
                     title={
                       stage in complianceRequirements &&

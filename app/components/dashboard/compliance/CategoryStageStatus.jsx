@@ -26,13 +26,13 @@ export default function CategoryStageStatus({ stage, category, partner }) {
       dept = admin.department_code
       counts =
         stage in Approvals && Approvals[stage][dept]?.counts
-          ? Approvals[stage][dept].counts
+          ? Approvals[stage][dept]?.counts
           : null
     } else {
-      counts = Approvals[stage].counts
+      counts = Approvals[stage]?.counts
     }
   }
-
+  console.log({ stage, counts })
   const { bg, textcolor, iconcolor, icon, text } = getStatuses(
     counts?.status,
     counts

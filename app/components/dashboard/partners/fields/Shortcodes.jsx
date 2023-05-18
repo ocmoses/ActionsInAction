@@ -23,7 +23,6 @@ export default function Shortcodes({ data, setShowModal }) {
   useEffect(() => {
     clearErrors()
   }, [])
-  console.log({ data })
   const handleSubmit = async (e) => {
     e.preventDefault()
     clearErrors()
@@ -72,10 +71,8 @@ export default function Shortcodes({ data, setShowModal }) {
         })
       }
       const results = await response.json()
-      console.log({ results })
       const { success, data: Data } = results
       if (!success) {
-        console.log({ success, Data })
         setSaving(false)
         return setError({
           update: Data.message,
@@ -123,7 +120,6 @@ export default function Shortcodes({ data, setShowModal }) {
     removeError("shtcde")
     let content = []
     content = formShortcodeArray(shtcde)
-    console.log({ content })
     if (content && content.length > 0) {
       const duplicate = []
       content.map((c) => {
@@ -151,9 +147,7 @@ export default function Shortcodes({ data, setShowModal }) {
     setShtcde(e.target.value)
   }
   const removeShtcde = (index) => {
-    console.log({ index })
     const shtcd = formdata.field_value[index]
-    console.log({ shtcd })
     setFormdata((prevState) => ({
       ...prevState,
       field_value: formdata.field_value.filter((sc) => sc !== shtcd),

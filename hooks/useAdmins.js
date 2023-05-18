@@ -50,14 +50,18 @@ export default function useAdmins() {
           headers: {
             token: states.token,
             "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
           },
         }
       )
-      if (response.status === 401) {
-        redirect(NextEndPoints.LOGIN_ADMIN)
-        return
-      }
-      console.log({ response })
+      // if (response.status === 401) {
+      //   redirect(NextEndPoints.LOGIN_ADMIN)
+      //   return
+      // }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        }
       const result = await response.json()
       setProcessing(false)
       if (result?.success) {
@@ -104,6 +108,7 @@ export default function useAdmins() {
     try {
       var headers = new Headers()
       headers.append("token", states.token)
+      headers.append("Authorization", `bearer ${states.token}`)
       headers.append("Content-Type", "application/x-www-form-urlencoded")
 
       var urlEncoded = new URLSearchParams()
@@ -132,6 +137,7 @@ export default function useAdmins() {
         console.log("error", error)
         return { success: false, error: error }
       })
+      console.log({ response })
       if (!response)
         return {
           success: false,

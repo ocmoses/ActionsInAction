@@ -9,6 +9,7 @@ import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
 import RemoteEndpoints from "@/app/modules/endpoints"
 import Axios from "@/app/modules/axios"
+import Portal from "@/app/components/Portal"
 import { useState, useEffect, useRef } from "react"
 import {
   Util,
@@ -242,7 +243,7 @@ export default function GetStarted({ type }) {
                               description="Describe the event and give further instructions if needed, include a call to action"
                               onclick={() => showAgreement(true)}
                               label="Take action"
-                              color="text-[#FF9897]"
+                              color="text-green-700"
                               desccolor="text-[#999999]"
                               icon={
                                 <svg
@@ -317,7 +318,7 @@ export default function GetStarted({ type }) {
                               description="Describe the event and give further instructions if needed, include a call to action"
                               onclick={() => showAgreement(true)}
                               label="Take action"
-                              color="text-[#FF9897]"
+                              color="text-green-700"
                               desccolor="text-[#999999]"
                               icon={
                                 <svg

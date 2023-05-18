@@ -3,6 +3,7 @@ import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
 import CategoryCard from "@/app/components/dashboard/CategoryCard"
 import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
 import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
+import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement"
 import OnboardingLayout from "./OnboardingLayout"
 import Button from "@/app/components/form/Button"
 import useUsers from "@/hooks/useUsers"
@@ -45,7 +46,7 @@ export default function GetStarted({ type }) {
     console.log({ _finalApproval })
     setFinalApproval(_finalApproval)
   }, [partner])
-  console.log({ FinalApproval })
+  // console.log({ FinalApproval })
   const [isOpen, setIsOpen] = useState(false)
   const [categoriesData, setCategoriesData] = useState([])
   const [partnerCategories, setPartnerCategories] = useState([])
@@ -60,6 +61,11 @@ export default function GetStarted({ type }) {
   const [{ errors, setError, success, setSuccess, clearErrors }] =
     useErrors(null)
 
+  const [showModal, setShowModal] = useState(false)
+  const showAgreement = (status) => {
+    console.log({ showModal })
+    setShowModal(status)
+  }
   useEffect(() => {
     setCategoriesData(categories)
   }, [categories])
@@ -232,13 +238,52 @@ export default function GetStarted({ type }) {
                         <>
                           {FinalApproval.partner ? (
                             <CallToAction
-                              message="Sign contract"
+                              message="Your contract is ready, click here to sign"
+                              description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
                               label="Take action"
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
                             />
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
+                              description=""
                               label=""
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
                             />
                           )}
                         </>
@@ -266,18 +311,54 @@ export default function GetStarted({ type }) {
                         "Complete your setup to get started!"
                       ) : (
                         <>
-                          {console.log({
-                            "FinalApproval.partner": FinalApproval.partner,
-                          })}
                           {FinalApproval.partner ? (
                             <CallToAction
-                              message="Sign contract"
+                              message="Your contract is ready, click here to sign"
+                              description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
                               label="Take action"
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
                             />
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
+                              description=""
                               label=""
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
                             />
                           )}
                         </>
@@ -512,6 +593,11 @@ export default function GetStarted({ type }) {
             </CategorySideDrawer>
           </div>
         </div>
+      )}
+      {showModal && (
+        <Portal>
+          <PartnerAgreement showAgreement={showAgreement} partner={partner} />
+        </Portal>
       )}
     </>
   )

@@ -297,7 +297,7 @@ export default function ComplianceLabelPartners({
                       <div className="flex flex-col gap-0 items-end">
                         <div className="grow-0">
                           <FieldStatus
-                            status={Approvals.counts.status[field]}
+                            status={Approvals?.counts.status[field]}
                           />
                         </div>
                         {Approvals?.counts?.status[field] === "approved" && (
@@ -314,8 +314,8 @@ export default function ComplianceLabelPartners({
                 </div>
               </div>
               {Approvals &&
-                Approvals.counts?.status &&
-                Approvals.counts?.status[field] === "rejected" && (
+                Approvals?.counts?.status &&
+                Approvals?.counts?.status[field] === "rejected" && (
                   <RejectionReasons
                     title={
                       stage in complianceRequirements &&

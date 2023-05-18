@@ -40,7 +40,7 @@ export default function CallToAction({
       </div>
       {label && (
         <p
-          onClick={() => onclick}
+          onClick={onclick}
           className="text-[#999999] my-0 text-sm cursor-pointer whitespace-nowrap hover:text-white/70"
         >
           {label}

@@ -1337,13 +1337,13 @@ export const partnerApprovals = (partner, category) => {
                 StageApprovals[_stage][_dept][field] =
                   Approvals[_stage][_dept][field]
 
-                if (!StageApprovals[_stage].counts.fields[field])
+                if (!StageApprovals[_stage]?.counts.fields[field])
                   StageApprovals[_stage].counts.fields[field] = []
                 StageApprovals[_stage].counts.fields[field].push(
                   Approvals[_stage][_dept][field]
                 )
 
-                if (!StageApprovals.counts.fields[field])
+                if (!StageApprovals?.counts.fields[field])
                   StageApprovals.counts.fields[field] = []
                 StageApprovals.counts.fields[field].push(
                   Approvals[_stage][_dept][field]
@@ -1367,7 +1367,7 @@ export const partnerApprovals = (partner, category) => {
                 StageApprovals[_stage].counts.pending++
                 StageApprovals[_stage][_dept].counts.pending++
 
-                if (!StageApprovals[_stage].counts.fields[field])
+                if (!StageApprovals[_stage]?.counts.fields[field])
                   StageApprovals[_stage].counts.fields[field] = []
                 StageApprovals[_stage].counts.fields[field].push("pending")
 
@@ -1436,26 +1436,28 @@ export const partnerApprovals = (partner, category) => {
       rejected: 0,
       corrected: 0,
     }
-    for (const field in StageApprovals.counts.fields) {
-      if (!shortcodeApprovalFieldsArray.includes(field)) {
-        let pending = 0
-        let approved = 0
-        let rejected = 0
-        let corrected = 0
-        let total = StageApprovals.counts.fields[field].length
-        let status = pending
-        StageApprovals.counts.fields[field].map((status) => {
-          if (status === "pending") pending++
-          if (status === "approved") approved++
-          if (status === "rejected") rejected++
-          if (status === "corrected") corrected++
-        })
-        if (rejected === 0 && (approved > 0 || corrected > 0))
-          status = "processing"
-        if (rejected > 0) status = "rejected"
-        if (pending === total) status = "pending"
-        if (approved === total) status = "approved"
-        StageApprovals.counts.status[field] = status
+    if (StageApprovals.counts) {
+      for (const field in StageApprovals.counts.fields) {
+        if (!shortcodeApprovalFieldsArray.includes(field)) {
+          let pending = 0
+          let approved = 0
+          let rejected = 0
+          let corrected = 0
+          let total = StageApprovals.counts.fields[field].length
+          let status = pending
+          StageApprovals.counts.fields[field].map((status) => {
+            if (status === "pending") pending++
+            if (status === "approved") approved++
+            if (status === "rejected") rejected++
+            if (status === "corrected") corrected++
+          })
+          if (rejected === 0 && (approved > 0 || corrected > 0))
+            status = "processing"
+          if (rejected > 0) status = "rejected"
+          if (pending === total) status = "pending"
+          if (approved === total) status = "approved"
+          StageApprovals.counts.status[field] = status
+        }
       }
     }
   }

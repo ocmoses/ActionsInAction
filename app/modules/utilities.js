@@ -1146,6 +1146,7 @@ export const getFieldStatus = (status) => {
 export const filterFields = (partner) => {
   if (!partner) return fieldCounts
   const Fields = { ...fieldCounts }
+  console.log({ Fields })
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {
       const shortcodes = category.shortcodes
@@ -1164,6 +1165,13 @@ export const filterFields = (partner) => {
                     Fields.shortcode[dept].fields[i].split("-")[0] + "-" + uuid
                   if (!fieldCounts.shortcode[dept].fields.includes(field))
                     fieldCounts.shortcode[dept].fields[i] = field
+                }
+              }
+              console.log({ dept, fields: fieldCounts.shortcode[dept] })
+              for (const field in fieldCounts.shortcode[dept].fields) {
+                for (const f in shortcodeApprovalFields) {
+                  if (field === f)
+                    delete fieldCounts.shortcode[dept].fields[field]
                 }
               }
             }

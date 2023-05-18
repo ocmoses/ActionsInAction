@@ -1337,13 +1337,13 @@ export const partnerApprovals = (partner, category) => {
                 StageApprovals[_stage][_dept][field] =
                   Approvals[_stage][_dept][field]
 
-                if (!StageApprovals[_stage]?.counts.fields[field])
+                if (!StageApprovals[_stage]?.counts?.fields[field])
                   StageApprovals[_stage].counts.fields[field] = []
                 StageApprovals[_stage].counts.fields[field].push(
                   Approvals[_stage][_dept][field]
                 )
 
-                if (!StageApprovals?.counts.fields[field])
+                if (!StageApprovals?.counts?.fields[field])
                   StageApprovals.counts.fields[field] = []
                 StageApprovals.counts.fields[field].push(
                   Approvals[_stage][_dept][field]
@@ -1367,11 +1367,11 @@ export const partnerApprovals = (partner, category) => {
                 StageApprovals[_stage].counts.pending++
                 StageApprovals[_stage][_dept].counts.pending++
 
-                if (!StageApprovals[_stage]?.counts.fields[field])
+                if (!StageApprovals[_stage]?.counts?.fields[field])
                   StageApprovals[_stage].counts.fields[field] = []
                 StageApprovals[_stage].counts.fields[field].push("pending")
 
-                if (!StageApprovals.counts.fields[field])
+                if (!StageApprovals.counts?.fields[field])
                   StageApprovals.counts.fields[field] = []
                 StageApprovals.counts.fields[field].push("pending")
               }
@@ -1405,8 +1405,8 @@ export const partnerApprovals = (partner, category) => {
         }
       }
       if (
-        StageApprovals[_stage]?.counts.approved ===
-        StageApprovals[_stage]?.counts.count
+        StageApprovals[_stage]?.counts?.approved ===
+        StageApprovals[_stage]?.counts?.count
       )
         StageApprovals[_stage].counts.status = "approved"
       else if (
@@ -1429,14 +1429,14 @@ export const partnerApprovals = (partner, category) => {
       else StageApprovals[_stage].counts.status = "processing"
     }
   }
-  if (!Util.isEmpty(StageApprovals.counts.fields)) {
+  if (!Util.isEmpty(StageApprovals?.counts?.fields)) {
     const counts = {
       pending: 0,
       approved: 0,
       rejected: 0,
       corrected: 0,
     }
-    if (StageApprovals?.counts) {
+    if (StageApprovals?.counts && StageApprovals?.counts?.fields) {
       for (const field in StageApprovals.counts.fields) {
         if (!shortcodeApprovalFieldsArray.includes(field)) {
           let pending = 0
@@ -1517,26 +1517,26 @@ export const getFinalApproval = (partner) => {
 
       if (!Util.isEmpty(approval?.counts?.fields)) {
         for (const field in approval.counts.fields) {
-          if (approval.counts.fields[field].includes("corrected")) {
+          if (approval.counts?.fields[field].includes("corrected")) {
             if (!corrected.includes(field)) corrected.push(field)
             if (
               !categoryStatus[category.category_uuid].corrected.includes(field)
             )
               categoryStatus[category.category_uuid].corrected.push(field)
           }
-          if (approval.counts.fields[field].includes("rejected")) {
+          if (approval.counts?.fields[field].includes("rejected")) {
             if (!rejected.includes(field)) rejected.push(field)
             if (
               !categoryStatus[category.category_uuid].rejected.includes(field)
             )
               categoryStatus[category.category_uuid].rejected.push(field)
           }
-          if (approval.counts.fields[field].includes("pending")) {
+          if (approval.counts?.fields[field]?.includes("pending")) {
             if (!pending.includes(field)) pending.push(field)
             if (!categoryStatus[category.category_uuid].pending.includes(field))
               categoryStatus[category.category_uuid].pending.push(field)
           }
-          if (approval.counts.fields[field].includes("approved")) {
+          if (approval.counts?.fields[field]?.includes("approved")) {
             if (!approved.includes(field)) approved.push(field)
             if (
               !categoryStatus[category.category_uuid].approved.includes(field)

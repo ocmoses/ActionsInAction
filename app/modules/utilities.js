@@ -1379,29 +1379,33 @@ export const partnerApprovals = (partner, category) => {
               StageApprovals[_stage][_dept].counts.count++
             }
           })
-          if (
-            StageApprovals[_stage][_dept]?.counts?.approved ===
-            StageApprovals[_stage][_dept]?.counts?.count
-          )
-            StageApprovals[_stage][_dept].counts.status = "approved"
-          else if (
-            StageApprovals[_stage][_dept]?.counts?.pending ===
-            StageApprovals[_stage][_dept]?.counts?.count
-          )
-            StageApprovals[_stage][_dept].counts.status = "pending"
-          else if (
-            StageApprovals[_stage][_dept]?.counts?.rejected ===
-              StageApprovals[_stage][_dept]?.counts?.count ||
-            StageApprovals[_stage][_dept]?.counts?.rejected > 0
-          )
-            StageApprovals[_stage][_dept].counts.status = "rejected"
-          else if (
-            StageApprovals[_stage][_dept]?.counts?.corrected ===
-              StageApprovals[_stage][_dept]?.counts?.count ||
-            StageApprovals[_stage][_dept]?.counts?.corrected > 0
-          )
-            StageApprovals[_stage][_dept].counts.status = "corrected"
-          else StageApprovals[_stage][_dept].counts.status = "processing"
+          console.log({ StageApprovals, _stage, _dept })
+          console.log({ coun: StageApprovals[_stage][_dept]?.counts })
+          if (StageApprovals[_stage][_dept]?.counts) {
+            if (
+              StageApprovals[_stage][_dept]?.counts?.approved ===
+              StageApprovals[_stage][_dept]?.counts?.count
+            )
+              StageApprovals[_stage][_dept].counts.status = "approved"
+            else if (
+              StageApprovals[_stage][_dept]?.counts?.pending ===
+              StageApprovals[_stage][_dept]?.counts?.count
+            )
+              StageApprovals[_stage][_dept].counts.status = "pending"
+            else if (
+              StageApprovals[_stage][_dept]?.counts?.rejected ===
+                StageApprovals[_stage][_dept]?.counts?.count ||
+              StageApprovals[_stage][_dept]?.counts?.rejected > 0
+            )
+              StageApprovals[_stage][_dept].counts.status = "rejected"
+            else if (
+              StageApprovals[_stage][_dept]?.counts?.corrected ===
+                StageApprovals[_stage][_dept]?.counts?.count ||
+              StageApprovals[_stage][_dept]?.counts?.corrected > 0
+            )
+              StageApprovals[_stage][_dept].counts.status = "corrected"
+            else StageApprovals[_stage][_dept].counts.status = "processing"
+          }
         }
       }
       if (

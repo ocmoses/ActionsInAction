@@ -50,10 +50,6 @@ export default function Compliance({ params }) {
 
   useEffect(() => {
     fieldsCounts()
-    // const _approvals = partnerApprovals(partner)
-    // setApproval(_approvals)
-    // const _approvalStages = partner.approvalStages
-    // setApprovalStages(_approvalStages)
   }, [partner.approvalStages])
 
   useEffect(() => {

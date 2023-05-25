@@ -1,12 +1,12 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import MenuIcon from "@/public/assets/icons/menu.svg";
-import useAdmins from "@/hooks/useAdmins";
-import AdminProfileIcons from "@/app/components/AdminProfileIcons";
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import MenuIcon from "@/public/assets/icons/menu.svg"
+import useAdmins from "@/hooks/useAdmins"
+import AdminProfileIcons from "@/app/components/AdminProfileIcons"
 
 export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
-  const { admin, session } = useAdmins();
+  const { admin, session } = useAdmins()
   return (
     <header
       id="dashboardheader"
@@ -45,5 +45,5 @@ export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
         </div>
       </div>
     </header>
-  );
+  )
 }

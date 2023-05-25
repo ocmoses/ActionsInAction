@@ -28,29 +28,35 @@ const getServerSession = async () => {
       : null
     const uuid = nextCookies.has("uuid") ? nextCookies.get("uuid")?.value : null
     if (uuid) {
-      // GET USER INFO
       try {
+        // ADMIN INFO
+        console.log({ adminToken })
         const response = await fetch(RemoteEndpoints.ADMIN_AUTH_USER, {
           headers: {
             apikey,
             "Content-Type": "application/json",
-            // redirect: "follow",
             referrerPolicy: "no-referrer",
             token: adminToken,
             Authorization: `bearer ${adminToken}`,
           },
         }).catch((error) => {
-          console.log({ error })
           return {
             success: false,
             error: error.message,
             data: null,
           }
         })
+
         if (!response)
           return {
             success: false,
             error: "Error reaching the server. Please check your connection",
+            data: null,
+          }
+        if (response.status === 500)
+          return {
+            success: false,
+            error: response.statusText,
             data: null,
           }
         const { success, data } = await response.json()
@@ -96,6 +102,12 @@ const getServerSession = async () => {
           return {
             success: false,
             error: "Error reaching the server. Please check your connection",
+            data: null,
+          }
+        if (response.status === 500)
+          return {
+            success: false,
+            error: response.statusText,
             data: null,
           }
         const { success, data } = await response.json()
@@ -170,14 +182,20 @@ export default async function RootLayout({ children }) {
   return (
     <>
       {/* {error ? (
-        <GlobalError error={error} />
+        <html lang="en">
+          <head />
+          <body>
+            <div className="flex w-full h-screen items-center justify-center text-white/40">
+              {error}
+            </div>
+          </body>
+        </html>
       ) : ( */}
       <html lang="en">
         <head />
         <body>
           <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
-
           <Providers>
             <Session
               serverSession={serverSession}

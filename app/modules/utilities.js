@@ -1147,7 +1147,7 @@ export const getFieldStatus = (status) => {
 export const filterFields = (partner) => {
   if (!partner) return fieldCounts
   const Fields = { ...fieldCounts }
-  console.log({ Fields })
+  // console.log({ Fields })
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {
       const shortcodes = category.shortcodes
@@ -1175,7 +1175,7 @@ export const filterFields = (partner) => {
                     delete fieldCounts.shortcode[dept].fields[field]
                 }
               }
-              console.log({ dept, fields: fieldCounts.shortcode[dept] })
+              // console.log({ dept, fields: fieldCounts.shortcode[dept] })
             }
           }
           s++
@@ -1379,8 +1379,8 @@ export const partnerApprovals = (partner, category) => {
               StageApprovals[_stage][_dept].counts.count++
             }
           })
-          console.log({ StageApprovals, _stage, _dept })
-          console.log({ coun: StageApprovals[_stage][_dept]?.counts })
+          // console.log({ StageApprovals, _stage, _dept })
+          // console.log({ coun: StageApprovals[_stage][_dept]?.counts })
           if (StageApprovals[_stage][_dept]?.counts) {
             if (
               StageApprovals[_stage][_dept]?.counts?.approved ===
@@ -1494,7 +1494,7 @@ export const partnerApprovals = (partner, category) => {
       }
     }
   }
-  console.log({ StageApprovals: StageApprovals })
+  // console.log({ StageApprovals: StageApprovals })
   StageApprovals.fieldDates = fields
   return StageApprovals
 }

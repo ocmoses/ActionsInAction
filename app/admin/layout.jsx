@@ -1,17 +1,20 @@
-"use client";
-import RouteGuardAdmin from "./RouteGuardAdmin";
-import { useState } from "react";
-import NavbarAdminDashboard from "@/app/components/dashboard/NavbarAdminDashboard";
-import AdminMenuBar from "@/app/components/dashboard/AdminMenuBar";
-import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar";
-import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer";
-import useAdmins from "@/hooks/useAdmins";
+"use client"
+import RouteGuardAdmin from "./RouteGuardAdmin"
+import { useState } from "react"
+import NavbarAdminDashboard from "@/app/components/dashboard/NavbarAdminDashboard"
+import AdminMenuBar from "@/app/components/dashboard/AdminMenuBar"
+import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
+import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
+import useAdmins from "@/hooks/useAdmins"
+import useApp from "@/hooks/useApp"
+import GlobalErrors from "@/app/components/GlobalErrors"
 
 function Layout({ children }) {
-  const { isLoggedIn } = useAdmins();
-  const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
+  const { isLoggedIn } = useAdmins()
+  const [open, setOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const { globalerrors } = useApp()
+  console.log({ globalerrors })
   return (
     <RouteGuardAdmin>
       <div
@@ -36,6 +39,7 @@ function Layout({ children }) {
             </div>
           )}
           <div className="h-full flex-1 relative pb-[50px] bg-[#030303]">
+            <GlobalErrors />
             {children}
           </div>
         </div>
@@ -44,6 +48,6 @@ function Layout({ children }) {
         </MainMenuSideDrawer>
       </div>
     </RouteGuardAdmin>
-  );
+  )
 }
-export default Layout;
+export default Layout

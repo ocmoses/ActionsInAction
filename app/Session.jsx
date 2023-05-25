@@ -18,6 +18,9 @@ export default function Session({
       }
     }
   }, [serverSession])
+  useEffect(() => {
+    if (error) app.setGlobalError(error)
+  }, [error])
 
   return <>{children}</>
 }

@@ -11,7 +11,7 @@ import { useState, useEffect } from "react"
 import { NextEndPoints } from "@/app/modules/endpoints"
 import { PageRoutes } from "@/app/modules/menu"
 import useAdmins from "@/hooks/useAdmins"
-import { useRouter, useSelectedLayoutSegments } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 function Login({ params }) {
   const router = useRouter()

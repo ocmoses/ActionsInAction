@@ -6,9 +6,6 @@ function NavLinks() {
   const links = [
     { href: "/", text: "Y'ello", active: pathname === "/" },
     { href: "/discover", text: "Discover", active: pathname === "/discover" },
-    // { href: '/grow', text: 'Grow', active: pathname === '/discover' },
-    // { href: '/dashboard', text: 'Dashboard', active: pathname === '/dashboard' },
-    // { href: "/community", text: "Community", active: pathname === '/community' },
   ]
   return (
     <nav className="hidden sm:flex space-x-20">

@@ -4,6 +4,7 @@ import RemoteEndpoints from "@/app/modules/endpoints"
 const app = {
   count: 0,
   errors: {},
+  globalerrors: [],
   success: null,
   processing: false,
   loading: {},
@@ -34,6 +35,7 @@ const app = {
   clear: action((state) => {
     state.count = 0
     state.errors = {}
+    state.globalerrors = []
     state.success = null
     state.processing = false
     state.loading = {}
@@ -193,15 +195,26 @@ const app = {
   setError: action((state, errorObject) => {
     state.errors = { ...state.errors, ...errorObject }
   }),
+
   setSuccess: action((state, message) => {
     state.success = message
   }),
   removeError: action((state, errorKey) => {
     delete state.errors[errorKey]
   }),
+
   clearErrors: action((state) => {
     state.errors = {}
     state.success = null
+  }),
+  setGlobalError: action((state, error) => {
+    state.globalerrors = [...state.globalerrors, error]
+  }),
+  removeGlobalError: action((state, index) => {
+    state.globalerrors.splice(index, 1)
+  }),
+  clearGlobalErrors: action((state) => {
+    state.globalerrors = []
   }),
   setProcessing: action((state, status) => {
     state.processing = status

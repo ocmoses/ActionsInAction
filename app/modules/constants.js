@@ -1289,7 +1289,7 @@ export const fieldsCounts = () => {
               counts[stage][dept.code].count++
               counts[stage].count++
             }
-            console.log({ field })
+            // console.log({ field })
           }
         })
       }

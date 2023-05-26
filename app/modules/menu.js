@@ -9,6 +9,11 @@ export const PartnerMenu = [
     icon: "",
     route: "/dashboard",
   },
+  {
+    label: "Compliance",
+    icon: "",
+    route: "/dashboard/compliance",
+  },
   // {
   //   label: "Services",
   //   icon: "",
@@ -49,7 +54,7 @@ export const AdminMenu = [
   {
     label: "Compliance",
     icon: "",
-    route: "/admin/dashboard/compliance",
+    route: "/admin/compliance",
   },
 ]
 
@@ -64,6 +69,9 @@ export const PageRoutes = {
   dashboard: "/dashboard",
   getstarted: "/dashboard/getstarted",
   companyinfo: "/dashboard/getstarted/onboarding/companyinfo",
-  adminlogin: "/backoffice/login",
+  partnerCompliance: "/dashboard/compliance",
+
+  // admin
+  adminlogin: "/admin/login",
   admindashboard: "/admin/dashboard",
 }

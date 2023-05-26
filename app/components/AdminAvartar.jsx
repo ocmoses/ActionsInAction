@@ -10,15 +10,14 @@ import { PageRoutes } from "@/app/modules/menu"
 export default function UserAvartar() {
   const { LogoutAdmin } = useLogout()
   const { session } = useAdmins()
-  const { loading } = useApp()
 
   const [initial, setInitial] = useState("")
   const [showMenu, setShowMenu] = useState(false)
 
   const getInitials = () => {
     const userName =
-      session.admin?.username !== "undefined" ? session.admin.username : ""
-    setInitial(`${userName ? userName[0] : ""}`)
+      session?.admin?.username !== "undefined" ? session?.admin?.username : ""
+    setInitial(`${userName ? userName[0].toUpperCase() : ""}`)
   }
   useEffect(() => {
     getInitials()

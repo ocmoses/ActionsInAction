@@ -7,7 +7,6 @@ import DatePicker from "@/app/components/form/DatePicker"
 import FileInputWrapper from "@/app/components/form/FileInputWrapper"
 import RegisterStepHeader from "@/app/components/RegisterStepHeader"
 import ButtonNext from "@/app/components/form/ButtonNext"
-import ButtonPrev from "@/app/components/form/ButtonPrev"
 import useErrors from "@/hooks/useErrors"
 import FormErrors from "@/app/components/FormErrors"
 import usePartners from "@/hooks/usePartners"
@@ -143,7 +142,6 @@ function NlrcLicense() {
       )
       newcategory.profile_stage.nlrclicense = "1"
       const { nextstage: NextStage } = nextStage(newcategory, partner)
-      console.log({ NextStage })
       return setForm(NextStage)
     }
     // const { nextstage: NextStage } = nextStage(category, partner)
@@ -174,7 +172,6 @@ function NlrcLicense() {
   }
   const Validate = (field) => {
     removeError(field)
-    console.log({ category })
     const error = ValidateField(field, "nlrclicense", data, category)
     if (error)
       return setError({

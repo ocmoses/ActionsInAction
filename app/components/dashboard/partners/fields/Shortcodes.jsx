@@ -96,7 +96,6 @@ export default function Shortcodes({ data, setShowModal }) {
   const formShortcodeArray = (shtcd) => {
     const input = shtcd
       ?.replaceAll(";", ",")
-      .replaceAll(",", ",")
       .replaceAll(" ", ",")
       .replaceAll(".", ",")
     if (!input) return null

@@ -8,6 +8,7 @@ const doLogin = async (body, req, res, categories) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
@@ -17,7 +18,6 @@ const doLogin = async (body, req, res, categories) => {
     const result = await response.json()
     // console.log({ result })
     const { data, success } = result
-    console.log({ data })
     if (success) {
       const partnerID = getCookie("partnerid", { req, res })
       const { User, authToken } = createHttpOnlyCookie(

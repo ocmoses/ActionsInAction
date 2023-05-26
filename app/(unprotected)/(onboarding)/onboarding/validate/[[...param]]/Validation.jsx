@@ -102,7 +102,7 @@ export default function RegisterValidation({ params }) {
           }
           return setError({ validate: loginData.error })
         }
-        console.log({ loginData })
+        // console.log({ loginData })
         // const serverSession = {
         //   status: loginData?.data?.user?.uuid
         //     ? "authenticated"

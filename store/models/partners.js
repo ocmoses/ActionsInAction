@@ -8,7 +8,10 @@ const partners = {
   category: null,
   categories: null,
   partnerCategories: null,
-
+  Stages: null,
+  selectedCategory: null,
+  Stages: null,
+  activeStage: null,
   clear: action((state) => {
     state.partnerID = null
     state.partners = null
@@ -17,6 +20,10 @@ const partners = {
     state.categories = null
     state.partnerCategory = null
     state.partnerCategories = null
+    state.Stages = null
+    state.selectedCategory = null
+    state.Stages = null
+    state.activeStage = null
   }),
   setPartner: action((state, partner) => {
     state.partner = filterPartner(partner)
@@ -31,21 +38,19 @@ const partners = {
     filterPartner(partner, state.categories)
     state.partner = { ...state.partner, ...partner }
     const category = state.category
-    console.log({ statecategory: category })
 
-    const currentCategory = partner?.categories?.find(
-      (c) => c.category_uuid === category.category_uuid
-    )
-    console.log({ statecurrentCategory: currentCategory })
-    console.log("state.categories", state.categories)
-    const baseCategory = state.categories?.find(
-      (c) => c.uuid === currentCategory.category_uuid
-    )
-    console.log({ statebaseCategory: baseCategory })
-    currentCategory.validation = baseCategory.validation
-    currentCategory.category_name = baseCategory.category_name
+    if (category) {
+      const currentCategory = partner?.categories?.find(
+        (c) => c.category_uuid === category.category_uuid
+      )
+      const baseCategory = state.categories?.find(
+        (c) => c.uuid === currentCategory.category_uuid
+      )
+      currentCategory.validation = baseCategory.validation
+      currentCategory.category_name = baseCategory.category_name
 
-    state.category = currentCategory
+      state.category = currentCategory
+    }
 
     const Partners = state.partners?.filter((p) => {
       p.uuid !== partner?.uuid
@@ -64,6 +69,15 @@ const partners = {
   activeCategory: computed((state) => {
     if (!state.category || !state.categories) return null
     return state.categories.find((cat) => cat.uuid === state.category.uuid)
+  }),
+  setSelectedCategory: action((state, category) => {
+    state.selectedCategory = category
+  }),
+  setStages: action((state, Stages) => {
+    state.Stages = Stages
+  }),
+  setActiveStage: action((state, stage) => {
+    state.activeStage = stage
   }),
 }
 export default partners

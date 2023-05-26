@@ -1,427 +1,70 @@
-// import { fetchData } from "./fetchData"
-// import { apiURL } from "./constants"
+import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-// export const getPartner = async (partnerid) => {
-//   const result = await proxyFetch(
-//     `${apiURL}/v1/auth/partner-info/${partnerid}`,
-//     {
-//       // cache: "no-store",
-//       next: { revalidate: 0 },
-//     }
-//   )
-//   const { success, error, data } = result
-//   return { success, error, data }
-// }
-// export const checkRegStatus = async (partner) => {
-//   const { percent, stages, status } = partner.progress
-//   if (status != "Not completed") return { percent, nextstage: "dashboard" }
-//   const Stages = [
-//     "userinfo",
-//     "companyinfo",
-//     "category",
-//     "companydetail",
-//     "compliance",
-//     "ncclicense",
-//     "nlrclicense",
-//     "shortcode",
-//     "indemnity",
-//     "accountinfo",
-//   ]
-//   const Pages = {
-//     userinfo: "/onboarding/userinfo",
-//     companyinfo: "/profile/companyinfo",
-//     category: "/profile/category",
-//     companydetail: "/profile/companydetail",
-//     compliance: "/profile/compliance",
-//     ncclicense: "/profile/ncclicense",
-//     nlrclicense: "/profile/nlrclicense",
-//     shortcode: "/profile/shortcode",
-//     indemnity: "/profile/indemnity",
-//     accountinfo: "/profile/accountinfo",
-//   }
-//   let nextstage = null
-//   Stages.map((stage) => {
-//     if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
-//   })
-//   if (!nextstage) nextstage = "/dashboard"
-//   return { percent, nextstage }
-// }
-// export const partnerRegistration = async (
-//   frm,
-//   userdata,
-//   partnerInfo,
-//   setProcessing
-// ) => {
-//   switch (frm) {
-//     case "userinfo":
-//       setProcessing(true)
-//       const { success, error, data } = await fetchData(
-//         `${apiURL}/v1/auth/register/userinfo`,
-//         {
-//           method: "POST",
-//           cache: "no-store",
-//           body: JSON.stringify({
-//             first_name: userdata.first_name,
-//             last_name: userdata.last_name,
-//             email: userdata.email,
-//             countrycode: userdata.countrycode,
-//             country: userdata.country,
-//             telephone: userdata.telephone,
-//             password: userdata.password,
-//             password_confirmed: userdata.password_confirmed,
-//           }),
-//         }
-//       )
-//       if (error) {
-//         setProcessing(false)
-//         return { success, error, data }
-//       }
-//       const result = await LoginUser(
-//         {
-//           partnerid: data.user.partnerid,
-//           password: userdata.password,
-//         },
-//         false,
-//         "/onboarding/register/companyinfo"
-//       )
+export const getAllPartners = async (page, perPage, contractStatus) => {
+  try {
+    const params = []
+    if (page) params.push(`page=${page}`)
+    if (perPage) params.push(`per_page=${perPage}`)
+    if (contractStatus) params.push(`contract_status=${contractStatus}`)
 
-//       if (result.success) {
-//         setUpdateStatus("review", "userinfo", true)
-//         router.push("/onboarding/register/companyinfo")
-//         return
-//       }
-//       break
+    const cookieStore = cookies()
+    const token = cookieStore.get("token")
+    const response = await fetch(
+      `${RemoteEndpoints.ALL_PARTNERS}?${
+        params.length > 0 ? params.join("&") : ""
+      }`,
+      {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        headers: {
+          token: token?.value,
+          Authorization: `bearer ${token?.value}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
 
-//     case "category":
-//       setProcessing(true)
-//       const {
-//         success: catSuccess,
-//         error: catError,
-//         data: category,
-//       } = await fetchData(`${apiURL}/v1/auth/register/category`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           category_id: userdata,
-//         }),
-//       })
-//       if (catError) {
-//         setProcessing(false)
-//         return { success: false, error: catError, data: null }
-//       }
-//       setPartner({ category_id: userdata })
-//       updatePercentComplete(category)
-//       setUpdateStatus("review", "category", true)
-//       router.push("/profile/companydetail")
-//       break
-//     case "companydetail":
-//       setProcessing(true)
-//       const {
-//         success: comDetSuccess,
-//         error: comDetError,
-//         data: companydetail,
-//       } = await fetchData(`${apiURL}/v1/auth/register/companydetail`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           company_name: userdata.company_name,
-//           country: userdata.country,
-//           company_address: userdata.company_address,
-//           company_city: userdata.company_city,
-//           company_state: userdata.company_state,
-//           company_postcode: userdata.company_postcode,
-//         }),
-//       })
-//       if (comDetError) {
-//         setProcessing(false)
-//         return { success: false, error: comDetError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(companydetail)
-//       setUpdateStatus("review", "companydetail", true)
-//       router.push("/profile/compliance")
-//       break
-//     case "compliance":
-//       setProcessing(true)
-//       const {
-//         success: complianceSuccess,
-//         error: complianceError,
-//         data: compliance,
-//       } = await fetchData(`${apiURL}/v1/auth/register/compliance`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           rc_no: userdata.rc_no ?? "",
-//           tin_no: userdata.tin_no ?? "",
-//           tin_doc: userdata.tin_doc ?? "",
-//           memart_doc: userdata.memart_doc ?? "",
-//           cac_doc: userdata.cac_doc ?? "",
-//         }),
-//       })
-//       if (complianceError) {
-//         setProcessing(false)
-//         return { success: false, error: complianceError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(compliance)
-//       setUpdateStatus("review", "compliance", true)
-//       router.push("/profile/ncclicense")
-//       break
-//     case "ncclicense":
-//       setProcessing(true)
-//       const {
-//         success: ncclicenseSuccess,
-//         error: ncclicenseError,
-//         data: ncclicense,
-//       } = await fetchData(`${apiURL}/v1/auth/register/ncclicense`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           vas_license_id: userdata.vas_license_id ?? "",
-//           ncc_issue_date: userdata.ncc_issue_date ?? "",
-//           ncc_expiry_date: userdata.ncc_expiry_date ?? "",
-//           ncc_doc: userdata.ncc_doc ?? "",
-//         }),
-//       })
+    // if (response.status === 401) {
+    //   return {
+    //     error: 401,
+    //   }
+    // }
+    const result = await response.json()
+    if (result?.success) {
+      const partners = result.data?.partners.data
+      const navigation = {
+        current_page: result?.data?.partners?.current_page,
+        first_page_url: result?.data?.partners?.first_page_url,
+        from: result?.data?.partners?.from,
+        last_page: result?.data?.partners?.last_page,
+        last_page_url: result?.data?.partners?.last_page_url,
+        links: result?.data?.partners?.links,
+        next_page_url: result?.data?.partners?.next_page_url,
+        path: result?.data?.partners?.path,
+        per_page: result?.data?.partners?.per_page,
+        prev_page_url: result?.data?.partners?.prev_page_url,
+        to: result?.data?.partners?.to,
+        total: result?.data?.partners?.total,
+      }
 
-//       if (ncclicenseError) {
-//         setProcessing(false)
-//         return { success: false, error: ncclicenseError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(ncclicense)
-//       setUpdateStatus("review", "ncclicense", true)
-//       router.push("/profile/nlrclicense")
-//       break
-//     case "nlrclicense":
-//       setProcessing(true)
-//       const {
-//         success: nlrclicenseSuccess,
-//         error: nlrclicenseError,
-//         data: nlrclicense,
-//       } = await fetchData(`${apiURL}/v1/auth/register/nlrclicense`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           nlrc_license_id: userdata.nlrc_license_id ?? "",
-//           nlrc_issue_date: userdata.nlrc_issue_date ?? "",
-//           nlrc_expiry_date: userdata.nlrc_expiry_date ?? "",
-//           nlrc_doc: userdata.nlrc_doc ?? "",
-//         }),
-//       })
-//       if (nlrclicenseError) {
-//         setProcessing(false)
-//         return { success: false, error: nlrclicenseError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(nlrclicense)
-//       setUpdateStatus("review", "nlrclicense", true)
-//       router.push("/profile/shortcode")
-//       break
-//     case "shortcode":
-//       setProcessing(true)
-//       const {
-//         success: shortcodeSuccess,
-//         error: shortcodeError,
-//         data: shortcode,
-//       } = await fetchData(`${apiURL}/v1/auth/register/shortcode`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           shortcode: userdata.shortcode ?? "",
-//           shortcode_issue_date: userdata.shortcode_issue_date ?? "",
-//           shortcode_expiry_date: userdata.shortcode_expiry_date ?? "",
-//           shortcode_price_issue_date: userdata.shortcode_price_issue_date ?? "",
-//           shortcode_price_expiry_date:
-//             userdata.shortcode_price_expiry_date ?? "",
-//           shortcode_doc: userdata.shortcode_doc ?? "",
-//           shortcode_approval_doc: userdata.shortcode_approval_doc ?? "",
-//         }),
-//       })
-//       if (shortcodeError) {
-//         setProcessing(false)
-//         return { success: false, error: shortcodeError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(shortcode)
-//       setUpdateStatus("review", "shortcode", true)
-//       router.push("/profile/indemnity")
-//       break
-//     case "indemnity":
-//       setProcessing(true)
-//       const {
-//         success: indemnitySuccess,
-//         error: indemnityError,
-//         data: indemnity,
-//       } = await fetchData(`${apiURL}/v1/auth/register/indemnity`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           indemnity_no: userdata.indemnity_no ?? "",
-//           indemnity_issue_date: userdata.indemnity_issue_date ?? "",
-//           indemnity_expiry_date: userdata.indemnity_expiry_date ?? "",
-//           indemnity_doc: userdata.indemnity_doc ?? "",
-//         }),
-//       })
-//       if (indemnityError) {
-//         setProcessing(false)
-//         return { success: false, error: indemnityError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(indemnity)
-//       setUpdateStatus("review", "indemnity", true)
-//       router.push("/profile/accountinfo")
-//       break
-//     case "accountinfo":
-//       setProcessing(true)
-//       const {
-//         success: accountinfoSuccess,
-//         error: accountinfoError,
-//         data: accountinfo,
-//       } = await fetchData(`${apiURL}/v1/auth/register/accountinfo`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           account_name: userdata.account_name ?? "",
-//           account_no: userdata.account_no ?? "",
-//           bank: userdata.bank ?? "",
-//           audited_account_1: userdata.audited_account_1 ?? "",
-//           audited_account_2: userdata.audited_account_2 ?? "",
-//           audited_account_3: userdata.audited_account_3 ?? "",
-//         }),
-//       })
-//       if (accountinfoError) {
-//         setProcessing(false)
-//         return { success: false, error: accountinfoError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(accountinfo)
-//       setUpdateStatus("review", "accountinfo", true)
-//       router.push("/profile/review")
-//       break
-//     // Existing partner flows
-//     case "partnerwelcome":
-//       setProcessing(true)
-//       const {
-//         success: partnerwelcomeSuccess,
-//         error: partnerwelcomeError,
-//         data: partnerwelcome,
-//       } = await fetchData(`${apiURL}/v1/existing-partner/welcome-back`, {
-//         method: "POST",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: userdata.partnerid,
-//         }),
-//       })
-//       if (partnerwelcomeError) {
-//         setProcessing(false)
-//         return { success: false, error: partnerwelcomeError, data: null }
-//       }
-
-//       const partner = await getPartner(userdata.partnerid)
-//       if (partner.error) return partner
-//       if (partner.data) {
-//         const user = {
-//           ...partner.data.user,
-//           progress: {
-//             percent: partner.data.percent_complete,
-//             stages: { ...partner.data.profile_stage },
-//           },
-//         }
-//         setPartner(user)
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(partnerwelcome)
-//       setUpdateStatus("review", "partnerwelcome", true)
-//       router.push("/onboarding/register/partnerwelcome/validate")
-//       break
-//     case "setpassword":
-//       setProcessing(true)
-//       const {
-//         success: setpasswordSuccess,
-//         error: setpasswordError,
-//         data: setpassword,
-//       } = await fetchData(`${apiURL}/v1/existing-partner/setup-password`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           password: userdata.password,
-//           password_confirmed: userdata.password_confirmed,
-//         }),
-//       })
-//       if (setpasswordError) {
-//         setProcessing(false)
-//         return { success: false, error: setpasswordError, data: null }
-//       }
-//       // setPartner(userdata)
-//       updatePercentComplete(setpassword)
-//       setUpdateStatus("updatereview", "setpassword", true)
-//       router.push("/profile/update/welcome?path=companyinfo")
-//       break
-//     case "confirmcompanyinfo":
-//       setProcessing(true)
-//       const {
-//         success: confirmcompanyinfoSuccess,
-//         error: confirmcompanyinfoError,
-//         data: confirmcompanyinfo,
-//       } = await fetchData(`${apiURL}/v1/existing-partner/confirm-companyinfo`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           company_name: userdata.company_name ?? "",
-//           country: userdata.country ?? "",
-//           company_address: userdata.company_address ?? "",
-//           company_city: userdata.company_city ?? "",
-//           company_state: userdata.company_state ?? "",
-//           company_postcode: userdata.company_postcode ?? "",
-//         }),
-//       })
-//       if (confirmcompanyinfoError) {
-//         setProcessing(false)
-//         return { success: false, error: confirmcompanyinfoError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(confirmcompanyinfo)
-//       setUpdateStatus("updatereview", "confirmcompanyinfo", true)
-//       router.push("/profile/update/contactperson")
-//       break
-//     case "contactperson":
-//       setProcessing(true)
-//       const {
-//         success: contactpersonSuccess,
-//         error: contactpersonError,
-//         data: contactperson,
-//       } = await fetchData(`${apiURL}/v1/existing-partner/contact-person`, {
-//         method: "PUT",
-//         cache: "no-store",
-//         body: JSON.stringify({
-//           partnerid: partnerInfo.partnerid,
-//           first_name: userdata.first_name ?? "",
-//           last_name: userdata.last_name ?? "",
-//           email: userdata.email ?? "",
-//           country: partnerInfo.country ?? "",
-//           countrycode: userdata.countrycode ?? "",
-//           telephone: userdata.telephone ?? "",
-//         }),
-//       })
-//       if (contactpersonError) {
-//         setProcessing(false)
-//         return { success: false, error: contactpersonError, data: null }
-//       }
-//       setPartner(userdata)
-//       updatePercentComplete(contactperson)
-//       setUpdateStatus("updatereview", "contactperson", true)
-//       router.push("/profile/update/review")
-//       break
-//   }
-// }
+      return {
+        partners,
+        navigation,
+      }
+    }
+    return {
+      error:
+        result?.data?.message ??
+        "Something went wrong. Please check your connection and try again",
+    }
+  } catch (error) {
+    console.log({ error })
+    return {
+      error:
+        error.message ??
+        "Something went wrong. Please check your connection and try again",
+    }
+  }
+}

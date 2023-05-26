@@ -12,16 +12,21 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${decrypted}`,
+        Authorization: `bearer ${decrypted}`,
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",
     })
     const result = await response.json()
+    if (hasCookie("token", { req, res })) deleteCookie("token", { req, res })
+    if (hasCookie("uuid", { req, res })) deleteCookie("uuid", { req, res })
+
     if (hasCookie("auth-token", { req, res }))
       deleteCookie("auth-token", { req, res })
+
     if (hasCookie("user_id", { req, res }))
       deleteCookie("user_id", { req, res })
+
     if (hasCookie("partnerid", { req, res }))
       deleteCookie("partnerid", { req, res })
     res.status(200).json({ success: true, error: null, data: null })

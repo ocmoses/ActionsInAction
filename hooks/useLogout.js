@@ -11,14 +11,14 @@ export default function useLogout() {
   const router = useRouter()
   const actions = useStoreActions((action) => action)
 
-  const {
-    setPartner,
-    setPartners,
-    setPartnerID,
-    setCategory,
-    setCategories,
-    setPartnerCategories,
-  } = usePartners()
+  // const {
+  //   setPartner,
+  //   setPartners,
+  //   setPartnerID,
+  //   setCategory,
+  //   setCategories,
+  //   setPartnerCategories,
+  // } = usePartners()
 
   const clearStore = () => {
     for (const store in model) {
@@ -38,7 +38,8 @@ export default function useLogout() {
     await logoutAdmin()
     clearStore()
     actions.app.endLoading("logout")
-    router.push(PageRoutes.adminlogin)
+    if (typeof window !== "undefined") window.location = PageRoutes.adminlogin
+    else router.push(PageRoutes.adminlogin)
   }
 
   return { Logout, LogoutAdmin, logoutAdmin, clearStore }

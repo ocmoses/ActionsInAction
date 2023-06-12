@@ -1,11 +1,11 @@
-"use client"
-import { useStoreActions, useStoreState } from "easy-peasy"
+"use client";
+import { useStoreActions, useStoreState } from "easy-peasy";
 const useRoles = () => {
-  const actions = useStoreActions((action) => action)
-  const states = useStoreState((state) => state)
+  const actions = useStoreActions((action) => action);
+  const states = useStoreState((state) => state);
 
-  const isSuperadmin = () => false
-  return { ...states, ...actions, isSuperadmin }
-}
+  const isSuperadmin = () => false;
+  return { ...states, ...actions, isSuperadmin };
+};
 
-export default useRoles
+export default useRoles;

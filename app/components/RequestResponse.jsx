@@ -1,20 +1,20 @@
-import { CheckedCircle, ExclamationCircle } from './Icons'
-import { motion } from 'framer-motion'
+import { CheckedCircle, ExclamationCircle } from "./Icons";
+import { motion } from "framer-motion";
 
 const toastVariants = {
   hidden: {
     opacity: 0,
-    scale: 0
+    scale: 0,
   },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      type: 'spring',
-      yoyo: 6
-    }
-  }
-}
+      type: "spring",
+      yoyo: 6,
+    },
+  },
+};
 
 export function RequestError({ errors }) {
   return (
@@ -38,13 +38,13 @@ export function RequestError({ errors }) {
         </div>
       )}
     </>
-  )
+  );
 }
 
 export function RequestSuccess({ success }) {
   return (
     <>
-      {success !== '' && (
+      {success !== "" && (
         <div className="toast toast-end z-20 fixed">
           <motion.div
             className="min-w-[320px] rounded-md py-2 pl-3 pr-5 text-white text-md bg-green-500"
@@ -60,5 +60,5 @@ export function RequestSuccess({ success }) {
         </div>
       )}
     </>
-  )
+  );
 }

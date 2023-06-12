@@ -1,12 +1,12 @@
-"use client"
-import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer"
-import ComplianceDetailPartners from "@/app/components/dashboard/partners/ComplianceDetailPartners"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import { useState, useEffect } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
+"use client";
+import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
+import ComplianceDetailPartners from "@/app/components/dashboard/partners/ComplianceDetailPartners";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import { useState, useEffect } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   filterCategory,
   filterFields,
@@ -14,18 +14,18 @@ import {
   filterApprovalFields,
   getStatuses,
   partnerApprovals,
-} from "@/app/modules/utilities"
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories"
-import { useRouter } from "next/navigation"
+} from "@/app/modules/utilities";
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories";
+import { useRouter } from "next/navigation";
 
-import { fieldsCounts, fieldCounts } from "@/app/modules/constants"
+import { fieldsCounts, fieldCounts } from "@/app/modules/constants";
 
 export default function Compliance({ params }) {
-  const router = useRouter()
-  const { processing, setProcessing } = useProcessing()
-  const [{ errors }] = useErrors(null)
+  const router = useRouter();
+  const { processing, setProcessing } = useProcessing();
+  const [{ errors }] = useErrors(null);
   const {
     getStages,
     selectedCategory,
@@ -36,53 +36,53 @@ export default function Compliance({ params }) {
     setActiveStage,
     partner,
     categories,
-  } = usePartners()
-  const [openDrawer, setOpenDrawer] = useState(false)
-  const { setRouteloading } = useApp()
+  } = usePartners();
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const { setRouteloading } = useApp();
 
   // const [ApprovalStages, setApprovalStages] = useState(null)
   // const [Approvals, setApproval] = useState(null)
 
   useEffect(() => {
-    setProcessing(false)
-    setRouteloading(false)
-  }, [])
+    setProcessing(false);
+    setRouteloading(false);
+  }, []);
 
   useEffect(() => {
-    fieldsCounts()
-  }, [partner.approvalStages])
+    fieldsCounts();
+  }, [partner.approvalStages]);
 
   useEffect(() => {
-    let html = document.getElementsByTagName("html")
-    if (openDrawer) html[0].style["overflow-y"] = "hidden"
-    else html[0].style["overflow-y"] = "auto"
-  }, [openDrawer])
+    let html = document.getElementsByTagName("html");
+    if (openDrawer) html[0].style["overflow-y"] = "hidden";
+    else html[0].style["overflow-y"] = "auto";
+  }, [openDrawer]);
 
   useEffect(() => {
     if (partner && params.params?.length > 0) {
-      filterFields(partner)
-      filterComplianceRequirements(partner)
-      filterApprovalFields(partner)
+      filterFields(partner);
+      filterComplianceRequirements(partner);
+      filterApprovalFields(partner);
 
-      const [_category] = params.params
+      const [_category] = params.params;
       const _selectedCategory = partner?.categories?.find(
         (c) => c.category_uuid === _category
-      )
+      );
       const _filtered_selectedCategory = filterCategory(
         _selectedCategory,
         partner
-      )
-      setSelectedCategory(_filtered_selectedCategory)
-      const _stages = getStages(_filtered_selectedCategory, categories)
-      setStages(_stages)
+      );
+      setSelectedCategory(_filtered_selectedCategory);
+      const _stages = getStages(_filtered_selectedCategory, categories);
+      setStages(_stages);
     }
     // console.log({ partner })
-  }, [partner, params, selectedCategory])
+  }, [partner, params, selectedCategory]);
 
   const handleOpenDrawer = (stage) => {
-    setActiveStage(stage)
-    setOpenDrawer(true)
-  }
+    setActiveStage(stage);
+    setOpenDrawer(true);
+  };
 
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
@@ -180,5 +180,5 @@ export default function Compliance({ params }) {
         </>
       )}
     </div>
-  )
+  );
 }

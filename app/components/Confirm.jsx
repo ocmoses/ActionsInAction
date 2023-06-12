@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
-import { Util } from "@/app/modules/utilities"
-import useAdmins from "@/hooks/useAdmins"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import { TailSpinPreloader } from "@/app/components/Icons"
+import { useState, useEffect } from "react";
+import { Util } from "@/app/modules/utilities";
+import useAdmins from "@/hooks/useAdmins";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import { TailSpinPreloader } from "@/app/components/Icons";
 
 export default function Confirm({
   yestext,
@@ -13,23 +13,23 @@ export default function Confirm({
   type,
   feedback,
 }) {
-  const [reason, setReason] = useState(null)
-  const [showReason, setShowReason] = useState(false)
-  const { rejectionReasons, approving, setApproving } = useAdmins()
-  const [{ errors, clearErrors }] = useErrors(null)
+  const [reason, setReason] = useState(null);
+  const [showReason, setShowReason] = useState(false);
+  const { rejectionReasons, approving, setApproving } = useAdmins();
+  const [{ errors, clearErrors }] = useErrors(null);
 
   useEffect(() => {
-    setApproving(false)
-    clearErrors()
-  }, [])
+    setApproving(false);
+    clearErrors();
+  }, []);
 
   const Reject = () => {
-    onYes(reason)
-  }
+    onYes(reason);
+  };
   const handleSetReason = (_reason) => {
-    setReason(_reason)
-    setShowReason(false)
-  }
+    setReason(_reason);
+    setShowReason(false);
+  };
   return (
     <>
       <div className="flex flex-col gap-3">
@@ -136,5 +136,5 @@ export default function Confirm({
         </div>
       </div>
     </>
-  )
+  );
 }

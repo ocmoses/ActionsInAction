@@ -1,5 +1,5 @@
-import moment from "moment"
-import { complianceRequirements } from "@/app/modules/constants"
+import moment from "moment";
+import { complianceRequirements } from "@/app/modules/constants";
 
 export default function Activities({ type, stage, feedbacks }) {
   return (
@@ -50,5 +50,5 @@ export default function Activities({ type, stage, feedbacks }) {
           </div>
         ))}
     </div>
-  )
+  );
 }

@@ -1,33 +1,33 @@
-"use client"
-import FormErrors from "@/app/components/FormErrors"
-import Button from "@/app/components/form/Button"
-import TextInput from "@/app/components/form/TextInput"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import useErrors from "@/hooks/useErrors"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useUsers from "@/hooks/useUsers"
-import freeemails from "@/app/modules/freeemails.json"
-import { NextEndPoints } from "@/app/modules/endpoints"
-import { createRef, useEffect, useState } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { CountrySelector } from "@/app/components/countrycode/selector"
-import { COUNTRIES } from "@/app/components/countrycode/countries"
-import { forms } from "@/app/modules/constants"
-import { Util } from "@/utils/utility"
-import { scrollToTop } from "@/app/modules/utilities"
-import useApp from "@/hooks/useApp"
-import axios from "axios"
+"use client";
+import FormErrors from "@/app/components/FormErrors";
+import Button from "@/app/components/form/Button";
+import TextInput from "@/app/components/form/TextInput";
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import useErrors from "@/hooks/useErrors";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import useUsers from "@/hooks/useUsers";
+import freeemails from "@/app/modules/freeemails.json";
+import { NextEndPoints } from "@/app/modules/endpoints";
+import { createRef, useEffect, useState } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { CountrySelector } from "@/app/components/countrycode/selector";
+import { COUNTRIES } from "@/app/components/countrycode/countries";
+import { forms } from "@/app/modules/constants";
+import { Util } from "@/utils/utility";
+import { scrollToTop } from "@/app/modules/utilities";
+import useApp from "@/hooks/useApp";
+import axios from "axios";
 
 function UserInfo({ designations }) {
-  const { setRouteloading } = useApp()
+  const { setRouteloading } = useApp();
 
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { partner, registerPartner } = usePartners()
-  const { title, subtitle, hand, required } = forms["userinfo"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors({})
+  const { processing, setProcessing, setForm } = useProcessing();
+  const { partner, registerPartner } = usePartners();
+  const { title, subtitle, hand, required } = forms["userinfo"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors({});
 
   const [data, setData] = useState({
     first_name: process.env.NODE_ENV === "production" ? "" : "Prince",
@@ -44,135 +44,137 @@ function UserInfo({ designations }) {
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
     password_confirmed:
       process.env.NODE_ENV === "production" ? "" : "Password12345%",
-  })
+  });
 
   useEffect(() => {
-    setForm("userinfo")
-    setProcessing(false)
-    clearErrors()
-    setRouteloading(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setForm("userinfo");
+    setProcessing(false);
+    clearErrors();
+    setRouteloading(false);
+    scrollToTop("onboardinglayout");
+  }, []);
   useEffect(() => {
-    if (designations.error) setError({ userinfo: designations.error })
-    else clearErrors()
-  }, [designations])
+    if (designations.error) setError({ userinfo: designations.error });
+    else clearErrors();
+  }, [designations]);
 
-  const [checkingEmail, setCheckingEmail] = useState(false)
-  const [lastEmailChecked, setLastEmailChecked] = useState(null)
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [lastEmailChecked, setLastEmailChecked] = useState(null);
   const checkIsFreeEmail = async (email) => {
-    removeError("email")
+    removeError("email");
     if (!Util.validateEmail(data["email"]))
-      return setError({ email: "Your email address is not valid" })
+      return setError({ email: "Your email address is not valid" });
     if (process.env.NEXT_PUBLIC_VALIDATOR === "JSON") {
-      const Email = email.split("@")
+      const Email = email.split("@");
 
       if (freeemails.includes(Email[1])) {
         setError({
           email:
             "Free email service account is not allowed. Please use a corporate email",
-        })
+        });
       }
     } else {
-      if (process.env.NODE_ENV === "development") return
-      if (errors?.email && email === lastEmailChecked) return
+      if (process.env.NODE_ENV === "development") return;
+      if (errors?.email && email === lastEmailChecked) return;
       try {
-        setCheckingEmail(true)
+        setCheckingEmail(true);
         const response = await axios
           .get(`${NextEndPoints.EMAIL_VALIDATOR}?email=${email}`)
           .catch((err) => {
-            setError({ email: "An error occured while verifying your email" })
-          })
-        setCheckingEmail(false)
+            setError({ email: "An error occured while verifying your email" });
+          });
+        setCheckingEmail(false);
         if (response) {
-          const { data } = response
-          setLastEmailChecked(email)
+          const { data } = response;
+          setLastEmailChecked(email);
           if (!data)
             setError({
               email: "Something went wrong while verifying your email",
-            })
-          const { is_free, error } = data
-          if (error) setError({ email: error })
+            });
+          const { is_free, error } = data;
+          if (error) setError({ email: error });
           if (is_free)
             setError({
               email:
                 "Free email service account is not allowed. Please use a corporate email",
-            })
+            });
         } else {
-          setError({ email: "Something went wrong while verifying your email" })
+          setError({
+            email: "Something went wrong while verifying your email",
+          });
         }
       } catch (error) {
-        setError({ email: "An error occured while verifying your email" })
+        setError({ email: "An error occured while verifying your email" });
       }
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
-    let error = false
+    e.preventDefault();
+    clearErrors();
+    let error = false;
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!!!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+          error = true;
+          setError({ [field]: `${required[field]} is required` });
         }
       }
-      if (error) return scrollToTop("onboardinglayout")
+      if (error) return scrollToTop("onboardinglayout");
     }
     if (!Util.validateEmail(data["email"]))
-      return setError({ email: "Your email address is not valid" })
+      return setError({ email: "Your email address is not valid" });
 
-    const isFreeEmail = await checkIsFreeEmail(data["email"])
-    if (isFreeEmail) return setError({ email: isFreeEmail })
+    const isFreeEmail = await checkIsFreeEmail(data["email"]);
+    if (isFreeEmail) return setError({ email: isFreeEmail });
     // return setError({ userinfo: "Submitted" })
 
     if (data["password"].length < 8)
       return setError({
         password: "Your password must be at least, 8 characters",
-      })
+      });
     if (data["password"] !== data.password_confirmed)
       return setError({
         password_confirmed: "Password confirmation mismatch",
-      })
+      });
     if (data["telephone"].length < 6 || data["telephone"].length > 11)
-      return setError({ telephone: "Your telephone is not valid" })
+      return setError({ telephone: "Your telephone is not valid" });
 
-    const result = await registerPartner("userinfo", data)
+    const result = await registerPartner("userinfo", data);
     if (result) {
-      scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ userinfo: result.error })
+      scrollToTop("onboardinglayout");
+      if (result?.error) return setError({ userinfo: result.error });
     }
-  }
+  };
 
   const handleFormChange = async (e) => {
-    const input = e.target.id
-    removeError(input)
+    const input = e.target.id;
+    removeError(input);
 
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const handleCountryChange = (val) => {
-    setCountry(val)
+    setCountry(val);
     setCountrycode(() => {
-      const country = COUNTRIES.find((option) => option.value === val)
-      return country.code
-    })
-  }
-  const myRef = createRef()
-  const [isOpen, setIsOpen] = useState(false)
-  const [country, setCountry] = useState(partner?.country ?? "NG")
-  const [countrycode, setCountrycode] = useState(partner?.countrycode ?? "234")
+      const country = COUNTRIES.find((option) => option.value === val);
+      return country.code;
+    });
+  };
+  const myRef = createRef();
+  const [isOpen, setIsOpen] = useState(false);
+  const [country, setCountry] = useState(partner?.country ?? "NG");
+  const [countrycode, setCountrycode] = useState(partner?.countrycode ?? "234");
 
   useEffect(() => {
     setData((prevState) => ({
       ...prevState,
       country: country,
       countrycode: countrycode,
-    }))
-  }, [country, countrycode])
+    }));
+  }, [country, countrycode]);
 
   return (
     <div
@@ -337,7 +339,7 @@ function UserInfo({ designations }) {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default UserInfo
+export default UserInfo;

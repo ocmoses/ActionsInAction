@@ -1,20 +1,20 @@
-"use client"
-import TextInput from "@/app/components/form/TextInput"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import usePartners from "@/hooks/usePartners"
-import useProcessing from "@/hooks/useProcessing"
-import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms, validities, license_type } from "@/app/modules/constants"
+"use client";
+import TextInput from "@/app/components/form/TextInput";
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
+import FileInput from "@/app/components/form/FileInput";
+import DatePicker from "@/app/components/form/DatePicker";
+import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import usePartners from "@/hooks/usePartners";
+import useProcessing from "@/hooks/useProcessing";
+import { useState, useEffect } from "react";
+import { Util } from "@/utils/utility";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { forms, validities, license_type } from "@/app/modules/constants";
 import {
   scrollToTop,
   validateExpiryDate,
@@ -22,11 +22,11 @@ import {
   ValidateField,
   fieldRequired,
   fieldName,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 function NlrcLicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
-    useProcessing()
+    useProcessing();
   const {
     partner,
     category,
@@ -34,9 +34,9 @@ function NlrcLicense() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
+  } = usePartners();
   const { min_start_date, max_end_date, yesterday, tomorrow } =
-    getValidityRange(validities.nlrc_lottery)
+    getValidityRange(validities.nlrc_lottery);
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -47,10 +47,10 @@ function NlrcLicense() {
     nlrc_expiry_date: "",
     nlrc_doc: {},
     nlrc_file: "",
-  })
-  const { title, subtitle, hand, fields } = forms["nlrclicense"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-  const [isMasterData, setIsMasterData] = useState(false)
+  });
+  const { title, subtitle, hand, fields } = forms["nlrclicense"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
+  const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
     if (category) {
       const Category =
@@ -58,13 +58,13 @@ function NlrcLicense() {
         partner.sections[partner.master.category_uuid]?.nlrclicense &&
         category.category_uuid !== partner.master.category_uuid
           ? partner.master
-          : category
+          : category;
 
       setIsMasterData(
         partner.master &&
           partner.sections[partner.master.category_uuid]?.nlrclicense &&
           category.category_uuid !== partner.master.category_uuid
-      )
+      );
       setData({
         partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
@@ -86,27 +86,27 @@ function NlrcLicense() {
             : "2024-03-20",
         nlrc_doc: Category?.nlrc_doc ?? {},
         nlrc_file: Category?.nlrc_file ?? "",
-      })
+      });
     }
-  }, [category])
+  }, [category]);
   useEffect(() => {
-    setForm("nlrclicense")
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setForm("nlrclicense");
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         if (field !== "nlrc_doc") {
-          const error = ValidateField(field, "nlrclicense", data, category)
+          const error = ValidateField(field, "nlrclicense", data, category);
           if (error) {
-            scrollToTop("onboardinglayout")
+            scrollToTop("onboardinglayout");
             return setError({
               [field]: error,
-            })
+            });
           }
         }
       }
@@ -116,68 +116,68 @@ function NlrcLicense() {
       Util.isEmpty(data.nlrc_doc) &&
       !data.nlrc_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         tin_file: `${fieldName("nlrc_doc", "nlrclicense")} is required`,
-      })
+      });
     }
     if (data.nlrc_issue_date && data.nlrc_expiry_date) {
       const expiryError = validateExpiryDate(
         data.nlrc_issue_date,
         data.nlrc_expiry_date,
         validities.nlrc_lottery
-      )
-      if (expiryError) return setError({ nlrclicense: expiryError })
+      );
+      if (expiryError) return setError({ nlrclicense: expiryError });
     }
-    const result = await registerPartner("nlrclicense", data)
+    const result = await registerPartner("nlrclicense", data);
 
     if (result) {
-      scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ nlrclicense: result.error })
+      scrollToTop("onboardinglayout");
+      if (result?.error) return setError({ nlrclicense: result.error });
     }
     if (result.data?.partner) {
-      updatePartner(result?.data?.partner)
+      updatePartner(result?.data?.partner);
       const newcategory = result.data?.partner.categories.find(
         (c) => c.category_uuid === category.category_uuid
-      )
-      newcategory.profile_stage.nlrclicense = "1"
-      const { nextstage: NextStage } = nextStage(newcategory, partner)
-      return setForm(NextStage)
+      );
+      newcategory.profile_stage.nlrclicense = "1";
+      const { nextstage: NextStage } = nextStage(newcategory, partner);
+      return setForm(NextStage);
     }
     // const { nextstage: NextStage } = nextStage(category, partner)
     // return setForm(NextStage)
     // if (NextStage === "review") return moveToNextForm(["review", true])
     // return moveToNextForm([NextStage])
-  }
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
 
-  const [selectField, setSelectField] = useState(null)
+  const [selectField, setSelectField] = useState(null);
   useEffect(() => {
-    removeError(selectField)
-    Validate(selectField)
-  }, [selectField, data])
+    removeError(selectField);
+    Validate(selectField);
+  }, [selectField, data]);
 
   const handleDateChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const Validate = (field) => {
-    removeError(field)
-    const error = ValidateField(field, "nlrclicense", data, category)
+    removeError(field);
+    const error = ValidateField(field, "nlrclicense", data, category);
     if (error)
       return setError({
         [field]: error,
-      })
-  }
+      });
+  };
   return (
     <div
       id="onboardingform"
@@ -193,8 +193,8 @@ function NlrcLicense() {
           label="License type"
           value={data.nlrc_license_type}
           onChange={(e) => {
-            handleFormChange(e)
-            setSelectField("nlrc_license_type")
+            handleFormChange(e);
+            setSelectField("nlrc_license_type");
           }}
           errors={errors}
           disabled={isMasterData || partner?.contract_status !== "not_started"}
@@ -286,7 +286,7 @@ function NlrcLicense() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default NlrcLicense
+export default NlrcLicense;

@@ -1,31 +1,31 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import MailOpened from "~/assets/icons/mail-opened.svg"
-import FormErrors from "@/app/components/FormErrors"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useUsers from "@/hooks/useUsers"
-import useErrors from "@/hooks/useErrors"
-import { useEffect, useState } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import MailOpened from "~/assets/icons/mail-opened.svg";
+import FormErrors from "@/app/components/FormErrors";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import useUsers from "@/hooks/useUsers";
+import useErrors from "@/hooks/useErrors";
+import { useEffect, useState } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
 
 export default function Validate({ params }) {
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { tmpuser } = useUsers()
-  const { resendEmail } = usePartners()
-  const [{ errors, success, clearErrors }] = useErrors({})
-  const [type, setType] = useState("")
-  const { resource } = params
+  const { processing, setProcessing, setForm } = useProcessing();
+  const { tmpuser } = useUsers();
+  const { resendEmail } = usePartners();
+  const [{ errors, success, clearErrors }] = useErrors({});
+  const [type, setType] = useState("");
+  const { resource } = params;
   useEffect(() => {
-    setForm(null)
-    setProcessing(false)
-    clearErrors()
-  }, [])
+    setForm(null);
+    setProcessing(false);
+    clearErrors();
+  }, []);
   useEffect(() => {
-    setType(resource && resource[1] ? resource[1] : "new")
-    clearErrors()
-  }, [resource])
+    setType(resource && resource[1] ? resource[1] : "new");
+    clearErrors();
+  }, [resource]);
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -67,8 +67,8 @@ export default function Validate({ params }) {
             <span
               className="cursor-pointer text-lg text-white hover:text-gray-300"
               onClick={() => {
-                clearErrors()
-                resendEmail(tmpuser?.email, type)
+                clearErrors();
+                resendEmail(tmpuser?.email, type);
               }}
             >
               Resend email
@@ -83,5 +83,5 @@ export default function Validate({ params }) {
         [[DEV TOOL. Continue to next screen]]
       </a> */}
     </>
-  )
+  );
 }

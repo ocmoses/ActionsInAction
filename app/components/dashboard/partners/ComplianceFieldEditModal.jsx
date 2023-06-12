@@ -1,25 +1,25 @@
-import { complianceRequirements } from "@/app/modules/constants"
-import Text from "@/app/components/dashboard/partners/fields/Text"
-import Date from "@/app/components/dashboard/partners/fields/Date"
-import File from "@/app/components/dashboard/partners/fields/File"
-import State from "@/app/components/dashboard/partners/fields/State"
-import Country from "@/app/components/dashboard/partners/fields/Country"
-import CompanyType from "@/app/components/dashboard/partners/fields/CompanyType"
-import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes"
+import { complianceRequirements } from "@/app/modules/constants";
+import Text from "@/app/components/dashboard/partners/fields/Text";
+import Date from "@/app/components/dashboard/partners/fields/Date";
+import File from "@/app/components/dashboard/partners/fields/File";
+import State from "@/app/components/dashboard/partners/fields/State";
+import Country from "@/app/components/dashboard/partners/fields/Country";
+import CompanyType from "@/app/components/dashboard/partners/fields/CompanyType";
+import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes";
 
 export default function ComplianceFieldEditModal({ setShowModal, data }) {
-  let type_of_file = ""
+  let type_of_file = "";
   switch (data.type) {
     case "shortcode_doc":
     case "pricing_doc":
-      data.type = "file"
-      break
+      data.type = "file";
+      break;
     case "shortcode_issue_date":
     case "shortcode_expiry_date":
     case "pricing_issue_date":
     case "pricing_expiry_date":
-      data.type = "date"
-      break
+      data.type = "date";
+      break;
   }
   return (
     <>
@@ -80,5 +80,5 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
         </div>
       </div>
     </>
-  )
+  );
 }

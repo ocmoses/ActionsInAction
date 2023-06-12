@@ -1,5 +1,5 @@
-import React from "react"
-import MenuBar from "@/app/components/dashboard/MenuBar"
+import React from "react";
+import MenuBar from "@/app/components/dashboard/MenuBar";
 export default function LayoutContent({ children }, open, setOpen) {
   return (
     <>
@@ -16,5 +16,5 @@ export default function LayoutContent({ children }, open, setOpen) {
         <div className="mx-auto flex-1 relative">{children}</div>
       </div>
     </>
-  )
+  );
 }

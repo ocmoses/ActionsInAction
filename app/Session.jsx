@@ -1,26 +1,26 @@
-"use client"
-import { useEffect } from "react"
-import useApp from "@/hooks/useApp"
-import useLogout from "@/hooks/useLogout"
+"use client";
+import { useEffect } from "react";
+import useApp from "@/hooks/useApp";
+import useLogout from "@/hooks/useLogout";
 export default function Session({
   children,
   serverSession,
   categories,
   error,
 }) {
-  const app = useApp()
-  const { clearStore } = useLogout()
+  const app = useApp();
+  const { clearStore } = useLogout();
   useEffect(() => {
-    clearStore()
+    clearStore();
     if (serverSession) {
       if (serverSession?.status === "authenticated") {
-        app.setStoreStates(serverSession, categories, "session")
+        app.setStoreStates(serverSession, categories, "session");
       }
     }
-  }, [serverSession])
+  }, [serverSession]);
   useEffect(() => {
-    if (error) app.setGlobalError(error)
-  }, [error])
+    if (error) app.setGlobalError(error);
+  }, [error]);
 
-  return <>{children}</>
+  return <>{children}</>;
 }

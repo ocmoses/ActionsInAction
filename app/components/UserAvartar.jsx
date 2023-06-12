@@ -1,43 +1,43 @@
-import { TailSpinPreloader } from "@/app/components/Icons"
-import Link from "next/link"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import useLogout from "@/hooks/useLogout"
-import { useState } from "react"
-import { useEffect } from "react"
-import { PageRoutes } from "@/app/modules/menu"
+import { TailSpinPreloader } from "@/app/components/Icons";
+import Link from "next/link";
+import useApp from "@/hooks/useApp";
+import useUsers from "@/hooks/useUsers";
+import useLogout from "@/hooks/useLogout";
+import { useState } from "react";
+import { useEffect } from "react";
+import { PageRoutes } from "@/app/modules/menu";
 
 export default function UserAvartar() {
-  const { Logout } = useLogout()
-  const { session } = useUsers()
-  const { loading } = useApp()
+  const { Logout } = useLogout();
+  const { session } = useUsers();
+  const { loading } = useApp();
 
-  const [initial, setInitial] = useState("")
-  const [showMenu, setShowMenu] = useState(false)
+  const [initial, setInitial] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
 
   const getInitials = () => {
     const firstName =
-      session.user?.first_name !== "undefined" ? session.user.first_name : ""
+      session.user?.first_name !== "undefined" ? session.user.first_name : "";
     const lastName =
-      session.user?.last_name !== "undefined" ? session.user.last_name : ""
+      session.user?.last_name !== "undefined" ? session.user.last_name : "";
     setInitial(
       `${firstName ? firstName[0].toUpperCase() : ""}${
         lastName ? lastName[0].toUpperCase() : ""
       }`
-    )
-  }
+    );
+  };
   useEffect(() => {
-    getInitials()
-  }, [session])
+    getInitials();
+  }, [session]);
 
   useEffect(() => {
     // console.log({ session })
-    setShowMenu(false)
-  }, [])
+    setShowMenu(false);
+  }, []);
 
   const toggleProfileMenu = () => {
-    setShowMenu((oldState) => !oldState)
-  }
+    setShowMenu((oldState) => !oldState);
+  };
   return (
     <>
       <div className="z-10 flex items-center justify-between gap-3">
@@ -97,8 +97,8 @@ export default function UserAvartar() {
                 </Link>
                 <div
                   onClick={() => {
-                    Logout()
-                    setShowMenu(false)
+                    Logout();
+                    setShowMenu(false);
                   }}
                   className="w-full text-end cursor-pointer text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
                 >
@@ -110,5 +110,5 @@ export default function UserAvartar() {
         </div>
       </div>
     </>
-  )
+  );
 }

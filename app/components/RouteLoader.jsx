@@ -1,9 +1,9 @@
-"use client"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import useApp from "@/hooks/useApp"
+"use client";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import useApp from "@/hooks/useApp";
 
 export default function RouteLoader() {
-  const { routeloading } = useApp()
+  const { routeloading } = useApp();
   return (
     <>
       {routeloading && (
@@ -12,5 +12,5 @@ export default function RouteLoader() {
         </div>
       )}
     </>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-"use client"
-import FileInput from "@/app/components/form/FileInput"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import usePartners from "@/hooks/usePartners"
-import useProcessing from "@/hooks/useProcessing"
-import { Util } from "@/utils/utility"
-import { useState, useEffect } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities"
+"use client";
+import FileInput from "@/app/components/form/FileInput";
+import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import usePartners from "@/hooks/usePartners";
+import useProcessing from "@/hooks/useProcessing";
+import { Util } from "@/utils/utility";
+import { useState, useEffect } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { forms } from "@/app/modules/constants";
+import { scrollToTop, fieldRequired, fieldName } from "@/app/modules/utilities";
 
 export default function Accountinfo() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
-    useProcessing()
+    useProcessing();
   const {
     partner,
     category,
@@ -23,7 +23,7 @@ export default function Accountinfo() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
+  } = usePartners();
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -36,10 +36,10 @@ export default function Accountinfo() {
     audited_account_3_file: null,
     job_evidence_doc: {},
     job_evidence_file: null,
-  })
-  const { title, subtitle, hand, required } = forms["accountinfo"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-  const [isMasterData, setIsMasterData] = useState(false)
+  });
+  const { title, subtitle, hand, required } = forms["accountinfo"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
+  const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
     if (category) {
       const Category =
@@ -47,13 +47,13 @@ export default function Accountinfo() {
         partner.sections[partner.master.category_uuid]?.accountinfo &&
         category.category_uuid !== partner.master.category_uuid
           ? partner.master
-          : category
+          : category;
 
       setIsMasterData(
         partner.master &&
           partner.sections[partner.master.category_uuid]?.accountinfo &&
           category.category_uuid !== partner.master.category_uuid
-      )
+      );
       setData({
         partner_uuid: Category?.partner_uuid ?? "",
         category_uuid: category?.category_uuid ?? "",
@@ -65,92 +65,92 @@ export default function Accountinfo() {
         audited_account_3_file: null,
         job_evidence_doc: Category?.job_evidence_doc ?? {},
         job_evidence_file: null,
-      })
+      });
     }
-  }, [category])
+  }, [category]);
 
   useEffect(() => {
-    clearErrors()
-    setForm("accountinfo")
-    setProcessing(false)
-  }, [])
+    clearErrors();
+    setForm("accountinfo");
+    setProcessing(false);
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (
       fieldRequired("audited_account_1_doc", "accountinfo", category) &&
       Util.isEmpty(data.audited_account_1_doc) &&
       !data.audited_account_1_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         audited_account_1_file: `${fieldName(
           "audited_account_1_doc",
           "accountinfo"
         )} is required`,
-      })
+      });
     }
     if (
       fieldRequired("audited_account_2_doc", "accountinfo", category) &&
       Util.isEmpty(data.audited_account_2_doc) &&
       !data.audited_account_2_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         audited_account_2_file: `${fieldName(
           "audited_account_2_doc",
           "accountinfo"
         )} is required`,
-      })
+      });
     }
     if (
       fieldRequired("audited_account_3_doc", "accountinfo", category) &&
       Util.isEmpty(data.audited_account_3_doc) &&
       !data.audited_account_3_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         audited_account_3_file: `${fieldName(
           "audited_account_3_doc",
           "accountinfo"
         )} is required`,
-      })
+      });
     }
     if (
       fieldRequired("job_evidence_doc", "accountinfo", category) &&
       Util.isEmpty(data.job_evidence_doc) &&
       !data.job_evidence_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         job_evidence_file: `${fieldName(
           "job_evidence_doc",
           "accountinfo"
         )} is required`,
-      })
+      });
     }
-    const result = await registerPartner("accountinfo", data)
+    const result = await registerPartner("accountinfo", data);
     if (result) {
-      if (result?.error) return setError({ accountinfo: result.error })
+      if (result?.error) return setError({ accountinfo: result.error });
     }
     if (result.data?.partner) {
-      updatePartner(result?.data?.partner)
+      updatePartner(result?.data?.partner);
       const newcategory = result.data?.partner.categories.find(
         (c) => c.category_uuid === category.category_uuid
-      )
-      newcategory.profile_stage.accountinfo = "1"
-      const { nextstage: NextStage } = nextStage(newcategory, partner)
-      return setForm(NextStage)
+      );
+      newcategory.profile_stage.accountinfo = "1";
+      const { nextstage: NextStage } = nextStage(newcategory, partner);
+      return setForm(NextStage);
     }
-  }
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="w3-animate-opacity pb-20 w-full max-w-[492px]">
@@ -234,5 +234,5 @@ export default function Accountinfo() {
         )}
       </form>
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import PartnerWelcome from "./PartnerWelcome"
+import PartnerWelcome from "./PartnerWelcome";
 
 export default function PartnerWelcomePage({ params: { resource } }) {
-  return <PartnerWelcome resource={resource} />
+  return <PartnerWelcome resource={resource} />;
 }

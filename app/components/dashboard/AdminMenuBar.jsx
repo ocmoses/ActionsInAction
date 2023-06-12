@@ -1,15 +1,15 @@
-import React from "react"
-import { AdminMenu } from "@/app/modules/menu"
-import { getPath } from "@/app/modules/utilities"
-import { useSelectedLayoutSegments } from "next/navigation"
-import Link from "next/link"
+import React from "react";
+import { AdminMenu } from "@/app/modules/menu";
+import { getPath } from "@/app/modules/utilities";
+import { useSelectedLayoutSegments } from "next/navigation";
+import Link from "next/link";
 export default function MenuBar({ open }) {
-  const segments = useSelectedLayoutSegments()
+  const segments = useSelectedLayoutSegments();
 
   return (
     <ul className="p-0 flex-grow h-full">
       {AdminMenu.map((menu) => {
-        const path = `/${getPath(segments)}`
+        const path = `/${getPath(segments)}`;
         return (
           <li key={menu.label}>
             <Link
@@ -43,8 +43,8 @@ export default function MenuBar({ open }) {
               )}
             </Link>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }

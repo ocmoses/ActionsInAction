@@ -1,14 +1,14 @@
 interface Props {
-  width?: number
-  height?: number
-  fill?: string
-  iconClass?: string
-  size?: any
+  width?: number;
+  height?: number;
+  fill?: string;
+  iconClass?: string;
+  size?: any;
 }
-import { ArrowRightCircleIcon } from "@heroicons/react/24/solid"
-import Image from "next/image"
+import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 export function ArrowRightCircle({ iconClass }: Props) {
-  return <ArrowRightCircleIcon className={iconClass ?? ""} />
+  return <ArrowRightCircleIcon className={iconClass ?? ""} />;
 }
 export function CheckedCircle({ iconClass }: Props) {
   return (
@@ -26,7 +26,7 @@ export function CheckedCircle({ iconClass }: Props) {
         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
-  )
+  );
 }
 export function ArrowDownCircle({ iconClass }: Props) {
   return (
@@ -44,7 +44,7 @@ export function ArrowDownCircle({ iconClass }: Props) {
         d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
-  )
+  );
 }
 export function ArrowLeftCircle({ iconClass }: Props) {
   return (
@@ -62,7 +62,7 @@ export function ArrowLeftCircle({ iconClass }: Props) {
         d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
-  )
+  );
 }
 export function ExclamationCircle({ iconClass }: Props) {
   return (
@@ -80,7 +80,7 @@ export function ExclamationCircle({ iconClass }: Props) {
         d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
       />
     </svg>
-  )
+  );
 }
 export function ExclamationTriangle({ iconClass }: Props) {
   return (
@@ -98,7 +98,7 @@ export function ExclamationTriangle({ iconClass }: Props) {
         d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
       />
     </svg>
-  )
+  );
 }
 export function CheckedIcon({ width, height, iconClass }: Props) {
   return (
@@ -109,7 +109,7 @@ export function CheckedIcon({ width, height, iconClass }: Props) {
       height={height}
       alt=""
     />
-  )
+  );
 }
 export function UnCheckedHoverIcon({ width, height, iconClass }: Props) {
   return (
@@ -120,7 +120,7 @@ export function UnCheckedHoverIcon({ width, height, iconClass }: Props) {
       className={iconClass ?? ""}
       alt=""
     />
-  )
+  );
 }
 export function CirclePreloader({ fill, width, height }: Props) {
   return (
@@ -152,7 +152,7 @@ export function CirclePreloader({ fill, width, height }: Props) {
         />
       </path>
     </svg>
-  )
+  );
 }
 export function TailSpinPreloader({ fill, width, height, iconClass }: Props) {
   return (
@@ -204,7 +204,7 @@ export function TailSpinPreloader({ fill, width, height, iconClass }: Props) {
         </g>
       </g>
     </svg>
-  )
+  );
 }
 export function UnCheckedInactiveIcon({ width, height, iconClass }: Props) {
   return (
@@ -215,7 +215,7 @@ export function UnCheckedInactiveIcon({ width, height, iconClass }: Props) {
       className={iconClass ?? ""}
       alt=""
     />
-  )
+  );
 }
 export function FileUploadActiveIcon({ width, height, iconClass }: Props) {
   return (
@@ -237,7 +237,7 @@ export function FileUploadActiveIcon({ width, height, iconClass }: Props) {
         strokeWidth="4"
       />
     </svg>
-  )
+  );
 }
 export function FileUploadIcon({ width, height, iconClass }: Props) {
   return (
@@ -254,7 +254,7 @@ export function FileUploadIcon({ width, height, iconClass }: Props) {
         fill="#888888"
       />
     </svg>
-  )
+  );
 }
 export function EyeOpenIcon({ iconClass }: Props) {
   return (
@@ -277,7 +277,7 @@ export function EyeOpenIcon({ iconClass }: Props) {
         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
       />
     </svg>
-  )
+  );
 }
 export function EyeCloseIcon({ iconClass }: Props) {
   return (
@@ -295,7 +295,7 @@ export function EyeCloseIcon({ iconClass }: Props) {
         d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
       />
     </svg>
-  )
+  );
 }
 export function InfoIcon({ width, height, iconClass }: Props) {
   return (
@@ -313,7 +313,7 @@ export function InfoIcon({ width, height, iconClass }: Props) {
         // fillOpacity="0.18"
       />
     </svg>
-  )
+  );
 }
 export function AccountinfoIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -350,7 +350,7 @@ export function AccountinfoIcon({ width, height, fill, iconClass }: Props) {
         fill={fill ?? "white"}
       />
     </svg>
-  )
+  );
 }
 export function CompanyDetailIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -382,7 +382,7 @@ export function CompanyDetailIcon({ width, height, fill, iconClass }: Props) {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
 export function ComplianceIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -403,7 +403,7 @@ export function ComplianceIcon({ width, height, fill, iconClass }: Props) {
         fill={fill ?? "white"}
       />
     </svg>
-  )
+  );
 }
 export function IndemnityIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -428,7 +428,7 @@ export function IndemnityIcon({ width, height, fill, iconClass }: Props) {
         fill={fill ?? "white"}
       />
     </svg>
-  )
+  );
 }
 export function NccLicenseIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -457,7 +457,7 @@ export function NccLicenseIcon({ width, height, fill, iconClass }: Props) {
         fill={fill ?? "white"}
       />
     </svg>
-  )
+  );
 }
 export function ShortcodeIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -509,7 +509,7 @@ export function ShortcodeIcon({ width, height, fill, iconClass }: Props) {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
 export function ReviewIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -534,7 +534,7 @@ export function ReviewIcon({ width, height, fill, iconClass }: Props) {
         fill={fill ?? "white"}
       />
     </svg>
-  )
+  );
 }
 export function StepBadgeIcon({ width, height, fill, iconClass }: Props) {
   return (
@@ -555,7 +555,7 @@ export function StepBadgeIcon({ width, height, fill, iconClass }: Props) {
         fill={`${fill ?? "#282320"}`}
       />
     </svg>
-  )
+  );
 }
 export function ContactPersonIcon({ width, height, iconClass }: Props) {
   return (
@@ -573,7 +573,7 @@ export function ContactPersonIcon({ width, height, iconClass }: Props) {
         clipRule="evenodd"
       />
     </svg>
-  )
+  );
 }
 
 export function CircleOkCheckmarkIcon({ iconClass }: Props) {
@@ -592,5 +592,5 @@ export function CircleOkCheckmarkIcon({ iconClass }: Props) {
         d="M4.5 12.75l6 6 9-13.5"
       />
     </svg>
-  )
+  );
 }

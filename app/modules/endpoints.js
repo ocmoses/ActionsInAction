@@ -1,11 +1,11 @@
-import { apiURL } from "@/app/modules/constants"
+import { apiURL } from "@/app/modules/constants";
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
   "Content-Type": "application/json",
   redirect: "follow",
   referrerPolicy: "no-referrer",
-}
+};
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
   LOGOUT: "/api/next/users/logout",
@@ -18,7 +18,7 @@ export const NextEndPoints = {
   LOGOUT_ADMIN: "/api/next/users/logout-admin",
   AUTH_USER: "/api/next/users/auth-admin",
   AUTH_ADMIN: "/api/next/users/auth-admin",
-}
+};
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v1/auth/login`,
@@ -54,5 +54,5 @@ const RemoteEndpoints = {
   COMPLIANCE_APPROVE: `${apiURL}/v2/admin/compliance/approve`,
   PARTNER_UPDATE: `${apiURL}/v2/admin/compliance/partner-correction`,
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
-}
-export default RemoteEndpoints
+};
+export default RemoteEndpoints;

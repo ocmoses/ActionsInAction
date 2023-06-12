@@ -1,4 +1,4 @@
-import Button from "@/app/components/form/Button"
+import Button from "@/app/components/form/Button";
 
 export default function ComplianceFieldEditModal({ showAgreement, partner }) {
   return (
@@ -135,5 +135,5 @@ export default function ComplianceFieldEditModal({ showAgreement, partner }) {
         </div>
       </div>
     </>
-  )
+  );
 }

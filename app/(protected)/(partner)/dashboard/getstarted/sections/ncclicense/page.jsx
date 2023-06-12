@@ -1,7 +1,7 @@
-import Ncclicense from "./Ncclicense"
+import Ncclicense from "./Ncclicense";
 
 function NcclicensePage() {
-  return <Ncclicense />
+  return <Ncclicense />;
 }
 
-export default NcclicensePage
+export default NcclicensePage;

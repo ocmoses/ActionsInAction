@@ -1,31 +1,31 @@
 export const fetchData = async (url, opt) => {
-  const Opts = opt ?? {}
+  const Opts = opt ?? {};
   const defaultHeaders = {
     apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
     "content-type": "application/json",
-  }
+  };
   const defaultOptions = {
     method: Opts?.method ?? "GET",
     headers: { ...defaultHeaders, ...Opts?.headers },
-  }
-  const options = { ...defaultOptions, ...Opts }
+  };
+  const options = { ...defaultOptions, ...Opts };
   try {
-    const result = await fetch(url, options)
+    const result = await fetch(url, options);
     if (result) {
-      const { data, success } = await result?.json()
+      const { data, success } = await result?.json();
       if (result?.ok) {
         if (success) {
-          return { success, error: null, data }
+          return { success, error: null, data };
         } else {
           return {
             success: false,
             error:
               "Sorry! Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
       } else if (data?.message) {
-        return { success: false, error: data?.message, data: null }
+        return { success: false, error: data?.message, data: null };
       }
     } else {
       return {
@@ -33,7 +33,7 @@ export const fetchData = async (url, opt) => {
         error:
           "Sorry! We could not reach the server. Please check your connection.",
         data: null,
-      }
+      };
     }
   } catch (e) {
     return {
@@ -41,14 +41,14 @@ export const fetchData = async (url, opt) => {
       error:
         "Sorry! We could not reach the server. Please check your connection.",
       data: null,
-    }
+    };
   }
   return {
     success: false,
     error: "Something went wrong. Please check your connection and try again",
     data: null,
-  }
-}
+  };
+};
 
 export const getRejectionReasons = async (setRejectionReasons) => {
   const result = {
@@ -133,7 +133,7 @@ export const getRejectionReasons = async (setRejectionReasons) => {
         updated_at: "2023-04-12T14:53:26.000000Z",
       },
     ],
-  }
+  };
   // const response = await fetch(RemoteEndpoints.REJECTION_RESONS, {
   //   cache: "no-store",
   //   next: { revalidate: 86400 },
@@ -143,13 +143,13 @@ export const getRejectionReasons = async (setRejectionReasons) => {
   // })
   // const result = await response.json()
   if (result?.success) {
-    const reasons = result?.data
-    setRejectionReasons(reasons)
-    return { reasons }
+    const reasons = result?.data;
+    setRejectionReasons(reasons);
+    return { reasons };
   }
   return {
     error:
       result?.data?.message ??
       "Something went wrong. Please check your connection and try again",
-  }
-}
+  };
+};

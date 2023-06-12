@@ -1,4 +1,4 @@
-import ScrollToTop from "react-scroll-to-top"
+import ScrollToTop from "react-scroll-to-top";
 
 export default function Footer() {
   return (
@@ -196,5 +196,5 @@ export default function Footer() {
         style={{ zIndex: 11111 }}
       />
     </>
-  )
+  );
 }

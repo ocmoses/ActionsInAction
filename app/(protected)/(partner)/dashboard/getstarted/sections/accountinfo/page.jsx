@@ -1,7 +1,7 @@
-import Accountinfo from "./Accountinfo"
+import Accountinfo from "./Accountinfo";
 
 function AccountinfoPage() {
-  return <Accountinfo />
+  return <Accountinfo />;
 }
 
-export default AccountinfoPage
+export default AccountinfoPage;

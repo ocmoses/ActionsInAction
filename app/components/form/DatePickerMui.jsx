@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
-import { inputDate } from "@/app/modules/utilities"
-import FormErrors from "@/app/components/FormErrors"
+import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { inputDate } from "@/app/modules/utilities";
+import FormErrors from "@/app/components/FormErrors";
 
 function FileInput({
   id,
@@ -16,16 +16,16 @@ function FileInput({
   min,
   max,
 }) {
-  const [startDate, setStartDate] = useState()
+  const [startDate, setStartDate] = useState();
 
   useEffect(() => {
-    setStartDate(value ? new Date(value) : "")
-  }, [value])
+    setStartDate(value ? new Date(value) : "");
+  }, [value]);
 
   const handleDateChange = (date) => {
-    setStartDate(date)
-    onChange({ target: { id, value: inputDate(date) } })
-  }
+    setStartDate(date);
+    onChange({ target: { id, value: inputDate(date) } });
+  };
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div
@@ -79,7 +79,7 @@ function FileInput({
       </div>
       {errors && <FormErrors error={errors[id]} />}
     </div>
-  )
+  );
 }
 
-export default FileInput
+export default FileInput;

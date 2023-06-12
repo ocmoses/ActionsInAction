@@ -1,4 +1,4 @@
-import AdminAvartar from "@/app/components/AdminAvartar"
+import AdminAvartar from "@/app/components/AdminAvartar";
 export default function AdminProfileIcons() {
   return (
     <>
@@ -39,5 +39,5 @@ export default function AdminProfileIcons() {
         <AdminAvartar />
       </div>
     </>
-  )
+  );
 }

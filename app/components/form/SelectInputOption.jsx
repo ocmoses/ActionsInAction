@@ -9,7 +9,7 @@ function SelectInputOption({ className, label, value }) {
     >
       {label}
     </option>
-  )
+  );
 }
 
-export default SelectInputOption
+export default SelectInputOption;

@@ -1,81 +1,82 @@
-"use client"
-import { useState, useEffect } from "react"
+"use client";
+import { useState, useEffect } from "react";
 import {
   getPartnerInitials,
   filterPartner,
   Util,
-} from "@/app/modules/utilities"
-import { status_type, statusOptions } from "@/app/modules/constants"
-import { PageRoutes } from "@/app/modules/menu"
+} from "@/app/modules/utilities";
+import { status_type, statusOptions } from "@/app/modules/constants";
+import { PageRoutes } from "@/app/modules/menu";
 
-import { TailSpinPreloader } from "@/app/components/Icons"
-import useProcessing from "@/hooks/useProcessing"
-import useAdmins from "@/hooks/useAdmins"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import moment from "moment"
-import { redirect, useRouter } from "next/navigation"
-import useApp from "@/hooks/useApp"
-import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
-import Image from "next/image"
+import { TailSpinPreloader } from "@/app/components/Icons";
+import useProcessing from "@/hooks/useProcessing";
+import useAdmins from "@/hooks/useAdmins";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import moment from "moment";
+import { redirect, useRouter } from "next/navigation";
+import useApp from "@/hooks/useApp";
+import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
+import Image from "next/image";
 
 export default function Dashboard({ allPartners }) {
-  const { getAllPartners, allCategories, categories } = useAdmins()
-  const { processing, setProcessing } = useProcessing()
-  const [{ errors, setError, clearErrors }] = useErrors(null)
-  const [Partners, setPartners] = useState([])
+  const { getAllPartners, allCategories, categories } = useAdmins();
+  const { processing, setProcessing } = useProcessing();
+  const [{ errors, setError, clearErrors }] = useErrors(null);
+  const [Partners, setPartners] = useState([]);
 
-  const [fetchingPartners, setFetchingPartners] = useState(false)
-  const router = useRouter()
-  const { setRouteloading } = useApp()
-  const [navigation, setNavigation] = useState(null)
-  const [page, setPage] = useState(null)
-  const [perPage, setPerPage] = useState(null)
-  const [onboardingStatus, setOnboardingStatus] = useState(null)
+  const [fetchingPartners, setFetchingPartners] = useState(false);
+  const router = useRouter();
+  const { setRouteloading } = useApp();
+  const [navigation, setNavigation] = useState(null);
+  const [page, setPage] = useState(null);
+  const [perPage, setPerPage] = useState(null);
+  const [onboardingStatus, setOnboardingStatus] = useState(null);
 
   const get_all_Partner = async () => {
-    if (fetchingPartners) return
-    setFetchingPartners(true)
-    const _onboardingStatus = onboardingStatus === "all" ? "" : onboardingStatus
-    const All_Partners = await getAllPartners(page, perPage, _onboardingStatus)
-    setPartners(All_Partners.partners)
-    setFetchingPartners(false)
-    if (All_Partners.error) setError({ compliance: All_Partners.error })
-    setNavigation(All_Partners.navigation)
-  }
+    if (fetchingPartners) return;
+    setFetchingPartners(true);
+    const _onboardingStatus =
+      onboardingStatus === "all" ? "" : onboardingStatus;
+    const All_Partners = await getAllPartners(page, perPage, _onboardingStatus);
+    setPartners(All_Partners.partners);
+    setFetchingPartners(false);
+    if (All_Partners.error) setError({ compliance: All_Partners.error });
+    setNavigation(All_Partners.navigation);
+  };
 
   useEffect(() => {
     if ((onboardingStatus || perPage, page)) {
-      get_all_Partner()
+      get_all_Partner();
     }
-  }, [page, onboardingStatus, perPage])
+  }, [page, onboardingStatus, perPage]);
 
   useEffect(() => {
-    setProcessing(true)
+    setProcessing(true);
     if (allPartners) {
       if (allPartners.partners?.length) {
         allPartners.partners.map((partner) => {
-          filterPartner(partner, categories)
-        })
+          filterPartner(partner, categories);
+        });
       }
-      setPartners(allPartners.partners)
+      setPartners(allPartners.partners);
       if (allPartners.error) {
-        setProcessing(false)
+        setProcessing(false);
         // if (allPartners.error === 401) {
         //   redirect(PageRoutes.adminlogin)
         //   return
         // }
-        setError({ compliance: allPartners.error })
+        setError({ compliance: allPartners.error });
       }
-      setNavigation(allPartners.navigation)
-      setProcessing(false)
+      setNavigation(allPartners.navigation);
+      setProcessing(false);
     }
-  }, [allPartners])
+  }, [allPartners]);
 
   const goToPartnerDetail = (uuid) => {
-    setRouteloading(true)
-    router.push(`admin/compliance/${uuid}`)
-  }
+    setRouteloading(true);
+    router.push(`admin/compliance/${uuid}`);
+  };
   return (
     <>
       <div id="compliance" className="flex flex-cols pb-12">
@@ -104,8 +105,8 @@ export default function Dashboard({ allPartners }) {
                     label: "20",
                   }}
                   onselect={(option) => {
-                    setPage(1)
-                    setPerPage(option.value)
+                    setPage(1);
+                    setPerPage(option.value);
                   }}
                   align="right"
                 />
@@ -119,8 +120,8 @@ export default function Dashboard({ allPartners }) {
                     label: status_type.processing,
                   }}
                   onselect={(option) => {
-                    setPage(1)
-                    setOnboardingStatus(option.value)
+                    setPage(1);
+                    setOnboardingStatus(option.value);
                   }}
                   align="right"
                 />
@@ -282,7 +283,7 @@ export default function Dashboard({ allPartners }) {
                   {!Util.isEmpty(navigation) &&
                     navigation.links?.length > 0 &&
                     navigation.links.map((nav, index) => {
-                      let link = null
+                      let link = null;
                       if (index === 0) {
                         if (nav.url) {
                         }
@@ -303,7 +304,7 @@ export default function Dashboard({ allPartners }) {
                               />
                             </svg>
                           </div>
-                        )
+                        );
                       } else if (index === navigation.links.length - 1) {
                         link = (
                           <div className="flex p-2 text-white">
@@ -322,7 +323,7 @@ export default function Dashboard({ allPartners }) {
                               />
                             </svg>
                           </div>
-                        )
+                        );
                       } else {
                         if (nav.url) {
                           link = nav.active ? (
@@ -336,17 +337,17 @@ export default function Dashboard({ allPartners }) {
                             >
                               {index}
                             </div>
-                          )
+                          );
                         } else {
                           link = (
                             <div className="flex p-2 text-white">
                               {nav.label}
                             </div>
-                          )
+                          );
                         }
                       }
 
-                      return link
+                      return link;
                     })}
                 </div>
               </>
@@ -355,5 +356,5 @@ export default function Dashboard({ allPartners }) {
         </div>
       </div>
     </>
-  )
+  );
 }

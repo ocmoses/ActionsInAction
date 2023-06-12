@@ -5,19 +5,19 @@ import {
   license_type,
   fieldCounts,
   fieldsCounts,
-} from "@/app/modules/constants"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
-import Confirm from "@/app/components/Confirm"
-import moment from "moment"
-import useErrors from "@/hooks/useErrors"
-import useApp from "@/hooks/useApp"
-import useAdmins from "@/hooks/useAdmins"
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { filterPartner, partnerApprovals } from "@/app/modules/utilities"
-import DeptBadge from "./compliance/DeptBadge"
-import useRoles from "@/hooks/useRoles"
+} from "@/app/modules/constants";
+import { COUNTRIES } from "@/app/modules/countries";
+import { STATES } from "@/app/modules/states";
+import Confirm from "@/app/components/Confirm";
+import moment from "moment";
+import useErrors from "@/hooks/useErrors";
+import useApp from "@/hooks/useApp";
+import useAdmins from "@/hooks/useAdmins";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { filterPartner, partnerApprovals } from "@/app/modules/utilities";
+import DeptBadge from "./compliance/DeptBadge";
+import useRoles from "@/hooks/useRoles";
 
 export default function ComplianceLabel({
   field,
@@ -26,8 +26,8 @@ export default function ComplianceLabel({
   category_shortcode,
   type,
 }) {
-  const { isSuperadmin } = useRoles()
-  const { previewFiles } = useApp()
+  const { isSuperadmin } = useRoles();
+  const { previewFiles } = useApp();
   const {
     admin,
     ApproveField,
@@ -38,32 +38,32 @@ export default function ComplianceLabel({
     categories,
     setPartner,
     partner,
-  } = useAdmins()
-  const [approve, setApprove] = useState(false)
-  const [reject, setReject] = useState(false)
-  const [{ setError, clearErrors }] = useErrors(null)
-  const Approvals = partnerApprovals(partner, category)
+  } = useAdmins();
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
+  const [{ setError, clearErrors }] = useErrors(null);
+  const Approvals = partnerApprovals(partner, category);
 
   useEffect(() => {
-    setApproving(false)
-    clearErrors()
-    fieldsCounts()
-  }, [])
+    setApproving(false);
+    clearErrors();
+    fieldsCounts();
+  }, []);
 
   const Approve = (status) => {
-    setActiveApproval(field)
+    setActiveApproval(field);
     if (status === "reject") {
-      setApprove(false)
-      setReject(true)
+      setApprove(false);
+      setReject(true);
     } else {
-      setReject(false)
-      setApprove(true)
+      setReject(false);
+      setApprove(true);
     }
-  }
+  };
 
   const handleApproveField = async (status, feedback) => {
-    if (approving) return
-    setApproving(true)
+    if (approving) return;
+    setApproving(true);
     const Data = {
       partner_uuid: category.partner_uuid,
       user_uuid: category.user_uuid,
@@ -72,40 +72,40 @@ export default function ComplianceLabel({
       feedback: feedback ?? "",
       status: status,
       field: field,
-    }
-    clearErrors()
+    };
+    clearErrors();
 
-    const response = await ApproveField(Data)
-    setApproving(false)
+    const response = await ApproveField(Data);
+    setApproving(false);
     if (!response)
       return setError({
         approval: "No respond received. Please check your connection",
-      })
-    const { success, data, error } = response
+      });
+    const { success, data, error } = response;
     if (!success)
       return setError({
         approval: error,
-      })
+      });
 
-    const partnerInfo = data?.partner
-    filterPartner(partnerInfo, categories)
-    setPartner(partnerInfo)
-    cancel()
-  }
+    const partnerInfo = data?.partner;
+    filterPartner(partnerInfo, categories);
+    setPartner(partnerInfo);
+    cancel();
+  };
   const approveField = async () => {
     await handleApproveField(
       "approved",
       `${complianceRequirements[stage][field].title} approved`
-    )
-  }
+    );
+  };
   const rejectField = async (reason) => {
-    await handleApproveField("rejected", reason.rejection_reason)
-  }
+    await handleApproveField("rejected", reason.rejection_reason);
+  };
   const cancel = () => {
-    setActiveApproval(null)
-    setApprove(false)
-    setReject(false)
-  }
+    setActiveApproval(null);
+    setApprove(false);
+    setReject(false);
+  };
   const rejectIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ export default function ComplianceLabel({
         d="M6 18L18 6M6 6l12 12"
       />
     </svg>
-  )
+  );
   const checkedIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ export default function ComplianceLabel({
         d="M4.5 12.75l6 6 9-13.5"
       />
     </svg>
-  )
+  );
   const correctedIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -153,10 +153,10 @@ export default function ComplianceLabel({
         d="M8.25 9.75h4.875a2.625 2.625 0 010 5.25H12M8.25 9.75L10.5 7.5M8.25 9.75L10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z"
       />
     </svg>
-  )
+  );
 
-  const Departments = []
-  const DeptCode = []
+  const Departments = [];
+  const DeptCode = [];
   departments?.length > 0 &&
     departments.map((dept) => {
       if (
@@ -164,11 +164,11 @@ export default function ComplianceLabel({
         "fields" in fieldCounts[stage][dept.code] &&
         fieldCounts[stage][dept.code].fields.includes(field)
       )
-        Departments.push(dept)
-      DeptCode.push(dept.code)
-    })
-  let icon
-  let icon_color = "text-[#999999]"
+        Departments.push(dept);
+      DeptCode.push(dept.code);
+    });
+  let icon;
+  let icon_color = "text-[#999999]";
   if (
     Approvals &&
     Approvals[stage] &&
@@ -176,16 +176,16 @@ export default function ComplianceLabel({
     field in Approvals[stage][admin.department_code]
   ) {
     if (Approvals[stage][admin.department_code][field] === "approved") {
-      icon = <span className="text-green-600 w-2 h-2">{checkedIcon}</span>
-      icon_color = "text-green-600"
+      icon = <span className="text-green-600 w-2 h-2">{checkedIcon}</span>;
+      icon_color = "text-green-600";
     }
     if (Approvals[stage][admin.department_code][field] === "rejected") {
-      icon = <span className="text-red-600 w-2 h-2">{rejectIcon}</span>
-      icon_color = "text-red-600"
+      icon = <span className="text-red-600 w-2 h-2">{rejectIcon}</span>;
+      icon_color = "text-red-600";
     }
     if (Approvals[stage][admin.department_code][field] === "corrected") {
-      icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>
-      icon_color = "text-mtn-600"
+      icon = <span className="text-mtn-600 w-3 h-3">{correctedIcon}</span>;
+      icon_color = "text-mtn-600";
     }
   }
 
@@ -475,5 +475,5 @@ export default function ComplianceLabel({
           )}
       </div>
     )
-  )
+  );
 }

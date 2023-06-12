@@ -44,7 +44,7 @@ export const PartnerMenu = [
   //   icon: "",
   //   route: "",
   // },
-]
+];
 export const AdminMenu = [
   {
     label: "Dashboard",
@@ -56,7 +56,7 @@ export const AdminMenu = [
     icon: "",
     route: "/admin/compliance",
   },
-]
+];
 
 export const PageRoutes = {
   home: "/",
@@ -74,4 +74,4 @@ export const PageRoutes = {
   // admin
   adminlogin: "/admin/login",
   admindashboard: "/admin/dashboard",
-}
+};

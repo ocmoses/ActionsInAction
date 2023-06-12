@@ -1,23 +1,23 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import NavLinks from "./NavLinks"
-import Button from "@/app/components/form/Button"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useRouter } from "next/navigation"
-import ProfileIcons from "@/app/components/ProfileIcons"
-import { PageRoutes } from "@/app/modules/menu"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import NavLinks from "./NavLinks";
+import Button from "@/app/components/form/Button";
+import useApp from "@/hooks/useApp";
+import useUsers from "@/hooks/useUsers";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useRouter } from "next/navigation";
+import ProfileIcons from "@/app/components/ProfileIcons";
+import { PageRoutes } from "@/app/modules/menu";
 
 function Navbar() {
-  const { session } = useUsers()
-  const { setRouteloading } = useApp()
-  const router = useRouter()
+  const { session } = useUsers();
+  const { setRouteloading } = useApp();
+  const router = useRouter();
   const goToRegister = () => {
-    setRouteloading(true)
-    router.push(PageRoutes.register)
-  }
+    setRouteloading(true);
+    router.push(PageRoutes.register);
+  };
 
   return (
     <div className="px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center z-10 relative">
@@ -56,7 +56,7 @@ function Navbar() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

@@ -19,7 +19,6 @@ import {
   getNextStage,
   getstages,
 } from "@/app/modules/utilities"
-// import { getRejectionReasons } from "@/app/modules/fetchData"
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
@@ -48,13 +47,11 @@ const usePartners = () => {
   }, [categories])
 
   useEffect(() => {
-    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
     if (!rejectionReasons) app.getRejectionReasons()
   }, [rejectionReasons])
 
   const { setPartners, updatePartner, setCategory } = actions.partners
   const { setTmpUser } = actions.users
-  // const { user } = states.users
   const users = useUsers()
   const [validation, setValidation] = useState({
     required: [],
@@ -66,7 +63,6 @@ const usePartners = () => {
     const list = []
     const optional = []
     const allForms = { required: [], optional: [], all: [], list: [] }
-    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -86,7 +82,6 @@ const usePartners = () => {
         }
       }
     }
-    // console.log({ allForms })
     const validated = { required, optional, allForms, list }
     setValidation(validated)
     actions.app.setFormSteps(validated)
@@ -262,7 +257,6 @@ const usePartners = () => {
         return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -386,7 +380,6 @@ const usePartners = () => {
     }
   }
 
-  // const setUpdateStatus = (stage) => {}
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 

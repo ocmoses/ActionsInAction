@@ -1,7 +1,7 @@
-import usePartners from "@/hooks/usePartners"
+import usePartners from "@/hooks/usePartners";
 
 export default function UserPercentComplete() {
-  const { partner } = usePartners()
+  const { partner } = usePartners();
   return (
     <div className="text-white flex items-center gap-3 mr-0 md:mr-3">
       {/* {partner?.progress && ( */}
@@ -18,5 +18,5 @@ export default function UserPercentComplete() {
       </>
       {/* )} */}
     </div>
-  )
+  );
 }

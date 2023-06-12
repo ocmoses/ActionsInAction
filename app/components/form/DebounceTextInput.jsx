@@ -1,8 +1,8 @@
-"use client"
-import { useState } from "react"
-import { EyeOpenIcon, EyeCloseIcon } from "../Icons"
-import { DebounceInput } from "react-debounce-input"
-import FormErrors from "@/app/components/FormErrors"
+"use client";
+import { useState } from "react";
+import { EyeOpenIcon, EyeCloseIcon } from "../Icons";
+import { DebounceInput } from "react-debounce-input";
+import FormErrors from "@/app/components/FormErrors";
 export default function TextInput({
   id,
   label,
@@ -16,11 +16,11 @@ export default function TextInput({
   margin,
   errors,
 }) {
-  const [Type, setType] = useState(type ?? "text")
+  const [Type, setType] = useState(type ?? "text");
 
   const TogglePassword = () => {
-    setType((oldState) => (oldState === "text" ? "password" : "text"))
-  }
+    setType((oldState) => (oldState === "text" ? "password" : "text"));
+  };
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div
@@ -69,5 +69,5 @@ export default function TextInput({
       </div>
       {errors && <FormErrors error={errors[id]} />}
     </div>
-  )
+  );
 }

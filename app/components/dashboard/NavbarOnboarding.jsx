@@ -1,19 +1,19 @@
-"use client"
-import usePartners from "@/hooks/usePartners"
-import UserPercentage from "@/app/components/UserPercentage"
+"use client";
+import usePartners from "@/hooks/usePartners";
+import UserPercentage from "@/app/components/UserPercentage";
 
 export default function NavbarOnboarding({
   setTmpCat,
   setIsOnboarding,
   scrollpage,
 }) {
-  const { partner, category } = usePartners()
+  const { partner, category } = usePartners();
 
   const cancelOnboarding = () => {
-    setIsOnboarding(false)
-    setTmpCat(null)
-    scrollpage()
-  }
+    setIsOnboarding(false);
+    setTmpCat(null);
+    scrollpage();
+  };
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
@@ -72,5 +72,5 @@ export default function NavbarOnboarding({
         </span>
       </div>
     </header>
-  )
+  );
 }

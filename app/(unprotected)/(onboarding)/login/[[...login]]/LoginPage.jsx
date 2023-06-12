@@ -1,31 +1,31 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import TextInput from "@/app/components/form/TextInput"
-import Button from "@/app/components/form/Button"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import useLogout from "@/hooks/useLogout"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
-import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints"
-import { PageRoutes } from "@/app/modules/menu"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import TextInput from "@/app/components/form/TextInput";
+import Button from "@/app/components/form/Button";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import useLogout from "@/hooks/useLogout";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
+import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints";
+import { PageRoutes } from "@/app/modules/menu";
+import useApp from "@/hooks/useApp";
+import useUsers from "@/hooks/useUsers";
 
 function Login({ params }) {
-  const router = useRouter()
-  const app = useApp()
-  const { resendEmail } = usePartners()
-  const { tmpuser, setTmpUser } = useUsers()
-  const { processing, setProcessing, setForm } = useProcessing()
+  const router = useRouter();
+  const app = useApp();
+  const { resendEmail } = usePartners();
+  const { tmpuser, setTmpUser } = useUsers();
+  const { processing, setProcessing, setForm } = useProcessing();
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
-  )
-  const { clearStore } = useLogout()
+  );
+  const { clearStore } = useLogout();
 
   const [data, setData] = useState({
     email:
@@ -37,33 +37,33 @@ function Login({ params }) {
         ? tmpuser?.email
         : "princemorpheus@gmail.com",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
-  })
-  const [notVerified, setNotVerified] = useState(null)
+  });
+  const [notVerified, setNotVerified] = useState(null);
   useEffect(() => {
-    setForm(null)
-    setProcessing(false)
-    clearErrors()
-    setNotVerified(null)
-  }, [])
+    setForm(null);
+    setProcessing(false);
+    clearErrors();
+    setNotVerified(null);
+  }, []);
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const handleLogin = async (e) => {
-    e.preventDefault()
-    clearErrors()
-    setNotVerified(null)
+    e.preventDefault();
+    clearErrors();
+    setNotVerified(null);
     if (!data.email) {
-      return setError({ email: `Please enter your email address` })
+      return setError({ email: `Please enter your email address` });
     }
     if (!data.password) {
-      return setError({ password: `Please enter your password` })
+      return setError({ password: `Please enter your password` });
     }
-    clearStore()
-    setProcessing(true)
+    clearStore();
+    setProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({
@@ -71,27 +71,27 @@ function Login({ params }) {
         password: data.password,
         endpoint: RemoteEndPoints.LOGIN,
       }),
-    })
-    const result = await response.json()
-    const { data: loginData, error: loginError } = result
+    });
+    const result = await response.json();
+    const { data: loginData, error: loginError } = result;
     if (!loginData) {
-      setProcessing(false)
-      return setError({ login: loginError /*"Authentication failed"*/ })
+      setProcessing(false);
+      return setError({ login: loginError /*"Authentication failed"*/ });
     }
     if (!loginData.success) {
-      setProcessing(false)
+      setProcessing(false);
       if (loginData.data?.email_verified === "no") {
-        setNotVerified(loginData.data)
+        setNotVerified(loginData.data);
       }
-      return setError({ login: loginData.error })
+      return setError({ login: loginData.error });
     }
-    setTmpUser(null)
+    setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: loginData?.data,
       type: "user",
-    }
-    app.setStoreStates(serverSession, loginData?.categories, "login")
+    };
+    app.setStoreStates(serverSession, loginData?.categories, "login");
 
     const redirect =
       params &&
@@ -99,11 +99,11 @@ function Login({ params }) {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard
-    if (params?.includes("getstarted")) app.toggleGetstartedLink(true)
-    else app.toggleGetstartedLink(false)
-    return router.replace(redirect)
-  }
+        : PageRoutes.dashboard;
+    if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
+    else app.toggleGetstartedLink(false);
+    return router.replace(redirect);
+  };
 
   return (
     <>
@@ -199,7 +199,7 @@ function Login({ params }) {
         </div>
       </form>
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;

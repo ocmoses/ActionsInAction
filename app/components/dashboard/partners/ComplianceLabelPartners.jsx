@@ -2,20 +2,20 @@ import {
   complianceRequirements,
   company_type,
   license_type,
-} from "@/app/modules/constants"
-import FieldStatus from "@/app/components/dashboard/compliance/FieldStatus"
-import moment from "moment"
-import useApp from "@/hooks/useApp"
-import usePartners from "@/hooks/usePartners"
-import Image from "next/image"
-import RejectionReasons from "@/app/components/dashboard/compliance/RejectionReason"
-import ComplianceFieldEditModal from "@/app/components/dashboard/partners/ComplianceFieldEditModal"
+} from "@/app/modules/constants";
+import FieldStatus from "@/app/components/dashboard/compliance/FieldStatus";
+import moment from "moment";
+import useApp from "@/hooks/useApp";
+import usePartners from "@/hooks/usePartners";
+import Image from "next/image";
+import RejectionReasons from "@/app/components/dashboard/compliance/RejectionReason";
+import ComplianceFieldEditModal from "@/app/components/dashboard/partners/ComplianceFieldEditModal";
 
-import { partnerApprovals, Util } from "@/app/modules/utilities"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
-import Portal from "@/app/components/Portal"
-import { useState } from "react"
+import { partnerApprovals, Util } from "@/app/modules/utilities";
+import { COUNTRIES } from "@/app/modules/countries";
+import { STATES } from "@/app/modules/states";
+import Portal from "@/app/components/Portal";
+import { useState } from "react";
 
 export default function ComplianceLabelPartners({
   field,
@@ -24,13 +24,13 @@ export default function ComplianceLabelPartners({
   category_shortcode,
   type,
 }) {
-  const { previewFiles } = useApp()
-  const { partner, activeApproval } = usePartners()
+  const { previewFiles } = useApp();
+  const { partner, activeApproval } = usePartners();
 
-  const [showModal, setShowModal] = useState(false)
-  const [data, setData] = useState(null)
+  const [showModal, setShowModal] = useState(false);
+  const [data, setData] = useState(null);
 
-  const Approvals = partnerApprovals(partner, category)
+  const Approvals = partnerApprovals(partner, category);
 
   // console.log({ type })
   // console.log({ field })
@@ -38,36 +38,38 @@ export default function ComplianceLabelPartners({
   // console.log({ category_shortcode })
 
   const updateField = () => {
-    let field_value = category[field]
+    let field_value = category[field];
     if (category_shortcode) {
       switch (type) {
         case "shortcodes":
-          field_value = category_shortcode.shortcode.shortcodes
-          break
+          field_value = category_shortcode.shortcode.shortcodes;
+          break;
         case "pricing_shortcodes":
-          field_value = category_shortcode.shortcode_pricing.pricing_shortcodes
-          break
+          field_value = category_shortcode.shortcode_pricing.pricing_shortcodes;
+          break;
         case "shortcode_doc":
-          field_value = category_shortcode.shortcode.shortcode_doc
-          break
+          field_value = category_shortcode.shortcode.shortcode_doc;
+          break;
         case "pricing_doc":
-          field_value = category_shortcode.shortcode_pricing.pricing_doc
-          break
+          field_value = category_shortcode.shortcode_pricing.pricing_doc;
+          break;
         case "shortcode_issue_date":
-          field_value = category_shortcode.shortcode.shortcode_issue_date
-          break
+          field_value = category_shortcode.shortcode.shortcode_issue_date;
+          break;
         case "shortcode_expiry_date":
-          field_value = category_shortcode.shortcode.shortcode_expiry_date
-          break
+          field_value = category_shortcode.shortcode.shortcode_expiry_date;
+          break;
         case "pricing_issue_date":
-          field_value = category_shortcode.shortcode_pricing.pricing_issue_date
-          break
+          field_value = category_shortcode.shortcode_pricing.pricing_issue_date;
+          break;
         case "pricing_expiry_date":
-          field_value = category_shortcode.shortcode_pricing.pricing_expiry_date
-          break
+          field_value =
+            category_shortcode.shortcode_pricing.pricing_expiry_date;
+          break;
         case "state":
-          field_value = category_shortcode.shortcode_pricing.pricing_expiry_date
-          break
+          field_value =
+            category_shortcode.shortcode_pricing.pricing_expiry_date;
+          break;
       }
     }
     //OPEN FIELD EDIT
@@ -85,9 +87,9 @@ export default function ComplianceLabelPartners({
         ? category_shortcode?.shortcode_uuid
         : null,
       country: category.country,
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   return (
     <>
@@ -335,5 +337,5 @@ export default function ComplianceLabelPartners({
         </Portal>
       )}
     </>
-  )
+  );
 }

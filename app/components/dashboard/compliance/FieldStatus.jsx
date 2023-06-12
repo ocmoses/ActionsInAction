@@ -1,7 +1,7 @@
-import { getFieldStatus, partnerApprovals } from "@/app/modules/utilities"
+import { getFieldStatus, partnerApprovals } from "@/app/modules/utilities";
 
 export default function CategoryStageStatus({ status }) {
-  const { bg, textcolor, iconcolor, icon, text } = getFieldStatus(status)
+  const { bg, textcolor, iconcolor, icon, text } = getFieldStatus(status);
   return (
     <div
       className={`inline-flex whitespace-nowrap gap-1 items-center rounded-2xl ${bg} py-[3px] pl-[10px] pr-[14px]`}
@@ -11,5 +11,5 @@ export default function CategoryStageStatus({ status }) {
         {text}
       </span>
     </div>
-  )
+  );
 }

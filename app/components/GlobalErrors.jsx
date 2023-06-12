@@ -1,7 +1,7 @@
-"use client"
-import useApp from "@/hooks/useApp"
+"use client";
+import useApp from "@/hooks/useApp";
 export default function FormErrors({ error, success, align }) {
-  const { globalerrors, removeGlobalError } = useApp()
+  const { globalerrors, removeGlobalError } = useApp();
   return (
     <>
       {globalerrors.length > 0 &&
@@ -51,5 +51,5 @@ export default function FormErrors({ error, success, align }) {
           </div>
         ))}
     </>
-  )
+  );
 }

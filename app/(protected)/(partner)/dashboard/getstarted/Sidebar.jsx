@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState } from "react";
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <div className="flex">
       <div
@@ -199,5 +199,5 @@ export default function Sidebar() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-"use client"
-import Image from "next/image"
-import { useEffect } from "react"
-import Button from "@/app/components/form/Button"
-import useProcessing from "@/hooks/useProcessing"
-import { scrollToTop } from "@/app/modules/utilities"
+"use client";
+import Image from "next/image";
+import { useEffect } from "react";
+import Button from "@/app/components/form/Button";
+import useProcessing from "@/hooks/useProcessing";
+import { scrollToTop } from "@/app/modules/utilities";
 
 export default function Complete({ setIsOnboarding, setTmpCat }) {
-  const { setProcessing, setForm } = useProcessing()
+  const { setProcessing, setForm } = useProcessing();
   useEffect(() => {
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
   const cancelOnboarding = () => {
-    setIsOnboarding(false)
-    setTmpCat(null)
-    setForm(null)
-  }
+    setIsOnboarding(false);
+    setTmpCat(null);
+    setForm(null);
+  };
   return (
     <>
       <div className="flex flex-col items-center justify-center pt-[15vh] w-full w3-animate-opacity pb-20  max-w-[492px]">
@@ -50,5 +50,5 @@ export default function Complete({ setIsOnboarding, setTmpCat }) {
         </div>
       </div>
     </>
-  )
+  );
 }

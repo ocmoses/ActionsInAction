@@ -4,8 +4,8 @@ export default function MainMenuSideDrawer({
   setMenuOpen,
 }) {
   const closeDrawer = () => {
-    setMenuOpen(false)
-  }
+    setMenuOpen(false);
+  };
   return (
     <main
       className={
@@ -51,5 +51,5 @@ export default function MainMenuSideDrawer({
         }}
       ></section> */}
     </main>
-  )
+  );
 }

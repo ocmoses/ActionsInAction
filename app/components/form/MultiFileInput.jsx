@@ -1,32 +1,32 @@
-import { useState } from 'react'
-import { FileUploadIcon } from '../Icons'
+import { useState } from "react";
+import { FileUploadIcon } from "../Icons";
 function MultiFileInput({ id, label, onChange, border, bg, margin, errors }) {
-  const [files, setFile] = useState([])
-  const [message, setMessage] = useState('')
+  const [files, setFile] = useState([]);
+  const [message, setMessage] = useState("");
   const handleFile = (e) => {
-    setMessage('')
-    let file = e.target.files
+    setMessage("");
+    let file = e.target.files;
 
     for (let i = 0; i < file.length; i++) {
-      const fileType = file[i]['type']
-      const validImageTypes = ['image/gif', 'image/jpeg', 'image/png']
+      const fileType = file[i]["type"];
+      const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
       if (validImageTypes.includes(fileType)) {
-        setFile([...files, file[i]])
+        setFile([...files, file[i]]);
       } else {
-        setMessage('only images accepted')
+        setMessage("only images accepted");
       }
     }
-  }
+  };
   const removeImage = (i) => {
-    setFile(files.filter((x) => x.name !== i))
-  }
+    setFile(files.filter((x) => x.name !== i));
+  };
 
   return (
-    <div className={margin ? margin + ' ' : 'mb-0 '}>
+    <div className={margin ? margin + " " : "mb-0 "}>
       <div
         className={
-          (bg ? bg + ' ' : 'bg-[#212121] ') +
-          'relative p-[8px] z-0 w-full group rounded-[10px]'
+          (bg ? bg + " " : "bg-[#212121] ") +
+          "relative p-[8px] z-0 w-full group rounded-[10px]"
         }
       >
         <div
@@ -66,23 +66,23 @@ function MultiFileInput({ id, label, onChange, border, bg, margin, errors }) {
                 </div>
                 <div
                   onClick={() => {
-                    removeImage(file.name)
+                    removeImage(file.name);
                   }}
                   className="h-6 w-6 bg-red-400 flex items-center cursor-pointer justify-center rounded-sm"
                 >
                   <i className="mdi mdi-trash-can text-white text-[14px]"></i>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
-      {errors && typeof errors[id] !== 'undefined' && (
+      {errors && typeof errors[id] !== "undefined" && (
         <div className="text-sm text-red-600 mt-2">{errors[id]}</div>
       )}
       {message && <div className="text-sm text-red-600 mt-2">{message}</div>}
     </div>
-  )
+  );
 }
 
-export default MultiFileInput
+export default MultiFileInput;

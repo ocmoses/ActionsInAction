@@ -1,14 +1,14 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import PropTypes from "prop-types";
 
 function FilePreviewModal({ file, filePath, closeModal }) {
   const fileExtension = file
     ? file.name.split(".").pop().toLowerCase()
-    : filePath.split(".").pop().toLowerCase()
-  const isPdf = fileExtension === "pdf"
-  const isDoc = ["doc", "docx"].includes(fileExtension)
-  const isVideo = ["mp4", "webm", "ogg"].includes(fileExtension)
-  const isAudio = ["mp3", "wav", "ogg"].includes(fileExtension)
+    : filePath.split(".").pop().toLowerCase();
+  const isPdf = fileExtension === "pdf";
+  const isDoc = ["doc", "docx"].includes(fileExtension);
+  const isVideo = ["mp4", "webm", "ogg"].includes(fileExtension);
+  const isAudio = ["mp3", "wav", "ogg"].includes(fileExtension);
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center">
@@ -74,13 +74,13 @@ function FilePreviewModal({ file, filePath, closeModal }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 FilePreviewModal.propTypes = {
   file: PropTypes.object,
   filePath: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
-}
+};
 
-export default FilePreviewModal
+export default FilePreviewModal;

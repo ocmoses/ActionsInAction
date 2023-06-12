@@ -17,5 +17,5 @@ export default function DiscoverGridBox({ image, text }) {
         </p>
       </div>
     </>
-  )
+  );
 }

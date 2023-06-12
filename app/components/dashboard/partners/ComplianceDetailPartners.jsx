@@ -1,49 +1,49 @@
-import { departments, forms } from "@/app/modules/constants"
-import { useState, useEffect } from "react"
-import usePartners from "@/hooks/usePartners"
-import Companydetail from "@/app/components/dashboard/partners/stages/Companydetail"
-import Compliance from "@/app/components/dashboard/partners/stages/Compliance"
-import Ncclicense from "@/app/components/dashboard/partners/stages/Ncclicense"
-import Nlrclicense from "@/app/components/dashboard/partners/stages/Nlrclicense"
-import Shortcode from "@/app/components/dashboard/partners/stages/Shortcode"
-import Indemnity from "@/app/components/dashboard/partners/stages/Indemnity"
-import Accountinfo from "@/app/components/dashboard/partners/stages/Accountinfo"
-import Activities from "@/app/components/dashboard/compliance/Activities"
-import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator"
+import { departments, forms } from "@/app/modules/constants";
+import { useState, useEffect } from "react";
+import usePartners from "@/hooks/usePartners";
+import Companydetail from "@/app/components/dashboard/partners/stages/Companydetail";
+import Compliance from "@/app/components/dashboard/partners/stages/Compliance";
+import Ncclicense from "@/app/components/dashboard/partners/stages/Ncclicense";
+import Nlrclicense from "@/app/components/dashboard/partners/stages/Nlrclicense";
+import Shortcode from "@/app/components/dashboard/partners/stages/Shortcode";
+import Indemnity from "@/app/components/dashboard/partners/stages/Indemnity";
+import Accountinfo from "@/app/components/dashboard/partners/stages/Accountinfo";
+import Activities from "@/app/components/dashboard/compliance/Activities";
+import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator";
 
 export default function ComplianceDetailPartners({ activeStage, category }) {
-  const { getStages, categories, setActiveStage } = usePartners()
-  const Stages = getStages(category, categories)
+  const { getStages, categories, setActiveStage } = usePartners();
+  const Stages = getStages(category, categories);
 
-  const [view, setView] = useState("overview")
-  const [Feedbacks, setFeedbacks] = useState([])
-  const [navlabels, setNavLabels] = useState({ prev: null, next: null })
-  const navigation = Stages.forms
-
-  useEffect(() => {
-    setFeedbacks(category.feedbacks[activeStage])
-  }, [activeStage, category])
+  const [view, setView] = useState("overview");
+  const [Feedbacks, setFeedbacks] = useState([]);
+  const [navlabels, setNavLabels] = useState({ prev: null, next: null });
+  const navigation = Stages.forms;
 
   useEffect(() => {
-    const index = navigation.indexOf(activeStage)
-    const next = index === navigation.length - 1 ? index : index + 1
-    const prev = index === 0 ? index : index - 1
+    setFeedbacks(category.feedbacks[activeStage]);
+  }, [activeStage, category]);
+
+  useEffect(() => {
+    const index = navigation.indexOf(activeStage);
+    const next = index === navigation.length - 1 ? index : index + 1;
+    const prev = index === 0 ? index : index - 1;
     setNavLabels({
       prev: forms[navigation[prev]].shortname,
       next: forms[navigation[next]].shortname,
-    })
-  }, [activeStage])
+    });
+  }, [activeStage]);
 
   const nextStage = () => {
-    const index = navigation.indexOf(activeStage)
-    const next = index === navigation.length - 1 ? index : index + 1
-    setActiveStage(navigation[next])
-  }
+    const index = navigation.indexOf(activeStage);
+    const next = index === navigation.length - 1 ? index : index + 1;
+    setActiveStage(navigation[next]);
+  };
   const prevStage = () => {
-    const index = navigation.indexOf(activeStage)
-    const prev = index === 0 ? index : index - 1
-    setActiveStage(navigation[prev])
-  }
+    const index = navigation.indexOf(activeStage);
+    const prev = index === 0 ? index : index - 1;
+    setActiveStage(navigation[prev]);
+  };
   return (
     <div className="flex flex-col justify-start items-between w-full h-full">
       <div className="grow-0 flex justify-start items-start gap-6 mb-auto border-b border-b-white/20 px-6">
@@ -112,5 +112,5 @@ export default function ComplianceDetailPartners({ activeStage, category }) {
         navlabels={navlabels}
       />
     </div>
-  )
+  );
 }

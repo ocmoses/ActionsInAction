@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
-import { getFileSizeText } from "@/app/modules/utilities"
-import { FileUploadIcon, FileUploadActiveIcon, InfoIcon } from "../Icons"
-import useErrors from "@/hooks/useErrors"
+import { useState, useEffect } from "react";
+import { getFileSizeText } from "@/app/modules/utilities";
+import { FileUploadIcon, FileUploadActiveIcon, InfoIcon } from "../Icons";
+import useErrors from "@/hooks/useErrors";
 
 function FileInput({
   id,
@@ -17,24 +17,24 @@ function FileInput({
   disabled,
   hidedelete,
 }) {
-  const [file, setFile] = useState(null)
-  const [message, setMessage] = useState("")
-  const [doc, setDoc] = useState(null)
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [doc, setDoc] = useState(null);
 
-  const [{ setError, removeError }] = useErrors(null)
+  const [{ setError, removeError }] = useErrors(null);
 
   const resetdata = () => {
-    setFile(null)
-    setDoc(null)
-  }
+    setFile(null);
+    setDoc(null);
+  };
 
   useEffect(() => {
-    setMessage(null)
-    setFile(null)
-    setDoc(null)
-    removeError(id)
-    return () => resetdata()
-  }, [])
+    setMessage(null);
+    setFile(null);
+    setDoc(null);
+    removeError(id);
+    return () => resetdata();
+  }, []);
 
   useEffect(() => {
     if (file) {
@@ -43,8 +43,8 @@ function FileInput({
         file_path: null,
         file_size: file.size,
         file_type: file.type.split("/")[1],
-      })
-      onChange({ target: { id, value: file } })
+      });
+      onChange({ target: { id, value: file } });
     } else if (value) {
       // console.log("doc", value)
       setDoc({
@@ -52,7 +52,7 @@ function FileInput({
         file_path: value.file_path,
         file_size: value.file_size,
         file_type: value.file_type,
-      })
+      });
     } else {
       // console.log("none", file)
       setDoc({
@@ -60,18 +60,18 @@ function FileInput({
         file_path: null,
         file_size: null,
         file_type: null,
-      })
+      });
     }
-  }, [value, file])
+  }, [value, file]);
   const handleFile = (e) => {
-    const validImageTypes = allowedtypes ?? ["application/pdf"]
-    const maxFileSize = maxSize ?? 5 * 1024 * 1024
-    removeError(id)
-    let file = e.target.files[0]
-    const fileType = file["type"]
-    const filesize = file["size"]
-    const fsize = filesize / 1024 / 1024
-    const max = maxFileSize / 1024 / 1024
+    const validImageTypes = allowedtypes ?? ["application/pdf"];
+    const maxFileSize = maxSize ?? 5 * 1024 * 1024;
+    removeError(id);
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+    const fsize = filesize / 1024 / 1024;
+    const max = maxFileSize / 1024 / 1024;
 
     if (validImageTypes.includes(fileType)) {
       if (filesize > maxFileSize) {
@@ -79,26 +79,26 @@ function FileInput({
           [id]: `File size exceeds limit. Please ensure uploaded files are ${getFileSizeText(
             maxFileSize
           )} or less.`,
-        })
-        file = null
+        });
+        file = null;
       } else {
-        setFile(file)
+        setFile(file);
       }
     } else {
-      setError({ [id]: "Only PDF files are allowed" })
-      file = null
+      setError({ [id]: "Only PDF files are allowed" });
+      file = null;
     }
-  }
+  };
   const removeImage = () => {
     if (file) {
-      setFile(null)
-      onChange({ target: { id, value: null } })
+      setFile(null);
+      onChange({ target: { id, value: null } });
     } else if (doc) {
-      setDoc(null)
-      onChange({ target: { id: doc_id, value: null } })
+      setDoc(null);
+      onChange({ target: { id: doc_id, value: null } });
     }
-    removeError(id)
-  }
+    removeError(id);
+  };
 
   return (
     <div className={margin ? margin + " " : "mb-0 relative"}>
@@ -185,7 +185,7 @@ function FileInput({
                         {!hidedelete && (
                           <div
                             onClick={() => {
-                              removeImage()
+                              removeImage();
                             }}
                             className="z-20 flex items-center cursor-pointer justify-center"
                           >
@@ -212,7 +212,7 @@ function FileInput({
                   : !disabled && (
                       <div
                         onClick={() => {
-                          removeError(id)
+                          removeError(id);
                         }}
                         className="z-20 flex items-center cursor-pointer justify-center"
                       >
@@ -240,7 +240,7 @@ function FileInput({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default FileInput
+export default FileInput;

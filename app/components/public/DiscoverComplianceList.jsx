@@ -8,5 +8,5 @@ export default function DiscoverComplianceList({ image, text }) {
         </p>
       </div>
     </>
-  )
+  );
 }

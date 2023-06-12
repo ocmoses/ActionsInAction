@@ -1,4 +1,4 @@
-import DefaultHead from '@/app/DefaultHead'
+import DefaultHead from "@/app/DefaultHead";
 export default function Head() {
-  return <DefaultHead title="Check your email" />
+  return <DefaultHead title="Check your email" />;
 }

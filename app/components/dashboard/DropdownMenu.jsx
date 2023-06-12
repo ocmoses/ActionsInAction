@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export default function DropdownMenu({
   options,
@@ -7,27 +7,27 @@ export default function DropdownMenu({
   align,
   optionwidth,
 }) {
-  const [showMenu, setShowMenu] = useState(false)
-  const [selected, setSelected] = useState({})
-  const [optionWidth, setOptionWidth] = useState(null)
+  const [showMenu, setShowMenu] = useState(false);
+  const [selected, setSelected] = useState({});
+  const [optionWidth, setOptionWidth] = useState(null);
   const handleSelection = (option) => {
-    setSelected(option)
-    onselect(option)
-    setShowMenu(false)
-  }
+    setSelected(option);
+    onselect(option);
+    setShowMenu(false);
+  };
 
   useEffect(() => {
-    setOptionWidth(optionwidth ?? "150")
-    setSelected(defaultvalue)
-  }, [])
-  let timeout
+    setOptionWidth(optionwidth ?? "150");
+    setSelected(defaultvalue);
+  }, []);
+  let timeout;
   useEffect(() => {
     if (showMenu) {
-      timeout = setTimeout(() => setShowMenu(false), 800)
+      timeout = setTimeout(() => setShowMenu(false), 800);
     } else {
-      timeout = clearTimeout(timeout)
+      timeout = clearTimeout(timeout);
     }
-  }, [showMenu])
+  }, [showMenu]);
   return (
     <div
       className={`flex flex-col  relative !overflow-x-visible w-full ${
@@ -79,5 +79,5 @@ export default function DropdownMenu({
           ))}
       </div>
     </div>
-  )
+  );
 }

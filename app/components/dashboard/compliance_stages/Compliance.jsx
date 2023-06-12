@@ -1,5 +1,5 @@
-import ComplianceLabel from "../ComplianceLabel"
-import { approvalFields } from "@/app/modules/constants"
+import ComplianceLabel from "../ComplianceLabel";
+import { approvalFields } from "@/app/modules/constants";
 
 export default function Compliance({ category, stage }) {
   return (
@@ -55,5 +55,5 @@ export default function Compliance({ category, stage }) {
         )}
       </div>
     )
-  )
+  );
 }

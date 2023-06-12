@@ -1,12 +1,12 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import MenuIcon from "@/public/assets/icons/menu.svg"
-import useUsers from "@/hooks/useUsers"
-import ProfileIcons from "@/app/components/ProfileIcons"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import MenuIcon from "@/public/assets/icons/menu.svg";
+import useUsers from "@/hooks/useUsers";
+import ProfileIcons from "@/app/components/ProfileIcons";
 
 export default function NavbarDashboard({ open, setOpen, setMenuOpen }) {
-  const { session } = useUsers()
+  const { session } = useUsers();
   return (
     <header
       id="dashboardheader"
@@ -43,5 +43,5 @@ export default function NavbarDashboard({ open, setOpen, setMenuOpen }) {
         </div>
       </div>
     </header>
-  )
+  );
 }

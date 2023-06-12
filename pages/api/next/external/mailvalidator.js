@@ -1,22 +1,22 @@
 export default async function handler(req, res) {
   try {
-    const { email } = req.query
+    const { email } = req.query;
     const url =
       process.env.VALIDATOR === "MAILBOX"
         ? `https://api.mailboxvalidator.com/v1/email/free?email=${email}&key=${process.env.MAILBOX_VALIDATOR_API_KEY}`
-        : `https://api.hunter.io/v2/email-verifier?email==${email}&api_key=${process.env.HUNTER_API_KEY}`
+        : `https://api.hunter.io/v2/email-verifier?email==${email}&api_key=${process.env.HUNTER_API_KEY}`;
     const response = await fetch(url).catch((err) => {
       // console.log({ err })
-      return "Something went wrong. Please check your connection and try again"
-    })
-    const result = await response.json()
+      return "Something went wrong. Please check your connection and try again";
+    });
+    const result = await response.json();
     // console.log("process.env.VALIDATOR", process.env.VALIDATOR)
     if (!result)
       return res.status(200).json({
         success: false,
         error: "We could not verify your email address at this time",
         data: null,
-      })
+      });
     switch (process.env.VALIDATOR) {
       case "MAILBOX":
         // console.log({ result })
@@ -24,14 +24,14 @@ export default async function handler(req, res) {
           return res.status(200).json({
             success: false,
             error: result.error_message,
-          })
+          });
         return res.status(200).json({
           success: true,
           error: null,
           is_free: result.is_free === "True",
-        })
+        });
       case "HUNTER":
-        const { data, errors } = result
+        const { data, errors } = result;
         // console.log({ errors })
         // console.log({ data })
         if (errors)
@@ -40,24 +40,24 @@ export default async function handler(req, res) {
             error:
               errors[0]?.details ??
               "Something went wrong. Please check your connection and try again",
-          })
+          });
         if (data.status !== "valid")
           return res.status(200).json({
             success: false,
             error: "Your email is invalid",
-          })
+          });
         return res
           .status(200)
-          .json({ success: true, error: null, is_free: !data.webmail })
+          .json({ success: true, error: null, is_free: !data.webmail });
     }
 
-    res.status(200).json({ success: true, error: null, data: result })
+    res.status(200).json({ success: true, error: null, data: result });
   } catch (error) {
-    console.log({ error })
+    console.log({ error });
     res.status(200).json({
       success: false,
       error: "Something went wrong. Please check your connection and try again",
-    })
-    return
+    });
+    return;
   }
 }

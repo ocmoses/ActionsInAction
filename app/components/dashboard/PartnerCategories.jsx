@@ -1,9 +1,9 @@
-import UserPercentage from "@/app/components/UserPercentage"
-import Button from "@/app/components/form/Button"
-import Image from "next/image"
-import { PageRoutes } from "@/app/modules/menu"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import UserPercentage from "@/app/components/UserPercentage";
+import Button from "@/app/components/form/Button";
+import Image from "next/image";
+import { PageRoutes } from "@/app/modules/menu";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PartnerCategories({
   partner,
@@ -13,17 +13,17 @@ export default function PartnerCategories({
   categories,
   finalApproval,
 }) {
-  const router = useRouter()
-  const [allCats, setAllCats] = useState([])
+  const router = useRouter();
+  const [allCats, setAllCats] = useState([]);
   useEffect(() => {
     if (categories?.length > 0) {
-      const Categories = {}
+      const Categories = {};
       categories.map((cat) => {
-        Categories[cat.uuid] = cat
-      })
-      setAllCats(Categories)
+        Categories[cat.uuid] = cat;
+      });
+      setAllCats(Categories);
     }
-  }, [categories])
+  }, [categories]);
 
   return (
     <>
@@ -144,5 +144,5 @@ export default function PartnerCategories({
         )}
       </div>
     </>
-  )
+  );
 }

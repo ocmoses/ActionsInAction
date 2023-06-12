@@ -1,7 +1,7 @@
-"use client"
-import Image from "next/image"
-import React from "react"
-import NavbarOnboarding from "@/app/components/NavbarOnboarding"
+"use client";
+import Image from "next/image";
+import React from "react";
+import NavbarOnboarding from "@/app/components/NavbarOnboarding";
 
 export default function Layout({ children }) {
   return (
@@ -27,5 +27,5 @@ export default function Layout({ children }) {
         />
       </div>
     </div>
-  )
+  );
 }

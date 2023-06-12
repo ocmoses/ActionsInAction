@@ -1,15 +1,15 @@
-"use client"
-import Navbar from "@/app/components/Navbar"
-import Typewriter from "typewriter-effect"
-import Button from "@/app/components/form/Button"
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import Footer from "@/app/components/public/Footer"
-import { useEffect, useState } from "react"
-import { PageRoutes } from "@/app/modules/menu"
+"use client";
+import Navbar from "@/app/components/Navbar";
+import Typewriter from "typewriter-effect";
+import Button from "@/app/components/form/Button";
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import Footer from "@/app/components/public/Footer";
+import { useEffect, useState } from "react";
+import { PageRoutes } from "@/app/modules/menu";
 
 export default function LandingPage() {
-  const { setRouteloading } = useApp()
+  const { setRouteloading } = useApp();
   const [faq, setFaq] = useState([
     {
       id: "1",
@@ -36,15 +36,15 @@ export default function LandingPage() {
       faq: "Is there a limit to the number of products or services I can promote on the MTN Partner Portal?",
       ans: "The number of products or services that can be promoted on the platform would depend on the terms and conditions of the contract. Partners should check the terms and conditions page on the MTN Partner Portal website for more details.",
     },
-  ])
-  const [openFaq, setOpenFaq] = useState("")
+  ]);
+  const [openFaq, setOpenFaq] = useState("");
   const toggleFaq = (id) => {
-    if (id === openFaq) setOpenFaq("")
-    else setOpenFaq(id)
-  }
+    if (id === openFaq) setOpenFaq("");
+    else setOpenFaq(id);
+  };
   useEffect(() => {
-    setRouteloading(false)
-  }, [])
+    setRouteloading(false);
+  }, []);
 
   return (
     <>
@@ -511,5 +511,5 @@ export default function LandingPage() {
         </div>
       </main>
     </>
-  )
+  );
 }

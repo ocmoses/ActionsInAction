@@ -1,4 +1,4 @@
-"use client"
+"use client";
 // import { useOnboardingContext } from "@/hooks/useOnboardingContext"
 export default function RegisterStepHeader({
   title,
@@ -27,5 +27,5 @@ export default function RegisterStepHeader({
         </div>
       )}
     </div>
-  )
+  );
 }

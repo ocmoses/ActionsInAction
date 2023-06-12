@@ -1,4 +1,4 @@
-import UserAvartar from "@/app/components/UserAvartar"
+import UserAvartar from "@/app/components/UserAvartar";
 export default function ProfileIcons() {
   return (
     <>
@@ -39,5 +39,5 @@ export default function ProfileIcons() {
         <UserAvartar />
       </div>
     </>
-  )
+  );
 }

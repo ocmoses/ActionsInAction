@@ -1,60 +1,60 @@
-"use client"
-import Navbar from "@/app/components/Navbar"
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import Footer from "@/app/components/public/Footer"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useEffect, useState } from "react"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import { apikey } from "@/app/modules/constants"
+"use client";
+import Navbar from "@/app/components/Navbar";
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import Footer from "@/app/components/public/Footer";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useEffect, useState } from "react";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import { apikey } from "@/app/modules/constants";
 
 export default function Discover() {
-  const { setRouteloading } = useApp()
-  const [loading, setLoading] = useState(false)
-  const [FAQ, setFAQ] = useState(false)
-  const [active, setActive] = useState([])
+  const { setRouteloading } = useApp();
+  const [loading, setLoading] = useState(false);
+  const [FAQ, setFAQ] = useState(false);
+  const [active, setActive] = useState([]);
 
-  const [{ errors, setError, clearErrors }] = useErrors()
+  const [{ errors, setError, clearErrors }] = useErrors();
 
   const toggleFAQ = (uuid) => {
     if (active.includes(uuid))
-      setActive((draft) => draft.filter((d) => d !== uuid))
-    else setActive((draft) => [...draft, uuid])
-  }
+      setActive((draft) => draft.filter((d) => d !== uuid));
+    else setActive((draft) => [...draft, uuid]);
+  };
 
   useEffect(() => {
-    setRouteloading(false)
-    clearErrors()
+    setRouteloading(false);
+    clearErrors();
     const fetchFAQ = async () => {
       try {
-        if (loading) return
-        setLoading(true)
+        if (loading) return;
+        setLoading(true);
         const response = await fetch(RemoteEndpoints.FAQ, {
           next: { revalidate: 120 },
           headers: {
             apikey: apikey,
           },
-        })
-        setLoading(false)
+        });
+        setLoading(false);
         if (!response)
-          return setError({ faq: "No response received from server" })
-        const results = await response.json()
-        if (!results) return setError({ faq: "No data fetched from server" })
+          return setError({ faq: "No response received from server" });
+        const results = await response.json();
+        if (!results) return setError({ faq: "No data fetched from server" });
         if (results.success) {
-          return setFAQ(results.data)
+          return setFAQ(results.data);
         } else {
-          return setError({ faq: results.message })
+          return setError({ faq: results.message });
         }
       } catch (err) {
-        setLoading(false)
-        return setError({ faq: err.message })
+        setLoading(false);
+        return setError({ faq: err.message });
       }
-    }
+    };
 
-    fetchFAQ()
-  }, [])
+    fetchFAQ();
+  }, []);
 
   return (
     <>
@@ -169,5 +169,5 @@ export default function Discover() {
         </div>
       </div>
     </>
-  )
+  );
 }

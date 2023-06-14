@@ -1,5 +1,5 @@
-import Faq from "./Faq"
+import Faq from "./Faq";
 
 export default function Page() {
-  return <Faq />
+  return <Faq />;
 }

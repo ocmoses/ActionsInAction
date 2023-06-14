@@ -1,17 +1,17 @@
-import axios from "axios";
-import { apiURL } from "./constants.js";
+import axios from "axios"
+import { apiURL, apikey } from "./constants.js"
 // create an axios instance
-const service = axios.create({
+const Axios = axios.create({
   baseURL: apiURL,
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 30000, // request timeout
-});
-service.defaults.headers.common["apikey"] = process.env.NEXT_PUBLIC_APIKEY;
+})
+Axios.defaults.headers.common["apikey"] = apikey
 // response interceptor
-let refresh = false;
-service.interceptors.response.use(
+let refresh = false
+Axios.interceptors.response.use(
   (response) => {
-    const res = response.data;
+    const res = response.data
     /* Informational responses */
     if (response.status >= 100 && response.status < 200) {
       // return res
@@ -32,32 +32,33 @@ service.interceptors.response.use(
     if (response.status >= 500 && response.status < 600) {
       // return res
     }
-    return res;
+    return res
   },
   async (error) => {
     if (error.response?.status === 401 && !refresh) {
-      refresh = true;
+      refresh = true
 
-      const { success, data /* , status */ } = await service
-        .get("/user/refresh", {
+      const { success, data /* , status */ } = await Axios.get(
+        "/user/refresh",
+        {
           withCredentials: false,
-        })
-        .catch(() => {
-          // console.log(status);
-        });
+        }
+      ).catch(() => {
+        // console.log(status);
+      })
 
       if (success) {
-        service.defaults.headers.common[
+        Axios.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${data.authorisation.token}`;
-        return service(error.config);
+        ] = `Bearer ${data.authorisation.token}`
+        return Axios(error.config)
       } else {
         // console.log(status);
       }
     }
-    refresh = false;
-    return error?.response?.data;
-    // return Promise.reject(error);
+    refresh = false
+    // return error?.response?.data
+    return Promise.reject(error)
   }
-);
-export default service;
+)
+export default Axios

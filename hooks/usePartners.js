@@ -1,16 +1,16 @@
-import useProcessing from "@/hooks/useProcessing"
-import useRegistration from "@/hooks/useRegistration"
-import useErrors from "@/hooks/useErrors"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import Axios from "@/app/modules/axios"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import { PageRoutes } from "@/app/modules/menu"
-import { fetchData } from "@/app/modules/fetchData"
-import { apiURL } from "@/app/modules/constants"
-import { useStoreActions, useStoreState } from "easy-peasy"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import useProcessing from "@/hooks/useProcessing";
+import useRegistration from "@/hooks/useRegistration";
+import useErrors from "@/hooks/useErrors";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import Axios from "@/app/modules/axios";
+import useApp from "@/hooks/useApp";
+import useUsers from "@/hooks/useUsers";
+import { PageRoutes } from "@/app/modules/menu";
+import { fetchData } from "@/app/modules/fetchData";
+import { apiURL } from "@/app/modules/constants";
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Util,
   isArray,
@@ -18,51 +18,51 @@ import {
   userData,
   getNextStage,
   getstages,
-} from "@/app/modules/utilities"
-import { forms, fieldCounts } from "@/app/modules/constants"
-import { getCategories } from "@/app/modules/categories"
+} from "@/app/modules/utilities";
+import { forms, fieldCounts } from "@/app/modules/constants";
+import { getCategories } from "@/app/modules/categories";
 
 const usePartners = () => {
-  const router = useRouter()
-  const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
-  const { updateCategory } = useRegistration()
-  const app = useApp()
-  const rejectionReasons = app.rejectionReasons
+  const router = useRouter();
+  const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing();
+  const { updateCategory } = useRegistration();
+  const app = useApp();
+  const rejectionReasons = app.rejectionReasons;
 
-  const [{ setError, setSuccess }] = useErrors({})
-  const actions = useStoreActions((action) => action)
-  const states = useStoreState((state) => state)
+  const [{ setError, setSuccess }] = useErrors({});
+  const actions = useStoreActions((action) => action);
+  const states = useStoreState((state) => state);
 
-  const { category, categories } = states.partners
-  const [allCategories, setAllCategories] = useState([])
+  const { category, categories } = states.partners;
+  const [allCategories, setAllCategories] = useState([]);
 
   useEffect(() => {
-    const Categories = {}
+    const Categories = {};
     if (categories?.length > 0) {
       categories.map((category) => {
-        Categories[category.uuid] = category
-      })
+        Categories[category.uuid] = category;
+      });
     }
-    setAllCategories(Categories)
-  }, [categories])
+    setAllCategories(Categories);
+  }, [categories]);
 
   useEffect(() => {
-    if (!rejectionReasons) app.getRejectionReasons()
-  }, [rejectionReasons])
+    if (!rejectionReasons) app.getRejectionReasons();
+  }, [rejectionReasons]);
 
-  const { setPartners, updatePartner, setCategory } = actions.partners
-  const { setTmpUser } = actions.users
-  const users = useUsers()
+  const { setPartners, updatePartner, setCategory } = actions.partners;
+  const { setTmpUser } = actions.users;
+  const users = useUsers();
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
-  })
+  });
   const setValidationRules = (category) => {
-    const required = []
-    const list = []
-    const optional = []
-    const allForms = { required: [], optional: [], all: [], list: [] }
+    const required = [];
+    const list = [];
+    const optional = [];
+    const allForms = { required: [], optional: [], all: [], list: [] };
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -70,58 +70,58 @@ const usePartners = () => {
             list.push({
               label: forms[validate].label,
               listdesc: forms[validate].listdesc,
-            })
-            required.push(forms[validate].label)
-            allForms.required.push(validate)
-            allForms.all.push(validate)
+            });
+            required.push(forms[validate].label);
+            allForms.required.push(validate);
+            allForms.all.push(validate);
           } else if (category?.validation[validate] === "o") {
-            optional.push(forms[validate].label)
-            allForms.optional.push(validate)
-            allForms.all.push(validate)
+            optional.push(forms[validate].label);
+            allForms.optional.push(validate);
+            allForms.all.push(validate);
           }
         }
       }
     }
-    const validated = { required, optional, allForms, list }
-    setValidation(validated)
-    actions.app.setFormSteps(validated)
-    actions.app.setActiveCategory(category?.uuid)
-    return validated
-  }
+    const validated = { required, optional, allForms, list };
+    setValidation(validated);
+    actions.app.setFormSteps(validated);
+    actions.app.setActiveCategory(category?.uuid);
+    return validated;
+  };
 
   const completeOnboarding = (category) => {
-    const currentCategory = categories?.find((c) => c.uuid === category.uuid)
-    category.validation = currentCategory.validation
-    setCategory(category)
-    setValidationRules(category)
-  }
+    const currentCategory = categories?.find((c) => c.uuid === category.uuid);
+    category.validation = currentCategory.validation;
+    setCategory(category);
+    setValidationRules(category);
+  };
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
       cache: "no-store",
       next: { revalidate: 0 },
-    })
-    const { success, error, data } = result
-    return { success, error, data }
-  }
+    });
+    const { success, error, data } = result;
+    return { success, error, data };
+  };
 
   const setCurrentCategory = (category, partner) => {
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
-    )
-    category.category_name = baseCategory.category_name
-    category.category_code = baseCategory.category_code
-    category.validation = baseCategory.validation
-    setCategory(category)
-    setValidationRules(category)
-  }
+    );
+    category.category_name = baseCategory.category_name;
+    category.category_code = baseCategory.category_code;
+    category.validation = baseCategory.validation;
+    setCategory(category);
+    setValidationRules(category);
+  };
   const checkUpdateStatus = (stage) => {
-    const progress = category.profile_stage
-    return progress[stage] && parseInt(progress[stage]) ? true : false
-  }
+    const progress = category.profile_stage;
+    return progress[stage] && parseInt(progress[stage]) ? true : false;
+  };
   const checkRegStatus = async (partner) => {
-    if (!partner?.progress) return null
-    const { percent, stages } = partner.progress
-    if (!(percent < 100)) return { percent, nextstage: "dashboard" }
+    if (!partner?.progress) return null;
+    const { percent, stages } = partner.progress;
+    if (!(percent < 100)) return { percent, nextstage: "dashboard" };
     const Stages = [
       "userinfo",
       "companyinfo",
@@ -133,7 +133,7 @@ const usePartners = () => {
       "shortcode",
       "indemnity",
       "accountinfo",
-    ]
+    ];
     const Pages = {
       userinfo: "/onboarding/userinfo",
       companyinfo: "/profile/companyinfo",
@@ -145,27 +145,27 @@ const usePartners = () => {
       shortcode: "/profile/shortcode",
       indemnity: "/profile/indemnity",
       accountinfo: "/profile/accountinfo",
-    }
-    let nextstage = null
+    };
+    let nextstage = null;
     Stages.map((stage) => {
-      if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage]
-    })
-    if (!nextstage) nextstage = PageRoutes.dashboard
-    return { percent, nextstage }
-  }
+      if (!nextstage && parseInt(stages[stage]) === 0) nextstage = Pages[stage];
+    });
+    if (!nextstage) nextstage = PageRoutes.dashboard;
+    return { percent, nextstage };
+  };
   const nextStage = (category, partner) => {
-    return getNextStage(category, partner)
-  }
+    return getNextStage(category, partner);
+  };
   const getStages = (category, categories) => {
-    if (!category) return
-    return getstages(category, categories)
-  }
+    if (!category) return;
+    return getstages(category, categories);
+  };
 
   const registerPartner = async (frm, userdata) => {
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
-        setProcessing(true)
+        setProcessing(true);
         const responsePartnerwelcome = await Axios.post(
           RemoteEndpoints.WELCOMEBACK,
           userdata,
@@ -176,42 +176,42 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!responsePartnerwelcome) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         const { success: successPartnerwelcome, data: partnerwelcome } =
-          responsePartnerwelcome
+          responsePartnerwelcome;
         if (!successPartnerwelcome) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
+          setProcessing(false);
+          return { success: false, error: partnerwelcome.message, data: null };
         }
         if (!successPartnerwelcome) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
+          setProcessing(false);
+          return { success: false, error: partnerwelcome.message, data: null };
         }
 
-        setTmpUser(partnerwelcome.user)
-        setPartners(partnerwelcome.partners)
+        setTmpUser(partnerwelcome.user);
+        setPartners(partnerwelcome.partners);
         router.push(
           `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
-        )
-        break
+        );
+        break;
       case "setpassword":
-        setProcessing(true)
+        setProcessing(true);
         const responseSetpassword = await Axios.post(
           RemoteEndpoints.RESETPASSWORD,
           userdata,
@@ -222,41 +222,41 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!responseSetpassword) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         const { success: successSetpassword, data: setpassword } =
-          responseSetpassword
+          responseSetpassword;
         if (!successSetpassword) {
-          setProcessing(false)
-          return { success: false, error: setpassword.message, data: null }
+          setProcessing(false);
+          return { success: false, error: setpassword.message, data: null };
         }
-        setTmpUserUUID(null)
-        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
+        setTmpUserUUID(null);
+        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY);
         const serverSession = {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
           User: setpassword,
           type: "user",
-        }
-        app.setStoreStates(serverSession, categories, "partner store")
-        if (userdata.type === "new") return router.push(PageRoutes.getstarted)
-        return router.push(PageRoutes.dashboard)
+        };
+        app.setStoreStates(serverSession, categories, "partner store");
+        if (userdata.type === "new") return router.push(PageRoutes.getstarted);
+        return router.push(PageRoutes.dashboard);
       case "userinfo":
-        setProcessing(true)
+        setProcessing(true);
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -267,34 +267,34 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!responseUserinfo) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
-        const { success: successUserinfo, data: userinfo } = responseUserinfo
+        const { success: successUserinfo, data: userinfo } = responseUserinfo;
         if (!successUserinfo) {
-          setProcessing(false)
-          return { success: false, error: userinfo.message, data: null }
+          setProcessing(false);
+          return { success: false, error: userinfo.message, data: null };
         }
-        const User = userData(userinfo)
-        users.setTmpUser(User.user)
-        router.push(`/onboarding/verify/${User.user.uuid}/new`)
-        break
+        const User = userData(userinfo);
+        users.setTmpUser(User.user);
+        router.push(`/onboarding/verify/${User.user.uuid}/new`);
+        break;
       case "category":
-        setProcessing(true)
+        setProcessing(true);
         const responseCategory = await Axios.post(
           RemoteEndpoints.CATEGORY,
           userdata,
@@ -305,48 +305,48 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!responseCategory) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         const { success: successCategory, data: categoryData } =
-          responseCategory
+          responseCategory;
         if (!successCategory) {
-          setProcessing(false)
-          return { success: false, error: categoryData.message, data: null }
+          setProcessing(false);
+          return { success: false, error: categoryData.message, data: null };
         }
-        setCurrentCategory(categoryData.category, categoryData.partner)
-        updatePartner(categoryData.partner)
-        return { success: true, error: null, data: categoryData }
+        setCurrentCategory(categoryData.category, categoryData.partner);
+        updatePartner(categoryData.partner);
+        return { success: true, error: null, data: categoryData };
       case "companydetail":
-        return updateCategory("companydetail", userdata)
+        return updateCategory("companydetail", userdata);
       case "compliance":
-        return updateCategory("compliance", userdata)
+        return updateCategory("compliance", userdata);
       case "ncclicense":
-        return updateCategory("ncclicense", userdata)
+        return updateCategory("ncclicense", userdata);
       case "nlrclicense":
-        return updateCategory("nlrclicense", userdata)
+        return updateCategory("nlrclicense", userdata);
       case "shortcode":
-        return updateCategory("shortcode", userdata)
+        return updateCategory("shortcode", userdata);
       case "indemnity":
-        return updateCategory("indemnity", userdata)
+        return updateCategory("indemnity", userdata);
       case "accountinfo":
-        return updateCategory("accountinfo", userdata)
+        return updateCategory("accountinfo", userdata);
       case "complete_registration":
-        setProcessing(true)
+        setProcessing(true);
         const regResponse = await Axios.post(
           RemoteEndpoints.REGISTRATION_COMPLETION,
           userdata,
@@ -354,34 +354,34 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!regResponse) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: ". Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
-        const { success: regSuccess, data: regData } = regResponse
+        const { success: regSuccess, data: regData } = regResponse;
         if (!regSuccess) {
-          setProcessing(false)
-          return { success: false, error: regData.message, data: null }
+          setProcessing(false);
+          return { success: false, error: regData.message, data: null };
         }
 
-        return { success: true, error: null, data: regData }
+        return { success: true, error: null, data: regData };
     }
-  }
+  };
 
   const resendEmail = async (email, email_type) => {
-    setProcessing(true)
+    setProcessing(true);
 
     const { data: resendEmailData, error: resendEmailError } = await fetchData(
       RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
@@ -393,39 +393,39 @@ const usePartners = () => {
           email_type,
         }),
       }
-    )
-    setProcessing(false)
+    );
+    setProcessing(false);
     if (resendEmailError) {
-      return setError({ verify: resendEmailError })
+      return setError({ verify: resendEmailError });
     }
 
-    setSuccess(resendEmailData.message)
-  }
-  const [stageStatus, setStageStatus] = useState(null)
+    setSuccess(resendEmailData.message);
+  };
+  const [stageStatus, setStageStatus] = useState(null);
 
   const updateStageStatus = (category, stage) => {
-    if (!category || !stage) return
+    if (!category || !stage) return;
     console.log({
       "states.partners.partner.approvalStages":
         states.partners.partner.approvalStages,
-    })
+    });
     const status =
       states?.partners?.partner?.approvalStages &&
       states.partners.partner.approvalStages[category.category_uuid]
         ? states.partners.partner.approvalStages[category.category_uuid][stage]
-        : {}
-    const fields = {}
+        : {};
+    const fields = {};
     if (status) {
       for (const dept in status) {
         for (const field in status[dept]) {
           if (field !== "rejections" && !isArray(status[dept][field])) {
-            if (!fields[field]) fields[field] = []
-            fields[field].push(status[dept][field])
+            if (!fields[field]) fields[field] = [];
+            fields[field].push(status[dept][field]);
           }
         }
       }
     }
-    const counts = {}
+    const counts = {};
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         counts[field] = {
@@ -433,18 +433,18 @@ const usePartners = () => {
           rejected: 0,
           corrected: 0,
           pending: 0,
-        }
+        };
         if (fields[field].length > 0) {
           fields[field].map((f) => {
-            counts[field][f]++
-          })
+            counts[field][f]++;
+          });
         }
       }
     }
     // console.log({ fields })
     // console.log({ counts })
     // console.log({ fieldCounts })
-  }
+  };
 
   return {
     ...states.partners,
@@ -466,6 +466,6 @@ const usePartners = () => {
     rejectionReasons,
     stageStatus,
     updateStageStatus,
-  }
-}
-export default usePartners
+  };
+};
+export default usePartners;

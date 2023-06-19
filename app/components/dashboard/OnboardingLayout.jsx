@@ -1,34 +1,34 @@
-"use client"
-import NavbarOnboarding from "@/app/components/dashboard/NavbarOnboarding"
-import ProfileTabItem from "@/app/components/ProfileTabItem"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import CompanyDetail from "@/app/(protected)/(partner)/dashboard/getstarted/sections/companydetail/CompanyDetail"
-import Compliance from "@/app/(protected)/(partner)/dashboard/getstarted/sections/compliance/Compliance"
-import Ncclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/ncclicense/Ncclicense"
-import Nlrclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/nlrclicense/Nlrclicense"
-import Indemnity from "@/app/(protected)/(partner)/dashboard/getstarted/sections/indemnity/Indemnity"
-import Accountinfo from "@/app/(protected)/(partner)/dashboard/getstarted/sections/accountinfo/Accountinfo"
-import Shortcode from "@/app/(protected)/(partner)/dashboard/getstarted/sections/shortcode/Shortcode"
-import Review from "@/app/(protected)/(partner)/dashboard/getstarted/sections/review/Review"
-import Complete from "@/app/(protected)/(partner)/dashboard/getstarted/sections/complete/Complete"
-import { profileMenu } from "@/app/modules/constants"
-import { useEffect } from "react"
+"use client";
+import NavbarOnboarding from "@/app/components/dashboard/NavbarOnboarding";
+import ProfileTabItem from "@/app/components/ProfileTabItem";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import CompanyDetail from "@/app/(protected)/(partner)/dashboard/getstarted/sections/companydetail/CompanyDetail";
+import Compliance from "@/app/(protected)/(partner)/dashboard/getstarted/sections/compliance/Compliance";
+import Ncclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/ncclicense/Ncclicense";
+import Nlrclicense from "@/app/(protected)/(partner)/dashboard/getstarted/sections/nlrclicense/Nlrclicense";
+import Indemnity from "@/app/(protected)/(partner)/dashboard/getstarted/sections/indemnity/Indemnity";
+import Accountinfo from "@/app/(protected)/(partner)/dashboard/getstarted/sections/accountinfo/Accountinfo";
+import Shortcode from "@/app/(protected)/(partner)/dashboard/getstarted/sections/shortcode/Shortcode";
+import Review from "@/app/(protected)/(partner)/dashboard/getstarted/sections/review/Review";
+import Complete from "@/app/(protected)/(partner)/dashboard/getstarted/sections/complete/Complete";
+import { profileMenu } from "@/app/modules/constants";
+import { useEffect } from "react";
 
 export default function OnboardingLayout({
   setIsOnboarding,
   setTmpCat,
   scrollpage,
 }) {
-  const { form } = useProcessing()
-  const { category } = usePartners()
-  const validForms = category?.validation
+  const { form } = useProcessing();
+  const { category } = usePartners();
+  const validForms = category?.validation;
 
   useEffect(() => {
     if (validForms) {
-      validForms.review = "r"
+      validForms.review = "r";
     }
-  }, [validForms])
+  }, [validForms]);
   return (
     <>
       <div
@@ -62,7 +62,7 @@ export default function OnboardingLayout({
                             />
                           )}
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 )}
@@ -94,5 +94,5 @@ export default function OnboardingLayout({
         </div>
       </div>
     </>
-  )
+  );
 }

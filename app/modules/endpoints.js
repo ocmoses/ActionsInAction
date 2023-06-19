@@ -54,5 +54,6 @@ const RemoteEndpoints = {
   COMPLIANCE_APPROVE: `${apiURL}/v2/admin/compliance/approve`,
   PARTNER_UPDATE: `${apiURL}/v2/admin/compliance/partner-correction`,
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
+  FAQ: `${apiURL}/v2/faq/get-faq`,
 }
 export default RemoteEndpoints

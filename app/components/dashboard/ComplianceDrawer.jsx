@@ -1,8 +1,8 @@
-import Image from "next/image"
-import { forms } from "@/app/modules/constants"
-import FilePreviewModal from "@/app/components/FilePreviewModal"
-import useApp from "@/hooks/useApp"
-import useAdmins from "@/hooks/useAdmins"
+import Image from "next/image";
+import { forms } from "@/app/modules/constants";
+import FilePreviewModal from "@/app/components/FilePreviewModal";
+import useApp from "@/hooks/useApp";
+import useAdmins from "@/hooks/useAdmins";
 
 export default function ComplianceDrawer({
   children,
@@ -11,13 +11,13 @@ export default function ComplianceDrawer({
   setOpenDrawer,
   openDrawer,
 }) {
-  const { setActiveApproval } = useAdmins()
+  const { setActiveApproval } = useAdmins();
   const closeDrawer = () => {
-    setActiveApproval(null)
-    setOpenDrawer(false)
-  }
+    setActiveApproval(null);
+    setOpenDrawer(false);
+  };
 
-  const { is_previewing_doc, doc_preview_path, handleCloseModal } = useApp()
+  const { is_previewing_doc, doc_preview_path, handleCloseModal } = useApp();
   return (
     <>
       {is_previewing_doc && (
@@ -93,5 +93,5 @@ export default function ComplianceDrawer({
         ></section>
       </main>
     </>
-  )
+  );
 }

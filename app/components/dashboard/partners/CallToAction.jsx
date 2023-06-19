@@ -47,5 +47,5 @@ export default function CallToAction({
         </p>
       )}
     </div>
-  )
+  );
 }

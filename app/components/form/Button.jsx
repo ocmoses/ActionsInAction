@@ -1,8 +1,8 @@
-import { ArrowRightCircle } from "@/app/components/Icons"
-import Link from "next/link"
+import { ArrowRightCircle } from "@/app/components/Icons";
+import Link from "next/link";
 export default function Button(props) {
-  const outline = props.outline ? true : false
-  const noicon = props.noicon && props.noicon === "yes" ? true : false
+  const outline = props.outline ? true : false;
+  const noicon = props.noicon && props.noicon === "yes" ? true : false;
   return (
     <>
       {!props.href ? (
@@ -60,5 +60,5 @@ export default function Button(props) {
         </Link>
       )}
     </>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 function PeerLabel({ id, label }) {
   return (
@@ -8,7 +8,7 @@ function PeerLabel({ id, label }) {
     >
       {label}
     </label>
-  )
+  );
 }
 
-export default PeerLabel
+export default PeerLabel;

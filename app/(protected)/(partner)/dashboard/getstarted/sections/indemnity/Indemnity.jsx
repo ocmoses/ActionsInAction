@@ -1,19 +1,19 @@
-"use client"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import FormErrors from "@/app/components/FormErrors"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import ButtonPrev from "@/app/components/form/ButtonPrev"
-import useErrors from "@/hooks/useErrors"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms, validities } from "@/app/modules/constants"
+"use client";
+import TextInput from "@/app/components/form/TextInput";
+import FileInput from "@/app/components/form/FileInput";
+import DatePicker from "@/app/components/form/DatePicker";
+import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import FormErrors from "@/app/components/FormErrors";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import ButtonPrev from "@/app/components/form/ButtonPrev";
+import useErrors from "@/hooks/useErrors";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import { useState, useEffect } from "react";
+import { Util } from "@/utils/utility";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { forms, validities } from "@/app/modules/constants";
 import {
   scrollToTop,
   validateExpiryDate,
@@ -21,11 +21,11 @@ import {
   ValidateField,
   fieldRequired,
   fieldName,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 function Indemnity() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
-    useProcessing()
+    useProcessing();
   const {
     partner,
     category,
@@ -33,9 +33,9 @@ function Indemnity() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
+  } = usePartners();
   const { min_start_date, max_end_date, yesterday, tomorrow } =
-    getValidityRange(validities.indemnity)
+    getValidityRange(validities.indemnity);
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -45,11 +45,11 @@ function Indemnity() {
     indemnity_expiry_date: "",
     indemnity_doc: {},
     indemnity_file: "",
-  })
-  const { title, subtitle, hand, fields } = forms["indemnity"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
+  });
+  const { title, subtitle, hand, fields } = forms["indemnity"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
 
-  const [isMasterData, setIsMasterData] = useState(false)
+  const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
     if (category) {
       const Category =
@@ -57,13 +57,13 @@ function Indemnity() {
         partner.sections[partner.master.category_uuid]?.indemnity &&
         category.category_uuid !== partner.master.category_uuid
           ? partner.master
-          : category
+          : category;
 
       setIsMasterData(
         partner.master &&
           partner.sections[partner.master.category_uuid]?.indemnity &&
           category.category_uuid !== partner.master.category_uuid
-      )
+      );
       setData({
         partner_uuid: Category?.partner_uuid,
         category_uuid: category?.category_uuid,
@@ -81,27 +81,27 @@ function Indemnity() {
             : "2023-06-20",
         indemnity_doc: Category?.indemnity_doc ?? {},
         indemnity_file: Category?.indemnity_file ?? "",
-      })
+      });
     }
-  }, [category])
+  }, [category]);
   useEffect(() => {
-    setForm("indemnity")
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setForm("indemnity");
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         if (field !== "indemnity_doc") {
-          const error = ValidateField(field, "indemnity", data, category)
+          const error = ValidateField(field, "indemnity", data, category);
           if (error) {
-            scrollToTop("onboardinglayout")
+            scrollToTop("onboardinglayout");
             return setError({
               [field]: error,
-            })
+            });
           }
         }
       }
@@ -111,59 +111,59 @@ function Indemnity() {
       Util.isEmpty(data.indemnity_doc) &&
       !data.indemnity_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         indemnity_file: `${fieldName(
           "indemnity_doc",
           "indemnity"
         )} is required`,
-      })
+      });
     }
 
     const expiryError = validateExpiryDate(
       data.indemnity_issue_date,
       data.indemnity_expiry_date,
       validities.indemnity
-    )
-    if (expiryError) return setError({ indemnity: expiryError })
+    );
+    if (expiryError) return setError({ indemnity: expiryError });
 
-    const result = await registerPartner("indemnity", data)
+    const result = await registerPartner("indemnity", data);
     if (result) {
-      scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ indemnity: result.error })
+      scrollToTop("onboardinglayout");
+      if (result?.error) return setError({ indemnity: result.error });
     }
     if (result.data?.partner) {
-      updatePartner(result?.data?.partner)
+      updatePartner(result?.data?.partner);
       const newcategory = result.data?.partner.categories.find(
         (c) => c.category_uuid === category.category_uuid
-      )
-      newcategory.profile_stage.indemnity = "1"
-      const { nextstage: NextStage } = nextStage(newcategory, partner)
-      return setForm(NextStage)
+      );
+      newcategory.profile_stage.indemnity = "1";
+      const { nextstage: NextStage } = nextStage(newcategory, partner);
+      return setForm(NextStage);
     }
-  }
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const handleDateChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const Validate = (field) => {
-    removeError(field)
-    const error = ValidateField(field, "indemnity", data, category)
+    removeError(field);
+    const error = ValidateField(field, "indemnity", data, category);
     if (error)
       return setError({
         [field]: error,
-      })
-  }
+      });
+  };
   return (
     <div
       id="onboardingform"
@@ -252,7 +252,7 @@ function Indemnity() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default Indemnity
+export default Indemnity;

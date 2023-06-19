@@ -1,4 +1,4 @@
-import FormErrors from "@/app/components/FormErrors"
+import FormErrors from "@/app/components/FormErrors";
 function SelectInput({
   id,
   label,
@@ -52,7 +52,7 @@ function SelectInput({
       </div>
       {errors && <FormErrors error={errors[id]} />}
     </div>
-  )
+  );
 }
 
-export default SelectInput
+export default SelectInput;

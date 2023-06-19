@@ -7,39 +7,39 @@ import {
   ShortcodeIcon,
   ReviewIcon,
   ContactPersonIcon,
-} from "@/app/components/Icons"
+} from "@/app/components/Icons";
 
-export const persistStore = true
+export const persistStore = true;
 
 export const EmailType = {
   EXISTING: "existing",
   NEW: "new",
-}
+};
 
 export const apiURL =
   typeof window === "undefined"
     ? process.env.APIURI
-    : process.env.NEXT_PUBLIC_APIURI
+    : process.env.NEXT_PUBLIC_APIURI;
 
 export const apikey =
   typeof window === "undefined"
     ? process.env.APIKEY
-    : process.env.NEXT_PUBLIC_APIKEY
+    : process.env.NEXT_PUBLIC_APIKEY;
 
 export const onboarding_type = {
   new: "Registration",
   migrated: "Migration",
-}
+};
 
 export const status_type = {
   processing: "Processing",
   not_started: "Pending",
-}
+};
 export const statusOptions = [
   { value: "all", label: "All" },
   { value: "processing", label: "Processing" },
   { value: "not_started", label: "Pending" },
-]
+];
 export const stages = [
   "companydetail",
   "compliance",
@@ -48,8 +48,8 @@ export const stages = [
   "shortcode",
   "indemnity",
   "accountinfo",
-]
-export const categoryCompletionPercentage = 100
+];
+export const categoryCompletionPercentage = 100;
 
 export const validities = {
   ncc: "5 years",
@@ -61,19 +61,19 @@ export const validities = {
   shortcode_pricing: "1 years",
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
-}
+};
 export const departments = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
   { code: "LEGA", name: "LEGAL", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
-]
+];
 export const categoryCombination = [
   ["VAS", "RMS"],
   ["VAS", "MKP"],
   ["RMS", "MKP"],
   ["AGR", "MKP"],
-]
+];
 export const company_type = [
   {
     value: "co",
@@ -85,7 +85,7 @@ export const company_type = [
     value: "it",
     label: "Incorporated Trustee",
   },
-]
+];
 export const license_type = [
   {
     value: "National lottery",
@@ -108,7 +108,7 @@ export const license_type = [
     label: "Promotional lottery(CSPS)",
     description: "Promotional scheme with an element of chance",
   },
-]
+];
 export const forms = {
   userinfo: {
     form: "userinfo",
@@ -391,7 +391,7 @@ export const forms = {
     listdesc: "",
     hand: "",
   },
-}
+};
 export const complianceRequirements = {
   companydetail: {
     company_name: {
@@ -664,7 +664,7 @@ export const complianceRequirements = {
       type: "form",
     },
   },
-}
+};
 export const shortcodeComplianceRequqirements = {
   shortcode: {
     shortcode_doc: {
@@ -709,7 +709,7 @@ export const shortcodeComplianceRequqirements = {
       type: "form",
     },
   },
-}
+};
 export const compliance = {
   companydetail: {
     company_name: {
@@ -921,7 +921,7 @@ export const compliance = {
       type: "form",
     },
   },
-}
+};
 export const approvalFields = {
   // companydetail: {
   company_name: {
@@ -1182,7 +1182,7 @@ export const approvalFields = {
     approval: ["SPRM"],
     stage: "accountinfo",
   },
-}
+};
 
 export const shortcodeApprovalFields = {
   // shortcode: {
@@ -1234,7 +1234,7 @@ export const shortcodeApprovalFields = {
     type: "form",
     approval: ["SPRM", "LEGA"],
   },
-}
+};
 export const shortcodeApprovalFieldsArray = [
   "shortcodes",
   "shortcode_doc",
@@ -1244,36 +1244,36 @@ export const shortcodeApprovalFieldsArray = [
   "pricing_issue_date",
   "pricing_expiry_date",
   "pricing_doc",
-]
-const deptCategories = {}
+];
+const deptCategories = {};
 for (const field in approvalFields) {
   if (approvalFields[field].approval.length > 0) {
     approvalFields[field].approval.map((dept) => {
       if (!(dept in deptCategories))
-        deptCategories[dept] = { categories: [], stages: [] }
+        deptCategories[dept] = { categories: [], stages: [] };
       if (approvalFields[field].categories.length > 0) {
         approvalFields[field].categories.map((category) => {
           if (!deptCategories[dept].categories.includes(category))
-            deptCategories[dept].categories.push(category)
-        })
+            deptCategories[dept].categories.push(category);
+        });
       }
       if (!deptCategories[dept].stages.includes(approvalFields[field].stage))
-        deptCategories[dept].stages.push(approvalFields[field].stage)
-    })
+        deptCategories[dept].stages.push(approvalFields[field].stage);
+    });
   }
 }
-export const DeptCategories = deptCategories
-const counts = {}
+export const DeptCategories = deptCategories;
+const counts = {};
 
 export const department = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
   { code: "LEGA", name: "LEGAL", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
-]
+];
 export const fieldsCounts = () => {
   for (const stage in complianceRequirements) {
-    if (!counts[stage]) counts[stage] = { count: 0 }
+    if (!counts[stage]) counts[stage] = { count: 0 };
     for (const field in complianceRequirements[stage]) {
       if (
         approvalFields[field]?.approval &&
@@ -1282,23 +1282,23 @@ export const fieldsCounts = () => {
         departments.map((dept) => {
           if (approvalFields[field]?.approval.includes(dept.code)) {
             if (!counts[stage][dept.code])
-              counts[stage][dept.code] = { count: 0 }
+              counts[stage][dept.code] = { count: 0 };
             if (!counts[stage][dept.code].fields)
-              counts[stage][dept.code].fields = []
+              counts[stage][dept.code].fields = [];
             if (!counts[stage][dept.code].fields.includes(field)) {
-              counts[stage][dept.code].fields.push(field)
-              counts[stage][dept.code].count++
-              counts[stage].count++
+              counts[stage][dept.code].fields.push(field);
+              counts[stage][dept.code].count++;
+              counts[stage].count++;
             }
-            console.log({ field })
+            // console.log({ field })
           }
-        })
+        });
       }
     }
   }
-  return counts
-}
-export const fieldCounts = fieldsCounts()
+  return counts;
+};
+export const fieldCounts = fieldsCounts();
 export const profileMenu = [
   "compliance",
   "companydetail",
@@ -1308,12 +1308,12 @@ export const profileMenu = [
   "indemnity",
   "accountinfo",
   "review",
-]
+];
 export const updateMenu = [
   "confirmcompanyinfo",
   "contactperson",
   "updatereview",
-]
+];
 export const profileMenuIcons = {
   companydetail: {
     component: <CompanyDetailIcon />,
@@ -1361,7 +1361,7 @@ export const profileMenuIcons = {
     component: <ReviewIcon />,
     title: "Review & Submit",
   },
-}
+};
 export const roles = [
   {
     slug: "",
@@ -1384,4 +1384,4 @@ export const roles = [
     slug: "Procurement Manager",
     title: "procurement-anager",
   },
-]
+];

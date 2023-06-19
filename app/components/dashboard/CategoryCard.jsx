@@ -1,7 +1,7 @@
-import Image from "next/image"
-import useProcessing from "@/hooks/useProcessing"
-import useErrors from "@/hooks/useErrors"
-import usePartners from "@/hooks/usePartners"
+import Image from "next/image";
+import useProcessing from "@/hooks/useProcessing";
+import useErrors from "@/hooks/useErrors";
+import usePartners from "@/hooks/usePartners";
 
 export default function CategoryCard({
   category,
@@ -9,13 +9,13 @@ export default function CategoryCard({
   setTmpCat,
   disabled,
 }) {
-  const [{ clearErrors }] = useErrors(null)
+  const [{ clearErrors }] = useErrors(null);
 
   const selectCategory = (category) => {
-    clearErrors()
-    setTmpCat(category)
-    setIsOpen(true)
-  }
+    clearErrors();
+    setTmpCat(category);
+    setIsOpen(true);
+  };
   return (
     <div
       onClick={() => (!disabled ? selectCategory(category) : {})}
@@ -39,5 +39,5 @@ export default function CategoryCard({
         </p>
       </div>
     </div>
-  )
+  );
 }

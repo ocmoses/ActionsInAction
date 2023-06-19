@@ -1,10 +1,10 @@
-"use client"
-import { useState } from "react"
-import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
-import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
+"use client";
+import { useState } from "react";
+import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar";
+import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer";
 
 function Layout({ children }) {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -13,6 +13,6 @@ function Layout({ children }) {
         {menuOpen && <MobileMenuBar setMenuOpen={setMenuOpen} />}
       </MainMenuSideDrawer> */}
     </>
-  )
+  );
 }
-export default Layout
+export default Layout;

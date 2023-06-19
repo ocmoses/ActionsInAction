@@ -1,15 +1,15 @@
-"use client"
-import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer"
-import ComplianceDetail from "@/app/components/dashboard/ComplianceDetail"
-import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories"
-import useProcessing from "@/hooks/useProcessing"
-import useAdmins from "@/hooks/useAdmins"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import DropdownMenu from "@/app/components/dashboard/DropdownMenu"
-import { useState, useEffect } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
+"use client";
+import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
+import ComplianceDetail from "@/app/components/dashboard/ComplianceDetail";
+import ComplianceCategories from "@/app/components/dashboard/compliance/ComplianceCategories";
+import useProcessing from "@/hooks/useProcessing";
+import useAdmins from "@/hooks/useAdmins";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
+import { useState, useEffect } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   getPartnerInitials,
   filterCategory,
@@ -19,16 +19,16 @@ import {
   filterApprovalFields,
   getDeptCategoryStages,
   getFinalApproval,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import useRoles from "@/hooks/useRoles"
-import Link from "next/link"
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import useRoles from "@/hooks/useRoles";
+import Link from "next/link";
 
 export default function Compliance({ params }) {
-  const { processing, setProcessing } = useProcessing()
-  const [{ errors, setError, clearErrors }] = useErrors(null)
+  const { processing, setProcessing } = useProcessing();
+  const [{ errors, setError, clearErrors }] = useErrors(null);
   const {
     admin,
     categories,
@@ -43,21 +43,21 @@ export default function Compliance({ params }) {
     setStages,
     activeStage,
     setActiveStage,
-  } = useAdmins()
+  } = useAdmins();
 
-  const [category, setCategory] = useState()
-  const [openDrawer, setOpenDrawer] = useState(false)
-  const { setRouteloading } = useApp()
-  const { isSuperadmin } = useRoles()
+  const [category, setCategory] = useState();
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const { setRouteloading } = useApp();
+  const { isSuperadmin } = useRoles();
 
   useEffect(() => {
-    setProcessing(false)
-    setRouteloading(false)
-  }, [])
+    setProcessing(false);
+    setRouteloading(false);
+  }, []);
   useEffect(() => {
-    clearErrors()
+    clearErrors();
     const getPartnerInfo = async (uuid) => {
-      setProcessing(true)
+      setProcessing(true);
 
       // var myHeaders = new Headers()
       // // myHeaders.append("Content-Type", "application/json")
@@ -117,95 +117,95 @@ export default function Compliance({ params }) {
           },
         }
       ).catch((e) => {
-        setProcessing(false)
+        setProcessing(false);
         return setError({
           compliance: e.message,
-        })
-      })
+        });
+      });
       if (!response)
         return setError({
           compliance: "This request has no response data available",
-        })
-      const result = await response.json()
-      setProcessing(false)
+        });
+      const result = await response.json();
+      setProcessing(false);
       if (result?.success) {
-        const partnerInfo = result.data?.partner
-        filterPartner(partnerInfo, categories)
-        setPartner(partnerInfo)
+        const partnerInfo = result.data?.partner;
+        filterPartner(partnerInfo, categories);
+        setPartner(partnerInfo);
         if (partnerInfo?.categories?.length > 0) {
           const _category = filterCategory(
             partnerInfo?.categories[0],
             partnerInfo
-          )
-          setCategory(_category.category_uuid)
-          setActiveCategory(_category)
+          );
+          setCategory(_category.category_uuid);
+          setActiveCategory(_category);
         }
-        return
+        return;
       }
-      setProcessing(false)
+      setProcessing(false);
       return setError({
         compliance:
           result?.data?.message ??
           "Something went wrong. Please check your connection and try again",
-      })
-    }
-    if (params?.params?.length > 0) getPartnerInfo(params.params[0])
-  }, [params])
+      });
+    };
+    if (params?.params?.length > 0) getPartnerInfo(params.params[0]);
+  }, [params]);
 
   useEffect(() => {
-    let html = document.getElementsByTagName("html")
-    if (openDrawer) html[0].style["overflow-y"] = "hidden"
-    else html[0].style["overflow-y"] = "auto"
-  }, [openDrawer])
+    let html = document.getElementsByTagName("html");
+    if (openDrawer) html[0].style["overflow-y"] = "hidden";
+    else html[0].style["overflow-y"] = "auto";
+  }, [openDrawer]);
 
   useEffect(() => {
     if (partner && category) {
-      filterFields(partner)
-      filterComplianceRequirements(partner)
-      filterApprovalFields(partner)
+      filterFields(partner);
+      filterComplianceRequirements(partner);
+      filterApprovalFields(partner);
       const _activeCategory = partner?.categories?.find(
         (c) => c.category_uuid === category
-      )
-      setActiveCategory(filterCategory(_activeCategory, partner))
-      setCategory(_activeCategory.category_uuid)
-      const _stages = getStages(_activeCategory, categories)
-      setStages(_stages)
+      );
+      setActiveCategory(filterCategory(_activeCategory, partner));
+      setCategory(_activeCategory.category_uuid);
+      const _stages = getStages(_activeCategory, categories);
+      setStages(_stages);
     }
-  }, [partner, category])
+  }, [partner, category]);
 
   useEffect(() => {
     if (partner) {
-      const finalApproval = getFinalApproval(partner)
+      const finalApproval = getFinalApproval(partner);
       // console.log({ finalApproval })
     }
-  }, [partner])
+  }, [partner]);
 
-  const [DDCategories, setDDCategories] = useState([])
+  const [DDCategories, setDDCategories] = useState([]);
   useEffect(() => {
-    let _cuuids = []
-    filterPartner(partner, categories)
+    let _cuuids = [];
+    filterPartner(partner, categories);
     if (allCategories) {
-      const _deptCategories = getDeptCategoryStages(admin, isSuperadmin)
+      const _deptCategories = getDeptCategoryStages(admin, isSuperadmin);
       if (partner?.approvalStages) {
-        const dept = admin?.department_code
+        const dept = admin?.department_code;
         for (const cuuid in partner?.approvalStages) {
           for (const stage in partner?.approvalStages[cuuid]) {
             if (dept in partner?.approvalStages[cuuid][stage])
-              if (!_cuuids.includes(cuuid)) _cuuids.push(cuuid)
+              if (!_cuuids.includes(cuuid)) _cuuids.push(cuuid);
           }
         }
       }
       const _ddcategories = partner?.categories.filter((cat) => {
-        return _deptCategories.categories.includes(cat.category_code)
-      })
-      setDDCategories(_ddcategories ?? [])
+        return _deptCategories.categories.includes(cat.category_code);
+      });
+      setDDCategories(_ddcategories ?? []);
     }
-  }, [partner, allCategories, admin])
+  }, [partner, allCategories, admin]);
 
   const handleOpenDrawer = (stage) => {
-    setActiveStage(stage)
-    setOpenDrawer(true)
-  }
+    setActiveStage(stage);
+    setOpenDrawer(true);
+  };
   return (
     <div className="max-w-[1158px] mx-auto py-12 px-16">
       <Link href="/admin/dashboard/">
@@ -281,7 +281,7 @@ export default function Compliance({ params }) {
                     label: partner?.categories[0]?.category_name,
                   }}
                   onselect={(option) => {
-                    setCategory(option.value)
+                    setCategory(option.value);
                   }}
                   align="right"
                   optionwidth={240}
@@ -329,5 +329,5 @@ export default function Compliance({ params }) {
         </>
       )}
     </div>
-  )
+  );
 }

@@ -7,16 +7,16 @@ import {
   ShortcodeIcon,
   ContactPersonIcon,
   ReviewIcon,
-} from "./Icons"
-import { profileMenuIcons } from "@/app/modules/constants"
-import Badge from "@/app/components/ProfileTabBadge"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
+} from "./Icons";
+import { profileMenuIcons } from "@/app/modules/constants";
+import Badge from "@/app/components/ProfileTabBadge";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
 
 function ProfileTabItem({ menu, form, category }) {
-  const { moveToNextForm } = useProcessing()
-  const { checkUpdateStatus, partner, nextStage } = usePartners()
-  const nextstage = nextStage(category, partner)
+  const { moveToNextForm } = useProcessing();
+  const { checkUpdateStatus, partner, nextStage } = usePartners();
+  const nextstage = nextStage(category, partner);
   return (
     <div
       // onClick={() =>
@@ -200,7 +200,7 @@ function ProfileTabItem({ menu, form, category }) {
         {profileMenuIcons[menu]?.title}
       </span>
     </div>
-  )
+  );
 }
 
-export default ProfileTabItem
+export default ProfileTabItem;

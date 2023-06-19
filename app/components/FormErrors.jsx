@@ -42,5 +42,5 @@ export default function FormErrors({ error, success, align }) {
         </div>
       )}
     </>
-  )
+  );
 }

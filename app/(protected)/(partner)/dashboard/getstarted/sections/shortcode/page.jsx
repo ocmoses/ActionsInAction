@@ -1,7 +1,7 @@
-import Shortcode from "./Shortcode"
+import Shortcode from "./Shortcode";
 
 function ShortcodePage() {
-  return <Shortcode />
+  return <Shortcode />;
 }
 
-export default ShortcodePage
+export default ShortcodePage;

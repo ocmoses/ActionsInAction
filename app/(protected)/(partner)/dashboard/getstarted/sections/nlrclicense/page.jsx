@@ -1,7 +1,7 @@
-import NlrcLicense from "./Nlrclicense"
+import NlrcLicense from "./Nlrclicense";
 
 function NlrcLicensePage() {
-  return <NlrcLicense />
+  return <NlrcLicense />;
 }
 
-export default NlrcLicensePage
+export default NlrcLicensePage;

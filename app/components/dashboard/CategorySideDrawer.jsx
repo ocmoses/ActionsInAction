@@ -5,9 +5,9 @@ export default function CategorySideDrawer({
   setTmpCat,
 }) {
   const closeDrawer = () => {
-    setTmpCat(null)
-    setIsOpen(false)
-  }
+    setTmpCat(null);
+    setIsOpen(false);
+  };
   return (
     <main
       className={
@@ -53,5 +53,5 @@ export default function CategorySideDrawer({
         }}
       ></section> */}
     </main>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-"use client"
-import RouteGuard from "../RouteGuard"
-import { useState } from "react"
-import NavbarDashboard from "@/app/components/dashboard/NavbarDashboard"
-import MenuBar from "@/app/components/dashboard/MenuBar"
-import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar"
-import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer"
+"use client";
+import RouteGuard from "../RouteGuard";
+import { useState } from "react";
+import NavbarDashboard from "@/app/components/dashboard/NavbarDashboard";
+import MenuBar from "@/app/components/dashboard/MenuBar";
+import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar";
+import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer";
 
 function Layout({ children }) {
-  const [open, setOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <RouteGuard>
@@ -40,6 +40,6 @@ function Layout({ children }) {
         </MainMenuSideDrawer>
       </div>
     </RouteGuard>
-  )
+  );
 }
-export default Layout
+export default Layout;

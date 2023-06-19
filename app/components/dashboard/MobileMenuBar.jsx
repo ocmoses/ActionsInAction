@@ -1,20 +1,20 @@
-import { PartnerMenu } from "@/app/modules/menu"
-import { getPath } from "@/app/modules/utilities"
-import { useSelectedLayoutSegments } from "next/navigation"
-import useApp from "@/hooks/useApp"
-import Link from "next/link"
-import { useEffect } from "react"
+import { PartnerMenu } from "@/app/modules/menu";
+import { getPath } from "@/app/modules/utilities";
+import { useSelectedLayoutSegments } from "next/navigation";
+import useApp from "@/hooks/useApp";
+import Link from "next/link";
+import { useEffect } from "react";
 
 export default function MobileMenuBar({ setMenuOpen }) {
-  const segments = useSelectedLayoutSegments()
-  const currentPath = segments?.reverse()
-  const path = `/${getPath(currentPath)}`
-  const app = useApp()
+  const segments = useSelectedLayoutSegments();
+  const currentPath = segments?.reverse();
+  const path = `/${getPath(currentPath)}`;
+  const app = useApp();
 
   useEffect(() => {
-    if (path === "/dashboard/getstarted") app.toggleGetstartedLink(true)
-    else app.toggleGetstartedLink(false)
-  }, [path])
+    if (path === "/dashboard/getstarted") app.toggleGetstartedLink(true);
+    else app.toggleGetstartedLink(false);
+  }, [path]);
 
   return (
     <ul className="p-0 max-w-[90%] h-full">
@@ -76,8 +76,8 @@ export default function MobileMenuBar({ setMenuOpen }) {
               </span>
             </Link>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }

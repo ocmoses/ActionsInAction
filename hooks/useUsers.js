@@ -1,10 +1,10 @@
-"use client"
-import { useStoreActions, useStoreState } from "easy-peasy"
-import { NextEndPoints } from "@/app/modules/endpoints"
+"use client";
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { NextEndPoints } from "@/app/modules/endpoints";
 
 export default function useUsers() {
-  const states = useStoreState((action) => action.users)
-  const actions = useStoreActions((action) => action.users)
+  const states = useStoreState((action) => action.users);
+  const actions = useStoreActions((action) => action.users);
 
   const handleLogin = async (data) => {
     const response = await fetch(NextEndPoints.LOGIN, {
@@ -13,25 +13,25 @@ export default function useUsers() {
         email: data.email,
         password: data.password,
       }),
-    })
-    const result = await response.json()
-    const { data: userdata, error } = result
+    });
+    const result = await response.json();
+    const { data: userdata, error } = result;
     if (!userdata && error) {
-      return { success: false, error, userdata: null }
+      return { success: false, error, userdata: null };
     }
     if (!userdata.success) {
       if (userdata.data?.email_verified === "no") {
-        setNotVerified(userdata.data)
+        setNotVerified(userdata.data);
       }
-      return { success: false, error: userdata.error, userdata }
+      return { success: false, error: userdata.error, userdata };
     }
 
     const serverSession = {
       status: userdata?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: userdata?.data,
       type: "user",
-    }
-    app.setStoreStates(serverSession, userdata?.categories, "login")
+    };
+    app.setStoreStates(serverSession, userdata?.categories, "login");
 
     const redirect =
       params &&
@@ -39,11 +39,11 @@ export default function useUsers() {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard
-    if (params?.includes("getstarted")) app.toggleGetstartedLink(true)
-    else app.toggleGetstartedLink(false)
-    return router.replace(redirect)
-  }
+        : PageRoutes.dashboard;
+    if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
+    else app.toggleGetstartedLink(false);
+    return router.replace(redirect);
+  };
 
-  return { ...states, ...actions, handleLogin }
+  return { ...states, ...actions, handleLogin };
 }

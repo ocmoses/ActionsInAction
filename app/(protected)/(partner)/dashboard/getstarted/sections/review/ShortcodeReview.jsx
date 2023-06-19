@@ -1,5 +1,5 @@
-import { outputDate } from "@/app/modules/utilities"
-import Image from "next/image"
+import { outputDate } from "@/app/modules/utilities";
+import Image from "next/image";
 export default function ShortcodeReview({ shortcode, PreviewFile }) {
   return shortcode.map((sc, i) => {
     return (
@@ -124,6 +124,6 @@ export default function ShortcodeReview({ shortcode, PreviewFile }) {
         </div>
         {/* </div> */}
       </div>
-    )
-  })
+    );
+  });
 }

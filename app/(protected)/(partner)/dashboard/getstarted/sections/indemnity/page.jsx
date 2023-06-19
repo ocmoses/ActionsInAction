@@ -1,7 +1,7 @@
-import Indemnity from "./Indemnity"
+import Indemnity from "./Indemnity";
 
 function IndemnityPage() {
-  return <Indemnity />
+  return <Indemnity />;
 }
 
-export default IndemnityPage
+export default IndemnityPage;

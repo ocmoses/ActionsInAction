@@ -1,4 +1,4 @@
-import { complianceRequirements } from "@/app/modules/constants"
+import { complianceRequirements } from "@/app/modules/constants";
 export const validate = (type, field, stage, data, category) => {
   switch (type) {
     case "file":
@@ -9,10 +9,10 @@ export const validate = (type, field, stage, data, category) => {
       ) {
         return `${
           complianceRequirements[data.category_stage][data.field]?.title
-        } is required`
+        } is required`;
       }
-      break
+      break;
     default:
-      return ValidateField(field, stage, data, category)
+      return ValidateField(field, stage, data, category);
   }
-}
+};

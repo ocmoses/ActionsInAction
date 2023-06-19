@@ -1,8 +1,8 @@
-import usePartners from "@/hooks/usePartners"
-import Image from "next/image"
-import { StepBadgeIcon } from "./Icons"
+import usePartners from "@/hooks/usePartners";
+import Image from "next/image";
+import { StepBadgeIcon } from "./Icons";
 export default function ProfileTabBadge({ name }) {
-  const { checkUpdateStatus } = usePartners()
+  const { checkUpdateStatus } = usePartners();
   return (
     <>
       {checkUpdateStatus(name) && (
@@ -15,5 +15,5 @@ export default function ProfileTabBadge({ name }) {
         />
       )}
     </>
-  )
+  );
 }

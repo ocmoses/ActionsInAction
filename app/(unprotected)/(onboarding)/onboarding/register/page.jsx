@@ -1,28 +1,28 @@
-"use client"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { ArrowRightCircle } from "@/app/components/Icons"
-import { PageRoutes } from "@/app/modules/menu"
-import useApp from "@/hooks/useApp"
-import { useEffect } from "react"
-import Link from "next/link"
+"use client";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ArrowRightCircle } from "@/app/components/Icons";
+import { PageRoutes } from "@/app/modules/menu";
+import useApp from "@/hooks/useApp";
+import { useEffect } from "react";
+import Link from "next/link";
 
 export default function Register() {
-  const { setRouteloading } = useApp()
-  const router = useRouter()
+  const { setRouteloading } = useApp();
+  const router = useRouter();
 
   useEffect(() => {
-    setRouteloading(false)
-  }, [])
+    setRouteloading(false);
+  }, []);
 
   const registerUserInfo = () => {
-    setRouteloading(true)
+    setRouteloading(true);
     // router.push(PageRoutes.registerUserinfo)
-  }
+  };
   const partnerWelcome = () => {
-    setRouteloading(true)
+    setRouteloading(true);
     // router.push(PageRoutes.partnerwelcome)
-  }
+  };
   return (
     <div className="mx-auto w3-animate-opacity pb-20">
       <h1 className="flex items-center font-mtn-extrabold mb-6  text-white text-4xl">
@@ -82,5 +82,5 @@ export default function Register() {
         </div>
       </Link>
     </div>
-  )
+  );
 }

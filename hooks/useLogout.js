@@ -2,23 +2,13 @@
 import { logout, logoutAdmin } from "@/app/modules/utilities"
 import { PageRoutes } from "@/app/modules/menu"
 
-import usePartners from "@/hooks/usePartners"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import store, { model, clearPersistStore } from "@/store"
+import { model, clearPersistStore } from "@/store"
 import { useRouter } from "next/navigation"
 
 export default function useLogout() {
   const router = useRouter()
   const actions = useStoreActions((action) => action)
-
-  // const {
-  //   setPartner,
-  //   setPartners,
-  //   setPartnerID,
-  //   setCategory,
-  //   setCategories,
-  //   setPartnerCategories,
-  // } = usePartners()
 
   const clearStore = () => {
     for (const store in model) {

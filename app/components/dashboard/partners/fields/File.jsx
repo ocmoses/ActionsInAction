@@ -1,111 +1,111 @@
-import FileInput from "@/app/components/form/FileInput"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import Button from "@/app/components/form/Button"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import usePartners from "@/hooks/usePartners"
-import { useState, useEffect } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { complianceRequirements } from "@/app/modules/constants"
+import FileInput from "@/app/components/form/FileInput";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import Button from "@/app/components/form/Button";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import usePartners from "@/hooks/usePartners";
+import { useState, useEffect } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { complianceRequirements } from "@/app/modules/constants";
 import {
   filterFields,
   filterComplianceRequirements,
   filterApprovalFields,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 export default function Date({ data, setShowModal }) {
-  const { updatePartner } = usePartners()
+  const { updatePartner } = usePartners();
   const [{ errors, setError, success, setSuccess, removeError, clearErrors }] =
-    useErrors(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [fileselected, setFileselected] = useState(false)
+    useErrors(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [fileselected, setFileselected] = useState(false);
   useEffect(() => {
-    clearErrors()
-  }, [])
+    clearErrors();
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     try {
-      setSaving(true)
-      setSaved(false)
+      setSaving(true);
+      setSaved(false);
 
       if (!formdata.file) {
-        setSaving(false)
-        return setError({ update: "Please select a file to upload" })
+        setSaving(false);
+        return setError({ update: "Please select a file to upload" });
       }
 
-      var headers = new Headers()
-      headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY)
+      var headers = new Headers();
+      headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY);
 
-      var Formdata = new FormData()
-      Formdata.append("partner_uuid", formdata.partner_uuid ?? "")
-      Formdata.append("category_uuid", formdata.category_uuid ?? "")
-      Formdata.append("category_stage", formdata.category_stage ?? "")
-      Formdata.append("file", formdata.file ?? "")
-      const _field = data.field.split("-")[0]
-      Formdata.append("type_of_file", _field.replace("_doc", "") ?? "")
-      Formdata.append("field", data.field)
-      Formdata.append("shortcode_uuid", data.shortcode_uuid ?? "")
+      var Formdata = new FormData();
+      Formdata.append("partner_uuid", formdata.partner_uuid ?? "");
+      Formdata.append("category_uuid", formdata.category_uuid ?? "");
+      Formdata.append("category_stage", formdata.category_stage ?? "");
+      Formdata.append("file", formdata.file ?? "");
+      const _field = data.field.split("-")[0];
+      Formdata.append("type_of_file", _field.replace("_doc", "") ?? "");
+      Formdata.append("field", data.field);
+      Formdata.append("shortcode_uuid", data.shortcode_uuid ?? "");
 
       var requestOptions = {
         method: "POST",
         headers: headers,
         body: Formdata,
         redirect: "follow",
-      }
+      };
 
       const response = await fetch(
         RemoteEndpoints.PARTNER_FILE_UPDATE,
         requestOptions
       ).catch((e) => {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update: e.message,
-        })
-      })
+        });
+      });
       if (!response) {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update:
             "Something went wrong. Please check your connection and try again",
-        })
+        });
       }
-      const results = await response.json()
-      const { success, data: Data } = results
+      const results = await response.json();
+      const { success, data: Data } = results;
       if (!success) {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update: Data.message,
-        })
+        });
       }
-      setSaving(false)
-      setSaved(true)
-      setFileselected(false)
-      updatePartner(Data.partner)
-      filterFields(Data.partner)
-      filterComplianceRequirements(Data.partner)
-      filterApprovalFields(Data.partner)
-      return setSuccess("Detail updated successfully")
+      setSaving(false);
+      setSaved(true);
+      setFileselected(false);
+      updatePartner(Data.partner);
+      filterFields(Data.partner);
+      filterComplianceRequirements(Data.partner);
+      filterApprovalFields(Data.partner);
+      return setSuccess("Detail updated successfully");
     } catch (e) {
-      setSaving(false)
+      setSaving(false);
       return setError({
         update: e.message,
-      })
+      });
     }
-  }
+  };
   const handleChange = (e) => {
-    removeError(data.field)
-    setFormdata((prev) => ({ ...prev, file: e.target.value }))
-    setFileselected(true)
-  }
+    removeError(data.field);
+    setFormdata((prev) => ({ ...prev, file: e.target.value }));
+    setFileselected(true);
+  };
   const [formdata, setFormdata] = useState({
     partner_uuid: data.partner_uuid,
     category_uuid: data.category_uuid,
     category_stage: data.category_stage,
     file: data.field_value,
-  })
+  });
 
   return (
     <form method="POST" onSubmit={handleSubmit}>
@@ -148,5 +148,5 @@ export default function Date({ data, setShowModal }) {
         )}
       </div>
     </form>
-  )
+  );
 }

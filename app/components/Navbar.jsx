@@ -21,17 +21,19 @@ function Navbar() {
 
   return (
     <div className="px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto flex justify-between items-center z-10 relative">
-      <Link href={"./"} className="flex space-x-20 items-center">
-        <Image
-          priority
-          src="/assets/pic/mtn-logo.svg"
-          width={76.71}
-          height={38.32}
-          alt="MTN Nigeria Logo"
-          className=" text-white min-w-[76px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
-        />
+      <div className="flex items-center">
+        <Link href={"./"} className="flex mr-20 items-center">
+          <Image
+            priority
+            src="/assets/pic/mtn-logo.svg"
+            width={76.71}
+            height={38.32}
+            alt="MTN Nigeria Logo"
+            className=" text-white min-w-[76px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+          />
+        </Link>
         <NavLinks />
-      </Link>
+      </div>
       {!session && (
         <div className="flex justify-end">
           <TailSpinPreloader width={28} height={28} fill="#efb703" />

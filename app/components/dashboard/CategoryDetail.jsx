@@ -1,13 +1,13 @@
-import Image from "next/image"
-import Button from "@/app/components/form/Button"
-import useProcessing from "@/hooks/useProcessing"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import usePartners from "@/hooks/usePartners"
-import { CircleOkCheckmarkIcon } from "@/app/components/Icons"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useEffect, useState } from "react"
-import { Util } from "@/app/modules/utilities"
+import Image from "next/image";
+import Button from "@/app/components/form/Button";
+import useProcessing from "@/hooks/useProcessing";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import usePartners from "@/hooks/usePartners";
+import { CircleOkCheckmarkIcon } from "@/app/components/Icons";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useEffect, useState } from "react";
+import { Util } from "@/app/modules/utilities";
 
 export default function CategoryDetail({
   category,
@@ -15,7 +15,7 @@ export default function CategoryDetail({
   setIsOpen,
   validation,
 }) {
-  const [{ errors, setError, clearErrors }] = useErrors(null)
+  const [{ errors, setError, clearErrors }] = useErrors(null);
   const {
     partner,
     category: partner_category,
@@ -23,26 +23,26 @@ export default function CategoryDetail({
     registerPartner,
     setCurrentCategory,
     nextStage,
-  } = usePartners()
-  const { processing, setProcessing, setForm } = useProcessing()
-  const [new_category, setNewCategory] = useState({})
+  } = usePartners();
+  const { processing, setProcessing, setForm } = useProcessing();
+  const [new_category, setNewCategory] = useState({});
   const selectCategory = async (sysCategory) => {
-    clearErrors()
+    clearErrors();
     const result = await registerPartner("category", {
       user_uuid: partner?.user_uuid ?? "",
       partner_uuid: partner?.uuid ?? "",
       category_uuid: sysCategory.uuid,
-    })
+    });
     if (result) {
-      setProcessing(false)
+      setProcessing(false);
       if (result?.error) {
-        return setError({ category: result.error })
+        return setError({ category: result.error });
       }
       if (result.data?.partner) {
-        const newcategory = { ...result?.data?.category }
-        setNewCategory(newcategory)
-        updatePartner(result?.data?.partner)
-        newcategory.profile_stage.category = "1"
+        const newcategory = { ...result?.data?.category };
+        setNewCategory(newcategory);
+        updatePartner(result?.data?.partner);
+        newcategory.profile_stage.category = "1";
         // setCurrentCategory(newcategory, partner)
         // const { nextstage: NextStage } = nextStage(newcategory, partner)
         // console.log({ NextStage })
@@ -54,18 +54,18 @@ export default function CategoryDetail({
     setError({
       category:
         "Unable to reach the server. Please check your connection and retry",
-    })
-  }
+    });
+  };
   useEffect(() => {
     if (!Util.isEmpty(new_category)) {
-      setCurrentCategory(new_category, partner)
-      const { nextstage: NextStage } = nextStage(new_category, partner)
+      setCurrentCategory(new_category, partner);
+      const { nextstage: NextStage } = nextStage(new_category, partner);
       // console.log({ NextStage })
-      setForm(NextStage)
-      setIsOnboarding(true)
-      return setIsOpen(false)
+      setForm(NextStage);
+      setIsOnboarding(true);
+      return setIsOpen(false);
     }
-  }, [new_category, partner])
+  }, [new_category, partner]);
   return (
     <div className="p-0 h-full pt-[50px]">
       <div className="h-full overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] !scrollbar-w-[4px]">
@@ -144,5 +144,5 @@ export default function CategoryDetail({
         </div>
       </div>
     </div>
-  )
+  );
 }

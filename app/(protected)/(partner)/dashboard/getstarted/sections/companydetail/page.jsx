@@ -1,7 +1,7 @@
-import CompanyDetail from "./CompanyDetail"
+import CompanyDetail from "./CompanyDetail";
 
 function CompanyDetailPage() {
-  return <CompanyDetail />
+  return <CompanyDetail />;
 }
 
-export default CompanyDetailPage
+export default CompanyDetailPage;

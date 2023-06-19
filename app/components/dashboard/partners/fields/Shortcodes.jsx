@@ -1,158 +1,158 @@
-import TextInput from "@/app/components/form/TextInput"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import Button from "@/app/components/form/Button"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import usePartners from "@/hooks/usePartners"
-import { useState, useEffect } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
+import TextInput from "@/app/components/form/TextInput";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import Button from "@/app/components/form/Button";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import usePartners from "@/hooks/usePartners";
+import { useState, useEffect } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   filterFields,
   filterComplianceRequirements,
   filterApprovalFields,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 export default function Shortcodes({ data, setShowModal }) {
-  const { updatePartner } = usePartners()
+  const { updatePartner } = usePartners();
   const [{ errors, setError, success, setSuccess, removeError, clearErrors }] =
-    useErrors(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [shtcde, setShtcde] = useState("")
+    useErrors(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [shtcde, setShtcde] = useState("");
 
   useEffect(() => {
-    clearErrors()
-  }, [])
+    clearErrors();
+  }, []);
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     try {
-      setSaving(true)
-      setSaved(false)
+      setSaving(true);
+      setSaved(false);
 
       if (!formdata.field_value) {
-        setSaving(false)
-        return setError({ update: "Please enter a value" })
+        setSaving(false);
+        return setError({ update: "Please enter a value" });
       }
 
-      var headers = new Headers()
-      headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY)
-      headers.append("Content-Type", "application/x-www-form-urlencoded")
+      var headers = new Headers();
+      headers.append("apiKey", process.env.NEXT_PUBLIC_APIKEY);
+      headers.append("Content-Type", "application/x-www-form-urlencoded");
 
-      var urlEncoded = new URLSearchParams()
-      urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "")
-      urlEncoded.append("category_uuid", formdata.category_uuid ?? "")
-      urlEncoded.append("category_stage", formdata.category_stage ?? "")
-      urlEncoded.append("field_value", formdata.field_value ?? "")
-      urlEncoded.append("field", data.field)
-      urlEncoded.append("shortcode_uuid", data.shortcode_uuid ?? "")
+      var urlEncoded = new URLSearchParams();
+      urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "");
+      urlEncoded.append("category_uuid", formdata.category_uuid ?? "");
+      urlEncoded.append("category_stage", formdata.category_stage ?? "");
+      urlEncoded.append("field_value", formdata.field_value ?? "");
+      urlEncoded.append("field", data.field);
+      urlEncoded.append("shortcode_uuid", data.shortcode_uuid ?? "");
 
       var requestOptions = {
         method: "POST",
         headers: headers,
         body: urlEncoded,
         redirect: "follow",
-      }
+      };
 
       const response = await fetch(
         RemoteEndpoints.PARTNER_UPDATE,
         requestOptions
       ).catch((e) => {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update: e.message,
-        })
-      })
+        });
+      });
       if (!response) {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update:
             "Something went wrong. Please check your connection and try again",
-        })
+        });
       }
-      const results = await response.json()
-      const { success, data: Data } = results
+      const results = await response.json();
+      const { success, data: Data } = results;
       if (!success) {
-        setSaving(false)
+        setSaving(false);
         return setError({
           update: Data.message,
-        })
+        });
       }
-      setSaving(false)
-      setSaved(true)
-      updatePartner(Data.partner)
-      filterFields(Data.partner)
-      filterComplianceRequirements(Data.partner)
-      filterApprovalFields(Data.partner)
-      return setSuccess("Detail updated successfully")
+      setSaving(false);
+      setSaved(true);
+      updatePartner(Data.partner);
+      filterFields(Data.partner);
+      filterComplianceRequirements(Data.partner);
+      filterApprovalFields(Data.partner);
+      return setSuccess("Detail updated successfully");
     } catch (e) {
-      setSaving(false)
+      setSaving(false);
       return setError({
         update: e.message,
-      })
+      });
     }
-  }
+  };
 
   const formShortcodeArray = (shtcd) => {
     const input = shtcd
       ?.replaceAll(";", ",")
       .replaceAll(",", ",")
       .replaceAll(" ", ",")
-      .replaceAll(".", ",")
-    if (!input) return null
-    const inputArray = input.split(",")
-    if (!inputArray.length) return null
-    const string = []
+      .replaceAll(".", ",");
+    if (!input) return null;
+    const inputArray = input.split(",");
+    if (!inputArray.length) return null;
+    const string = [];
     for (let i = 0; i < inputArray.length; i++) {
       if (!(!inputArray[i].trim() || /^\s*$/.test(inputArray[i].trim())))
-        string.push(inputArray[i].trim())
+        string.push(inputArray[i].trim());
     }
-    return string.filter((str) => str !== "undefined")
-  }
+    return string.filter((str) => str !== "undefined");
+  };
 
   const handleKeyUp = (e) => {
     if (e.key === " " || e.key === "Enter") {
-      processKeyUp()
+      processKeyUp();
     }
-  }
+  };
 
   const processKeyUp = () => {
-    removeError("shtcde")
-    let content = []
-    content = formShortcodeArray(shtcde)
+    removeError("shtcde");
+    let content = [];
+    content = formShortcodeArray(shtcde);
     if (content && content.length > 0) {
-      const duplicate = []
+      const duplicate = [];
       content.map((c) => {
         if (formdata.field_value.includes(c)) {
-          duplicate.push(c)
+          duplicate.push(c);
         }
-      })
+      });
       if (duplicate.length > 0) {
         setError({
           shtcde: `${duplicate.join(", ")} already exists in shortcodes`,
-        })
-        return false
+        });
+        return false;
       }
 
       setFormdata((prevState) => ({
         ...prevState,
         field_value: [...prevState.field_value, ...content],
-      }))
+      }));
 
-      setShtcde("")
+      setShtcde("");
     }
-    return true
-  }
+    return true;
+  };
   const handleShortcodeChange = (e) => {
-    setShtcde(e.target.value)
-  }
+    setShtcde(e.target.value);
+  };
   const removeShtcde = (index) => {
-    const shtcd = formdata.field_value[index]
+    const shtcd = formdata.field_value[index];
     setFormdata((prevState) => ({
       ...prevState,
       field_value: formdata.field_value.filter((sc) => sc !== shtcd),
-    }))
-  }
+    }));
+  };
 
   const [formdata, setFormdata] = useState({
     partner_uuid: data.partner_uuid,
@@ -160,7 +160,7 @@ export default function Shortcodes({ data, setShowModal }) {
     category_stage: data.category_stage,
     field: data.field,
     field_value: data.field_value,
-  })
+  });
 
   return (
     <>
@@ -179,7 +179,7 @@ export default function Shortcodes({ data, setShowModal }) {
               <span>{sc}</span>
               <div
                 onClick={() => {
-                  removeShtcde(index)
+                  removeShtcde(index);
                 }}
                 className="flex items-center cursor-pointer justify-center rounded-full text-white/80 hover:text-red-300"
               >
@@ -228,5 +228,5 @@ export default function Shortcodes({ data, setShowModal }) {
         )}
       </div>
     </>
-  )
+  );
 }

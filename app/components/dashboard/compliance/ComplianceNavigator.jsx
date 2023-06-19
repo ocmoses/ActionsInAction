@@ -62,5 +62,5 @@ export default function ComplianceNavigator({ next, previous, navlabels }) {
         </div>
       </div>
     </>
-  )
+  );
 }

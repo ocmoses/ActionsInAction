@@ -16,7 +16,7 @@ function ResponsiveLabel() {
       </span>
       <span className="text-md font-bold hidden 2xl:inline-flex">2xl</span>
     </div>
-  )
+  );
 }
 
-export default ResponsiveLabel
+export default ResponsiveLabel;

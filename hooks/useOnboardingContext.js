@@ -1,70 +1,11 @@
 "use client"
-import { useEffect, useState, createContext, useContext } from "react"
-import { useRouter, useSelectedLayoutSegments } from "next/navigation"
-import { v4 as uuidv4 } from "uuid"
-import { apiURL, forms, partnerFields, roles } from "@/app/modules/constants"
+import { useEffect, createContext, useContext } from "react"
+import { apiURL } from "@/app/modules/constants"
 import { fetchData } from "@/app/modules/fetchData"
-import {
-  checkRegStatus,
-  getPartner,
-  partnerRegistration,
-} from "@/app/modules/partners"
-import { Util } from "@/utils/utility"
-import { signIn } from "next-auth/react"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
-import { BANKS } from "@/app/modules/banks"
 
 const OnboardingContext = createContext()
 
 export function OnboardingContextProvider({ children }) {
-  const router = useRouter()
-  const segments = useSelectedLayoutSegments()
-  const currentPath = segments?.reverse()[0]
-  // console.log('currentPath', currentPath)
-  const [partnerInfo, setPartnerInfo] = useState(partnerFields)
-  const [fetching, setFetching] = useState({})
-  const [processing, setProcessing] = useState(false)
-  const [categories, setCategories] = useState({})
-  const [reviewStatus, setReviewStatus] = useState({
-    companydetail: false,
-    compliance: false,
-    ncclicense: false,
-    nlrclicense: false,
-    shortcode: false,
-    indemnity: false,
-    accountinfo: false,
-    review: false,
-  })
-  const [reviewUpdateStatus, setReviewUpdateStatus] = useState({
-    confirmcompanyinfo: false,
-    contactperson: false,
-    updatereview: false,
-  })
-  const setUpdateStatus = (type, key, status) => {
-    if (type === "review") {
-      if (reviewStatus[key] !== "undefined")
-        setReviewStatus((oldState) => ({
-          ...oldState,
-          [key]: status,
-        }))
-    } else {
-      if (reviewUpdateStatus[key] !== "undefined")
-        setReviewUpdateStatus((oldState) => ({
-          ...oldState,
-          [key]: status,
-        }))
-    }
-  }
-  const checkUpdateStatus = (type, key) => {
-    if (type === "review") {
-      if (reviewStatus[key]) return true
-      return false
-    } else {
-      if (reviewUpdateStatus[key]) return true
-      return false
-    }
-  }
   const setIsFetching = (key, status) => {
     setFetching((oldState) => {
       if (status === true) return { ...oldState, [key]: true }
@@ -116,46 +57,9 @@ export function OnboardingContextProvider({ children }) {
   useEffect(() => {
     fetchCatgories()
   }, [])
-  const updatePercentComplete = (data) => {
-    const percent = data.percent_complete
-    const stages = { ...data.profile_stage }
-    if (percent) {
-      setPartnerInfo((oldState) => ({
-        ...oldState,
-        progress: { ...oldState.progress, percent, stages },
-      }))
-    }
-  }
 
-  const registerPartner = async (frm, userdata) => {
-    return partnerRegistration(frm, userdata, partnerInfo, setProcessing)
-  }
-  const setPartner = (data) => {
-    setPartnerInfo((oldState) => ({ ...oldState, ...data }))
-  }
   return (
-    <OnboardingContext.Provider
-      value={
-        {
-          // COUNTRIES,
-          // STATES,
-          // BANKS,
-          // fetching,
-          // setIsFetching,
-          // processing,
-          // categories,
-          // roles,
-          // partnerInfo,
-          // setPartnerInfo,
-          // setPartner,
-          // registerPartner,
-          // getPartner,
-          // reviewStatus,
-          // reviewUpdateStatus,
-          // checkUpdateStatus,
-        }
-      }
-    >
+    <OnboardingContext.Provider value={{}}>
       {children}
     </OnboardingContext.Provider>
   )

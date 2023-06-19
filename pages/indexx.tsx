@@ -1,8 +1,8 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
 
-import Seo from '../app/components/Seo'
+import Seo from "../app/components/Seo";
 
 export default function PartnerHome() {
   return (
@@ -35,9 +35,9 @@ export default function PartnerHome() {
               transparent,
               rgba(0, 0, 0, 0.9)
             ),
-            url('/assets/pic/hero.jpeg');
-          background-size: 'cover';
-          background-position: 'left center';
+            url("/assets/pic/hero.jpeg");
+          background-size: "cover";
+          background-position: "left center";
         }
         h1 {
           font-weight: 700;
@@ -47,5 +47,5 @@ export default function PartnerHome() {
         }
       `}</style>
     </>
-  )
+  );
 }

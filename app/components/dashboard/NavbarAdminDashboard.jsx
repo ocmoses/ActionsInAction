@@ -1,12 +1,12 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import MenuIcon from "@/public/assets/icons/menu.svg"
-import useAdmins from "@/hooks/useAdmins"
-import AdminProfileIcons from "@/app/components/AdminProfileIcons"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import MenuIcon from "@/public/assets/icons/menu.svg";
+import useAdmins from "@/hooks/useAdmins";
+import AdminProfileIcons from "@/app/components/AdminProfileIcons";
 
-function NavbarDashboard({ open, setOpen, setMenuOpen }) {
-  const { admin, session } = useAdmins()
+export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
+  const { admin, session } = useAdmins();
   return (
     <header
       id="dashboardheader"
@@ -31,9 +31,9 @@ function NavbarDashboard({ open, setOpen, setMenuOpen }) {
             <Image src={MenuIcon} width={24} height={24} alt="" />
           </span>
         </div>
-        <div className="hidden md:flex flex-grow justify-start text-white px-3 py-2">
+        {/* <div className="hidden md:flex flex-grow justify-start text-white px-3 py-2">
           {admin && admin.department_code}
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-end text-white px-2 gap-2 items-center">
         {session && session.status === "authenticated" && <AdminProfileIcons />}
@@ -45,7 +45,5 @@ function NavbarDashboard({ open, setOpen, setMenuOpen }) {
         </div>
       </div>
     </header>
-  )
+  );
 }
-
-export default NavbarDashboard

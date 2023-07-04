@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "./font/mtn/stylesheet.css";
+@import "iconsax-css/style.css";
+@import "./w3.css";
+/* @import './w3-mtn-theme.css'; */
+
+@layer base {
+  body {
+    font-family: "mtn_regular" !important;
+    @apply m-0 p-0;
+    @apply bg-[#030303];
+    @apply min-h-screen;
+  }
+  /* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #fed428 #e1e1e0;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #e1e1e0;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #fed428;
+    border-radius: 9px;
+    border: 2px solid #cca000;
+  }
+
+  .layout-center {
+    @apply flex md:flex w-full sm:w-[80%] mx-auto h-full justify-center items-start;
+  }
+
+  .mtn-h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 40px;
+    letter-spacing: 0em;
+  }
+  .mtn-h1-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+  }
+  .-z-1 {
+    z-index: -1 !important;
+  }
+  .-z-2 {
+    z-index: -2 !important;
+  }
+  .ellipsis {
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    overflow: hidden !important;
+  }
+  .border-1 {
+    border-width: 1px !important;
+  }
+  .border-t-1 {
+    border-top-width: 1px !important;
+  }
+  .border-r-1 {
+    border-right-width: 1px !important;
+  }
+  .border-b-1 {
+    border-bottom-width: 1px !important;
+  }
+  .border-l-1 {
+    border-left-width: 1px !important;
+  }
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: #030303 !important;
+  }
+  @keyframes slide-up-in {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  table.transparent th,
+  table.transparent td {
+    @apply bg-transparent text-[#999999];
+  }
+  table.transparent tr {
+    @apply border-b border-b-white/20;
+  }
+  table.transparent h4 {
+    @apply text-white text-[14px] font-mtn-bold;
+  }
+
+  .animate-slide-up-in {
+    animation-name: slide-up-in;
+    animation-duration: var(--animate-duration, 1s);
+    animation-fill-mode: forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up-in.delay-100 {
+    --animate-delay: 1000ms;
+  }
+  @keyframes slide-up-out {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  .animate-slide-up-out {
+    animation-name: slide-up-out;
+    animation-duration: var(--animate-duration, 1s);
+    animation-fill-mode: forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-up-out.delay-100 {
+    --animate-delay: 1000ms;
+  }
+
+  .transform {
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .translate-y-full {
+    transform: translateY(-100%);
+  }
+  .typeanimation .Typewriter {
+    display: inline;
+  }
+  select.react-datepicker__month-select,
+  select.react-datepicker__year-select {
+    @apply !bg-transparent !border-0 !py-1;
+  }
+
+  .table:where(:not(.table-zebra))
+    :where(thead, tbody, tfoot)
+    :where(tr:not(:last-child) :where(th, td)) {
+    border-bottom-width: 0px !important;
+  }
+}

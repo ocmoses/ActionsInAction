@@ -1,0 +1,184 @@
+import { COUNTRIES } from "./countries";
+import { SelectMenuOption } from "./types/index";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { MutableRefObject, useEffect, useState } from "react";
+import Image from "next/image";
+
+export const CountrySelector = React.forwardRef<
+  HTMLDivElement,
+  {
+    id: string;
+    open: boolean;
+    onToggle: () => void;
+    onChange: (value: any) => void;
+    selectedValue: SelectMenuOption;
+  }
+>((props, ref) => {
+  useEffect(() => {
+    const mutableRef = ref as MutableRefObject<HTMLDivElement | null>;
+
+    const handleClickOutside = (event: any) => {
+      if (
+        mutableRef.current &&
+        !mutableRef.current.contains(event.target) &&
+        props.open
+      ) {
+        props.onToggle();
+        setQuery("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
+
+  const [query, setQuery] = useState("");
+
+  return (
+    <div ref={ref}>
+      <div className="relative">
+        <button
+          type="button"
+          className="flex items-center gap-4 bg-transparent relative border-0  px-4 pb-2.5 pt-3 w-full text-left cursor-pointer focus:outline-none  focus:ring-0 text-white text-xl"
+          aria-haspopup="listbox"
+          aria-expanded="true"
+          aria-labelledby="listbox-label"
+          onClick={props.onToggle}
+        >
+          <span className=" flex items-center pr-2">
+            <Image
+              alt={`${props.selectedValue?.value}`}
+              src={`/assets/flags/${
+                props.selectedValue?.value.toLowerCase() ?? "ng"
+              }.svg`}
+              className={"inline mr-2 h-4 rounded-sm h-auto"}
+              width={24}
+              height={15}
+              priority
+            />
+
+            {/* <img
+              alt={`${props.selectedValue?.value ?? "NG"}`}
+              src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${
+                props.selectedValue?.value ?? "NG"
+              }.svg`}
+              className={"inline mr-2 h-4 rounded-sm"}
+            /> */}
+            {/* {props.selectedValue.code} */}
+          </span>
+          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+            <svg
+              className="h-4 w-4 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
+        </button>
+
+        <AnimatePresence>
+          {props.open && (
+            <motion.ul
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+              className="absolute z-10 mt-1 min-w-[100px] bg-white shadow-lg max-h-80 rounded-md text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              tabIndex={-1}
+              role="listbox"
+              aria-labelledby="listbox-label"
+              aria-activedescendant="listbox-option-3"
+            >
+              <div className="sticky top-0 z-10 bg-gray-400">
+                <li className=" text-gray-900 cursor-default select-none relative py-0">
+                  <input
+                    type="search"
+                    name="search"
+                    autoComplete={"off"}
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-none"
+                    placeholder={"Search a country"}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                </li>
+                <hr />
+              </div>
+
+              <div
+                className={
+                  "max-h-64 w-full scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-600 scrollbar-thumb-rounded scrollbar-thin overflow-y-scroll"
+                }
+              >
+                {COUNTRIES.filter((country) =>
+                  country.title.toLowerCase().startsWith(query.toLowerCase())
+                ).length === 0 ? (
+                  <li className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9">
+                    No countries found
+                  </li>
+                ) : (
+                  COUNTRIES.filter((country) =>
+                    country.title.toLowerCase().startsWith(query.toLowerCase())
+                  ).map((value, index) => {
+                    return (
+                      <li
+                        key={`${props.id}-${index}`}
+                        className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 flex items-center hover:bg-gray-50 transition"
+                        id="listbox-option-0"
+                        role="option"
+                        onClick={() => {
+                          props.onChange(value.value);
+                          setQuery("");
+                          props.onToggle();
+                        }}
+                      >
+                        {value?.value && (
+                          <Image
+                            alt={`${value.value}`}
+                            src={`/assets/flags/${value.value.toLowerCase()}.svg`}
+                            className={"inline mr-2 h-4 rounded-sm h-auto"}
+                            width={24}
+                            height={15}
+                            priority
+                          />
+                        )}
+
+                        <span className="font-normal truncate">
+                          {value.title}
+                        </span>
+                        {value.value === props.selectedValue.value ? (
+                          <span className="text-blue-600 absolute inset-y-0 right-0 flex items-center pr-8">
+                            <svg
+                              className="h-5 w-5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        ) : null}
+                      </li>
+                    );
+                  })
+                )}
+              </div>
+            </motion.ul>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+});

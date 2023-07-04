@@ -11,7 +11,7 @@ import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints";
+import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
 import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
@@ -19,6 +19,7 @@ import useUsers from "@/hooks/useUsers";
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
+
   const { resendEmail } = usePartners();
   const { tmpuser, setTmpUser } = useUsers();
   const { processing, setProcessing, setForm } = useProcessing();
@@ -88,7 +89,8 @@ function Login({ params }) {
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User: loginData?.data,
+      User:  loginData?.data,
+      token:  loginData?.data?.login_token?.access_token,
       type: "user",
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");

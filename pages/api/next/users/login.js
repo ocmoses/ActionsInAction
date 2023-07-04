@@ -3,6 +3,7 @@ import { getCookie } from "cookies-next";
 import { createHttpOnlyCookie } from "@/app/modules/utilities";
 import { getCategories } from "@/app/modules/categories";
 
+
 const doLogin = async (body, req, res, categories) => {
   const response = await fetch(RemoteEndPoints.LOGIN, {
     method: "POST",
@@ -27,8 +28,8 @@ const doLogin = async (body, req, res, categories) => {
         partnerID,
         categories
       );
-      if (!authToken) return { success, error: "Invalid request", data: User };
-      return { success, error: null, data: User };
+      if (!authToken) return { success, error: "Invalid request", data: User };      
+      return { success, error: null, data: {...User, 'access_token': authToken} };
     } else {
       if (data) {
         return { success, error: data.message, data: data.user ?? null };

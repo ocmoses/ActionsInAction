@@ -14,6 +14,8 @@ const doLogin = async (body, req, res) => {
     body: JSON.stringify(body),
   });
 
+  
+
   if (!response)
     return {
       success: false,
@@ -22,6 +24,10 @@ const doLogin = async (body, req, res) => {
     };
 
   const result = await response.json();
+  
+  // console.log('RemoteEndPoints.LOGIN_ADMIN', RemoteEndPoints.LOGIN_ADMIN);
+  // console.log('Admin login response', result);
+
   if (!result)
     return {
       success: false,

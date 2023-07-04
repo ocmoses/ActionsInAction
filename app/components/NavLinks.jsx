@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 function NavLinks() {
-  const pathname = usePathname();
+  const pathname = usePathname()
   const links = [
     { href: "/", text: "Y'ello", active: pathname === "/" },
     { href: "/discover", text: "Discover", active: pathname === "/discover" },
@@ -22,7 +22,7 @@ function NavLinks() {
         </Link>
       ))}
     </nav>
-  );
+  )
 }
 
-export default NavLinks;
+export default NavLinks

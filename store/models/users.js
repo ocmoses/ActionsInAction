@@ -2,6 +2,7 @@ import { action, computed, thunk } from "easy-peasy";
 const users = {
   users: null,
   user: null,
+  token: null,
   tmpuser: null,
   session: { status: "unauthenticated" },
 
@@ -9,6 +10,7 @@ const users = {
     state.users = null;
     state.user = null;
     state.user = null;
+    state.token = null;
     state.session = { status: "unauthenticated" };
   }),
   isLoggedIn: computed((state) => state.user?.id != null),
@@ -20,6 +22,9 @@ const users = {
   setUser: action((state, user) => {
     state.user = user;
     state.session = { status: "authenticated", user };
+  }),
+  setToken: action((state, token) => {
+    state.token = token;
   }),
   setTmpUser: action((state, user) => {
     state.tmpuser = user;

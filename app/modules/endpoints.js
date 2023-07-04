@@ -1,11 +1,11 @@
-import { apiURL } from "@/app/modules/constants"
+import { apiURL } from "@/app/modules/constants";
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
   "Content-Type": "application/json",
   redirect: "follow",
   referrerPolicy: "no-referrer",
-}
+};
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
   LOGOUT: "/api/next/users/logout",
@@ -18,7 +18,10 @@ export const NextEndPoints = {
   LOGOUT_ADMIN: "/api/next/users/logout-admin",
   AUTH_USER: "/api/next/users/auth-admin",
   AUTH_ADMIN: "/api/next/users/auth-admin",
-}
+
+  GET_NOTIFICATIONS: `/api/next/users/notifications`,
+  
+};
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v1/auth/login`,
@@ -55,5 +58,18 @@ const RemoteEndpoints = {
   PARTNER_UPDATE: `${apiURL}/v2/admin/compliance/partner-correction`,
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
   FAQ: `${apiURL}/v2/faq/get-faq`,
+
+  //Notifications
+  GET_NOTIFICATIONS: `http://10.1.29.142/api/notification/:partner-portal-uuid`,
+
+  GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notification/unread/:partner-portal-uuid`,
+
+  ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
+  ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
+  ALL_ADMIN_PRIVILEGES: `${apiURL}/v2/admin/portal-privileges/admin`,
+  CREATE_ADMIN: `${apiURL}/v2/admin/add-admin-user`,
+  DELETE_ADMIN: `${apiURL}/v2/admin/delete-admin-user`,
+  CREATE_ROLE: `${apiURL}/v2/admin/create-role`,
+  DELETE_ROLE: `${apiURL}/v2/admin/delete-role`
 }
 export default RemoteEndpoints

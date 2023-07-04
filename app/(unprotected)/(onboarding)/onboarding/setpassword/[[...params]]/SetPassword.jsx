@@ -70,7 +70,7 @@ function SetPassword({ params: { params } }) {
     }
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User: loginData?.data,
+      User:  loginData?.data,
       type: "user",
     };
     app.setStoreStates(serverSession, loginData?.categories, "setpassword");

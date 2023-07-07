@@ -13,6 +13,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
 import useRoles from "@/hooks/useRoles";
 import useErrors from "@/hooks/useErrors";
+import useAdmins from "@/hooks/useAdmins";
 import FormErrors from "@/app/components/FormErrors";
 import { redirect, useRouter } from "next/navigation";
 import useApp from "@/hooks/useApp";
@@ -22,12 +23,15 @@ import RemoteEndpoints from "../../../modules/endpoints";
 
 
 export default function AdminRoles({ allRoles }) {
+  const {getAllAdmins} = useAdmins();
   const { getAllAdminRoles, getAllAdminPrivileges, deleteRole, createRole} = useRoles();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
+  const [admins, setAdmins] = useState([]);
   const [adminRoles, setAdminRoles] = useState([]);
   const [adminPrivileges, setAdminPrivileges] = useState([]);
 
+  const [fetchingAdmins, setFetchingAdmins] = useState(false);
   const [fetchingAdminRoles, setFetchingAdminRoles] = useState(false);
   const [fetchingAdminPrivileges, setFetchingAdminPrivileges] = useState(false);
   const [deletingRole, setDeletingRole] = useState(false);
@@ -51,10 +55,21 @@ export default function AdminRoles({ allRoles }) {
   const [successMessage, setSuccessMessage] = useState("");
 
   
+  let all_Admins = null;
   let all_Admin_Roles = null;
   let all_Admin_Privileges = null;
   let delete_role_response = null;
   let create_role_response = null;
+
+  const get_all_admins = async () => {
+    if (fetchingAdmins) return;
+    setFetchingAdmins(true);
+    all_Admins = await getAllAdmins(page, perPage);
+    setAdmins(all_Admins.admin_users);
+    setFetchingAdmins(false);
+    if (all_Admins.error) setError({ error: all_Admins.error });
+    // setNavigation(all_Admins.navigation);
+  };
 
   const get_all_admin_roles = async () => {
     if (fetchingAdminRoles) return;
@@ -122,6 +137,7 @@ export default function AdminRoles({ allRoles }) {
     
     get_all_admin_roles();
     get_all_admin_privileges();
+    get_all_admins();
     
   }, [page, perPage]);
 
@@ -173,6 +189,11 @@ export default function AdminRoles({ allRoles }) {
 
     create_Role(data);
 
+  }
+
+
+  const getMembers = (role) => {
+    return admins ? admins.filter(admin => admin.role.role_name == role.role_name).length : '-';
   }
 
   
@@ -260,7 +281,7 @@ export default function AdminRoles({ allRoles }) {
                           {/* Role members */}
                           <td>
                             <div>
-                              {1}
+                              {getMembers(role)}
                             </div>
                           </td>
                           <td>
@@ -269,10 +290,21 @@ export default function AdminRoles({ allRoles }) {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                 </svg>
                             </div>
-                            {(showActions == `action-${role.uuid}`) &&
-                              <div className="rounded-xl flex flex-col shadow-xl absolute bg-gray-500 overflow-hidden">
-                                <h1 className="px-8 text-white p-2 hover:bg-gray-800" onClick={() => {setShowActions(null); viewRoleDetails(role.uuid)}}>Details</h1>
-                                <h1 className="px-8 bg-red-600 p-2 hover:bg-red-800 text-white" onClick={() => displayDeleteModal(role.uuid)}>Delete</h1>
+                            {
+                              (showActions == `action-${role.uuid}`) && 
+                              <div className="absolute bg-[#323232] w-64 rounded-xl p-4 shadow-lg ">
+                                <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full" 
+                                  onClick={() => {setShowActions(null); viewRoleDetails(role.uuid)}}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                  </svg> <span className="text-white">Edit role</span>
+                                </div>
+                                <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
+                                  onClick={() => displayDeleteModal(role.uuid)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                                  </svg> <span className="text-white">Delete role</span>
+                                </div>  
                               </div>
                             }
                           </td>
@@ -443,8 +475,8 @@ export default function AdminRoles({ allRoles }) {
               <div>
                 <h1 className="text-white text-xl">{currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1)}</h1>
                 <p className="text-gray-500 text-md">{ellipsify(currentRole.privileges.join(','))}</p>
-                <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 px-4 py-3 rounded-md text-white">
-                  {`1 team member`}
+                <span className=" font-extralight text-[15px] inline-flex items-center justify-center bg-white/20 h-6 px-4 py-3 rounded-md text-white">
+                  {getMembers(currentRole) == 1 ? `${getMembers(currentRole)} team member` : `${getMembers(currentRole)} team members`}
                 </span>
               </div>
             </div>

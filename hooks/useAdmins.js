@@ -209,7 +209,7 @@ export default function useAdmins() {
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
-        const all_departments = result.data?.admin_users.data;
+        const all_departments = result.data?.departments;
         // if (admins_users.length > 0)
         // admins_users.map((admin) => {
         //     filterPartner(admin, states.categories);
@@ -320,9 +320,9 @@ export default function useAdmins() {
           method: 'POST',
           body: JSON.stringify(data),
           headers: {
-            token: states.admins.token,
+            token: states.token,
             "Content-Type": "application/json",
-            Authorization: `bearer ${states.admins.token}`,
+            Authorization: `bearer ${states.token}`,
           },
         }
       );
@@ -335,13 +335,66 @@ export default function useAdmins() {
 
       console.log('RemoteEndpoints.CREATE_ADMIN', RemoteEndpoints.CREATE_ADMIN);
       console.log('Create result', result);
-      console.log('states.admins.token', states.admins.token);
+      console.log('states.admins.token', states.token);
 
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.message;
         
         console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const deleteAdmin = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.DELETE_ADMIN}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'DELETE',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log('RemoteEndpoints.DELETE_ADMIN', RemoteEndpoints.DELETE_ADMIN);
+      console.log('Create result', result);
+      console.log('states.token', states.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('deleted message', message);
 
         return {
           message
@@ -374,5 +427,6 @@ export default function useAdmins() {
     rejectionReasons,
     createAdmin,
     getAllDepartments,
+    deleteAdmin
   };
 }

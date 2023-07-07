@@ -67,6 +67,7 @@ const RemoteEndpoints = {
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
   ALL_ADMIN_PRIVILEGES: `${apiURL}/v2/admin/portal-privileges/admin`,
+  ALL_DEPARTMENTS: `${apiURL}/v2/admin/admin-departments`,
   CREATE_ADMIN: `${apiURL}/v2/admin/add-admin-user`,
   DELETE_ADMIN: `${apiURL}/v2/admin/delete-admin-user`,
   CREATE_ROLE: `${apiURL}/v2/admin/create-role`,

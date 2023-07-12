@@ -4,6 +4,7 @@ import {
   getPartnerInitials,
   filterPartner,
   Util,
+  titleCase
 } from "@/app/modules/utilities";
 import { status_type, statusOptions } from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
@@ -21,17 +22,33 @@ import TextInput from "@/app/components/form/TextInput";
 import { ellipsify } from "../../../modules/utilities";
 
 export default function Admins({ allAdmins }) {
-  const { getAllAdmins, createAdmin } = useAdmins();
-  const {getAllAdminRoles} = useRoles();
+  const { getAllAdmins, createAdmin, getAllDepartments, deleteAdmin } = useAdmins();
+  const {getAllAdminRoles, getAllAdminPrivileges} = useRoles();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [admins, setAdmins] = useState([]);
+  const [creationError, setCreationError] = useState(null);
 
   const [adminRoles, setAdminRoles] = useState([]);
+  const [adminPrivileges, setAdminPrivileges] = useState([]);
   const [intendedRole, setIntendedRole] = useState("");
+  const [departments, setDepartments] = useState([]);
+  let [data, setData] = useState({
+                                  fullname: "",
+                                  firstname: "",
+                                  lastname: "",
+                                  username: "",
+                                  email: "",
+                                  department: "",
+                                  department_code: "",
+                                  role: ""
+                                });
 
   const [fetchingAdmins, setFetchingAdmins] = useState(false);
   const [fetchingAdminRoles, setFetchingAdminRoles] = useState(false);
+  const [fetchingAdminPrivileges, setFetchingAdminPrivileges] = useState(false);
+  const [fetchingDepartments, setFetchingDepartments] = useState(false);
+  const [deletingAdmin, setDeletingAdmin] = useState(false);
 
   const router = useRouter();
   const { setRouteloading } = useApp();
@@ -42,10 +59,22 @@ export default function Admins({ allAdmins }) {
   const [showAddAdmin, setShowAddAdmin] = useState(false);
 
   const [creatingAdmin, setCreatingAdmin] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+
+  const [currentAdmin, setCurrentAdmin] = useState(null);
+
+  const [displaySuccess, setDisplaySuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   let all_Admins = null;
   let all_Roles = null;
+  let all_Departments = null;
   let create_admin_response = null;
+  let delete_admin_response = null;
+  let all_Admin_Privileges = null;
 
   const get_all_admins = async () => {
     if (fetchingAdmins) return;
@@ -57,6 +86,16 @@ export default function Admins({ allAdmins }) {
     setNavigation(all_Admins.navigation);
   };
 
+  const get_all_departments = async () => {
+    if (fetchingDepartments) return;
+    setFetchingDepartments(true);
+    all_Departments = await getAllDepartments(page, perPage);
+    setDepartments(all_Departments.all_departments);
+    setFetchingDepartments(false);
+    if (all_Departments.error) setError({ error: all_Departments.error });
+    // setNavigation(all_Departments.navigation);
+  };
+
   const get_all_admin_roles = async () => {
     if (fetchingAdminRoles) return;
     setFetchingAdminRoles(true);
@@ -65,6 +104,16 @@ export default function Admins({ allAdmins }) {
     setFetchingAdminRoles(false);
     if (all_Roles.error) setError({ error: all_Roles.error });
     // setNavigation(all_Admins.navigation);
+  };
+
+  const get_all_admin_privileges = async () => {
+    if (fetchingAdminPrivileges) return;
+    setFetchingAdminPrivileges(true);
+    all_Admin_Privileges = await getAllAdminPrivileges(page, perPage);
+    setAdminPrivileges(all_Admin_Privileges.admin_privileges);
+    setFetchingAdminPrivileges(false);
+    if (all_Admin_Privileges.error) setError({ error: all_Admin_Privileges.error });
+    // setNavigation(all_AdminRoles.navigation);
   };
 
   const create_admin = async (data) => {
@@ -87,42 +136,55 @@ export default function Admins({ allAdmins }) {
     }
     // setNavigation(all_AdminRoles.navigation);
   };
+  
+  const delete_admin = async (data) => {
+    if (deletingAdmin) return;
+    setDeletingAdmin(true);
+    delete_admin_response = await deleteAdmin(data);
+    setDeletingAdmin(false);
+    setConfirmDelete(false);
+    if (delete_admin_response.error) setError({ error: delete_admin_response.error })
+    else {
+        console.log('delete_admin_response', delete_admin_response);
+        setSuccessMessage("Admin deleted successfully");
+        setDisplaySuccess(true);
+        
+        setTimeout(() => {
+            setDisplaySuccess(false);
+            location.reload();
+        }, 3000);
 
-  let data = {
-    fullname: "",
-    username: "",
-    email: "",
-    department: "",
-    department_code: "",
-    role: intendedRole
-  }
+    }
+    // setNavigation(all_AdminRoles.navigation);
+  };
 
+  
   const handleCreate = () => {
     if(data.fullname == ""){
-        setError("Please enter user's full name");
+        setCreationError("Please enter user's full name");
         return;
     }
     if(data.username == ""){
-        setError("Please enter username");
+      setCreationError("Please enter username");
         return;
     }
     if(data.email == ""){
-      setError("Please enter user email");
+      setCreationError("Please enter user email");
       return;
     }
 
     if(data.department == ""){
-      setError("Please enter department");
+      setCreationError("Please enter department");
       return;
     }
 
     if(data.department_code == ""){
-      setError("Please enter department code");
+      setCreationError("No department code set");
       return;
     }
 
     if(data.role == ""){
-      setError("Please select a role");
+      setCreationError("Please select a role");
       return;
     }
 
@@ -130,10 +192,16 @@ export default function Admins({ allAdmins }) {
 
   }
 
+  const handleDelete = () => {
+    delete_admin({admin_user_uuid: currentAdmin.uuid});
+  }
+
   useEffect(() => {
     
     get_all_admins();
     get_all_admin_roles();
+    get_all_admin_privileges();
+    get_all_departments();
     
   }, [page, perPage]);
 
@@ -151,10 +219,30 @@ export default function Admins({ allAdmins }) {
     }
   }, [all_Admins]);
 
-  const goToAdminDetail = (uuid) => {
-    setRouteloading(true);
-    router.push(`admin/details`);
+  const clearCreationData = () => {
+    
+    setData(() => ({
+      firstname: "",
+      lastname: "",
+      username: "",
+      fullname: "",
+      email: "",
+      department: "",
+      department_code: "",
+      role: ""
+    }));
+  }
+
+  const confirmDeleteAdmin = (admin) => {
+    setDeleteModal(false);
+    setDetailsModalOpen(false);
+    setConfirmDelete(true);    
+  }
+
+  const clearError = () => {
+    setCreationError(null);
   };
+
   return (
     <>
       <div id="compliance" className="flex flex-cols pb-12">
@@ -223,7 +311,7 @@ export default function Admins({ allAdmins }) {
                       admins?.map((admin) => (
                         <tr
                           key={admin.uuid}
-                          className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/20"
+                          className="border-b border-b-white/10 cursor-pointer bg-transparent"
                           // onClick={() => goToAdminDetail(admin.uuid)}
                         >
                           {/* Name */}
@@ -260,11 +348,11 @@ export default function Admins({ allAdmins }) {
                             </div>
                           </td>
                           <td>
-                            <div className="flex gap-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                            <div id={`action-${admin.uuid}`} className="flex gap-0" onClick={() => {setCurrentAdmin(admin); setDetailsModalOpen(true)}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                 </svg>
-                            </div>
+                            </div>                            
                           </td>
                           {/* <th>
                           <button className="btn btn-ghost btn-xs">
@@ -354,33 +442,50 @@ export default function Admins({ allAdmins }) {
         </div>
       </div>
       {      
-        showAddAdmin && <div id="create_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black bg-opacity-80" onClick={(e) => {if(e.target.id == "create_modal") setModalOpen(false)}}>
-          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl p-8 bg-black inline-flex flex-col w-[450px] pb-4">
+        showAddAdmin && 
+        <div id="create_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "create_modal") setModalOpen(false)}}>
+          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl p-8 bg-[#111111] inline-flex flex-col w-[450px] pb-4">
             <h1 className="text-white font-mtn-bold text-2xl mb-4">Add Admin</h1>
-            {errors && errors["error"] && (
+            {creationError && (
                 <div className="mb-6">
-                <FormErrors error={errors["error"]} />
+                  <span className="text-red-500 text-sm font-italic">{creationError}</span>
                 </div>
               )}
-            <TextInput
-                id="fullname"
-                label="Fullname"
+            
+            <div className="flex space-x-2">
+              <TextInput
+                id="firstname"
+                label="Firstname"
                 // value={data.role_name}                
                 onChange={(e) => {
-                    data.fullname = e.target.value.trim(); 
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
                     console.log('data', data);
                     }
                 }
-            />
+              />
+              <TextInput
+                id="lastname"
+                label="Lastname"         
+                onChange={(e) => {
+                    setData(() => ({...data, lastname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
+                }
+              />
+            </div>
             <div className="flex space-x-2">
+              
               <TextInput
                 id="username"
                 label="Username"
-                // value={data.role_name}                
-                onChange={(e) => {
-                    data.username = e.target.value.trim(); 
+                type="text"              
+                onChange={(e) => { 
+                    setData({...data, username: e.target.value.trim()});
+                    clearError();
                     console.log('data', data);
-                    }
+                  }
                 }
               />
               <TextInput
@@ -388,45 +493,55 @@ export default function Admins({ allAdmins }) {
                 label="Email"
                 type="email"               
                 onChange={(e) => {
-                    data.email = e.target.value.trim(); 
+                    setData({...data, email: e.target.value.trim()});
+                    clearError();
                     console.log('data', data);
-                    }
+                  }
                 }
               />
             </div>
-            <TextInput
-                id="department"
-                label="Department"
-                // value={data.role_name}                
-                onChange={(e) => {
-                    data.department = e.target.value.trim(); 
+            <select id="department" 
+                  className="mb-4 block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-[#212121] border-[#333333] rounded-[10px] autofill:!bg-inherit active:!bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-mtn peer" 
+                  onChange={(e) => {
+                    data.department = e.target.value.trim();  
+                    let department_code = departments.find(department => department.department == data.department)?.department_code;
+                    setData({...data, department_code, department: e.target.value.trim()});
+                    clearError();
                     console.log('data', data);
-                    }
-                }
-            />
+                  }}
+                >
+                  <option value={``} className="py-2 bg-black text-[#333333]">
+                    Select Department
+                  </option>
+                {departments && departments.map(department => 
+                  <option value={`${department.department}`} className="py-2 bg-black">
+                    {department.department}
+                  </option>)}
+
+            </select>
+
             <TextInput
                 id="department_code"
                 label="Department Code"
-                // value={data.role_name}                
-                onChange={(e) => {
-                    data.department_code = e.target.value.trim(); 
-                    console.log('data', data);
-                    }
-                }
+                value={data.department_code}
+                readonly={true}   
+                disabled
             />
+
             <div className="flex space-x-2">
               {
                 adminRoles && adminRoles.map((role) => 
                   <div key={`role-${role.uuid}`} 
-                    className={`p-4 rounded-md text-white text-sm cursor-pointer  ${intendedRole == role.uuid ? 'text-mtn-500 border-1 border-yellow-500 bg-black' : 'bg-gray-600'}`}
-                    onClick={() => setIntendedRole(role.uuid)}>
+                    className={`p-4 rounded-md text-white text-sm cursor-pointer  ${data.role == role.uuid ? 'text-mtn-500 border-1 border-yellow-500 bg-black' : 'bg-gray-600'}`}
+                    onClick={() => {setData({...data, role: role.uuid}); console.log('data', data); 
+                    clearError();}}>
                     {role.role_name[0].toUpperCase() + role.role_name.slice(1)}
                   </div>)
               }
             </div>
             {
-              intendedRole && <div className="flex space-x-2 mt-4">
-                <p className="text-gray-500">{ellipsify(adminRoles.find((a_role) => a_role.uuid == intendedRole)?.privileges?.join(', '), 100)}</p>
+              data.role != "" && <div className="flex space-x-2 mt-4">
+                <p className="text-gray-500">{ellipsify(adminRoles.find((a_role) => a_role.uuid == data.role)?.privileges?.join(', '), 100)}</p>
                 </div>
 
             }
@@ -443,7 +558,7 @@ export default function Admins({ allAdmins }) {
 
               
               {!creatingAdmin && <div className="flex py-8 px-2 space-x-4 justify-center">
-                <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => setShowAddAdmin(false)}>Cancel</button>
+                <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {clearCreationData(); setShowAddAdmin(false); }}>Cancel</button>
                 <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={handleCreate}>Create</button>
                </div>
               }
@@ -452,6 +567,122 @@ export default function Admins({ allAdmins }) {
                 }
           </div>
         </div>
+      }
+      {      
+        detailsModalOpen && 
+        <div id="details_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "details_modal") {setDeleteModal(false); setDetailsModalOpen(false);}}}>
+          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
+            <div className="p-8 space-x-4 flex">
+              <div className="flex flex-0 justify-center items-center rounded-full w-16 h-16 bg-purple-600 text-white text-[28px]">
+                <span className="text-white">
+                  {getPartnerInitials(currentAdmin.fullname)}
+                </span>
+              </div>
+              <div className="flex-1">
+                <h1 className="text-white text-xl">{currentAdmin.fullname}</h1>
+                <p className="text-gray-500 text-md">{currentAdmin.email}</p>
+                <span className=" font-extralight text-[15px] inline-flex items-center justify-center bg-white/20 h-6 px-4 py-3 rounded-md text-white">
+                  {currentAdmin.role.role_name}
+                </span>
+              </div>
+              <div className="w-12 flex justify-right relative" onClick={() => deleteModal ? setDeleteModal(false) : setDeleteModal(true) }>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+                {
+                  deleteModal && 
+                  <div className="absolute top-8 bg-[#323232] w-64 rounded-xl p-4 shadow-lg ">
+                    <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer inline-flex space-x-4 w-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg> <span className="text-white">Edit user permissions</span>
+                    </div>
+                    <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer inline-flex space-x-4 w-full"
+                      onClick={() => confirmDeleteAdmin(currentAdmin)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                      </svg> <span className="text-white">Remove User</span>
+                    </div>  
+                  </div>
+                }
+              </div>
+            </div>
+            <hr className="bg-gray-800"/>
+            <div className="p-8 pb-4  space-x-4 flex flex-col">
+              <div className="text-white text-sm">
+                <p className="text-gray-200 font-mtn-medium-italic text-sm">Privileges</p>
+              </div>
+              <div>
+              {
+                  adminPrivileges.map((privilegeGroup, index) => 
+                  <div className="flex space-x-4">
+                    <div className="w-[150px]">
+                      <span className="text-gray-200 text-xs font-mtn-extralight">{titleCase(privilegeGroup.role_class_name)}</span>
+                    </div>
+                    <div className="flex flex-col w-[300px]">
+                    {
+                      privilegeGroup.role_class.map((privilege, index) => 
+                      
+                        adminRoles.find(role => role.role_name == currentAdmin.role.role_name).privileges.includes(privilege.privilege) ? 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>) : 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>)
+
+                      )
+                      
+                    }                      
+                    </div>
+                    
+                  </div>)
+                }
+              </div>
+            </div>           
+
+              
+            <div className="flex py-8 px-2 space-x-4 justify-center">
+              <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {setDeleteModal(false); setDetailsModalOpen(false)}}>OK</button>
+            </div>
+          </div>
+        </div>
+      }
+      {
+        confirmDelete && 
+        <div id="confirm_delete_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "confirm_delete_modal") {setConfirmDelete(false);}}}>
+          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
+            <div className="p-8 pb-4">
+              <p className="text-white text-2xl mb-4">Are you sure you want to delete this admin?</p>
+              <p className="text-sm text-gray-500 text-italic">{`${currentAdmin.fullname} will lose access immediately and you can't re-invite them later`}</p>
+            </div>
+                              
+            {!deletingAdmin && <div className="flex py-4 px-2 space-x-4 justify-center">
+                <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {setConfirmDelete(false); }}>Cancel</button>
+                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={handleDelete}>Yes, Remove</button>
+               </div>
+              }
+              {deletingAdmin && 
+                  <div className="flex px-4">
+                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                  </div>
+                }
+          </div>
+        </div>
+      }
+      {
+        displaySuccess &&
+        <div className="fixed top-0 left-0 z-10 w-screen h-screen flex justify-center items-end">
+            <div className="min-w-48 rounded-xl bg-gray-800 text-white p-4 mb-12 flex spacing-x-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" class="w-6 h-6">
+                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                </svg>&nbsp;&nbsp; {successMessage}
+            </div>
+        </div>       
       }
     </>
   );

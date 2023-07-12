@@ -84,9 +84,9 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      <div className={`absolute bottom-0 left-0`}>
+      <div className={`fixed bottom-4 pb-4 left-0`}>
         {/* The popup menu */}
-        {openSecondaryMenu && <div className="absolute bottom-4 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
+        {openSecondaryMenu && <div className="z-[9999] bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
           
           <div className="flex items-center space-x-3">
             <div className="relative flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
@@ -170,7 +170,7 @@ export default function MenuBar({ open }) {
               
         </div>}
         <hr className="mb-8 bg-gray-500" />
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 pb-4">
           <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
             <span>
               {getPartnerInitials(fullname)}

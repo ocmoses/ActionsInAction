@@ -31,7 +31,7 @@ function Layout({ children }) {
               <MenuBar open={open} />
             </div>
           </div>
-          <div className="h-full flex-1 relative border-l border-l-white/20 bg-[#030303]">
+          <div className="flex-1 relative border-l border-l-white/20 bg-[#030303]">
             {children}
           </div>
         </div>

@@ -1654,4 +1654,15 @@ export function ellipsify(text, length=35){
   return text.substring(0, length) + '...';
 }
 
+export function titleCase(text){
+  if(text.trim().length == 0){
+    return text.trim();
+  }
+  let textArray = text.trim().split(" ");
+  for(let i = 0; i < textArray.length; i++){
+    textArray[i] = textArray[i].substring(0,1).toUpperCase() + textArray[i].slice(1);
+  }
+  return textArray.join(" ");
+}
+
 

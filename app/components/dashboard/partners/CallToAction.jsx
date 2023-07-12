@@ -1,14 +1,18 @@
 export default function CallToAction({
+  bg,
+  border,
   message,
   description,
   label,
+  button,
+  feedback,
   onclick,
   icon,
   color,
   desccolor,
 }) {
   return (
-    <div className="flex justify-between gap-6 items-center px-[24px] py-[18px] border border-[#621E1E] rounded-lg">
+    <div className={`flex justify-between gap-6 items-center px-[24px] py-[18px] ${bg ? bg : ''} border ${border ? border : 'border-[#621E1E]'} rounded-lg`}>
       <div className="flex justify-start items-center gap-6">
         <div
           className={`flex justify-center p-0 items-center ${
@@ -45,6 +49,17 @@ export default function CallToAction({
         >
           {label}
         </p>
+      )}
+      {button && (
+        <button
+          onClick={onclick}
+          className="text-[#999999] rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white"
+        >
+          {button}
+        </button>
+      )}
+      {feedback && (
+        feedback
       )}
     </div>
   );

@@ -112,7 +112,7 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      <div className={`absolute bottom-0 left-0`}>
+      <div className={`fixed bottom-0 left-0 pl-2`}>
         {/* The popup menu */}
         {openSecondaryMenu && <div className="absolute bottom-4 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
           

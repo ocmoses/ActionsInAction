@@ -4,6 +4,7 @@ import {
   getPartnerInitials,
   filterPartner,
   Util,
+  titleCase
 } from "@/app/modules/utilities";
 import { status_type, statusOptions } from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
@@ -22,7 +23,7 @@ import { ellipsify } from "../../../modules/utilities";
 
 export default function Admins({ allAdmins }) {
   const { getAllAdmins, createAdmin, getAllDepartments, deleteAdmin } = useAdmins();
-  const {getAllAdminRoles} = useRoles();
+  const {getAllAdminRoles, getAllAdminPrivileges} = useRoles();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [admins, setAdmins] = useState([]);
@@ -607,26 +608,39 @@ export default function Admins({ allAdmins }) {
               </div>
             </div>
             <hr className="bg-gray-800"/>
-            <div className="p-8 pb-4  space-x-4 flex">
+            <div className="p-8 pb-4  space-x-4 flex flex-col">
               <div className="text-white text-sm">
                 <p className="text-gray-200 font-mtn-medium-italic text-sm">Privileges</p>
               </div>
               <div>
               {
-                  adminPrivileges.map((privilege, index) => 
-                  adminRoles.find(role => role.role_name == currentAdmin.role.role_name).privileges.includes(privilege.privilege) ? 
-                  <div className="flex space-x-2 py-2 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg> &nbsp;&nbsp; {privilege.privilege}
-                  </div> : 
-                  <div className="flex space-x-2 py-2 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg> &nbsp;&nbsp; {privilege.privilege}
+                  adminPrivileges.map((privilegeGroup, index) => 
+                  <div className="flex space-x-4">
+                    <div className="w-[150px]">
+                      <span className="text-gray-200 text-xs font-mtn-extralight">{titleCase(privilegeGroup.role_class_name)}</span>
+                    </div>
+                    <div className="flex flex-col w-[300px]">
+                    {
+                      privilegeGroup.role_class.map((privilege, index) => 
+                      
+                        adminRoles.find(role => role.role_name == currentAdmin.role.role_name).privileges.includes(privilege.privilege) ? 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>) : 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>)
 
-                  </div>
-                  )
+                      )
+                      
+                    }                      
+                    </div>
+                    
+                  </div>)
                 }
               </div>
             </div>           

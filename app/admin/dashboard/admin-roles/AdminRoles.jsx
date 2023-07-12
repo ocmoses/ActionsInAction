@@ -4,7 +4,8 @@ import {
   getPartnerInitials,
   filterPartner,
   Util,
-  ellipsify
+  ellipsify,
+  titleCase
 } from "@/app/modules/utilities";
 import { status_type, statusOptions } from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
@@ -261,7 +262,7 @@ export default function AdminRoles({ allRoles }) {
                           <td>
                             <div className="flex items-center space-x-3">
                               <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                                <span>
+                                <span className="text-white">
                                   {getPartnerInitials(role.role_name[0].toUpperCase())}
                                 </span>
                               </div>
@@ -275,7 +276,7 @@ export default function AdminRoles({ allRoles }) {
                           {/* Description */}
                           <td>
                             <div className="flex gap-0">
-                              {ellipsify(role.privileges.join(','))}
+                              {role.privileges.description ? role.privileges.description : ellipsify(role.privileges.join(','))}
                             </div>
                           </td>
                           {/* Role members */}
@@ -292,7 +293,7 @@ export default function AdminRoles({ allRoles }) {
                             </div>
                             {
                               (showActions == `action-${role.uuid}`) && 
-                              <div className="absolute bg-[#323232] w-64 rounded-xl p-4 shadow-lg ">
+                              <div className="absolute right-0 bg-[#323232] w-48 rounded-xl p-4 shadow-lg ">
                                 <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full" 
                                   onClick={() => {setShowActions(null); viewRoleDetails(role.uuid)}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
@@ -425,29 +426,44 @@ export default function AdminRoles({ allRoles }) {
                 <FormErrors error={errors["error"]} />
                 </div>
               )}
-              {/* <TextInput
+              <TextInput
                 id="description"
                 label="Role description"
-                value={data.description}
-                onChange={handleFormChange}
+                onChange={(e) => {
+                  data.description = e.target.value.trim(); 
+                  // console.log('data', data);
+                  }
+              }
                 errors={errors}
-              /> */}
+              />
 
               {
                 adminPrivileges.length == 0 ? 
                   (<h1 className="text-gray-200 font-mtn-medium-italic">Getting privileges...</h1>)                  
                   :  
-                  adminPrivileges.map((privilege, index) => 
-                  <label for={'privilege-' + index} className="text-white h-6 mb-4">
-                    <input type="checkbox" id={'privilege-' + index} 
-                        onChange={(e) => {
-                            e.target.checked ? 
-                            data.privileges.push(privilege.privilege) : 
-                            data.privileges.splice(data.privileges.indexOf(privilege.privilege), 1);
-                            // console.log('data', data) 
-                            } 
-                        } className="rounded bg-gray-900 h-6 w-6" />&nbsp;&nbsp; {privilege.privilege}
-                  </label>
+                  adminPrivileges.map((privilegeGroup, index) => 
+                  <div className="flex space-x-4">
+                    <div className="w-[200px]">
+                      <span className="text-gray-200 text-xs font-mtn-extralight">{titleCase(privilegeGroup.role_class_name)}</span>
+                    </div>
+                    <div className="flex flex-col w-[250px]">
+                    {
+                      privilegeGroup.role_class.map((privilege, index) => 
+                      <label for={'privilege-' + index} className="text-white h-6 mb-4">
+                        <input type="checkbox" id={'privilege-' + index} 
+                            onChange={(e) => {
+                                e.target.checked ? 
+                                data.privileges.push(privilege.privilege) : 
+                                data.privileges.splice(data.privileges.indexOf(privilege.privilege), 1);
+                                // console.log('data', data) 
+                                } 
+                            } className="rounded bg-gray-900 h-5 w-5 accent-yellow-500" />&nbsp;&nbsp; {privilege.privilege}
+                      </label>)
+                    }                      
+                    </div>
+                    
+                  </div>
+                  
                     
                 )
               }
@@ -464,7 +480,7 @@ export default function AdminRoles({ allRoles }) {
       }
       {      
         detailsModalOpen && 
-        <div id="details_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "details_modal") setDetailsModalOpen(false)}}>
+        <div id="details_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "delete_modal") setDeleteModalOpen(false)}}>
           <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
             <div className="p-8 space-x-4 flex">
               <div className="flex flex-0 justify-center items-center rounded-full w-16 h-16 bg-purple-600 text-white text-[28px]">
@@ -514,30 +530,25 @@ export default function AdminRoles({ allRoles }) {
       }
       {      
         deleteModalOpen && 
-        <div id="delete_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "delete_modal") setDeleteModalOpen(false)}}>
-          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[300px] pb-4">
-            <div className="p-8 space-x-4 flex flex-col justify-center items-center text-center">
-              
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
-                <h1 className="text-white text-xl ">Are you sure you want to delete the role: {currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1)}</h1>
-                <p className="text-red-500 text-md font-italic">This action is irreversible</p>
-                
+        <div id="delete_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "confirm_delete_modal") {setConfirmDelete(false);}}}>
+          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
+            <div className="p-8 pb-4">
+              <p className="text-white text-2xl mb-4">Are you sure you want to delete the role: {currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1)}</p>
+              <p className="text-sm text-gray-500 text-italic">{`Everyone with the ${currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1)} role will be defaulted to a member role`}</p>
             </div>
-            <hr className="bg-gray-800"/>
-                          
-            <div className="flex py-4 px-2 space-x-4 justify-center">
-                {!deletingRole && <>
-                    <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
-                    <button className=" text-white bg-red-500 w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {delete_Role(currentRole.uuid)}}>Yes, Delete</button>
-                </>}
-                {deletingRole && 
-                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                }
-            </div>
+                              
+            {!deletingRole && <div className="flex py-4 px-2 space-x-4 justify-center">
+              <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => setDeleteModalOpen(false)}>Cancel</button>
+              <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {delete_Role(currentRole.uuid)}}>Yes, Remove</button>
+              </div>
+            }
+            {deletingRole && 
+                <div className="flex px-4">
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                </div>
+              }
           </div>
-        </div>
+        </div>        
       }
       {
         displaySuccess &&

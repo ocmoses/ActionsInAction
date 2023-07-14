@@ -24,7 +24,7 @@ export const NextEndPoints = {
 };
 
 const RemoteEndpoints = {
-  LOGIN: `${apiURL}/v1/auth/login`,
+  LOGIN: `${apiURL}/v2/auth/login`,
   LOGOUT: `${apiURL}/v1/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
@@ -60,10 +60,10 @@ const RemoteEndpoints = {
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
   //Notifications
-  GET_NOTIFICATIONS: `http://10.1.29.142/api/notification/:partner-portal-uuid`,
+  GET_NOTIFICATIONS: `http://10.1.29.142/api/notifications/:partner-portal-uuid`,
 
-  GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notification/unread/:partner-portal-uuid`,
-
+  GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notifications/unread/:partner-portal-uuid/:user-uuid`,
+  
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
   ALL_ADMIN_PRIVILEGES: `${apiURL}/v2/admin/portal-privileges/admin`,
@@ -71,6 +71,12 @@ const RemoteEndpoints = {
   CREATE_ADMIN: `${apiURL}/v2/admin/add-admin-user`,
   DELETE_ADMIN: `${apiURL}/v2/admin/delete-admin-user`,
   CREATE_ROLE: `${apiURL}/v2/admin/create-role`,
-  DELETE_ROLE: `${apiURL}/v2/admin/delete-role`
+  DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
+
+  ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
+  ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
+  ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
+  CREATE_PARTNER: `${apiURL}/v2/partner-user/add-partner-user`,
+  DELETE_PARTNER: `${apiURL}/v2/partner-user/delete-partner-user`,
 }
 export default RemoteEndpoints

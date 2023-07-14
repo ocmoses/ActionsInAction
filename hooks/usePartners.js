@@ -451,6 +451,191 @@ const usePartners = () => {
     // console.log({ fieldCounts })
   }
 
+  const getAllAdminPartners = async (page, perPage) => {
+    try {
+      const params = [];
+      if (page) params.push(`page=${page}`);
+      if (perPage) params.push(`per_page=${perPage}`);
+
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.ALL_ADMIN_PARTNERS.replace(':partner-uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      // if (response.status === 401) {
+      //   redirect(NextEndPoints.LOGIN_ADMIN)
+      //   return
+      // }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const admin_partners = result.data?.admin_users;
+        // if (admins_users.length > 0)
+        // admins_users.map((admin) => {
+        //     filterPartner(admin, states.categories);
+        //   });
+        const navigation = {
+          current_page: result?.data?.admin_users?.current_page,
+          first_page_url: result?.data?.admin_users?.first_page_url,
+          from: result?.data?.admin_users?.from,
+          last_page: result?.data?.admin_users?.last_page,
+          last_page_url: result?.data?.admin_users?.last_page_url,
+          links: result?.data?.admin_users?.links,
+          next_page_url: result?.data?.admin_users?.next_page_url,
+          path: result?.data?.admin_users?.path,
+          per_page: result?.data?.admin_users?.per_page,
+          prev_page_url: result?.data?.admin_users?.prev_page_url,
+          to: result?.data?.admin_users?.to,
+          total: result?.data?.admin_users?.total,
+        };
+
+        // console.log('Admin partners retrieved', result);
+
+        return {
+          admin_partners,
+          navigation,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+
+  const createPartner = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.CREATE_PARTNER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
+      console.log('Create result', result);
+      console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const deletePartner = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.DELETE_PARTNER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'DELETE',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
+      console.log('Create result', result);
+      console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -471,6 +656,9 @@ const usePartners = () => {
     rejectionReasons,
     stageStatus,
     updateStageStatus,
+    getAllAdminPartners,
+    createPartner,
+    deletePartner
   }
 }
 export default usePartners

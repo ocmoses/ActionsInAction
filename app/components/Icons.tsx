@@ -297,6 +297,7 @@ export function EyeCloseIcon({ iconClass }: Props) {
     </svg>
   );
 }
+
 export function InfoIcon({ width, height, iconClass }: Props) {
   return (
     <svg
@@ -591,6 +592,25 @@ export function CircleOkCheckmarkIcon({ iconClass }: Props) {
         strokeLinejoin="round"
         d="M4.5 12.75l6 6 9-13.5"
       />
+    </svg>
+  );
+}
+
+
+
+export function BulletIcon({ iconClass }: Props) {
+  return (
+    <svg 
+      fill="#ccc" 
+      height="7px" 
+      width="7px" 
+      version="1.1" 
+      id="Layer_1" 
+      xmlns="http://www.w3.org/2000/svg" 
+      xmlnsXlink="http://www.w3.org/1999/xlink" 
+	    viewBox="0 0 455 455" 
+      xmlSpace="preserve">
+      <circle cx="227.5" cy="227.5" r="227.5"/>
     </svg>
   );
 }

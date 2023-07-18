@@ -131,7 +131,7 @@ export default function Terms() {
 
   return (
     <>
-      <div className="flex flex-col font-mtn items-start px-8 xl:px-0 m-0 pb-2xl h-full w-full relative bg-[url('/assets/pic/terms.png')] bg-left-top bg-no-repeat">
+      <div className="flex flex-col font-mtn items-start px-8 xl:px-0 m-0 pb-2xl h-full w-full relative bg-[url('/assets/pic/terms.png')] bg-right-top bg-no-repeat">
         <div className="w-full mx-auto lg:max-w-[1158px] relative">
           <Navbar />
         </div>
@@ -157,7 +157,7 @@ export default function Terms() {
 
         <div className="border-1 border-white/10 border-solid rounded-3xl w-full relative lg:max-w-[1158px] mx-auto min-h-[400px] mt-20">
             <div className="px-10 py-10 flex  flex-row gap-[23px]">
-                <ul className="h-auto w-[208px] border-r-1 border-white/10 border-solid list-disc list-outside flex flex-col gap-[30px] px-[12px] py-[15px]">
+                <ul className="h-auto w-[208px] border-r-1 border-white/10 border-solid list-disc list-outside flex flex-col gap-[30px] px-[12px] py-[15px] max-[700px]:hidden">
                   {LinkList.map((title)=>(
                       
                         <li 

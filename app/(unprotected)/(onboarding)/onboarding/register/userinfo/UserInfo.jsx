@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link'
 import FormErrors from "@/app/components/FormErrors";
 import Button from "@/app/components/form/Button";
 import TextInput from "@/app/components/form/TextInput";
@@ -309,19 +310,21 @@ function UserInfo({ designations }) {
           }}
         >
           By clicking "Start Application" I agree to MTN's{" "}
-          <a
-            href="#"
+          <Link
+            href={"/term-of-use"}
             className=" text-white hover:text-white border-b-1 border-b-white"
           >
             Terms of Use
-          </a>
+          </Link>
           ,
-          <a
-            href="#"
+          
+          <Link
+            href={"/privacy-notice"}
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"
           >
             Privacy Policy
-          </a>{" "}
+          </Link>
+          
           and to receive electronic communication about my accounts and services
           per Mtn's{" "}
           <a

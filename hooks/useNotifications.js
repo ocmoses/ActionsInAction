@@ -19,6 +19,7 @@ export default function useNotifications(){
     //   : null;
 
     console.log('users state from store ', users);
+    console.log('partners state from store ', partners);
     // console.log('token', token);
     
     // const getNotifications = async () => {
@@ -39,7 +40,9 @@ export default function useNotifications(){
     
           setProcessing(true);
           const response = await fetch(
-            `${RemoteEndpoints.GET_UNREAD_NOTIFICATIONS.replace(':partner-portal-uuid', partners.partner.uuid)}`,
+            `${RemoteEndpoints.GET_UNREAD_NOTIFICATIONS
+                        .replace(':user-uuid', partners.partner.user_uuid)
+                        .replace(':partner-portal-uuid', partners.partner.uuid)}`,
             {
               cache: "no-store",
               next: { revalidate: 120 },

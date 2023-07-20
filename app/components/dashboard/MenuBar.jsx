@@ -146,7 +146,7 @@ export default function MenuBar({ open }) {
                 !open && "tooltip tooltip-right tooltip-mtn"
               }`}
               data-tip={'Team'}
-              onClick={() => {setOpenSecondaryMenu(false); window.location = '/admin/dashboard/admins'}}
+              onClick={() => {setOpenSecondaryMenu(false); window.location = '/dashboard/team'}}
             >
             <svg
               xmlns="http://www.w3.org/2000/svg"

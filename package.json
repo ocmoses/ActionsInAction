@@ -41,7 +41,8 @@
     "styled-components": "^5.3.8",
     "swr": "^2.0.3",
     "typewriter-effect": "^2.19.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "laravel-echo": "^1.15.1"
   },
   "devDependencies": {
     "@types/node": "18.11.3",

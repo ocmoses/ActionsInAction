@@ -298,7 +298,7 @@ export default function AdminRoles({ allRoles }) {
                                   onClick={() => {setShowActions(null); viewRoleDetails(role.uuid)}}>
                                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                  </svg> <span className="text-white">Edit role</span>
+                                  </svg> <span className="text-white">Role details</span>
                                 </div>
                                 <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
                                   onClick={() => displayDeleteModal(role.uuid)}>
@@ -497,26 +497,54 @@ export default function AdminRoles({ allRoles }) {
               </div>
             </div>
             <hr className="bg-gray-800"/>
-            <div className="p-8 pb-4  space-x-4 flex">
+            <div className="p-8 pb-4  space-x-4 flex flex-col">
               <div className="text-white text-sm">
                 <p className="text-gray-200 font-mtn-medium-italic text-sm">Privileges</p>
               </div>
               <div>
                 {
-                  adminPrivileges.map((privilege, index) => 
-                  currentRole.privileges.includes(privilege.privilege) ? 
-                  <div className="flex space-x-2 py-2 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg> &nbsp;&nbsp; {privilege.privilege}
-                  </div> : 
-                  <div className="flex space-x-2 py-2 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg> &nbsp;&nbsp; {privilege.privilege}
+                  // adminPrivileges.map((privilege, index) => 
+                  // currentRole.privileges.includes(privilege.privilege) ? 
+                  // <div className="flex space-x-2 py-2 text-white">
+                  //   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
+                  //     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  //   </svg> &nbsp;&nbsp; {privilege.privilege}
+                  // </div> : 
+                  // <div className="flex space-x-2 py-2 text-white">
+                  //   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
+                  //     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  //   </svg> &nbsp;&nbsp; {privilege.privilege}
 
-                  </div>
-                  )
+                  // </div>
+                  // )
+
+                  adminPrivileges.map((privilegeGroup, index) => 
+                  <div className="flex space-x-4">
+                    <div className="w-[150px]">
+                      <span className="text-gray-200 text-xs font-mtn-extralight">{titleCase(privilegeGroup.role_class_name)}</span>
+                    </div>
+                    <div className="flex flex-col w-[300px]">
+                    {
+                      privilegeGroup.role_class.map((privilege, index) => 
+                      
+                        adminRoles.find(role => role.role_name == currentRole.role_name).privileges.includes(privilege.privilege) ? 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>) : 
+                        (<div className="flex space-x-2 py-2 text-white">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg> &nbsp;&nbsp; {privilege.privilege}
+                        </div>)
+
+                      )
+                      
+                    }                      
+                    </div>
+                    
+                  </div>)
                 }
               </div>
             </div>           

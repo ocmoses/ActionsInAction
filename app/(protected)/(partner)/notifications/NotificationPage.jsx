@@ -1,5 +1,5 @@
 "use client"
-import NotificationContent from "../../../components/dashboard/NotificationContent";
+import NotificationContent from "@/app/components/dashboard/NotificationContent";
 
 export default function NotificationPage(){
 

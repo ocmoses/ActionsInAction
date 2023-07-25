@@ -8,7 +8,10 @@ const notifications = {
     state.notifications = []
   }),
   
-  count: computed((state) => state.notifications.length),
+  count: computed((state) => state.notifications
+              .filter(notification => notification.deleted_at == null 
+                                      && notification.read_at == null
+                                      && notification.archived_at == null).length),
   
   setNotification: action((state, notification) => {
     state.notification = notification;

@@ -31,7 +31,7 @@ const RemoteEndpoints = {
   AUTH_USER: `${apiURL}/v1/auth/authenticated-user`,
   GET_USER_INFO_VALIDATED: `${apiURL}/v1/auth/partner-info/validate`,
   WELCOMEBACK: `${apiURL}/v1/existing-partner/welcome-back`,
-  USERINFO: `${apiURL}/v1/auth/register/userinfo`,
+  USERINFO: `${apiURL}/v2/auth/register/userinfo`,
   RESETPASSWORD: `${apiURL}/v1/auth/reset-password/new-password`,
   RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v1/auth/register/resend-email-confirmation-link`,
   CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v1/auth/check-email-verification-link`,
@@ -60,10 +60,11 @@ const RemoteEndpoints = {
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
   //Notifications
-  GET_NOTIFICATIONS: `http://10.1.29.142/api/notifications/:partner-portal-uuid`,
-
+  GET_ALL_NOTIFICATIONS: `http://10.1.29.142/api/notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notifications/unread/:partner-portal-uuid/:user-uuid`,
-  
+  MARK_NOTIFICATION_READ: `http://10.1.29.142/api/notifications/read/:notification-uuid`,
+  ARCHIVE_NOTIFICATION: `http://10.1.29.142/api/notification/archive/:notification-uuid/:user-uuid`,
+
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
   ALL_ADMIN_PRIVILEGES: `${apiURL}/v2/admin/portal-privileges/admin`,
@@ -78,5 +79,9 @@ const RemoteEndpoints = {
   ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
   CREATE_PARTNER: `${apiURL}/v2/partner-user/add-partner-user`,
   DELETE_PARTNER: `${apiURL}/v2/partner-user/delete-partner-user`,
+
+  GET_SERVICES: `${apiURL}/v2/contract/service-types`,
+  SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
+  SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
 }
 export default RemoteEndpoints

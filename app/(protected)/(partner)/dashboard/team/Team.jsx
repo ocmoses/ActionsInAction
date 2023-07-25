@@ -637,12 +637,12 @@ export default function Team() {
                 <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {setConfirmDelete(false); }}>Cancel</button>
                 <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={handleDelete}>Yes, Remove</button>
                </div>
-              }
-              {deletingPartner && 
-                  <div className="flex px-4">
-                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                  </div>
-                }
+            }
+            {deletingPartner && 
+                <div className="flex px-4">
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                </div>
+            }
           </div>
         </div>
       }

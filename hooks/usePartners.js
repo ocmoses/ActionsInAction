@@ -54,7 +54,10 @@ const usePartners = () => {
   const { setPartners, updatePartner, setCategory } = actions.partners
   const { setTmpUser } = actions.users
   // const { user } = states.users
-  const users = useUsers()
+  const users = useUsers();
+
+  const [stageStatus, setStageStatus] = useState(null)
+
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -406,8 +409,7 @@ const usePartners = () => {
 
     setSuccess(resendEmailData.message)
   }
-  const [stageStatus, setStageStatus] = useState(null)
-
+  
   const updateStageStatus = (category, stage) => {
     if (!category || !stage) return
     console.log({
@@ -526,6 +528,112 @@ const usePartners = () => {
     }
   };
 
+  const getAllServices = async () => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_SERVICES}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      // if (response.status === 401) {
+      //   redirect(NextEndPoints.LOGIN_ADMIN)
+      //   return
+      // }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const service_types = result?.data['service-types'];
+        
+        // console.log('Service types retrieved', result);
+
+        return {
+          service_types
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const partnerSelectService = async (data) => {
+    console.log("data being sent: ", data);
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SELECT_SERVICE}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.SELECT_SERVICE', RemoteEndpoints.SELECT_SERVICE);
+      // console.log('Select result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.messsage;
+        
+        console.log('Selected message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
 
   const createPartner = async (data) => {
     try {
@@ -552,9 +660,9 @@ const usePartners = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
-      console.log('Create result', result);
-      console.log('states.users.token', states.users.token);
+      // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
 
       setProcessing(false);
       if (result?.success) {
@@ -581,6 +689,56 @@ const usePartners = () => {
     }
   };
 
+  const submitAllSignatories = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SUBMIT_SIGNATORIES}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('submit signatories message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
   const deletePartner = async (data) => {
     try {
       setProcessing(true);
@@ -606,9 +764,9 @@ const usePartners = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
-      console.log('Create result', result);
-      console.log('states.users.token', states.users.token);
+      // console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
 
       setProcessing(false);
       if (result?.success) {
@@ -658,7 +816,10 @@ const usePartners = () => {
     updateStageStatus,
     getAllAdminPartners,
     createPartner,
-    deletePartner
+    deletePartner,
+    getAllServices,
+    partnerSelectService,
+    submitAllSignatories
   }
 }
 export default usePartners

@@ -46,7 +46,7 @@ export const PartnerMenu = [
   //   route: "",
   // },
 ];
-];
+
 export const AdminMenu = [
   {
     label: "Dashboard",
@@ -83,5 +83,4 @@ export const PageRoutes = {
   // admin
   adminlogin: "/admin/login",
   admindashboard: "/admin/dashboard",
-};
 };

@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
@@ -27,8 +27,6 @@ function Login({ params }) {
     {}
   );
   const { clearStore } = useLogout();
-  );
-  const { clearStore } = useLogout();
 
   const [data, setData] = useState({
     email:
@@ -43,121 +41,32 @@ function Login({ params }) {
   });
   const [notVerified, setNotVerified] = useState(null);
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
   let canvasRef = useRef(null);
-  const [drawing, setDrawing] = useState(false)
-  const [position, setPosition] = useState(null)
-
-  const onDown = useCallback((event) => {
-    const coordinates = getCoordinates(event)
-    if (coordinates) {
-      setPosition(coordinates)
-      setDrawing(true)
-    }
-  }, [])
-
-  const onUp = useCallback(() => {
-    setDrawing(false)
-    setPosition(null)
-  }, [])
-
-  const getCoordinates = (event) => {
-    if (!canvasRef.current) {
-      return null
-    }
-
-    const x = event.pageX || event.touches[0].pageX
-    const y = event.pageY || event.touches[0].pageY
-
-    return {
-      x: x - canvasRef.current.offsetLeft,
-      y: y - canvasRef.current.offsetTop
-    }
-  }
-
-  const onMove = useCallback(
-    (event) => {
-      if (drawing) {
-        const newPosition = getCoordinates(event)
-        if (position && newPosition) {
-          drawLine(position, newPosition)
-          setPosition(newPosition)
-        }
-      }
-    },
-    [drawing, position]
-  )
-
-  const drawLine = (originalPosition, newPosition) => {
-    if (!canvasRef.current) {
-      return null
-    }
-
-    const context = canvasRef.current.getContext('2d')
-
-    if (context) {
-      context.strokeStyle = "white";
-      context.lineJoin = 'round';
-      context.lineWidth = 4;
-
-      context.beginPath()
-      context.moveTo(originalPosition.x, originalPosition.y)
-      context.lineTo(newPosition.x, newPosition.y)
-      context.closePath()
-
-      context.stroke()
-      handleDraw(context.getImageData(0, 0, 400, 200))
-    }
-  }
-
-  const handleDraw = (data) => {
-    if (typeof onDraw === 'function') {
-      onDraw(data)
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     setForm(null);
     setProcessing(false);
     clearErrors();
     setNotVerified(null);
-
-    /////////////////////////////////////////////////////////////////////////////////////////
-    if(canvasRef.current){
-      const context = canvasRef.current.getContext('2d');
-      
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////
+    
   }, []);
   const handleFormChange = (e) => {
-    removeError(e.target.id);
     removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   };
-    }));
-  };
   const handleLogin = async (e) => {
-    e.preventDefault();
-    clearErrors();
-    setNotVerified(null);
     e.preventDefault();
     clearErrors();
     setNotVerified(null);
     if (!data.email) {
       return setError({ email: `Please enter your email address` });
-      return setError({ email: `Please enter your email address` });
     }
     if (!data.password) {
       return setError({ password: `Please enter your password` });
-      return setError({ password: `Please enter your password` });
     }
-    clearStore();
-    setProcessing(true);
     clearStore();
     setProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN, {
@@ -170,34 +79,23 @@ function Login({ params }) {
     });
     const result = await response.json();
     const { data: loginData, error: loginError } = result;
-    });
-    const result = await response.json();
-    const { data: loginData, error: loginError } = result;
     if (!loginData) {
-      setProcessing(false);
-      return setError({ login: loginError /*"Authentication failed"*/ });
       setProcessing(false);
       return setError({ login: loginError /*"Authentication failed"*/ });
     }
     if (!loginData.success) {
       setProcessing(false);
-      setProcessing(false);
       if (loginData.data?.email_verified === "no") {
-        setNotVerified(loginData.data);
         setNotVerified(loginData.data);
       }
       return setError({ login: loginData.error });
-      return setError({ login: loginData.error });
     }
-    setTmpUser(null);
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User:  loginData?.data,
       token:  loginData?.data?.login_token?.access_token,
       type: "user",
-    };
-    app.setStoreStates(serverSession, loginData?.categories, "login");
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");
 
@@ -207,11 +105,6 @@ function Login({ params }) {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard;
-    if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
-    else app.toggleGetstartedLink(false);
-    return router.replace(redirect);
-  };
         : PageRoutes.dashboard;
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
@@ -312,22 +205,10 @@ function Login({ params }) {
         </div>
       </form>
 
-      <canvas width="400" height="200" 
-        ref={canvasRef} className="border-px border-gray-200"
-        onMouseDown={onDown}
-        onTouchStart={onDown}
-        onMouseUp={onUp}
-        onTouchEnd={onUp}
-        onMouseLeave={onUp}
-        onMouseMove={onMove}
-        onTouchMove={onMove}
-        >          
-      </canvas>
+      <canvas width="400" height="200" ref={canvasRef}></canvas>
       
     </>
   );
-  );
 }
 
-export default Login;
 export default Login;

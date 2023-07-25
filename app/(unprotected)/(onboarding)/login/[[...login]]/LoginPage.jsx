@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
@@ -41,14 +41,93 @@ function Login({ params }) {
   });
   const [notVerified, setNotVerified] = useState(null);
 
+  ////////////////////////////////////////////////////////////////////////////////////////////
   let canvasRef = useRef(null);
+  const [drawing, setDrawing] = useState(false)
+  const [position, setPosition] = useState(null)
+
+  const onDown = useCallback((event) => {
+    const coordinates = getCoordinates(event)
+    if (coordinates) {
+      setPosition(coordinates)
+      setDrawing(true)
+    }
+  }, [])
+
+  const onUp = useCallback(() => {
+    setDrawing(false)
+    setPosition(null)
+  }, [])
+
+  const getCoordinates = (event) => {
+    if (!canvasRef.current) {
+      return null
+    }
+
+    const x = event.pageX || event.touches[0].pageX
+    const y = event.pageY || event.touches[0].pageY
+
+    return {
+      x: x - canvasRef.current.offsetLeft,
+      y: y - canvasRef.current.offsetTop
+    }
+  }
+
+  const onMove = useCallback(
+    (event) => {
+      if (drawing) {
+        const newPosition = getCoordinates(event)
+        if (position && newPosition) {
+          drawLine(position, newPosition)
+          setPosition(newPosition)
+        }
+      }
+    },
+    [drawing, position]
+  )
+
+  const drawLine = (originalPosition, newPosition) => {
+    if (!canvasRef.current) {
+      return null
+    }
+
+    const context = canvasRef.current.getContext('2d')
+
+    if (context) {
+      context.strokeStyle = "white";
+      context.lineJoin = 'round';
+      context.lineWidth = 4;
+
+      context.beginPath()
+      context.moveTo(originalPosition.x, originalPosition.y)
+      context.lineTo(newPosition.x, newPosition.y)
+      context.closePath()
+
+      context.stroke()
+      handleDraw(context.getImageData(0, 0, 400, 200))
+    }
+  }
+
+  const handleDraw = (data) => {
+    if (typeof onDraw === 'function') {
+      onDraw(data)
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     setForm(null);
     setProcessing(false);
     clearErrors();
     setNotVerified(null);
-    
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    if(canvasRef.current){
+      const context = canvasRef.current.getContext('2d');
+      
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
   }, []);
   const handleFormChange = (e) => {
     removeError(e.target.id);
@@ -205,7 +284,17 @@ function Login({ params }) {
         </div>
       </form>
 
-      <canvas width="400" height="200" ref={canvasRef}></canvas>
+      <canvas width="400" height="200" 
+        ref={canvasRef} className="border-px border-gray-200"
+        onMouseDown={onDown}
+        onTouchStart={onDown}
+        onMouseUp={onUp}
+        onTouchEnd={onUp}
+        onMouseLeave={onUp}
+        onMouseMove={onMove}
+        onTouchMove={onMove}
+        >          
+      </canvas>
       
     </>
   );

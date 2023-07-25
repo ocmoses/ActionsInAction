@@ -1665,4 +1665,29 @@ export function titleCase(text){
   return textArray.join(" ");
 }
 
+export function base64(file_id, callback){
+  const fileInput = document.querySelector('#' + file_id);
+
+    // Listen for the change event so we can capture the file
+    fileInput.addEventListener('change', (e) => {
+        // Get a reference to the file
+        const file = e.target.files[0];
+
+        // Encode the file using the FileReader API
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            // Use a regex to remove data url part
+            const base64String = reader.result
+                .replace('data:', '')
+                .replace(/^.+,/, '');
+
+                console.log('base64String', base64String);
+
+            callback(base64String);
+            // Logs wL2dvYWwgbW9yZ...
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 

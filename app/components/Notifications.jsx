@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useState } from 'react';
 import useUsers from '@/hooks/useUsers';
+import {ellipsify} from "@/app/modules/utilities";
+import moment from 'moment/moment';
 
 export default function Notifications({count=0}){
 
@@ -14,7 +16,19 @@ export default function Notifications({count=0}){
 
 
     useEffect(() => {
-        getNotifications().then((res) => setSlice(notifications.slice(0,3)) );        
+        setInterval(function(){
+            getNotifications().then((res) => {
+                if(notifications?.length){
+                    notifications.sort((a,b) => {(a.read_at == null && b.read_at != null) ? 1 : (a.read_at != null && b.read_at == null) ? -1 : 0})
+                }
+                if(notifications.length >= 3){
+                    setSlice(notifications.slice(0,3))
+                }else{
+                    setSlice(notifications)
+                }
+                
+            } ); 
+        }, 60000);               
     }, []);
 
     return (<div className="hidden md:flex text-[#888888] relative">
@@ -46,23 +60,37 @@ export default function Notifications({count=0}){
                         {
                             previewNotifications &&
                             <div                            
-                                className="absolute top-10 right-0 text-right w-[140px] bg-white/10 p-0 mt-3 rounded-lg shadow-lg w3-animate-opacity"
+                                className="absolute z-10 top-10 right-0 w-[250px] bg-[#212121] p-4 mt-3 rounded-lg shadow-lg w3-animate-opacity"
                             >
-                                <div className="w-full flex flex-col justify-start items-start">
+                                <div className="border-b border-gray-500 pb-4">
+                                    <p className="text-white">Notifications</p>
+                                </div>
+                                <div className="w-full flex flex-col justify-start items-start pt-4 space-y-4">
                                     {
                                         notifications.slice(0,3).length > 0 && 
                                         notifications.slice(0,3).map((item, index) => (<div
-                                        className="w-full text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
+                                        className="w-full flex text-[12px]  space-x-4"
                                         >
-                                        {item.subject}
+                                            {/* <div className="p4 inline-flex text-lg">
+                                                <span className="flex rounded-full w-10 h-10 text-white bg-pink-900 justify-center items-center">I</span>
+                                            </div> */}
+                                            <div className="flex-1">
+                                                <h1 className="text-md text-white">{item.subject}</h1>
+                                                <p className="text-md text-white/50">{ellipsify(item.message, 60)}</p>
+                                                <span className="text-white/15 text-xs">{moment(item.created_at).fromNow()}</span>
+                                            </div>
+
+                                            <div className="w-2 h-2 rounded-full bg-yellow-500">
+                                            </div>
+                                        
                                         </div>))
                                     }
                                     
                                     <Link
                                     href="/notifications"
-                                    className="w-full cursor-pointer text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
+                                    className="w-full text-center cursor-pointer text-mtn text-[12px] px-3 py-2 pt-4 border-t border-gray-500"
                                     >
-                                        Show more...
+                                        All notifications
                                     </Link>                             
                                     
                                 </div>

@@ -1,5 +1,7 @@
 import { createStore, persist } from "easy-peasy";
 import { persistStore } from "@/app/modules/constants";
+import { createStore, persist } from "easy-peasy";
+import { persistStore } from "@/app/modules/constants";
 
 import app from "./models/app";
 import users from "./models/users";
@@ -19,5 +21,8 @@ const store = persistStore ? createStore(persist(model)) : createStore(model);
 export const clearPersistStore = async () => {
   if (persistStore) await store.persist.clear();
 };
+  if (persistStore) await store.persist.clear();
+};
 
+export default store;
 export default store;

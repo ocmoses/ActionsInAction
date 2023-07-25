@@ -27,6 +27,8 @@ function Login({ params }) {
     {}
   );
   const { clearStore } = useLogout();
+  );
+  const { clearStore } = useLogout();
 
   const [data, setData] = useState({
     email:
@@ -131,21 +133,31 @@ function Login({ params }) {
   }, []);
   const handleFormChange = (e) => {
     removeError(e.target.id);
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
+    }));
+  };
     }));
   };
   const handleLogin = async (e) => {
     e.preventDefault();
     clearErrors();
     setNotVerified(null);
+    e.preventDefault();
+    clearErrors();
+    setNotVerified(null);
     if (!data.email) {
+      return setError({ email: `Please enter your email address` });
       return setError({ email: `Please enter your email address` });
     }
     if (!data.password) {
       return setError({ password: `Please enter your password` });
+      return setError({ password: `Please enter your password` });
     }
+    clearStore();
+    setProcessing(true);
     clearStore();
     setProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN, {
@@ -158,23 +170,34 @@ function Login({ params }) {
     });
     const result = await response.json();
     const { data: loginData, error: loginError } = result;
+    });
+    const result = await response.json();
+    const { data: loginData, error: loginError } = result;
     if (!loginData) {
+      setProcessing(false);
+      return setError({ login: loginError /*"Authentication failed"*/ });
       setProcessing(false);
       return setError({ login: loginError /*"Authentication failed"*/ });
     }
     if (!loginData.success) {
       setProcessing(false);
+      setProcessing(false);
       if (loginData.data?.email_verified === "no") {
+        setNotVerified(loginData.data);
         setNotVerified(loginData.data);
       }
       return setError({ login: loginData.error });
+      return setError({ login: loginData.error });
     }
+    setTmpUser(null);
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User:  loginData?.data,
       token:  loginData?.data?.login_token?.access_token,
       type: "user",
+    };
+    app.setStoreStates(serverSession, loginData?.categories, "login");
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");
 
@@ -184,6 +207,11 @@ function Login({ params }) {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
+        : PageRoutes.dashboard;
+    if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
+    else app.toggleGetstartedLink(false);
+    return router.replace(redirect);
+  };
         : PageRoutes.dashboard;
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
@@ -298,6 +326,8 @@ function Login({ params }) {
       
     </>
   );
+  );
 }
 
+export default Login;
 export default Login;

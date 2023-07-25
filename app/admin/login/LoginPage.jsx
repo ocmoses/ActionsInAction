@@ -12,8 +12,25 @@ import { NextEndPoints } from "@/app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
 import useAdmins from "@/hooks/useAdmins";
 import { useRouter } from "next/navigation";
+"use client";
+import Image from "next/image";
+import TextInput from "@/app/components/form/TextInput";
+import Button from "@/app/components/form/Button";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import useLogout from "@/hooks/useLogout";
+import useProcessing from "@/hooks/useProcessing";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useState, useEffect } from "react";
+import { NextEndPoints } from "@/app/modules/endpoints";
+import { PageRoutes } from "@/app/modules/menu";
+import useAdmins from "@/hooks/useAdmins";
+import { useRouter } from "next/navigation";
 
 function Login({ params }) {
+  const router = useRouter();
+  const { setToken, setAdmin, setCategories } = useAdmins();
+  const { processing, setProcessing, setForm } = useProcessing();
   const router = useRouter();
   const { setToken, setAdmin, setCategories } = useAdmins();
   const { processing, setProcessing, setForm } = useProcessing();
@@ -21,31 +38,47 @@ function Login({ params }) {
     {}
   );
   const { clearStore } = useLogout();
+  );
+  const { clearStore } = useLogout();
   const [data, setData] = useState({
     username: process.env.NODE_ENV === "production" ? "" : "olabodg",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+  });
   });
   useEffect(() => {
     setForm(null);
     setProcessing(false);
     clearErrors();
   }, []);
+    setForm(null);
+    setProcessing(false);
+    clearErrors();
+  }, []);
   const handleFormChange = (e) => {
+    removeError(e.target.id);
     removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   };
+    }));
+  };
   const handleLogin = async (e) => {
+    e.preventDefault();
+    clearErrors();
     e.preventDefault();
     clearErrors();
     if (!data.username) {
       return setError({ username: `Please enter your AD username` });
+      return setError({ username: `Please enter your AD username` });
     }
     if (!data.password) {
       return setError({ password: `Please enter your AD password` });
+      return setError({ password: `Please enter your AD password` });
     }
+    clearStore();
+    setProcessing(true);
     clearStore();
     setProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN_ADMIN, {
@@ -57,7 +90,12 @@ function Login({ params }) {
     });
     const result = await response.json();
     const { data: Data, error } = result;
+    });
+    const result = await response.json();
+    const { data: Data, error } = result;
     if (error) {
+      setProcessing(false);
+      return setError({ login: error });
       setProcessing(false);
       return setError({ login: error });
     }
@@ -68,7 +106,10 @@ function Login({ params }) {
       params && params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
         : PageRoutes.admindashboard;
+        : PageRoutes.admindashboard;
 
+    return router.replace(redirect);
+  };
     return router.replace(redirect);
   };
   return (
@@ -151,6 +192,8 @@ function Login({ params }) {
       </div>
     </>
   );
+  );
 }
 
+export default Login;
 export default Login;

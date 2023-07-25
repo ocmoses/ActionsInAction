@@ -1,4 +1,5 @@
 import { action, computed, thunk } from "easy-peasy";
+import { action, computed, thunk } from "easy-peasy";
 const users = {
   users: null,
   user: null,
@@ -18,6 +19,7 @@ const users = {
     return state.user?.id != null
       ? `${state.user?.first_name} ${state.user?.last_name}`
       : null;
+      : null;
   }),
   setUser: action((state, user) => {
     state.user = user;
@@ -29,9 +31,14 @@ const users = {
   setTmpUser: action((state, user) => {
     state.tmpuser = user;
     state.session = { status: "unauthenticated", user: null };
+    state.tmpuser = user;
+    state.session = { status: "unauthenticated", user: null };
   }),
   updateUser: action((state, user) => {
     state.user = { ...state.user, ...user };
+    state.user = { ...state.user, ...user };
   }),
+};
+export default users;
 };
 export default users;

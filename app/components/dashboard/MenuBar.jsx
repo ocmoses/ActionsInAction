@@ -107,6 +107,7 @@ export default function MenuBar({ open }) {
             </Link>
           </li>
         );
+        );
       })}
 
       <div className={`absolute bottom-0 left-0 pl-2`}>
@@ -218,5 +219,6 @@ export default function MenuBar({ open }) {
         </div>
       </div>
     </ul>
+  );
   );
 }

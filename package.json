@@ -5,10 +5,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""
-    "start": "next start",
-    "lint": "next lint",
-    "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""
+    "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""    
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -34,7 +31,6 @@
     "next": "13.0.6",
     "next-auth": "^4.18.7",
     "npm": "^9.6.4",
-    "prettier": "^2.8.8",
     "prettier": "^2.8.8",
     "react": "18.2.0",
     "react-datepicker": "^4.8.0",

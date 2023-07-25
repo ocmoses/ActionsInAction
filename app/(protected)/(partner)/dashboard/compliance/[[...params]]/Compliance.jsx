@@ -7,15 +7,6 @@ import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import { useState, useEffect } from "react";
 import { TailSpinPreloader } from "@/app/components/Icons";
-"use client";
-import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
-import ComplianceDetailPartners from "@/app/components/dashboard/partners/ComplianceDetailPartners";
-import useProcessing from "@/hooks/useProcessing";
-import usePartners from "@/hooks/usePartners";
-import useErrors from "@/hooks/useErrors";
-import FormErrors from "@/app/components/FormErrors";
-import { useState, useEffect } from "react";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   filterCategory,
   filterFields,
@@ -185,14 +176,8 @@ export default function Compliance({ params }) {
   useEffect(() => {
     fieldsCounts();
   }, [partner.approvalStages]);
-    fieldsCounts();
-  }, [partner.approvalStages]);
 
   useEffect(() => {
-    let html = document.getElementsByTagName("html");
-    if (openDrawer) html[0].style["overflow-y"] = "hidden";
-    else html[0].style["overflow-y"] = "auto";
-  }, [openDrawer]);
     let html = document.getElementsByTagName("html");
     if (openDrawer) html[0].style["overflow-y"] = "hidden";
     else html[0].style["overflow-y"] = "auto";
@@ -203,23 +188,14 @@ export default function Compliance({ params }) {
       filterFields(partner);
       filterComplianceRequirements(partner);
       filterApprovalFields(partner);
-      filterFields(partner);
-      filterComplianceRequirements(partner);
-      filterApprovalFields(partner);
 
-      const [_category] = params.params;
       const [_category] = params.params;
       const _selectedCategory = partner?.categories?.find(
         (c) => c.category_uuid === _category
       );
-      );
       const _filtered_selectedCategory = filterCategory(
         _selectedCategory,
         partner
-      );
-      setSelectedCategory(_filtered_selectedCategory);
-      const _stages = getStages(_filtered_selectedCategory, categories);
-      setStages(_stages);
       );
       setSelectedCategory(_filtered_selectedCategory);
       const _stages = getStages(_filtered_selectedCategory, categories);
@@ -1084,6 +1060,5 @@ export default function Compliance({ params }) {
         </div>        
       }
     </div>
-  );
   );
 }

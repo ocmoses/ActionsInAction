@@ -48,6 +48,7 @@ export default function MenuBar({ open }) {
     <ul className={`p-0 flex-grow relative h-full`}>
       {AdminMenu.map((menu) => {
         const path = `/${getPath(segments)}`;
+        const path = `/${getPath(segments)}`;
         return (
           <li key={menu.label}>
             <Link
@@ -85,6 +86,7 @@ export default function MenuBar({ open }) {
               )}
             </Link>
           </li>
+        );
         );
       })}
 
@@ -197,5 +199,6 @@ export default function MenuBar({ open }) {
         </div>
       </div>
     </ul>
+  );
   );
 }

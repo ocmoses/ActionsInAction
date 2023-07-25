@@ -6,8 +6,18 @@ import { useStoreActions, useStoreState } from "easy-peasy";
 import { filterPartner } from "@/app/modules/utilities";
 import { redirect } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
+import useProcessing from "@/hooks/useProcessing";
+import useApp from "@/hooks/useApp";
+import { useEffect, useState } from "react";
+import { filterCategory, getstages } from "@/app/modules/utilities";
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { filterPartner } from "@/app/modules/utilities";
+import { redirect } from "next/navigation";
+import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
 export default function useAdmins() {
+  const states = useStoreState((action) => action.admins);
+  const actions = useStoreActions((action) => action.admins);
   const states = useStoreState((action) => action.admins);
   const actions = useStoreActions((action) => action.admins);
 
@@ -15,21 +25,34 @@ export default function useAdmins() {
   const [allCategories, setAllCategories] = useState([]);
   const app = useApp();
   const rejectionReasons = app.rejectionReasons;
+  const { setProcessing } = useProcessing();
+  const [allCategories, setAllCategories] = useState([]);
+  const app = useApp();
+  const rejectionReasons = app.rejectionReasons;
 
   useEffect(() => {
+    const Categories = {};
     const Categories = {};
     if (states.categories?.length > 0) {
       states.categories.map((category) => {
         Categories[category.uuid] = category;
       });
+        Categories[category.uuid] = category;
+      });
     }
+    setAllCategories(Categories);
+  }, [states.categories]);
     setAllCategories(Categories);
   }, [states.categories]);
   useEffect(() => {
     if (!rejectionReasons) app.getRejectionReasons();
   }, [rejectionReasons]);
+    if (!rejectionReasons) app.getRejectionReasons();
+  }, [rejectionReasons]);
 
   const getStages = (category, categories) => {
+    return getstages(category, categories);
+  };
     return getstages(category, categories);
   };
   const getAllPartners = async (page, perPage, contractStatus) => {
@@ -38,7 +61,12 @@ export default function useAdmins() {
       if (page) params.push(`page=${page}`);
       if (perPage) params.push(`per_page=${perPage}`);
       if (contractStatus) params.push(`contract_status=${contractStatus}`);
+      const params = [];
+      if (page) params.push(`page=${page}`);
+      if (perPage) params.push(`per_page=${perPage}`);
+      if (contractStatus) params.push(`contract_status=${contractStatus}`);
 
+      setProcessing(true);
       setProcessing(true);
       const response = await fetch(
         `${RemoteEndpoints.ALL_PARTNERS}?${
@@ -54,6 +82,7 @@ export default function useAdmins() {
           },
         }
       );
+      );
       // if (response.status === 401) {
       //   redirect(NextEndPoints.LOGIN_ADMIN)
       //   return
@@ -64,10 +93,16 @@ export default function useAdmins() {
         };
       const result = await response.json();
       setProcessing(false);
+        };
+      const result = await response.json();
+      setProcessing(false);
       if (result?.success) {
+        const partners = result.data?.partners.data;
         const partners = result.data?.partners.data;
         if (partners.length > 0)
           partners.map((partner) => {
+            filterPartner(partner, states.categories);
+          });
             filterPartner(partner, states.categories);
           });
         const navigation = {
@@ -83,6 +118,7 @@ export default function useAdmins() {
           prev_page_url: result?.data?.partners?.prev_page_url,
           to: result?.data?.partners?.to,
           total: result?.data?.partners?.total,
+        };
         };
 
         return {
@@ -243,10 +279,12 @@ export default function useAdmins() {
       };
     } catch (error) {
       console.log({ error });
+      console.log({ error });
       return {
         error:
           error.message ??
           "Something went wrong. Please check your connection and try again",
+      };
       };
     }
   };
@@ -257,7 +295,22 @@ export default function useAdmins() {
       headers.append("token", states.token);
       headers.append("Authorization", `bearer ${states.token}`);
       headers.append("Content-Type", "application/x-www-form-urlencoded");
+      var headers = new Headers();
+      headers.append("token", states.token);
+      headers.append("Authorization", `bearer ${states.token}`);
+      headers.append("Content-Type", "application/x-www-form-urlencoded");
 
+      var urlEncoded = new URLSearchParams();
+      urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "");
+      urlEncoded.append("user_uuid", formdata.user_uuid ?? "");
+      urlEncoded.append("category_uuid", formdata.category_uuid ?? "");
+      urlEncoded.append("category_stage", formdata.category_stage ?? "");
+      urlEncoded.append("admin_user", states.admin.uuid ?? "");
+      urlEncoded.append("feedback", formdata.feedback ?? "");
+      urlEncoded.append("status", formdata.status ?? "");
+      urlEncoded.append("field", formdata.field ?? "");
+      urlEncoded.append("approval_uuid", formdata.approval_uuid ?? "");
+      urlEncoded.append("created_by", states.admin.uuid ?? "");
       var urlEncoded = new URLSearchParams();
       urlEncoded.append("partner_uuid", formdata.partner_uuid ?? "");
       urlEncoded.append("user_uuid", formdata.user_uuid ?? "");
@@ -276,11 +329,16 @@ export default function useAdmins() {
         body: urlEncoded,
         redirect: "follow",
       };
+      };
 
       const response = await fetch(
         RemoteEndpoints.COMPLIANCE_APPROVE,
         requestOptions
       ).catch((error) => {
+        console.log("error", error);
+        return { success: false, error: error };
+      });
+      console.log({ response });
         console.log("error", error);
         return { success: false, error: error };
       });
@@ -291,10 +349,16 @@ export default function useAdmins() {
           error: "Unable to send request. Please check your connection",
         };
       const result = await response.json();
+        };
+      const result = await response.json();
       if (!response)
         return {
           success: false,
           error: "Unable to receive response. Please check your connection",
+        };
+      const { success, data } = result;
+      if (!success) return { success: false, error: data.message };
+      return { success: true, data, error: null };
         };
       const { success, data } = result;
       if (!success) return { success: false, error: data.message };

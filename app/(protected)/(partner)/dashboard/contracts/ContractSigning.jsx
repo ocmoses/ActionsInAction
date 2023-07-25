@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react";
+import {useState, useRef, useEffect} from "react";
 import TextInput from "@/app/components/form/TextInput";
 import useErrors from "@/hooks/useErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
@@ -17,6 +17,49 @@ export default function ContractSigning(){
     const [signing, setSigning] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
+
+    const [tool, setTool] = useState('pen');
+    const [lines, setLines] = useState([]);
+    const isDrawing = useRef(false);
+
+    const handleMouseDown = (e) => {
+        isDrawing.current = true;
+        const pos = e.target.getStage().getPointerPosition();
+        setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+    };
+
+    const handleMouseMove = (e) => {
+        // no drawing - skipping
+        if (!isDrawing.current) {
+            return;
+        }
+        const stage = e.target.getStage();
+        const point = stage.getPointerPosition();
+        let lastLine = lines[lines.length - 1];
+        // add point
+        lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+        // replace last
+        lines.splice(lines.length - 1, 1, lastLine);
+        setLines(lines.concat());
+    };
+
+    const handleMouseUp = () => {
+        isDrawing.current = false;
+    };
+
+    
+
+    useEffect(() => {
+        setTimeout(()=> {
+            const canvas = document.querySelector('#signature_canvas');
+            const ctx = canvas.getContext("2d");
+    
+            ctx.fillStyle = "red";
+            ctx.fillRect(20, 20, 150, 100);
+        }, 500);
+    }, []);
+    
 
     return <>
                 <div className="flex flex-col justify-center items-center pt-8">
@@ -75,7 +118,7 @@ export default function ContractSigning(){
 
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-16 h-16">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
@@ -90,7 +133,7 @@ export default function ContractSigning(){
 
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-16 h-16">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
@@ -101,7 +144,7 @@ export default function ContractSigning(){
 
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-16 h-16">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
@@ -149,12 +192,12 @@ export default function ContractSigning(){
                                 )}
 
 
-                                <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
-                                        <li class="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.selectStyle) setActiveSigningTab({upload: false, selectStyle: true})}}>
+                                <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+                                    <ul className="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
+                                        <li className="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.selectStyle) setActiveSigningTab({upload: false, selectStyle: true})}}>
                                             <button className={`inline-block p-4 border-b-2 ${activeSigningTab.selectStyle ? 'border-yellow-600' : 'border-transparent'} rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${activeSigningTab.selectStyle ? 'text-yellow-500' : 'text-white'}`} id="style-tab" data-tabs-target="#style" type="button" role="tab" aria-controls="style" aria-selected="false">Select style</button>
                                         </li>
-                                        <li class="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.upload) setActiveSigningTab({upload: true, selectStyle: false})}}>
+                                        <li className="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.upload) setActiveSigningTab({upload: true, selectStyle: false})}}>
                                             <button className={`inline-block p-4 border-b-2 ${activeSigningTab.upload ? 'border-yellow-600' : 'border-transparent'} rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${activeSigningTab.upload ? 'text-yellow-500' : 'text-white'}`} id="upload-tab" data-tabs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="false">Upload</button>
                                         </li>
                                     </ul>
@@ -175,9 +218,11 @@ export default function ContractSigning(){
 
                                             <div className="rounded-xl bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center py-12 justify-center">
 
-                                                <p className="text-white font-3xl">User Signature</p>
+                                                <canvas width="300" height="100" id="signature_canvas"></canvas>
+                                                {/* <p className="text-white font-3xl">User Signature</p> */}
 
-                                            </div>                                             
+                                            </div>    
+                                                                                 
 
                                         </div>
                                         <div className="flex m-4">
@@ -208,7 +253,7 @@ export default function ContractSigning(){
                                             <div className="rounded-xl bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
 
                                                 <div className="w-16 h-16 bg-white/40 flex items-center justify-center p-8 rounded-full">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" class="w-12 h-12">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="w-12 h-12">
                                                         <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
                                                         <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
                                                     </svg>
@@ -266,7 +311,7 @@ export default function ContractSigning(){
                                 
                                 <div className="flex pt-8 pb-4 justify-center items-center">
                                 <div className="flex justify-center items-center w-12 h-12 rounded-full bg-green-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
                                     <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
                                     </svg>  
                                 </div>              

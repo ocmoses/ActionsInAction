@@ -31,7 +31,7 @@ const useApp = () => {
           serverSession.User.user.status = "authenticated";
 
 
-          console.log('serverSession.User.access_token', serverSession.User.access_token);
+          // console.log('serverSession.User.access_token', serverSession.User.access_token);
           if(serverSession.User.access_token != null && serverSession.User.access_token != undefined){
             serverSession.User.user.token = serverSession.User.access_token;
             actions.users.setToken(serverSession.User.access_token);

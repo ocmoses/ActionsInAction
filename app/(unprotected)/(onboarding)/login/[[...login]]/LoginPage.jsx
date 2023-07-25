@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
@@ -40,11 +40,15 @@ function Login({ params }) {
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   const [notVerified, setNotVerified] = useState(null);
+
+  let canvasRef = useRef(null);
+
   useEffect(() => {
     setForm(null);
     setProcessing(false);
     clearErrors();
     setNotVerified(null);
+    
   }, []);
   const handleFormChange = (e) => {
     removeError(e.target.id);
@@ -200,6 +204,9 @@ function Login({ params }) {
           </div>
         </div>
       </form>
+
+      <canvas width="400" height="200" ref={canvasRef}></canvas>
+      
     </>
   );
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import { PartnerMenu } from "@/app/modules/menu";
 import { getPath, ellipsify } from "@/app/modules/utilities";
 import { useSelectedLayoutSegments } from "next/navigation";
@@ -8,9 +10,12 @@ import {
   getPartnerInitials
 } from "@/app/modules/utilities";
 import useUsers from "@/hooks/useUsers";
+import usePartners from "@/hooks/usePartners";
 
 
 export default function MenuBar({ open }) {
+  const {partners} = usePartners();
+
   const segments = useSelectedLayoutSegments();
   const currentPath = segments?.reverse();
   const path = `/${getPath(currentPath)}`;
@@ -22,18 +27,10 @@ export default function MenuBar({ open }) {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
 
-  console.log('useUsers', useUsers());
 
   const getFullname = () => {
-    const firstName =
-      session.user?.first_name !== "undefined" ? session.user?.first_name : "";
-    const lastName =
-      session.user?.last_name !== "undefined" ? session.user?.last_name : "";
-    setFullname(firstName + " " + lastName);
-    setEmail(session.user?.email);
-
-    setFullname("Moses Ocho");
-    setEmail(ellipsify("moses.ocho@mtn.com", 10));
+    setFullname(partners[0]?.company_name);
+    setEmail(ellipsify(partners[0]?.email));
   };
 
   useEffect(() => {
@@ -112,9 +109,9 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      <div className={`fixed bottom-0 left-0 pl-2`}>
+      <div className={`absolute bottom-0 left-0 pl-2`}>
         {/* The popup menu */}
-        {openSecondaryMenu && <div className="absolute bottom-4 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
+        {openSecondaryMenu && <div className="fixed bottom-10 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
           
           <div className="flex items-center space-x-3">
             <div className="relative flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
@@ -133,12 +130,12 @@ export default function MenuBar({ open }) {
             </div>
             <div className="cursor-pointer absolute top-0 right-0" onClick={() => setOpenSecondaryMenu(false)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div> 
           </div>
 
-          <hr className="my-4 bg-gray-100" />
+          <hr className="my-4 bg-white/200" />
 
           <Link
               href={'/dashboard/team'}
@@ -174,7 +171,7 @@ export default function MenuBar({ open }) {
                 !open && "tooltip tooltip-right tooltip-mtn"
               }`}
               data-tip={'Team'}
-              onClick={() => {setOpenSecondaryMenu(false); window.location = '/admin/dashboard/admin-roles'}}
+              onClick={() => {setOpenSecondaryMenu(false); window.location = '/dashboard/roles'}}
             >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -197,20 +194,20 @@ export default function MenuBar({ open }) {
           </Link>
               
         </div>}
-        <hr className="mb-8 bg-gray-500" />
-        <div className="flex items-center space-x-3">
-          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-            <span>
+        <hr className="mb-4 bg-gray-500" />
+        <div className="flex items-center space-x-4 pr-8 pb-4">
+          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px]">
+            <span className="w-10 h-10 flex justify-center items-center">
               {getPartnerInitials(fullname)}
             </span>
           </div>
           <div>
             <div className="font-italic text-white">
-              {fullname}
+              {ellipsify(fullname, 12)}
             </div>
             <div className="flex items-center gap-4 text-sm text-white/80">
               {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-              {email}
+              {ellipsify(email, 12)}
             </div>
           </div>
           <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(true)}>

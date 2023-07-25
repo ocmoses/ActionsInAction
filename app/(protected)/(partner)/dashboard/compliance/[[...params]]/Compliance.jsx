@@ -14,6 +14,7 @@ import {
   filterApprovalFields,
   getStatuses,
   partnerApprovals,
+  base64
 } from "@/app/modules/utilities";
 import Image from "next/image";
 import useApp from "@/hooks/useApp";
@@ -22,14 +23,16 @@ import { useRouter } from "next/navigation";
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import TextInput from "@/app/components/form/TextInput";
 import { fieldsCounts, fieldCounts } from "@/app/modules/constants";
+import useRoles from "@/hooks/useRoles";
 
 
 
 
 export default function Compliance({ params }) {
   const router = useRouter();
-  const { processing, setProcessing } = useProcessing();
-  const [{ errors }] = useErrors(null);
+  const {getAllPartnerRoles} = useRoles();
+  const { processing, setProcessing } = useProcessing();  
+  const [{ errors, setError, clearErrors }] = useErrors(null);
   const {
     getStages,
     selectedCategory,
@@ -40,9 +43,17 @@ export default function Compliance({ params }) {
     setActiveStage,
     partner,
     categories,
+    getAllAdminPartners,
+    getAllServices,
+    partnerSelectService,
+    createPartner,
+    submitAllSignatories
   } = usePartners();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
+
+  const [allServices, setAllServices] = useState([]); 
+  const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
 
   // const [ApprovalStages, setApprovalStages] = useState(null)
   // const [Approvals, setApproval] = useState(null)
@@ -60,11 +71,106 @@ export default function Compliance({ params }) {
   const [addingWitness, setAddingWitness] = useState(false);
   const [contractSignatoriesSuccess, setContractSignatoriesSuccess] = useState(false);
 
+  const [selectingService, setSelectingService] = useState(false);
+
+  const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
+
+  const [creatingPartner, setCreatingPartner] = useState(false);
+  const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
+  const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
+  const [adminPartners, setAdminPartners] = useState([]);
+  const [partnerRoles, setPartnerRoles] = useState([]);
+
+  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
+  const [disableActiveButton, setDisableActiveButton] = useState(true);
+
+  const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
+
+
+  let get_service_response = null;
+  let partner_select_service_response = null;
+  let create_partner_response = null;
+  let all_Roles = null;
+  let all_admin_partners_response = null;
+  let submit_signatories_response = null;
+
+  const get_service_types = async () => {
+    if (gettingServiceTypes) return;
+    setGettingServiceTypes(true);
+    get_service_response = await getAllServices();
+    setGettingServiceTypes(false);
+    // console.log('get_service_response', get_service_response);
+    if (get_service_response.error) setError({ error: get_service_response.error })
+    else {
+        // console.log('get_service_response', get_service_response);
+        setAllServices(get_service_response.service_types);
+    }
+  };
+
+  const partner_select_service = async (data) => {
+    if (selectingService) return;
+    setSelectingService(true);
+    partner_select_service_response = await partnerSelectService(data);
+    setSelectingService(false);
+    // console.log('partner_select_service_response', partner_select_service_response);
+    if (partner_select_service_response.error) setError({ error: partner_select_service_response.error })
+    else {
+        // console.log('partner_select_service_response', partner_select_service_response);
+        setContractModal(false); 
+        setContractSignatriesModal(true);
+
+    }
+  };
+
+  const get_all_partner_roles = async () => {
+    if (fetchingPartnerRoles) return;
+    setFetchingPartnerRoles(true);
+    all_Roles = await getAllPartnerRoles();
+    setPartnerRoles(all_Roles.partner_roles);
+    setFetchingPartnerRoles(false);
+    if (all_Roles.error) setError({ error: all_Roles.error });
+    // setNavigation(all_Admins.navigation);
+  };
+
+  const get_all_admin_partners = async () => {
+    if (fetchingAdminPartners) return;
+    setFetchingAdminPartners(true);
+    all_admin_partners_response = await getAllAdminPartners();
+    setAdminPartners(all_admin_partners_response.admin_partners);
+    setFetchingAdminPartners(false);
+    if (all_admin_partners_response.error) setError({ error: all_admin_partners_response.error });
+    // setNavigation(all_Admins.navigation);
+  };
+
+  const submit_signatories = async (signatories) => {
+
+    let data = {"email": []};
+
+    console.log("signatories", signatories);
+
+    for(let prop in signatories){
+      data.email.push(signatories[prop].email);
+    }
+
+    if(data.email.length == 3){
+      if (submitingContractSignatories) return;
+      setSubmitingContractSignatories(true);
+      submit_signatories_response = await submitAllSignatories(data);
+      setSubmitingContractSignatories(false);
+      if (submit_signatories_response.error) setError({ error: submit_signatories_response.error });
+    }else{
+      setError({error: "Please select all signatories"});
+    }
+    
+  };
 
 
   useEffect(() => {
     setProcessing(false);
     setRouteloading(false);
+    get_service_types();
+    get_all_partner_roles();
+    get_all_admin_partners();
   }, []);
 
   useEffect(() => {
@@ -99,12 +205,12 @@ export default function Compliance({ params }) {
   }, [partner, params, selectedCategory]);
 
   
-  
   const handleOpenDrawer = (stage) => {
     setActiveStage(stage);
     setOpenDrawer(true);
   };
 
+  
   const showContracts = () => {
     //Get all contracts and display
     setContractModal(true);
@@ -115,9 +221,100 @@ export default function Compliance({ params }) {
     router.push("dashboard/contracts/")
   }
 
+  const selectService = (name) => {
+    //make server call...
+    console.log("Partner here: ", partner);
+    const data = {
+                    partner_uuid: `${partner.uuid}`, 
+                    service_type: [name]
+                  };
+    partner_select_service(data);
+    
+  }
+
+  const submitSignatories = () => {
+    submit_signatories(signatories);
+  }
+
+  const convertFile = (e) => {
+    // Get a reference to the file
+    const file = e.target.files[0];
+
+    // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        // Use a regex to remove data url part
+        const base64String = reader.result
+            .replace('data:', '')
+            .replace(/^.+,/, '');
+
+        // console.log('base64String', base64String);
+        setData({...data, file:base64String});
+        // Logs wL2dvYWwgbW9yZ...
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const create_partner = async (data) => {
+    if (creatingPartner) return;
+    setCreatingPartner(true);
+    create_partner_response = await createPartner(data);
+
+    //Just setting the signatories anyway
+    if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
+      setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
+      setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    }else{
+      setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    }
+    ///////////////////////////////////////
+    
+    if (create_partner_response.error) setError({ error: create_partner_response.error })
+    else {
+        console.log('create_partner_response', create_partner_response);
+
+        if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
+          setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+        }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
+          setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+        }else{
+          setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+        }
+        
+    }
+    setCreatingPartner(false);
+    setAddDirectorModal(false);
+    setAddDelegateModal(false);
+    setAddWitnessModal(false);
+    setContractSignatriesModal(true);
+    setDisableActiveButton(true);
+    // setNavigation(all_AdminRoles.navigation);
+  };
+
+  const handleCreate = () => {
+    console.log('data in handleCreate', data);
+    console.log('allRoles', partnerRoles);
+    if(data.firstname == ""){
+        setError({error: "Please enter user's first name"});
+        return;
+    }
+    if(data.lastname == ""){
+      setError({error: "Please enter user's last name"});
+      return;
+    }
+    
+    if(data.email == ""){
+      setError({error: "Please enter user email"});
+      return;
+    }
+
+    create_partner(data);
+  };
+
   return (
     // max-w-[1158px]
-    <div className="mx-auto py-12 px-16">
+    <div className="mx-auto py-12 px-16 flex-grow">
       <div onClick={() => router.push("dashboard/")} className="mb-12">
         <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
           <svg
@@ -332,41 +529,34 @@ export default function Compliance({ params }) {
               </div> 
             </div>
 
-            <div className="m-4 rounded-lg bg-white/20 flex cursor-pointer hover:bg-white/40 hover:border-1 hover:border-color-[#212121]" onClick={() => {setContractModal(false); setContractSignatriesModal(true)}}>
-              <div className="w-16 h-16 flex justify-center items-center p-4 m-4 bg-white/20 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-8 h-8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                </svg>
+            {errors && (
+              <div className="my-6">
+                <FormErrors error={errors.error} />
               </div>
-              <div className="p-4 flex flex-col items-start space-y-2">
-                <p className="text-white text-md">Value added services</p>
-                <span className="text-xs color-black px-2 py-1 rounded bg-green-200 inline-flex">Active</span>
-              </div>
-            </div>
+            )}
 
-            <div className="m-4 rounded-lg bg-white/20 flex cursor-pointer hover:bg-white/40 hover:border-1 hover:border-color-[#212121]">
-              <div className="w-16 h-16 flex justify-center items-center p-4 m-4 bg-white/20 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-8 h-8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                </svg>
-              </div>
-              <div className="p-4 flex flex-col items-start space-y-2">
-                <p className="text-white text-md">Rich Media Services</p>
-                <span className="text-xs color-black px-2 py-1 rounded bg-red-300 inline-flex">Expired</span>
-              </div>
-            </div>
+            {
+              gettingServiceTypes ? (
+                <div className="flex justify-center items-center h-76">
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                </div>
+              ): (
+                allServices.map(service => 
+                <div key={`${service.id}-index`} className="m-4 rounded-lg bg-white/20 flex cursor-pointer hover:bg-white/40 hover:border-1 hover:border-color-[#212121]" onClick={() => {selectService(service.name_of_service_type)}}>
+                  <div className="w-16 h-16 flex justify-center items-center p-4 m-4 bg-white/20 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" className="w-8 h-8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                  </div>
+                  <div className="p-4 flex flex-col items-center justify-center space-y-2">
+                    <p className="text-white text-md">{service.name_of_service_type}</p>
+                    <span className="text-xs color-black px-2 py-1 rounded bg-green-200 inline-flex">Active</span>
+                  </div>
+                </div>)
+              )
+            }
 
-            <div className="m-4 rounded-lg bg-white/20 flex cursor-pointer hover:bg-white/40 hover:border-1 hover:border-color-[#212121] ">
-              <div className="w-16 h-16 flex justify-center items-center p-4 m-4 bg-white/20 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-8 h-8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                </svg>
-              </div>
-              <div className="p-4 flex flex-col items-start space-y-2">
-                <p className="text-white text-md">Aggregator</p>
-                <span className="text-xs text-black px-2 py-1 rounded bg-yellow-600 inline-flex">Expiring soon</span>
-              </div>
-            </div>
+            
                               
             {/* Add services here */}
           </div>
@@ -385,90 +575,151 @@ export default function Compliance({ params }) {
               </div> 
             </div>
 
+            {errors && errors["error"] && (
+              <div className="mb-6">
+              <FormErrors error={errors["error"]} />
+              </div>
+            )}
+
             <div className="m-4 rounded-lg bg-white/20 flex flex-col p-4">
 
+              {/* Add Director */}
               <div className="flex my-4">
 
                 <div className="w-12">
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
+                    {signatories.director &&
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                    }
                   </div>
                 </div>
-                <div className="flex-1 flex flex-col justify-center">
+                <div className="flex-1 flex flex-col justify-center " onClick={() => setSelectDirectorModal(true)}>
                   <p className="text-white text-md mb-2">A company director</p>
-                  <span className="text-gray-300 text-xs cursor-pointer" 
-                        onClick={() => {setContractSignatriesModal(false); setSelectDirectorModal(true);}}>
-                    A company director as stated in the company incorporation documents
-                  </span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
+                  {
+                    !signatories.director ?
+                    (<div className="flex flex-col group">
+                   
+                        <span className="text-gray-300 text-xs cursor-pointer group-hover:hidden" 
+                              onClick={() => {setContractSignatriesModal(false); setSelectDirectorModal(true);}}>
+                          A company director as stated in the company incorporation documents
+                        </span>
+                        <span className="text-yellow-500 text-xs hidden group-hover:block w-[200px] border-1 border-yellow-500 py-1 px-4 rounded-full cursor-pointer">
+                          Choose existing director
+                        </span>
+                      </div>):
+                      <span className="flex text-gray-300 text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>&nbsp;{`${signatories.director?.firstname} ${signatories.director?.lastname}`}
+                      </span>
+                  }
+                                    
                 </div>
+                
                 <div className="w-16 flex justify-center items-center">
-                  <div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setAddDirectorModal(true);}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                  </div>
+                  {
+                    !signatories.director ? 
+                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
+                        onClick={() => {
+                            setContractSignatriesModal(false); 
+                            setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'director').uuid}); 
+                            setAddDirectorModal(true);
+                          }
+                        }>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      </div>):
+                      <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                  }
+                  
                 </div>
 
               </div>
 
               <hr className="h-px bg-gray-500 border-0" />
 
+              {/* Add Delegate */}
               <div className="flex my-4">
 
                 <div className="w-12">
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg> */}
+                    {signatories.delegate && 
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg> 
+                    }
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col justify-center">
                   <p className="text-white text-md mb-2">A company delegate</p>
-                  <span className="text-gray-300 text-xs cursor-pointer" 
-                        onClick={() => {setContractSignatriesModal(false); setSelectDelegateModal(true);}}>
-                    A person nominated by the company to sign. Requires a board resolution document</span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
+                  {!signatories.delegate ?
+                    (<span className="text-gray-300 text-xs cursor-pointer" 
+                            onClick={() => {setContractSignatriesModal(false); setSelectDelegateModal(true);}}>
+                        A person nominated by the company to sign. Requires a board resolution document
+                    </span>):
+                    (<span className="flex text-gray-300 text-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      </svg>&nbsp;{`${signatories.delegate?.firstname} ${signatories.delegate?.lastname}`}
+                    </span>) 
+                  }
                 </div>
                 <div className="w-16 flex justify-center items-center">
-                  <div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer"
-                    onClick={() => {setContractSignatriesModal(false); setAddDelegateModal(true);}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                  </div>
+                  {
+                    !signatories.delegate ? 
+                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'delegate').uuid}); setAddDelegateModal(true);}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      </div>):
+                      <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                  }     
                 </div>
 
               </div>              
 
-
             </div>
 
+            {/* Add Witness */}
             <div className="m-4 rounded-lg bg-white/20 flex flex-col p-4">
 
               <div className="flex my-4">
 
                 <div className="w-12">
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
+                  {signatories.witness && 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
+                  }
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col justify-center">
                   <p className="text-white text-md mb-2">Add a witness</p>
-                  <span className="text-gray-300 text-xs cursor-pointer">A person who will sign as a witness to this contract</span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
+                  {!signatories.witness ?
+                    (<span className="text-gray-300 text-xs cursor-pointer">
+                      A person who will sign as a witness to this contract
+                    </span>):
+                    (<span className="flex text-gray-300 text-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      </svg>&nbsp;{`${signatories.witness?.firstname} ${signatories.witness?.lastname}`}
+                    </span>)
+                  }
                 </div>
                 <div className="w-16 flex justify-center items-center">
-                  <div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer"
-                    onClick={() => {setContractSignatriesModal(false); setAddWitnessModal(true);}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                  </div>
+                  {
+                    !signatories.witness ? 
+                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'witness').uuid}); setAddWitnessModal(true);}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      </div>):
+                      <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                  }                  
                 </div>
 
               </div>
@@ -476,7 +727,7 @@ export default function Compliance({ params }) {
 
             <div className="flex m-4">
               <div className="w-12 flex justify-end mr-4">
-                  <input type="checkbox" className="h-8 w-8 rounded-lg bg-black/40" />
+                <input onChange={(e) => e.target.checked ? setAllowSubmitSignatories(true) : setAllowSubmitSignatories(false)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
               </div>
               <div>
                   <p className="text-gray-500">By selecting this checkbox, I confirm that the entered user holds the position of director at my company and possesses the authoriized signatory rights to execute this contract on behalf of the company</p>
@@ -486,8 +737,8 @@ export default function Compliance({ params }) {
             <div className="">
               {!submitingContractSignatories &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
-                  <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setContractSignatriesModal(false); setContractModal(true);}}>Back</button>
-                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatriesModal(false); setContractSignatoriesSuccess(true)}}>Submit</button>
+                  <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setContractSignatriesModal(false); }}>Back</button>
+                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={!allowSubmitSignatories} onClick={() => {submitSignatories()}}>Submit</button>
                 </div>
               }
               {submitingContractSignatories &&
@@ -513,81 +764,31 @@ export default function Compliance({ params }) {
               </div> 
             </div>
 
-            <div className="mb-4 rounded-lg bg-white/20 flex p-4">
+            {
+              adminPartners && adminPartners.map(partner => partner.role.role_name == 'director' ? 
               
+              (<div className="mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={partner.uuid}
+                    onClick={() => {
+                      setSignatories({...signatories, director: {firstname: partner.firstname, lastname: partner.lastname, email: partner.email}}); 
+                      setSelectDirectorModal(false); setContractSignatriesModal(true);
+                      }
+                    }>
 
                 <div className="w-12">
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col justify-center cursor-pointer">
-                  <p className="text-white text-md mb-2">John Doe</p>
-                  <span className="text-gray-300 text-xs">john@himself.com</span>
+                  <p className="text-white text-md mb-2">{`${partner.firstname} ${partner.lastname}`}</p>
+                  <span className="text-gray-300 text-xs">{partner.email}</span>
                   {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
                 </div>
-                
               
-            </div>
-
-            <div className="mb-4 rounded-lg bg-white/20 flex p-4">
-              
-
-                <div className="w-12">
-                  <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1 flex flex-col justify-center cursor-pointer">
-                  <p className="text-white text-md mb-2">John Doe</p>
-                  <span className="text-gray-300 text-xs">john@himself.com</span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
-                </div>
-                
-              
-            </div>
-
-            <div className="mb-4 rounded-lg bg-white/20 flex p-4">
-              
-
-                <div className="w-12">
-                  <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1 flex flex-col justify-center cursor-pointer">
-                  <p className="text-white text-md mb-2">John Doe</p>
-                  <span className="text-gray-300 text-xs">john@himself.com</span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
-                </div>
-                
-              
-            </div>
-
-            <div className="mb-4 rounded-lg bg-white/20 flex p-4">
-              
-
-                <div className="w-12">
-                  <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1 flex flex-col justify-center cursor-pointer">
-                  <p className="text-white text-md mb-2">John Doe</p>
-                  <span className="text-gray-300 text-xs">john@himself.com</span>
-                  {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
-                </div>
-                
-              
-            </div>
+              </div>) : "")
+            }
 
             <div className="flex py-4 px-2 space-x-4 justify-end">
               <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setSelectDirectorModal(false); setContractSignatriesModal(true)}}>Back</button>
@@ -605,38 +806,45 @@ export default function Compliance({ params }) {
                 <p className="text-yellow-500 text-xs underline">I'm a director</p>
               </div> 
             </div>
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+              <FormErrors error={errors["error"]} />
+              </div>
+            )}
  
             <TextInput
                 id="name"
                 label="Name"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => { 
+                    try{
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
 
             <TextInput
                 id="email"
                 label="Email"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => {
+                    setData({...data, email: e.target.value.trim()});
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
-
+            
             <div className="flex m-4">
               <div className="w-12 flex justify-end mr-4">
-                  <input type="checkbox" className="h-8 w-8 rounded-lg bg-black/40" />
+                  <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
               </div>
               <div>
                   <p className="text-gray-500">By clicking this checkbox I agree that the user I've entered is a director of the Company and is authorized to sign this contract on behalf of the company</p>
@@ -644,13 +852,13 @@ export default function Compliance({ params }) {
             </div>
 
             <div className="">
-              {!addingDirector &&
+              {!creatingPartner && partnerRoles.length > 0 &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
                   <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setAddDirectorModal(false); setContractSignatriesModal(true);}}>Back</button>
-                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled onClick={() => {}}>Add</button>
+                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'director').uuid);}}>Add</button>
                 </div>
               }
-              {addingDirector &&
+              {(creatingPartner || partnerRoles.length == 0) &&
                 <div className="flex px-4">
                   <TailSpinPreloader width={40} height={40} fill="#efb703" />
                 </div>
@@ -669,43 +877,52 @@ export default function Compliance({ params }) {
                 <p className="text-yellow-500 text-xs underline">I'm a delegate</p>
               </div> 
             </div>
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+              <FormErrors error={errors["error"]} />
+              </div>
+            )}
  
             <TextInput
                 id="name"
                 label="Name"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => { 
+                    try{
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
 
             <TextInput
                 id="email"
                 label="Email"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => {
+                    setData({...data, email: e.target.value.trim()});
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
 
             <div className="mb-4 rounded-lg bg-white/20 flex p-2">              
 
               <div className="rounded-lg bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
 
-                <div className="w-16 h-16 bg-white/20 flex items-center justify-center p-8 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="w-12 h-12">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                <div className="w-16 h-16 bg-white/20 flex items-center justify-center rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-8 h-8">
+                    <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
+                    <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
                   </svg>
+
                 </div>
 
                 <div className="flex flex-col flex-1 space-y-1 justify-center">                
@@ -718,7 +935,8 @@ export default function Compliance({ params }) {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                   </svg>
-                  <button className="border-1 border-white rounded-full py-2 px-6 text-white">Choose file</button>
+                  <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
+                  <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
                 </div>
 
               </div>          
@@ -727,7 +945,7 @@ export default function Compliance({ params }) {
 
             <div className="flex m-4">
               <div className="w-12 flex justify-end mr-4">
-                  <input type="checkbox" className="h-8 w-8 rounded-lg bg-black/40" />
+                <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
               </div>
               <div>
                   <p className="text-gray-500">By clicking this checkbox I agree that the user I've entered is a delegate of the Company and is authorized to sign this contract on behalf of the company</p>
@@ -735,13 +953,13 @@ export default function Compliance({ params }) {
             </div>
 
             <div className="">
-              {!addingDelegate &&
+              {!creatingPartner && partnerRoles.length > 0 &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
                   <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setAddDelegateModal(false); setContractSignatriesModal(true);}}>Back</button>
-                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled onClick={() => {}}>Add</button>
+                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'delegate').uuid);}}>Add</button>
                 </div>
               }
-              {addingDelegate &&
+              {(creatingPartner || partnerRoles.length == 0) &&
                 <div className="flex px-4">
                   <TailSpinPreloader width={40} height={40} fill="#efb703" />
                 </div>
@@ -765,33 +983,34 @@ export default function Compliance({ params }) {
                 id="name"
                 label="Name"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => { 
+                    try{
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
 
             <TextInput
                 id="email"
                 label="Email"
                 // value={data.role_name}
-                onChange={(e) => {}
+                onChange={
+                  (e) => {
+                    setData({...data, email: e.target.value.trim()});
+                  }
                 }
                 errors={errors}
             />
-            {errors && errors["error"] && (
-              <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-              </div>
-            )}
             
             <div className="flex m-4">
               <div className="w-12 flex justify-end mr-4">
-                  <input type="checkbox" className="h-8 w-8 rounded-lg bg-black/40" />
+                <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
               </div>
               <div>
                   <p className="text-gray-500">By clicking this checkbox I agree that the user I've entered is a witness of the Company and is authorized to sign this contract on behalf of the company</p>
@@ -799,13 +1018,13 @@ export default function Compliance({ params }) {
             </div>
 
             <div className="">
-              {!addingWitness &&
+            {!creatingPartner && partnerRoles.length > 0 &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
                   <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setAddWitnessModal(false); setContractSignatriesModal(true);}}>Back</button>
-                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled onClick={() => {}}>Add</button>
+                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'witness').uuid);}}>Add</button>
                 </div>
               }
-              {addingWitness &&
+              {(creatingPartner || partnerRoles.length == 0) &&
                 <div className="flex px-4">
                   <TailSpinPreloader width={40} height={40} fill="#efb703" />
                 </div>
@@ -821,7 +1040,7 @@ export default function Compliance({ params }) {
             
             <div className="flex pt-8 pb-4 justify-center items-center">
               <div className="flex justify-center items-center w-12 h-12 rounded-full bg-green-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
                   <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
                 </svg>  
               </div>              

@@ -8,7 +8,7 @@ const useRoles = () => {
   const actions = useStoreActions((action) => action);
   const states = useStoreState((state) => state);
 
-  console.log('States from within useRoles', states);
+  // console.log('States from within useRoles', states);
 
   // console.log('Username from within useRoles', states.admins.admin.username);
 
@@ -56,7 +56,7 @@ const useRoles = () => {
       if (result?.success) {
         const admin_roles = result.data?.roles;
         
-        console.log('Admin roles retrieved', admin_roles);
+        // console.log('Admin roles retrieved', admin_roles);
 
         return {
           admin_roles
@@ -107,15 +107,15 @@ const useRoles = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.ALL_ADMIN_PRIVILEGES', RemoteEndpoints.ALL_ADMIN_PRIVILEGES);
-      console.log('All Admin Privileges', result);
-      console.log('states.admins.token', states.admins.token);
+      // console.log('RemoteEndpoints.ALL_ADMIN_PRIVILEGES', RemoteEndpoints.ALL_ADMIN_PRIVILEGES);
+      // console.log('All Admin Privileges', result);
+      // console.log('states.admins.token', states.admins.token);
 
       setProcessing(false);
       if (result?.success) {
         const admin_privileges = result.data?.privileges;
         
-        console.log('Admin privileges retrieved', admin_privileges);
+        // console.log('Admin privileges retrieved', admin_privileges);
 
         return {
           admin_privileges
@@ -161,15 +161,15 @@ const useRoles = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.DELETE_ROLE', RemoteEndpoints.DELETE_ROLE);
-      console.log('Delete result', result);
-      console.log('states.admins.token', states.admins.token);
+      // console.log('RemoteEndpoints.DELETE_ROLE', RemoteEndpoints.DELETE_ROLE);
+      // console.log('Delete result', result);
+      // console.log('states.admins.token', states.admins.token);
 
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.message;
         
-        console.log('Deleted message', message);
+        // console.log('Deleted message', message);
 
         return {
           message
@@ -214,15 +214,15 @@ const useRoles = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.CREATE_ROLE', RemoteEndpoints.CREATE_ROLE);
-      console.log('Create result', result);
-      console.log('states.admins.token', states.admins.token);
+      // console.log('RemoteEndpoints.CREATE_ROLE', RemoteEndpoints.CREATE_ROLE);
+      // console.log('Create result', result);
+      // console.log('states.admins.token', states.admins.token);
 
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.message;
         
-        console.log('Created message', message);
+        // console.log('Created message', message);
 
         return {
           message
@@ -281,7 +281,7 @@ const useRoles = () => {
       if (result?.success) {
         const partner_roles = result.data?.roles;
         
-        console.log('Partner roles retrieved', partner_roles);
+        // console.log('Partner roles retrieved', partner_roles);
 
         return {
           partner_roles
@@ -332,15 +332,15 @@ const useRoles = () => {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.ALL_PARTNER_PRIVILEGES', RemoteEndpoints.ALL_PARTNER_PRIVILEGES);
-      console.log('All Partner Privileges', result);
-      console.log('states.partners.token', states.partners.token);
+      // console.log('RemoteEndpoints.ALL_PARTNER_PRIVILEGES', RemoteEndpoints.ALL_PARTNER_PRIVILEGES);
+      // console.log('All Partner Privileges', result);
+      // console.log('states.partners.token', states.partners.token);
 
       setProcessing(false);
       if (result?.success) {
         const partner_privileges = result.data?.privileges;
         
-        console.log('Partner privileges retrieved', partner_privileges);
+        // console.log('Partner privileges retrieved', partner_privileges);
 
         return {
           partner_privileges

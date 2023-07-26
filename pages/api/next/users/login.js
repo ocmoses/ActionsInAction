@@ -17,7 +17,7 @@ const doLogin = async (body, req, res, categories) => {
   });
   if (response) {
     const result = await response.json();
-    // console.log({ result })
+    // console.log('result', { result })
     const { data, success } = result;
     if (success) {
       const partnerID = getCookie("partnerid", { req, res });

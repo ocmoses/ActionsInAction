@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { AdminMenu } from "@/app/modules/menu";
 import { getPath, ellipsify } from "@/app/modules/utilities";
@@ -9,6 +11,7 @@ import {
 import { useEffect } from "react";
 import { useState } from "react";
 import useUsers from "@/hooks/useUsers";
+import useAdmins from "@/hooks/useAdmins";
 
 
 
@@ -18,21 +21,19 @@ export default function MenuBar({ open }) {
   const [openSecondaryMenu, setOpenSecondaryMenu] = useState(false);
 
   const {session} = useUsers();
+  const {admin} = useAdmins();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
 
-  console.log('useUsers', useUsers());
+  console.log('useAdmins', useAdmins());
 
   const getFullname = () => {
-    const firstName =
-      session.user?.first_name !== "undefined" ? session.user?.first_name : "";
-    const lastName =
-      session.user?.last_name !== "undefined" ? session.user?.last_name : "";
-    setFullname(firstName + " " + lastName);
-    setEmail(session.user?.email);
+    
+    setFullname(admin.fullname);
+    setEmail(ellipsify(admin?.email, 10));
 
-    setFullname("Moses Ocho");
-    setEmail(ellipsify("moses.ocho@mtn.com", 10));
+    // setFullname("Moses Ocho");
+    // setEmail(ellipsify("moses.ocho@mtn.com", 10));
   };
   
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function MenuBar({ open }) {
 
   
   return (
-    <ul className={`p-0 flex-grow relative h-full`}>
+    <ul className={`p-0 flex-grow h-full`}>
       {AdminMenu.map((menu) => {
         const path = `/${getPath(segments)}`;
         return (
@@ -88,9 +89,9 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      <div className={`fixed bottom-4 pb-4 left-4`}>
+      <div className={`absolute bottom-0 left-0 pl-2`}>
         {/* The popup menu */}
-        {openSecondaryMenu && <div className="z-[9999] bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
+        {openSecondaryMenu && <div className="fixed bottom-10 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
           
           <div className="flex items-center space-x-3">
             <div className="relative flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">

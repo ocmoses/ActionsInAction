@@ -29,7 +29,7 @@ export default function MenuBar({ open }) {
 
 
   const getFullname = () => {
-    setFullname(partners[0]?.company_name);
+    setFullname(ellipsify(partners[0]?.company_name, 10));
     setEmail(ellipsify(partners[0]?.email));
   };
 
@@ -196,7 +196,8 @@ export default function MenuBar({ open }) {
         </div>}
         <hr className="mb-4 bg-gray-500" />
         <div className="flex items-center space-x-4 pr-8 pb-4">
-          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px]">
+          <div className="flex justify-center items-center cursor-pointer rounded-full w-10 h-10 bg-mtn text-white text-[12px]" 
+              onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
             <span className="w-10 h-10 flex justify-center items-center">
               {getPartnerInitials(fullname)}
             </span>
@@ -210,7 +211,7 @@ export default function MenuBar({ open }) {
               {ellipsify(email, 12)}
             </div>
           </div>
-          <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(true)}>
+          <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
             </svg>

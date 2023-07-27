@@ -11,7 +11,7 @@ export default function Session({
   const app = useApp();
   const { clearStore } = useLogout();
   useEffect(() => {
-    clearStore();
+    // clearStore();
     if (serverSession) {
       if (serverSession?.status === "authenticated") {
         app.setStoreStates(serverSession, categories, "session");

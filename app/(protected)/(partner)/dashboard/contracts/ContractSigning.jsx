@@ -5,6 +5,7 @@ import TextInput from "@/app/components/form/TextInput";
 import useErrors from "@/hooks/useErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter } from "next/navigation";
+import Canvas from '@/app/components/Canvas';
 
 
 
@@ -18,47 +19,15 @@ export default function ContractSigning(){
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
 
+    const [clearCanvas, setClearCanvas] = useState(false);
+
     const [tool, setTool] = useState('pen');
     const [lines, setLines] = useState([]);
     const isDrawing = useRef(false);
 
-    const handleMouseDown = (e) => {
-        isDrawing.current = true;
-        const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { tool, points: [pos.x, pos.y] }]);
-    };
-
-    const handleMouseMove = (e) => {
-        // no drawing - skipping
-        if (!isDrawing.current) {
-            return;
-        }
-        const stage = e.target.getStage();
-        const point = stage.getPointerPosition();
-        let lastLine = lines[lines.length - 1];
-        // add point
-        lastLine.points = lastLine.points.concat([point.x, point.y]);
-
-        // replace last
-        lines.splice(lines.length - 1, 1, lastLine);
-        setLines(lines.concat());
-    };
-
-    const handleMouseUp = () => {
-        isDrawing.current = false;
-    };
-
-    
-
     useEffect(() => {
-        setTimeout(()=> {
-            const canvas = document.querySelector('#signature_canvas');
-            const ctx = canvas.getContext("2d");
-    
-            ctx.fillStyle = "red";
-            ctx.fillRect(20, 20, 150, 100);
-        }, 500);
-    }, []);
+
+    }, [signingModal, clearCanvas]);
     
 
     return <>
@@ -111,7 +80,7 @@ export default function ContractSigning(){
                                 <h1 className="text-white text-center text-xl font-bold">Director's signature</h1>
 
                                 <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                        onClick={() => setSigningModal(true)}>
+                                        onClick={() => {setSigningModal(true), window.scrollTo({top:0, behavior: "smooth"});}}>
                                     Click to Sign here
                                 </div>
                             </div>
@@ -119,7 +88,7 @@ export default function ContractSigning(){
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
                                 <h1 className="text-white text-center text-xl font-bold p-4">Witness's Signature</h1>
@@ -134,7 +103,7 @@ export default function ContractSigning(){
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
                                 <h1 className="text-white text-center text-xl font-bold p-4">MTN's Signature</h1>
@@ -145,7 +114,7 @@ export default function ContractSigning(){
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-16 h-16">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
                                 <h1 className="text-white text-center text-xl font-bold p-4">MTN's Signature</h1>
@@ -212,13 +181,13 @@ export default function ContractSigning(){
 
                                                 <span className="text-gray-200">Preview</span>
 
-                                                <span className="cursor-pointer text-yellow-500">Clear</span>
+                                                <span className="cursor-pointer text-yellow-500" onClick={() => setClearCanvas(!clearCanvas)}>Clear</span>
 
                                             </div>          
 
-                                            <div className="rounded-xl bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center py-12 justify-center">
+                                            <div className="rounded-xl bg-black border-1 border-dashed border-gray-200 flex p-2 w-full space-x-4 items-center justify-center">
 
-                                                <canvas width="300" height="100" id="signature_canvas"></canvas>
+                                                <Canvas refresh={clearCanvas} width="300" height="100" id="signature_canvas" />
                                                 {/* <p className="text-white font-3xl">User Signature</p> */}
 
                                             </div>    
@@ -254,7 +223,7 @@ export default function ContractSigning(){
 
                                                 <div className="w-16 h-16 bg-white/40 flex items-center justify-center p-8 rounded-full">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" className="w-12 h-12">
-                                                        <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
+                                                        <path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
                                                         <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
                                                     </svg>
                                                 </div>
@@ -267,7 +236,7 @@ export default function ContractSigning(){
 
                                                 <div className="flex flex-col justify-end space-between items-end space-y-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
-                                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                                                    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                                                 </svg>
                                                 <button className="border-1 border-white rounded-full py-2 px-6 text-white">Choose file</button>
                                                 </div>
@@ -312,7 +281,7 @@ export default function ContractSigning(){
                                 <div className="flex pt-8 pb-4 justify-center items-center">
                                 <div className="flex justify-center items-center w-12 h-12 rounded-full bg-green-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
-                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+                                    <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" />
                                     </svg>  
                                 </div>              
                                 </div>

@@ -39,6 +39,7 @@ const useApp = () => {
             localStorage.setItem("firstname", serverSession.User.user.first_name);
             localStorage.setItem("lastname", serverSession.User.user.last_name);
             localStorage.setItem("email", serverSession.User.user.email);
+            localStorage.setItem("user", serverSession.User.user);
           }
 
           if(localStorage.getItem("token")){

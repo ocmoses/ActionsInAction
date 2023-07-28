@@ -309,21 +309,21 @@ function UserInfo({ designations }) {
             lineHeight: "16px",
           }}
         >
-          By clicking "Start Application" I agree to MTN's{" "}
+          By clicking "Proceed" I agree to MTN's{" "}
           <Link
             href={"/term-of-use"}
             className=" text-white hover:text-white border-b-1 border-b-white"
           >
             Terms of Use
           </Link>
-          ,
+          ,&nbsp;
           
           <Link
             href={"/privacy-notice"}
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"
           >
             Privacy Policy
-          </Link>
+          </Link>&nbsp;
           
           and to receive electronic communication about my accounts and services
           per Mtn's{" "}
@@ -338,7 +338,7 @@ function UserInfo({ designations }) {
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (
-          <Button label="Start registration" />
+          <Button label="Proceed" />
         )}
       </form>
     </div>

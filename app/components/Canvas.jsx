@@ -3,14 +3,14 @@
 import {useState, useRef, useEffect, useCallback} from "react";
 
 
-export default function Canvas({width, height, refresh}){
+function Canvas({width, height, refresh}){
 
     const canvas = useRef(null);
     const [drawing, setDrawing] = useState(false);
     const [position, setPosition] = useState(null);
 
     const onDown = useCallback((event) => {
-        console.log("Touchdown===========");
+        
         const coordinates = getCoordinates(event)
         if (coordinates) {
           setPosition(coordinates)
@@ -72,11 +72,9 @@ export default function Canvas({width, height, refresh}){
         }
       }
     
-    //   const handleDraw = (data) => {
-    //     if (typeof props.onDraw === 'function') {
-    //       onDraw(data)
-    //     }
-    //   }
+    const imageBase64 = ()  => {
+      return context.current.toDataUrl();
+    }
 
       const clear = (context) => {
         context.clearRect(0, 0, width, height);
@@ -111,3 +109,5 @@ export default function Canvas({width, height, refresh}){
             />
 
 }
+
+export default Canvas;

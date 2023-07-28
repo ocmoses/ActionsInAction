@@ -84,5 +84,6 @@ const RemoteEndpoints = {
   GET_SERVICES: `${apiURL}/v2/contract/service-types`,
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
+  SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`
 }
 export default RemoteEndpoints

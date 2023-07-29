@@ -9,9 +9,9 @@ import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import RemoteEndPoints, { NextEndPoints } from "@/app/modules/endpoints";
+import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
 import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
@@ -19,6 +19,7 @@ import useUsers from "@/hooks/useUsers";
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
+
   const { resendEmail } = usePartners();
   const { tmpuser, setTmpUser } = useUsers();
   const { processing, setProcessing, setForm } = useProcessing();
@@ -39,11 +40,15 @@ function Login({ params }) {
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   const [notVerified, setNotVerified] = useState(null);
+
+  let canvasRef = useRef(null);
+
   useEffect(() => {
     setForm(null);
     setProcessing(false);
     clearErrors();
     setNotVerified(null);
+    
   }, []);
   const handleFormChange = (e) => {
     removeError(e.target.id);
@@ -88,7 +93,8 @@ function Login({ params }) {
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User: loginData?.data,
+      User:  loginData?.data,
+      token:  loginData?.data?.login_token?.access_token,
       type: "user",
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");
@@ -198,6 +204,9 @@ function Login({ params }) {
           </div>
         </div>
       </form>
+
+      <canvas width="400" height="200" ref={canvasRef}></canvas>
+      
     </>
   );
 }

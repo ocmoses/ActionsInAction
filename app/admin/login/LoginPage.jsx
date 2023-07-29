@@ -61,8 +61,8 @@ function Login({ params }) {
       setProcessing(false);
       return setError({ login: error });
     }
-    setToken(Data?.user.token);
-    setAdmin(Data?.user.user);
+    setToken(Data?.user.token); 
+    setAdmin(Data?.user.user);  
     setCategories(Data?.categories);
     const redirect =
       params && params?.length && params[0] !== "login"

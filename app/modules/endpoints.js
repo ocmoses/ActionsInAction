@@ -1,11 +1,11 @@
-import { apiURL } from "@/app/modules/constants"
+import { apiURL } from "@/app/modules/constants";
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
   "Content-Type": "application/json",
   redirect: "follow",
   referrerPolicy: "no-referrer",
-}
+};
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
   LOGOUT: "/api/next/users/logout",
@@ -18,26 +18,30 @@ export const NextEndPoints = {
   LOGOUT_ADMIN: "/api/next/users/logout-admin",
   AUTH_USER: "/api/next/users/auth-admin",
   AUTH_ADMIN: "/api/next/users/auth-admin",
-}
+
+  GET_NOTIFICATIONS: `/api/next/users/notifications`,
+  
+};
 
 const RemoteEndpoints = {
-  LOGIN: `${apiURL}/v1/auth/login`,
-  LOGOUT: `${apiURL}/v1/auth/logout`,
+  LOGIN: `${apiURL}/v2/auth/login`,
+  LOGOUT: `${apiURL}/v2/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
-  AUTH_USER: `${apiURL}/v1/auth/authenticated-user`,
-  GET_USER_INFO_VALIDATED: `${apiURL}/v1/auth/partner-info/validate`,
-  WELCOMEBACK: `${apiURL}/v1/existing-partner/welcome-back`,
-  USERINFO: `${apiURL}/v1/auth/register/userinfo`,
-  RESETPASSWORD: `${apiURL}/v1/auth/reset-password/new-password`,
-  RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v1/auth/register/resend-email-confirmation-link`,
-  CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v1/auth/check-email-verification-link`,
-  CATEGORIES: `${apiURL}/v1/categories`,
-  DESIGNATION: `${apiURL}/v1/your-roles`,
-  SINGLE_PARNER: `${apiURL}/v1/auth/partner-info`,
+  AUTH_USER: `${apiURL}/v2/auth/authenticated-user`,
+  GET_USER_INFO_VALIDATED: `${apiURL}/v2/auth/partner-info/validate`,
+  WELCOMEBACK: `${apiURL}/v2/existing-partner/welcome-back`,
+  USERINFO: `${apiURL}/v2/auth/register/userinfo`,
+  RESETPASSWORD: `${apiURL}/v2/auth/reset-password/new-password`,
+  RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v2/auth/register/resend-email-confirmation-link`,
+  CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v2/auth/check-email-verification-link`,
+  CATEGORIES: `${apiURL}/v2/categories`,
+  DESIGNATION: `${apiURL}/v2/your-roles`,
+  SINGLE_PARNER: `${apiURL}/v2/auth/partner-info`,
   // onboarding
-  CATEGORY: `${apiURL}/v1/auth/register/category`,
-  COMPANYDETAIL: `${apiURL}/v1/auth/register/companydetail`,
+  CATEGORY: `${apiURL}/v2/auth/register/category`,
+  COMPANYDETAIL: `${apiURL}/v2/auth/register/companydetail`,
+  //these ones would be changed to v2 later
   COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
   NCCLICENSE: `${apiURL}/v1/auth/register/ncclicense`,
   NLRCLICENSE: `${apiURL}/v1/auth/register/nlrclicense`,
@@ -55,5 +59,31 @@ const RemoteEndpoints = {
   PARTNER_UPDATE: `${apiURL}/v2/admin/compliance/partner-correction`,
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
   FAQ: `${apiURL}/v2/faq/get-faq`,
+
+  //Notifications
+  GET_ALL_NOTIFICATIONS: `http://10.1.29.142/api/notifications/:partner-portal-uuid/:user-uuid`,
+  GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notifications/unread/:partner-portal-uuid/:user-uuid`,
+  MARK_NOTIFICATION_READ: `http://10.1.29.142/api/notifications/read/:notification-uuid`,
+  ARCHIVE_NOTIFICATION: `http://10.1.29.142/api/notification/archive/:notification-uuid/:user-uuid`,
+
+  ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
+  ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
+  ALL_ADMIN_PRIVILEGES: `${apiURL}/v2/admin/portal-privileges/admin`,
+  ALL_DEPARTMENTS: `${apiURL}/v2/admin/admin-departments`,
+  CREATE_ADMIN: `${apiURL}/v2/admin/add-admin-user`,
+  DELETE_ADMIN: `${apiURL}/v2/admin/delete-admin-user`,
+  CREATE_ROLE: `${apiURL}/v2/admin/create-role`,
+  DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
+
+  ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
+  ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
+  ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
+  CREATE_PARTNER: `${apiURL}/v2/partner-user/add-partner-user`,
+  DELETE_PARTNER: `${apiURL}/v2/partner-user/delete-partner-user`,
+
+  GET_SERVICES: `${apiURL}/v2/contract/service-types`,
+  SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
+  SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
+  SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`
 }
 export default RemoteEndpoints

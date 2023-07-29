@@ -494,8 +494,9 @@ function Compliance() {
                   value={data.tin_no}
                   onChange={handleFormChange}
                   onBlur={(e) => {
-                    verifyTIN(e.target.value);
-                    Validate("tin_no");
+                    // Hidden for now
+                    // verifyTIN(e.target.value);
+                    // Validate("tin_no");
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -540,7 +541,10 @@ function Compliance() {
                   }
                   value={data.rc_no}
                   onChange={handleFormChange}
-                  onBlur={verifyCAC}
+                  onBlur={(e) => {
+                    // Suspending this for now
+                    // verifyCAC()
+                  }}
                   errors={errors}
                   margin="mb-1"
                 />

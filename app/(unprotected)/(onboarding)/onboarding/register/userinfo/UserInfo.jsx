@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link'
 import FormErrors from "@/app/components/FormErrors";
 import Button from "@/app/components/form/Button";
 import TextInput from "@/app/components/form/TextInput";
@@ -308,20 +309,22 @@ function UserInfo({ designations }) {
             lineHeight: "16px",
           }}
         >
-          By clicking "Start Application" I agree to MTN's{" "}
-          <a
-            href="#"
+          By clicking "Proceed" I agree to MTN's{" "}
+          <Link
+            href={"/term-of-use"}
             className=" text-white hover:text-white border-b-1 border-b-white"
           >
             Terms of Use
-          </a>
-          ,
-          <a
-            href="#"
+          </Link>
+          ,&nbsp;
+          
+          <Link
+            href={"/privacy-notice"}
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"
           >
             Privacy Policy
-          </a>{" "}
+          </Link>&nbsp;
+          
           and to receive electronic communication about my accounts and services
           per Mtn's{" "}
           <a
@@ -335,7 +338,7 @@ function UserInfo({ designations }) {
         {processing ? (
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         ) : (
-          <Button label="Start registration" />
+          <Button label="Proceed" />
         )}
       </form>
     </div>

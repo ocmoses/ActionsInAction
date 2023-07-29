@@ -17,6 +17,7 @@ export default function useLogout() {
     clearPersistStore()
   }
   const Logout = async () => {
+    localStorage.removeItem("token");
     actions.app.startLoading("logout")
     await logout()
     clearStore()

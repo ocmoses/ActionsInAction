@@ -31,11 +31,26 @@ const useApp = () => {
           serverSession.User.user.status = "authenticated";
 
 
-          // console.log('serverSession.User.access_token', serverSession.User.access_token);
-          if(serverSession.User.access_token != null && serverSession.User.access_token != undefined){
+          console.log('serverSession.User.access_token', serverSession.User.access_token);
+          console.log('serverSession.User', serverSession.User);
+
+          if(serverSession.User.access_token){
+            localStorage.setItem("token", serverSession.User.access_token);
+            localStorage.setItem("firstname", serverSession.User.user.first_name);
+            localStorage.setItem("lastname", serverSession.User.user.last_name);
+            localStorage.setItem("email", serverSession.User.user.email);
+            localStorage.setItem("user", serverSession.User.user);
+          }
+
+          if(localStorage.getItem("token")){
+            serverSession.User.access_token = localStorage.getItem("token");
             serverSession.User.user.token = serverSession.User.access_token;
-            actions.users.setToken(serverSession.User.access_token);
-          }           
+            actions.users.setToken(localStorage.getItem("token"));
+          }
+          // if(serverSession.User.access_token != null && serverSession.User.access_token != undefined){
+          //   serverSession.User.user.token = serverSession.User.access_token;
+          //   actions.users.setToken(serverSession.User.access_token);
+          // }         
 
           actions.users.setUser(serverSession.User.user);
           

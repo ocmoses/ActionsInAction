@@ -631,6 +631,60 @@ const usePartners = () => {
     }
   }
 
+  const signBilateralContract = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SIGN_CONTRACT}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Signed message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const createPartner = async (data) => {
     try {
       setProcessing(true);
@@ -815,7 +869,8 @@ const usePartners = () => {
     deletePartner,
     getAllServices,
     partnerSelectService,
-    submitAllSignatories
+    submitAllSignatories,
+    signBilateralContract
   }
 }
 export default usePartners

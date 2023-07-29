@@ -29,18 +29,19 @@ const RemoteEndpoints = {
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
   AUTH_USER: `${apiURL}/v2/auth/authenticated-user`,
-  GET_USER_INFO_VALIDATED: `${apiURL}/v1/auth/partner-info/validate`,
-  WELCOMEBACK: `${apiURL}/v1/existing-partner/welcome-back`,
+  GET_USER_INFO_VALIDATED: `${apiURL}/v2/auth/partner-info/validate`,
+  WELCOMEBACK: `${apiURL}/v2/existing-partner/welcome-back`,
   USERINFO: `${apiURL}/v2/auth/register/userinfo`,
-  RESETPASSWORD: `${apiURL}/v1/auth/reset-password/new-password`,
-  RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v1/auth/register/resend-email-confirmation-link`,
-  CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v1/auth/check-email-verification-link`,
-  CATEGORIES: `${apiURL}/v1/categories`,
-  DESIGNATION: `${apiURL}/v1/your-roles`,
-  SINGLE_PARNER: `${apiURL}/v1/auth/partner-info`,
+  RESETPASSWORD: `${apiURL}/v2/auth/reset-password/new-password`,
+  RESEND_CONFIRM_EMAIL_LINK: `${apiURL}/v2/auth/register/resend-email-confirmation-link`,
+  CHECK_EMAIL_VERIFICATION_LINK: `${apiURL}/v2/auth/check-email-verification-link`,
+  CATEGORIES: `${apiURL}/v2/categories`,
+  DESIGNATION: `${apiURL}/v2/your-roles`,
+  SINGLE_PARNER: `${apiURL}/v2/auth/partner-info`,
   // onboarding
-  CATEGORY: `${apiURL}/v1/auth/register/category`,
-  COMPANYDETAIL: `${apiURL}/v1/auth/register/companydetail`,
+  CATEGORY: `${apiURL}/v2/auth/register/category`,
+  COMPANYDETAIL: `${apiURL}/v2/auth/register/companydetail`,
+  //these ones would be changed to v2 later
   COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
   NCCLICENSE: `${apiURL}/v1/auth/register/ncclicense`,
   NLRCLICENSE: `${apiURL}/v1/auth/register/nlrclicense`,
@@ -83,5 +84,6 @@ const RemoteEndpoints = {
   GET_SERVICES: `${apiURL}/v2/contract/service-types`,
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
+  SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`
 }
 export default RemoteEndpoints

@@ -206,7 +206,7 @@ export default function Admins({ allAdmins }) {
   }, [page, perPage]);
 
   useEffect(() => {
-    setProcessing(true);
+    // setProcessing(true);
     if (all_Admins) {
       
       setAdmins(all_Admins.admin_users);
@@ -280,12 +280,12 @@ export default function Admins({ allAdmins }) {
           )}
 
           <div className="w-full mt-10">
-            {processing && (
+            {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               </div>
             )}
-            {!processing && (
+            {!processing && ( */}
               <>
                 <table className="table w-full transparent">
                   <tbody>
@@ -293,6 +293,9 @@ export default function Admins({ allAdmins }) {
                     <tr className="border-b border-b-white/40 text-11">
                       <th>
                         <span className="text-[13px]">Name</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]">Username</span>
                       </th>
                       <th>
                         <span className="text-[13px]">Role</span>
@@ -331,6 +334,12 @@ export default function Admins({ allAdmins }) {
                                   {admin.email}
                                 </div>
                               </div>
+                            </div>
+                          </td>
+                          {/* Username */}
+                          <td>
+                            <div className="flex gap-0">
+                              <span >{admin.username}</span>
                             </div>
                           </td>
                           {/* Role */}
@@ -437,7 +446,7 @@ export default function Admins({ allAdmins }) {
                     })}
                 </div>
               </>
-            )}
+            {/* )} */}
           </div>
         </div>
       </div>

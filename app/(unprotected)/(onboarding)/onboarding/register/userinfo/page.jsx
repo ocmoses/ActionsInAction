@@ -1,9 +1,11 @@
 import UserInfo from "./UserInfo";
 import { apiURL } from "@/app/modules/constants";
+import RemoteEndpoints from "@/app/modules/endpoints"
+
 
 const getDesignations = async () => {
   try {
-    const response = await fetch(`${apiURL}/v1/your-roles`, {
+    const response = await fetch(RemoteEndpoints.DESIGNATION, {
       headers: {
         apikey: `${process.env.APIKEY}`,
         "Content-Type": "application/json",

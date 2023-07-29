@@ -9,6 +9,8 @@ import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
 
+import './modules/bootstrap';
+
 const getServerSession = async () => {
   try {
     const nextCookies = cookies();
@@ -62,7 +64,9 @@ const getServerSession = async () => {
             data: null,
           };
         const { success, data } = await response.json();
-        if (response?.ok)
+        if (response?.ok){
+          //Added for quick user storage/retrieval
+          // localStorage.setItem('user', data.user);
           return {
             success,
             error: null,
@@ -70,6 +74,8 @@ const getServerSession = async () => {
             type: "admin",
             token: adminToken,
           };
+        }
+          
         if (data?.message)
           return { success: false, error: data.message, data: null };
         return {
@@ -173,7 +179,8 @@ export default async function RootLayout({ children }) {
     User: sessionData?.data ?? null,
     error: sessionData?.error ?? null,
     type: sessionData?.type,
-    token: sessionData?.type === "admin" ? sessionData?.token : "",
+    // token: sessionData?.type === "admin" ? sessionData?.token : "",
+    token: sessionData?.token,
   };
   const error = categoriesData?.error
     ? categoriesData?.error

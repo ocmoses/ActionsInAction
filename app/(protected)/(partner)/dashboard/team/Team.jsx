@@ -260,12 +260,12 @@ export default function Team() {
           )}
 
           <div className="w-full mt-10">
-            {processing && (
+            {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               </div>
-            )}
-            {!processing && (
+            )} */}
+            {/* {!processing && ( */}
               <>
                 <table className="table w-full transparent">
                   <tbody>
@@ -417,7 +417,7 @@ export default function Team() {
                     })}
                 </div>
               </>
-            )}
+            {/* )} */}
           </div>
         </div>
       </div>

@@ -38,10 +38,10 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
       if (!response)
       return {
         error: "This request has no response available",
@@ -97,10 +97,10 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
       if (!response)
       return {
         error: "This request has no response available",
@@ -154,6 +154,11 @@ const useRoles = () => {
           },
         }
       );
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
       
       if (!response)
       return {
@@ -263,10 +268,10 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
       if (!response)
       return {
         error: "This request has no response available",
@@ -322,10 +327,10 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
       if (!response)
       return {
         error: "This request has no response available",

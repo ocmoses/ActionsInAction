@@ -471,14 +471,17 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      
       if (!response)
         return {
           error: "This request has no response available",
         };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -549,7 +552,13 @@ const usePartners = () => {
       if (!response)
         return {
           error: "This request has no response available",
-        };
+      };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -595,11 +604,19 @@ const usePartners = () => {
           },
         }
       );
+
+      
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.SELECT_SERVICE', RemoteEndpoints.SELECT_SERVICE);
@@ -649,11 +666,19 @@ const usePartners = () => {
           },
         }
       );
+
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -703,11 +728,18 @@ const usePartners = () => {
           },
         }
       );
+     
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -757,11 +789,17 @@ const usePartners = () => {
           },
         }
       );
-      
+
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
 
       setProcessing(false);
@@ -807,11 +845,18 @@ const usePartners = () => {
           },
         }
       );
-      
+
+            
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+      
       const result = await response.json();
 
       // console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);

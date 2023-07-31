@@ -224,9 +224,9 @@ export default function Terms() {
                           <p>3.1. In order to use the Portal, you must create an account and provide accurate and complete registration information such as the following:</p>
                           
                           <ul className="flex flex-col gap-[15px] py-[15px] p-0 pl-10">
-                            <div>a. Your company s registered name</div>
-                            <div>b. Your company s incorporation documents.</div>
-                            <div>c. Your company s registered email address and Phone number</div>
+                            <div>a. Your company's registered name</div>
+                            <div>b. Your company's incorporation documents.</div>
+                            <div>c. Your company's registered email address and Phone number</div>
                             <div>d. Your user Identity and password.</div>
                             <div>e. Current tax clearance certificate of the Service Provider.</div>
                             <div>f. Your account contact information.</div>
@@ -379,7 +379,7 @@ export default function Terms() {
                         <p>
                           You agree to receive all communications, agreements and notices that we provide in connection with the
                           Portal, including, but not limited to, communications concerning the delivery of the Services on the Portal via
-                          electronic means, including by e mail, text, in product notifications, or by posting them on the Portal. You
+                          electronic means, including by email, text, in product notifications, or by posting them on the Portal. You
                           agree that all communications we provide to you electronically satisfy any legal requirement that such
                           communications be in writing or be delivered in a particular manner and you agree to keep your account
                           contact information current.

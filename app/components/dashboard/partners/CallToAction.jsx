@@ -53,7 +53,7 @@ export default function CallToAction({
       {button && (
         <button
           onClick={onclick}
-          className="text-[#999999] rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white"
+          className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white"
         >
           {button}
         </button>

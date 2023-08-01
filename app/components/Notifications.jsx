@@ -5,6 +5,11 @@ import { useState } from 'react';
 import useUsers from '@/hooks/useUsers';
 import {ellipsify} from "@/app/modules/utilities";
 import moment from 'moment/moment';
+import { useRouter } from "next/navigation";
+
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
+
 
 export default function Notifications({count=0}){
 
@@ -14,15 +19,31 @@ export default function Notifications({count=0}){
 
     const [slice, setSlice] = useState([]);
 
+    const router = useRouter();
+
+    let previousNotificationCount = 0;
+
+
+
 
     useEffect(() => {
+        // NotificationManager.info(message, title, timeOut, callback, priority);
         setInterval(function(){
             getNotifications().then((res) => {
+                
                 if(notifications?.length){
+
+                    if(notifications.length > previousNotificationCount){
+                        NotificationManager.info('You have some messages', null, 3000, () => router.push('/dashboard/notifications'));     
+                        previousNotificationCount = notifications.length;
+                    }
+
                     notifications.sort((a,b) => {(a.read_at == null && b.read_at != null) ? 1 : (a.read_at != null && b.read_at == null) ? -1 : 0})
                 }
                 if(notifications.length >= 3){
-                    setSlice(notifications.slice(0,3))
+
+                    setSlice(notifications.slice(0,3));                    
+                    
                 }else{
                     setSlice(notifications)
                 }
@@ -87,7 +108,7 @@ export default function Notifications({count=0}){
                                     }
                                     
                                     <Link
-                                    href="/notifications"
+                                    href="/dashboard/notifications"
                                     className="w-full text-center cursor-pointer text-mtn text-[12px] px-3 py-2 pt-4 border-t border-gray-500"
                                     >
                                         All notifications
@@ -98,5 +119,7 @@ export default function Notifications({count=0}){
                         }
                     </div>
                 }
+
+                <NotificationContainer />
             </div>);
 }

@@ -1,5 +1,7 @@
 import { apiURL } from "@/app/modules/constants";
 
+const NOTIFICATION_BASE =  "http://10.1.44.43/api/"; //http://10.1.29.142/api/
+
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
   "Content-Type": "application/json",
@@ -41,6 +43,10 @@ const RemoteEndpoints = {
   // onboarding
   CATEGORY: `${apiURL}/v2/auth/register/category`,
   COMPANYDETAIL: `${apiURL}/v2/auth/register/companydetail`,
+
+  GET_BOARD_RESOLUTION_DOCS: `${apiURL}/v2/admin/board-resolution-documents`,
+  GET_ALL_SIGNED_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts?partner_uuid=:partner_uuid`,
+
   //these ones would be changed to v2 later
   COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
   NCCLICENSE: `${apiURL}/v1/auth/register/ncclicense`,
@@ -61,10 +67,10 @@ const RemoteEndpoints = {
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
   //Notifications
-  GET_ALL_NOTIFICATIONS: `http://10.1.29.142/api/notifications/:partner-portal-uuid/:user-uuid`,
-  GET_UNREAD_NOTIFICATIONS: `http://10.1.29.142/api/notifications/unread/:partner-portal-uuid/:user-uuid`,
-  MARK_NOTIFICATION_READ: `http://10.1.29.142/api/notifications/read/:notification-uuid`,
-  ARCHIVE_NOTIFICATION: `http://10.1.29.142/api/notification/archive/:notification-uuid/:user-uuid`,
+  GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
+  GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
+  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notifications/read/:notification-uuid`,
+  ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,

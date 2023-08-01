@@ -10,7 +10,7 @@ const useRoles = () => {
 
   // console.log('States from within useRoles', states);
 
-  // console.log('Username from within useRoles', states.admins.admin.username);
+  // console.log('User from within useRoles', states.users);
 
   const { setProcessing } = useProcessing();
 

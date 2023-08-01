@@ -167,13 +167,12 @@ export default function Privacy() {
                           <p>This notice applies to individuals that are:</p>
                           
                           <ul className="list-disc list-outside flex flex-col gap-[15px] py-[15px] p-0 pl-10">
-                            <li>any person(s) who contracts with us for the provision of products and services, or who purchases a product from us (“customers”), including potential customers to the extent MTN Processes your Personal Data;</li>
-                            <li>any person(s) who uses our website, mobile applications or any products or services (“users”);</li>
-                            <li>all suppliers, contractors, partners and service providers of MTN (“suppliers”) including potential suppliers to the extent MTN Processes your Personal Data;</li>
-                            <li>resellers such a MTN distributors and agents as well as partners (“resellers”) including potential resellers to the extent MTN Processes your Personal Data;</li>
-                            <li>resellers such a MTN distributors and agents as well as partners (“resellers”) including potential resellers to the extent MTN Processes your Personal Data;</li>
-                            <li>all visitors of MTN premises whose details are captured via our visitors’ register, visitors management system, CCTV cameras etc; and</li>
-                            <li>any other persons (save for employees and job applicants) who share Personal Data with MTN including beneficiaries, trustees or donors to MTN trusts or charitable causes; MTN guests (“other Data Subjects”).</li>
+                            <li>Any person(s) who contracts with us for the provision of products and services, or who purchases a product from us (“customers”), including potential customers to the extent MTN Processes your Personal Data;</li>
+                            <li>Any person(s) who uses our website, mobile applications or any products or services (“users”);</li>
+                            <li>All suppliers, contractors, partners and service providers of MTN (“suppliers”) including potential suppliers to the extent MTN Processes your Personal Data;</li>
+                            <li>Resellers such a MTN distributors and agents as well as partners (“resellers”) including potential resellers to the extent MTN Processes your Personal Data;</li>
+                            <li>All visitors of MTN premises whose details are captured via our visitors’ register, visitors management system, CCTV cameras etc; and</li>
+                            <li>Any other persons (save for employees and job applicants) who share Personal Data with MTN including beneficiaries, trustees or donors to MTN trusts or charitable causes; MTN guests (“other Data Subjects”).</li>
                           </ul>
                     </section>
 

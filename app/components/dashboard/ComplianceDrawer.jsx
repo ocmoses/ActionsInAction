@@ -37,7 +37,7 @@ export default function ComplianceDrawer({
         {activeStage && (
           <section
             className={
-              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >

@@ -77,6 +77,7 @@ export default function Admins({ allAdmins }) {
   let all_Admin_Privileges = null;
 
   const get_all_admins = async () => {
+    clearErrors();
     if (fetchingAdmins) return;
     setFetchingAdmins(true);
     all_Admins = await getAllAdmins(page, perPage);
@@ -87,6 +88,7 @@ export default function Admins({ allAdmins }) {
   };
 
   const get_all_departments = async () => {
+    clearErrors();
     if (fetchingDepartments) return;
     setFetchingDepartments(true);
     all_Departments = await getAllDepartments(page, perPage);
@@ -97,6 +99,7 @@ export default function Admins({ allAdmins }) {
   };
 
   const get_all_admin_roles = async () => {
+    clearErrors();
     if (fetchingAdminRoles) return;
     setFetchingAdminRoles(true);
     all_Roles = await getAllAdminRoles();
@@ -107,6 +110,7 @@ export default function Admins({ allAdmins }) {
   };
 
   const get_all_admin_privileges = async () => {
+    clearErrors();
     if (fetchingAdminPrivileges) return;
     setFetchingAdminPrivileges(true);
     all_Admin_Privileges = await getAllAdminPrivileges(page, perPage);
@@ -117,6 +121,7 @@ export default function Admins({ allAdmins }) {
   };
 
   const create_admin = async (data) => {
+    clearErrors();
     if (creatingAdmin) return;
     setCreatingAdmin(true);
     create_admin_response = await createAdmin(data);
@@ -138,6 +143,7 @@ export default function Admins({ allAdmins }) {
   };
   
   const delete_admin = async (data) => {
+    clearErrors();
     if (deletingAdmin) return;
     setDeletingAdmin(true);
     delete_admin_response = await deleteAdmin(data);
@@ -157,9 +163,10 @@ export default function Admins({ allAdmins }) {
     }
     // setNavigation(all_AdminRoles.navigation);
   };
-
+  
   
   const handleCreate = () => {
+    clearErrors();
     if(data.fullname == ""){
         setCreationError("Please enter user's full name");
         return;
@@ -188,14 +195,17 @@ export default function Admins({ allAdmins }) {
       return;
     }
 
-    create_admin(data);
+    console.log("The data", data);
+
+    // create_admin(data);
 
   }
-
+  
   const handleDelete = () => {
+    clearErrors();
     delete_admin({admin_user_uuid: currentAdmin.uuid});
   }
-
+  
   useEffect(() => {
     
     get_all_admins();

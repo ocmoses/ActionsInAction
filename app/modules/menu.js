@@ -30,11 +30,11 @@ export const PartnerMenu = [
   //   icon: "",
   //   route: "",
   // },
-  {
-    label: "Reports",
-    icon: "",
-    route: "/admin/reports",
-  },
+  // {
+  //   label: "Reports",
+  //   icon: "",
+  //   route: "/admin/reports",
+  // },
   // {
   //   label: "Audit log",
   //   icon: "",

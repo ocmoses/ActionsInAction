@@ -206,13 +206,13 @@ export default function Terms() {
                             <br/><br/>
                             2.2. You will maintain the accuracy of such information and promptly update such registration information as necessary;
                             <br/><br/>
-                            2.3. You have the legal capacity and you are duly authorised by your legal entity to register and accept these Terms.
+                            2.3. You have the legal capacity and you are duly authorised by your legal entity to register and accept these Terms;
                             <br/><br/>
-                            2.4. You will be solely responsible for your acts on the Portal including those conducted under the username assigned to you.
+                            2.4. You will be solely responsible for your acts on the Portal including those conducted under the username assigned to you;
                             <br/><br/>
-                            2.5. You will not use the Portal for any illegal or unauthorized purpose.
+                            2.5. You will not use the Portal for any illegal or unauthorized purpose;
                             <br/><br/>
-                            2.6. Your use of the Portal will not violate any applicable law or regulation.
+                            2.6. Your use of the Portal will not violate any applicable law or regulation;
                             <br/><br/>
                             2.7. If you provide any information that is untrue, inaccurate, not current or incomplete, we have the right to suspend or terminate your account and refuse any and all current or future use of the Portal (or any portion thereof).
                           </p>
@@ -224,7 +224,7 @@ export default function Terms() {
                           <p>3.1. In order to use the Portal, you must create an account and provide accurate and complete registration information such as the following:</p>
                           
                           <ul className="flex flex-col gap-[15px] py-[15px] p-0 pl-10">
-                            <div>a. Your company's registered name</div>
+                            <div>a. Your company's registered name.</div>
                             <div>b. Your company's incorporation documents.</div>
                             <div>c. Your company's registered email address and Phone number</div>
                             <div>d. Your user Identity and password.</div>

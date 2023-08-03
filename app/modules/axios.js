@@ -12,6 +12,9 @@ let refresh = false
 Axios.interceptors.response.use(
   (response) => {
     const res = response.data
+
+    // console.log("current response", res);
+
     /* Informational responses */
     if (response.status >= 100 && response.status < 200) {
       // return res

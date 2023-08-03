@@ -11,7 +11,7 @@ export default function useNotifications(){
 
     const users = useStoreState((state) => state.users);
 
-    console.log("users from store", users);
+    // console.log("users from store", users);
 
     const { setProcessing } = useProcessing();
 

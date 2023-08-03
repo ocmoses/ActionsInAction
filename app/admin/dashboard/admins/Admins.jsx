@@ -499,10 +499,10 @@ export default function Admins({ allAdmins }) {
                     }
                 }
                 onBlur={(e) => {
-                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
-                    clearError();
-                    console.log('data', data);
-                    }
+                  setData(() => ({...data, lastname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                  clearError();
+                  console.log('data', data);
+                  }
                 }
               />
             </div>
@@ -518,12 +518,12 @@ export default function Admins({ allAdmins }) {
                     console.log('data', data);
                   }
                 }
-                onBlur={(e) => {
-                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
-                    clearError();
-                    console.log('data', data);
-                    }
+                onBlur={(e) => { 
+                  setData({...data, username: e.target.value.trim()});
+                  clearError();
+                  console.log('data', data);
                 }
+              }
               />
               <TextInput
                 id="email"
@@ -536,11 +536,11 @@ export default function Admins({ allAdmins }) {
                   }
                 }
                 onBlur={(e) => {
-                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
-                    clearError();
-                    console.log('data', data);
-                    }
+                  setData({...data, email: e.target.value.trim()});
+                  clearError();
+                  console.log('data', data);
                 }
+              }
               />
             </div>
             <select id="department" 

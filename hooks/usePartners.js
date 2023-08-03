@@ -184,12 +184,17 @@ const usePartners = () => {
           }
         ).catch((e) => {
           setProcessing(false)
+          // console.log("e", e);
           return {
             success: false,
-            error: `${e.message}. Please check you connection`,
+            error: `${e.message}. Please check your connection`,
+            message: e.response.data.data.message,
             data: null,
           }
         })
+        
+        console.log("responsePartnerwelcome", responsePartnerwelcome);
+
         if (!responsePartnerwelcome) {
           setProcessing(false)
           return {
@@ -199,22 +204,19 @@ const usePartners = () => {
             data: null,
           }
         }
+        
+        const { success, data, message } = responsePartnerwelcome
 
-        const { success: successPartnerwelcome, data: partnerwelcome } =
-          responsePartnerwelcome
-        if (!successPartnerwelcome) {
+        if (!success) {
           setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
+          return { success: false, error: message, data: data }
         }
-        if (!successPartnerwelcome) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
-        }
+        
 
-        setTmpUser(partnerwelcome.user)
-        setPartners(partnerwelcome.partners)
+        setTmpUser(data.user)
+        setPartners(data.partners)
         router.push(
-          `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
+          `/onboarding/verify/${data.user.uuid}/${userdata.email_type}`
         )
         break
       case "setpassword":
@@ -232,10 +234,14 @@ const usePartners = () => {
           setProcessing(false)
           return {
             success: false,
-            error: `${e.message}. Please check you connection`,
+            error: `${e.message}. Please check your connection`,
             data: null,
           }
         })
+
+        console.log("responseSetpassword", responseSetpassword);
+
+
         if (!responseSetpassword) {
           setProcessing(false)
           return {
@@ -276,9 +282,11 @@ const usePartners = () => {
           }
         ).catch((e) => {
           setProcessing(false)
+          // console.log("e", e);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
+            message: e.response.data.data.message,
             data: null,
           }
         })
@@ -292,10 +300,13 @@ const usePartners = () => {
           }
         }
 
+        // console.log('responseUserinfo', responseUserinfo);
+
         const { success: successUserinfo, data: userinfo } = responseUserinfo
+
         if (!successUserinfo) {
           setProcessing(false)
-          return { success: false, error: userinfo.message, data: null }
+          return { success: false, error: responseUserinfo.message, data: null }
         }
         const User = userData(userinfo)
         users.setTmpUser(User.user)

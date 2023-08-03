@@ -195,9 +195,9 @@ export default function Admins({ allAdmins }) {
       return;
     }
 
-    console.log("The data", data);
+    // console.log("The data", data);
 
-    // create_admin(data);
+    create_admin(data);
 
   }
   
@@ -482,12 +482,24 @@ export default function Admins({ allAdmins }) {
                     console.log('data', data);
                     }
                 }
+                onBlur={(e) => {
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
+                }
               />
               <TextInput
                 id="lastname"
                 label="Lastname"         
                 onChange={(e) => {
                     setData(() => ({...data, lastname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
+                }
+                onBlur={(e) => {
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
                     clearError();
                     console.log('data', data);
                     }
@@ -506,6 +518,12 @@ export default function Admins({ allAdmins }) {
                     console.log('data', data);
                   }
                 }
+                onBlur={(e) => {
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
+                }
               />
               <TextInput
                 id="email"
@@ -516,6 +534,12 @@ export default function Admins({ allAdmins }) {
                     clearError();
                     console.log('data', data);
                   }
+                }
+                onBlur={(e) => {
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
                 }
               />
             </div>

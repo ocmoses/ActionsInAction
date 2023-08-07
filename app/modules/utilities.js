@@ -1694,3 +1694,9 @@ export function base64(file_id, callback){
 }
 
 
+
+
+export function formatNumber(number){
+  const numberFormart = number.toLocaleString()
+  return numberFormart;
+}

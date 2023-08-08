@@ -1,16 +1,16 @@
 export default function Head(props) {
   const siteMeta = {
-    title: 'MTN Digital Partner Portal',
-    appName: 'MTN Digital Partner',
-    description: 'MTN Digital Partner Portal',
-    robots: 'follow, index',
-    image: ''
-  }
+    title: "MTN Digital Partner Portal",
+    appName: "MTN Digital Partner",
+    description: "MTN Digital Partner Portal",
+    robots: "follow, index",
+    image: "",
+  };
 
   const meta = {
     ...siteMeta,
-    ...props
-  }
+    ...props,
+  };
   return (
     <>
       <title>{`${meta.title} | ${meta.appName}`}</title>
@@ -78,5 +78,5 @@ export default function Head(props) {
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
       <meta name="theme-color" content="#ffffff"></meta>
     </>
-  )
+  );
 }

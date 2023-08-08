@@ -26727,8 +26727,8 @@ const states = [
     state_name: "Harare Province",
     status: 1,
   },
-]
+];
 
 export const STATES = states.sort((s1, s2) =>
   s1.state_name < s2.state_name ? -1 : s1.state_name > s2.state_name ? 1 : 0
-)
+);

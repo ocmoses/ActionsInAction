@@ -1,4 +1,4 @@
-import FormErrors from "@/app/components/FormErrors"
+import FormErrors from "@/app/components/FormErrors";
 function SelectInput({
   id,
   label,
@@ -6,6 +6,8 @@ function SelectInput({
   children,
   onChange,
   type,
+  classes,
+  fontsize,
   border,
   bg,
   margin,
@@ -26,12 +28,15 @@ function SelectInput({
           id={id}
           name={id}
           disabled={disabled}
-          className="block pl-5 pr-4 pt-6 pb-3 form-select scrollbar scrollbar-thumb-[#212121] scrollbar-track-[#383838] w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn  peer"
+          className={`block pl-5 pr-4 pt-6 pb-3 form-select scrollbar scrollbar-thumb-[#212121] scrollbar-track-[#383838] w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn  peer ${
+            classes ?? ""
+          }]`}
           placeholder={label}
           onChange={onChange}
           style={{
             fontStyle: "normal",
             fontWeight: 400,
+            fontSize: fontsize,
           }}
           aria-label=".form-select-lg"
           value={value}
@@ -47,7 +52,7 @@ function SelectInput({
       </div>
       {errors && <FormErrors error={errors[id]} />}
     </div>
-  )
+  );
 }
 
-export default SelectInput
+export default SelectInput;

@@ -1,5 +1,5 @@
-import GetStarted from "./GetStarted"
+import GetStarted from "./GetStarted";
 
 export default async function Page() {
-  return <GetStarted />
+  return <GetStarted />;
 }

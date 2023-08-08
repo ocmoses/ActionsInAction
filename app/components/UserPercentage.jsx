@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export default function UserPercentage({
   percent,
@@ -14,21 +14,21 @@ export default function UserPercentage({
     thickness: 4,
     inner: 16,
     textsize,
-  })
+  });
   useEffect(() => {
-    const Hidelabel = hidelabel ?? false
-    const Size = size ? parseInt(size) : 20
-    const Textsize = textsize ? parseInt(textsize) : 14
-    const Thickness = thickness ? parseInt(thickness) : 4
-    const iSize = Size - Thickness
+    const Hidelabel = hidelabel ?? false;
+    const Size = size ? parseInt(size) : 20;
+    const Textsize = textsize ? parseInt(textsize) : 14;
+    const Thickness = thickness ? parseInt(thickness) : 4;
+    const iSize = Size - Thickness;
     setInnerCircle({
       size: Size,
       thickness: Thickness,
       inner: iSize,
       textsize: Textsize,
       hidelabel: Hidelabel,
-    })
-  }, [size, thickness, textsize, hidelabel])
+    });
+  }, [size, thickness, textsize, hidelabel]);
   return (
     <>
       {/* {percent && ( */}
@@ -52,7 +52,7 @@ export default function UserPercentage({
                 fontSize: `${config.textsize}px`,
               }}
             >
-              {percent ?? 0}%
+              {percent ?? 0} %
             </span>
           )}
         </div>
@@ -60,5 +60,5 @@ export default function UserPercentage({
       </div>
       {/* )} */}
     </>
-  )
+  );
 }

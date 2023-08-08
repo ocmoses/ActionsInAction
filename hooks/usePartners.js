@@ -9,10 +9,17 @@ import { PageRoutes } from "@/app/modules/menu"
 import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { proxyFetch, userData, getNextStage } from "@/app/modules/utilities"
-import { forms } from "@/app/modules/constants"
+import {
+  Util,
+  isArray,
+  proxyFetch,
+  userData,
+  getNextStage,
+  getstages,
+} from "@/app/modules/utilities"
+import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 
 const usePartners = () => {
@@ -20,16 +27,36 @@ const usePartners = () => {
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
+  const rejectionReasons = app.rejectionReasons
 
   const [{ setError, setSuccess }] = useErrors({})
   const actions = useStoreActions((action) => action)
   const states = useStoreState((state) => state)
 
   const { category, categories } = states.partners
+  const [allCategories, setAllCategories] = useState([])
+
+  useEffect(() => {
+    const Categories = {}
+    if (categories?.length > 0) {
+      categories.map((category) => {
+        Categories[category.uuid] = category
+      })
+    }
+    setAllCategories(Categories)
+  }, [categories])
+
+  useEffect(() => {
+    if (!rejectionReasons) app.getRejectionReasons()
+  }, [rejectionReasons])
+
   const { setPartners, updatePartner, setCategory } = actions.partners
   const { setTmpUser } = actions.users
   // const { user } = states.users
-  const users = useUsers()
+  const users = useUsers();
+
+  const [stageStatus, setStageStatus] = useState(null)
+
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
@@ -40,7 +67,6 @@ const usePartners = () => {
     const list = []
     const optional = []
     const allForms = { required: [], optional: [], all: [], list: [] }
-    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -60,7 +86,6 @@ const usePartners = () => {
         }
       }
     }
-    // console.log({ allForms })
     const validated = { required, optional, allForms, list }
     setValidation(validated)
     actions.app.setFormSteps(validated)
@@ -82,9 +107,7 @@ const usePartners = () => {
     const { success, error, data } = result
     return { success, error, data }
   }
-  const consolidateCategory = () => {
-    // console.log({ categories })
-  }
+
   const setCurrentCategory = (category, partner) => {
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
@@ -137,6 +160,10 @@ const usePartners = () => {
   const nextStage = (category, partner) => {
     return getNextStage(category, partner)
   }
+  const getStages = (category, categories) => {
+    if (!category) return
+    return getstages(category, categories)
+  }
 
   const registerPartner = async (frm, userdata) => {
     switch (frm) {
@@ -150,7 +177,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -196,7 +223,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -234,7 +261,6 @@ const usePartners = () => {
         return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -242,7 +268,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -280,7 +306,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -329,7 +355,7 @@ const usePartners = () => {
           RemoteEndpoints.REGISTRATION_COMPLETION,
           userdata,
           {
-            timeout: process.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -358,7 +384,6 @@ const usePartners = () => {
     }
   }
 
-  // const setUpdateStatus = (stage) => {}
   const resendEmail = async (email, email_type) => {
     setProcessing(true)
 
@@ -380,6 +405,444 @@ const usePartners = () => {
 
     setSuccess(resendEmailData.message)
   }
+  
+  const updateStageStatus = (category, stage) => {
+    if (!category || !stage) return
+    console.log({
+      "states.partners.partner.approvalStages":
+        states.partners.partner.approvalStages,
+    })
+    const status =
+      states?.partners?.partner?.approvalStages &&
+      states.partners.partner.approvalStages[category.category_uuid]
+        ? states.partners.partner.approvalStages[category.category_uuid][stage]
+        : {}
+    const fields = {}
+    if (status) {
+      for (const dept in status) {
+        for (const field in status[dept]) {
+          if (field !== "rejections" && !isArray(status[dept][field])) {
+            if (!fields[field]) fields[field] = []
+            fields[field].push(status[dept][field])
+          }
+        }
+      }
+    }
+    const counts = {}
+    if (!Util.isEmpty(fields)) {
+      for (const field in fields) {
+        counts[field] = {
+          approved: 0,
+          rejected: 0,
+          corrected: 0,
+          pending: 0,
+        }
+        if (fields[field].length > 0) {
+          fields[field].map((f) => {
+            counts[field][f]++
+          })
+        }
+      }
+    }
+    // console.log({ fields })
+    // console.log({ counts })
+    // console.log({ fieldCounts })
+  }
+
+  const getAllAdminPartners = async (page, perPage) => {
+    try {
+      const params = [];
+      if (page) params.push(`page=${page}`);
+      if (perPage) params.push(`per_page=${perPage}`);
+
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.ALL_ADMIN_PARTNERS.replace(':partner-uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      // if (response.status === 401) {
+      //   redirect(NextEndPoints.LOGIN_ADMIN)
+      //   return
+      // }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const admin_partners = result.data?.admin_users;
+        // if (admins_users.length > 0)
+        // admins_users.map((admin) => {
+        //     filterPartner(admin, states.categories);
+        //   });
+        const navigation = {
+          current_page: result?.data?.admin_users?.current_page,
+          first_page_url: result?.data?.admin_users?.first_page_url,
+          from: result?.data?.admin_users?.from,
+          last_page: result?.data?.admin_users?.last_page,
+          last_page_url: result?.data?.admin_users?.last_page_url,
+          links: result?.data?.admin_users?.links,
+          next_page_url: result?.data?.admin_users?.next_page_url,
+          path: result?.data?.admin_users?.path,
+          per_page: result?.data?.admin_users?.per_page,
+          prev_page_url: result?.data?.admin_users?.prev_page_url,
+          to: result?.data?.admin_users?.to,
+          total: result?.data?.admin_users?.total,
+        };
+
+        // console.log('Admin partners retrieved', result);
+
+        return {
+          admin_partners,
+          navigation,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const getAllServices = async () => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_SERVICES}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      // if (response.status === 401) {
+      //   redirect(NextEndPoints.LOGIN_ADMIN)
+      //   return
+      // }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const service_types = result?.data['service-types'];
+        
+        // console.log('Service types retrieved', result);
+
+        return {
+          service_types
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const partnerSelectService = async (data) => {
+    console.log("data being sent: ", data);
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SELECT_SERVICE}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.SELECT_SERVICE', RemoteEndpoints.SELECT_SERVICE);
+      // console.log('Select result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.messsage;
+        
+        console.log('Selected message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const signBilateralContract = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SIGN_CONTRACT}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Signed message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const createPartner = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.CREATE_PARTNER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const submitAllSignatories = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.SUBMIT_SIGNATORIES}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('submit signatories message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const deletePartner = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.DELETE_PARTNER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'DELETE',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
+      // console.log('Create result', result);
+      // console.log('states.users.token', states.users.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
 
   return {
     ...states.partners,
@@ -396,6 +859,18 @@ const usePartners = () => {
     setValidationRules,
     completeOnboarding,
     setCurrentCategory,
+    getStages,
+    allCategories,
+    rejectionReasons,
+    stageStatus,
+    updateStageStatus,
+    getAllAdminPartners,
+    createPartner,
+    deletePartner,
+    getAllServices,
+    partnerSelectService,
+    submitAllSignatories,
+    signBilateralContract
   }
 }
 export default usePartners

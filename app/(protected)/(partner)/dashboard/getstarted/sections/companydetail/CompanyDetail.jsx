@@ -1,24 +1,25 @@
-"use client"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
-import TextInput from "@/app/components/form/TextInput"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import usePartners from "@/hooks/usePartners"
-import useProcessing from "@/hooks/useProcessing"
-import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
-import { forms } from "@/app/modules/constants"
-import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities"
+"use client";
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
+import TextInput from "@/app/components/form/TextInput";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import usePartners from "@/hooks/usePartners";
+import useProcessing from "@/hooks/useProcessing";
+import { useState, useEffect } from "react";
+import { Util } from "@/utils/utility";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { COUNTRIES } from "@/app/modules/countries";
+import { STATES } from "@/app/modules/states";
+import { forms } from "@/app/modules/constants";
+import { scrollToTop, ValidateField, isString } from "@/app/modules/utilities";
 
 function CompanyDetail() {
-  const { processing, setProcessing, setForm, moveToNextForm } = useProcessing()
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(null)
+  const { processing, setProcessing, setForm, moveToNextForm } =
+    useProcessing();
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(null);
   const {
     partner,
     category,
@@ -26,8 +27,8 @@ function CompanyDetail() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
-  const { title, subtitle, hand, fields } = forms["companydetail"]
+  } = usePartners();
+  const { title, subtitle, hand, fields } = forms["companydetail"];
   const [data, setData] = useState({
     partner_uuid: "",
     category_uuid: "",
@@ -37,34 +38,34 @@ function CompanyDetail() {
     company_city: "",
     company_state: "",
     company_postcode: "",
-  })
-  const [isMasterData, setIsMasterData] = useState(false)
-  const [tinData, setTinData] = useState(null)
+  });
+  const [isMasterData, setIsMasterData] = useState(false);
+  const [tinData, setTinData] = useState(null);
   useEffect(() => {
     const Category =
       partner.master &&
       partner.sections[partner.master.category_uuid]?.companydetail &&
       category.category_uuid !== partner.master.category_uuid
         ? partner.master
-        : category
+        : category;
     setIsMasterData(
       partner.master &&
         partner.sections[partner.master.category_uuid]?.companydetail &&
         category.category_uuid !== partner.master.category_uuid
-    )
-    let tin_data = null
-    let cac_data = null
+    );
+    let tin_data = null;
+    let cac_data = null;
     if (Category?.tin_data) {
       tin_data = isString(Category.tin_data)
         ? JSON.parse(Category.tin_data)
-        : Category.tin_data
-      setTinData(tin_data)
+        : Category.tin_data;
+      setTinData(tin_data);
     }
     if (Category?.cac_data) {
       cac_data = isString(Category.cac_data)
         ? JSON.parse(Category.cac_data)
-        : Category.cac_data
-      setTinData(cac_data)
+        : Category.cac_data;
+      setTinData(cac_data);
     }
     setData({
       partner_uuid: Category?.partner_uuid,
@@ -94,78 +95,77 @@ function CompanyDetail() {
         process.env.NODE_ENV === "production"
           ? Category?.company_postcode ?? ""
           : "123456",
-    })
-  }, [category])
+    });
+  }, [category]);
 
   useEffect(() => {
-    setForm("companydetail")
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
-  const [states, setStates] = useState([])
+    setForm("companydetail");
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
+  const [states, setStates] = useState([]);
   useEffect(() => {
     setStates(
       data.country
         ? STATES.filter((state) => state.country_code === data.country)
         : []
-    )
-  }, [data.country])
+    );
+  }, [data.country]);
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
-        const error = ValidateField(field, "companydetail", data, category)
+        const error = ValidateField(field, "companydetail", data, category);
         if (error) {
-          scrollToTop("onboardinglayout")
+          scrollToTop("onboardinglayout");
           return setError({
             [field]: error,
-          })
+          });
         }
       }
     }
 
-    const result = await registerPartner("companydetail", data)
+    const result = await registerPartner("companydetail", data);
     if (result?.error) {
-      scrollToTop("onboardinglayout")
-      return setError({ companydetail: result.error })
+      scrollToTop("onboardinglayout");
+      return setError({ companydetail: result.error });
     }
     if (result.data?.partner) {
-      updatePartner(result?.data?.partner)
+      updatePartner(result?.data?.partner);
       const newcategory = result.data?.partner.categories.find(
         (c) => c.category_uuid === category.category_uuid
-      )
-      newcategory.profile_stage.companydetail = "1"
-      const { nextstage: NextStage } = nextStage(newcategory, partner)
-      return setForm(NextStage)
+      );
+      newcategory.profile_stage.companydetail = "1";
+      const { nextstage: NextStage } = nextStage(newcategory, partner);
+      return setForm(NextStage);
     }
     // if (NextStage === "review") return moveToNextForm(["review", true])
     // return moveToNextForm([NextStage])
-  }
-  const [selectField, setSelectField] = useState(null)
+  };
+  const [selectField, setSelectField] = useState(null);
   useEffect(() => {
-    removeError(selectField)
-    Validate(selectField)
-  }, [selectField, data])
+    removeError(selectField);
+    Validate(selectField);
+  }, [selectField, data]);
 
   const handleFormChange = (e) => {
-    const field = e.target.id
+    const field = e.target.id;
     setData((prevState) => ({
       ...prevState,
       [field]: e.target.value,
-    }))
-  }
+    }));
+  };
   const Validate = (field) => {
-    removeError(field)
-    const error = ValidateField(field, "companydetail", data, category)
+    removeError(field);
+    const error = ValidateField(field, "companydetail", data, category);
     if (error)
       return setError({
         [field]: error,
-      })
-  }
+      });
+  };
   return (
     <div className="w3-animate-opacity mx-auto w-full max-w-[440px]">
-      {/* <div className="p-2 text-white">{JSON.stringify(category)}</div> */}
       <form method="POST" onSubmit={handleSubmit}>
         <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
         <div className="mb-6">
@@ -189,8 +189,8 @@ function CompanyDetail() {
           label="Select Country"
           value={data.country}
           onChange={(e) => {
-            handleFormChange(e)
-            setSelectField("country")
+            handleFormChange(e);
+            setSelectField("country");
           }}
           errors={errors}
           disabled={isMasterData || partner?.contract_status !== "not_started"}
@@ -229,8 +229,8 @@ function CompanyDetail() {
               label="State"
               value={data.company_state}
               onChange={(e) => {
-                handleFormChange(e)
-                setSelectField("company_state")
+                handleFormChange(e);
+                setSelectField("company_state");
               }}
               errors={errors}
               disabled={
@@ -270,7 +270,7 @@ function CompanyDetail() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default CompanyDetail
+export default CompanyDetail;

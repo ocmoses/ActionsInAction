@@ -1,36 +1,35 @@
-import { TailSpinPreloader } from "@/app/components/Icons"
-import Link from "next/link"
-import useApp from "@/hooks/useApp"
-import useAdmins from "@/hooks/useAdmins"
-import useLogout from "@/hooks/useLogout"
-import { useState } from "react"
-import { useEffect } from "react"
-import { PageRoutes } from "@/app/modules/menu"
+import { TailSpinPreloader } from "@/app/components/Icons";
+import Link from "next/link";
+import useApp from "@/hooks/useApp";
+import useAdmins from "@/hooks/useAdmins";
+import useLogout from "@/hooks/useLogout";
+import { useState } from "react";
+import { useEffect } from "react";
+import { PageRoutes } from "@/app/modules/menu";
 
 export default function UserAvartar() {
-  const { LogoutAdmin } = useLogout()
-  const { session } = useAdmins()
-  const { loading } = useApp()
+  const { LogoutAdmin } = useLogout();
+  const { session } = useAdmins();
 
-  const [initial, setInitial] = useState("")
-  const [showMenu, setShowMenu] = useState(false)
+  const [initial, setInitial] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
 
   const getInitials = () => {
     const userName =
-      session.admin?.username !== "undefined" ? session.admin.username : ""
-    setInitial(`${userName ? userName[0] : ""}`)
-  }
+      session?.admin?.username !== "undefined" ? session?.admin?.username : "";
+    setInitial(`${userName ? userName[0].toUpperCase() : ""}`);
+  };
   useEffect(() => {
-    getInitials()
-  }, [session])
+    getInitials();
+  }, [session]);
 
   useEffect(() => {
-    setShowMenu(false)
-  }, [])
+    setShowMenu(false);
+  }, []);
 
   const toggleProfileMenu = () => {
-    setShowMenu((oldState) => !oldState)
-  }
+    setShowMenu((oldState) => !oldState);
+  };
   return (
     <>
       <div className="z-10 flex items-center justify-between gap-3">
@@ -90,8 +89,8 @@ export default function UserAvartar() {
                 </Link>
                 <div
                   onClick={() => {
-                    LogoutAdmin()
-                    setShowMenu(false)
+                    LogoutAdmin();
+                    setShowMenu(false);
                   }}
                   className="w-full text-end cursor-pointer text-[12px] text-mtn hover:bg-white/20 m-0 px-3 py-2"
                 >
@@ -103,5 +102,5 @@ export default function UserAvartar() {
         </div>
       </div>
     </>
-  )
+  );
 }

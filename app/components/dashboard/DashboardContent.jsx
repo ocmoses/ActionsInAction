@@ -1,26 +1,36 @@
-"use client"
-import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
-import CategoryCard from "@/app/components/dashboard/CategoryCard"
-import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
-import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
-import OnboardingLayout from "./OnboardingLayout"
-import Button from "@/app/components/form/Button"
-import useUsers from "@/hooks/useUsers"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import Axios from "@/app/modules/axios"
-import { useState, useEffect, useRef } from "react"
-import { Util, AllowedCategories, filterPartner } from "@/app/modules/utilities"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import Image from "next/image"
+"use client";
+import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer";
+import CategoryCard from "@/app/components/dashboard/CategoryCard";
+import CategoryDetail from "@/app/components/dashboard/CategoryDetail";
+import PartnerCategories from "@/app/components/dashboard/PartnerCategories";
+import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement";
+import OnboardingLayout from "./OnboardingLayout";
+import Button from "@/app/components/form/Button";
+import useUsers from "@/hooks/useUsers";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import Axios from "@/app/modules/axios";
+import Portal from "@/app/components/Portal";
+import { useState, useEffect, useRef } from "react";
+import {
+  Util,
+  AllowedCategories,
+  filterPartner,
+  filterCategory,
+  getFinalApproval,
+} from "@/app/modules/utilities";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import Image from "next/image";
+import { scrollToTop } from "@/app/modules/utilities";
+import CallToAction from "./partners/CallToAction";
 
 export default function GetStarted({ type }) {
   const {
     session: { user },
-  } = useUsers()
+  } = useUsers();
   const {
     partner,
     category,
@@ -29,106 +39,118 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
-  } = usePartners()
+  } = usePartners();
 
-  const [isOpen, setIsOpen] = useState(false)
-  const [categoriesData, setCategoriesData] = useState([])
-  const [partnerCategories, setPartnerCategories] = useState([])
-  const [partnerActiveCategories, setPartnerActiveCategories] = useState([])
-  const [showProgress, setShowProgress] = useState(false)
-  const [tmpCat, setTmpCat] = useState(null)
-  const [isOnboarding, setIsOnboarding] = useState(false)
-  const [allowedCategories, setAllowedCategories] = useState(false)
+  const [FinalApproval, setFinalApproval] = useState(false);
+  useEffect(() => {
+    const _finalApproval = getFinalApproval(partner);
+    console.log({ _finalApproval });
+    setFinalApproval(_finalApproval);
+  }, [partner]);
+  // console.log({ FinalApproval })
+  const [isOpen, setIsOpen] = useState(false);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [partnerCategories, setPartnerCategories] = useState([]);
+  const [partnerActiveCategories, setPartnerActiveCategories] = useState([]);
+  const [showProgress, setShowProgress] = useState(false);
+  const [tmpCat, setTmpCat] = useState(null);
+  const [isOnboarding, setIsOnboarding] = useState(false);
+  // const [allowedCategories, setAllowedCategories] = useState(false)
 
-  const { setForm, setProcessing, moveToNextForm, setActiveCategory } =
-    useProcessing()
+  const { setForm, setProcessing, setActiveCategory } = useProcessing();
 
   const [{ errors, setError, success, setSuccess, clearErrors }] =
-    useErrors(null)
+    useErrors(null);
 
+  const [showModal, setShowModal] = useState(false);
+  const showAgreement = (status) => {
+    console.log({ showModal });
+    setShowModal(status);
+  };
   useEffect(() => {
-    setCategoriesData(categories)
-    setAllowedCategories(AllowedCategories(categories))
-  }, [categories])
+    setCategoriesData(categories);
+  }, [categories]);
 
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
-  })
+  });
 
   useEffect(() => {
-    setActiveCategory(tmpCat)
-    const validation = setValidationRules(tmpCat)
-    setValidation(validation)
-  }, [tmpCat])
+    setActiveCategory(tmpCat);
+    const validation = setValidationRules(tmpCat);
+    setValidation(validation);
+  }, [tmpCat]);
 
   useEffect(() => {
-    setForm(null)
-    setShowProgress(false)
-    setProcessing(false)
-  }, [])
+    setForm(null);
+    setShowProgress(false);
+    setProcessing(false);
+  }, []);
 
   useEffect(() => {
-    const partnerCat = []
-    const partnerActiveCat = []
-    filterPartner(partner, categoriesData)
+    const partnerCat = [];
+    const partnerActiveCat = [];
+    filterPartner(partner, categoriesData);
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
-        partner.categories.map((category) => {
-          partnerActiveCat.push(category.uuid)
+        partner.categories.map((_category) => {
+          const category = filterCategory(_category, partner);
+          partnerActiveCat.push(category.uuid);
           const mainCategory = categoriesData.find(
             (c) => c.uuid === category.category_uuid
-          )
+          );
+
           partnerCat.push({
             ...category,
             category_name: mainCategory?.category_name,
             validation: mainCategory?.validation,
-          })
-        })
+          });
+        });
       }
     }
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
         partner.allowedCategories.includes(category.category_code)
-    )
-    setPartnerActiveCategories(newCatArray)
-    setPartnerCategories(partnerCat)
-  }, [partner, categoriesData, category])
+    );
+    setPartnerActiveCategories(newCatArray);
+    setPartnerCategories(partnerCat);
+  }, [partner, categoriesData, category]);
 
   const toggleProgress = () => {
-    setShowProgress((oldState) => !oldState)
-  }
-  const MainBox = useRef()
-  const CategoryBox = useRef()
+    setShowProgress((oldState) => !oldState);
+  };
+  const MainBox = useRef();
+  const CategoryBox = useRef();
 
   const continueRegistration = (uuid) => {
-    clearErrors()
-    const category = partner?.categories?.find((cat) => cat.uuid === uuid)
+    clearErrors();
+    const category = partner?.categories?.find((cat) => cat.uuid === uuid);
 
     if (category) {
       //  CHECK IF MASTER DATA EXISTS
-      const { nextstage: NextStage } = nextStage(category, partner)
-      setCurrentCategory(category, partner)
-      setIsOnboarding(true)
-      setIsOpen(false)
-      return setForm(NextStage)
+      const { nextstage: NextStage } = nextStage(category, partner);
+      setCurrentCategory(category, partner);
+      setIsOnboarding(true);
+      setIsOpen(false);
+      return setForm(NextStage);
     }
-  }
+  };
   const scrollpage = () => {
     document.getElementById("portals").scrollTo({
       top: 0,
       behavior: "smooth",
-    })
-  }
-  const [isSaving, setIsSaving] = useState(false)
-  const [contractStarted, setContractStarted] = useState(false)
+    });
+  };
+  const [isSaving, setIsSaving] = useState(false);
+  const [contractStarted, setContractStarted] = useState(false);
 
   const finishApplication = async () => {
-    if (isSaving) return
-    clearErrors()
-    setIsSaving(true)
+    if (isSaving) return;
+    clearErrors();
+    setIsSaving(true);
     try {
       const result = await Axios.post(
         RemoteEndpoints.START_CONTRACT,
@@ -142,37 +164,37 @@ export default function GetStarted({ type }) {
           referrerPolicy: "no-referrer",
         }
       ).catch((error) => {
-        console.log(error)
-        setIsSaving(false)
+        console.log(error);
+        setIsSaving(false);
         return setError({
           dashboard:
             "Unable to reach the server. Please check your connection and retry",
-        })
-      })
-      setIsSaving(false)
+        });
+      });
+      setIsSaving(false);
       if (result) {
-        const { success, data } = result
+        const { success, data } = result;
         if (success) {
-          setContractStarted(true)
-          updatePartner(data?.partner)
-          setSuccess("Your application was submited successfully")
+          setContractStarted(true);
+          updatePartner(data?.partner);
+          setSuccess("Your application was submited successfully");
         } else {
-          return setError({ dashboard: data.message })
+          return setError({ dashboard: data.message });
         }
       } else {
         return setError({
           dashboard: "Cannot reach the server. Please check your connection",
-        })
+        });
       }
     } catch (err) {
-      console.log({ err })
-      setIsSaving(false)
+      console.log({ err });
+      setIsSaving(false);
       return setError({
         dashboard:
           "Something went wrong. Please check your connection and try again",
-      })
+      });
     }
-  }
+  };
   return (
     <>
       {isOnboarding && (
@@ -211,9 +233,62 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      {partner?.contract_status === "not_started"
-                        ? "Complete your setup to get started!"
-                        : "Your application is currently being reviewed"}
+                      {partner?.contract_status === "not_started" ? (
+                        "Complete your setup to get started!"
+                      ) : (
+                        <>
+                          {FinalApproval.partner ? (
+                            <CallToAction
+                              message="Your contract is ready, click here to sign"
+                              description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
+                              label="Take action"
+                              color="text-green-700"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          ) : (
+                            <CallToAction
+                              message="Your application is currently being reviewed"
+                              description=""
+                              label=""
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          )}
+                        </>
+                      )}
                     </p>
                   )}
                 </div>
@@ -233,9 +308,62 @@ export default function GetStarted({ type }) {
                     </>
                   ) : (
                     <p className="text-[#999999] text-center md:text-start">
-                      {partner?.contract_status === "not_started"
-                        ? "Complete your setup to get started!"
-                        : "Your application is currently being reviewed"}
+                      {partner?.contract_status === "not_started" ? (
+                        "Complete your setup to get started!"
+                      ) : (
+                        <>
+                          {FinalApproval.partner ? (
+                            <CallToAction
+                              message="Your contract is ready, click here to sign"
+                              description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
+                              label="Take action"
+                              color="text-green-700"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          ) : (
+                            <CallToAction
+                              message="Your application is currently being reviewed"
+                              description=""
+                              label=""
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          )}
+                        </>
+                      )}
                     </p>
                   )}
                 </>
@@ -246,8 +374,9 @@ export default function GetStarted({ type }) {
                   partner={partner}
                   partnerCategories={partnerCategories}
                   type={type}
-                  onClick={continueRegistration}
+                  onclick={continueRegistration}
                   categories={categoriesData}
+                  finalApproval={FinalApproval}
                 />
               )}
               {success && (
@@ -271,23 +400,45 @@ export default function GetStarted({ type }) {
                         fill="#efb703"
                       />
                     ) : (
-                      <Button
-                        onClick={finishApplication}
-                        label="Finish Application"
-                        paddingclass="pl-12 pr-4 py-3 animate-pulse hover:animate-none animate-pulse"
-                        textsizecss="inline-flex text-[14px] whitespace-nowrap"
-                      />
+                      <div className="flex flex-col items-center justify-start gap-3 w-full sm:flex sm:flex-row sm:items-center sm:justify-center sm:gap-6 sm:w-auto">
+                        {!contractStarted &&
+                          partner?.contract_status === "not_started" &&
+                          partnerCategories?.length > 0 &&
+                          partnerActiveCategories?.length > 0 && (
+                            <>
+                              <Button
+                                href="javascript:;"
+                                onClick={(e) => scrollToTop("categoryselect")}
+                                label="Add another category"
+                                paddingclass="pl-4 pr-3 py-2 w-full animate-pulse hover:animate-none animate-pulse"
+                                textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                                outline="yes"
+                                icon="no"
+                              />
+                              <span className="text-white">OR</span>
+                            </>
+                          )}
+                        <Button
+                          onClick={finishApplication}
+                          label="Finish Application"
+                          paddingclass="pl-6 pr-3 py-2 w-full animate-pulse hover:animate-none animate-pulse"
+                          textsizecss="inline-flex text-[14px] whitespace-nowrap"
+                        />
+                      </div>
                     )}
                   </div>
                 )}
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 partnerActiveCategories?.length > 0 && (
-                  <div className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto">
+                  <div
+                    id="categoryselect"
+                    className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
+                  >
                     Dear {user.first_name}, please note that you can choose
                     multiple service categories. However, you will be required
                     to complete a selected category to enable you move to the
-                    next category
+                    next category
                   </div>
                 )}
               {!contractStarted &&
@@ -444,6 +595,11 @@ export default function GetStarted({ type }) {
           </div>
         </div>
       )}
+      {showModal && (
+        <Portal>
+          <PartnerAgreement showAgreement={showAgreement} partner={partner} />
+        </Portal>
+      )}
     </>
-  )
+  );
 }

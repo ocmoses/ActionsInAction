@@ -1,37 +1,37 @@
-"use client"
-import "client-only"
+"use client";
+import "client-only";
 
-import useErrors from "@/hooks/useErrors"
-import useProcessing from "@/hooks/useProcessing"
-import Axios from "@/app/modules/axios"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import useApp from "@/hooks/useApp"
-import useUsers from "@/hooks/useUsers"
-import usePartners from "@/hooks/usePartners"
+import useErrors from "@/hooks/useErrors";
+import useProcessing from "@/hooks/useProcessing";
+import Axios from "@/app/modules/axios";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import useApp from "@/hooks/useApp";
+import useUsers from "@/hooks/useUsers";
+import usePartners from "@/hooks/usePartners";
 
-import { PageRoutes } from "@/app/modules/menu"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useRouter } from "next/navigation"
-import { useEffect, useState, useRef } from "react"
-import { NextEndPoints } from "@/app/modules/endpoints"
-import { Util } from "@/app/modules/utilities"
+import { PageRoutes } from "@/app/modules/menu";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import { NextEndPoints } from "@/app/modules/endpoints";
+import { Util } from "@/app/modules/utilities";
 
 export default function RegisterValidation({ params }) {
-  const { processing, setProcessing } = useProcessing()
-  const [{ errors, setError, removeError, clearErrors }] = useErrors({})
-  const [data, setData] = useState(null)
-  const validating = useRef(false)
-  const router = useRouter()
-  const app = useApp()
-  const users = useUsers()
-  const { resendEmail } = usePartners()
+  const { processing, setProcessing } = useProcessing();
+  const [{ errors, setError, removeError, clearErrors }] = useErrors({});
+  const [data, setData] = useState(null);
+  const validating = useRef(false);
+  const router = useRouter();
+  const app = useApp();
+  const users = useUsers();
+  const { resendEmail } = usePartners();
 
   const ValidateEmailAndUser = async (params) => {
-    setProcessing(true)
+    setProcessing(true);
     try {
-      let response = null
+      let response = null;
 
-      const url = `${PageRoutes.setpassword}/${params.type}/${params.user_uuid}`
+      const url = `${PageRoutes.setpassword}/${params.type}/${params.user_uuid}`;
       response = await Axios.post(
         RemoteEndpoints.CHECK_EMAIL_VERIFICATION_LINK,
         { user_uuid: params.user_uuid },
@@ -39,38 +39,38 @@ export default function RegisterValidation({ params }) {
           timeout: process.TIMEOUT,
         }
       ).catch((e) => {
-        setProcessing(false)
+        setProcessing(false);
         return setError({
           validate: `${e.message}. Please check you connection`,
-        })
-      })
+        });
+      });
       if (response) {
-        const { success, data } = response
+        const { success, data } = response;
         if (success) {
-          return router.push(url)
+          return router.push(url);
         } else {
-          setProcessing(false)
+          setProcessing(false);
           return setError({
             validate: `${data.message}`,
-          })
+          });
         }
       } else {
-        setProcessing(false)
+        setProcessing(false);
         return setError({
           validate: "Cannot reach the server. Please check your connection",
-        })
+        });
       }
     } catch (err) {
-      setProcessing(false)
+      setProcessing(false);
       return setError({
         validate: "Something went wrong",
-      })
+      });
     }
-  }
+  };
   const ValidateNewUser = async () => {
-    setProcessing(true)
+    setProcessing(true);
     try {
-      clearErrors()
+      clearErrors();
       // clearStore()
       const response = await fetch(NextEndPoints.VALIDATE_USER, {
         method: "POST",
@@ -78,31 +78,31 @@ export default function RegisterValidation({ params }) {
           user_uuid: params.user_uuid,
           type: params.type,
         }),
-      })
+      });
       if (response) {
         // setValidating(true)
-        validating.current = true
-        const result = await response.json()
-        const { data: loginData } = result
+        validating.current = true;
+        const result = await response.json();
+        const { data: loginData } = result;
 
         if (!loginData) {
-          setProcessing(false)
-          return setError({ validate: "Authentication failed" })
+          setProcessing(false);
+          return setError({ validate: "Authentication failed" });
         }
 
         if (loginData.error) {
-          setProcessing(false)
-          users.setTmpUser(loginData.data)
+          setProcessing(false);
+          users.setTmpUser(loginData.data);
           if (loginData.data && loginData.data.email_verified === "yes") {
             return setError({
               validate: `Your email ${Util.obscureEmail(
                 loginData.data.email
               )} is already verified. Please login to proceed`,
-            })
+            });
           }
-          return setError({ validate: loginData.error })
+          return setError({ validate: loginData.error });
         }
-        console.log({ loginData })
+        // console.log({ loginData })
         // const serverSession = {
         //   status: loginData?.data?.user?.uuid
         //     ? "authenticated"
@@ -119,27 +119,27 @@ export default function RegisterValidation({ params }) {
         // }
         // app.toggleGetstartedLink(false)
         // return router.push(PageRoutes.dashboard)
-        users.setTmpUser(loginData?.data?.user)
-        return router.replace(`${PageRoutes.login}`)
+        users.setTmpUser(loginData?.data?.user);
+        return router.replace(`${PageRoutes.login}`);
       } else {
-        setProcessing(false)
+        setProcessing(false);
         return setError({
           validate: "Cannot reach the server. Please check your connection",
-        })
+        });
       }
     } catch (err) {
-      console.log({ err })
-      setProcessing(false)
-      setError({ validate: JSON.stringify(err) })
+      console.log({ err });
+      setProcessing(false);
+      setError({ validate: JSON.stringify(err) });
     }
-  }
+  };
   useEffect(() => {
     if (params?.type === "new") {
-      ValidateNewUser()
+      ValidateNewUser();
     } else {
-      ValidateEmailAndUser(params)
+      ValidateEmailAndUser(params);
     }
-  }, [])
+  }, []);
   return (
     <>
       <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -191,5 +191,5 @@ export default function RegisterValidation({ params }) {
         </div>
       </div>
     </>
-  )
+  );
 }

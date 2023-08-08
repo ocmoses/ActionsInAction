@@ -1,14 +1,11 @@
-"use client"
-// 'use client' marks this page as a Client Component
-// https://beta.nextjs.org/docs/rendering/server-and-client-components
-
-import { useEffect } from "react"
+"use client";
+import { useEffect } from "react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error)
-  }, [error])
+    console.error(error);
+  }, [error]);
 
   return (
     <div className="flex p-20 justify-center items-start flex-col gap-5 text-white">
@@ -20,5 +17,5 @@ export default function Error({ error, reset }) {
       </div>
       <button onClick={() => reset()}>Reset</button>
     </div>
-  )
+  );
 }

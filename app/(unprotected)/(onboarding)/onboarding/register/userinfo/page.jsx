@@ -1,9 +1,11 @@
-import UserInfo from "./UserInfo"
-import { apiURL } from "@/app/modules/constants"
+import UserInfo from "./UserInfo";
+import { apiURL } from "@/app/modules/constants";
+import RemoteEndpoints from "@/app/modules/endpoints"
+
 
 const getDesignations = async () => {
   try {
-    const response = await fetch(`${apiURL}/v1/your-roles`, {
+    const response = await fetch(RemoteEndpoints.DESIGNATION, {
       headers: {
         apikey: `${process.env.APIKEY}`,
         "Content-Type": "application/json",
@@ -12,31 +14,31 @@ const getDesignations = async () => {
       },
       redirect: "follow",
       next: { revalidate: 60 * 60 * 24 },
-    })
-    const { success, data } = await response.json()
+    });
+    const { success, data } = await response.json();
     if (response?.ok) {
-      return { success, error: null, data }
+      return { success, error: null, data };
     } else {
       if (data) {
-        return { success, error: data.message, data: {} }
+        return { success, error: data.message, data: {} };
       } else {
         return {
           success: false,
           error: `${response.status} ${response.statusText}`,
           data: {},
-        }
+        };
       }
     }
   } catch (error) {
-    return { success: false, error: error.message, data: {} }
+    return { success: false, error: error.message, data: {} };
   }
-  s
-}
+  s;
+};
 
 async function UserInfoPage() {
-  const designations = await getDesignations()
+  const designations = await getDesignations();
 
-  return <UserInfo designations={designations} />
+  return <UserInfo designations={designations} />;
 }
 
-export default UserInfoPage
+export default UserInfoPage;

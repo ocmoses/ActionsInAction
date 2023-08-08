@@ -28,4 +28,4 @@ export const BANKS = [
   { code: "215", name: "Unity Bank" },
   { code: "035", name: "Wema Bank" },
   { code: "057", name: "Zenith Bank" },
-]
+];

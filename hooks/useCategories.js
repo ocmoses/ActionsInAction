@@ -3,32 +3,7 @@
 import RemoteEndPoints from "@/app/modules/endpoints"
 import { useEffect, useState } from "react"
 
-// const fetcher = (args) => fetch(args.url, args.options).then((r) => r.json())
-
 const useCategories = (apikey) => {
-  //     try {
-  //   const { data, error, isValidating } = useSWR(
-  //     {
-  //       url: RemoteEndPoints.CATEGORIES,
-  //       options: {
-  //         method: "GET",
-  //         headers: {
-  //           apikey,
-  //           "Content-Type": "application/json",
-  //         },
-  //         redirect: "follow",
-  //       },
-  //     },
-  //     fetcher
-  //   )
-  //   console.log({ data })
-  //  } catch (err) {
-  //       return {
-  //         success: false,
-  //         error: err.message,
-  //         data: null,
-  //       }
-  //     }
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)

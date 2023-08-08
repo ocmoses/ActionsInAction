@@ -1,7 +1,7 @@
-import Compliance from "./Compliance"
+import Compliance from "./Compliance";
 
 function CompliancePage() {
-  return <Compliance />
+  return <Compliance />;
 }
 
-export default CompliancePage
+export default CompliancePage;

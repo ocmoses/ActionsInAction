@@ -1,19 +1,19 @@
-"use client"
-import TextInput from "@/app/components/form/TextInput"
-import FileInput from "@/app/components/form/FileInput"
-import DatePicker from "@/app/components/form/DatePicker"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import useErrors from "@/hooks/useErrors"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import ButtonPrev from "@/app/components/form/ButtonPrev"
-import FormErrors from "@/app/components/FormErrors"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import usePartners from "@/hooks/usePartners"
-import useProcessing from "@/hooks/useProcessing"
-import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms, validities } from "@/app/modules/constants"
+"use client";
+import TextInput from "@/app/components/form/TextInput";
+import FileInput from "@/app/components/form/FileInput";
+import DatePicker from "@/app/components/form/DatePicker";
+import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+import useErrors from "@/hooks/useErrors";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import ButtonPrev from "@/app/components/form/ButtonPrev";
+import FormErrors from "@/app/components/FormErrors";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import usePartners from "@/hooks/usePartners";
+import useProcessing from "@/hooks/useProcessing";
+import { useState, useEffect } from "react";
+import { Util } from "@/utils/utility";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { forms, validities } from "@/app/modules/constants";
 import {
   scrollToTop,
   validateExpiryDate,
@@ -21,11 +21,11 @@ import {
   ValidateField,
   fieldRequired,
   fieldName,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 function Ncclicense() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
-    useProcessing()
+    useProcessing();
   const {
     partner,
     category,
@@ -33,9 +33,9 @@ function Ncclicense() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
+  } = usePartners();
   const { min_start_date, max_end_date, yesterday, tomorrow } =
-    getValidityRange(validities.ncc)
+    getValidityRange(validities.ncc);
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -45,22 +45,22 @@ function Ncclicense() {
     ncc_expiry_date: "",
     ncc_doc: {},
     ncc_file: "",
-  })
-  const { title, subtitle, hand, fields } = forms["ncclicense"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-  const [isMasterData, setIsMasterData] = useState(false)
+  });
+  const { title, subtitle, hand, fields } = forms["ncclicense"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
+  const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
     const Category =
       partner.master &&
       partner.sections[partner.master.category_uuid]?.ncclicense &&
       category.category_uuid !== partner.master.category_uuid
         ? partner.master
-        : category
+        : category;
     setIsMasterData(
       partner.master &&
         partner.sections[partner.master.category_uuid]?.ncclicense &&
         category.category_uuid !== partner.master.category_uuid
-    )
+    );
     if (category)
       setData({
         partner_uuid: Category?.partner_uuid ?? "",
@@ -79,26 +79,26 @@ function Ncclicense() {
             : "2024-03-20",
         ncc_doc: Category?.ncc_doc ?? {},
         ncc_file: Category?.ncc_file ?? "",
-      })
-  }, [category])
+      });
+  }, [category]);
   useEffect(() => {
-    setForm("ncclicense")
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setForm("ncclicense");
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         if (field !== "ncc_doc") {
-          const error = ValidateField(field, "ncclicense", data, category)
+          const error = ValidateField(field, "ncclicense", data, category);
           if (error) {
-            scrollToTop("onboardinglayout")
+            scrollToTop("onboardinglayout");
             return setError({
               [field]: error,
-            })
+            });
           }
         }
       }
@@ -108,62 +108,62 @@ function Ncclicense() {
       Util.isEmpty(data.ncc_doc) &&
       !data.ncc_file
     ) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       return setError({
         ncc_file: `${fieldName("ncc_doc", "ncclicense")} is required`,
-      })
+      });
     }
     if (data.ncc_issue_date && data.ncc_expiry_date) {
       const expiryError = validateExpiryDate(
         data.ncc_issue_date,
         data.ncc_expiry_date,
         validities.ncc
-      )
-      if (expiryError) return setError({ ncc_issue_date: expiryError })
+      );
+      if (expiryError) return setError({ ncc_issue_date: expiryError });
     }
 
-    const result = await registerPartner("ncclicense", data)
+    const result = await registerPartner("ncclicense", data);
     if (result) {
-      scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ ncclicense: result.error })
+      scrollToTop("onboardinglayout");
+      if (result?.error) return setError({ ncclicense: result.error });
     }
     if (result.data?.partner) {
-      updatePartner(result?.data?.partner)
+      updatePartner(result?.data?.partner);
       const newcategory = result.data?.partner.categories.find(
         (c) => c.category_uuid === category.category_uuid
-      )
-      newcategory.profile_stage.ncclicense = "1"
-      const { nextstage: NextStage } = nextStage(newcategory, partner)
-      console.log({ NextStage })
-      return setForm(NextStage)
+      );
+      newcategory.profile_stage.ncclicense = "1";
+      const { nextstage: NextStage } = nextStage(newcategory, partner);
+      // console.log({ NextStage })
+      return setForm(NextStage);
     }
     // const { nextstage: NextStage } = nextStage(category, partner)
     // return setForm(NextStage)
-    if (NextStage === "review") return moveToNextForm(["review", true])
-    return moveToNextForm([NextStage])
-  }
+    if (NextStage === "review") return moveToNextForm(["review", true]);
+    return moveToNextForm([NextStage]);
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const handleDateChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const Validate = (field) => {
-    removeError(field)
-    const error = ValidateField(field, "ncclicense", data, category)
+    removeError(field);
+    const error = ValidateField(field, "ncclicense", data, category);
     if (error)
       return setError({
         [field]: error,
-      })
-  }
+      });
+  };
 
   return (
     <div
@@ -253,7 +253,7 @@ function Ncclicense() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default Ncclicense
+export default Ncclicense;

@@ -1,69 +1,69 @@
-"use client"
-import usePartners from "@/hooks/usePartners"
-import TextInput from "@/app/components/form/TextInput"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import Button from "@/app/components/form/Button"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import useProcessing from "@/hooks/useProcessing"
-import { useEffect, useState } from "react"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { Util } from "@/utils/utility"
-import { forms } from "@/app/modules/constants"
-import useApp from "@/hooks/useApp"
+"use client";
+import usePartners from "@/hooks/usePartners";
+import TextInput from "@/app/components/form/TextInput";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import Button from "@/app/components/form/Button";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import useProcessing from "@/hooks/useProcessing";
+import { useEffect, useState } from "react";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { Util } from "@/utils/utility";
+import { forms } from "@/app/modules/constants";
+import useApp from "@/hooks/useApp";
 
 export default function PartnerWelcome({ resource }) {
-  const { setRouteloading } = useApp()
+  const { setRouteloading } = useApp();
 
-  const { processing, setProcessing, setForm } = useProcessing()
-  const { registerPartner } = usePartners()
+  const { processing, setProcessing, setForm } = useProcessing();
+  const { registerPartner } = usePartners();
 
   const [data, setData] = useState({
     partnerid: "",
     email_type: "",
-  })
-  const { title, subtitle, hand, required } = forms["partnerwelcome"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors()
+  });
+  const { title, subtitle, hand, required } = forms["partnerwelcome"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors();
 
   useEffect(() => {
-    setForm("partnerwelcome")
-    setProcessing(false)
-    clearErrors()
-    setRouteloading(false)
-  }, [])
+    setForm("partnerwelcome");
+    setProcessing(false);
+    clearErrors();
+    setRouteloading(false);
+  }, []);
   useEffect(() => {
     setData((oldState) => ({
       ...oldState,
       email_type:
         resource && resource[0] === "resetpassword" ? "reset" : "existing",
-    }))
-  }, [resource])
+    }));
+  }, [resource]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
-    let error = false
+    e.preventDefault();
+    clearErrors();
+    let error = false;
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!data[field]) {
-          error = true
-          setError({ [field]: `${required[field]} is required` })
+          error = true;
+          setError({ [field]: `${required[field]} is required` });
         }
       }
-      if (error) return
+      if (error) return;
     }
-    const result = await registerPartner("partnerwelcome", data)
+    const result = await registerPartner("partnerwelcome", data);
     if (result) {
-      if (result?.error) return setError({ partnerwelcome: result.error })
+      if (result?.error) return setError({ partnerwelcome: result.error });
     }
-  }
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
@@ -97,5 +97,5 @@ export default function PartnerWelcome({ resource }) {
         )}
       </form>
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 export default function ButtonNext(props) {
-  const noicon = props.noicon ? true : false
+  const noicon = props.noicon && props.noicon === "yes" ? true : false;
   return (
     <button
       className={`rounded-full pl-3 pr-2 py-2 flex justify-between items-center text-black bg-mtn hover:bg-mtn-400 transition ease-in-out 5000`}
@@ -26,5 +26,5 @@ export default function ButtonNext(props) {
         </svg>
       )}
     </button>
-  )
+  );
 }

@@ -1,28 +1,28 @@
-import { outputDate, scrollToTop } from "@/app/modules/utilities"
-import ReviewTitle from "@/app/components/dashboard/ReviewTitle"
-import Button from "@/app/components/form/Button"
-import usePartners from "@/hooks/usePartners"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import useProcessing from "@/hooks/useProcessing"
-import { COUNTRIES } from "@/app/modules/countries"
-import { STATES } from "@/app/modules/states"
-import Image from "next/image"
-import ShortcodeReview from "./ShortcodeReview"
-import FilePreviewModal from "@/app/components/FilePreviewModal"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { useState, useEffect } from "react"
+import { outputDate, scrollToTop } from "@/app/modules/utilities";
+import ReviewTitle from "@/app/components/dashboard/ReviewTitle";
+import Button from "@/app/components/form/Button";
+import usePartners from "@/hooks/usePartners";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import useProcessing from "@/hooks/useProcessing";
+import { COUNTRIES } from "@/app/modules/countries";
+import { STATES } from "@/app/modules/states";
+import Image from "next/image";
+import ShortcodeReview from "./ShortcodeReview";
+import FilePreviewModal from "@/app/components/FilePreviewModal";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { useState, useEffect } from "react";
 
 export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
-  const { setForm, moveToNextForm } = useProcessing()
+  const { setForm, moveToNextForm } = useProcessing();
   const { partner, category, setCategory, updatePartner, registerPartner } =
-    usePartners()
-  const [{ errors, setError, clearErrors }] = useErrors()
+    usePartners();
+  const [{ errors, setError, clearErrors }] = useErrors();
   const showSection = (section) =>
     category?.validation &&
     category.validation[section] &&
     (category.validation[section] === "r" ||
-      category.validation[section] === "o")
+      category.validation[section] === "o");
 
   const [isMaster, setIsMaster] = useState({
     compliance: false,
@@ -32,14 +32,14 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
     shortcode: false,
     indemnity: false,
     accountinfo: false,
-  })
-  const [complianceCategory, setComplianceCategory] = useState(null)
-  const [companydetailCategory, setCompanydetailCategory] = useState(null)
-  const [ncclicenseCategory, setNcclicenseCategory] = useState(null)
-  const [nlrclicenseCategory, setNlrclicenseCategory] = useState(null)
-  const [shortcodeCategory, setShortcodeCategory] = useState(null)
-  const [indemnityCategory, setIndemnityCategory] = useState(null)
-  const [accountinfoCategory, setAccountinfoCategory] = useState(null)
+  });
+  const [complianceCategory, setComplianceCategory] = useState(null);
+  const [companydetailCategory, setCompanydetailCategory] = useState(null);
+  const [ncclicenseCategory, setNcclicenseCategory] = useState(null);
+  const [nlrclicenseCategory, setNlrclicenseCategory] = useState(null);
+  const [shortcodeCategory, setShortcodeCategory] = useState(null);
+  const [indemnityCategory, setIndemnityCategory] = useState(null);
+  const [accountinfoCategory, setAccountinfoCategory] = useState(null);
   useEffect(() => {
     const Stages = [
       "compliance",
@@ -48,7 +48,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
       "shortcode",
       "indemnity",
       "accountinfo",
-    ]
+    ];
     if (category) {
       setIsMaster((oldState) => {
         Stages.map((stage) => {
@@ -58,72 +58,70 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
             partner.sections[partner?.master.category_uuid][stage] &&
             category.category_uuid !== partner?.master.category_uuid
               ? true
-              : false
-        })
-        return oldState
-      })
+              : false;
+        });
+        return oldState;
+      });
     }
-  }, [category])
+  }, [category]);
 
   useEffect(() => {
-    setComplianceCategory(isMaster.compliance ? partner?.master : category)
+    setComplianceCategory(isMaster.compliance ? partner?.master : category);
     setCompanydetailCategory(
       isMaster.companydetail ? partner?.master : category
-    )
-    setNcclicenseCategory(isMaster.ncclicense ? partner?.master : category)
-    setNlrclicenseCategory(isMaster.nlrclicense ? partner?.master : category)
-    setShortcodeCategory(isMaster.shortcode ? partner?.master : category)
-    setIndemnityCategory(isMaster.indemnity ? partner?.master : category)
-    setAccountinfoCategory(isMaster.accountinfo ? partner?.master : category)
-  }, [isMaster])
+    );
+    setNcclicenseCategory(isMaster.ncclicense ? partner?.master : category);
+    setNlrclicenseCategory(isMaster.nlrclicense ? partner?.master : category);
+    setShortcodeCategory(isMaster.shortcode ? partner?.master : category);
+    setIndemnityCategory(isMaster.indemnity ? partner?.master : category);
+    setAccountinfoCategory(isMaster.accountinfo ? partner?.master : category);
+  }, [isMaster]);
 
-  const [showModal, setShowModal] = useState(false)
-  const [filePath, setFilePath] = useState("")
-  const [isSaving, setIsSaving] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [filePath, setFilePath] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const saveForm = async () => {
-    clearErrors()
-    if (isSaving) return
-    setIsSaving(true)
+    clearErrors();
+    if (isSaving) return;
+    setIsSaving(true);
     const result = await registerPartner("complete_registration", {
       partner_uuid: category.partner_uuid,
       category_uuid: category.category_uuid,
       user_uuid: category.user_uuid,
       action_completed: "category_registration",
-    })
+    });
 
     if (result) {
-      scrollToTop("onboardinglayout")
+      scrollToTop("onboardinglayout");
       if (result?.error) {
-        setIsSaving(false)
-        return setError({ review: result.error })
+        setIsSaving(false);
+        return setError({ review: result.error });
       }
 
-      console.log("result?.data?.partner", result?.data?.partner)
-      console.log({ category })
-      setCategory(category)
-      updatePartner(result?.data?.partner)
-      setForm("complete")
+      setCategory(category);
+      updatePartner(result?.data?.partner);
+      setForm("complete");
     }
     return setError({
       review: "Something went wrong. Please check your connection",
-    })
-  }
+    });
+  };
   const PreviewFile = (url) => {
     if (url) {
-      setFilePath(url)
-      setShowModal(true)
+      setFilePath(url);
+      setShowModal(true);
     }
-  }
+  };
 
   function handleCloseModal() {
-    setFilePath("")
-    setShowModal(false)
+    setFilePath("");
+    setShowModal(false);
   }
 
   const moveTo = (section, category) => {
-    moveToNextForm([section, true])
-    scrollToTop("onboardinglayout")
-  }
+    moveToNextForm([section, true]);
+    scrollToTop("onboardinglayout");
+  };
   return (
     <>
       {showModal && (
@@ -744,9 +742,9 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
           </p>
           <p
             onClick={() => {
-              setIsOnboarding(false)
-              setTmpCat(null)
-              setForm(null)
+              setIsOnboarding(false);
+              setTmpCat(null);
+              setForm(null);
             }}
             className="flex rounded-full border border-[#666666] hover:border-white/30 px-4 py-1 text-[14px] text-[#666666] hover:text-[#999999] cursor-pointer"
           >
@@ -755,5 +753,5 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
         </div>
       )}
     </>
-  )
+  );
 }

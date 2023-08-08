@@ -1,7 +1,7 @@
-"use client"
+"use client";
 // import { OnboardingContextProvider } from "@/hooks/useOnboardingContext"
-import { StoreProvider } from "easy-peasy"
-import store from "@/store"
+import { StoreProvider } from "easy-peasy";
+import store from "@/store";
 
 export default function Providers({ children }) {
   return (
@@ -10,5 +10,5 @@ export default function Providers({ children }) {
       {children}
       {/* </OnboardingContextProvider> */}
     </StoreProvider>
-  )
+  );
 }

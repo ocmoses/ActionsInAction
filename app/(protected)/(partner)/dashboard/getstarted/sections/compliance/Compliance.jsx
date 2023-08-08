@@ -1,31 +1,30 @@
-"use client"
-import RegisterStepHeader from "@/app/components/RegisterStepHeader"
-import FileInput from "@/app/components/form/FileInput"
-import FileInputWrapper from "@/app/components/form/FileInputWrapper"
-import TextInput from "@/app/components/form/TextInput"
-import SelectInput from "@/app/components/form/SelectInput"
-import SelectInputOption from "@/app/components/form/SelectInputOption"
-import ButtonNext from "@/app/components/form/ButtonNext"
-import ButtonPrev from "@/app/components/form/ButtonPrev"
-import useErrors from "@/hooks/useErrors"
-import usePartners from "@/hooks/usePartners"
-import useProcessing from "@/hooks/useProcessing"
-import FormErrors from "@/app/components/FormErrors"
-import axios from "axios"
-import { NextEndPoints } from "@/app/modules/endpoints"
-import { useState, useEffect } from "react"
-import { Util } from "@/utils/utility"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import { forms, company_type } from "@/app/modules/constants"
+"use client";
+import RegisterStepHeader from "@/app/components/RegisterStepHeader";
+import FileInput from "@/app/components/form/FileInput";
+import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+import TextInput from "@/app/components/form/TextInput";
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
+import ButtonNext from "@/app/components/form/ButtonNext";
+import useErrors from "@/hooks/useErrors";
+import usePartners from "@/hooks/usePartners";
+import useProcessing from "@/hooks/useProcessing";
+import FormErrors from "@/app/components/FormErrors";
+import axios from "axios";
+import { NextEndPoints } from "@/app/modules/endpoints";
+import { useState, useEffect } from "react";
+import { Util } from "@/utils/utility";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import { forms, company_type } from "@/app/modules/constants";
 import {
   scrollToTop,
   ValidateField,
   fieldRequired,
-} from "@/app/modules/utilities"
+} from "@/app/modules/utilities";
 
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
-    useProcessing()
+    useProcessing();
   const {
     partner,
     category,
@@ -33,14 +32,14 @@ function Compliance() {
     updatePartner,
     checkUpdateStatus,
     nextStage,
-  } = usePartners()
+  } = usePartners();
 
-  const [retryTIN, setRetryTIN] = useState(false)
-  const [checkingTIN, setCheckingTIN] = useState(false)
-  const [lastTINChecked, setLastTINChecked] = useState(null)
-  const [retryCAC, setRetryCAC] = useState(false)
-  const [checkingCAC, setCheckingCAC] = useState(false)
-  const [lastCACChecked, setLastCACChecked] = useState(null)
+  const [retryTIN, setRetryTIN] = useState(false);
+  const [checkingTIN, setCheckingTIN] = useState(false);
+  const [lastTINChecked, setLastTINChecked] = useState(null);
+  const [retryCAC, setRetryCAC] = useState(false);
+  const [checkingCAC, setCheckingCAC] = useState(false);
+  const [lastCACChecked, setLastCACChecked] = useState(null);
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -59,10 +58,10 @@ function Compliance() {
     cac_data: {},
     valid_cac: "yes",
     valid_tin: "no",
-  })
-  const { title, subtitle, hand, fields } = forms["compliance"]
-  const [{ errors, setError, removeError, clearErrors }] = useErrors(data)
-  const [isMasterData, setIsMasterData] = useState(false)
+  });
+  const { title, subtitle, hand, fields } = forms["compliance"];
+  const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
+  const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
     if (category) {
       const Category =
@@ -70,12 +69,12 @@ function Compliance() {
         partner.sections[partner.master.category_uuid]?.compliance &&
         category.category_uuid !== partner.master.category_uuid
           ? partner.master
-          : category
+          : category;
       setIsMasterData(
         partner.master &&
           partner.sections[partner.master.category_uuid]?.compliance &&
           category.category_uuid !== partner.master.category_uuid
-      )
+      );
 
       setData({
         partner_uuid: Category?.partner_uuid ?? "",
@@ -105,104 +104,101 @@ function Compliance() {
           process.env.NODE_ENV === "production"
             ? Category?.valid_tin ?? "no"
             : "yes",
-      })
-      setLastTINChecked(Category?.tin_no)
-      setLastCACChecked(Category?.rc_no)
+      });
+      setLastTINChecked(Category?.tin_no);
+      setLastCACChecked(Category?.rc_no);
     }
-  }, [category])
+  }, [category]);
 
   useEffect(() => {
-    setForm("compliance")
-    setProcessing(false)
-    scrollToTop("onboardinglayout")
-  }, [])
+    setForm("compliance");
+    setProcessing(false);
+    scrollToTop("onboardinglayout");
+  }, []);
 
-  // useEffect(() => {
-  //   if (data.valid_tin === "yes") verifyCAC()
-  // }, [data.valid_tin])
   const verifyTIN = async (tin_no) => {
-    if (process.env.NODE_ENV !== "production") {
-      setData((prvState) => ({
-        ...prvState,
-        rc_no: "14386692",
-        tin_data: {},
-        valid_tin: "yes",
-        valid_cac: "yes",
-      }))
-      return
-    }
-    setLastCACChecked("")
-    setRetryTIN(false)
-    if (tin_no === lastTINChecked) return
+    // if (process.env.NODE_ENV !== "production") {
+    //   setData((prvState) => ({
+    //     ...prvState,
+    //     rc_no: "14386692",
+    //     tin_data: {},
+    //     valid_tin: "yes",
+    //     valid_cac: "yes",
+    //   }))
+    //   return
+    // }
+    setLastCACChecked("");
+    setRetryTIN(false);
+    if (tin_no === lastTINChecked) return;
 
-    removeError("company_type")
-    removeError("tin_no")
-    removeError("rc_no")
+    removeError("company_type");
+    removeError("tin_no");
+    removeError("rc_no");
     if (!tin_no) {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        // valid_cac: "no",
-      }))
-      return setError({ tin_no: "Your TIN is required" })
+        valid_cac: "no",
+      }));
+      return setError({ tin_no: "Your TIN is required" });
     }
 
     if (!tin_no.includes("-")) {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        // valid_cac: "no",
-      }))
-      return setError({ tin_no: "Your TIN must include an hyphen ('-')" })
+        valid_cac: "no",
+      }));
+      return setError({ tin_no: "Your TIN must include an hyphen ('-')" });
     }
     try {
-      setCheckingTIN(true)
+      setCheckingTIN(true);
       const response = await axios
         .get(`${NextEndPoints.TIN_CHECK}?tin=${tin_no}`)
         .catch((err) => {
-          console.log({ err })
-          setCheckingTIN(false)
+          console.log({ err });
+          setCheckingTIN(false);
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            // valid_cac: "no",
-          }))
+            valid_cac: "no",
+          }));
           return setError({
             tin_no: "An error occured while verifying your TIN (TIN-001)",
-          })
-        })
-      setCheckingTIN(false)
-      setLastTINChecked(tin_no)
+          });
+        });
+      setCheckingTIN(false);
+      setLastTINChecked(tin_no);
       if (response) {
-        const { success, data: result, error } = response.data
+        const { success, data: result, error } = response.data;
         if (error) {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            // valid_cac: "no",
-          }))
-          return setError({ tin_no: error })
+            valid_cac: "no",
+          }));
+          return setError({ tin_no: error });
         }
         if (!result) {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            // valid_cac: "no",
-          }))
+            valid_cac: "no",
+          }));
           return setError({
             tin_no: "Something went wrong while verifying your TIN (TIN-002)",
-          })
+          });
         }
         if (!result.TIN) {
           setData((prvState) => ({
             ...prvState,
             valid_tin: "no",
-            // valid_cac: "no",
-          }))
+            valid_cac: "no",
+          }));
           return setError({
             tin_no:
               "Your TIN may be invalid or cannot be verified. Please try again with a valid TIN (TIN-003)",
-          })
+          });
         }
         setData((prvState) => ({
           ...prvState,
@@ -210,167 +206,164 @@ function Compliance() {
           tin_data: result,
           valid_tin: "yes",
           valid_cac: result["RC/BN"] ? "yes" : "no",
-        }))
+        }));
+        verifyCAC();
       } else {
         setData((prvState) => ({
           ...prvState,
           valid_tin: "no",
-          // valid_cac: "no",
-        }))
+          valid_cac: "no",
+        }));
         return setError({
           tin_no: "Something went wrong while verifying your TIN (TIN-004)",
-        })
+        });
       }
     } catch (error) {
-      console.log({ error })
-      setCheckingTIN(false)
+      console.log({ error });
+      setCheckingTIN(false);
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        // valid_cac: "no",
-      }))
+        valid_cac: "no",
+      }));
       return setError({
         tin_no: "An error occured while verifying your TIN (TIN-005)",
-      })
+      });
     }
-  }
+  };
   const verifyCAC = async () => {
-    setRetryCAC(false)
-    if (data.rc_no === lastCACChecked) return
-    removeError("company_type")
-    removeError("tin_no")
-    removeError("rc_no")
+    setRetryCAC(false);
+    if (data.rc_no === lastCACChecked) return;
+    removeError("company_type");
+    removeError("tin_no");
+    removeError("rc_no");
 
     if (!data.rc_no) {
       setData((prvState) => ({
         ...prvState,
-        // valid_cac: "no",
-      }))
-      return setError({ rc_no: "Your CAC is required" })
+        valid_cac: "no",
+      }));
+      return setError({ rc_no: "Your CAC is required" });
     }
     if (data.valid_tin !== "yes") {
       setData((prvState) => ({
         ...prvState,
-        // valid_cac: "no",
-      }))
-      return setError({ rc_no: "Please provide a valid TIN to continue" })
+        valid_cac: "no",
+      }));
+      return setError({ rc_no: "Please provide a valid TIN to continue" });
     }
     if (!data.company_type) {
       setData((prvState) => ({
         ...prvState,
-        // valid_cac: "no",
-      }))
-      return setError({ rc_no: "Your company type is required" })
+        valid_cac: "no",
+      }));
+      return setError({ rc_no: "Your company type is required" });
     }
-    let rc_no = data.rc_no
+    let rc_no = data.rc_no;
     if (rc_no.toUpperCase().indexOf("RC") !== 0) {
-      rc_no = `RC${rc_no}`
-      setData((prvState) => ({ ...prvState, rc_no }))
+      rc_no = `RC${rc_no}`;
+      setData((prvState) => ({ ...prvState, rc_no }));
     }
 
     try {
-      setCheckingCAC(true)
+      setCheckingCAC(true);
       const response = await axios
         .get(
           `${NextEndPoints.CAC_CHECK}?cac=${rc_no}&type=${data.company_type}`
         )
         .catch((err) => {
-          console.log({ err })
-          setCheckingCAC(false)
+          console.log({ err });
+          setCheckingCAC(false);
           setData((prvState) => ({
             ...prvState,
-            // valid_cac: "no",
-          }))
+            valid_cac: "no",
+          }));
           return setError({
             rc_no: "An error occured while verifying your CAC (CAC-001)",
-          })
-        })
-      setCheckingCAC(false)
-      setLastCACChecked(rc_no)
+          });
+        });
+      setCheckingCAC(false);
+      setLastCACChecked(rc_no);
 
       if (response) {
-        const { data: result, error } = response.data
+        const { data: result, error } = response.data;
 
         if (error) {
           setData((prvState) => ({
             ...prvState,
-            // valid_cac: "no",
-          }))
-          return setError({ rc_no: error })
+            valid_cac: "no",
+          }));
+          return setError({ rc_no: error });
         }
         if (result.valid) {
           setData((prvState) => ({
             ...prvState,
             cac_data: result,
             valid_cac: "yes",
-          }))
+          }));
         }
       } else {
         setData((prvState) => ({
           ...prvState,
-          // valid_cac: "no",
-        }))
+          valid_cac: "no",
+        }));
         return setError({
           rc_no:
             "Your CAC numver could not be verified at this time. Please try again. (CAC-002)",
-        })
+        });
       }
     } catch (error) {
-      setCheckingCAC(false)
-      console.log({ error })
+      setCheckingCAC(false);
+      console.log({ error });
       setData((prvState) => ({
         ...prvState,
-        // valid_cac: "no",
-      }))
+        valid_cac: "no",
+      }));
       return setError({
         rc_no: "An error occured while verifying your CAC (CAC-003)",
-      })
+      });
     }
-  }
+  };
   const onChangeCompanyType = async (company_type) => {
-    removeError("company_type")
-    removeError("tin_no")
-    removeError("rc_no")
+    removeError("company_type");
+    removeError("tin_no");
+    removeError("rc_no");
     if (!company_type) {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        // valid_cac: "no",
-      }))
-      return setError({ company_type: "Your company type is required" })
+        valid_cac: "no",
+      }));
+      return setError({ company_type: "Your company type is required" });
     }
 
     if (!data.tin_no || !data.rc_no) {
       setData((prvState) => ({
         ...prvState,
         valid_tin: "no",
-        // valid_cac: "no",
-      }))
-      return
+        valid_cac: "no",
+      }));
+      return;
     }
 
-    verifyTIN(data.tin_no)
-  }
+    // verifyTIN(data.tin_no)
+  };
   useEffect(() => {
-    if (retryTIN) verifyTIN(data.tin_no)
-  }, [retryTIN])
-
-  // useEffect(() => {
-  //   if (retryCAC) verifyCAC()
-  // }, [retryCAC])
+    if (retryTIN) verifyTIN(data.tin_no);
+  }, [retryTIN]);
 
   const Retry = (type) => {
     if (type === "tin") {
-      setLastTINChecked("")
-      setRetryTIN(true)
+      setLastTINChecked("");
+      setRetryTIN(true);
     } else {
-      setLastCACChecked("")
-      setRetryCAC(true)
+      setLastCACChecked("");
+      setRetryCAC(true);
     }
-  }
+  };
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    clearErrors()
+    e.preventDefault();
+    clearErrors();
     if (!Util.isEmpty(fields)) {
       for (const field in fields) {
         if (
@@ -378,12 +371,12 @@ function Compliance() {
           field !== "memart_doc" &&
           field !== "cac_doc"
         ) {
-          const error = ValidateField(field, "compliance", data, category)
+          const error = ValidateField(field, "compliance", data, category);
           if (error) {
-            scrollToTop("onboardinglayout")
+            scrollToTop("onboardinglayout");
             return setError({
               [field]: error,
-            })
+            });
           }
         }
       }
@@ -393,16 +386,16 @@ function Compliance() {
       Util.isEmpty(data.tin_doc) &&
       !data.tin_file
     ) {
-      scrollToTop("onboardinglayout")
-      return setError({ tin_file: `TIN document is required` })
+      scrollToTop("onboardinglayout");
+      return setError({ tin_file: `TIN document is required` });
     }
     if (
       fieldRequired("memart_doc", "compliance", category) &&
       Util.isEmpty(data.memart_doc) &&
       !data.memart_file
     ) {
-      scrollToTop("onboardinglayout")
-      return setError({ memart_file: `Memart document is required` })
+      scrollToTop("onboardinglayout");
+      return setError({ memart_file: `Memart document is required` });
     }
 
     if (
@@ -410,40 +403,40 @@ function Compliance() {
       Util.isEmpty(data.cac_doc) &&
       !data.cac_file
     ) {
-      scrollToTop("onboardinglayout")
-      return setError({ cac_file: `CAC certificate is required` })
+      scrollToTop("onboardinglayout");
+      return setError({ cac_file: `CAC certificate is required` });
     }
-    const result = await registerPartner("compliance", data)
+    const result = await registerPartner("compliance", data);
     if (result) {
-      console.log({ category })
-      scrollToTop("onboardinglayout")
-      if (result?.error) return setError({ compliance: result.error })
+      // console.log({ category })
+      scrollToTop("onboardinglayout");
+      if (result?.error) return setError({ compliance: result.error });
       if (result.data?.partner) {
-        updatePartner(result?.data?.partner)
+        updatePartner(result?.data?.partner);
         const newcategory = result.data?.partner.categories.find(
           (c) => c.category_uuid === category.category_uuid
-        )
-        newcategory.profile_stage.compliance = "1"
-        const { nextstage: NextStage } = nextStage(newcategory, partner)
-        console.log({ NextStage })
-        return setForm(NextStage)
+        );
+        newcategory.profile_stage.compliance = "1";
+        const { nextstage: NextStage } = nextStage(newcategory, partner);
+        // console.log({ NextStage })
+        return setForm(NextStage);
       }
     }
-  }
+  };
   const handleFormChange = (e) => {
-    removeError(e.target.id)
+    removeError(e.target.id);
     setData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
-    }))
-  }
+    }));
+  };
   const Validate = (field) => {
-    const error = ValidateField(field, "compliance", data, category)
+    const error = ValidateField(field, "compliance", data, category);
     if (error)
       return setError({
         [field]: error,
-      })
-  }
+      });
+  };
 
   return (
     <div
@@ -466,9 +459,9 @@ function Compliance() {
           }
           value={data.company_type}
           onChange={(e) => {
-            handleFormChange(e)
-            onChangeCompanyType(e.target.value)
-            Validate("company_type")
+            handleFormChange(e);
+            onChangeCompanyType(e.target.value);
+            Validate("company_type");
           }}
           errors={errors}
           margin="mb-1"
@@ -501,8 +494,9 @@ function Compliance() {
                   value={data.tin_no}
                   onChange={handleFormChange}
                   onBlur={(e) => {
-                    verifyTIN(e.target.value)
-                    Validate("tin_no")
+                    // Hidden for now
+                    // verifyTIN(e.target.value);
+                    // Validate("tin_no");
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -547,7 +541,10 @@ function Compliance() {
                   }
                   value={data.rc_no}
                   onChange={handleFormChange}
-                  // onBlur={verifyCAC}
+                  onBlur={(e) => {
+                    // Suspending this for now
+                    // verifyCAC()
+                  }}
                   errors={errors}
                   margin="mb-1"
                 />
@@ -616,7 +613,6 @@ function Compliance() {
                     }
                   />
                 </FileInputWrapper>
-
                 {!isMasterData &&
                   partner?.contract_status === "not_started" && (
                     <div className="mt-6">
@@ -653,7 +649,7 @@ function Compliance() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
-export default Compliance
+export default Compliance;

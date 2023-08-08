@@ -32,6 +32,7 @@ export default function useAdmins() {
   const getStages = (category, categories) => {
     return getstages(category, categories);
   };
+  
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {
       const params = [];

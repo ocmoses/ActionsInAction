@@ -66,6 +66,9 @@ export default function AdminRoles({ allRoles }) {
     if (fetchingAdmins) return;
     setFetchingAdmins(true);
     all_Admins = await getAllAdmins(page, perPage);
+    if(all_Admins.status == 401){
+      window.location = "/admin/login";      
+    }
     setAdmins(all_Admins.admin_users);
     setFetchingAdmins(false);
     if (all_Admins.error) setError({ error: all_Admins.error });

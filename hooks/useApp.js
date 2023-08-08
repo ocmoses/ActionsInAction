@@ -31,8 +31,8 @@ const useApp = () => {
           serverSession.User.user.status = "authenticated";
 
 
-          console.log('serverSession.User.access_token', serverSession.User.access_token);
-          console.log('serverSession.User', serverSession.User);
+          // console.log('serverSession.User.access_token', serverSession.User.access_token);
+          // console.log('serverSession.User', serverSession.User);
 
           if(serverSession.User.access_token){
             localStorage.setItem("token", serverSession.User.access_token);
@@ -42,10 +42,19 @@ const useApp = () => {
             localStorage.setItem("user", serverSession.User.user);
           }
 
+          if(serverSession.role != undefined && serverSession.role != null){
+            localStorage.setItem("role", serverSession.role);
+          }
+
           if(localStorage.getItem("token")){
             serverSession.User.access_token = localStorage.getItem("token");
             serverSession.User.user.token = serverSession.User.access_token;
             actions.users.setToken(localStorage.getItem("token"));
+            
+          }
+
+          if(localStorage.getItem("role") != null && localStorage.getItem("role") != undefined){
+            actions.users.setRole(localStorage.getItem("role"));
           }
           // if(serverSession.User.access_token != null && serverSession.User.access_token != undefined){
           //   serverSession.User.user.token = serverSession.User.access_token;

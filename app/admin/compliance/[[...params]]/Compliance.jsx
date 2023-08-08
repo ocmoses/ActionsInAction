@@ -232,12 +232,12 @@ export default function Compliance({ params }) {
           <FormErrors error={errors.compliance} />
         </div>
       )}
-      {processing && (
+      {/* {processing && (
         <div className="flex justify-center items-center">
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         </div>
       )}
-      {!processing && partner && (
+      {!processing && partner && ( */}
         <>
           <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
             <div className="flex items-center space-x-3">
@@ -327,7 +327,7 @@ export default function Compliance({ params }) {
             )}
           </ComplianceDrawer>
         </>
-      )}
+      {/* )} */}
     </div>
   );
 }

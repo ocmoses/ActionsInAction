@@ -96,6 +96,7 @@ function Login({ params }) {
       User:  loginData?.data,
       token:  loginData?.data?.login_token?.access_token,
       type: "user",
+      role: loginData?.data['login-user-role']
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");
 
@@ -204,9 +205,7 @@ function Login({ params }) {
           </div>
         </div>
       </form>
-
-      <canvas width="400" height="200" ref={canvasRef}></canvas>
-      
+  
     </>
   );
 }

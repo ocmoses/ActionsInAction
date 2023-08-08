@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import RemoteEndpoints from "@/app/modules/endpoints";
+//import useAdmins from "@/hooks/useAdmins";
 import { apikey } from "@/app/modules/constants";
 
 
@@ -8,10 +9,19 @@ import PartnerStatisticsReport from "@/app/components/dashboard/admin/AdminRepor
 import axios from "axios";
 
 export default function Approvals() {
+//const { fetchData }=  useAdmins()
   const [reportStatistics, setReportStatistics] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchReport = async () => {
+      // //console.log('fetchReports')
+      // const api_key = apikey
+      // const response = await fetchData(RemoteEndpoints.PARTNER_STATISTICS, api_key)
+      // if(response.success){
+      //   setReportStatistics(response.data);
+      // } else {
+      //   console.error("Error fetching data:", response.message);
+      // }
       try {
         const response = await axios.get(
           RemoteEndpoints.PARTNER_STATISTICS,
@@ -28,7 +38,7 @@ export default function Approvals() {
       }
     };
 
-    fetchData();
+    fetchReport();
   }, []);
 
 

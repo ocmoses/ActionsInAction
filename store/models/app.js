@@ -206,16 +206,7 @@ const app = {
   clearErrors: action((state) => {
     state.errors = {};
     state.success = null;
-  }),
-  setGlobalError: action((state, error) => {
-    state.globalerrors = [...state.globalerrors, error];
-  }),
-  removeGlobalError: action((state, index) => {
-    state.globalerrors.splice(index, 1);
-  }),
-  clearGlobalErrors: action((state) => {
-    state.globalerrors = [];
-  }),
+  }),  
   setGlobalError: action((state, error) => {
     state.globalerrors = [...state.globalerrors, error]
   }),

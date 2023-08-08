@@ -1,8 +1,11 @@
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import useLogout from "@/hooks/useLogout";
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
+
+  const {Logout} = useLogout();
+
   try {
     const params = [];
     if (page) params.push(`page=${page}`);
@@ -26,11 +29,10 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
       }
     );
 
-    // if (response.status === 401) {
-    //   return {
-    //     error: 401,
-    //   }
-    // }
+    if (response.status === 400 || response.status === 401 ) {
+      Logout();
+      return;
+    }
     const result = await response.json();
     if (result?.success) {
       const partners = result.data?.partners.data;

@@ -240,9 +240,9 @@ export default function Dashboard({ allPartners }) {
                           </td>
                           <td>
                             <div>
-                              {moment(partner?.submitted_on).format(
+                              {partner?.submitted_on ? moment(partner?.submitted_on).format(
                                 "DD/MM/YYYY"
-                              )}
+                              ): "Not submitted"}
                             </div>
                           </td>
                           <td>

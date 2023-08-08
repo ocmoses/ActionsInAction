@@ -59,7 +59,7 @@ export default function Approvals() {
                     reportStatistics.onboarding_stats.partners_past_month.new) * 100)/100).toFixed(2)
                   }
                   rate={
-                    reportStatistics.onboarding_stats.partners.new >
+                    reportStatistics.onboarding_stats.partners.new <
                     reportStatistics.onboarding_stats.partners_past_month.new
                       ? "DOWN"
                       : "UP"
@@ -101,7 +101,7 @@ export default function Approvals() {
                     reportStatistics.contracting_stats.licenses_past_month.expiring_soon) * 100).toFixed(2)
                   }
                   rate={
-                    reportStatistics.contracting_stats.licenses.expiring_soon<
+                    reportStatistics.contracting_stats.licenses.expiring_soon <
                     reportStatistics.contracting_stats.licenses_past_month.expiring_soon
                       ? "DOWN"
                       : "UP"

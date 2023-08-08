@@ -21,9 +21,11 @@ import {
 } from "@/app/modules/utilities"
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
+import useLogout from "@/hooks/useLogout";
 
 const usePartners = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const {Logout} = useLogout();
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
@@ -486,10 +488,10 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -557,10 +559,10 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -615,6 +617,12 @@ const usePartners = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.SELECT_SERVICE', RemoteEndpoints.SELECT_SERVICE);
@@ -669,6 +677,12 @@ const usePartners = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -723,6 +737,12 @@ const usePartners = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -777,6 +797,12 @@ const usePartners = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       setProcessing(false);
@@ -827,6 +853,12 @@ const usePartners = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+      
       const result = await response.json();
 
       // console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
@@ -848,6 +880,46 @@ const usePartners = () => {
           result?.data?.message ??
           "Something went wrong. Please check your connection and try again",
       };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const verifyPartnerLink = async (link) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.VERIFY_PARTNER_LINK.replace(':link', link)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            "Content-Type": "application/json"
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      console.log('result', result);
+    setProcessing(false);
+        
+      console.log('result', result);
+
+      return {
+        success: result?.success,
+        message: result?.data?.message
+      };
+      
     } catch (error) {
       console.log({ error });
       return {
@@ -885,7 +957,8 @@ const usePartners = () => {
     getAllServices,
     partnerSelectService,
     submitAllSignatories,
-    signBilateralContract
+    signBilateralContract,
+    verifyPartnerLink
   }
 }
 export default usePartners

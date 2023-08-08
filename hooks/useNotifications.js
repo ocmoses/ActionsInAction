@@ -1,7 +1,6 @@
 import { useStoreState, useStoreActions } from "easy-peasy";
 import RemoteEndpoints from "../app/modules/endpoints";
 import useProcessing from "@/hooks/useProcessing";
-// import { cookies } from "next/headers";
 
 export default function useNotifications(){
 
@@ -11,7 +10,7 @@ export default function useNotifications(){
 
     const users = useStoreState((state) => state.users);
 
-    console.log("users from store", users);
+    // console.log("users from store", users);
 
     const { setProcessing } = useProcessing();
 

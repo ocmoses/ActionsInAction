@@ -29,7 +29,9 @@ import {useStoreState} from 'easy-peasy';
 
 export default function Compliance({ params }) {
   const users = useStoreState((state) => state.users);
-  console.log("Users:....", users);
+
+  // console.log("Users:....", users);
+
   const router = useRouter();
   const {getAllPartnerRoles} = useRoles();
   const { processing, setProcessing } = useProcessing();  
@@ -362,12 +364,16 @@ export default function Compliance({ params }) {
                 <svg xmlns="http://www.w3.org/2000/svg" 
                   fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
                   stroke="currentColor" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
                     stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     viewBox="0 0 24 24" fill="yellow" 
@@ -382,7 +388,9 @@ export default function Compliance({ params }) {
                
       </div>
 
-      <div className="my-8 max-w-6xl">
+
+      {/* <div className="my-8 max-w-6xl">
+
         {
           //signers selected but you have not signed
           users.role == 'superAdmin' && 
@@ -449,12 +457,16 @@ export default function Compliance({ params }) {
                 <svg xmlns="http://www.w3.org/2000/svg" 
                   fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
                   stroke="currentColor" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
                     stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     viewBox="0 0 24 24" fill="currentColor" 
@@ -467,22 +479,24 @@ export default function Compliance({ params }) {
           />
         }
         
-      </div>
+
+      </div> */}
+
       
-      {/* Just for testts ends here */}
-      {processing && (
+      {/* Just for tests ends here */}
+      {/* {processing && (
         <div className="flex justify-center items-center">
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         </div>
       )}
-      {!processing && selectedCategory && (
+      {!processing && selectedCategory && ( */}
         <>
           <div className="grin grid-cols-1 space-y-3 sm:flex justify-between items-center space-x-3 mb-20">
             <div className="flex items-center space-x-3">
               <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-white/10 text-white text-[12px] mr-2">
                 {selectedCategory && (
                   <Image
-                    alt={selectedCategory.category_name}
+                    alt={selectedCategory?.category_name}
                     src={selectedCategory?.icon}
                     width={29}
                     height={29}
@@ -492,7 +506,7 @@ export default function Compliance({ params }) {
               </div>
               <div>
                 <div className="font-bold text-[30px] text-white mb-1">
-                  {selectedCategory.category_name}
+                  {selectedCategory?.category_name}
                 </div>
                 <div className="flex items-center gap-2 text-[15px] text-[#999999]">
                   <svg
@@ -538,7 +552,7 @@ export default function Compliance({ params }) {
             </ComplianceDrawer>
           )}
         </>
-      )}
+      {/* )} */}
       {      
         contractModal && 
         <div id="contracts_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "contracts_modal") {setContractModal(false);}}}>
@@ -547,7 +561,7 @@ export default function Compliance({ params }) {
               <div className="text-white text-2xl mb-4 flex-1">Select a service to renew</div>
               <div className="cursor-pointer" onClick={() => setContractModal(false)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div> 
             </div>
@@ -568,7 +582,7 @@ export default function Compliance({ params }) {
                 <div key={`${service.id}-index`} className="m-4 rounded-lg bg-white/20 flex cursor-pointer hover:bg-white/40 hover:border-1 hover:border-color-[#212121]" onClick={() => {selectService(service.name_of_service_type)}}>
                   <div className="w-16 h-16 flex justify-center items-center p-4 m-4 bg-white/20 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" className="w-8 h-8">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                      <path strokeLinecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                   </div>
                   <div className="p-4 flex flex-col items-center justify-center space-y-2">
@@ -593,7 +607,7 @@ export default function Compliance({ params }) {
               <div className="text-white text-2xl mb-4 flex-1">Add contract signatries</div>
               <div className="cursor-pointer" onClick={() => setContractSignatriesModal(false)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div> 
             </div>
@@ -613,7 +627,7 @@ export default function Compliance({ params }) {
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
                     {signatories.director &&
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                     }
                   </div>
@@ -634,7 +648,7 @@ export default function Compliance({ params }) {
                       </div>):
                       <span className="flex text-gray-300 text-xs">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                          <path strokeLinecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                         </svg>&nbsp;{`${signatories.director?.firstname} ${signatories.director?.lastname}`}
                       </span>
                   }
@@ -652,7 +666,7 @@ export default function Compliance({ params }) {
                           }
                         }>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          <path strokeLinecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                       </div>):
                       <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
@@ -671,7 +685,7 @@ export default function Compliance({ params }) {
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
                     {signatories.delegate && 
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg> 
                     }
                   </div>
@@ -685,7 +699,7 @@ export default function Compliance({ params }) {
                     </span>):
                     (<span className="flex text-gray-300 text-xs">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        <path strokeLinecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                       </svg>&nbsp;{`${signatories.delegate?.firstname} ${signatories.delegate?.lastname}`}
                     </span>) 
                   }
@@ -695,7 +709,7 @@ export default function Compliance({ params }) {
                     !signatories.delegate ? 
                     (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'delegate').uuid}); setAddDelegateModal(true);}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          <path strokeLinecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                       </div>):
                       <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
@@ -715,7 +729,7 @@ export default function Compliance({ params }) {
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
                   {signatories.witness && 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      <path strokeLinecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
                   }
                   </div>
@@ -728,7 +742,7 @@ export default function Compliance({ params }) {
                     </span>):
                     (<span className="flex text-gray-300 text-xs">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-3 h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        <path strokeLinecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                       </svg>&nbsp;{`${signatories.witness?.firstname} ${signatories.witness?.lastname}`}
                     </span>)
                   }
@@ -738,7 +752,7 @@ export default function Compliance({ params }) {
                     !signatories.witness ? 
                     (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'witness').uuid}); setAddWitnessModal(true);}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          <path strokeLinecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                       </div>):
                       <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
@@ -782,7 +796,7 @@ export default function Compliance({ params }) {
               <div className="text-white text-2xl mb-4 flex-1">Choose a director</div>
               <div className="cursor-pointer" onClick={() => {setSelectDirectorModal(false); setContractSignatriesModal(true)}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div> 
             </div>
@@ -800,7 +814,7 @@ export default function Compliance({ params }) {
                 <div className="w-12">
                   <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="yellow" className="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                      <path strokeLinecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
                   </div>
                 </div>
@@ -958,7 +972,13 @@ export default function Compliance({ params }) {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                   </svg>
-                  <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
+                  {
+                    data.file ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 hover:color-gray-200" onClick={() => document.querySelector("#resolution_document").click()}>
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
+                    </svg> :
+                    <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>                                        
+                  }
                   <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
                 </div>
 
@@ -976,7 +996,7 @@ export default function Compliance({ params }) {
             </div>
 
             <div className="">
-              {!creatingPartner && partnerRoles.length > 0 &&
+              {!creatingPartner && data.file && partnerRoles.length > 0 &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
                   <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setAddDelegateModal(false); setContractSignatriesModal(true);}}>Back</button>
                   <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'delegate').uuid);}}>Add</button>

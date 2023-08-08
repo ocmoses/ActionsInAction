@@ -2,11 +2,15 @@
 import { useStoreActions, useStoreState } from "easy-peasy";
 import useProcessing from "@/hooks/useProcessing";
 import RemoteEndpoints from "@/app/modules/endpoints";
+import { redirect } from "next/navigation";
+import useLogout from "@/hooks/useLogout";
 
 
 const useRoles = () => {
   const actions = useStoreActions((action) => action);
   const states = useStoreState((state) => state);
+
+  const {Logout, LogoutAdmin} = useLogout();
 
   // console.log('States from within useRoles', states);
 
@@ -38,14 +42,17 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.ALL_ADMIN_ROLES', RemoteEndpoints.ALL_ADMIN_ROLES);
@@ -97,14 +104,17 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.ALL_ADMIN_PRIVILEGES', RemoteEndpoints.ALL_ADMIN_PRIVILEGES);
@@ -135,6 +145,7 @@ const useRoles = () => {
       };
     }
   };
+
   const deleteRole = async (uuid) => {
     try {
       setProcessing(true);
@@ -154,11 +165,22 @@ const useRoles = () => {
           },
         }
       );
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.DELETE_ROLE', RemoteEndpoints.DELETE_ROLE);
@@ -212,6 +234,12 @@ const useRoles = () => {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_ROLE', RemoteEndpoints.CREATE_ROLE);
@@ -263,14 +291,20 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        // redirect(NextEndPoints.LOGIN)
+        return;
+      }
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
       const result = await response.json();
 
       // console.log('RemoteEndpoints.ALL_PARTNER_ROLES', RemoteEndpoints.ALL_PARTNER_ROLES);
@@ -288,6 +322,7 @@ const useRoles = () => {
         };
       }
       return {
+        status: response?.status,
         error:
           result?.data?.message ??
           "Something went wrong. Please check your connection and try again",
@@ -322,14 +357,17 @@ const useRoles = () => {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.ALL_PARTNER_PRIVILEGES', RemoteEndpoints.ALL_PARTNER_PRIVILEGES);

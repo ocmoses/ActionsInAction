@@ -4,6 +4,7 @@ const users = {
   user: null,
   token: null,
   tmpuser: null,
+  role: null,
   session: { status: "unauthenticated" },
 
   clear: action((state) => {
@@ -11,6 +12,7 @@ const users = {
     state.user = null;
     state.user = null;
     state.token = null;
+    state.role = null;
     state.session = { status: "unauthenticated" };
   }),
   isLoggedIn: computed((state) => state.user?.id != null),
@@ -20,8 +22,12 @@ const users = {
       : null;
   }),
   setUser: action((state, user) => {
+    
     state.user = user;
     state.session = { status: "authenticated", user };
+  }),
+  setRole: action((state, role) => {    
+    state.role = role;
   }),
   setToken: action((state, token) => {
     state.token = token;

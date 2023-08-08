@@ -206,13 +206,13 @@ export default function Terms() {
                             <br/><br/>
                             2.2. You will maintain the accuracy of such information and promptly update such registration information as necessary;
                             <br/><br/>
-                            2.3. You have the legal capacity and you are duly authorised by your legal entity to register and accept these Terms.
+                            2.3. You have the legal capacity and you are duly authorised by your legal entity to register and accept these Terms;
                             <br/><br/>
-                            2.4. You will be solely responsible for your acts on the Portal including those conducted under the username assigned to you.
+                            2.4. You will be solely responsible for your acts on the Portal including those conducted under the username assigned to you;
                             <br/><br/>
-                            2.5. You will not use the Portal for any illegal or unauthorized purpose.
+                            2.5. You will not use the Portal for any illegal or unauthorized purpose;
                             <br/><br/>
-                            2.6. Your use of the Portal will not violate any applicable law or regulation.
+                            2.6. Your use of the Portal will not violate any applicable law or regulation;
                             <br/><br/>
                             2.7. If you provide any information that is untrue, inaccurate, not current or incomplete, we have the right to suspend or terminate your account and refuse any and all current or future use of the Portal (or any portion thereof).
                           </p>
@@ -224,9 +224,9 @@ export default function Terms() {
                           <p>3.1. In order to use the Portal, you must create an account and provide accurate and complete registration information such as the following:</p>
                           
                           <ul className="flex flex-col gap-[15px] py-[15px] p-0 pl-10">
-                            <div>a. Your company s registered name</div>
-                            <div>b. Your company s incorporation documents.</div>
-                            <div>c. Your company s registered email address and Phone number</div>
+                            <div>a. Your company's registered name.</div>
+                            <div>b. Your company's incorporation documents.</div>
+                            <div>c. Your company's registered email address and Phone number</div>
                             <div>d. Your user Identity and password.</div>
                             <div>e. Current tax clearance certificate of the Service Provider.</div>
                             <div>f. Your account contact information.</div>
@@ -379,7 +379,7 @@ export default function Terms() {
                         <p>
                           You agree to receive all communications, agreements and notices that we provide in connection with the
                           Portal, including, but not limited to, communications concerning the delivery of the Services on the Portal via
-                          electronic means, including by e mail, text, in product notifications, or by posting them on the Portal. You
+                          electronic means, including by email, text, in product notifications, or by posting them on the Portal. You
                           agree that all communications we provide to you electronically satisfy any legal requirement that such
                           communications be in writing or be delivered in a particular manner and you agree to keep your account
                           contact information current.

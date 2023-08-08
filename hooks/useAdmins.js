@@ -8,8 +8,8 @@ import { redirect } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
 export default function useAdmins() {
-  const states = useStoreState((action) => action.admins);
-  const actions = useStoreActions((action) => action.admins);
+  const states = useStoreState((states) => states.admins);
+  const actions = useStoreActions((actions) => actions.admins);
 
   const { setProcessing } = useProcessing();
   const [allCategories, setAllCategories] = useState([]);
@@ -416,6 +416,32 @@ export default function useAdmins() {
     }
   };
 
+
+
+/// //////////////////////////////////////////afolabi's functions starts here
+  const fetchData = async (url, apikey) => {
+    try {
+      const response = await axios.get(
+        url,
+        {
+          headers: {
+            apikey: apikey,
+          },
+        }
+      );
+      //console.log("this is my response", response);
+     return {success: true, data: response.data.data}
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return {success: false, message: error.message}
+    }
+  };
+
+
+/// //////////////////////////////////////////afolabi's functions Ends here
+
+
+
   return {
     ...states,
     ...actions,
@@ -428,6 +454,7 @@ export default function useAdmins() {
     rejectionReasons,
     createAdmin,
     getAllDepartments,
-    deleteAdmin
+    deleteAdmin,
+    fetchData
   };
 }

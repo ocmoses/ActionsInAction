@@ -14,10 +14,11 @@ export default function useLogout() {
     for (const store in model) {
       actions[store].clear()
     }
-    clearPersistStore()
+    clearPersistStore();
+    localStorage.clear();
   }
   const Logout = async () => {
-    localStorage.removeItem("token");
+    localStorage.clear();
     actions.app.startLoading("logout")
     await logout()
     clearStore()
@@ -25,6 +26,7 @@ export default function useLogout() {
     router.push(PageRoutes.home)
   }
   const LogoutAdmin = async () => {
+    localStorage.clear();
     actions.app.startLoading("logout")
     await logoutAdmin()
     clearStore()
@@ -35,4 +37,4 @@ export default function useLogout() {
 
   return { Logout, LogoutAdmin, logoutAdmin, clearStore }
 }
-useLogout
+

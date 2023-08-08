@@ -68,6 +68,24 @@ export default function Team() {
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const convertFile = (e) => {
+    // Get a reference to the file
+    const file = e.target.files[0];
+
+    // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        // Use a regex to remove data url part
+        const base64String = reader.result
+            .replace('data:', '')
+            .replace(/^.+,/, '');
+
+        // console.log('base64String', base64String);
+        setData({...data, signature:base64String});
+    };
+    reader.readAsDataURL(file);
+};
+
   let all_Admin_Partners = null;
   let all_Roles = null;
   let create_partner_response = null;
@@ -88,9 +106,12 @@ export default function Team() {
     if (fetchingPartnerRoles) return;
     setFetchingPartnerRoles(true);
     all_Roles = await getAllPartnerRoles();
+
+    console.log("all_Roles", all_Roles);
+
     setPartnerRoles(all_Roles.partner_roles);
     setFetchingPartnerRoles(false);
-    if (all_Roles.error) setError({ error: all_Roles.error });
+    if (all_Roles.error) setError({ error: all_Roles.error, status: all_Roles.status });
     // setNavigation(all_Admins.navigation);
   };
 
@@ -260,12 +281,12 @@ export default function Team() {
           )}
 
           <div className="w-full mt-10">
-            {processing && (
+            {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               </div>
             )}
-            {!processing && (
+            {!processing && ( */}
               <>
                 <table className="table w-full transparent">
                   <tbody>
@@ -417,7 +438,7 @@ export default function Team() {
                     })}
                 </div>
               </>
-            )}
+            {/* )} */}
           </div>
         </div>
       </div>
@@ -443,6 +464,12 @@ export default function Team() {
                     console.log('data', data);
                     }
                 }
+                onBlur={(e) => {
+                  setData(() => ({...data, firstname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                    clearError();
+                    console.log('data', data);
+                    }
+                }
               />
               <TextInput
                 id="lastname"
@@ -453,6 +480,12 @@ export default function Team() {
                     console.log('data', data);
                     }
                 }
+                onBlur={(e) => {
+                  setData(() => ({...data, lastname: e.target.value.trim(), fullname: data.firstname + " " + data.lastname}));
+                  clearError();
+                  console.log('data', data);
+                  }
+              }
               />
             </div>
             
@@ -466,6 +499,12 @@ export default function Team() {
                   console.log('data', data);
                 }
               }
+              onBlur={(e) => { 
+                setData({...data, phone: e.target.value.trim()});
+                clearError();
+                console.log('data', data);
+              }
+            }
             />
             <TextInput
               id="email"
@@ -477,26 +516,50 @@ export default function Team() {
                   console.log('data', data);
                 }
               }
+              onBlur={(e) => {
+                setData({...data, email: e.target.value.trim()});
+                clearError();
+                console.log('data', data);
+              }
+            }
             />
 
-            {/* <select id="role" 
-                  className="mb-4 block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-[#212121] border-[#333333] rounded-[10px] autofill:!bg-inherit active:!bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-mtn peer" 
-                  onChange={(e) => {
-                    setData({...data, role: e.target.value.trim()});
-                    clearError();
-                    console.log('data', data);
-                  }}
-                >
-                  <option value={``} className="py-2 bg-black text-[#333333]">
-                    Select Role
-                  </option>
-                {all_Roles && all_Roles.map(role => 
-                  <option value={`${role.role_name}`} className="py-2 bg-black">
-                    {role.role_name}
-                  </option>)}
+            {
+              data.role == partnerRoles?.find((a_role) => a_role.role_name == 'delegate').uuid &&
 
-            </select> */}
+                <div className="mb-4 rounded-lg bg-white/20 flex p-2">              
 
+                  <div className="rounded-lg bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
+
+                    <div className="w-16 h-16 bg-white/20 flex items-center justify-center rounded-full">
+                      
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-8 h-8">
+                        <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
+                        <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                      </svg>
+
+                    </div>
+
+                    <div className="flex flex-col flex-1 space-y-.5 justify-center">                
+                      <p className="text-gray-500 text-sm">Upload</p>
+                      <p className="text-white text-md">Company board resolution</p>
+                      <p className="text-gray-500 text-sm">Drag and drop here or</p>
+                    </div>
+
+                    <div className="flex flex-col justify-end space-between items-end space-y-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                      </svg>
+                      <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
+                      <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
+                    </div>
+
+                  </div>  
+                
+                </div>
+              
+            }
+            
             <div className="flex space-x-2">
               {
                 partnerRoles && partnerRoles.map((role) => 
@@ -509,31 +572,20 @@ export default function Team() {
               }
             </div>
             {
-              data.role != "" && <div className="flex space-x-2 mt-4">
-                <p className="text-gray-500">{ellipsify(partnerRoles.find((a_role) => a_role.uuid == data.role)?.privileges?.join(', '), 100)}</p>
+              data.role != "" && 
+                <div className="flex space-x-2 mt-4">
+                  <p className="text-gray-500">{ellipsify(partnerRoles.find((a_role) => a_role.uuid == data.role)?.privileges?.join(', '), 100)}</p>
                 </div>
-
+            }            
+                          
+            {!creatingPartner && <div className="flex py-8 px-2 space-x-4 justify-center">
+              <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {clearCreationData(); setShowAddPartner(false); }}>Cancel</button>
+              <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={handleCreate}>Create</button>
+              </div>
             }
-            
-            
-              
-              {/* <TextInput
-                id="description"
-                label="Role description"
-                value={data.description}
-                onChange={handleFormChange}
-                errors={errors}
-              /> */}
-
-              
-              {!creatingPartner && <div className="flex py-8 px-2 space-x-4 justify-center">
-                <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => {clearCreationData(); setShowAddPartner(false); }}>Cancel</button>
-                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={handleCreate}>Create</button>
-               </div>
-              }
-              {creatingPartner && 
-                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                }
+            {creatingPartner && 
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            }
           </div>
         </div>
       }

@@ -29,7 +29,7 @@ import {useStoreState} from 'easy-peasy';
 
 export default function Compliance({ params }) {
   const users = useStoreState((state) => state.users);
-  console.log("Users:....", users);
+  // console.log("Users:....", users);
   const router = useRouter();
   const {getAllPartnerRoles} = useRoles();
   const { processing, setProcessing } = useProcessing();  
@@ -344,7 +344,7 @@ export default function Compliance({ params }) {
         </div>
       )}
       {/* Just for tests */}
-      {/* <div className="my-8 max-w-6xl">
+      <div className="my-8 max-w-6xl">
         {
           users.role == 'superAdmin' && 
           <CallToAction
@@ -382,7 +382,7 @@ export default function Compliance({ params }) {
                
       </div>
 
-      <div className="my-8 max-w-6xl">
+      {/* <div className="my-8 max-w-6xl">
         {
           //signers selected but you have not signed
           users.role == 'superAdmin' && 
@@ -482,7 +482,7 @@ export default function Compliance({ params }) {
               <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-white/10 text-white text-[12px] mr-2">
                 {selectedCategory && (
                   <Image
-                    alt={selectedCategory.category_name}
+                    alt={selectedCategory?.category_name}
                     src={selectedCategory?.icon}
                     width={29}
                     height={29}
@@ -492,7 +492,7 @@ export default function Compliance({ params }) {
               </div>
               <div>
                 <div className="font-bold text-[30px] text-white mb-1">
-                  {selectedCategory.category_name}
+                  {selectedCategory?.category_name}
                 </div>
                 <div className="flex items-center gap-2 text-[15px] text-[#999999]">
                   <svg
@@ -958,7 +958,13 @@ export default function Compliance({ params }) {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                   </svg>
-                  <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
+                  {
+                    data.file ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 hover:color-gray-200" onClick={() => document.querySelector("#resolution_document").click()}>
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
+                    </svg> :
+                    <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>                                        
+                  }
                   <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
                 </div>
 
@@ -976,7 +982,7 @@ export default function Compliance({ params }) {
             </div>
 
             <div className="">
-              {!creatingPartner && partnerRoles.length > 0 &&
+              {!creatingPartner && data.file && partnerRoles.length > 0 &&
                 <div className="flex py-4 px-2 space-x-4 justify-end">
                   <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setAddDelegateModal(false); setContractSignatriesModal(true);}}>Back</button>
                   <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'delegate').uuid);}}>Add</button>

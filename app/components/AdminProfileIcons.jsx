@@ -5,7 +5,7 @@ import {useStoreState} from 'easy-peasy'
 export default function AdminProfileIcons() {
 
   const notifications = useStoreState((state) => state.notifications);
-  console.log('notifications from adminProfileIcons', notifications);
+  // console.log('notifications from adminProfileIcons', notifications);
 
   return (
     <>

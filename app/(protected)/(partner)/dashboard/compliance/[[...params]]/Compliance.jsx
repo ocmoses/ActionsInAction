@@ -344,7 +344,7 @@ export default function Compliance({ params }) {
         </div>
       )}
       {/* Just for tests */}
-      <div className="my-8 max-w-6xl">
+      {/* <div className="my-8 max-w-6xl">
         {
           users.role == 'superAdmin' && 
           <CallToAction
@@ -380,7 +380,7 @@ export default function Compliance({ params }) {
           /> 
         }
                
-      </div>
+      </div> */}
 
       {/* <div className="my-8 max-w-6xl">
         {

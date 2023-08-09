@@ -4,7 +4,7 @@ import useLogout from "@/hooks/useLogout";
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
 
-  const {Logout} = useLogout();
+  // const {Logout} = useLogout();
 
   try {
     const params = [];
@@ -29,10 +29,10 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
       }
     );
 
-    if (response.status === 400 || response.status === 401 ) {
-      Logout();
-      return;
-    }
+    // if (response.status === 400 || response.status === 401 ) {
+    //   Logout();
+    //   return;
+    // }
     const result = await response.json();
     if (result?.success) {
       const partners = result.data?.partners.data;

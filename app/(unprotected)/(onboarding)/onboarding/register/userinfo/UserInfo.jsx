@@ -142,13 +142,9 @@ function UserInfo({ designations }) {
       return setError({ telephone: "Your telephone is not valid" });
 
     const result = await registerPartner("userinfo", data);
-
-    // console.log("result", result);
-
     if (result) {
       scrollToTop("onboardinglayout");
-      window.scrollTo({top:0, behavior: "smooth"});
-      if (result?.error) return setError({ userinfo: result.error });      
+      if (result?.error) return setError({ userinfo: result.error });
     }
   };
 
@@ -320,7 +316,7 @@ function UserInfo({ designations }) {
           >
             Terms of Use
           </Link>
-          &nbsp; and &nbsp;
+          ,&nbsp;
           
           <Link
             href={"/privacy-notice"}
@@ -330,13 +326,13 @@ function UserInfo({ designations }) {
           </Link>&nbsp;
           
           and to receive electronic communication about my accounts and services
-          {/* per Mtn's{" "}
+          per Mtn's{" "}
           <a
             href="#"
             className=" text-white hover:text-white border-b-1 border-b- border-b-white"
           >
             Electronic Communications Agreement
-          </a> */}
+          </a>
           .
         </div>
         {processing ? (

@@ -21,7 +21,7 @@ export default function Session({
   const resetIdleTimer = () => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      alert("Session expired :(")
+      // alert("Session expired :(")
       Logout();
       window.location.reload();
     }, process.env.NEXT_PUBLIC_IDLE_TIMEOUT);

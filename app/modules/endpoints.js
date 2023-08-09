@@ -91,6 +91,11 @@ const RemoteEndpoints = {
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
-  VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`
+
+  VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
+
+//Admin Reports
+  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`
+
 }
 export default RemoteEndpoints

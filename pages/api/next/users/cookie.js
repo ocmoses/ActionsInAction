@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       {
         cache: "no-store",
         headers: {
-          apikey: `${process.env.APIKEY}`,
+        apikey: `${process.env.APIKEY}`,
           "Content-Type": "application/json",
           redirect: "follow",
           referrerPolicy: "no-referrer",

@@ -49,7 +49,6 @@ const usePartners = () => {
   }, [categories])
 
   useEffect(() => {
-    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
     if (!rejectionReasons) app.getRejectionReasons()
   }, [rejectionReasons])
 
@@ -70,7 +69,6 @@ const usePartners = () => {
     const list = []
     const optional = []
     const allForms = { required: [], optional: [], all: [], list: [] }
-    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -90,7 +88,6 @@ const usePartners = () => {
         }
       }
     }
-    // console.log({ allForms })
     const validated = { required, optional, allForms, list }
     setValidation(validated)
     actions.app.setFormSteps(validated)
@@ -272,7 +269,6 @@ const usePartners = () => {
         return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -496,6 +492,12 @@ const usePartners = () => {
         return {
           error: "This request has no response available",
         };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -566,7 +568,13 @@ const usePartners = () => {
       if (!response)
         return {
           error: "This request has no response available",
-        };
+      };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -612,6 +620,8 @@ const usePartners = () => {
           },
         }
       );
+
+      
       
       if (!response)
       return {
@@ -672,6 +682,7 @@ const usePartners = () => {
           },
         }
       );
+
       
       if (!response)
       return {
@@ -732,6 +743,7 @@ const usePartners = () => {
           },
         }
       );
+     
       
       if (!response)
       return {
@@ -792,7 +804,7 @@ const usePartners = () => {
           },
         }
       );
-      
+
       if (!response)
       return {
         error: "This request has no response available",
@@ -848,7 +860,8 @@ const usePartners = () => {
           },
         }
       );
-      
+
+            
       if (!response)
       return {
         error: "This request has no response available",

@@ -165,6 +165,11 @@ const useRoles = () => {
           },
         }
       );
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN_ADMIN)
+        return
+      }
       
       if (!response)
       return {

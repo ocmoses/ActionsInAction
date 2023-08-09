@@ -614,3 +614,53 @@ export function BulletIcon({ iconClass }: Props) {
     </svg>
   );
 }
+
+
+
+
+
+export function IncreaseArrow({ iconClass }: Props) {
+  return (
+    <svg
+      fill="#4ade80" 
+      height="12px" 
+      width="12px" 
+      version="1.1" 
+      id="Layer_1" 
+      xmlns="http://www.w3.org/2000/svg" 
+	    viewBox="0 0 330 330"
+      className={iconClass}
+    >
+      <path
+        id="XMLID_21_"
+        d="M213.107,41.894l-37.5-37.5c-5.857-5.858-15.355-5.858-21.213,0l-37.5,37.5
+        c-4.29,4.29-5.573,10.742-3.252,16.347c2.322,5.605,7.792,9.26,13.858,9.26H150V315c0,8.284,6.716,15,15,15c8.284,0,15-6.716,15-15
+        V67.5h22.5c6.067,0,11.537-3.655,13.858-9.26C218.68,52.635,217.397,46.184,213.107,41.894z"
+      />
+    </svg>
+  );
+}
+
+
+
+export function DecreaseArrow({ iconClass }: Props) {
+  return (
+    <svg
+      fill="#fb7185" 
+      height="12px" 
+      width="12px" 
+      version="1.1" 
+      id="Layer_1" 
+      xmlns="http://www.w3.org/2000/svg" 
+	    viewBox="0 0 330 330"
+      className={iconClass}
+    >
+      <path
+        id="XMLID_24_"
+        d="M216.358,271.76c-2.322-5.605-7.792-9.26-13.858-9.26H180V15c0-8.284-6.716-15-15-15
+        c-8.284,0-15,6.716-15,15v247.5h-22.5c-6.067,0-11.537,3.655-13.858,9.26c-2.321,5.605-1.038,12.057,3.252,16.347l37.5,37.5
+        C157.322,328.536,161.161,330,165,330s7.678-1.464,10.607-4.394l37.5-37.5C217.396,283.816,218.68,277.365,216.358,271.76z"
+      />
+    </svg>
+  );
+}

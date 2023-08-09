@@ -35,6 +35,7 @@ export default function useAdmins() {
   const getStages = (category, categories) => {
     return getstages(category, categories);
   };
+  
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {
       const params = [];
@@ -423,6 +424,32 @@ export default function useAdmins() {
     }
   };
 
+
+
+/// //////////////////////////////////////////afolabi's functions starts here
+  const fetchData = async (url, apikey) => {
+    try {
+      const response = await axios.get(
+        url,
+        {
+          headers: {
+            apikey: apikey,
+          },
+        }
+      );
+      //console.log("this is my response", response);
+     return {success: true, data: response.data.data}
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return {success: false, message: error.message}
+    }
+  };
+
+
+/// //////////////////////////////////////////afolabi's functions Ends here
+
+
+
   return {
     ...states,
     ...actions,
@@ -435,6 +462,7 @@ export default function useAdmins() {
     rejectionReasons,
     createAdmin,
     getAllDepartments,
-    deleteAdmin
+    deleteAdmin,
+    fetchData
   };
 }

@@ -205,7 +205,9 @@ function Login({ params }) {
           </div>
         </div>
       </form>
-  
+
+      <canvas width="400" height="200" ref={canvasRef}></canvas>
+      
     </>
   );
 }

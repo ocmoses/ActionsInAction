@@ -14,7 +14,6 @@ export default function Approvals() {
 
   useEffect(() => {
     const fetchReport = async () => {
-      // //console.log('fetchReports')
       // const api_key = apikey
       // const response = await fetchData(RemoteEndpoints.PARTNER_STATISTICS, api_key)
       // if(response.success){
@@ -69,7 +68,7 @@ export default function Approvals() {
                     reportStatistics.onboarding_stats.partners_past_month.new) * 100)/100).toFixed(2)
                   }
                   rate={
-                    reportStatistics.onboarding_stats.partners.new <
+                    reportStatistics.onboarding_stats.partners.new >
                     reportStatistics.onboarding_stats.partners_past_month.new
                       ? "DOWN"
                       : "UP"

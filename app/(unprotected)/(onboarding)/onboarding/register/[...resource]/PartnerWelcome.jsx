@@ -53,8 +53,6 @@ export default function PartnerWelcome({ resource }) {
       if (error) return;
     }
     const result = await registerPartner("partnerwelcome", data);
-    // console.log("reset result", result);
-    
     if (result) {
       if (result?.error) return setError({ partnerwelcome: result.error });
     }

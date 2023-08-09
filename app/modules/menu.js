@@ -66,11 +66,11 @@ export const AdminMenu = [
   //         </svg>,
   //   route: "/admin/approvals",
   // },
-  // {
-  //   label: "Reports",
-  //   icon: "",
-  //   route: "/admin/reports",
-  // },
+  {
+    label: "Reports",
+    icon: "",
+    route: "/admin/reports",
+  },
 ];
 
 export const PageRoutes = {

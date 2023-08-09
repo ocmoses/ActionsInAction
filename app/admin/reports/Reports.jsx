@@ -14,7 +14,6 @@ export default function Approvals() {
 
   useEffect(() => {
     const fetchReport = async () => {
-      // //console.log('fetchReports')
       // const api_key = apikey
       // const response = await fetchData(RemoteEndpoints.PARTNER_STATISTICS, api_key)
       // if(response.success){

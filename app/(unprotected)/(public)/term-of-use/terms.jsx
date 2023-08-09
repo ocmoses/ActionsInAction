@@ -224,7 +224,9 @@ export default function Terms() {
                           <p>3.1. In order to use the Portal, you must create an account and provide accurate and complete registration information such as the following:</p>
                           
                           <ul className="flex flex-col gap-[15px] py-[15px] p-0 pl-10">
+
                             <div>a. Your company's registered name.</div>
+
                             <div>b. Your company's incorporation documents.</div>
                             <div>c. Your company's registered email address and Phone number</div>
                             <div>d. Your user Identity and password.</div>

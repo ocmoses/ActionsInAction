@@ -18,9 +18,9 @@ export default function PartnerStatisticsReport({title,count,percentage,rate}){
         <div>
           {
             rate == 'UP' ? 
-            <span className="text-green-400"><IncreaseArrow iconClass="float-left mt-[5px]"/> {percentage}%</span>  
+            <span className="text-green-400"><IncreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>  
             :
-            <span className="text-rose-400"><DecreaseArrow iconClass="float-left mt-[5px]"/> {percentage}%</span>
+            <span className="text-rose-400"><DecreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>
           }
           &nbsp; Past Month      
        

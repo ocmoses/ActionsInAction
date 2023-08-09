@@ -21,9 +21,11 @@ import {
 } from "@/app/modules/utilities"
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
+import useLogout from "@/hooks/useLogout";
 
 const usePartners = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const {Logout} = useLogout();
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
@@ -47,7 +49,6 @@ const usePartners = () => {
   }, [categories])
 
   useEffect(() => {
-    // if (!rejectionReasons) getRejectionReasons(app.setRejectionReasons)
     if (!rejectionReasons) app.getRejectionReasons()
   }, [rejectionReasons])
 
@@ -68,7 +69,6 @@ const usePartners = () => {
     const list = []
     const optional = []
     const allForms = { required: [], optional: [], all: [], list: [] }
-    // console.log("category?.validation", category?.validation)
     if (category?.validation) {
       for (const validate in category.validation) {
         if (validate && forms[validate]) {
@@ -88,7 +88,6 @@ const usePartners = () => {
         }
       }
     }
-    // console.log({ allForms })
     const validated = { required, optional, allForms, list }
     setValidation(validated)
     actions.app.setFormSteps(validated)
@@ -184,12 +183,17 @@ const usePartners = () => {
           }
         ).catch((e) => {
           setProcessing(false)
+          // console.log("e", e);
           return {
             success: false,
-            error: `${e.message}. Please check you connection`,
+            error: `${e.message}. Please check your connection`,
+            message: e.response.data.data.message,
             data: null,
           }
         })
+        
+        console.log("responsePartnerwelcome", responsePartnerwelcome);
+
         if (!responsePartnerwelcome) {
           setProcessing(false)
           return {
@@ -199,22 +203,19 @@ const usePartners = () => {
             data: null,
           }
         }
+        
+        const { success, data, message } = responsePartnerwelcome
 
-        const { success: successPartnerwelcome, data: partnerwelcome } =
-          responsePartnerwelcome
-        if (!successPartnerwelcome) {
+        if (!success) {
           setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
+          return { success: false, error: message, data: data }
         }
-        if (!successPartnerwelcome) {
-          setProcessing(false)
-          return { success: false, error: partnerwelcome.message, data: null }
-        }
+        
 
-        setTmpUser(partnerwelcome.user)
-        setPartners(partnerwelcome.partners)
+        setTmpUser(data.user)
+        setPartners(data.partners)
         router.push(
-          `/onboarding/verify/${partnerwelcome.user.uuid}/${userdata.email_type}`
+          `/onboarding/verify/${data.user.uuid}/${userdata.email_type}`
         )
         break
       case "setpassword":
@@ -232,10 +233,14 @@ const usePartners = () => {
           setProcessing(false)
           return {
             success: false,
-            error: `${e.message}. Please check you connection`,
+            error: `${e.message}. Please check your connection`,
             data: null,
           }
         })
+
+        console.log("responseSetpassword", responseSetpassword);
+
+
         if (!responseSetpassword) {
           setProcessing(false)
           return {
@@ -264,7 +269,6 @@ const usePartners = () => {
         return router.push(PageRoutes.dashboard)
       case "userinfo":
         setProcessing(true)
-        // userdata.password_confirmed = userdata.password
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -276,9 +280,11 @@ const usePartners = () => {
           }
         ).catch((e) => {
           setProcessing(false)
+          // console.log("e", e);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
+            message: e.response.data.data.message,
             data: null,
           }
         })
@@ -292,10 +298,13 @@ const usePartners = () => {
           }
         }
 
+        // console.log('responseUserinfo', responseUserinfo);
+
         const { success: successUserinfo, data: userinfo } = responseUserinfo
+
         if (!successUserinfo) {
           setProcessing(false)
-          return { success: false, error: userinfo.message, data: null }
+          return { success: false, error: responseUserinfo.message, data: null }
         }
         const User = userData(userinfo)
         users.setTmpUser(User.user)
@@ -475,14 +484,20 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
         };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -546,14 +561,20 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
-        };
+      };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -599,11 +620,19 @@ const usePartners = () => {
           },
         }
       );
+
+      
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.SELECT_SERVICE', RemoteEndpoints.SELECT_SERVICE);
@@ -653,11 +682,18 @@ const usePartners = () => {
           },
         }
       );
+
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -707,11 +743,18 @@ const usePartners = () => {
           },
         }
       );
+     
       
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);
@@ -761,11 +804,17 @@ const usePartners = () => {
           },
         }
       );
-      
+
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+
       const result = await response.json();
 
       setProcessing(false);
@@ -811,11 +860,18 @@ const usePartners = () => {
           },
         }
       );
-      
+
+            
       if (!response)
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+      
       const result = await response.json();
 
       // console.log('RemoteEndpoints.DELETE_PARTNER', RemoteEndpoints.DELETE_PARTNER);
@@ -837,6 +893,46 @@ const usePartners = () => {
           result?.data?.message ??
           "Something went wrong. Please check your connection and try again",
       };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const verifyPartnerLink = async (link) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.VERIFY_PARTNER_LINK.replace(':link', link)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            "Content-Type": "application/json"
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      console.log('result', result);
+    setProcessing(false);
+        
+      console.log('result', result);
+
+      return {
+        success: result?.success,
+        message: result?.data?.message
+      };
+      
     } catch (error) {
       console.log({ error });
       return {
@@ -874,7 +970,8 @@ const usePartners = () => {
     getAllServices,
     partnerSelectService,
     submitAllSignatories,
-    signBilateralContract
+    signBilateralContract,
+    verifyPartnerLink
   }
 }
 export default usePartners

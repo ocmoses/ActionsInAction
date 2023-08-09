@@ -79,9 +79,9 @@ export default function Dashboard({ allPartners }) {
   };
   return (
     <>
-      <div id="compliance" className="flex flex-cols pb-12">
-        <div className="w-full pt-[72px] px-12 mx-auto">
-          <div className="flex justify-between items-center">
+      <div id="compliance" className="flex flex-cols pb-12 min-h-screen">
+        <div className="w-full pt-[72px] px-12 mx-auto flex-grow">
+          <div className="flex justify-between items-center ">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Applicants</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
@@ -101,8 +101,8 @@ export default function Dashboard({ allPartners }) {
                     { value: "200", label: "200" },
                   ]}
                   defaultvalue={{
-                    value: "20",
-                    label: "20",
+                    value: "10",
+                    label: "10",
                   }}
                   onselect={(option) => {
                     setPage(1);
@@ -135,13 +135,13 @@ export default function Dashboard({ allPartners }) {
             </div>
           )}
 
-          <div className="w-full mt-10">
-            {processing && (
+          <div className="w-full mt-10 min-h-screen">
+            {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               </div>
             )}
-            {!processing && (
+            {!processing && ( */}
               <>
                 <table className="table w-full transparent">
                   <tbody>
@@ -194,7 +194,7 @@ export default function Dashboard({ allPartners }) {
                           <td>
                             <div className="flex flex-col gap-0">
                               <div className="flex gap-1 items-center">
-                                <div className="flex items-center rounded-full overflow-hidden w-[100px] z-0 relative h-[15px] border border-white/20 flex text-mtn text-[12px] bg-black items-center justify-center">
+                                <div className="flex items-center rounded-full overflow-hidden w-[100px] z-0 relative h-[15px] border border-white/20 text-mtn text-[12px] bg-black justify-center">
                                   <div
                                     className={`left-0 top-0 z-10 absolute h-[15px] bg-[#FFCB03]`}
                                     style={{
@@ -240,9 +240,9 @@ export default function Dashboard({ allPartners }) {
                           </td>
                           <td>
                             <div>
-                              {moment(partner?.submitted_on).format(
+                              {partner?.submitted_on ? moment(partner?.submitted_on).format(
                                 "DD/MM/YYYY"
-                              )}
+                              ): "Not submitted"}
                             </div>
                           </td>
                           <td>
@@ -351,7 +351,7 @@ export default function Dashboard({ allPartners }) {
                     })}
                 </div>
               </>
-            )}
+            {/* )} */}
           </div>
         </div>
       </div>

@@ -1,15 +1,18 @@
 import useProcessing from "@/hooks/useProcessing";
 import useApp from "@/hooks/useApp";
+import useLogout from "@/hooks/useLogout";
 import { useEffect, useState } from "react";
 import { filterCategory, getstages } from "@/app/modules/utilities";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import { filterPartner } from "@/app/modules/utilities";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
 export default function useAdmins() {
-  const states = useStoreState((states) => states.admins);
-  const actions = useStoreActions((actions) => actions.admins);
+  const  {LogoutAdmin} = useLogout();
+  const router = useRouter();
+  const states = useStoreState((action) => action.admins);
+  const actions = useStoreActions((action) => action.admins);
 
   const { setProcessing } = useProcessing();
   const [allCategories, setAllCategories] = useState([]);
@@ -55,10 +58,10 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -127,10 +130,15 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+
+      console.log("response", response);
+      console.log("response.status", response.status);
+      console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -199,10 +207,10 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",

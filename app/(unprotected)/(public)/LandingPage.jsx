@@ -1,15 +1,15 @@
-"use client"
-import Navbar from "@/app/components/Navbar"
-import Typewriter from "typewriter-effect"
-import Button from "@/app/components/form/Button"
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import Footer from "@/app/components/public/Footer"
-import { useEffect, useState } from "react"
-import { PageRoutes } from "@/app/modules/menu"
+"use client";
+import Navbar from "@/app/components/Navbar";
+import Typewriter from "typewriter-effect";
+import Button from "@/app/components/form/Button";
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import Footer from "@/app/components/public/Footer";
+import { useEffect, useState } from "react";
+import { PageRoutes } from "@/app/modules/menu";
 
 export default function LandingPage() {
-  const { setRouteloading } = useApp()
+  const { setRouteloading } = useApp();
   const [faq, setFaq] = useState([
     {
       id: "1",
@@ -20,10 +20,12 @@ export default function LandingPage() {
       id: "2",
       faq: "What do I need to register?",
       ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
+      ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
     },
     {
       id: "3",
       faq: "How long does the documentation verification take?",
+      ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
       ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
     },
     {
@@ -36,15 +38,15 @@ export default function LandingPage() {
       faq: "Is there a limit to the number of products or services I can promote on the MTN Partner Portal?",
       ans: "The number of products or services that can be promoted on the platform would depend on the terms and conditions of the contract. Partners should check the terms and conditions page on the MTN Partner Portal website for more details.",
     },
-  ])
-  const [openFaq, setOpenFaq] = useState("")
+  ]);
+  const [openFaq, setOpenFaq] = useState("");
   const toggleFaq = (id) => {
-    if (id === openFaq) setOpenFaq("")
-    else setOpenFaq(id)
-  }
+    if (id === openFaq) setOpenFaq("");
+    else setOpenFaq(id);
+  };
   useEffect(() => {
-    setRouteloading(false)
-  }, [])
+    setRouteloading(false);
+  }, []);
 
   return (
     <>
@@ -97,13 +99,18 @@ export default function LandingPage() {
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon="yes"
+                  noicon="yes"
                 />
+                <Button
+                  href={"/discover"}
                 <Button
                   href={"/discover"}
                   label="Discover more"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 bg-black/50 hover:bg-white/20 text-white border-2 border-white"
                   outline="yes"
                   outlinecolor="border-white/80"
+                  noicon="yes"
+                />
                   noicon="yes"
                 />
               </div>
@@ -478,6 +485,7 @@ export default function LandingPage() {
                               width={31}
                               height={31}
                               className="min-w-[31px] max-w-[31px] h-auto"
+                              className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           ) : (
                             <Image
@@ -486,6 +494,7 @@ export default function LandingPage() {
                               priority
                               width={31}
                               height={31}
+                              className="min-w-[31px] max-w-[31px] h-auto"
                               className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           )}
@@ -500,6 +509,10 @@ export default function LandingPage() {
                           className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
                           dangerouslySetInnerHTML={{ __html: f.ans }}
                         ></p>
+                        <p
+                          className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
+                          dangerouslySetInnerHTML={{ __html: f.ans }}
+                        ></p>
                       </div>
                     </div>
                   ))}
@@ -507,9 +520,10 @@ export default function LandingPage() {
               </div>
             </div>
             <Footer />
+            <Footer />
           </div>
         </div>
       </main>
     </>
-  )
+  );
 }

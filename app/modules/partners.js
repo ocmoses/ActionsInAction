@@ -1,16 +1,19 @@
-import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints"
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
+import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
+import { cookies } from "next/headers";
+import useLogout from "@/hooks/useLogout";
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
-  try {
-    const params = []
-    if (page) params.push(`page=${page}`)
-    if (perPage) params.push(`per_page=${perPage}`)
-    if (contractStatus) params.push(`contract_status=${contractStatus}`)
 
-    const cookieStore = cookies()
-    const token = cookieStore.get("token")
+  // const {Logout} = useLogout();
+
+  try {
+    const params = [];
+    if (page) params.push(`page=${page}`);
+    if (perPage) params.push(`per_page=${perPage}`);
+    if (contractStatus) params.push(`contract_status=${contractStatus}`);
+
+    const cookieStore = cookies();
+    const token = cookieStore.get("token");
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
         params.length > 0 ? params.join("&") : ""
@@ -24,16 +27,15 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
           "Content-Type": "application/json",
         },
       }
-    )
+    );
 
-    // if (response.status === 401) {
-    //   return {
-    //     error: 401,
-    //   }
+    // if (response.status === 400 || response.status === 401 ) {
+    //   Logout();
+    //   return;
     // }
-    const result = await response.json()
+    const result = await response.json();
     if (result?.success) {
-      const partners = result.data?.partners.data
+      const partners = result.data?.partners.data;
       const navigation = {
         current_page: result?.data?.partners?.current_page,
         first_page_url: result?.data?.partners?.first_page_url,
@@ -47,24 +49,24 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         prev_page_url: result?.data?.partners?.prev_page_url,
         to: result?.data?.partners?.to,
         total: result?.data?.partners?.total,
-      }
+      };
 
       return {
         partners,
         navigation,
-      }
+      };
     }
     return {
       error:
         result?.data?.message ??
         "Something went wrong. Please check your connection and try again",
-    }
+    };
   } catch (error) {
-    console.log({ error })
+    console.log({ error });
     return {
       error:
         error.message ??
         "Something went wrong. Please check your connection and try again",
-    }
+    };
   }
-}
+};

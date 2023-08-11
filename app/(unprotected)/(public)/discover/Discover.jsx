@@ -1,19 +1,19 @@
-"use client"
-import Navbar from "@/app/components/Navbar"
-import Image from "next/image"
-import useApp from "@/hooks/useApp"
-import Footer from "@/app/components/public/Footer"
-import { useEffect, useState } from "react"
-import Button from "@/app/components/form/Button"
-import DiscoverGridBox from "@/app/components/public/DiscoverGridBox"
-import DiscoverComplianceList from "@/app/components/public/DiscoverComplianceList"
-import DiscoverEarningTodayGrid from "@/app/components/public/DiscoverEarningTodayGrid"
+"use client";
+import Navbar from "@/app/components/Navbar";
+import Image from "next/image";
+import useApp from "@/hooks/useApp";
+import Footer from "@/app/components/public/Footer";
+import { useEffect, useState } from "react";
+import Button from "@/app/components/form/Button";
+import DiscoverGridBox from "@/app/components/public/DiscoverGridBox";
+import DiscoverComplianceList from "@/app/components/public/DiscoverComplianceList";
+import DiscoverEarningTodayGrid from "@/app/components/public/DiscoverEarningTodayGrid";
 
 export default function Discover() {
-  const { setRouteloading } = useApp()
+  const { setRouteloading } = useApp();
   useEffect(() => {
-    setRouteloading(false)
-  }, [])
+    setRouteloading(false);
+  }, []);
 
   return (
     <>
@@ -513,5 +513,5 @@ export default function Discover() {
         </div>
       </main>
     </>
-  )
+  );
 }

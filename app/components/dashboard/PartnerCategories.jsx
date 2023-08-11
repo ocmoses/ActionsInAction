@@ -1,29 +1,31 @@
-import UserPercentage from "@/app/components/UserPercentage"
-import Button from "@/app/components/form/Button"
-import Image from "next/image"
-import { PageRoutes } from "@/app/modules/menu"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import UserPercentage from "@/app/components/UserPercentage";
+import Button from "@/app/components/form/Button";
+import Image from "next/image";
+import { PageRoutes } from "@/app/modules/menu";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PartnerCategories({
   partner,
   type,
   partnerCategories,
   onclick,
+  onclick,
   categories,
   finalApproval,
+  finalApproval,
 }) {
-  const router = useRouter()
-  const [allCats, setAllCats] = useState([])
+  const router = useRouter();
+  const [allCats, setAllCats] = useState([]);
   useEffect(() => {
     if (categories?.length > 0) {
-      const Categories = {}
+      const Categories = {};
       categories.map((cat) => {
-        Categories[cat.uuid] = cat
-      })
-      setAllCats(Categories)
+        Categories[cat.uuid] = cat;
+      });
+      setAllCats(Categories);
     }
-  }, [categories])
+  }, [categories]);
 
   return (
     <>
@@ -38,6 +40,14 @@ export default function PartnerCategories({
           (category) =>
             category.category_name && (
               <div
+                onClick={() =>
+                  category.status === "open" ||
+                  partner?.contract_status === "not_started"
+                    ? onclick(category.uuid)
+                    : router.push(
+                        `${PageRoutes.partnerCompliance}/${category.category_uuid}`
+                      )
+                }
                 onClick={() =>
                   category.status === "open" ||
                   partner?.contract_status === "not_started"
@@ -69,6 +79,10 @@ export default function PartnerCategories({
                           partner?.sections[category.category_uuid].percent
                         }
                         // percent={category.percentage}
+                        percent={
+                          partner?.sections[category.category_uuid].percent
+                        }
+                        // percent={category.percentage}
                       />
                     ) : (
                       <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">
@@ -91,10 +105,13 @@ export default function PartnerCategories({
                         ? "Pending review"
                         : finalApproval[category.category_uuid].status
                         ? "Approved"
+                        : finalApproval[category.category_uuid].status
+                        ? "Approved"
                         : "In review"}
                     </span>
 
                     <span className="text-white text-center md:text-left font-bold">
+                      {category.category_name}
                       {category.category_name}
                     </span>
                   </div>
@@ -128,9 +145,26 @@ export default function PartnerCategories({
                             height={16}
                           />
                         )}
+                      <div
+                        className={`flex gap-2 ${
+                          finalApproval[category.category_uuid].status
+                            ? " bg-[#18291F] text-[#97CDAD]"
+                            : " bg-[#2D200A] text-[#F9D89A]"
+                        } rounded-full px-3 py-1 text-[11px] md:text-sm whitespace-nowrap text-ellipsis overflow-hidden`}
+                      >
+                        {!finalApproval[category.category_uuid].status && (
+                          <Image
+                            alt=""
+                            src="/assets/icons/review.svg"
+                            width={16}
+                            height={16}
+                          />
+                        )}
                         <span>
                           {partner?.contract_status === "not_started"
                             ? "Pending review"
+                            : finalApproval[category.category_uuid].status
+                            ? "Approved"
                             : finalApproval[category.category_uuid].status
                             ? "Approved"
                             : "In review"}
@@ -144,5 +178,5 @@ export default function PartnerCategories({
         )}
       </div>
     </>
-  )
+  );
 }

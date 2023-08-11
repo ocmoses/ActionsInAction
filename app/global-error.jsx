@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
+import { useEffect } from "react";
 
 export default function GlobalError({ error }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.log(error)
-  }, [error])
+    console.log(error);
+  }, [error]);
   const reset = () => {
-    location.reload()
-  }
+    location.reload();
+  };
   return (
     <html lang="en">
       <head />
@@ -47,5 +47,5 @@ export default function GlobalError({ error }) {
         </div>
       </body>
     </html>
-  )
+  );
 }

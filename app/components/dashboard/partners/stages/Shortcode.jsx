@@ -1,5 +1,5 @@
-import ComplianceLabelPartners from "@/app/components/dashboard/partners/ComplianceLabelPartners"
-import { approvalFields } from "@/app/modules/constants"
+import ComplianceLabelPartners from "@/app/components/dashboard/partners/ComplianceLabelPartners";
+import { approvalFields } from "@/app/modules/constants";
 
 export default function Shortcode({ category, stage }) {
   return (
@@ -141,5 +141,5 @@ export default function Shortcode({ category, stage }) {
           ))}
       </div>
     )
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import Review from "./Review"
+import Review from "./Review";
 
 export default function ReviewPage() {
-  return <Review />
+  return <Review />;
 }

@@ -2,31 +2,23 @@
 import { logout, logoutAdmin } from "@/app/modules/utilities"
 import { PageRoutes } from "@/app/modules/menu"
 
-import usePartners from "@/hooks/usePartners"
 import { useStoreActions, useStoreState } from "easy-peasy"
-import store, { model, clearPersistStore } from "@/store"
+import { model, clearPersistStore } from "@/store"
 import { useRouter } from "next/navigation"
 
 export default function useLogout() {
   const router = useRouter()
   const actions = useStoreActions((action) => action)
 
-  // const {
-  //   setPartner,
-  //   setPartners,
-  //   setPartnerID,
-  //   setCategory,
-  //   setCategories,
-  //   setPartnerCategories,
-  // } = usePartners()
-
   const clearStore = () => {
     for (const store in model) {
       actions[store].clear()
     }
-    clearPersistStore()
+    clearPersistStore();
+    localStorage.clear();
   }
   const Logout = async () => {
+    localStorage.clear();
     actions.app.startLoading("logout")
     await logout()
     clearStore()
@@ -34,14 +26,17 @@ export default function useLogout() {
     router.push(PageRoutes.home)
   }
   const LogoutAdmin = async () => {
+    localStorage.clear();
     actions.app.startLoading("logout")
     await logoutAdmin()
     clearStore()
     actions.app.endLoading("logout")
     if (typeof window !== "undefined") window.location = PageRoutes.adminlogin
     else router.push(PageRoutes.adminlogin)
+    if (typeof window !== "undefined") window.location = PageRoutes.adminlogin
+    else router.push(PageRoutes.adminlogin)
   }
 
   return { Logout, LogoutAdmin, logoutAdmin, clearStore }
 }
-useLogout
+

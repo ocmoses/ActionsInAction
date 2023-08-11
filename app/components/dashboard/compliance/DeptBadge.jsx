@@ -1,6 +1,6 @@
 export default function DeptBadge({ dept, field, category }) {
-  let bg = "bg-white/40"
-  let text = `Pending approval for ${dept.name}`
+  let bg = "bg-white/40";
+  let text = `Pending approval for ${dept.name}`;
   if (
     category?.approvedFields[category.category_uuid] &&
     dept.code in category?.approvedFields[category.category_uuid] &&
@@ -10,15 +10,15 @@ export default function DeptBadge({ dept, field, category }) {
       category?.approvedFields[category.category_uuid][dept.code][field] ===
       "approved"
     ) {
-      bg = "bg-green-600"
-      text = `${dept.name} APPROVED`
+      bg = "bg-green-600";
+      text = `${dept.name} APPROVED`;
     }
     if (
       category?.approvedFields[category.category_uuid][dept.code][field] ===
       "rejected"
     ) {
-      bg = "bg-red-600"
-      text = `${dept.name} REJECTED`
+      bg = "bg-red-600";
+      text = `${dept.name} REJECTED`;
     }
   }
   return (
@@ -28,5 +28,5 @@ export default function DeptBadge({ dept, field, category }) {
     >
       {dept.code[0]}
     </span>
-  )
+  );
 }

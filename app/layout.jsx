@@ -94,9 +94,12 @@ const getServerSession = async () => {
         const response = await fetch(RemoteEndpoints.AUTH_USER, {
           headers: {
             apikey,
+            apikey,
             "Content-Type": "application/json",
             // redirect: "follow",
+            // redirect: "follow",
             referrerPolicy: "no-referrer",
+            Authorization: `bearer ${authToken}`,
             Authorization: `bearer ${authToken}`,
           },
         }).catch((error) => {
@@ -131,6 +134,7 @@ const getServerSession = async () => {
             return { success: false, error: data.error, data: null };
           return {
             success: false,
+            error: "No data was return from the server. Please try again",
             error: "No data was return from the server. Please try again",
             data: null,
           };

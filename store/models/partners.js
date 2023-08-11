@@ -12,6 +12,10 @@ const partners = {
   selectedCategory: null,
   Stages: null,
   activeStage: null,
+  Stages: null,
+  selectedCategory: null,
+  Stages: null,
+  activeStage: null,
   clear: action((state) => {
     state.partnerID = null;
     state.partners = null;

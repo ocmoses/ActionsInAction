@@ -10,6 +10,7 @@ import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   Util,
@@ -110,6 +111,7 @@ const usePartners = () => {
     return { success, error, data }
   }
 
+
   const setCurrentCategory = (category, partner) => {
     const baseCategory = categories?.find(
       (c) => c.uuid === category.category_uuid
@@ -162,6 +164,7 @@ const usePartners = () => {
   const nextStage = (category, partner) => {
     return getNextStage(category, partner)
   }
+  
   const getStages = (category, categories) => {
     if (!category) return
     return getstages(category, categories)
@@ -179,6 +182,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
@@ -227,6 +231,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
@@ -277,6 +282,7 @@ const usePartners = () => {
               "Content-Type": "multipart/form-data",
             },
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
           setProcessing(false)
@@ -319,6 +325,7 @@ const usePartners = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
@@ -368,6 +375,7 @@ const usePartners = () => {
           RemoteEndpoints.REGISTRATION_COMPLETION,
           userdata,
           {
+            timeout: process.env.NEXT_PUBLIC_TIMEOUT,
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {

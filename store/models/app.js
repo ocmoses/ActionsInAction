@@ -5,6 +5,7 @@ const app = {
   count: 0,
   errors: {},
   globalerrors: [],
+  globalerrors: [],
   success: null,
   processing: false,
   loading: {},
@@ -28,9 +29,12 @@ const app = {
   showGetstartedLink: false,
   is_previewing_doc: false,
   doc_preview_path: "",
+  is_previewing_doc: false,
+  doc_preview_path: "",
   increaseCount: action((state, key) => {
     return state.count++;
   }),
+  rejectionReasons: null,
   rejectionReasons: null,
   clear: action((state) => {
     state.count = 0;
@@ -196,12 +200,14 @@ const app = {
     state.errors = { ...state.errors, ...errorObject };
   }),
 
+
   setSuccess: action((state, message) => {
     state.success = message;
   }),
   removeError: action((state, errorKey) => {
     delete state.errors[errorKey];
   }),
+
 
   clearErrors: action((state) => {
     state.errors = {};

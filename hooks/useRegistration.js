@@ -36,6 +36,7 @@ const useRegistration = () => {
         "Content-Type": "multipart/form-data",
       },
       timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+      timeout: process.env.NEXT_PUBLIC_TIMEOUT,
     }).catch((e) => {
       return {
         success: false,
@@ -79,6 +80,7 @@ const useRegistration = () => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      timeout: process.env.NEXT_PUBLIC_TIMEOUT,
       timeout: process.env.NEXT_PUBLIC_TIMEOUT,
     }).catch((e) => {
       setProcessing(false);

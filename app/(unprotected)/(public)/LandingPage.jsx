@@ -20,10 +20,12 @@ export default function LandingPage() {
       id: "2",
       faq: "What do I need to register?",
       ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
+      ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
     },
     {
       id: "3",
       faq: "How long does the documentation verification take?",
+      ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
       ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
     },
     {
@@ -97,13 +99,18 @@ export default function LandingPage() {
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon="yes"
+                  noicon="yes"
                 />
+                <Button
+                  href={"/discover"}
                 <Button
                   href={"/discover"}
                   label="Discover more"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 bg-black/50 hover:bg-white/20 text-white border-2 border-white"
                   outline="yes"
                   outlinecolor="border-white/80"
+                  noicon="yes"
+                />
                   noicon="yes"
                 />
               </div>
@@ -478,6 +485,7 @@ export default function LandingPage() {
                               width={31}
                               height={31}
                               className="min-w-[31px] max-w-[31px] h-auto"
+                              className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           ) : (
                             <Image
@@ -486,6 +494,7 @@ export default function LandingPage() {
                               priority
                               width={31}
                               height={31}
+                              className="min-w-[31px] max-w-[31px] h-auto"
                               className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           )}
@@ -500,12 +509,17 @@ export default function LandingPage() {
                           className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
                           dangerouslySetInnerHTML={{ __html: f.ans }}
                         ></p>
+                        <p
+                          className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
+                          dangerouslySetInnerHTML={{ __html: f.ans }}
+                        ></p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
+            <Footer />
             <Footer />
           </div>
         </div>

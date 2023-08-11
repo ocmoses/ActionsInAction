@@ -48,11 +48,6 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         run: |
           cp dev_default/default.conf default.conf
-
-      - name: 'dev Dockerfile'
-        if: github.ref == 'refs/heads/dev'
-        run: |
-          cp dev_default/Dockerfile Dockerfile
         
       - name: Login to dev image repository
         if: github.ref == 'refs/heads/dev'
@@ -101,11 +96,6 @@ jobs:
         if: github.ref == 'refs/heads/stage'
         run: |
           cp stage_default/default.conf default.conf
-
-      - name: 'Stage Dockerfile'
-        if: github.ref == 'refs/heads/stage'
-        run: |
-          cp stage_default/Dockerfile Dockerfile
         
       - name: Login to staging image repository
         if: github.ref == 'refs/heads/stage'
@@ -154,11 +144,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           cp prod_default/default.conf default.conf
-
-      - name: 'Prod Dockerfile'
-        if: github.ref == 'refs/heads/main'
-        run: |
-          cp prod_default/Dockerfile Dockerfile
         
       - name: Login to prod image repository
         if: github.ref == 'refs/heads/main'

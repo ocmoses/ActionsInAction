@@ -32,6 +32,7 @@ export default function NavbarDashboard({ open, setOpen, setMenuOpen }) {
           </span>
         </div>
         <div className="hidden md:flex flex-grow justify-start text-[#666666] px-3 py-2"></div>
+        <div className="hidden md:flex flex-grow justify-start text-[#666666] px-3 py-2"></div>
       </div>
       <div className="flex justify-end text-white px-2 gap-2 items-center">
         {session && session.status === "authenticated" && <ProfileIcons />}

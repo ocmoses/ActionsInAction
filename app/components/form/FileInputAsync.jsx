@@ -11,10 +11,12 @@ export default function FileInputAsync({
   onChange,
   allowedtypes,
   maxSize,
+  maxSize,
   value,
   bg,
   margin,
   errors,
+  disabled,
   disabled,
 }) {
   const [file, setFile] = useState(null);
@@ -38,6 +40,7 @@ export default function FileInputAsync({
       setDoc({
         file_name: file.name,
         file_path: null,
+        file_size: file.size,
         file_size: file.size,
         file_type: file.type.split("/")[1],
       });
@@ -115,6 +118,7 @@ export default function FileInputAsync({
               className="h-full w-full opacity-0 z-10 absolute"
               name="files"
               disabled={disabled}
+              disabled={disabled}
             />
             {!doc?.file_name && (
               <>
@@ -128,12 +132,14 @@ export default function FileInputAsync({
                       <>
                         <p className="text-[#999999]">
                           Drag and drop or choose file
+                          Drag and drop or choose file
                         </p>
                         <p className="text-[#999999]">PDF file (5mb max)</p>
                       </>
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
+                        <span className="whitespace-normal text-red-600 text-[13px]">
                         <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>
@@ -164,9 +170,16 @@ export default function FileInputAsync({
                           {doc ? getFileSizeText(doc.file_size) : "0"}
                         </p>
                       </>
+                      <>
+                        <p className="text-[#999999] mb-0">{doc?.file_name}</p>
+                        <p className="text-[#999999] mt-0">
+                          {doc ? getFileSizeText(doc.file_size) : "0"}
+                        </p>
+                      </>
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
+                        <span className="whitespace-normal text-red-600 text-[13px]">
                         <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>

@@ -61,6 +61,8 @@ export default function NavbarOnboarding({
           <span className="flex text-white text-[12px] flex-nowrap">
             {partner?.sections[category?.category_uuid].percent ?? 0}%
             <span className="hidden sm:flex"> &nbsp;completed</span>
+            {partner?.sections[category?.category_uuid].percent ?? 0}%
+            <span className="hidden sm:flex"> &nbsp;completed</span>
           </span>
         </div>
         <span

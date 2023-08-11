@@ -88,5 +88,9 @@ export const PageRoutes = {
 
   // admin
   adminlogin: "/admin/login",
+  partnerCompliance: "/dashboard/compliance",
+
+  // admin
+  adminlogin: "/admin/login",
   admindashboard: "/admin/dashboard",
 };

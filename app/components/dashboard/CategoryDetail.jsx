@@ -103,7 +103,6 @@ export default function CategoryDetail({
                 informations from our{" "}
                 {category.category_code === "AGR" ? (
                   <>aggregators</>
-                  <>aggregators</>
                 ) : (
                   <>{category.category_code} providers.</>
                 )}

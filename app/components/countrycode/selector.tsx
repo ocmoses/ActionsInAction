@@ -1,21 +1,21 @@
-import { COUNTRIES } from "./countries"
-import { SelectMenuOption } from "./types/index"
-import { AnimatePresence, motion } from "framer-motion"
-import React, { MutableRefObject, useEffect, useState } from "react"
-import Image from "next/image"
+import { COUNTRIES } from "./countries";
+import { SelectMenuOption } from "./types/index";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { MutableRefObject, useEffect, useState } from "react";
+import Image from "next/image";
 
 export const CountrySelector = React.forwardRef<
   HTMLDivElement,
   {
-    id: string
-    open: boolean
-    onToggle: () => void
-    onChange: (value: any) => void
-    selectedValue: SelectMenuOption
+    id: string;
+    open: boolean;
+    onToggle: () => void;
+    onChange: (value: any) => void;
+    selectedValue: SelectMenuOption;
   }
 >((props, ref) => {
   useEffect(() => {
-    const mutableRef = ref as MutableRefObject<HTMLDivElement | null>
+    const mutableRef = ref as MutableRefObject<HTMLDivElement | null>;
 
     const handleClickOutside = (event: any) => {
       if (
@@ -23,18 +23,18 @@ export const CountrySelector = React.forwardRef<
         !mutableRef.current.contains(event.target) &&
         props.open
       ) {
-        props.onToggle()
-        setQuery("")
+        props.onToggle();
+        setQuery("");
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [ref])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
 
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
 
   return (
     <div ref={ref}>
@@ -134,9 +134,9 @@ export const CountrySelector = React.forwardRef<
                         id="listbox-option-0"
                         role="option"
                         onClick={() => {
-                          props.onChange(value.value)
-                          setQuery("")
-                          props.onToggle()
+                          props.onChange(value.value);
+                          setQuery("");
+                          props.onToggle();
                         }}
                       >
                         {value?.value && (
@@ -171,7 +171,7 @@ export const CountrySelector = React.forwardRef<
                           </span>
                         ) : null}
                       </li>
-                    )
+                    );
                   })
                 )}
               </div>
@@ -180,5 +180,5 @@ export const CountrySelector = React.forwardRef<
         </AnimatePresence>
       </div>
     </div>
-  )
-})
+  );
+});

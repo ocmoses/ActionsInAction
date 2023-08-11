@@ -1,8 +1,8 @@
-import Image from "next/image"
-import { forms } from "@/app/modules/constants"
-import FilePreviewModal from "@/app/components/FilePreviewModal"
-import useApp from "@/hooks/useApp"
-import useAdmins from "@/hooks/useAdmins"
+import Image from "next/image";
+import { forms } from "@/app/modules/constants";
+import FilePreviewModal from "@/app/components/FilePreviewModal";
+import useApp from "@/hooks/useApp";
+import useAdmins from "@/hooks/useAdmins";
 
 export default function ComplianceDrawer({
   children,
@@ -11,13 +11,13 @@ export default function ComplianceDrawer({
   setOpenDrawer,
   openDrawer,
 }) {
-  const { setActiveApproval } = useAdmins()
+  const { setActiveApproval } = useAdmins();
   const closeDrawer = () => {
-    setActiveApproval(null)
-    setOpenDrawer(false)
-  }
+    setActiveApproval(null);
+    setOpenDrawer(false);
+  };
 
-  const { is_previewing_doc, doc_preview_path, handleCloseModal } = useApp()
+  const { is_previewing_doc, doc_preview_path, handleCloseModal } = useApp();
   return (
     <>
       {is_previewing_doc && (
@@ -37,7 +37,7 @@ export default function ComplianceDrawer({
         {activeStage && (
           <section
             className={
-              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >
@@ -93,5 +93,5 @@ export default function ComplianceDrawer({
         ></section>
       </main>
     </>
-  )
+  );
 }

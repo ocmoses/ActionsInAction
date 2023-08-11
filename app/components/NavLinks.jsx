@@ -6,9 +6,10 @@ function NavLinks() {
   const links = [
     { href: "/", text: "Y'ello", active: pathname === "/" },
     { href: "/discover", text: "Discover", active: pathname === "/discover" },
+    { href: "/faq", text: "FAQ", active: pathname === "/faq" },
   ]
   return (
-    <nav className="hidden sm:flex space-x-20">
+    <nav className="hidden sm:flex space-x-10">
       {links.map((link) => (
         <Link href={link.href} key={link.text}>
           <span

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
@@ -8,7 +8,6 @@ export default function Error({ error, reset }) {
     console.log(error.toString())
   }, [error])
   const [showError, setShowError] = useState(false)
-  console.log({ showError })
   return (
     <div className="flex p-20 justify-center items-center flex-col gap-5 text-white mx-auto h-screen">
       <span className="flex justify-center items-center text-mtn-600">
@@ -38,11 +37,10 @@ export default function Error({ error, reset }) {
         {showError ? (
           <div
             onClick={() => {
-              setShowError(false)
+              setShowError(false);
             }}
             className="relative z-10 bg-[#111111] hover:bg-[#313131] inline-flex justify-center items-center rounded-full p-1 border border-white/30 cursor-pointer my-2"
           >
-            {" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,7 +59,7 @@ export default function Error({ error, reset }) {
         ) : (
           <div
             onClick={() => {
-              setShowError(true)
+              setShowError(true);
             }}
             className="relative z-10 bg-[#111111] hover:bg-[#313131] inline-flex justify-center items-center rounded-full p-1 border border-white/30 cursor-pointer my-2"
           >
@@ -93,6 +91,12 @@ export default function Error({ error, reset }) {
       >
         Retry
       </button>
+      <button
+        className="bg-red-600 hover:bg-red-900 rounded-full text-white/50 px-4 py-2"
+        onClick={reset}
+      >
+        Retry
+      </button>
     </div>
-  )
+  );
 }

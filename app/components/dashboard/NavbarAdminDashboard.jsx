@@ -1,12 +1,12 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import MenuIcon from "@/public/assets/icons/menu.svg"
-import useAdmins from "@/hooks/useAdmins"
-import AdminProfileIcons from "@/app/components/AdminProfileIcons"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import MenuIcon from "@/public/assets/icons/menu.svg";
+import useAdmins from "@/hooks/useAdmins";
+import AdminProfileIcons from "@/app/components/AdminProfileIcons";
 
 export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
-  const { admin, session } = useAdmins()
+  const { admin, session } = useAdmins();
   return (
     <header
       id="dashboardheader"
@@ -29,8 +29,12 @@ export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
             className="cursor-pointer text-white hidden md:flex"
           >
             <Image src={MenuIcon} width={24} height={24} alt="" />
+            <Image src={MenuIcon} width={24} height={24} alt="" />
           </span>
         </div>
+        {/* <div className="hidden md:flex flex-grow justify-start text-white px-3 py-2">
+          {admin && admin.department_code}
+        </div> */}
         {/* <div className="hidden md:flex flex-grow justify-start text-white px-3 py-2">
           {admin && admin.department_code}
         </div> */}
@@ -42,8 +46,9 @@ export default function NavbarAdminDashboard({ open, setOpen, setMenuOpen }) {
           className="md:hidden text-white hover:text-white/60 cursor-pointer z-50"
         >
           <Image src={MenuIcon} width={24} height={24} alt="" />
+          <Image src={MenuIcon} width={24} height={24} alt="" />
         </div>
       </div>
     </header>
-  )
+  );
 }

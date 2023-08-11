@@ -1,50 +1,50 @@
-import { forms } from "@/app/modules/constants"
-import { useState, useEffect } from "react"
-import useAdmins from "@/hooks/useAdmins"
-import Companydetail from "@/app/components/dashboard/compliance_stages/Companydetail"
-import Compliance from "@/app/components/dashboard/compliance_stages/Compliance"
-import Ncclicense from "@/app/components/dashboard/compliance_stages/Ncclicense"
-import Nlrclicense from "@/app/components/dashboard/compliance_stages/Nlrclicense"
-import Shortcode from "@/app/components/dashboard/compliance_stages/Shortcode"
-import Indemnity from "@/app/components/dashboard/compliance_stages/Indemnity"
-import Accountinfo from "@/app/components/dashboard/compliance_stages/Accountinfo"
-import Activities from "@/app/components/dashboard/compliance/Activities"
-import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator"
+import { forms } from "@/app/modules/constants";
+import { useState, useEffect } from "react";
+import useAdmins from "@/hooks/useAdmins";
+import Companydetail from "@/app/components/dashboard/compliance_stages/Companydetail";
+import Compliance from "@/app/components/dashboard/compliance_stages/Compliance";
+import Ncclicense from "@/app/components/dashboard/compliance_stages/Ncclicense";
+import Nlrclicense from "@/app/components/dashboard/compliance_stages/Nlrclicense";
+import Shortcode from "@/app/components/dashboard/compliance_stages/Shortcode";
+import Indemnity from "@/app/components/dashboard/compliance_stages/Indemnity";
+import Accountinfo from "@/app/components/dashboard/compliance_stages/Accountinfo";
+import Activities from "@/app/components/dashboard/compliance/Activities";
+import ComplianceNavigator from "@/app/components/dashboard/compliance/ComplianceNavigator";
 
 export default function ComplianceDetail({ activeStage, category }) {
-  const { getStages, categories, setActiveStage } = useAdmins()
+  const { getStages, categories, setActiveStage } = useAdmins();
 
-  const [view, setView] = useState("overview")
-  const [Feedbacks, setFeedbacks] = useState([])
-  const [navlabels, setNavLabels] = useState({ prev: null, next: null })
+  const [view, setView] = useState("overview");
+  const [Feedbacks, setFeedbacks] = useState([]);
+  const [navlabels, setNavLabels] = useState({ prev: null, next: null });
 
-  const Stages = getStages(category, categories)
-  const navigation = Stages.forms
-
-  useEffect(() => {
-    setFeedbacks(category.feedbacks[activeStage])
-  }, [activeStage, category])
+  const Stages = getStages(category, categories);
+  const navigation = Stages.forms;
 
   useEffect(() => {
-    const index = navigation.indexOf(activeStage)
-    const next = index === navigation.length - 1 ? index : index + 1
-    const prev = index === 0 ? index : index - 1
+    setFeedbacks(category.feedbacks[activeStage]);
+  }, [activeStage, category]);
+
+  useEffect(() => {
+    const index = navigation.indexOf(activeStage);
+    const next = index === navigation.length - 1 ? index : index + 1;
+    const prev = index === 0 ? index : index - 1;
     setNavLabels({
       prev: forms[navigation[prev]].shortname,
       next: forms[navigation[next]].shortname,
-    })
-  }, [activeStage])
+    });
+  }, [activeStage]);
 
   const nextStage = () => {
-    const index = navigation.indexOf(activeStage)
-    const next = index === navigation.length - 1 ? index : index + 1
-    setActiveStage(navigation[next])
-  }
+    const index = navigation.indexOf(activeStage);
+    const next = index === navigation.length - 1 ? index : index + 1;
+    setActiveStage(navigation[next]);
+  };
   const prevStage = () => {
-    const index = navigation.indexOf(activeStage)
-    const prev = index === 0 ? index : index - 1
-    setActiveStage(navigation[prev])
-  }
+    const index = navigation.indexOf(activeStage);
+    const prev = index === 0 ? index : index - 1;
+    setActiveStage(navigation[prev]);
+  };
   return (
     <div className="flex flex-col justify-start items-between w-full h-full">
       <div className="grow-0 flex justify-start items-start gap-6 mb-auto border-b border-b-white/20 px-6">
@@ -112,5 +112,5 @@ export default function ComplianceDetail({ activeStage, category }) {
         navlabels={navlabels}
       />
     </div>
-  )
+  );
 }

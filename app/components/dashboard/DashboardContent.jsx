@@ -1,36 +1,36 @@
-"use client"
-import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer"
-import CategoryCard from "@/app/components/dashboard/CategoryCard"
-import CategoryDetail from "@/app/components/dashboard/CategoryDetail"
-import PartnerCategories from "@/app/components/dashboard/PartnerCategories"
-import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement"
-import OnboardingLayout from "./OnboardingLayout"
-import Button from "@/app/components/form/Button"
-import useUsers from "@/hooks/useUsers"
-import RemoteEndpoints from "@/app/modules/endpoints"
-import Axios from "@/app/modules/axios"
-import Portal from "@/app/components/Portal"
-import { useState, useEffect, useRef } from "react"
+"use client";
+import CategorySideDrawer from "@/app/components/dashboard/CategorySideDrawer";
+import CategoryCard from "@/app/components/dashboard/CategoryCard";
+import CategoryDetail from "@/app/components/dashboard/CategoryDetail";
+import PartnerCategories from "@/app/components/dashboard/PartnerCategories";
+import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement";
+import OnboardingLayout from "./OnboardingLayout";
+import Button from "@/app/components/form/Button";
+import useUsers from "@/hooks/useUsers";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import Axios from "@/app/modules/axios";
+import Portal from "@/app/components/Portal";
+import { useState, useEffect, useRef } from "react";
 import {
   Util,
   AllowedCategories,
   filterPartner,
   filterCategory,
   getFinalApproval,
-} from "@/app/modules/utilities"
-import { TailSpinPreloader } from "@/app/components/Icons"
-import useProcessing from "@/hooks/useProcessing"
-import usePartners from "@/hooks/usePartners"
-import useErrors from "@/hooks/useErrors"
-import FormErrors from "@/app/components/FormErrors"
-import Image from "next/image"
-import { scrollToTop } from "@/app/modules/utilities"
-import CallToAction from "./partners/CallToAction"
+} from "@/app/modules/utilities";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import useProcessing from "@/hooks/useProcessing";
+import usePartners from "@/hooks/usePartners";
+import useErrors from "@/hooks/useErrors";
+import FormErrors from "@/app/components/FormErrors";
+import Image from "next/image";
+import { scrollToTop } from "@/app/modules/utilities";
+import CallToAction from "./partners/CallToAction";
 
 export default function GetStarted({ type }) {
   const {
     session: { user },
-  } = useUsers()
+  } = useUsers();
   const {
     partner,
     category,
@@ -39,118 +39,118 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
-  } = usePartners()
+  } = usePartners();
 
-  const [FinalApproval, setFinalApproval] = useState(false)
+  const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-    const _finalApproval = getFinalApproval(partner)
-    console.log({ _finalApproval })
-    setFinalApproval(_finalApproval)
-  }, [partner])
+    const _finalApproval = getFinalApproval(partner);
+    console.log({ _finalApproval });
+    setFinalApproval(_finalApproval);
+  }, [partner]);
   // console.log({ FinalApproval })
-  const [isOpen, setIsOpen] = useState(false)
-  const [categoriesData, setCategoriesData] = useState([])
-  const [partnerCategories, setPartnerCategories] = useState([])
-  const [partnerActiveCategories, setPartnerActiveCategories] = useState([])
-  const [showProgress, setShowProgress] = useState(false)
-  const [tmpCat, setTmpCat] = useState(null)
-  const [isOnboarding, setIsOnboarding] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [partnerCategories, setPartnerCategories] = useState([]);
+  const [partnerActiveCategories, setPartnerActiveCategories] = useState([]);
+  const [showProgress, setShowProgress] = useState(false);
+  const [tmpCat, setTmpCat] = useState(null);
+  const [isOnboarding, setIsOnboarding] = useState(false);
   // const [allowedCategories, setAllowedCategories] = useState(false)
 
-  const { setForm, setProcessing, setActiveCategory } = useProcessing()
+  const { setForm, setProcessing, setActiveCategory } = useProcessing();
 
   const [{ errors, setError, success, setSuccess, clearErrors }] =
-    useErrors(null)
+    useErrors(null);
 
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const showAgreement = (status) => {
-    console.log({ showModal })
-    setShowModal(status)
-  }
+    console.log({ showModal });
+    setShowModal(status);
+  };
   useEffect(() => {
-    setCategoriesData(categories)
-  }, [categories])
+    setCategoriesData(categories);
+  }, [categories]);
 
   const [validation, setValidation] = useState({
     required: [],
     optional: [],
     allForms: [],
-  })
+  });
 
   useEffect(() => {
-    setActiveCategory(tmpCat)
-    const validation = setValidationRules(tmpCat)
-    setValidation(validation)
-  }, [tmpCat])
+    setActiveCategory(tmpCat);
+    const validation = setValidationRules(tmpCat);
+    setValidation(validation);
+  }, [tmpCat]);
 
   useEffect(() => {
-    setForm(null)
-    setShowProgress(false)
-    setProcessing(false)
-  }, [])
+    setForm(null);
+    setShowProgress(false);
+    setProcessing(false);
+  }, []);
 
   useEffect(() => {
-    const partnerCat = []
-    const partnerActiveCat = []
-    filterPartner(partner, categoriesData)
+    const partnerCat = [];
+    const partnerActiveCat = [];
+    filterPartner(partner, categoriesData);
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
       if (partner.categories?.length > 0) {
         partner.categories.map((_category) => {
-          const category = filterCategory(_category, partner)
-          partnerActiveCat.push(category.uuid)
+          const category = filterCategory(_category, partner);
+          partnerActiveCat.push(category.uuid);
           const mainCategory = categoriesData.find(
             (c) => c.uuid === category.category_uuid
-          )
+          );
 
           partnerCat.push({
             ...category,
             category_name: mainCategory?.category_name,
             validation: mainCategory?.validation,
-          })
-        })
+          });
+        });
       }
     }
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
         partner.allowedCategories.includes(category.category_code)
-    )
-    setPartnerActiveCategories(newCatArray)
-    setPartnerCategories(partnerCat)
-  }, [partner, categoriesData, category])
+    );
+    setPartnerActiveCategories(newCatArray);
+    setPartnerCategories(partnerCat);
+  }, [partner, categoriesData, category]);
 
   const toggleProgress = () => {
-    setShowProgress((oldState) => !oldState)
-  }
-  const MainBox = useRef()
-  const CategoryBox = useRef()
+    setShowProgress((oldState) => !oldState);
+  };
+  const MainBox = useRef();
+  const CategoryBox = useRef();
 
   const continueRegistration = (uuid) => {
-    clearErrors()
-    const category = partner?.categories?.find((cat) => cat.uuid === uuid)
+    clearErrors();
+    const category = partner?.categories?.find((cat) => cat.uuid === uuid);
 
     if (category) {
       //  CHECK IF MASTER DATA EXISTS
-      const { nextstage: NextStage } = nextStage(category, partner)
-      setCurrentCategory(category, partner)
-      setIsOnboarding(true)
-      setIsOpen(false)
-      return setForm(NextStage)
+      const { nextstage: NextStage } = nextStage(category, partner);
+      setCurrentCategory(category, partner);
+      setIsOnboarding(true);
+      setIsOpen(false);
+      return setForm(NextStage);
     }
-  }
+  };
   const scrollpage = () => {
     document.getElementById("portals").scrollTo({
       top: 0,
       behavior: "smooth",
-    })
-  }
-  const [isSaving, setIsSaving] = useState(false)
-  const [contractStarted, setContractStarted] = useState(false)
+    });
+  };
+  const [isSaving, setIsSaving] = useState(false);
+  const [contractStarted, setContractStarted] = useState(false);
 
   const finishApplication = async () => {
-    if (isSaving) return
-    clearErrors()
-    setIsSaving(true)
+    if (isSaving) return;
+    clearErrors();
+    setIsSaving(true);
     try {
       const result = await Axios.post(
         RemoteEndpoints.START_CONTRACT,
@@ -164,37 +164,37 @@ export default function GetStarted({ type }) {
           referrerPolicy: "no-referrer",
         }
       ).catch((error) => {
-        console.log(error)
-        setIsSaving(false)
+        console.log(error);
+        setIsSaving(false);
         return setError({
           dashboard:
             "Unable to reach the server. Please check your connection and retry",
-        })
-      })
-      setIsSaving(false)
+        });
+      });
+      setIsSaving(false);
       if (result) {
-        const { success, data } = result
+        const { success, data } = result;
         if (success) {
-          setContractStarted(true)
-          updatePartner(data?.partner)
-          setSuccess("Your application was submited successfully")
+          setContractStarted(true);
+          updatePartner(data?.partner);
+          setSuccess("Your application was submited successfully");
         } else {
-          return setError({ dashboard: data.message })
+          return setError({ dashboard: data.message });
         }
       } else {
         return setError({
           dashboard: "Cannot reach the server. Please check your connection",
-        })
+        });
       }
     } catch (err) {
-      console.log({ err })
-      setIsSaving(false)
+      console.log({ err });
+      setIsSaving(false);
       return setError({
         dashboard:
           "Something went wrong. Please check your connection and try again",
-      })
+      });
     }
-  }
+  };
   return (
     <>
       {isOnboarding && (
@@ -601,5 +601,5 @@ export default function GetStarted({ type }) {
         </Portal>
       )}
     </>
-  )
+  );
 }

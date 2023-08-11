@@ -1,4 +1,4 @@
-import DefaultHead from '@/app/DefaultHead'
+import DefaultHead from "@/app/DefaultHead";
 export default function Head() {
-  return <DefaultHead title="NCC license" />
+  return <DefaultHead title="NCC license" />;
 }

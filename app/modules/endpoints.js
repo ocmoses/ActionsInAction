@@ -1,7 +1,7 @@
 import { apiURL } from "@/app/modules/constants";
 
 
-const NOTIFICATION_BASE = "http://10.1.29.142/api/"; //"http://10.1.44.43/api/"; //
+const NOTIFICATION_BASE = "http://10.1.44.43/api/"; //"http://10.1.29.142/api/";
 
 
 export const EndPointHeaders = {

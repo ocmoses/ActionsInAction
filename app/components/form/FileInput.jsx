@@ -16,7 +16,6 @@ function FileInput({
   errors,
   disabled,
   hidedelete,
-  hidedelete,
 }) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");

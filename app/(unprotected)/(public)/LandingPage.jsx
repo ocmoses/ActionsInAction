@@ -99,18 +99,14 @@ export default function LandingPage() {
                   label="Partner with us"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon="yes"
-                  noicon="yes"
                 />
-                <Button
-                  href={"/discover"}
+                
                 <Button
                   href={"/discover"}
                   label="Discover more"
                   className="rounded-full flex justify-between items-center px-[42px] py-2 bg-black/50 hover:bg-white/20 text-white border-2 border-white"
                   outline="yes"
                   outlinecolor="border-white/80"
-                  noicon="yes"
-                />
                   noicon="yes"
                 />
               </div>
@@ -485,7 +481,6 @@ export default function LandingPage() {
                               width={31}
                               height={31}
                               className="min-w-[31px] max-w-[31px] h-auto"
-                              className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           ) : (
                             <Image
@@ -494,7 +489,6 @@ export default function LandingPage() {
                               priority
                               width={31}
                               height={31}
-                              className="min-w-[31px] max-w-[31px] h-auto"
                               className="min-w-[31px] max-w-[31px] h-auto"
                             />
                           )}

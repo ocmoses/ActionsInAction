@@ -73,8 +73,7 @@ function Login({ params }) {
   };
   return (
     <>
-      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">
-        <form method="POST" onSubmit={handleLogin}>
+      
       <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">
         <form method="POST" onSubmit={handleLogin}>
           <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
@@ -149,8 +148,6 @@ function Login({ params }) {
               <Button label="Continue" />
             )}
           </div>
-        </form>
-      </div>
         </form>
       </div>
     </>

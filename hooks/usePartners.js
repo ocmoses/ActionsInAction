@@ -10,7 +10,6 @@ import { fetchData } from "@/app/modules/fetchData"
 import { apiURL } from "@/app/modules/constants"
 import { useStoreActions, useStoreState } from "easy-peasy"
 import { useState, useEffect } from "react"
-import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   Util,

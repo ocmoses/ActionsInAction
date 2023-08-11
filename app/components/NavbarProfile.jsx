@@ -20,7 +20,6 @@ function NavbarProfile() {
           />
         </Link>
         <div className="flex justify-end text-white">
-        <div className="flex justify-end text-white">
           <UserPercentComplete />
         </div>
       </div>

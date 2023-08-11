@@ -14,7 +14,6 @@ export default function Button(props) {
           } ${
             props.paddingclass ?? "pl-4 pr-3 py-2"
           } flex justify-between items-center  ${
-          } flex justify-between items-center  ${
             !outline
               ? `text-black ${
                   props.disabled ? "bg-white/20" : "bg-mtn hover:bg-mtn-400"

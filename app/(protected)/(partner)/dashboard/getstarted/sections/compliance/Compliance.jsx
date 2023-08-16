@@ -576,7 +576,7 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            {data.valid_tin === "yes" && data.valid_cac === "yes" && (
+            {/* {data.valid_tin === "yes" && data.valid_cac === "yes" && ( */}
               <>
                 <FileInputWrapper>
                   <FileInput
@@ -644,7 +644,7 @@ function Compliance() {
                     </div>
                   )}
               </>
-            )}
+            {/* )} */}
           </>
         )}
       </form>

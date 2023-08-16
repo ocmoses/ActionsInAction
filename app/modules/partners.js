@@ -1,10 +1,12 @@
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
-import { cookies } from "next/headers";
 import useLogout from "@/hooks/useLogout";
+import {useStoreState} from "easy-peasy";
+
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
 
-  // const {Logout} = useLogout();
+  const {LogoutAdmin} = useLogout();
+  const states = useStoreState((state) => state);
 
   try {
     const params = [];
@@ -12,8 +14,6 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
     if (perPage) params.push(`per_page=${perPage}`);
     if (contractStatus) params.push(`contract_status=${contractStatus}`);
 
-    const cookieStore = cookies();
-    const token = cookieStore.get("token");
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
         params.length > 0 ? params.join("&") : ""
@@ -23,16 +23,17 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         next: { revalidate: 120 },
         headers: {
           token: token?.value,
-          Authorization: `bearer ${token?.value}`,
+          Authorization: `bearer ${states.users.token}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    // if (response.status === 400 || response.status === 401 ) {
-    //   Logout();
-    //   return;
-    // }
+    if (response.status === 400 || response.status === 401 ) {
+      LogoutAdmin();
+      return;
+    }
+
     const result = await response.json();
     if (result?.success) {
       const partners = result.data?.partners.data;

@@ -6,7 +6,7 @@ import useErrors from "@/hooks/useErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter } from "next/navigation";
 import usePartners from "@/hooks/usePartners";
-import Canvas from '@/app/components/Canvas';
+
 import FormErrors from "@/app/components/FormErrors";
 
 

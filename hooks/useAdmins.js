@@ -293,6 +293,12 @@ export default function useAdmins() {
         console.log("error", error);
         return { success: false, error: error };
       });
+      
+      
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       console.log({ response });
       if (!response)
         return {
@@ -340,11 +346,17 @@ export default function useAdmins() {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
-      console.log('RemoteEndpoints.CREATE_ADMIN', RemoteEndpoints.CREATE_ADMIN);
-      console.log('Create result', result);
-      console.log('states.admins.token', states.token);
+      // console.log('RemoteEndpoints.CREATE_ADMIN', RemoteEndpoints.CREATE_ADMIN);
+      // console.log('Create result', result);
+      // console.log('states.admins.token', states.token);
 
       setProcessing(false);
       if (result?.success) {
@@ -393,11 +405,17 @@ export default function useAdmins() {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
-      console.log('RemoteEndpoints.DELETE_ADMIN', RemoteEndpoints.DELETE_ADMIN);
-      console.log('Create result', result);
-      console.log('states.token', states.token);
+      // console.log('RemoteEndpoints.DELETE_ADMIN', RemoteEndpoints.DELETE_ADMIN);
+      // console.log('Create result', result);
+      // console.log('states.token', states.token);
 
       setProcessing(false);
       if (result?.success) {

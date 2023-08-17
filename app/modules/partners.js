@@ -1,5 +1,6 @@
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 import { cookies } from "next/headers";
+import { Decrypt } from "./utilities";
 import useLogout from "@/hooks/useLogout";
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
@@ -13,7 +14,7 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
     if (contractStatus) params.push(`contract_status=${contractStatus}`);
 
     const cookieStore = cookies();
-    const token = cookieStore.get("token");
+    const token = Decrypt(cookieStore.get("token"));
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
         params.length > 0 ? params.join("&") : ""

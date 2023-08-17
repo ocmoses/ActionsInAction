@@ -71,7 +71,7 @@ const RemoteEndpoints = {
   //Notifications
   GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
-  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notifications/read/:notification-uuid`,
+  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notification/read/:notification-uuid/:user-uuid`,
   ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,

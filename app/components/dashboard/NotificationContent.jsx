@@ -101,15 +101,7 @@ export default function NotificationContent(){
                                 {notification.message}
                               </div>
 
-                              <div className="">
-                                <button className={`border-1 border-gray-200 w-200 ${notification.archived != null ? 'text-gray-500' : 'text-white'} hover:bg-gray-800 p-4 py-2 rounded-full`}
-                                        onClick={() => {}}>Decline</button>
-                                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full ml-4" onClick={() => mark(notification.uuid)}>Approve</button>
-                                
-                              </div>
-                              
-
-                            </div>
+                          </div>
                           )) : <div className="p-12 text-white/50 flex w-full justify-center items-center"> No notifications found</div>
 
 

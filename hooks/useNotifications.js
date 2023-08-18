@@ -99,8 +99,8 @@ export default function useNotifications(){
             next: { revalidate: 120 },
             method: 'PATCH',
             headers: {
-              "Content-Type": "application/json",
-              'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
             },
           }
         );
@@ -148,15 +148,12 @@ export default function useNotifications(){
             next: { revalidate: 120 },
             method: 'PATCH',
             headers: {
-              "Content-Type": "application/json",
-              'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
             },
           }
         );
-        // if (response.status === 401) {
-        //   redirect(NextEndPoints.LOGIN_ADMIN)
-        //   return
-        // }
+        
         if (!response)
           return {
             error: "This request has no response available",

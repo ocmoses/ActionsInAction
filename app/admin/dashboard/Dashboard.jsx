@@ -46,6 +46,7 @@ export default function Dashboard({ allPartners }) {
   };
 
   useEffect(() => {
+    
     if ((onboardingStatus || perPage, page)) {
       get_all_Partner();
     }

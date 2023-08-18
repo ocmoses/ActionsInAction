@@ -117,16 +117,16 @@ function Compliance() {
   }, []);
 
   const verifyTIN = async (tin_no) => {
-    if (process.env.NODE_ENV == "production") {
-      setData((prvState) => ({
-        ...prvState,
-        rc_no: "14386692",
-        tin_data: {},
-        valid_tin: "yes",
-        valid_cac: "yes",
-      }))
-      return
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   setData((prvState) => ({
+    //     ...prvState,
+    //     rc_no: "14386692",
+    //     tin_data: {},
+    //     valid_tin: "yes",
+    //     valid_cac: "yes",
+    //   }))
+    //   return
+    // }
     setLastCACChecked("");
     setRetryTIN(false);
     if (tin_no === lastTINChecked) return;
@@ -232,10 +232,6 @@ function Compliance() {
     }
   };
   const verifyCAC = async () => {
-
-    if (process.env.NODE_ENV !== "production") {
-      return;
-    }
     setRetryCAC(false);
     if (data.rc_no === lastCACChecked) return;
     removeError("company_type");
@@ -350,7 +346,7 @@ function Compliance() {
       return;
     }
 
-    verifyTIN(data.tin_no)
+    // verifyTIN(data.tin_no)
   };
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no);
@@ -499,8 +495,8 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Hidden for now
-                    verifyTIN(e.target.value);
-                    Validate("tin_no");
+                    // verifyTIN(e.target.value);
+                    // Validate("tin_no");
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -547,7 +543,7 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Suspending this for now
-                    verifyCAC()
+                    // verifyCAC()
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -580,7 +576,7 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            {/* {process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes" && ( */}
+            {/* {data.valid_tin === "yes" && data.valid_cac === "yes" && ( */}
               <>
                 <FileInputWrapper>
                   <FileInput
@@ -648,7 +644,8 @@ function Compliance() {
                     </div>
                   )}
               </>
-            {/* )} */}
+            {/* )} */} 
+            {/* // removed */}
           </>
         )}
       </form>

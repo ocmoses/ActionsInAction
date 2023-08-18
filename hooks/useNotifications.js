@@ -38,10 +38,13 @@ export default function useNotifications(){
           //   redirect(NextEndPoints.LOGIN_ADMIN)
           //   return
           // }
-          if (!response)
+          if (!response){
             return {
               error: "This request has no response available",
             };
+          }
+
+          
           const result = await response.json();
           console.log('Notifications result', result);
           setProcessing(false);
@@ -97,10 +100,10 @@ export default function useNotifications(){
           {
             cache: "no-store",
             next: { revalidate: 120 },
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
-              "Content-Type": "application/json",
-              'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
             },
           }
         );
@@ -108,10 +111,16 @@ export default function useNotifications(){
         //   redirect(NextEndPoints.LOGIN_ADMIN)
         //   return
         // }
+        
+
         if (!response)
           return {
             error: "This request has no response available",
           };
+
+
+        // console.log('Archive response', response);
+
         const result = await response.json();
         console.log('Archive result', result);
         setProcessing(false);
@@ -146,21 +155,20 @@ export default function useNotifications(){
           {
             cache: "no-store",
             next: { revalidate: 120 },
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
-              "Content-Type": "application/json",
-              'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
             },
           }
         );
-        // if (response.status === 401) {
-        //   redirect(NextEndPoints.LOGIN_ADMIN)
-        //   return
-        // }
-        if (!response)
+        
+        if (!response){
           return {
             error: "This request has no response available",
           };
+        }
+        // console.log('Mark read response', response);
         const result = await response.json();
         console.log('Mark read result', result);
         setProcessing(false);

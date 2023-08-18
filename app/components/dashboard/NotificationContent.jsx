@@ -10,9 +10,9 @@ export default function NotificationContent(){
     const [activeTab, setActiveTab] = useState('messages');
     const [showActions, setShowActions] = useState(null);
 
-    let messages = notifications.filter(notification => notification.archived == null);
+    let messages = notifications.filter(notification => notification.archived_at == null);
 
-    let archived = notifications.filter(notification => notification.archived != null);    
+    let archived = notifications.filter(notification => notification.archived_at != null);    
 
     const archive = (uuid) => {
       tryArchive(uuid)

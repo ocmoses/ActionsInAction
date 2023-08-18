@@ -141,7 +141,8 @@ export default function useNotifications(){
         setProcessing(true);
         const response = await fetch(
           `${RemoteEndpoints.MARK_NOTIFICATION_READ
-                      .replace(':notification-uuid', uuid)}`,
+                      .replace(':notification-uuid', uuid)
+                      .replace(':user-uuid', users.user.uuid)}`,
           {
             cache: "no-store",
             next: { revalidate: 120 },

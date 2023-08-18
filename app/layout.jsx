@@ -16,7 +16,7 @@ const getServerSession = async () => {
     const nextCookies = cookies();
     // User session
     const token = nextCookies.has("auth-token")
-      ? nextCookies.get("auth-token")?.value
+      ? Decrypt(nextCookies.get("auth-token")?.value)
       : null;
     const partnerid = nextCookies.has("partnerid")
       ? nextCookies.get("partnerid")?.value
@@ -29,7 +29,7 @@ const getServerSession = async () => {
       ? nextCookies.get("token")?.value
       : null;
     const uuid = nextCookies.has("uuid")
-      ? nextCookies.get("uuid")?.value
+      ? Decrypt(nextCookies.get("uuid")?.value)
       : null;
     if (uuid) {
       try {

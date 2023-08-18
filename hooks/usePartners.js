@@ -755,6 +755,8 @@ const usePartners = () => {
         return;
       }
 
+      // console.log('Create response', response.text);
+
       const result = await response.json();
 
       // console.log('RemoteEndpoints.CREATE_PARTNER', RemoteEndpoints.CREATE_PARTNER);

@@ -26,7 +26,7 @@ const getServerSession = async () => {
       : null;
     // Admin session
     const adminToken = nextCookies.has("token")
-      ? nextCookies.get("token")?.value
+      ? Decrypt(nextCookies.get("token")?.value)
       : null;
     const uuid = nextCookies.has("uuid")
       ? Decrypt(nextCookies.get("uuid")?.value)

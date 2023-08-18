@@ -4,7 +4,7 @@ import useLogout from "@/hooks/useLogout";
 import { useEffect, useState } from "react";
 import { filterCategory, getstages } from "@/app/modules/utilities";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { filterPartner } from "@/app/modules/utilities";
+import { filterPartner, Decrypt } from "@/app/modules/utilities";
 import { useRouter } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
@@ -35,6 +35,8 @@ export default function useAdmins() {
   const getStages = (category, categories) => {
     return getstages(category, categories);
   };
+
+  // console.log("states from within useAdmin", states);
   
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {

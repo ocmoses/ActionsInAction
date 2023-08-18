@@ -36,6 +36,7 @@ export default function Footer() {
     <section>
       <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 justify-between items-start gap-6 pt-6 mb-[100px] w-full">
         <div className="w-full col-span-1 sm:col-span-3 md:col-span-1 pb-6">
+        <Link href={PageRoutes.home}>
           <Image
             priority
             src="/assets/pic/mtn-logo.svg"
@@ -44,6 +45,7 @@ export default function Footer() {
             alt="MTN Nigeria Logo"
             className=" text-white min-w-[76px] hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
           />
+          </Link>
         </div>
         <div className="w-full col-span-1 pb-6">
           <FooterTitleLink title="Products" />

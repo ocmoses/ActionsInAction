@@ -26,7 +26,7 @@ function Layout({ children }) {
           setOpen={setOpen}
           setMenuOpen={setMenuOpen}
         />
-        <div className="flex h-full grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
+        <div className="flex h-full">
           {isLoggedIn && (
             <div
               className={` ${
@@ -38,7 +38,7 @@ function Layout({ children }) {
               </div>
             </div>
           )}
-          <div className="h-full flex-1 relative pb-[50px] bg-[#030303]">
+          <div className="h-full flex-1 relative pb-[50px] bg-[#030303] grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
             <GlobalErrors />
             {children}
           </div>

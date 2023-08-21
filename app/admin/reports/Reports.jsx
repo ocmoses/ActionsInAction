@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import RemoteEndpoints from "@/app/modules/endpoints";
 //import useAdmins from "@/hooks/useAdmins";
 import { apikey } from "@/app/modules/constants";
-
-
 import PartnerStatisticsReport from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
@@ -54,7 +52,7 @@ export default function Approvals() {
           <section id="partner_statistics">
             
               <div className="m-auto my-10  flex flex-row gap-[15px] flex-wrap">
-
+{/* Reports for partners */}
                 <PartnerStatisticsReport
                   title="NEW PARTNER"
                   count={
@@ -98,20 +96,20 @@ export default function Approvals() {
 
 
                 <PartnerStatisticsReport
-                  title="EXPIRING PARTNER"
+                  title="APPROVED PARTNER"
                   count={
-                    reportStatistics.contracting_stats.licenses.expiring_soon
+                    reportStatistics.compliance_stats.compliance.approved
                   }
                   percentage={
-                    reportStatistics.contracting_stats.licenses_past_month.expiring_soon === 0
+                    reportStatistics.compliance_stats.compliance_past_month.approved === 0
                     ? "0.00" :
-                    Math.abs(((reportStatistics.contracting_stats.licenses.expiring_soon -
-                    reportStatistics.contracting_stats.licenses_past_month.expiring_soon) /
-                    reportStatistics.contracting_stats.licenses_past_month.expiring_soon) * 100).toFixed(2)
+                    Math.abs(((reportStatistics.compliance_stats.compliance.approved -
+                    reportStatistics.compliance_stats.compliance_past_month.approved) /
+                    reportStatistics.compliance_stats.compliance_past_month.approved) * 100).toFixed(2)
                   }
                   rate={
-                    reportStatistics.contracting_stats.licenses.expiring_soon <
-                    reportStatistics.contracting_stats.licenses_past_month.expiring_soon
+                    reportStatistics.compliance_stats.compliance.approved <
+                    reportStatistics.compliance_stats.compliance_past_month.approved
                       ? "DOWN"
                       : "UP"
                   }
@@ -119,7 +117,7 @@ export default function Approvals() {
 
 
                 <PartnerStatisticsReport
-                  title="IN REVIEW"
+                  title="PARTNERS IN REVIEW"
                   count={
                     reportStatistics.compliance_stats.compliance.in_review
                   }
@@ -137,9 +135,98 @@ export default function Approvals() {
                       : "UP"
                   }
                 />
-              </div>
-           
-          </section>
+              
+
+
+
+{/* Reports for contracts */}
+            <PartnerStatisticsReport
+              title="ACTIVE CONTRACTS"
+              count={
+                reportStatistics.contracting_stats.contracts.active
+              }
+              percentage={
+                reportStatistics.contracting_stats.contracts_past_month.active === 0
+                ? "0.00" :
+                Math.abs((((reportStatistics.contracting_stats.contracts.active -
+                reportStatistics.contracting_stats.contracts_past_month.active) /
+                reportStatistics.contracting_stats.contracts_past_month.active) * 100)/100).toFixed(2)
+              }
+              rate={
+                reportStatistics.contracting_stats.contracts.active <
+                reportStatistics.contracting_stats.contracts_past_month.active
+                  ? "DOWN"
+                  : "UP"
+              }
+            />
+
+
+            <PartnerStatisticsReport
+              title="INACTIVE CONTRACTS"
+              count={
+                reportStatistics.contracting_stats.contracts.inactive
+              }
+              percentage={
+                reportStatistics.contracting_stats.contracts_past_month.inactive === 0
+                ? "0.00" :
+                Math.abs((((reportStatistics.contracting_stats.contracts.inactive -
+                reportStatistics.contracting_stats.contracts_past_month.inactive) /
+                reportStatistics.contracting_stats.contracts_past_month.inactive) * 100)/100).toFixed(2)
+              }
+              rate={
+                reportStatistics.contracting_stats.contracts.inactive <
+                reportStatistics.contracting_stats.contracts_past_month.inactive
+                  ? "DOWN"
+                  : "UP"
+              }
+            />
+
+
+            <PartnerStatisticsReport
+              title="EXPIRING CONTRACTS"
+              count={
+                reportStatistics.contracting_stats.contracts.expiring_soon
+              }
+              percentage={
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon === 0
+                ? "0.00" :
+                Math.abs((((reportStatistics.contracting_stats.contracts.expiring_soon -
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon) /
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon) * 100)/100).toFixed(2)
+              }
+              rate={
+                reportStatistics.contracting_stats.contracts.expiring_soon <
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon
+                  ? "DOWN"
+                  : "UP"
+              }
+            />
+
+               
+            <PartnerStatisticsReport
+              title="TOTAL CONTRACTS"
+              count={
+                reportStatistics.contracting_stats.contracts.active +
+                reportStatistics.contracting_stats.contracts.inactive +
+                reportStatistics.contracting_stats.contracts.expiring_soon
+              }
+              percentage={
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon === 0
+                ? "0.00" :
+                Math.abs((((reportStatistics.contracting_stats.contracts.expiring_soon -
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon) /
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon) * 100)/100).toFixed(2)
+              }
+              rate={
+                reportStatistics.contracting_stats.contracts.expiring_soon <
+                reportStatistics.contracting_stats.contracts_past_month.expiring_soon
+                  ? "DOWN"
+                  : "UP"
+              }
+            />
+          </div>
+       
+      </section>
         )}
       </div>
     </div>

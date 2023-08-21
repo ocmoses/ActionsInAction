@@ -75,6 +75,9 @@ export const AdminMenu = [
 
 export const PageRoutes = {
   home: "/",
+  faq: "/faq",
+  termOfUse: "/term-of-use",
+  privacyNotice: "/privacy-notice",
   login: "/login",
   register: "/onboarding/register",
   partnerwelcome: "/onboarding/register/partnerwelcome",

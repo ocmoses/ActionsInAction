@@ -22,7 +22,7 @@ function FooterTopLink({ title, link }) {
 
 function FooterBottomLink({ title, link }) {
   return (
-    <Link
+    <Link target="_blank" rel="noopener noreferrer"
       href={link}
       className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
     >

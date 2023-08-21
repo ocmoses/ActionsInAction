@@ -344,7 +344,7 @@ export default function Compliance({ params }) {
         </div>
       )}
       {/* Just for tests */}
-      {/* <div className="my-8 max-w-6xl">
+      <div className="my-8 max-w-6xl">
         {
           users.role == 'superAdmin' && 
           <CallToAction
@@ -382,6 +382,7 @@ export default function Compliance({ params }) {
                
       </div>
 
+      {/* 
       <div className="my-8 max-w-6xl">
         {
           //signers selected but you have not signed
@@ -467,15 +468,15 @@ export default function Compliance({ params }) {
           />
         }
         
-      </div> */}
-      
-      {/* Just for testts ends here */}
-      {processing && (
+      </div> */}      
+      {/* Just for tests ends here */}
+
+      {/* {processing && (
         <div className="flex justify-center items-center">
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         </div>
-      )}
-      {!processing && selectedCategory && (
+      )} */}
+      {selectedCategory && (
         <>
           <div className="grin grid-cols-1 space-y-3 sm:flex justify-between items-center space-x-3 mb-20">
             <div className="flex items-center space-x-3">

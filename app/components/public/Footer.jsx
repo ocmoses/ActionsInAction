@@ -2,38 +2,150 @@ import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
 import Image from "next/image";
 import ScrollToTop from "react-scroll-to-top";
+import ContactUsPopUp from "@/app/components/PopUps"
+import { useEffect, useState } from "react";
 
-function FooterTitleLink({ title }) {
-  return (
-    <p className="inline-flex text-white font-mtn-bold mb-[25px] pb-[12px] border-b-2 border-b-[#FFC30D]">
-      {title}
-    </p>
-  );
-}
-function FooterTopLink({ title, link }) {
-  return (
-    <li>
-      <Link href={link} className="text-[#7C7D7F] hover:text-white/70">
-        {title}
-      </Link>
-    </li>
-  );
-}
+//function FooterTitleLink({ title }) {
+//   return (
+//     <p className="inline-flex text-white font-mtn-bold mb-[25px] pb-[12px] border-b-2 border-b-[#FFC30D]">
+//       {title}
+//     </p>
+//   );
+// }
+// function FooterTopLink({ title, link }) {
+//   return (
+//     <li>
+//       <Link href={link} className="text-[#7C7D7F] hover:text-white/70">
+//         {title}
+//       </Link>
+//     </li>
+//   );
+// }
 
-function FooterBottomLink({ title, link }) {
+function FooterBottomLink({ title, link, target, openModalAction }) {
+  
   return (
-    <Link target="_blank" rel="noopener noreferrer"
+    <Link target={target} rel="noopener noreferrer"
       href={link}
       className="text-[13px] leading-[16px] sm:text-[15px] sm:leading-[18px] text-white hover:text-white/70"
+      onClick={openModalAction}
     >
-      {title}
+     <li> {title}</li>
     </Link>
   );
 }
 
 export default function Footer() {
+  const [popContactUs, setPopContactUs] = useState(false)
+
+
+const openModal = () =>{
+  setPopContactUs(true)
+}
+const closeModal = () =>{
+  setPopContactUs(false)
+}
+
+
+
+
   return (
-    <section>
+    <>
+    
+    {popContactUs && (
+      <ContactUsPopUp closeModalAction={closeModal}>
+
+      </ContactUsPopUp>
+    )}
+    
+    <section className="w-screen">
+        <div className="w-full min-h-[200px] border-t-1 border-white/10 ">
+          <div className="px-10 py-10 items-center text-center">
+            <Link href={PageRoutes.home}>
+            <Image
+              priority
+              src="/assets/pic/mtn-logo.svg"
+              width={76.71}
+              height={38.32}
+              alt="MTN Nigeria Logo"
+              className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+            />
+          </Link>
+
+          <div className=" w-[670px]  py-5 text-center m-auto">
+            <ul className="w-full flex justify-between gap-2 list-disc list-inside marker:text-mtn-600">
+              <FooterBottomLink 
+                title="Frequently Asked Question" 
+                link={PageRoutes.faq}
+                target=""
+              />
+              <FooterBottomLink 
+                title="Contact Us"
+                link="javascript:;"
+                openModalAction={openModal}
+                target=""
+                />
+              <FooterBottomLink 
+                title="Terms of Use" 
+                link={PageRoutes.termOfUse}
+                target="_blank"
+              />
+              <FooterBottomLink 
+                title="Privacy Policy" 
+                link={PageRoutes.privacyNotice}
+                target="_blank"
+              />
+            </ul>
+        </div>
+
+        <p>
+        © 2022 MTN Nigeria Communications PLC, All rights reserved.
+        </p>
+          <div className="flex mx-auto items-center justify-center text-center gap-6 py-4">
+            <Link target="_blank" rel="noopener noreferrer" href="https://twitter.com/MTNNG/">
+              <Image
+                priority
+                src="/assets/illustrations/twitter.png"
+                width={24}
+                height={24}
+                alt="Twitter"
+                className="hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+              />
+            </Link>
+            <Link target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/MTNNG">
+              <Image
+                priority
+                src="/assets/illustrations/linkedin.png"
+                width={24}
+                height={24}
+                alt="LinkedIn"
+                className="hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+              />
+            </Link>
+            <Link target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/MTNNG">
+              <Image
+                priority
+                src="/assets/illustrations/youtube.png"
+                width={24}
+                height={24}
+                alt="Youtube"
+                className="hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+              />
+            </Link>
+        </div>
+
+      
+        </div>
+      </div>
+
+
+
+
+
+
+
+{/* Copyrights
+
       <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 justify-between items-start gap-6 pt-6 mb-[100px] w-full">
         <div className="w-full col-span-1 sm:col-span-3 md:col-span-1 pb-6">
         <Link href={PageRoutes.home}>
@@ -110,7 +222,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyrights */}
       <div className="flex flex-col max-w-[850px] text-[12px] leading-[19px] text-[#A2A2A2] mb-[70px]">
         © 2022 MTN. All Rights Reserved
         <br />
@@ -118,7 +229,6 @@ export default function Footer() {
         GuardriskInsurance Company. FSPlicense number: 44774.
       </div>
 
-      {/* Footer nav */}
       <div className="flex justify-between gap-4 w-full max-w-[521px] pb-20">
         <FooterBottomLink title="Contact Us" link="javascript:;" />
         <FooterBottomLink 
@@ -126,7 +236,7 @@ export default function Footer() {
           link={PageRoutes.termOfUse}
         />
         <FooterBottomLink 
-          title="Privacy Notice" 
+          title="Privacy Policy" 
           link={PageRoutes.privacyNotice}
         />
       </div>
@@ -142,5 +252,6 @@ export default function Footer() {
         style={{ zIndex: 11111 }}
       />
     </section>
+    </>
   );
 }

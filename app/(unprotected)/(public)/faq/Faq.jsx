@@ -163,10 +163,8 @@ export default function Discover() {
             )}
           </>
         )}
-
-        <div className="w-full mt-20 mx-auto lg:max-w-[1158px] relative">
-          <Footer />
-        </div>
+              <br/><br/>
+        <Footer />
       </div>
     </>
   )

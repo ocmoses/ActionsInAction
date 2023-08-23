@@ -71,7 +71,7 @@ const RemoteEndpoints = {
   //Notifications
   GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
-  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notifications/read/:notification-uuid`,
+  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notification/read/:notification-uuid/:user-uuid`,
   ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
@@ -88,11 +88,13 @@ const RemoteEndpoints = {
   ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
   CREATE_PARTNER: `${apiURL}/v2/partner-user/add-partner-user`,
   DELETE_PARTNER: `${apiURL}/v2/partner-user/delete-partner-user`,
+  SET_UP_PASSWORD: `${apiURL}/v2/partner-user/setup-password`,
 
   GET_SERVICES: `${apiURL}/v2/contract/service-types`,
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
 
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 

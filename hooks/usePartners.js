@@ -734,11 +734,10 @@ const usePartners = () => {
           cache: "no-store",
           next: { revalidate: 120 },
           method: 'POST',
-          body: JSON.stringify(data),
+          body: data,
           headers: {
             apikey: process.env.NEXT_PUBLIC_APIKEY,
             token: states.users.token,
-            "Content-Type": "application/json",
             Authorization: `bearer ${states.users.token}`,
           },
         }
@@ -750,10 +749,12 @@ const usePartners = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         Logout();
         return;
       }
+
+      // console.log('Create response', response.text);
 
       const result = await response.json();
 
@@ -882,7 +883,7 @@ const usePartners = () => {
       if (result?.success) {
         const message = result.data?.message;
         
-        console.log('Created message', message);
+        console.log('Deleted message', message);
 
         return {
           message
@@ -943,6 +944,63 @@ const usePartners = () => {
     }
   };
 
+  const getContractDynamicData = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 400 || response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
+        redirect(NextEndPoints.LOGIN)
+        return
+      }
+
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const data = result?.data['dynamic-details'];
+
+        return {
+          data
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
 
   return {
     ...states.partners,
@@ -971,7 +1029,8 @@ const usePartners = () => {
     partnerSelectService,
     submitAllSignatories,
     signBilateralContract,
-    verifyPartnerLink
+    verifyPartnerLink,
+    getContractDynamicData
   }
 }
 export default usePartners

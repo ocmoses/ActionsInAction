@@ -45,7 +45,7 @@ export default function Confirm({
         >
           <div className="flex flex-1 gap-4">
             {type === "approve" && (
-              <>
+              <section>
                 <span className="text-mtn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@ export default function Confirm({
                 <span className="text-[#999999]">
                   Are you sure you want to approve?
                 </span>
-              </>
+              </section>
             )}
             {type === "reject" && (
               <div className="flex flex-col w-full">
@@ -79,7 +79,8 @@ export default function Confirm({
                   >
                     {!Util.isEmpty(reason)
                       ? reason?.rejection_reason
-                      : "Select a reason for rejection"}
+                      : "Select a reason for rejection"
+                    }
                   </div>
                   <div
                     style={{

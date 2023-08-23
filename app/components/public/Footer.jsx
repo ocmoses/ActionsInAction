@@ -4,7 +4,7 @@ import { useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { ContactUsForm } from "@/app/components/PopUps";
+import PopUp, { ContactUsForm , ContactUsSuccess} from "@/app/components/PopUps";
 
 //==============================================================================================================================
 //function FooterTitleLink({ title }) {
@@ -41,13 +41,19 @@ function FooterBottomLink({ title, link, target, openPopUp }) {
 
 export default function Footer() {
   const [popUp, setPopUp] = useState(false);
+  const [contactSubmit, setContactSubmit] = useState(false);
   const openPopUp = () => {
     setPopUp(true);
+    setContactSubmit(false); 
   };
   const closePopUp = () => {
-    setPopUp(false);
-    
+    setPopUp(false); 
   };
+
+  const submitContact = () => {
+    setContactSubmit(true); 
+  };
+
 
   return (
     <>
@@ -55,9 +61,14 @@ export default function Footer() {
 
       {popUp && (
         <PopUp closePopUp={closePopUp}>
-          <ContactUsForm closePopUp={closePopUp} /> {/* this is the children*/}
+          {!contactSubmit ? (
+            <ContactUsForm closePopUp={closePopUp}  submitForm={submitContact}/>    // If contactSubmit is false
+          ) : (
+            <ContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+          )}
         </PopUp>
       )}
+      
 
       {/*//==============================================================================================================================*/}
       <section className="w-full">

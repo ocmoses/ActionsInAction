@@ -119,7 +119,7 @@ export default function Footer() {
               <Link
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://www.linkedin.com/MTNNG"
+                href="https://www.linkedin.com/company/mtn-nigeria/"
               >
                 <Image
                   priority

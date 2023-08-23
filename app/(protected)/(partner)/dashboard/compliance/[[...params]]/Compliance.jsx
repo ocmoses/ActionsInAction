@@ -29,7 +29,7 @@ import {useStoreState} from 'easy-peasy';
 
 export default function Compliance({ params }) {
   const users = useStoreState((state) => state.users);
-  console.log("Users:....", users);
+  // console.log("Users:....", users);
   const router = useRouter();
   const {getAllPartnerRoles} = useRoles();
   const { processing, setProcessing } = useProcessing();  
@@ -82,7 +82,7 @@ export default function Compliance({ params }) {
   const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
 
-  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
+  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
@@ -175,10 +175,11 @@ export default function Compliance({ params }) {
     get_service_types();
     get_all_partner_roles();
     get_all_admin_partners();
+    
   }, []);
 
   useEffect(() => {
-    fieldsCounts();
+    
   }, [partner.approvalStages]);
 
   useEffect(() => {
@@ -265,13 +266,13 @@ export default function Compliance({ params }) {
     create_partner_response = await createPartner(data);
 
     //Just setting the signatories anyway
-    if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
-      setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
-      setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    }else{
-      setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    }
+    // if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
+    //   setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    // }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
+    //   setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    // }else{
+    //   setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
+    // }
     ///////////////////////////////////////
     
     if (create_partner_response.error) setError({ error: create_partner_response.error })
@@ -313,7 +314,15 @@ export default function Compliance({ params }) {
       return;
     }
 
-    create_partner(data);
+    let formData = new FormData();
+
+    // console.log("Object.keys(data)", Object.keys(data));
+
+    Object.keys(data).forEach(element => {
+      formData.append(element, data[element]);
+    });
+
+    create_partner(formData);
   };
 
   return (
@@ -579,9 +588,7 @@ export default function Compliance({ params }) {
                 </div>)
               )
             }
-
-            
-                              
+           
             {/* Add services here */}
           </div>
         </div>        
@@ -842,8 +849,20 @@ export default function Compliance({ params }) {
                 label="Name"
                 // value={data.role_name}
                 onChange={
-                  (e) => { 
+                  (e) => {                     
                     try{
+                      clearErrors();
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
+                }
+                onBlur={
+                  (e) => {                     
+                    try{
+                      clearErrors();
                       let [firstname, lastname] = e.target.value.trim().split(" ");
                       setData({...data, firstname, lastname })
                     }catch(ex){
@@ -860,6 +879,13 @@ export default function Compliance({ params }) {
                 // value={data.role_name}
                 onChange={
                   (e) => {
+                    clearErrors();
+                    setData({...data, email: e.target.value.trim()});
+                  }
+                }
+                onBlur={
+                  (e) => {
+                    clearErrors();
                     setData({...data, email: e.target.value.trim()});
                   }
                 }
@@ -915,6 +941,18 @@ export default function Compliance({ params }) {
                 onChange={
                   (e) => { 
                     try{
+                      clearErrors();
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
+                }
+                onBlur={
+                  (e) => { 
+                    try{
+                      clearErrors();
                       let [firstname, lastname] = e.target.value.trim().split(" ");
                       setData({...data, firstname, lastname })
                     }catch(ex){
@@ -931,6 +969,13 @@ export default function Compliance({ params }) {
                 // value={data.role_name}
                 onChange={
                   (e) => {
+                    clearErrors();
+                    setData({...data, email: e.target.value.trim()});
+                  }
+                }
+                onBlur={
+                  (e) => {
+                    clearErrors();
                     setData({...data, email: e.target.value.trim()});
                   }
                 }
@@ -960,7 +1005,7 @@ export default function Compliance({ params }) {
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                   </svg>
                   <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
-                  <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
+                  <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {setData({...data, file: e.target.files[0]}); console.log("data", data)}}/>                   
                 </div>
 
               </div>          
@@ -1010,6 +1055,18 @@ export default function Compliance({ params }) {
                 onChange={
                   (e) => { 
                     try{
+                      clearErrors();
+                      let [firstname, lastname] = e.target.value.trim().split(" ");
+                      setData({...data, firstname, lastname })
+                    }catch(ex){
+                      setError({error: "Please enter user's first and last names"})
+                    } 
+                  }
+                }
+                onBlur={
+                  (e) => { 
+                    try{
+                      clearErrors();
                       let [firstname, lastname] = e.target.value.trim().split(" ");
                       setData({...data, firstname, lastname })
                     }catch(ex){
@@ -1026,6 +1083,13 @@ export default function Compliance({ params }) {
                 // value={data.role_name}
                 onChange={
                   (e) => {
+                    clearErrors();
+                    setData({...data, email: e.target.value.trim()});
+                  }
+                }
+                onBlur={
+                  (e) => {
+                    clearErrors();
                     setData({...data, email: e.target.value.trim()});
                   }
                 }

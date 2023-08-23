@@ -56,9 +56,9 @@ export const validities = {
   nlrc_lottery: "10 years",
   nlrc_sport_betting: "5 years",
   nlrc_mobile_lottery: "5 years",
-  shortcode: "1 years",
+  shortcode: "2 years",
   shortcode_2: "2 years",
-  shortcode_pricing: "1 years",
+  shortcode_pricing: "2 years",
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 };

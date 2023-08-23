@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""    
+    "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -17,6 +17,7 @@
     "@tailwindcss/forms": "^0.5.3",
     "axios": "^1.2.1",
     "canvas": "^2.11.2",
+    "chart.js": "^2.9.4",
     "client-only": "^0.0.1",
     "cookies-next": "^2.1.1",
     "crypto-js": "^4.1.1",

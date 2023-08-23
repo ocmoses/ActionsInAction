@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import RemoteEndpoints from "@/app/modules/endpoints";
 //import useAdmins from "@/hooks/useAdmins";
 import { apikey } from "@/app/modules/constants";
-import PartnerStatisticsReport from "@/app/components/dashboard/admin/AdminReport";
+import PartnerStatisticsReport, {PartnerReportBarChart} from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
+
+
 
 export default function Approvals() {
 //const { fetchData }=  useAdmins()
@@ -37,7 +39,6 @@ export default function Approvals() {
 
     fetchReport();
   }, []);
-
 
   return (
     <div id="reports" className="flex flex-cols pb-12">
@@ -228,6 +229,16 @@ export default function Approvals() {
        
       </section>
         )}
+
+
+
+      <section id="partner_reporting_bar_charts">
+          <div className="bg-white/10 min-h-[250px] min-w-[280px]">
+            <PartnerReportBarChart/>
+          </div>
+      </section>
+
+
       </div>
     </div>
   );

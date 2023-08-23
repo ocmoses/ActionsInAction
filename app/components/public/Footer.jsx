@@ -60,9 +60,9 @@ export default function Footer() {
       )}
 
       {/*//==============================================================================================================================*/}
-      <section className="w-screen">
+      <section className="w-full">
         <div className="w-full min-h-[200px] border-t-1 border-white/10 ">
-          <div className="px-10 py-10 items-center text-center">
+          <div className="px-10 py-10 items-center text-center max-[820px]:px-2">
             <Link href={PageRoutes.home}>
               <Image
                 priority
@@ -74,8 +74,8 @@ export default function Footer() {
               />
             </Link>
 
-            <div className=" w-[670px]  py-5 text-center m-auto">
-              <ul className="w-full flex justify-between gap-2 list-disc list-inside marker:text-mtn-600">
+            <div className=" w-[670px]  py-5 text-center m-auto max-[820px]:w-full">
+              <ul className="w-full flex justify-center gap-2 list-disc list-inside marker:text-mtn-600 flex-wrap">
                 <FooterBottomLink
                   title="Frequently Asked Question"
                   link={PageRoutes.faq}

@@ -9,11 +9,14 @@ import TextAreaInput from "@/app/components/form/TextAreaInput";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
+import { TailSpinPreloader } from "@/app/components/Icons";
 
 export default function PopUp({ closePopUp, submitForm }) {
   ////////////////////////////////////fetch subject to the select field//////////////////////////////
   const [getSubjects, setGetSubjects] = useState(null);
   const [fetching, setFetching] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [sendAction, setSendAction] = useState(false);
 
   const [formData, setFormData] = useState({
     contact_type: "portal_visitor",
@@ -58,19 +61,46 @@ export default function PopUp({ closePopUp, submitForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post(
-      RemoteEndpoints.PORTAL_VISITOR_CONTACT_MAIL,
-      formData,
-      {
-        headers: {
-          apikey: apikey,
-        },
+    const name = formData.name;
+    const email = formData.email;
+    const subject = formData.subject;
+    const message = formData.message;
+    try {
+      clearError();
+      if (name === "") {
+        setErrorMessage("Name Error: Check the field to continue");
+      } else if (email === "") {
+        setErrorMessage("Email Error: Check the field to continue");
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        // Check for valid email format
+        setErrorMessage("Invalid Email Format");
+      } else if (subject === "") {
+        setErrorMessage("Subject Error: Check the field to continue");
+      } else if (message === "") {
+        setErrorMessage("Message Error: Check the field to continue");
+      } else {
+        setSendAction(true);
+        const response = await axios.post(
+          RemoteEndpoints.PORTAL_VISITOR_CONTACT_MAIL,
+          formData,
+          {
+            headers: {
+              apikey: apikey,
+            },
+          }
+        );
+        submitForm();
+        console.log(response);
       }
-    );
-    submitForm()
-    console.log(response);
+    } catch (err) {
+      setSendAction(false);
+      setErrorMessage("There is an error on the try");
+      console.log(setErrorMessage, err);
+    }
   };
-
+  const clearError = () => {
+    setErrorMessage(null);
+  };
   return (
     <section id="contact_form">
       <button
@@ -148,6 +178,9 @@ export default function PopUp({ closePopUp, submitForm }) {
           onChange={handleChange}
         />
 
+        {errorMessage && (
+          <p className="text-red-500 text-sm font-italic">{errorMessage}</p>
+        )}
         <div className="flex gap-2 justify-end">
           <button
             className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
@@ -155,12 +188,17 @@ export default function PopUp({ closePopUp, submitForm }) {
           >
             Cancel
           </button>
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+
+          {sendAction ? (
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
+          ) : (
+            <button
+              className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </section>

@@ -630,12 +630,12 @@ function Compliance() {
                   ) : (
                     <div className="flex items-center gap-4">
                       {/* <ButtonPrev
-                      onClick={() => moveToPrevForm("compliance")}
-                      type="button"
-                      label="Back"
-                      outline="yes"
-                      outlinecolor="border-white"
-                    /> */}
+                        onClick={() => moveToPrevForm("compliance")}
+                        type="button"
+                        label="Back"
+                        outline="yes"
+                        outlinecolor="border-white"
+                      /> */}
                       <ButtonNext
                         type="submit"
                         label={
@@ -648,7 +648,6 @@ function Compliance() {
                   )}
                 </div>
               )}
-              
           </>
         )}
       </form>

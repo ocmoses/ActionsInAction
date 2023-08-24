@@ -1182,6 +1182,13 @@ export const approvalFields = {
     approval: ["SPRM"],
     stage: "accountinfo",
   },
+  board_resolution_document: {
+    title: "Board Resolution Document",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM"],
+    stage: "board_resolution_document",
+  },
 };
 
 export const shortcodeApprovalFields = {

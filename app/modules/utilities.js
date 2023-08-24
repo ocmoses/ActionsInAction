@@ -1668,6 +1668,14 @@ export function titleCase(text){
   return textArray.join(" ");
 }
 
+export function capitalizeFirst(string){
+  if(!string.length){
+    return "";
+  }
+
+  return string.slice(0,1).toUpperCase() + string.slice(1);
+}
+
 export function base64(file_id, callback){
   const fileInput = document.querySelector('#' + file_id);
 

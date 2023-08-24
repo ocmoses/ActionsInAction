@@ -98,8 +98,8 @@ const RemoteEndpoints = {
 
 //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
-  PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`
-
+  PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
+  PORTAL_VISITOR_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`
 
 }
 export default RemoteEndpoints

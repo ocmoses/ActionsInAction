@@ -346,7 +346,7 @@ function Compliance() {
       return;
     }
 
-    verifyTIN(data.tin_no)
+    // verifyTIN(data.tin_no)
   };
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no);
@@ -495,10 +495,10 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Hidden for now
-                    if(process.env.NODE_ENV == 'production'){
-                      verifyTIN(e.target.value);
-                      Validate("tin_no");
-                    }
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyTIN(e.target.value);
+                    //   Validate("tin_no");
+                    // }
                     
                   }}
                   errors={errors}
@@ -546,9 +546,9 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Suspending this for now
-                    if(process.env.NODE_ENV == 'production'){
-                      verifyCAC();
-                    }
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyCAC();
+                    // }
                     
                   }}
                   errors={errors}
@@ -582,72 +582,78 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            
-            <FileInputWrapper>
-              <FileInput
-                id="tin_file"
-                doc_id="tin_doc"
-                label="TIN Document"
-                value={data.tin_doc}
-                onChange={handleFormChange}
-                errors={errors}
-                disabled={
-                  isMasterData || partner?.contract_status !== "not_started"
-                }
-              />
-              <FileInput
-                id="memart_file"
-                doc_id="memart_doc"
-                label="Memart certificate"
-                value={data.memart_doc}
-                onChange={handleFormChange}
-                errors={errors}
-                disabled={
-                  isMasterData || partner?.contract_status !== "not_started"
-                }
-              />
-              <FileInput
-                id="cac_file"
-                doc_id="cac_doc"
-                label="CAC Registration Certificate"
-                value={data.cac_doc}
-                onChange={handleFormChange}
-                errors={errors}
-                disabled={
-                  isMasterData || partner?.contract_status !== "not_started"
-                }
-              />
-            </FileInputWrapper>
-            {!isMasterData &&
-              partner?.contract_status === "not_started" && (
-                <div className="mt-6">
-                  {processing ? (
-                    <TailSpinPreloader
-                      width={40}
-                      height={40}
-                      fill="#efb703"
-                    />
-                  ) : (
-                    <div className="flex items-center gap-4">
-                      {/* <ButtonPrev
-                        onClick={() => moveToPrevForm("compliance")}
-                        type="button"
-                        label="Back"
-                        outline="yes"
-                        outlinecolor="border-white"
-                      /> */}
-                      <ButtonNext
-                        type="submit"
-                        label={
-                          checkUpdateStatus("compliance")
-                            ? "Update"
-                            : "Next"
-                        }
-                      />
+            {/* {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
+              (process.env.NODE_ENV != 'production')) && ( 
+              <>*/}
+                <FileInputWrapper>
+                  <FileInput
+                    id="tin_file"
+                    doc_id="tin_doc"
+                    label="TIN Document"
+                    value={data.tin_doc}
+                    onChange={handleFormChange}
+                    errors={errors}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
+                  />
+                  <FileInput
+                    id="memart_file"
+                    doc_id="memart_doc"
+                    label="Memart certificate"
+                    value={data.memart_doc}
+                    onChange={handleFormChange}
+                    errors={errors}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
+                  />
+                  <FileInput
+                    id="cac_file"
+                    doc_id="cac_doc"
+                    label="CAC Registration Certificate"
+                    value={data.cac_doc}
+                    onChange={handleFormChange}
+                    errors={errors}
+                    disabled={
+                      isMasterData || partner?.contract_status !== "not_started"
+                    }
+                  />
+                </FileInputWrapper>
+                {!isMasterData &&
+                  partner?.contract_status === "not_started" && (
+                    <div className="mt-6">
+                      {processing ? (
+                        <TailSpinPreloader
+                          width={40}
+                          height={40}
+                          fill="#efb703"
+                        />
+                      ) : (
+                        <div className="flex items-center gap-4">
+                          {/* <ButtonPrev
+                          onClick={() => moveToPrevForm("compliance")}
+                          type="button"
+                          label="Back"
+                          outline="yes"
+                          outlinecolor="border-white"
+                        /> */}
+                          <ButtonNext
+                            type="submit"
+                            label={
+                              checkUpdateStatus("compliance")
+                                ? "Update"
+                                : "Next"
+                            }
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
-              )}
+              
+              {/*</>
+             )}  */}
+            
           </>
         )}
       </form>

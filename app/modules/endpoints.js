@@ -83,6 +83,7 @@ const RemoteEndpoints = {
   CREATE_ROLE: `${apiURL}/v2/admin/create-role`,
   DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
 
+  GET_RESOLUTION_DOCUMENTS: `${apiURL}/v2/admin/board-resolution-documents`,
   ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
   ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
   ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,

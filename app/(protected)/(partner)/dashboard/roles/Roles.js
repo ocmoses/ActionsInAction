@@ -71,6 +71,9 @@ export default function Roles() {
     if (fetchingPartnerRoles) return;
     setFetchingPartnerRoles(true);
     all_Partner_Roles = await getAllPartnerRoles(page, perPage);
+    
+    console.log("all_Partner_Roles", all_Partner_Roles);
+
     setPartnerRoles(all_Partner_Roles.partner_roles);
     setFetchingPartnerRoles(false);
     if (all_Partner_Roles.error) setError({ error: all_Partner_Roles.error });

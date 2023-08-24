@@ -1,14 +1,14 @@
 "use client";
-import Link from 'next/link'
 import Navbar from "@/app/components/Navbar";
 import useApp from "@/hooks/useApp";
 import Footer from "@/app/components/public/Footer";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import  DocumentationH2Title, {DocumentationH3Title} from "@/app/components/public/DocumentationComponent";
 
 export default function Privacy() {
  
   const { setRouteloading } = useApp();
+
   useEffect(() => {
     setRouteloading(false);
   }, []);
@@ -153,6 +153,10 @@ export default function Privacy() {
                 </ul>
 
                 <div className="min-h-[400px] md:w-[calc(100%-208px)] text-[16px] text-white/70  font-mtn-light">
+
+                    
+
+
                   <p>We respect your right to privacy, it is very important to us, and we take the protection of your privacy and ensuring the security of your Personal Data very seriously.</p>
                   <br/>
                   <p>We are committed to the fair and transparent Processing of your Personal Data. This Privacy Notice describes how we Process your Personal Data, explain your rights in relation to the Personal Data we Process, and states our commitment when Processing your Personal Data in a compliant, ethical and secure manner.</p>
@@ -161,20 +165,28 @@ export default function Privacy() {
                           <DocumentationH2Title text="Who are we?"/>
                           <p>In this privacy notice “MTN”, “we”, “our” and “us” refers to MTN Nigeria Communication Plc (“MTN”) a public limited liability company, incorporated in the Federal Republic of Nigeria with registration number 395010 and its principal office at MTN Plaza, Falomo Roundabout, Awolowo Road, Ikoyi, Lagos.</p>
                     </section>
+
+
+
                     
                     <section id="section_2">
                           <DocumentationH2Title text="Who does this notice apply to?"/>
                           <p>This notice applies to individuals that are:</p>
                           
                           <ul className="list-disc list-outside flex flex-col gap-[15px] py-[15px] p-0 pl-10">
-                            <li>Any person(s) who contracts with us for the provision of products and services, or who purchases a product from us (“customers”), including potential customers to the extent MTN Processes your Personal Data;</li>
-                            <li>Any person(s) who uses our website, mobile applications or any products or services (“users”);</li>
-                            <li>All suppliers, contractors, partners and service providers of MTN (“suppliers”) including potential suppliers to the extent MTN Processes your Personal Data;</li>
-                            <li>Resellers such a MTN distributors and agents as well as partners (“resellers”) including potential resellers to the extent MTN Processes your Personal Data;</li>
-                            <li>All visitors of MTN premises whose details are captured via our visitors’ register, visitors management system, CCTV cameras etc; and</li>
-                            <li>Any other persons (save for employees and job applicants) who share Personal Data with MTN including beneficiaries, trustees or donors to MTN trusts or charitable causes; MTN guests (“other Data Subjects”).</li>
+
+                            <li>any person(s) who contracts with us for the provision of products and services, or who purchases a product from us (“customers”), including potential customers to the extent MTN Processes your Personal Data;</li>
+                            <li>any person(s) who uses our website, mobile applications or any products or services (“users”);</li>
+                            <li>all suppliers, contractors, partners and service providers of MTN (“suppliers”) including potential suppliers to the extent MTN Processes your Personal Data;</li>
+                            <li>resellers such a MTN distributors and agents as well as partners (“resellers”) including potential resellers to the extent MTN Processes your Personal Data;</li>
+                            <li>all visitors of MTN premises whose details are captured via our visitors’ register, visitors management system, CCTV cameras etc; and</li>
+                            <li>any other persons (save for employees and job applicants) who share Personal Data with MTN including beneficiaries, trustees or donors to MTN trusts or charitable causes; MTN guests (“other Data Subjects”).</li>
+
                           </ul>
                     </section>
+
+
+
 
                     <section id="section_3">
                           <DocumentationH2Title text="Important terms you need to understand when reading this notice?"/>
@@ -209,6 +221,10 @@ export default function Privacy() {
                             <p className="pl-5">A sub-set of Personal Data which is considered more sensitive than other categories of Personal Data. Sensitive Personal Data includes but is not limited to Personal Data revealing a Data Subject’s racial or ethnic origin; political opinions or persuasions; religious or philosophical beliefs; trade union membership; criminal behaviour relating to the alleged commission of a crime or proceedings relating to the alleged commission of a crime; genetic data; biometric data; data concerning health; and/or data concerning a Data Subject’s sex life or sexual orientation.</p>
                             
                     </section>
+
+
+
+
 
                     <section id="section_4">
                           <DocumentationH2Title text="What Personal Data does MTN collect and use?"/>
@@ -303,6 +319,10 @@ export default function Privacy() {
 
 
 
+
+
+
+
                     <section id="section_7">
                           <DocumentationH2Title text="Is MTN allowed to Process my Personal Data?"/>
                           <p className="pl-5">
@@ -331,6 +351,9 @@ export default function Privacy() {
 
 
 
+
+
+
                     <section id="section_8">
                           <DocumentationH2Title text="Is it mandatory to provide MTN the Personal Data asked for?"/>
                           <p className="pl-5">
@@ -344,6 +367,8 @@ export default function Privacy() {
                               <li>to allow you access to our premises or buildings.</li>
                             </ul> 
                     </section>
+
+
 
 
 
@@ -366,6 +391,8 @@ export default function Privacy() {
 
 
 
+
+
                     <section id="section_10">
                           <DocumentationH2Title text="Does MTN transfer my Personal Data to third parties?"/>
                           <p className="pl-5">
@@ -382,6 +409,10 @@ export default function Privacy() {
                     </section>
 
 
+
+
+
+
                     <section id="section_11">
                           <DocumentationH2Title text="Does MTN transfer my Personal Data internationally?"/>
                           <p className="pl-5">
@@ -392,6 +423,9 @@ export default function Privacy() {
                           MTN also transfers certain Personal Data outside of Nigeria to third parties working with us or on our behalf for the purposes described in this Privacy Notice. When transferring Personal Data internationally to third parties we ensure your Personal Data will continue to be protected for example, by entering to binding data transfer agreements or by ensuring there are adequate data privacy laws, which requires the relevant third party to adhere to the data handling and data protection requirements, acceptable to MTN.
                           </p>
                     </section>
+
+
+
 
 
 
@@ -411,12 +445,18 @@ export default function Privacy() {
                     </section>
 
 
+
+
+
+
                     <section id="section_13">
                           <DocumentationH2Title text="How does MTN handle Personal Data Breaches?"/>
                           <p className="pl-5">
                           While MTN implements reasonable measures to prevent or reduce the likelihood and impact of Personal Data Breaches, this risk can’t be completely eliminated. If MTN becomes aware of or reasonably suspects a Personal Data Breach has occurred or that the integrity or confidentiality of Personal Data has been compromised, MTN adheres to its incident management Policies, Procedures and supporting documents governing the handling and reporting of Personal Data Breaches. MTN will report personal data breaches to the Data Privacy Regulator within 72 hours of knowledge of such breach.
                           </p>
                     </section>
+
+
 
 
 
@@ -439,12 +479,19 @@ export default function Privacy() {
                     </section>
 
 
+
+
+
                     <section id="section_15">
                           <DocumentationH2Title text="Contact us"/>
                           <p className="pl-5">
                           If you have any questions or concerns regarding this Privacy Notice and would like further information about how we protect your information and/or when you want to contact your local Data Protection Officer (DPO), please email us at DPONigeria@mtn.com or visit the MTN Nigeria Communication Plc (“MTN”) at its principal office at MTN Plaza, Falomo Roundabout, Awolowo Road, Ikoyi, Lagos
                           </p>
                     </section>
+
+
+
+
 
                     <section id="section_16">
                           <DocumentationH2Title text="Changes to privacy policy"/>
@@ -458,9 +505,9 @@ export default function Privacy() {
             </div>
         </div>
 
-        <div className="w-full mt-20 mx-auto lg:max-w-[1158px] relative">
+        <br/><br/>
           <Footer />
-        </div>
+        
       </div>
     </>
   );

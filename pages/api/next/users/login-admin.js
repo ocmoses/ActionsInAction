@@ -62,6 +62,9 @@ export default async function handler(req, res) {
     const body = JSON.parse(req.body);
     const categoriesData = await getCategories(process.env.APIKEY);
     const loginData = await doLogin(body, req, res);
+
+    // console.log("loginData", loginData);
+
     const [User, categories] = await Promise.all([loginData, categoriesData]);
     if (User.error)
       return res

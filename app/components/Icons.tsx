@@ -614,3 +614,48 @@ export function BulletIcon({ iconClass }: Props) {
     </svg>
   );
 }
+
+
+
+
+
+export function IncreaseArrow({ iconClass }: Props) {
+  return (
+    <svg
+      fill="#4ade80" 
+      height="12px" 
+      width="12px" 
+      version="1.1"  
+      xmlns="http://www.w3.org/2000/svg" 
+	    viewBox="0 0 32 32"
+      className={iconClass}
+    >
+      <path
+        id="_5-Arrow_Up"
+        d="M31,0H15V2H28.59L.29,30.29l1.41,1.41L30,3.41V16h2V1A1,1,0,0,0,31,0Z"
+      />
+    </svg>
+  );
+}
+
+
+
+export function DecreaseArrow({ iconClass }: Props) {
+  return (
+    <svg
+      fill="#fb7185" 
+      height="12px" 
+      width="12px" 
+      version="1.1" 
+      xmlns="http://www.w3.org/2000/svg" 
+	    viewBox="0 0 32 32"
+      className={iconClass}
+    >
+      <path
+        id="_8-Arrow_Down"
+        data-name="8-Arrow Down"
+        d="M30,15V28.59L1.71.29.29,1.71,28.59,30H16v2H31a1,1,0,0,0,1-1V15Z"
+      />
+    </svg>
+  );
+}

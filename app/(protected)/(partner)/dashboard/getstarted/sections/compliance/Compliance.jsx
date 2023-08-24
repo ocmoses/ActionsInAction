@@ -582,75 +582,72 @@ function Compliance() {
                 </div>
               </div>
             </div>
-              <>
-                <FileInputWrapper>
-                  <FileInput
-                    id="tin_file"
-                    doc_id="tin_doc"
-                    label="TIN Document"
-                    value={data.tin_doc}
-                    onChange={handleFormChange}
-                    errors={errors}
-                    disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
-                    }
-                  />
-                  <FileInput
-                    id="memart_file"
-                    doc_id="memart_doc"
-                    label="Memart certificate"
-                    value={data.memart_doc}
-                    onChange={handleFormChange}
-                    errors={errors}
-                    disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
-                    }
-                  />
-                  <FileInput
-                    id="cac_file"
-                    doc_id="cac_doc"
-                    label="CAC Registration Certificate"
-                    value={data.cac_doc}
-                    onChange={handleFormChange}
-                    errors={errors}
-                    disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
-                    }
-                  />
-                </FileInputWrapper>
-                {!isMasterData &&
-                  partner?.contract_status === "not_started" && (
-                    <div className="mt-6">
-                      {processing ? (
-                        <TailSpinPreloader
-                          width={40}
-                          height={40}
-                          fill="#efb703"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-4">
-                          {/* <ButtonPrev
-                          onClick={() => moveToPrevForm("compliance")}
-                          type="button"
-                          label="Back"
-                          outline="yes"
-                          outlinecolor="border-white"
-                        /> */}
-                          <ButtonNext
-                            type="submit"
-                            label={
-                              checkUpdateStatus("compliance")
-                                ? "Update"
-                                : "Next"
-                            }
-                          />
-                        </div>
-                      )}
-                    </div>
-                  
-               </> 
-            )} 
             
+            <FileInputWrapper>
+              <FileInput
+                id="tin_file"
+                doc_id="tin_doc"
+                label="TIN Document"
+                value={data.tin_doc}
+                onChange={handleFormChange}
+                errors={errors}
+                disabled={
+                  isMasterData || partner?.contract_status !== "not_started"
+                }
+              />
+              <FileInput
+                id="memart_file"
+                doc_id="memart_doc"
+                label="Memart certificate"
+                value={data.memart_doc}
+                onChange={handleFormChange}
+                errors={errors}
+                disabled={
+                  isMasterData || partner?.contract_status !== "not_started"
+                }
+              />
+              <FileInput
+                id="cac_file"
+                doc_id="cac_doc"
+                label="CAC Registration Certificate"
+                value={data.cac_doc}
+                onChange={handleFormChange}
+                errors={errors}
+                disabled={
+                  isMasterData || partner?.contract_status !== "not_started"
+                }
+              />
+            </FileInputWrapper>
+            {!isMasterData &&
+              partner?.contract_status === "not_started" && (
+                <div className="mt-6">
+                  {processing ? (
+                    <TailSpinPreloader
+                      width={40}
+                      height={40}
+                      fill="#efb703"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      {/* <ButtonPrev
+                        onClick={() => moveToPrevForm("compliance")}
+                        type="button"
+                        label="Back"
+                        outline="yes"
+                        outlinecolor="border-white"
+                      /> */}
+                      <ButtonNext
+                        type="submit"
+                        label={
+                          checkUpdateStatus("compliance")
+                            ? "Update"
+                            : "Next"
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
           </>
         )}
       </form>

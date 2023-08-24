@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 
-
 export default function PopUp({ closePopUp, children }) {
   return (
     <div
@@ -21,11 +20,6 @@ export default function PopUp({ closePopUp, children }) {
   );
 }
 
-
-
-
-
-
 export const ContactUsSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -44,6 +38,36 @@ export const ContactUsSuccess = ({ closePopUp }) => {
         We encourage you to sign up and explore the app while we get back to
         you. Setting up your partner portal account is free, no payment
         required.
+      </p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={closePopUp}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const PartnerContactUsSuccess = ({ closePopUp }) => {
+  return (
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <Image
+        priority
+        src="/assets/icons/check.svg"
+        width={76.71}
+        height={38.32}
+        alt="MTN Nigeria Logo"
+        className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+      />
+      <h2 className="text-white font-mtn-bold text-2xl my-4">
+        Thanks, we’ll be in touch shortly
+      </h2>
+      <p>
+        We encourage you to check out our frequently asked questions to find
+        answers to common issues.
       </p>
       <div className="flex gap-2 justify-center mt-10">
         <button

@@ -4,7 +4,8 @@ import { useStoreState } from "easy-peasy";
 import Image from "next/image";
 
 import { useState } from "react";
-import PopUp, { ContactUsForm , ContactUsSuccess} from "@/app/components/PopUps";
+import PopUp, { PartnerContactUsSuccess} from "@/app/components/PopUps";
+import PartnerContactUsForm from "@/app/components/contactus/PartnerContactUsForm";
 
 export default function AdminProfileIcons() {
   const notifications = useStoreState((state) => state.notifications);
@@ -32,13 +33,15 @@ export default function AdminProfileIcons() {
        {popUp && (
         <PopUp closePopUp={closePopUp}>
           {!contactSubmit ? (
-            <ContactUsForm closePopUp={closePopUp}  submitForm={submitContact}/>    // If contactSubmit is false
+            <PartnerContactUsForm closePopUp={closePopUp}  submitForm={submitContact}/>    // If contactSubmit is false
           ) : (
-            <ContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+            <PartnerContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
           )}
         </PopUp>
       )}
       
+
+      {/*//==============================================================================================================================*/}
 
       {/*//==============================================================================================================================*/}
       <div className="flex gap-6 items-center justify-end">

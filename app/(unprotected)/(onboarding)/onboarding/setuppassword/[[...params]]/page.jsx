@@ -1,5 +1,5 @@
 import SetUpPassword from "./SetUpPassword";
 
 export default function SetUpPasswordPage({ params }) {
-  return <SetUpPassword link={params[0]} />;
+  return <SetUpPassword params={params} />;
 }

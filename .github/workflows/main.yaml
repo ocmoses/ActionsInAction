@@ -48,7 +48,6 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         run: |
           cp dev_default/default.conf default.conf
-          cp dev_default/default.conf default.conf
 
       - name: 'dev Dockerfile'
         if: github.ref == 'refs/heads/dev'
@@ -101,7 +100,6 @@ jobs:
       - name: 'stage nginx conf'
         if: github.ref == 'refs/heads/stage'
         run: |
-          cp stage_default/default.conf default.conf
           cp stage_default/default.conf default.conf
 
       - name: 'Stage Dockerfile'
@@ -156,7 +154,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           cp prod_default/default.conf default.conf
-          cp prod_default/default.conf default.conf
 
       - name: 'Prod Dockerfile'
         if: github.ref == 'refs/heads/main'
@@ -205,4 +202,3 @@ jobs:
             git commit -m "updated values.yml file"
             echo "Done.."
             git push origin prod
-

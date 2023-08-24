@@ -9,6 +9,8 @@ import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
 
+import ContactUsPopUp from "@/app/components/PopUps"
+
 import './modules/bootstrap';
 
 const getServerSession = async () => {
@@ -16,7 +18,7 @@ const getServerSession = async () => {
     const nextCookies = cookies();
     // User session
     const token = nextCookies.has("auth-token")
-      ? nextCookies.get("auth-token")?.value
+      ? Decrypt(nextCookies.get("auth-token")?.value)
       : null;
     const partnerid = nextCookies.has("partnerid")
       ? nextCookies.get("partnerid")?.value
@@ -26,10 +28,10 @@ const getServerSession = async () => {
       : null;
     // Admin session
     const adminToken = nextCookies.has("token")
-      ? nextCookies.get("token")?.value
+      ? Decrypt(nextCookies.get("token")?.value)
       : null;
     const uuid = nextCookies.has("uuid")
-      ? nextCookies.get("uuid")?.value
+      ? Decrypt(nextCookies.get("uuid")?.value)
       : null;
     if (uuid) {
       try {
@@ -203,6 +205,7 @@ export default async function RootLayout({ children }) {
       <html lang="en">
         <head />
         <body>
+       {/* <ContactUsPopUp/>*/}
           <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
           <Providers>

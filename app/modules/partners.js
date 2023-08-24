@@ -1,8 +1,12 @@
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { Decrypt } from "./utilities";
+import useLogout from "@/hooks/useLogout";
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
+
+  // const {Logout} = useLogout();
+
   try {
     const params = [];
     if (page) params.push(`page=${page}`);
@@ -10,6 +14,9 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
     if (contractStatus) params.push(`contract_status=${contractStatus}`);
 
     const cookieStore = cookies();
+
+    // console.log("cookieStore", cookieStore);
+
     const token = cookieStore.get("token");
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
@@ -19,17 +26,16 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         cache: "no-store",
         next: { revalidate: 120 },
         headers: {
-          token: token?.value,
-          Authorization: `bearer ${token?.value}`,
+          token: Decrypt(token?.value),
+          Authorization: `bearer ${Decrypt(token?.value)}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    // if (response.status === 401) {
-    //   return {
-    //     error: 401,
-    //   }
+    // if (response.status === 400 || response.status === 401 ) {
+    //   Logout();
+    //   return;
     // }
     const result = await response.json();
     if (result?.success) {

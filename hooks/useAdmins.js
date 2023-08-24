@@ -1,13 +1,16 @@
 import useProcessing from "@/hooks/useProcessing";
 import useApp from "@/hooks/useApp";
+import useLogout from "@/hooks/useLogout";
 import { useEffect, useState } from "react";
 import { filterCategory, getstages } from "@/app/modules/utilities";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { filterPartner } from "@/app/modules/utilities";
-import { redirect } from "next/navigation";
+import { filterPartner, Decrypt } from "@/app/modules/utilities";
+import { useRouter } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
 export default function useAdmins() {
+  const  {LogoutAdmin} = useLogout();
+  const router = useRouter();
   const states = useStoreState((action) => action.admins);
   const actions = useStoreActions((action) => action.admins);
 
@@ -32,6 +35,9 @@ export default function useAdmins() {
   const getStages = (category, categories) => {
     return getstages(category, categories);
   };
+
+  // console.log("states from within useAdmin", states);
+  
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {
       const params = [];
@@ -54,10 +60,10 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -126,10 +132,15 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+
+      console.log("response", response);
+      console.log("response.status", response.status);
+      console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -198,10 +209,10 @@ export default function useAdmins() {
           },
         }
       );
-      // if (response.status === 401) {
-      //   redirect(NextEndPoints.LOGIN_ADMIN)
-      //   return
-      // }
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       if (!response)
         return {
           error: "This request has no response available",
@@ -415,6 +426,32 @@ export default function useAdmins() {
     }
   };
 
+
+
+/// //////////////////////////////////////////afolabi's functions starts here
+  const fetchData = async (url, apikey) => {
+    try {
+      const response = await axios.get(
+        url,
+        {
+          headers: {
+            apikey: apikey,
+          },
+        }
+      );
+      //console.log("this is my response", response);
+     return {success: true, data: response.data.data}
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return {success: false, message: error.message}
+    }
+  };
+
+
+/// //////////////////////////////////////////afolabi's functions Ends here
+
+
+
   return {
     ...states,
     ...actions,
@@ -427,6 +464,7 @@ export default function useAdmins() {
     rejectionReasons,
     createAdmin,
     getAllDepartments,
-    deleteAdmin
+    deleteAdmin,
+    fetchData
   };
 }

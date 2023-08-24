@@ -582,8 +582,8 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
-              (process.env.NODE_ENV != 'production')) && (
+{/*             {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
+              (process.env.NODE_ENV != 'production')) && ( */}
               <>
                 <FileInputWrapper>
                   <FileInput
@@ -650,7 +650,7 @@ function Compliance() {
                       )}
                     </div>
                   )}
-              </>
+{/*               </> */}
             )} 
             
           </>

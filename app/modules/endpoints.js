@@ -97,7 +97,9 @@ const RemoteEndpoints = {
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
 //Admin Reports
-  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`
+  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`
+
 
 }
 export default RemoteEndpoints

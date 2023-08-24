@@ -1,17 +1,22 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
 import SelectInput from "@/app/components/form/SelectInput";
 import TextAreaInput from "@/app/components/form/TextAreaInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
 import Image from "next/image";
 
-export default function PopUp({closePopUp, children}) {
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { apikey } from "@/app/modules/constants";
+import axios from "axios";
+
+export default function PopUp({ closePopUp, children }) {
   return (
     <div
       id="modal_flyout"
-      className="w-screen flex justify-center items-center h-screen fixed z-50 top-0 left-0 bg-black/80"
+      className="w-screen flex justify-center items-center h-screen fixed z-50 top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
       onClick={(e) => {
         e.target.id == "modal_flyout" && closePopUp();
       }}
@@ -26,7 +31,63 @@ export default function PopUp({closePopUp, children}) {
   );
 }
 
-export const ContactUsForm = ({ closePopUp ,submitForm}) => {
+export const ContactUsForm = ({ closePopUp, submitForm }) => {
+  ////////////////////////////////////fetch subject to the select field//////////////////////////////
+  const [getSubjects, setGetSubjects] = useState(null);
+  const [fetching, setFetching] = useState(false);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        setFetching(true);
+        const response = await axios.get(
+          RemoteEndpoints.PORTAL_VISITOR_CONTACT_SUBJECTS,
+          {
+            headers: {
+              apikey: apikey,
+            },
+          }
+        );
+        console.log("this is my response", response);
+        setGetSubjects(response.data.data);
+        setFetching(false);
+      } catch (error) {
+        setFetching(false);
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  ////////////////////////////////////End fetch subject to the select field//////////////////////////////
+
+  let handleSubmit = async (e) => {
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+    try {
+      if (fullName === "") {
+        const feedback = "Full Name Error: Check the field to continue";
+        console.log(feedback);
+      } else if (loanAmount === "") {
+        const feedback = "Loan Amount Error: Check the field to continue";
+        console.log(feedback);
+      } else if (duration === "") {
+        const feedback = "Loan Duration Error: Check the field to continue";
+        console.log(feedback);
+      } else if (duration === "") {
+        const feedback = "Loan Duration Error: Check the field to continue";
+        console.log(feedback);
+      } else {
+      }
+    } catch (err) {
+      //toast.error(err.message);
+      console.log("There is an error on the try");
+    }
+  };
+
   return (
     <section id="contact_form">
       <button
@@ -54,11 +115,34 @@ export const ContactUsForm = ({ closePopUp ,submitForm}) => {
 
       <div className="pt-5">
         <div className="flex space-x-2">
-          <TextInput id="name" label="Name" type="text" />
+          <TextInput
+            id="name"
+            label="Name"
+            type="text"
+            value={name}
+            setvalue={setName}
+          />
           <TextInput id="email" label="Email" type="email" />
         </div>
-        <SelectInput id="subjectid" label="Select Subject"></SelectInput>
-        <TextAreaInput id="message" label="Message" type="text" />
+        {/* //================Select subjects==============================================================================================================*/}
+        <SelectInput id="subject" label="Choose A Subject">
+          {fetching && (
+            <SelectInputOption value="" label="Fetching Subjects..." />
+          )}
+          {!fetching &&
+            getSubjects?.length > 0 &&
+            getSubjects.map((eachSubject) => (
+              <SelectInputOption
+                key={eachSubject.subject}
+                value={eachSubject.subject}
+                label={eachSubject.subject}
+              />
+            ))}
+        </SelectInput>
+        {/* //==============================================================================================================================*/}
+
+        <p className="text-white pb-3">What problems are you facing?</p>
+        <TextAreaInput id="message" label="Help me with..." type="text" />
         <div className="flex gap-2 justify-end">
           <button
             className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
@@ -66,7 +150,10 @@ export const ContactUsForm = ({ closePopUp ,submitForm}) => {
           >
             Cancel
           </button>
-          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full" onClick={submitForm}>
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={handleSubmit}
+          >
             Submit
           </button>
         </div>
@@ -77,7 +164,7 @@ export const ContactUsForm = ({ closePopUp ,submitForm}) => {
 
 export const ContactUsSuccess = ({ closePopUp }) => {
   return (
-    <div className="my-10 text-center">
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <Image
         priority
         src="/assets/icons/check.svg"

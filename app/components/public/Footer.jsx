@@ -4,8 +4,8 @@ import { useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { ContactUsForm , ContactUsSuccess} from "@/app/components/PopUps";
-
+import PopUp, {ContactUsSuccess} from "@/app/components/PopUps";
+import ContactUsForm from "@/app/components/contactus/ContactUsForm";
 //==============================================================================================================================
 //function FooterTitleLink({ title }) {
 //   return (

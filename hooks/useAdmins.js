@@ -190,6 +190,79 @@ export default function useAdmins() {
     }
   };
 
+  const getAllBoardResolutionDocuments = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_RESOLUTION_DOCUMENTS}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+
+      console.log("response", response);
+      console.log("response.status", response.status);
+      console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+
+      if (result?.success) {
+
+        const brds = result?.data['board-resolution-documents'].data;
+        
+        const navigation = {
+          current_page: result?.data['board-resolution-documents'].current_page,
+          first_page_url: result?.data['board-resolution-documents'].first_page_url,
+          from: result?.data['board-resolution-documents'].from,
+          last_page: result?.data['board-resolution-documents'].last_page,
+          last_page_url: result?.data['board-resolution-documents'].last_page_url,
+          links: result?.data['board-resolution-documents'].links,
+          next_page_url: result?.data['board-resolution-documents'].next_page_url,
+          path: result?.data['board-resolution-documents'].path,
+          per_page: result?.data['board-resolution-documents'].per_page,
+          prev_page_url: result?.data['board-resolution-documents'].prev_page_url,
+          to: result?.data['board-resolution-documents'].to,
+          total: result?.data['board-resolution-documents'].total,
+        };
+
+        // console.log('brds', brds);
+
+        return {
+          brds,
+          navigation,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const getAllDepartments = async (page, perPage) => {
     try {
       const params = [];
@@ -465,6 +538,7 @@ export default function useAdmins() {
     createAdmin,
     getAllDepartments,
     deleteAdmin,
-    fetchData
+    fetchData,
+    getAllBoardResolutionDocuments
   };
 }

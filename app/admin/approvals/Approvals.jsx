@@ -20,6 +20,7 @@ import useApp from "@/hooks/useApp";
 import { ellipsify, capitalizeFirst } from "@/app/modules/utilities";
 
 import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
+import FilePreviewModal from "@/app/components/FilePreviewModal";
 
 export default function Approvals() {
   const {getAllBoardResolutionDocuments} = useAdmins();
@@ -42,7 +43,6 @@ export default function Approvals() {
 
 
   const router = useRouter();
-  const { setRouteloading } = useApp();
   const [navigation, setNavigation] = useState([]);
   const [page, setPage] = useState(null);
   const [perPage, setPerPage] = useState(null);
@@ -50,13 +50,14 @@ export default function Approvals() {
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const [selectedApproval, setSelectedApproval] = useState(null);
-
   const [fetchingBRD, setFetchingBRD] = useState(false);
   const [brds, setBrds] = useState([]);
 
   const activeStage = "board_resolution_document";
   const [openDrawer, setOpenDrawer] = useState(false);
+
+
+  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
 
 
   let get_brd_response = null;
@@ -80,10 +81,11 @@ export default function Approvals() {
     get_brds()
     setProcessing(false);
     
-  }, []);
+  }, [selectedBrd]);
 
   return (
     <>
+      
       {!selectedBrd ? 
         (<div id="approvals" className="flex flex-cols pb-12">
           <div className="w-full pt-[72px] px-12 mx-auto">
@@ -163,7 +165,7 @@ export default function Approvals() {
                               </td>
 
                               <td>
-                                <div  className="flex gap-0" onClick={() => {setSelectedBrd(brd)}}>
+                                <div  className="flex gap-0" onClick={() => {setSelectedBrd(brd); console.log("selectedBrd", selectedBrd); }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
                                         <path strokeLinecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                     </svg>
@@ -254,6 +256,12 @@ export default function Approvals() {
         </div>) :
         (
           <>
+          {is_previewing_doc && (
+            <FilePreviewModal
+              filePath={selectedBrd?.file_path}
+              closeModal={handleCloseModal}
+            />
+          )}
           <div id="approvals" className="flex flex-col p-12">
             <div onClick={() => setSelectedBrd(null)} className="mb-8">
               <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
@@ -276,11 +284,11 @@ export default function Approvals() {
             </div>
             <div className="flex w-4xl">
               <div className="flex w-16 h-16 rounded-full bg-pink-900 text-white justify-center items-center text-3xl mr-4">
-                <p className="text-white">A</p>
+                <p className="text-white">{getPartnerInitials(selectedBrd.company_name)}</p>
               </div>
               <div className="flex flex-col space-y-2 flex-1">
-                <p className="text-white text-2xl">Beta Media Group</p>
-                <span className="text-gray-500 text-sm">Lagos, Nigeria</span>
+                <p className="text-white text-2xl">{selectedBrd.company_name}</p>
+                {/* <span className="text-gray-500 text-sm">Lagos, Nigeria</span> */}
               </div>
             </div>
 
@@ -293,10 +301,10 @@ export default function Approvals() {
               </span>
               <div className="my-4">
                 <h2 className="text-white my-2 text-[24px]">Board resolution document</h2>
-                <p className="text-white/20">Board resolution document for company name</p>
+                <p className="text-white/20">Board resolution document for {selectedBrd.company_name}</p>
               </div>
 
-              <div class="inline-flex gap-1 items-center rounded-2xl bg-white/10 py-[3px] pl-[10px] pr-[14px]" >
+              <div class="inline-flex gap-1 items-center rounded-2xl bg-white/10 py-[3px] pl-[10px] pr-[14px] w-40" >
                 <span class="text-[#999999]">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-[12px] min-w-[12px] h-[12px]">
                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd">
@@ -320,44 +328,27 @@ export default function Approvals() {
                 <p className="text-white">
                   Board resolution
                 </p>
-                <div className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px]">
+                <div className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer" onClick={() => setIsPreviewingDoc(!is_previewing_doc)}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-3 h-3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                   </svg>&nbsp; {selectedBrd.file_name}
                 </div>
               </div>
 
-              <div className="flex h-full items-center px-2 justify-between w-32 ml-auto">
+              <div className="flex h-full items-center px-2 w-32 ml-auto">
 
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <div class="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                  </svg>
+                </div>
 
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5"
-                  />
-                </svg>
+                <div class="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center ml-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5">
+                    </path>
+                  </svg>
+                </div>                 
 
               </div>
               

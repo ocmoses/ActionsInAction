@@ -36,7 +36,7 @@ export default function useAdmins() {
     return getstages(category, categories);
   };
 
-  console.log("states from within useAdmin", states);
+  // console.log("states from within useAdmin", states);
   
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {

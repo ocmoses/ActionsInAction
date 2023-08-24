@@ -101,6 +101,7 @@ export default function PopUp({ closePopUp, submitForm }) {
   const clearError = () => {
     setErrorMessage(null);
   };
+
   return (
     <section id="contact_form">
       <button
@@ -135,7 +136,6 @@ export default function PopUp({ closePopUp, submitForm }) {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            required
           />
           <TextInput
             id="email"

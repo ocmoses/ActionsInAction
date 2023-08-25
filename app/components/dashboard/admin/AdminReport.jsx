@@ -8,15 +8,15 @@ export default function PartnerStatisticsReport({title,count,percentage,rate}){
 
   return(
 
-    <div id="statistics" className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[280px]">
+    <div id="statistics" className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[280px] rounded-lg">
     <div className="px-5 py-5 flex  flex-col">
-        <div className="mb-[15px]">
+        <div className="mb-[15px] text-gray-400">
         {title}
         </div>
         <h2 className="text-[30px] text-white font-mtn font-semibold">
         {formatNumber(parseInt(count))}
         </h2>
-        <div>
+        <div className='text-gray-400'>
           {
             rate == 'UP' ? 
             <span className="text-green-400"><IncreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>  

@@ -11,7 +11,7 @@ import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import { TailSpinPreloader } from "@/app/components/Icons";
 
-export default function PopUp({ closePopUp, submitForm }) {
+export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmail, token }) {
   ////////////////////////////////////fetch subject to the select field//////////////////////////////
   const [getSubjects, setGetSubjects] = useState(null);
   const [fetching, setFetching] = useState(false);
@@ -19,10 +19,10 @@ export default function PopUp({ closePopUp, submitForm }) {
   const [sendAction, setSendAction] = useState(false);
 
   const [formData, setFormData] = useState({
-    contact_type: "portal_visitor",
-    name: "",
-    email: "",
-    subject: "General Enquiry",
+    contact_type: "logged_in_partner",
+    name: partnerName,
+    email: partnerEmail,
+    subject: "I want to request a feature",
     message: "",
   });
 
@@ -40,10 +40,11 @@ export default function PopUp({ closePopUp, submitForm }) {
       try {
         setFetching(true);
         const response = await axios.get(
-          RemoteEndpoints.PORTAL_VISITOR_CONTACT_SUBJECTS,
+          RemoteEndpoints.PORTAL_PARTNER_CONTACT_SUBJECTS,
           {
             headers: {
               apikey: apikey,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -73,11 +74,12 @@ export default function PopUp({ closePopUp, submitForm }) {
       } else {
         setSendAction(true);
         const response = await axios.post(
-          RemoteEndpoints.PORTAL_VISITOR_CONTACT_MAIL,
+          RemoteEndpoints.PORTAL_PARTNER_CONTACT_MAIL,
           formData,
           {
             headers: {
               apikey: apikey,
+              Authorization: `Bearer ${token}`,
             },
           }
         );

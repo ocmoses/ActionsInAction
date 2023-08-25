@@ -81,7 +81,7 @@ export default function PopUp({ closePopUp, submitForm }) {
       } else {
         setSendAction(true);
         const response = await axios.post(
-          RemoteEndpoints.PORTAL_VISITOR_CONTACT_MAIL,
+          RemoteEndpoints.PARTNER_PORTAL_CONTACT_MAIL,
           formData,
           {
             headers: {

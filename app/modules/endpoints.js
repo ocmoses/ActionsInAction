@@ -106,8 +106,7 @@ const RemoteEndpoints = {
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
   PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
   PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
-  PORTAL_VISITOR_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
-  PORTAL_PARTNER_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`
+  PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
 
 }
 export default RemoteEndpoints

@@ -130,6 +130,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
           value={formData.subject}
           onChange={handleChange}
         >
+        
           {fetching && (
             <SelectInputOption value="" label="Fetching Subjects..." />
           )}
@@ -142,6 +143,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
                 label={eachSubject.subject}
               />
             ))}
+            <SelectInputOption value="" label="Choose Here" />
         </SelectInput>
 
         <p className="text-white pb-3">What problems are you facing?</p>

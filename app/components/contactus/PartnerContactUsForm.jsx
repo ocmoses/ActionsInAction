@@ -74,7 +74,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
       } else {
         setSendAction(true);
         const response = await axios.post(
-          RemoteEndpoints.PORTAL_PARTNER_CONTACT_MAIL,
+          RemoteEndpoints.PARTNER_PORTAL_CONTACT_MAIL,
           formData,
           {
             headers: {
@@ -130,6 +130,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
           value={formData.subject}
           onChange={handleChange}
         >
+        
           {fetching && (
             <SelectInputOption value="" label="Fetching Subjects..." />
           )}
@@ -142,6 +143,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
                 label={eachSubject.subject}
               />
             ))}
+            <SelectInputOption value="" label="Choose Here" />
         </SelectInput>
 
         <p className="text-white pb-3">What problems are you facing?</p>

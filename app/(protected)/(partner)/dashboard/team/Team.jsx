@@ -143,13 +143,13 @@ export default function Team() {
     setConfirmDelete(false);
     if (delete_partner_response.error) setError({ error: delete_partner_response.error })
     else {
-        console.log('delete_partner_response', delete_partner_response);
+        // console.log('delete_partner_response', delete_partner_response);
         setSuccessMessage("Partner deleted successfully");
         setDisplaySuccess(true);
         
         setTimeout(() => {
             setDisplaySuccess(false);
-            location.reload();
+            get_all_admin_partners();
         }, 3000);
 
     }
@@ -185,7 +185,15 @@ export default function Team() {
       return;
     }
 
-    create_partner(data);
+    let formData = new FormData();
+
+    // console.log("Object.keys(data)", Object.keys(data));
+
+    Object.keys(data).forEach(element => {
+      formData.append(element, data[element]);
+    });
+
+    create_partner(formData);
 
   }
 
@@ -553,7 +561,7 @@ export default function Team() {
 
                     <div className="flex flex-col flex-1 space-y-1 justify-center">                
                         <p className="text-gray-500 text-sm">Upload</p>
-                        <p className="text-white text-md">Your signature</p>
+                        <p className="text-white text-md">Board resolution Document</p>
                         <p className="text-gray-500 text-sm">Drag and drop here or</p>
                     </div>
 
@@ -570,7 +578,7 @@ export default function Team() {
                           <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
                         }
                         
-                        <input type="file" key={reset} className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".pdf" onChange={(e) => {convertFile(e)}}/>                   
+                        <input type="file" key={reset} className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".pdf" onChange={(e) => {setData({...data, file: e.target.files[0]}); setUploadedFile(true); console.log("data", data)}}/>                   
                     </div>
 
                 </div>

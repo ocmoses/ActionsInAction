@@ -346,7 +346,7 @@ function Compliance() {
       return;
     }
 
-    verifyTIN(data.tin_no)
+    // verifyTIN(data.tin_no)
   };
   useEffect(() => {
     if (retryTIN) verifyTIN(data.tin_no);
@@ -495,10 +495,10 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Hidden for now
-                    if(process.env.NODE_ENV == 'production'){
-                      verifyTIN(e.target.value);
-                      Validate("tin_no");
-                    }
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyTIN(e.target.value);
+                    //   Validate("tin_no");
+                    // }
                     
                   }}
                   errors={errors}
@@ -546,9 +546,9 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Suspending this for now
-                    if(process.env.NODE_ENV == 'production'){
-                      verifyCAC();
-                    }
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyCAC();
+                    // }
                     
                   }}
                   errors={errors}
@@ -582,9 +582,9 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
-              (process.env.NODE_ENV != 'production')) && (
-              <>
+            {/* {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
+              (process.env.NODE_ENV != 'production')) && ( 
+              <>*/}
                 <FileInputWrapper>
                   <FileInput
                     id="tin_file"
@@ -650,9 +650,10 @@ function Compliance() {
                       )}
                     </div>
                   )}
-              </>
-            )} 
-            {/* // removed */}
+              
+              {/*</>
+             )}  */}
+            
           </>
         )}
       </form>

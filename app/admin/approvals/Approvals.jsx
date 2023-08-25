@@ -22,24 +22,36 @@ import { ellipsify, capitalizeFirst } from "@/app/modules/utilities";
 import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 
+import Confirm from "@/app/components/Confirm";
+import Success from "@/app/components/toasts/Success";
+
 export default function Approvals() {
-  const {getAllBoardResolutionDocuments} = useAdmins();
+  const {getAllBoardResolutionDocuments, approving, setApproving, approveOrRejectBrd} = useAdmins();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
-  const [approvals, setApprovals] = useState([]);
-  const [creationError, setCreationError] = useState(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
 
-  let [data, setData] = useState({
-                                  fullname: "",
-                                  firstname: "",
-                                  lastname: "",
-                                  username: "",
-                                  email: "",
-                                  department: "",
-                                  department_code: "",
-                                  role: ""
-                                });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successToast, setSuccessToast] = useState(false);
+  const successAction = () => setTimeout(() => {
+                                                  setSuccessToast(false),                                                   
+                                                  setApprove(false);
+                                                  setReject(false);
+                                                  setSelectedBrd(null); 
+                                                  get_brds();
+                                                  setOpenDrawer(false);
+                                                }, 3000);
+
+
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
+
+  let [approvalData, setApprovalData] = useState({
+                                          board_document_uuid: "",
+                                          partner_uuid: "",
+                                          delegate_email: "",
+                                          status: ""
+                                        });
 
 
   const router = useRouter();
@@ -48,7 +60,6 @@ export default function Approvals() {
   const [perPage, setPerPage] = useState(null);
 
   const [displaySuccess, setDisplaySuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   const [fetchingBRD, setFetchingBRD] = useState(false);
   const [brds, setBrds] = useState([]);
@@ -61,6 +72,8 @@ export default function Approvals() {
 
 
   let get_brd_response = null;
+  let approve_brd_response = null;
+  let reject_brd_response = null;
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -74,6 +87,69 @@ export default function Approvals() {
 
     setFetchingBRD(false);
     if (get_brd_response.error) setError({ error: get_brd_response.error });
+  };
+
+  const approveBrd = async () => {
+    //TODO
+    clearErrors();
+
+    approvalData.status = "approved";
+
+    // console.log("approvalData", approvalData);
+
+    if (approving) return;
+    setApproving(true);
+    approve_brd_response = await approveOrRejectBrd(approvalData);
+
+    setApproving(false);
+    
+    if(approve_brd_response.message){
+      //display success
+      setSuccessMessage(approve_brd_response.message);
+      //set selected brd to null
+      setSuccessToast(true);
+      
+    }else{
+      //set errors
+      setError({error: approve_brd_response.error});
+    }
+
+    
+    if (approve_brd_response.error) setError({ error: approve_brd_response.error });
+  };
+
+  const rejectBrd = async () => {
+    //TODO
+    clearErrors();
+
+    approvalData.status = "rejected";
+
+    // console.log("approvalData", approvalData);
+
+    if (approving) return;
+    setApproving(true);
+    reject_brd_response = await approveOrRejectBrd(approvalData);
+
+    setApproving(false);
+    
+    if(reject_brd_response.message){
+      //display success
+      setSuccessMessage(reject_brd_response.message);
+      //set selected brd to null
+      setSuccessToast(true);
+      
+    }else{
+      //set errors
+      setError({error: reject_brd_response.error});
+    }
+
+    
+    if (reject_brd_response.error) setError({ error: reject_brd_response.error });
+  };
+
+  const cancel = () => {
+    setApprove(false);
+    setReject(false);
   };
   
   useEffect(() => {
@@ -159,13 +235,21 @@ export default function Approvals() {
                               </td>
                               {/* Status */}
                               <td>
-                                <div className="bg-white/20 py-2 px-4 rounded-full text-white inline-flex">
+                                <div className={` py-2 px-4 rounded-full text-white inline-flex ${brd.status.toLowerCase() == 'rejected' ? "bg-red-700/50" : (brd.status.toLowerCase() == 'approved' ? "bg-green-900/50" : "bg-white/20")}`}>
                                   {capitalizeFirst(brd.status.replace('_', ' '))}
                                 </div>
                               </td>
 
                               <td>
-                                <div  className="flex gap-0" onClick={() => {setSelectedBrd(brd); console.log("selectedBrd", selectedBrd); }}>
+                                <div  className="flex gap-0" onClick={() => {
+                                                                              setSelectedBrd(() => brd); 
+                                                                              setApprovalData(() => ({...approvalData, board_document_uuid: brd.uuid,
+                                                                              partner_uuid: brd.partner_uuid,
+                                                                              delegate_email: brd.delegate_email}) );
+
+                                                                              console.log("selectedBrd", brd); 
+                                                                            }
+                                                                      }>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
                                         <path strokeLinecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                                     </svg>
@@ -256,13 +340,19 @@ export default function Approvals() {
         </div>) :
         (
           <>
-          {is_previewing_doc && (
+          {is_previewing_doc && selectedBrd && (
             <FilePreviewModal
               filePath={selectedBrd?.file_path}
               closeModal={handleCloseModal}
             />
           )}
+          
           <div id="approvals" className="flex flex-col p-12">
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
+              </div>
+            )} 
             <div onClick={() => setSelectedBrd(null)} className="mb-8">
               <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
                 <svg
@@ -322,7 +412,31 @@ export default function Approvals() {
             setOpenDrawer={setOpenDrawer}
             openDrawer={openDrawer}
           >
-            <div className="border-1 border-white/20 rounded-xl p-4 flex mx-4">
+            <div className="border-1 border-white/20 rounded-xl p-4 flex mx-4 relative">
+
+              {
+                (approve || reject) &&
+                  <div className={`absolute left-0 top-0 w-full p-3 border border-[#212121] rounded-[8px] z-10 bg-[#313131]`} >
+                  {approve && (
+                    <Confirm
+                      yestext="Yes"
+                      notext="No"
+                      type="approve"
+                      onYes={() => approveBrd()}
+                      onNo={cancel}
+                    />
+                  )}
+                  {reject && (
+                    <Confirm
+                      yestext="Reject"
+                      notext="Cancel"
+                      type="reject"
+                      onYes={() => rejectBrd()}
+                      onNo={cancel}
+                    />
+                  )}
+                </div>
+              }
 
               <div className="">
                 <p className="text-white">
@@ -337,13 +451,15 @@ export default function Approvals() {
 
               <div className="flex h-full items-center px-2 w-32 ml-auto">
 
-                <div class="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center">
+                <div class="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
+                  onClick={() => setReject(true)}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12">
                     </path>
                   </svg>
                 </div>
 
-                <div class="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center ml-4">
+                <div class="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center ml-4"
+                  onClick={() => setApprove(true)}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5">
                     </path>
@@ -359,16 +475,7 @@ export default function Approvals() {
         )
       }
       
-      {
-        displaySuccess &&
-        <div className="fixed top-0 left-0 z-10 w-screen h-screen flex justify-center items-end">
-            <div className="min-w-48 rounded-xl bg-gray-800 text-white p-4 mb-12 flex spacing-x-4">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" class="w-6 h-6">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                </svg>&nbsp;&nbsp; {successMessage}
-            </div>
-        </div>       
-      }
+      <Success message={successMessage} visible={successToast} action={successAction} />
     </>
   );
 }

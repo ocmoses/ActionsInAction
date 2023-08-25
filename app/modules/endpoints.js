@@ -68,6 +68,7 @@ const RemoteEndpoints = {
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
+
   //Notifications
   GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
@@ -84,6 +85,7 @@ const RemoteEndpoints = {
   DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
 
   GET_RESOLUTION_DOCUMENTS: `${apiURL}/v2/admin/board-resolution-documents`,
+  APPROVE_REJECT_BRD: `${apiURL}/v2/admin/board-resolution-documents/approve-or-reject`,
   ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
   ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
   ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
@@ -99,8 +101,13 @@ const RemoteEndpoints = {
 
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
+
 //Admin Reports
-  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`
+  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
+  PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
+  PORTAL_VISITOR_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
+  PORTAL_PARTNER_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`
 
 }
 export default RemoteEndpoints

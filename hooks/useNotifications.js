@@ -33,7 +33,7 @@ export default function useNotifications(){
                 'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
               },
             }
-          );
+          ); 
           // if (response.status === 401) {
           //   redirect(NextEndPoints.LOGIN_ADMIN)
           //   return
@@ -100,7 +100,7 @@ export default function useNotifications(){
           {
             cache: "no-store",
             next: { revalidate: 120 },
-            method: 'PUT',
+            // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
               'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
@@ -155,7 +155,7 @@ export default function useNotifications(){
           {
             cache: "no-store",
             next: { revalidate: 120 },
-            method: 'PUT',
+            // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
               'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,

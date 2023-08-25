@@ -122,10 +122,17 @@ export default function Compliance({ params }) {
           compliance: e.message,
         });
       });
-      if (!response)
+      if (!response){
         return setError({
           compliance: "This request has no response data available",
         });
+      }
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {

@@ -236,14 +236,15 @@ export default function Approvals() {
         )}
 
 
-
+{/*
       <section id="partner_reporting_bar_charts">
           <div className="bg-white/10 min-h-[250px] min-w-[280px]">
+          
             <PartnerReportBarChart/>
           </div>
       </section>
 
-
+  */}
       </div>
     </div>
   );

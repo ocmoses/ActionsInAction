@@ -74,7 +74,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
       } else {
         setSendAction(true);
         const response = await axios.post(
-          RemoteEndpoints.PORTAL_PARTNER_CONTACT_MAIL,
+          RemoteEndpoints.PARTNER_PORTAL_CONTACT_MAIL,
           formData,
           {
             headers: {

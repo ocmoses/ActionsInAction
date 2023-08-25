@@ -19,7 +19,7 @@ function Layout({ children }) {
     <RouteGuardAdmin>
       <div
         id="admindashboard"
-        className="mx-auto flex grow flex-col h-screen  w-screen bg-[#111111]"
+        className="mx-auto flex flex-col h-full w-screen pb-[50px] bg-[#111111]"
       >
         <NavbarAdminDashboard
           open={open}

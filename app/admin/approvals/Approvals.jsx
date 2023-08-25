@@ -67,7 +67,6 @@ export default function Approvals() {
   const activeStage = "board_resolution_document";
   const [openDrawer, setOpenDrawer] = useState(false);
 
-
   const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
 
 
@@ -113,7 +112,6 @@ export default function Approvals() {
       //set errors
       setError({error: approve_brd_response.error});
     }
-
     
     if (approve_brd_response.error) setError({ error: approve_brd_response.error });
   };
@@ -142,7 +140,6 @@ export default function Approvals() {
       //set errors
       setError({error: reject_brd_response.error});
     }
-
     
     if (reject_brd_response.error) setError({ error: reject_brd_response.error });
   };
@@ -151,13 +148,14 @@ export default function Approvals() {
     setApprove(false);
     setReject(false);
   };
-  
+
+    
   useEffect(() => {
     clearErrors();
     get_brds()
     setProcessing(false);
     
-  }, [selectedBrd]);
+  },[]);
 
   return (
     <>
@@ -242,12 +240,12 @@ export default function Approvals() {
 
                               <td>
                                 <div  className="flex gap-0" onClick={() => {
-                                                                              setSelectedBrd(() => brd); 
+                                                                              setSelectedBrd(brd);
                                                                               setApprovalData(() => ({...approvalData, board_document_uuid: brd.uuid,
                                                                               partner_uuid: brd.partner_uuid,
                                                                               delegate_email: brd.delegate_email}) );
 
-                                                                              console.log("selectedBrd", brd); 
+                                                                              console.log("selectedBrd", selectedBrd); 
                                                                             }
                                                                       }>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
@@ -258,8 +256,6 @@ export default function Approvals() {
                               
                         </tr>)
                       }
-
-
                     </tbody>
                   </table>
                   <div className="w-full flex justify-end">
@@ -394,14 +390,14 @@ export default function Approvals() {
                 <p className="text-white/20">Board resolution document for {selectedBrd.company_name}</p>
               </div>
 
-              <div class="inline-flex gap-1 items-center rounded-2xl bg-white/10 py-[3px] pl-[10px] pr-[14px] w-40" >
-                <span class="text-[#999999]">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-[12px] min-w-[12px] h-[12px]">
+              <div className="inline-flex gap-1 items-center rounded-2xl bg-white/10 py-[3px] pl-[10px] pr-[14px] w-40" >
+                <span className="text-[#999999]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[12px] min-w-[12px] h-[12px]">
                     <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd">
                     </path>
                   </svg>
                 </span>
-                <span class="text-white text-[11px]">{capitalizeFirst(selectedBrd.status.replace("_", " "))}</span>
+                <span className="text-white text-[11px]">{capitalizeFirst(selectedBrd.status.replace("_", " "))}</span>
               </div>
 
             </div>
@@ -451,16 +447,16 @@ export default function Approvals() {
 
               <div className="flex h-full items-center px-2 w-32 ml-auto">
 
-                <div class="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
+                <div className="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
                   onClick={() => setReject(true)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12">
                     </path>
                   </svg>
                 </div>
 
-                <div class="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center ml-4"
+                <div className="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center ml-4"
                   onClick={() => setApprove(true)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5">
                     </path>
                   </svg>

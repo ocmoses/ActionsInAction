@@ -2,9 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function FilePreviewModal({ file, filePath, closeModal }) {
-  const fileExtension = file
+  let fileExtension = file
     ? file.name.split(".").pop().toLowerCase()
     : filePath.split(".").pop().toLowerCase();
+
+  if(!fileExtension){
+    let filePathArray = filePath.split(".");
+    fileExtension = filePathArray[filePathArray.length - 1];
+  }
+
   const isPdf = fileExtension === "pdf";
   const isDoc = ["doc", "docx"].includes(fileExtension);
   const isVideo = ["mp4", "webm", "ogg"].includes(fileExtension);

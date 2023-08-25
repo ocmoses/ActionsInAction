@@ -57,7 +57,7 @@ export default function Approvals() {
         {reportStatistics && (
           <section id="partner_statistics">
             
-              <div className="m-auto my-10  flex flex-row gap-[15px] flex-wrap">
+              <div className="m-auto my-10  flex flex-row gap-[10px] flex-wrap">
 {/* Reports for partners */}
                 <PartnerStatisticsReport
                   title="NEW PARTNER"

@@ -8,7 +8,7 @@ export default function PartnerStatisticsReport({title,count,percentage,rate}){
 
   return(
 
-    <div id="statistics" className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[280px] rounded-lg">
+    <div id="statistics" className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg">
     <div className="px-5 py-5 flex  flex-col">
         <div className="mb-[15px] text-gray-400">
         {title}

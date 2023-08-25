@@ -11,6 +11,7 @@ import axios from "axios";
 export default function Approvals() {
 //const { fetchData }=  useAdmins()
   const [reportStatistics, setReportStatistics] = useState(null);
+  const [fetching, setFetching]=useState(false);
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -21,7 +22,9 @@ export default function Approvals() {
       // } else {
       //   console.error("Error fetching data:", response.message);
       // }
+      if(fetching) return
       try {
+        setFetching(true);
         const response = await axios.get(
           RemoteEndpoints.PARTNER_STATISTICS,
           {
@@ -31,8 +34,10 @@ export default function Approvals() {
           }
         );
         console.log("this is my response", response);
+        setFetching(false);
         setReportStatistics(response.data.data);
       } catch (error) {
+        setFetching(false);
         console.error("Error fetching data:", error);
       }
     };

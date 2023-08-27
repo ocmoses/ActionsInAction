@@ -29,7 +29,7 @@ import {useStoreState} from 'easy-peasy';
 
 export default function Compliance({ params }) {
   const users = useStoreState((state) => state.users);
-  // console.log("Users:....", users);
+  // console.log("usePartners:....", usePartners());
   const router = useRouter();
   const {getAllPartnerRoles} = useRoles();
   const { processing, setProcessing } = useProcessing();  
@@ -86,6 +86,14 @@ export default function Compliance({ params }) {
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
+
+  let admin_users = partner.partner_admin_users;
+  let signingDirector = admin_users.find(user => user.role == 'director');
+  let signingDelegate = admin_users.find(user => user.role == 'delegate');
+  let signingWitness = admin_users.find(user => user.role == 'witness');
+
+  
+  console.log("signingDirector", signingDirector);
 
 
   let get_service_response = null;
@@ -175,6 +183,14 @@ export default function Compliance({ params }) {
     get_service_types();
     get_all_partner_roles();
     get_all_admin_partners();
+
+    if(signingDirector){
+      setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
+    }else if(signingDelegate){
+      setSignatories({...signatories, delegate: {email: signingDelegate.email, firstname: signingDelegate.firstname, lastname: signingDelegate.lastname}});
+    }else if(signingWitness){
+      setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
+    }
     
   }, []);
 
@@ -194,7 +210,7 @@ export default function Compliance({ params }) {
       filterComplianceRequirements(partner);
       filterApprovalFields(partner);
 
-      const [_category] = params.params;
+      const [_category] = params.params; //partner.uuid
       const _selectedCategory = partner?.categories?.find(
         (c) => c.category_uuid === _category
       );
@@ -205,6 +221,8 @@ export default function Compliance({ params }) {
       setSelectedCategory(_filtered_selectedCategory);
       const _stages = getStages(_filtered_selectedCategory, categories);
       setStages(_stages);
+    }else{
+      router.push(`/dashboard/compliance/${categories[0].uuid}`);
     }
     // console.log({ partner })
   }, [partner, params, selectedCategory]);
@@ -261,33 +279,37 @@ export default function Compliance({ params }) {
   };
 
   const create_partner = async (data) => {
+
+    console.log('create_data', data);
+
+    let formData = new FormData();
+
+    // console.log("Object.keys(data)", Object.keys(data));
+
+    Object.keys(data).forEach(element => {
+      formData.append(element, data[element]);
+    });
+
     if (creatingPartner) return;
     setCreatingPartner(true);
-    create_partner_response = await createPartner(data);
+    create_partner_response = await createPartner(formData);
 
-    //Just setting the signatories anyway
-    // if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
-    //   setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    // }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
-    //   setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    // }else{
-    //   setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-    // }
-    ///////////////////////////////////////
-    
     if (create_partner_response.error) setError({ error: create_partner_response.error })
     else {
         console.log('create_partner_response', create_partner_response);
-
+        
         if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
           setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
         }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
           setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-        }else{
+        }else if(data.role == partnerRoles.find(role => role.role_name == 'witness').uuid){
           setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
         }
         
     }
+
+    setData({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
+
     setCreatingPartner(false);
     setAddDirectorModal(false);
     setAddDelegateModal(false);
@@ -314,15 +336,7 @@ export default function Compliance({ params }) {
       return;
     }
 
-    let formData = new FormData();
-
-    // console.log("Object.keys(data)", Object.keys(data));
-
-    Object.keys(data).forEach(element => {
-      formData.append(element, data[element]);
-    });
-
-    create_partner(formData);
+    create_partner(data);
   };
 
   return (
@@ -352,79 +366,83 @@ export default function Compliance({ params }) {
           <FormErrors error={errors.compliance} />
         </div>
       )}
-      {/* Just for tests */}
-      <div className="my-8 max-w-6xl">
-        {
-          users.role == 'superAdmin' && 
-          <CallToAction
-            style={{border: "1px solid rgba(255,255,255,.1)"}}
-            message="Your contract is ready click here to sign"
-            description="Outline contract conditions and give contract warrantees."
-            onclick={() => {showContracts()}}
-            button={'Sign your contract'}
-            color="text-gray-200"
-            desccolor="text-[#999999]"
-            bg='bg-white/10'
-            border="border-transparent"
-            icon={
-              <div className="relative inline-flex">
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                  stroke="currentColor" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
+      {/* Only when we have not selected all signees */}
+      {
+        users.role == 'superAdmin' && !(signingDirector && 
+        signingDelegate && signingWitness) ? 
+
+        (<div className="my-8 max-w-6xl">          
+            <CallToAction
+              style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
+              message="Your contract is ready click here to sign"
+              description="Outline contract conditions and give contract warrantees."
+              onclick={() => {showContracts()}}
+              button={'Sign your contract'}
+              color="text-gray-200"
+              desccolor="text-[#999999]"
+              bg='bg-white/10'
+              border="border-transparent"
+              icon={
+                <div className="relative inline-flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                    stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" fill="yellow" 
-                    className="w-4 h-6 absolute top-8 right-2">
-                  <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
-                </svg>
-              </div>            
+                    stroke="currentColor" className="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" fill="yellow" 
+                      className="w-4 h-6 absolute top-8 right-2">
+                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
+                  </svg>
+                </div>            
 
-            }
-          /> 
-        }
-               
-      </div>
+              }
+            />                        
+        </div>) :
 
+        (
+          <div className="my-8 max-w-6xl">  
+            <CallToAction
+              style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
+              message="Your contract is ready click here to sign"
+              description="Outline contract conditions and give contract warrantees."
+              onclick={() => {showAgreement()}}
+              button={'Sign your contract'}
+              color="text-gray-200"
+              desccolor="text-[#999999]"
+              bg='bg-white/10'
+              border="border-transparent"
+              icon={
+                <div className="relative inline-flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                    stroke="currentColor" className="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" fill="yellow" 
+                      className="w-4 h-6 absolute top-8 right-2">
+                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                   
+          }
+        />
+        </div>)
+
+      }
+      
       {/* 
-      <div className="my-8 max-w-6xl">
-        {
-          //signers selected but you have not signed
-          users.role == 'superAdmin' && 
-          <CallToAction
-            style={{border: "1px solid rgba(255,255,255,.1)"}}
-            message="Your contract is ready, click here to sign"
-            description="Describe the event and give further instructions if needed, include a call to action"
-            onclick={() => showAgreement()}
-            label="Sign your contract"
-            color="text-green-700"
-            desccolor="text-[#999999]"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className=" w-[28px] h-[28px]"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                />
-              </svg>
-            }
-          />
-        }
-        
-      </div>
-
       <div className="my-8 max-w-6xl">
         {
           //Contract has been signed

@@ -58,7 +58,6 @@ export default function Footer() {
   return (
     <>
       {/* //================this is the popup==============================================================================================================*/}
-
       {popUp && (
         <PopUp closePopUp={closePopUp}>
           {!contactSubmit ? (
@@ -68,8 +67,6 @@ export default function Footer() {
           )}
         </PopUp>
       )}
-      
-
       {/*//==============================================================================================================================*/}
       <section className="w-full">
         <div className="w-full min-h-[200px] border-t-1 border-white/10 ">

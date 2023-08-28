@@ -22,7 +22,7 @@ export default function PopUp({ closePopUp, submitForm }) {
     contact_type: "portal_visitor",
     name: "",
     email: "",
-    subject: "General Enquiry",
+    subject: "",
     message: "",
   });
 
@@ -47,7 +47,7 @@ export default function PopUp({ closePopUp, submitForm }) {
             },
           }
         );
-        console.log("this is my response", response);
+        // console.log("this is my response", response);
         setGetSubjects(response.data.data);
         setFetching(false);
       } catch (error) {
@@ -68,16 +68,16 @@ export default function PopUp({ closePopUp, submitForm }) {
     try {
       clearError();
       if (name === "") {
-        setErrorMessage("Name Error: Check the field to continue");
+        setErrorMessage("Name field is empty!");
       } else if (email === "") {
-        setErrorMessage("Email Error: Check the field to continue");
+        setErrorMessage("Email field is empty!");
       } else if (!/\S+@\S+\.\S+/.test(email)) {
         // Check for valid email format
         setErrorMessage("Invalid Email Format");
       } else if (subject === "") {
-        setErrorMessage("Subject Error: Check the field to continue");
+        setErrorMessage("Subject field is empty!");
       } else if (message === "") {
-        setErrorMessage("Message Error: Check the field to continue");
+        setErrorMessage("Message field is empty!");
       } else {
         setSendAction(true);
         const response = await axios.post(
@@ -154,18 +154,18 @@ export default function PopUp({ closePopUp, submitForm }) {
           value={formData.subject}
           onChange={handleChange}
         >
-          {fetching && (
+          {!fetching && <SelectInputOption value="" label="" />}
+          {fetching ? (
             <SelectInputOption value="" label="Fetching Subjects..." />
-          )}
-          {!fetching &&
-            getSubjects?.length > 0 &&
-            getSubjects.map((eachSubject) => (
+          ) : (
+            getSubjects?.map((eachSubject) => (
               <SelectInputOption
                 key={eachSubject.subject}
                 value={eachSubject.subject}
                 label={eachSubject.subject}
               />
-            ))}
+            ))
+          )}
         </SelectInput>
 
         <p className="text-white pb-3">What problems are you facing?</p>

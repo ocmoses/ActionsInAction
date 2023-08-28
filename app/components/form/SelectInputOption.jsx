@@ -1,4 +1,4 @@
-function SelectInputOption({ className, label, value }) {
+function SelectInputOption({ className, label, value}) {
   return (
     <option
       className={

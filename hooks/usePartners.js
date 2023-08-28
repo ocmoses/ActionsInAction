@@ -1001,61 +1001,10 @@ const usePartners = () => {
     }
   };
 
-  const downloadContract = async () => {
-    try {
-      
-      setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(':partner_uuid', states.partners.partner.uuid)}`,
-        {
-          cache: "no-store",
-          next: { revalidate: 120 },
-          headers: {
-            apikey: process.env.NEXT_PUBLIC_APIKEY,
-            token: states.users.token,
-            "Content-Type": "application/json",
-            Authorization: `bearer ${states.users.token}`,
-          },
-        }
-      );
-
-      // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 401) {
-        Logout();
-        return;
-      }
-      if (!response)
-        return {
-          error: "This request has no response available",
-        };
-
-      if (response.status === 401) {
-        redirect(NextEndPoints.LOGIN)
-        return
-      }
-
-      const result = await response.json();
-      setProcessing(false);
-      if (result?.success) {
-        const data = result?.data['dynamic-details'];
-
-        return {
-          data
-        };
-      }
-      return {
-        error:
-          result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
-      };
-    } catch (error) {
-      console.log({ error });
-      return {
-        error:
-          error.message ??
-          "Something went wrong. Please check your connection and try again",
-      };
-    }
+  const downloadContract = () => {
+    return RemoteEndpoints.DOWNLOAD_CONTRACT
+    .replace(':partner_uuid', states.partners.partner.uuid)
+    .replace(':type', 'not_signed');
   };
 
 

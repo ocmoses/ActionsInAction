@@ -34,6 +34,8 @@ function Compliance() {
     nextStage,
   } = usePartners();
 
+  console.log("usePartners", usePartners);
+
   const [retryTIN, setRetryTIN] = useState(false);
   const [checkingTIN, setCheckingTIN] = useState(false);
   const [lastTINChecked, setLastTINChecked] = useState(null);

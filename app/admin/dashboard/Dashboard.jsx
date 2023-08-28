@@ -60,6 +60,9 @@ export default function Dashboard({ allPartners }) {
           filterPartner(partner, categories);
         });
       }
+
+      console.log("allPartners.partners", allPartners.partners);
+      
       setPartners(allPartners.partners);
       if (allPartners.error) {
         setProcessing(false);

@@ -93,7 +93,8 @@ export default function Compliance({ params }) {
   let signingWitness = admin_users.find(user => user.role == 'witness');
 
   
-  console.log("signingDirector", signingDirector);
+  console.log("admin_users", admin_users);
+  // console.log("signingDirector", signingDirector);
 
 
   let get_service_response = null;

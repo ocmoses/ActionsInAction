@@ -203,15 +203,14 @@ export default function ContractSigning(){
     return <>
                 <div className="flex flex-col justify-center items-center pt-8">
 
-                    <div className="mb-4 p-8 rounded-xl flex justify-end items-center pt-8 text-white w-4xl">
-                        <button
-                            onClick={downloadContract}
-                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white ml-auto flex"
+                    <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
+                        <a href={downloadContract()}
+                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>&nbsp;Download
-                        </button>
+                        </a>
                     </div>
                     
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">

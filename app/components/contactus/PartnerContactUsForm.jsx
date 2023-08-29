@@ -107,7 +107,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
       </button>
 
       <h2 className="text-white font-mtn-bold text-2xl mb-4">Contact Us</h2>
-      <p>
+      <p className="text-gray-400">
         Let us know what problem you are facing. If you have general questions ,
         check out our &nbsp;
         <Link
@@ -130,7 +130,6 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
           value={formData.subject}
           onChange={handleChange}
         >
-        
         {!fetching && <SelectInputOption value="" label="" />}
           {fetching ? (
             <SelectInputOption value="" label="Fetching Subjects..." />

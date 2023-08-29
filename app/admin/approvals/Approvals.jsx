@@ -161,7 +161,7 @@ export default function Approvals() {
     <>
       
       {!selectedBrd ? 
-        (<div id="approvals" className="flex flex-cols pb-12">
+        (<div id="approvals" className="flex flex-cols pb-12 min-h-screen">
           <div className="w-full pt-[72px] px-12 mx-auto">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
@@ -343,7 +343,7 @@ export default function Approvals() {
             />
           )}
           
-          <div id="approvals" className="flex flex-col p-12">
+          <div id="approvals" className="flex flex-col p-12 min-h-screen">
             {errors && errors["error"] && (
               <div className="mb-6">
                 <FormErrors error={errors["error"]} />

@@ -53,7 +53,9 @@ export default function Compliance({ params }) {
   } = usePartners();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
-  const {user} = useUsers();
+  const {user, role} = useUsers();
+
+  console.log("useUsers()", useUsers());
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -122,6 +124,7 @@ export default function Compliance({ params }) {
   };
 
   const partner_select_service = async (data) => {
+
     clearErrors();
     if (selectingService) return;
     setSelectingService(true);
@@ -184,12 +187,17 @@ export default function Compliance({ params }) {
 
 
   useEffect(() => {
+    
     setProcessing(false);
     setRouteloading(false);
-    get_service_types();
-    get_all_partner_roles();
-    get_all_admin_partners();
-
+    
+    if(role == 'superAdmin'){
+      get_service_types();
+      get_all_partner_roles();
+      get_all_admin_partners();
+  
+    }
+    
     if(signingDirector){
       setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
     }else if(signingDelegate){

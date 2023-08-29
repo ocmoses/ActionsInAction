@@ -24,6 +24,7 @@ import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import TextInput from "@/app/components/form/TextInput";
 import { fieldsCounts, fieldCounts } from "@/app/modules/constants";
 import useRoles from "@/hooks/useRoles";
+import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
 
 
@@ -52,6 +53,7 @@ export default function Compliance({ params }) {
   } = usePartners();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
+  const {user} = useUsers();
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -81,19 +83,20 @@ export default function Compliance({ params }) {
   const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
   const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(false);
 
   const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
 
-  let admin_users = partner.partner_admin_users;
-  let signingDirector = admin_users.find(user => user.role == 'director');
-  let signingDelegate = admin_users.find(user => user.role == 'delegate');
-  let signingWitness = admin_users.find(user => user.role == 'witness');
+  let selected_admin_users = partner.selected_partner_admin_users;
+  let signingDirector = selected_admin_users.find(user => user.role == 'director');
+  let signingDelegate = selected_admin_users.find(user => user.role == 'delegate');
+  let signingWitness = selected_admin_users.find(user => user.role == 'witness');
 
   
-  console.log("admin_users", admin_users);
+  console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
 
 
@@ -162,17 +165,19 @@ export default function Compliance({ params }) {
     console.log("signatories", signatories);
 
     for(let prop in signatories){
-      data.email.push(signatories[prop].email);
+      if(signatories[prop]){
+        data.email.push(signatories[prop].email);
+      }      
     }
 
-    if(data.email.length == 3){
+    if((signatories.director || signatories.delegate) && signatories.witness){
       if (submitingContractSignatories) return;
       setSubmitingContractSignatories(true);
       submit_signatories_response = await submitAllSignatories(data);
       setSubmitingContractSignatories(false);
       if (submit_signatories_response.error) setError({ error: submit_signatories_response.error });
     }else{
-      setError({error: "Please select all signatories"});
+      setError({error: "You must choose  a director or delegate and a witness"});
     }
     
   };
@@ -283,6 +288,8 @@ export default function Compliance({ params }) {
 
     console.log('create_data', data);
 
+    
+
     let formData = new FormData();
 
     // console.log("Object.keys(data)", Object.keys(data));
@@ -337,6 +344,11 @@ export default function Compliance({ params }) {
       return;
     }
 
+    // if(data.role == partnerRoles.find((role) => role.role_name == 'delegate').uuid && !uploadedFile){
+    //   setCreationError("Please select a file");
+    //   return;
+    // }
+
     create_partner(data);
   };
 
@@ -370,9 +382,9 @@ export default function Compliance({ params }) {
       {/* Only when we have not selected all signees */}
       {
         users.role == 'superAdmin' && !(signingDirector && 
-        signingDelegate && signingWitness) ? 
+        signingDelegate && signingWitness) &&
 
-        (<div className="my-8 max-w-6xl">          
+        <div className="my-8 max-w-6xl">          
             <CallToAction
               style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
               message="Your contract is ready click here to sign"
@@ -404,9 +416,12 @@ export default function Compliance({ params }) {
 
               }
             />                        
-        </div>) :
+        </div>
+      }
 
-        (
+      { (signingDirector || 
+        signingDelegate) && signingWitness &&
+
           <div className="my-8 max-w-6xl">  
             <CallToAction
               style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
@@ -437,10 +452,9 @@ export default function Compliance({ params }) {
                   </svg>
                 </div>
                    
-          }
-        />
-        </div>)
-
+              }
+            />
+        </div>
       }
       
       {/* 
@@ -814,6 +828,28 @@ export default function Compliance({ params }) {
               </div> 
             </div>
 
+            <div className="mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={user.uuid}
+                  onClick={() => {
+                    setSignatories({...signatories, director: {firstname: user.first_name, lastname: user.last_name, email: user.email}}); 
+                    setSelectDirectorModal(false); setContractSignatriesModal(true);
+                    }
+                  }>
+
+              <div className="w-12">
+                <div className="w-8 h-8 flex bg-black rounded-full justify-center items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="yellow" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1 flex flex-col justify-center cursor-pointer">
+                <p className="text-white text-md mb-2">{`Me`}</p>
+                <span className="text-gray-300 text-xs">{user.email}</span>
+                {/* <span className="text-yellow-500 text-xs hidden hover:inline-flex border-1 border-yellow-500 py-1 px-4 rounded-full">Add a director</span> */}
+              </div>
+            
+            </div>
+
             {
               adminPartners && adminPartners.map(partner => partner.role.role_name == 'director' ? 
               
@@ -1023,8 +1059,13 @@ export default function Compliance({ params }) {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                     <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                   </svg>
-                  <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>
-                  <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {setData({...data, file: e.target.files[0]}); console.log("data", data)}}/>                   
+                  {uploadedFile ? 
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" onClick={() => {setReset(Date.now()); setUploadedFile(false); }}>
+                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
+                          </svg>
+                          :
+                  <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#resolution_document").click()}>Choose file</button>}
+                  <input type="file" className="opacity-0 w-1 h-1" id="resolution_document" accept=".pdf" onChange={(e) => {setData({...data, file: e.target.files[0]}); setUploadedFile(true); console.log("data", data)}}/>                   
                 </div>
 
               </div>          

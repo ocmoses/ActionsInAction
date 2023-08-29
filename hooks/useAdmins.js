@@ -207,14 +207,15 @@ export default function useAdmins() {
         }
       );
 
-      console.log("response", response);
-      console.log("response.status", response.status);
-      console.log("response.status === 401", response.status === 401);
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
 
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         LogoutAdmin();
         return;
       }
+
       if (!response)
         return {
           error: "This request has no response available",
@@ -499,9 +500,60 @@ export default function useAdmins() {
     }
   };
 
+  const approveOrRejectBrd = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.APPROVE_REJECT_BRD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
 
+      console.log('RemoteEndpoints.APPROVE_REJECT_BRD', RemoteEndpoints.APPROVE_REJECT_BRD);
+      console.log('Approve result', result);
+      console.log('states.admins.token', states.token);
 
-/// //////////////////////////////////////////afolabi's functions starts here
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Approval/rejection message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  /// //////////////////////////////////////////afolabi's functions starts here
   const fetchData = async (url, apikey) => {
     try {
       const response = await axios.get(
@@ -519,10 +571,7 @@ export default function useAdmins() {
       return {success: false, message: error.message}
     }
   };
-
-
-/// //////////////////////////////////////////afolabi's functions Ends here
-
+  /// //////////////////////////////////////////afolabi's functions Ends here
 
 
   return {
@@ -539,6 +588,7 @@ export default function useAdmins() {
     getAllDepartments,
     deleteAdmin,
     fetchData,
-    getAllBoardResolutionDocuments
+    getAllBoardResolutionDocuments,
+    approveOrRejectBrd
   };
 }

@@ -73,7 +73,7 @@ function Login({ params }) {
   };
   return (
     <>
-      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">
+      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto min-h-screen">
         <form method="POST" onSubmit={handleLogin}>
           <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
             <span

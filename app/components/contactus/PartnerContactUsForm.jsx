@@ -22,7 +22,7 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
     contact_type: "logged_in_partner",
     name: partnerName,
     email: partnerEmail,
-    subject: "I want to request a feature",
+    subject: "",
     message: "",
   });
 
@@ -68,9 +68,9 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
     try {
       clearError();
       if (subject === "") {
-        setErrorMessage("Subject Error: Check the field to continue");
+        setErrorMessage("Subject field is empty!");
       } else if (message === "") {
-        setErrorMessage("Message Error: Check the field to continue");
+        setErrorMessage("Message field is empty!");
       } else {
         setSendAction(true);
         const response = await axios.post(
@@ -131,19 +131,18 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
           onChange={handleChange}
         >
         
-          {fetching && (
+        {!fetching && <SelectInputOption value="" label="" />}
+          {fetching ? (
             <SelectInputOption value="" label="Fetching Subjects..." />
-          )}
-          {!fetching &&
-            getSubjects?.length > 0 &&
-            getSubjects.map((eachSubject) => (
+          ) : (
+            getSubjects?.map((eachSubject) => (
               <SelectInputOption
                 key={eachSubject.subject}
                 value={eachSubject.subject}
                 label={eachSubject.subject}
               />
-            ))}
-            <SelectInputOption value="" label="Choose Here" />
+            ))
+          )}
         </SelectInput>
 
         <p className="text-white pb-3">What problems are you facing?</p>

@@ -853,38 +853,45 @@ export const filterPartner = (partnerInfo, Categories) => {
           }
         });
       }
-      partnerInfo.Percent = 0;
-      let Percent = 0;
-      let sectionCount = 0;
-      if (!Util.isEmpty(sections)) {
-        const count = {};
-        const completed = {};
-        for (const cuuid in sections) {
-          sections[cuuid].percent = 0;
-          if (!count[cuuid]) count[cuuid] = 0;
-          if (!completed[cuuid]) completed[cuuid] = 0;
-          for (const stage in sections[cuuid]) {
-            if (
-              stage !== "master" &&
-              stage !== "status" &&
-              stage !== "status_date" &&
-              stage !== "percent"
-            ) {
-              count[cuuid]++;
-              if (sections[cuuid][stage].completed === true) completed[cuuid]++;
-            }
-          }
-          if (completed[cuuid] > 0) {
-            sections[cuuid].percent = Math.ceil(
-              (completed[cuuid] / count[cuuid]) * categoryCompletionPercentage
-            );
-            Percent += sections[cuuid].percent;
-          }
-          sectionCount++;
-        }
-        partnerInfo.Percent =
-          Percent > 0 && sectionCount ? Math.ceil(Percent / sectionCount) : 0;
-      }
+
+      let categoriesCount = partnerInfo.categories.length;
+
+      let totalPercentage = 0;
+      partnerInfo.categories.forEach((category) => totalPercentage += category.percentage);
+
+      partnerInfo.Percent = categoriesCount == 0 ? 0 : Math.round(totalPercentage/categoriesCount);
+
+      // let Percent = 0;
+      // let sectionCount = 0;
+      // if (!Util.isEmpty(sections)) {
+      //   const count = {};
+      //   const completed = {};
+      //   for (const cuuid in sections) {
+      //     sections[cuuid].percent = 0;
+      //     if (!count[cuuid]) count[cuuid] = 0;
+      //     if (!completed[cuuid]) completed[cuuid] = 0;
+      //     for (const stage in sections[cuuid]) {
+      //       if (
+      //         stage !== "master" &&
+      //         stage !== "status" &&
+      //         stage !== "status_date" &&
+      //         stage !== "percent"
+      //       ) {
+      //         count[cuuid]++;
+      //         if (sections[cuuid][stage].completed === true) completed[cuuid]++;
+      //       }
+      //     }
+      //     if (completed[cuuid] > 0) {
+      //       sections[cuuid].percent = Math.ceil(
+      //         (completed[cuuid] / count[cuuid]) * categoryCompletionPercentage
+      //       );
+      //       Percent += sections[cuuid].percent;
+      //     }
+      //     sectionCount++;
+      //   }
+      //   partnerInfo.Percent =
+      //     Percent > 0 && sectionCount ? Math.ceil(Percent / sectionCount) : 0;
+      // }
       partnerInfo.sections = sections;
       partnerInfo.edittable = edittable;
       partnerInfo.allowedCategories = AllowedCategories(registeredCategories);

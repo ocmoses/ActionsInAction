@@ -9,26 +9,26 @@ export default function PartnerStatisticsReport({title,count,percentage,rate}){
   return(
 
     <div id="statistics" className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg animate-[slide-down-fade_1s_ease-in-out]">
-    <div className="px-5 py-5 flex  flex-col">
-        <div className="mb-[15px] text-gray-400">
-        {title}
-        </div>
-        <h2 className="text-[30px] text-white font-mtn font-semibold">
-        {formatNumber(parseInt(count))}
-        </h2>
-        <div className='text-gray-400'>
-          {
-            rate == 'UP' ? 
-            <span className="text-green-400"><IncreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>  
-            :
-            <span className="text-rose-400"><DecreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>
-          }
-          &nbsp; Past Month      
-       
-        </div>
+      <div className="px-5 py-5 flex  flex-col">
+          <div className="mb-[15px] text-gray-400">
+          {title}
+          </div>
+          <h2 className="text-[30px] text-white font-mtn font-semibold">
+          {formatNumber(parseInt(count))}
+          </h2>
+          <div className='text-gray-400'>
+            {
+              rate == 'UP' ? 
+              <span className="text-green-400"><IncreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>  
+              :
+              <span className="text-rose-400"><DecreaseArrow iconClass="float-left mt-[5px] mr-[5px]"/> {percentage}%</span>
+            }
+            &nbsp; Past Month      
+        
+          </div>
 
+      </div>
     </div>
-  </div>
 
   )
 }

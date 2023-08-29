@@ -24,7 +24,7 @@ export default function ProfileIcons() {
     nextStage,
   } = usePartners();
   const states = useStoreState((state) => state);
-  console.log("User Object", states.users.token)
+  // console.log("User Object", states.users.token)
   const [popUp, setPopUp] = useState(false);
   const [contactSubmit, setContactSubmit] = useState(false);
   const openPopUp = () => {

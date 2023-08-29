@@ -1,16 +1,17 @@
 import AdminAvartar from "@/app/components/AdminAvartar";
 import Notifications from "@/app/components/Notifications";
-import {useStoreState} from 'easy-peasy'
+import { useStoreState } from "easy-peasy";
 
 export default function AdminProfileIcons() {
-
   const notifications = useStoreState((state) => state.notifications);
+
+ 
   // console.log('notifications from adminProfileIcons', notifications);
 
   return (
     <>
       <div className="flex gap-6 items-center justify-end">
-        <div className="hidden md:flex text-[#888888]">
+        <div className=" text-[#888888] w-[20px] h-[20px] cursor-pointer group/help">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -24,11 +25,9 @@ export default function AdminProfileIcons() {
               strokeLinejoin="round"
               d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
             />
-          </svg>{" "}
-        </div>
-
+          </svg>
+        </div>{" "}
         <Notifications count={notifications.count} />
-
         <AdminAvartar />
       </div>
     </>

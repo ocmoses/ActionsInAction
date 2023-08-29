@@ -122,10 +122,17 @@ export default function Compliance({ params }) {
           compliance: e.message,
         });
       });
-      if (!response)
+      if (!response){
         return setError({
           compliance: "This request has no response data available",
         });
+      }
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
@@ -207,7 +214,7 @@ export default function Compliance({ params }) {
     setOpenDrawer(true);
   };
   return (
-    <div className="max-w-[1158px] mx-auto py-12 px-16">
+    <div className="max-w-[1158px] mx-auto py-12 px-16 min-h-screen">
       <Link href="/admin/dashboard/">
         <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
           <svg

@@ -203,6 +203,7 @@ export default async function RootLayout({ children }) {
         </html>
       ) : ( */}
       <html lang="en">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <head />
         <body>
        {/* <ContactUsPopUp/>*/}

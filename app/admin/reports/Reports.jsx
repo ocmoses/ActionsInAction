@@ -11,6 +11,7 @@ import axios from "axios";
 export default function Approvals() {
 //const { fetchData }=  useAdmins()
   const [reportStatistics, setReportStatistics] = useState(null);
+  const [fetching, setFetching]=useState(false);
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -21,7 +22,9 @@ export default function Approvals() {
       // } else {
       //   console.error("Error fetching data:", response.message);
       // }
+      if(fetching) return
       try {
+        setFetching(true);
         const response = await axios.get(
           RemoteEndpoints.PARTNER_STATISTICS,
           {
@@ -31,8 +34,10 @@ export default function Approvals() {
           }
         );
         console.log("this is my response", response);
+        setFetching(false);
         setReportStatistics(response.data.data);
       } catch (error) {
+        setFetching(false);
         console.error("Error fetching data:", error);
       }
     };
@@ -41,18 +46,18 @@ export default function Approvals() {
   }, []);
 
   return (
-    <div id="reports" className="flex flex-cols pb-12">
+    <div id="reports" className="flex flex-cols pb-12 min-h-screen">
       <div className="w-full pt-[72px] px-12 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
-            <h2>Reports</h2>
+            <h2>Partners</h2>
           </div>
         </div>
 
         {reportStatistics && (
           <section id="partner_statistics">
             
-              <div className="m-auto my-10  flex flex-row gap-[15px] flex-wrap">
+              <div className="m-auto my-10  flex flex-row gap-[10px] flex-wrap">
 {/* Reports for partners */}
                 <PartnerStatisticsReport
                   title="NEW PARTNER"
@@ -231,14 +236,15 @@ export default function Approvals() {
         )}
 
 
-
+{/*
       <section id="partner_reporting_bar_charts">
           <div className="bg-white/10 min-h-[250px] min-w-[280px]">
+          
             <PartnerReportBarChart/>
           </div>
       </section>
 
-
+  */}
       </div>
     </div>
   );

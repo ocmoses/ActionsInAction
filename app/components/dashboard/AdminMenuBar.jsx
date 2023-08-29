@@ -25,7 +25,7 @@ export default function MenuBar({ open }) {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
 
-  console.log('useAdmins', useAdmins());
+  // console.log('useAdmins', useAdmins());
 
   const getFullname = () => {
     

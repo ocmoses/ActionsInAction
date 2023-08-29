@@ -25,7 +25,7 @@ import useLogout from "@/hooks/useLogout";
 
 const usePartners = () => {
   const router = useRouter();
-  const {Logout} = useLogout();
+  const {Logout, LogoutAdmin} = useLogout();
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
@@ -562,7 +562,7 @@ const usePartners = () => {
 
       // console.log('states.users.token in usePartners', states.users.token);
       if (response.status === 400 || response.status === 401 ) {
-        Logout();
+        LogoutAdmin();
         return;
       }
       if (!response)
@@ -811,7 +811,7 @@ const usePartners = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         Logout();
         return;
       }
@@ -1001,6 +1001,12 @@ const usePartners = () => {
     }
   };
 
+  const downloadContract = () => {
+    return RemoteEndpoints.DOWNLOAD_CONTRACT
+    .replace(':partner_uuid', states.partners.partner.uuid)
+    .replace(':type', 'not_signed');
+  };
+
 
   return {
     ...states.partners,
@@ -1030,7 +1036,8 @@ const usePartners = () => {
     submitAllSignatories,
     signBilateralContract,
     verifyPartnerLink,
-    getContractDynamicData
+    getContractDynamicData,
+    downloadContract
   }
 }
 export default usePartners

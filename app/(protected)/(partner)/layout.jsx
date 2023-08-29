@@ -21,7 +21,7 @@ function Layout({ children }) {
           setOpen={setOpen}
           setMenuOpen={setMenuOpen}
         />
-        <div className="flex h-full grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
+        <div className="flex h-full">
           <div
             className={` ${
               open ? "w-[250px]" : "w-[60px] "
@@ -31,7 +31,7 @@ function Layout({ children }) {
               <MenuBar open={open} />
             </div>
           </div>
-          <div className="flex-1 relative border-l border-l-white/20 bg-[#030303]">
+          <div className="h-full flex-1 relative pb-[50px] bg-[#030303] grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
             {children}
           </div>
         </div>

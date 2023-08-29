@@ -4,8 +4,8 @@ import { useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { ContactUsForm , ContactUsSuccess} from "@/app/components/PopUps";
-
+import PopUp, {ContactUsSuccess} from "@/app/components/PopUps";
+import ContactUsForm from "@/app/components/contactus/ContactUsForm";
 //==============================================================================================================================
 //function FooterTitleLink({ title }) {
 //   return (
@@ -58,7 +58,6 @@ export default function Footer() {
   return (
     <>
       {/* //================this is the popup==============================================================================================================*/}
-
       {popUp && (
         <PopUp closePopUp={closePopUp}>
           {!contactSubmit ? (
@@ -68,8 +67,6 @@ export default function Footer() {
           )}
         </PopUp>
       )}
-      
-
       {/*//==============================================================================================================================*/}
       <section className="w-full">
         <div className="w-full min-h-[200px] border-t-1 border-white/10 ">

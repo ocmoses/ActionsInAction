@@ -214,7 +214,7 @@ export default function Compliance({ params }) {
     setOpenDrawer(true);
   };
   return (
-    <div className="max-w-[1158px] mx-auto py-12 px-16">
+    <div className="max-w-[1158px] mx-auto py-12 px-16 min-h-screen">
       <Link href="/admin/dashboard/">
         <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
           <svg

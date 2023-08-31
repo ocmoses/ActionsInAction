@@ -1,6 +1,10 @@
 "use client";
 import Image from "next/image";
 
+
+
+
+
 export default function PopUp({ closePopUp, children }) {
   return (
     <div
@@ -19,6 +23,12 @@ export default function PopUp({ closePopUp, children }) {
     </div>
   );
 }
+
+
+
+
+
+
 
 export const ContactUsSuccess = ({ closePopUp }) => {
   return (
@@ -51,6 +61,9 @@ export const ContactUsSuccess = ({ closePopUp }) => {
   );
 };
 
+
+
+
 export const PartnerContactUsSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -80,3 +93,7 @@ export const PartnerContactUsSuccess = ({ closePopUp }) => {
     </div>
   );
 };
+
+
+
+

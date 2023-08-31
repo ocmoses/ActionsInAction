@@ -46,7 +46,7 @@ export default function Approvals() {
   }, []);
 
   return (
-    <div id="reports" className="flex flex-cols pb-12">
+    <div id="reports" className="flex flex-cols pb-12 min-h-screen">
       <div className="w-full pt-[72px] px-12 mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">

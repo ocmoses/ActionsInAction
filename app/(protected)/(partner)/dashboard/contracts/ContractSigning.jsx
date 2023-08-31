@@ -7,6 +7,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter } from "next/navigation";
 import usePartners from "@/hooks/usePartners";
 import FormErrors from "@/app/components/FormErrors";
+import moment from "moment";
 
 
 
@@ -15,8 +16,8 @@ export default function ContractSigning(){
     const {
         partner,
         signBilateralContract,
-        getContractDynamicData
-
+        getContractDynamicData,
+        downloadContract
       } = usePartners();
     const [{ errors, setError, clearErrors }] = useErrors(null);
     const router = useRouter();
@@ -201,25 +202,40 @@ export default function ContractSigning(){
 
     return <>
                 <div className="flex flex-col justify-center items-center pt-8">
+
+                    <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
+                        <a href={downloadContract()}
+                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-4 h-4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>&nbsp;Download
+                        </a>
+                    </div>
                     
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
 
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt="" style={{width: '25%'}}  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    <div>
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <br />
 
@@ -258,9 +274,9 @@ export default function ContractSigning(){
                             <br /><br />
 
                         <h3>
-                            :PARTY
+                            {dynamicData.company_name}
                             <br />
-                            (RC No. :RC_NO)
+                            (RC No. {dynamicData.rc_no})
                         </h3>
 
                             <br /><br />
@@ -291,7 +307,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -301,21 +317,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkICAgKCgkLDhcPDg0NDhwUFREXIh4jIyEeICAlKjUtJScyKCAgLj8vMjc5PDw8JC1CRkE6RjU7PDn/wAALCABPAIwBAREA/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAcFBgMECAIB/8QATRAAAQIFAQMHBQkOBAcAAAAAAQIDAAQFBhEHEiExEyJBUWFxgQgUkaGxFSMyQlJicqKyFhckMzU2Q1Njc3SCwtI0N1aUdZKzwcPR4v/aAAgBAQAAPwB4wQQQR5WtDaStaglI4lRwBEJPXjbUgSJmvU1tQ4p85SVegHMQ7+q1kMZ2q62o/s2XFexMah1jskHdU3j3Srn/AKjI1q/ZDhwautH0pV3+2JGV1Is2aOG7hkk/vFFv7QET0jVqbURmRqEpND9i8lfsMbsEEEEEEEYpmYZlWFvzDzbLLYytxxQSlI6yTuELS5ta7epZWzS23as+ndtNnYaB+md58AR2wvZrVC/bofVL0VhbKTu5Ony5WvHao5I7xiPCNNNRLjUHaotxO0c7VQnNo/8AKCoj0RNyWgM8rBna/LtdYZl1L9ZKYmGNAqUB7/W55w/MbQj25jZToLbgG+p1Yn6bf9keHNBKAR73Vamk/OLZ/pER81oAwQfNbidQegOyoV6woRAz2hdySp5SRqEhM7O8c5TS/WMeuNLY1Vs3nD3WDCOo+dNAd3OAHoict/XidYUGq9Sm30jcp2VOwsd6TuJ8RDYte97fulAFMqCFP4yZdzmOp/lPHvGRFjgggim6gahUuzJbYc/Cqk4nLUohWDj5Sj8VPrPR04S7TF8atz5cWoiQQvirLcqz2Ab9o+k9cM61tF7cpKUO1Pbq00N55XmtA9iBx/mJhjSkpLSTCWJWXaYZT8FtpAQkeAjNBBBBBBBEBcNm29caVe6dKl3nD+mSnYcH84wYUV16JVCnKM9a86uZDZ20y7qgh5OPkrGAT6D3x8snV6p0Sc9yLwbfdabVyaphaCH2T88cVD63fD3k5uXnpVqalXkPMOpC0OIVlKgekGM0VjUO7GbPtt6oKSlyZWeSlmifhuEHGewYye7HTCW00sib1ArEzcFwPPOSIdy4pRwqac+SD0JG7OOwDs6Kk5SXkZVqVlWW2GGk7KG20hKUjqAEZoqGol8N2PJycy5ILnBMuKbwl0I2cDOd4MZ7AvWRvWlOTcs2qXeZXsPS6lBRR8k56QR09h6o19Q7+kbIlpZTzCpuamVEIYQsJOyOKid+BwHb4GIiX1VYesaZukUh0IYmxK+b8uMnOzztrHzuGIrv3/5T/Tr/APuk/wBsH3/5XH5uv/7pP9sWK89VWLVcpqHKQ7M+fSaZoEPhOxtZ5vA54cYt1o3JJXXQ2KrIkhDnNW2Tzmljik9o9YIPTFRujVVm3ruNvKpDr6wppPLB8JHPAPDHRmGPBFM1E0+p15SKl7KJeqtp94mgPqr60+sdHSCqNKLsn7Muddq1vbbk3XyyUOH/AAz2cAg/JUePRvB689FRzz5RlRceuanU7J5KWleVA+ctRB9SRDwtWks0O3KfTGEhKJdhKTjpVjKj4kk+MS0EJvykvyLR/wCJX9iFZYdyTtj3DKVFbTvmkwgcs1+uZJxlPWQQSO0Edcal3VuoXhW5+tvNrLScYSBlLDWcIT6/EkmHDofSKfXNOZySqcqiZllVFSi2vOCQhvHCILXS1aHb1NpTlJprMot55aVlvPOASMcTFp00sS16tYtJnp6jS78082ouOKKsqO2odB6hFK8ohluXuKkMMpCGm6eEISOAAWoARD6d3PO6eXSqUqiHG5GZ2EzTR37IIBQ6O4EHtBPZG1qg4h7V4OtLStta5RSVJOQoFKMEHqjpcR9gjn7yjKS1K1yl1VpIS5ONKbcI6VNkYPfhQHgIc1mVJyq2nSJ94kuvyja3CelWyMn05hNeUdSXGq3TKulJ5F9gy6iOAWgkjPeFeow4rHrjNxWrTqk0sFTjQS6B8VxIwoekegiJ6CE55SP5Fo38Sv7EYqTp/L3vpXbey+mUnpZLmw+UbWUFxeUkZGR0jq8TGveNky1k6Rz0qh0TE2/NMrmJgJ2dvCuaAOgAesk9MT3k7fmPNf8AEHPsNxGeUl+SaL/EOfZEXTSD/Leifulf9RUKryj/AM6aZ/A/+RUWrUexPuksum1ansg1WRkm+akb32ggEp7SN5HiOmEXSH3X65TS64pwoeZQkqOcJCgAO4COzxH2COd/KCrKKpdEjRpQl1Ug2QsJ3++uEc3vwE+mHlatLNHtql01fw5WWbbX9IJGfXmMN5W3KXXb8zSpvm8oNppwDJacHwVD/v1gkQgrSuOsaT3NM0qrSzipJahy7KTxHAOtE7ju9I3HBG7omh1qnV6nNz9Mmm5mWc4KQeB6iOIPYYkIrl52ZS7ylpZiprmUol1laOQWEnJGN+QYkbdosrbtFlqTJKdVLSwKUF1W0reSd5wOkxhuq3ZK6aOul1BTyZda0rJZUEqyk5G8gxis+1afaFMcp1NU+phbxeJeWFK2iAOIA3c0RhvOy6XeTEszU1zKUSyytHILCTkjBzkGJG3aNK29RpWkySnVS8skpQXVZVvJO84HXEFeWndEvGeZnKm5OJdZa5JPIOBIxknpB37zFpk5ZEpKMyzeS2yhLado5OAMD2RR57SO2Jutrq+zOMPreD5bZdCWwrOdw2TgE7+PTF+ghbam6oyVssPU6luNzVaIKcDnIlu1XWrqT6e2m6MWLNVSqJu+uJWpoLL0sHd6n3Sc8qc9AO8dZ39G99wRX7xs+kXfT/Nakx74jPIzCNzjR7D1dYO4wiqpad66Yz7lRpD7z0kOMzLJ2kKSOh1vfjxyOoxbrW12k3koZuKRVLOcDMSo22z2lB3jwzDQolzUOvICqXVJWaz8RDg2x3pO8eIiXggggggjw662y2px1xLbaRkqUcAeJik3FqvadEC0CfE/MJ/RSY5Tf2q+CPTCprup923rNGlW/KOyjTu7kpTK3lj5y+gd2O0xaLA0WblXG6jdRRMPDnJkUnaQD+0V8buG7rJhzISlCQhICUgYAAwAI+wQQRSrm0vta4lLddkfM5pXF+UIbJPWRjZPiMwsq1oTWJRZdotUl5tKTlKXQWXB3EZB9IiK2dWLV5o92uTR1fhTYH1gBGVjWm8qevk5xiSeUOIflihX1SPZEqxr9Ukj3+hSiz8x9SfaDG0nygXMc62k57J3/wCIxueUBMH8XbjSfpTZP9MR81r1X1giWpdNa7V7ayPrCND74OpVwcyn+dbKuiRkv6sEj0x6a041EuhwOVZx5CCc7dRmycfygqI9Ai6W9oRS5YpcrdRenVDeWWByTfcTvUfDENCjUSl0KV82pcgxKM9IaRgq7SeJPaYkIIIIIIIIIxPyzEynZfZbdT1LSFD1xFTFpW3M/jqBS3D1qlG8+yNU2DaJOfucpnhLpj21Y1qNHKbcpWe2VQfaIkZWh0iUIMtS5Fgj9XLoT7BG+ABwj7BBBBBH/9k=" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> EFFECTIVE DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -406,7 +426,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -417,25 +437,29 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
-                        <strong>THIS AGREEMENT</strong> is made on this :EFFECTIVE_DATE.
+                        <strong>THIS AGREEMENT</strong> is made on this {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
                         </p>
 
                         <p>
@@ -451,7 +475,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        <strong>:PARTY,</strong> a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. :RC_NO, and having its registered office at :ADDRESS, (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.
+                        <strong>{dynamicData.company_name?.toUpperCase()},</strong> a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. :RC_NO, and having its registered office at :ADDRESS, (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.
                         </p>
 
                         <p>
@@ -541,7 +565,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -552,21 +576,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -583,7 +611,7 @@ export default function ContractSigning(){
                             </p>
 
                             <p>
-                            1.9.	<strong>“Effective Date”</strong> means :EFFECTIVE_DATE;
+                            1.9.	<strong>“Effective Date”</strong> means {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")};
                             </p>
 
                             <p>
@@ -669,7 +697,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -680,21 +708,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -769,7 +801,7 @@ export default function ContractSigning(){
 
                         <div id="subcontent">
                             <p>
-                            3.1.	This Agreement shall commence on the Effective Date and remain in force for a period of :CONTRACT_TERM, unless earlier terminated by either of the Parties in accordance with the terms of this Agreement.
+                            3.1.	This Agreement shall commence on the Effective Date and remain in force for a period of {moment(dynamicData.term_of_contract).format("DD/MM/YYYY")}, unless earlier terminated by either of the Parties in accordance with the terms of this Agreement.
                             </p>
 
                             <p>
@@ -799,7 +831,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -809,21 +841,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -922,7 +958,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -933,21 +969,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1031,7 +1071,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -1042,21 +1082,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -1121,7 +1165,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -1132,21 +1176,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1211,7 +1259,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1221,21 +1269,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1303,7 +1355,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1313,21 +1365,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div id="subcontent">
@@ -1387,7 +1443,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1398,21 +1454,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -1471,7 +1531,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1482,21 +1542,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1570,7 +1634,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1581,21 +1645,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1668,7 +1736,7 @@ export default function ContractSigning(){
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >
+                                        <td  >
                                             Sensitivity:MTN Group - internal
                                         </td>
                                     </tr>
@@ -1679,21 +1747,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subcontent">
@@ -1772,7 +1844,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1783,21 +1855,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkICAgKCgkLDhcPDg0NDhwUFREXIh4jIyEeICAlKjUtJScyKCAgLj8vMjc5PDw8JC1CRkE6RjU7PDn/wAALCABPAIwBAREA/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAcFBgMECAIB/8QATRAAAQIFAQMHBQkOBAcAAAAAAQIDAAQFBhEHEiExEyJBUWFxgQgUkaGxFSMyQlJicqKyFhckMzU2Q1Njc3SCwtI0N1aUdZKzwcPR4v/aAAgBAQAAPwB4wQQQR5WtDaStaglI4lRwBEJPXjbUgSJmvU1tQ4p85SVegHMQ7+q1kMZ2q62o/s2XFexMah1jskHdU3j3Srn/AKjI1q/ZDhwautH0pV3+2JGV1Is2aOG7hkk/vFFv7QET0jVqbURmRqEpND9i8lfsMbsEEEEEEEYpmYZlWFvzDzbLLYytxxQSlI6yTuELS5ta7epZWzS23as+ndtNnYaB+md58AR2wvZrVC/bofVL0VhbKTu5Ony5WvHao5I7xiPCNNNRLjUHaotxO0c7VQnNo/8AKCoj0RNyWgM8rBna/LtdYZl1L9ZKYmGNAqUB7/W55w/MbQj25jZToLbgG+p1Yn6bf9keHNBKAR73Vamk/OLZ/pER81oAwQfNbidQegOyoV6woRAz2hdySp5SRqEhM7O8c5TS/WMeuNLY1Vs3nD3WDCOo+dNAd3OAHoict/XidYUGq9Sm30jcp2VOwsd6TuJ8RDYte97fulAFMqCFP4yZdzmOp/lPHvGRFjgggim6gahUuzJbYc/Cqk4nLUohWDj5Sj8VPrPR04S7TF8atz5cWoiQQvirLcqz2Ab9o+k9cM61tF7cpKUO1Pbq00N55XmtA9iBx/mJhjSkpLSTCWJWXaYZT8FtpAQkeAjNBBBBBBBEBcNm29caVe6dKl3nD+mSnYcH84wYUV16JVCnKM9a86uZDZ20y7qgh5OPkrGAT6D3x8snV6p0Sc9yLwbfdabVyaphaCH2T88cVD63fD3k5uXnpVqalXkPMOpC0OIVlKgekGM0VjUO7GbPtt6oKSlyZWeSlmifhuEHGewYye7HTCW00sib1ArEzcFwPPOSIdy4pRwqac+SD0JG7OOwDs6Kk5SXkZVqVlWW2GGk7KG20hKUjqAEZoqGol8N2PJycy5ILnBMuKbwl0I2cDOd4MZ7AvWRvWlOTcs2qXeZXsPS6lBRR8k56QR09h6o19Q7+kbIlpZTzCpuamVEIYQsJOyOKid+BwHb4GIiX1VYesaZukUh0IYmxK+b8uMnOzztrHzuGIrv3/5T/Tr/APuk/wBsH3/5XH5uv/7pP9sWK89VWLVcpqHKQ7M+fSaZoEPhOxtZ5vA54cYt1o3JJXXQ2KrIkhDnNW2Tzmljik9o9YIPTFRujVVm3ruNvKpDr6wppPLB8JHPAPDHRmGPBFM1E0+p15SKl7KJeqtp94mgPqr60+sdHSCqNKLsn7Muddq1vbbk3XyyUOH/AAz2cAg/JUePRvB689FRzz5RlRceuanU7J5KWleVA+ctRB9SRDwtWks0O3KfTGEhKJdhKTjpVjKj4kk+MS0EJvykvyLR/wCJX9iFZYdyTtj3DKVFbTvmkwgcs1+uZJxlPWQQSO0Edcal3VuoXhW5+tvNrLScYSBlLDWcIT6/EkmHDofSKfXNOZySqcqiZllVFSi2vOCQhvHCILXS1aHb1NpTlJprMot55aVlvPOASMcTFp00sS16tYtJnp6jS78082ouOKKsqO2odB6hFK8ohluXuKkMMpCGm6eEISOAAWoARD6d3PO6eXSqUqiHG5GZ2EzTR37IIBQ6O4EHtBPZG1qg4h7V4OtLStta5RSVJOQoFKMEHqjpcR9gjn7yjKS1K1yl1VpIS5ONKbcI6VNkYPfhQHgIc1mVJyq2nSJ94kuvyja3CelWyMn05hNeUdSXGq3TKulJ5F9gy6iOAWgkjPeFeow4rHrjNxWrTqk0sFTjQS6B8VxIwoekegiJ6CE55SP5Fo38Sv7EYqTp/L3vpXbey+mUnpZLmw+UbWUFxeUkZGR0jq8TGveNky1k6Rz0qh0TE2/NMrmJgJ2dvCuaAOgAesk9MT3k7fmPNf8AEHPsNxGeUl+SaL/EOfZEXTSD/Leifulf9RUKryj/AM6aZ/A/+RUWrUexPuksum1ansg1WRkm+akb32ggEp7SN5HiOmEXSH3X65TS64pwoeZQkqOcJCgAO4COzxH2COd/KCrKKpdEjRpQl1Ug2QsJ3++uEc3vwE+mHlatLNHtql01fw5WWbbX9IJGfXmMN5W3KXXb8zSpvm8oNppwDJacHwVD/v1gkQgrSuOsaT3NM0qrSzipJahy7KTxHAOtE7ju9I3HBG7omh1qnV6nNz9Mmm5mWc4KQeB6iOIPYYkIrl52ZS7ylpZiprmUol1laOQWEnJGN+QYkbdosrbtFlqTJKdVLSwKUF1W0reSd5wOkxhuq3ZK6aOul1BTyZda0rJZUEqyk5G8gxis+1afaFMcp1NU+phbxeJeWFK2iAOIA3c0RhvOy6XeTEszU1zKUSyytHILCTkjBzkGJG3aNK29RpWkySnVS8skpQXVZVvJO84HXEFeWndEvGeZnKm5OJdZa5JPIOBIxknpB37zFpk5ZEpKMyzeS2yhLado5OAMD2RR57SO2Jutrq+zOMPreD5bZdCWwrOdw2TgE7+PTF+ghbam6oyVssPU6luNzVaIKcDnIlu1XWrqT6e2m6MWLNVSqJu+uJWpoLL0sHd6n3Sc8qc9AO8dZ39G99wRX7xs+kXfT/Nakx74jPIzCNzjR7D1dYO4wiqpad66Yz7lRpD7z0kOMzLJ2kKSOh1vfjxyOoxbrW12k3koZuKRVLOcDMSo22z2lB3jwzDQolzUOvICqXVJWaz8RDg2x3pO8eIiXggggggjw662y2px1xLbaRkqUcAeJik3FqvadEC0CfE/MJ/RSY5Tf2q+CPTCprup923rNGlW/KOyjTu7kpTK3lj5y+gd2O0xaLA0WblXG6jdRRMPDnJkUnaQD+0V8buG7rJhzISlCQhICUgYAAwAI+wQQRSrm0vta4lLddkfM5pXF+UIbJPWRjZPiMwsq1oTWJRZdotUl5tKTlKXQWXB3EZB9IiK2dWLV5o92uTR1fhTYH1gBGVjWm8qevk5xiSeUOIflihX1SPZEqxr9Ukj3+hSiz8x9SfaDG0nygXMc62k57J3/wCIxueUBMH8XbjSfpTZP9MR81r1X1giWpdNa7V7ayPrCND74OpVwcyn+dbKuiRkv6sEj0x6a041EuhwOVZx5CCc7dRmycfygqI9Ai6W9oRS5YpcrdRenVDeWWByTfcTvUfDENCjUSl0KV82pcgxKM9IaRgq7SeJPaYkIIIIIIIIIxPyzEynZfZbdT1LSFD1xFTFpW3M/jqBS3D1qlG8+yNU2DaJOfucpnhLpj21Y1qNHKbcpWe2VQfaIkZWh0iUIMtS5Fgj9XLoT7BG+ABwj7BBBBBH/9k=" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -1878,7 +1954,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>
@@ -1889,21 +1965,25 @@ export default function ContractSigning(){
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
                         <div id="header-table">
-                            <table class="table-header">
-                                <tr>
-                                    <td >
-                                        <img src="data:image/jpeg;base64,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" alt=""  />
-                                    </td>
-                                    <td >
-                                        Created: <br /> :EFFECTIVE_DATE.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND :PARTY
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-header">
+                                <div className="relative w-full mb-4">
+                                    
+                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                                    
+                                    <div className="flex justify-center flex-col w-full ">
+                                        <p className="text-white text-center">Created: </p>
+                                        <p className="text-white text-center">
+                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div  >
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <p>
@@ -1978,7 +2058,7 @@ export default function ContractSigning(){
                                     <div class="signature">
                                         <p>
                                         For and on behalf of: <br />
-                                        <strong>:PARTY </strong>
+                                        <strong>{dynamicData.company_name?.toUpperCase()} </strong>
                                         </p>
                                         <p>
                                             Name: :DIRECTOR_DELEGATE_NAME
@@ -2063,7 +2143,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" >
+                                    <td  >
                                         Sensitivity:MTN Group - internal
                                     </td>
                                 </tr>

@@ -5,6 +5,7 @@ import ComplianceCategories from "@/app/components/dashboard/compliance/Complian
 import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
+import useLogout from "@/hooks/useLogout";
 import FormErrors from "@/app/components/FormErrors";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
@@ -44,6 +45,11 @@ export default function Compliance({ params }) {
     activeStage,
     setActiveStage,
   } = useAdmins();
+
+  const {LogoutAdmin} = useLogout();
+
+
+  // console.log("useAdmins from admin compliance", useAdmins());
 
   const [category, setCategory] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -111,8 +117,8 @@ export default function Compliance({ params }) {
           cache: "no-store",
           next: { revalidate: 0 },
           headers: {
-            token: token,
-            Authorization: `bearer ${token}`,
+            token: useAdmins().token,
+            Authorization: `bearer ${useAdmins().token}`,
             "Content-Type": "application/json",
           },
         }

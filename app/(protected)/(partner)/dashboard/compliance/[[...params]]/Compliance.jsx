@@ -55,7 +55,8 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role} = useUsers();
 
-  console.log("useUsers()", useUsers());
+  console.log("usePartners() from compliance", usePartners());
+  console.log("useUsers() from compliance", useUsers());
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -180,7 +181,7 @@ export default function Compliance({ params }) {
       setSubmitingContractSignatories(false);
       if (submit_signatories_response.error) setError({ error: submit_signatories_response.error });
     }else{
-      setError({error: "You must choose  a director or delegate and a witness"});
+      setError({error: "You must choose a director or delegate and a witness"});
     }
     
   };
@@ -295,7 +296,6 @@ export default function Compliance({ params }) {
   const create_partner = async (data) => {
 
     console.log('create_data', data);
-
     
 
     let formData = new FormData();
@@ -389,8 +389,8 @@ export default function Compliance({ params }) {
       )}
       {/* Only when we have not selected all signees */}
       {
-        users.role == 'superAdmin' && !(signingDirector && 
-        signingDelegate && signingWitness) &&
+        users.role == 'superAdmin' && !((signingDirector || 
+        signingDelegate) && signingWitness) &&
 
         <div className="my-8 max-w-6xl">          
             <CallToAction

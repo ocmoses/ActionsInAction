@@ -133,14 +133,14 @@ export default function useAdmins() {
         }
       );
 
-      console.log("response", response);
-      console.log("response.status", response.status);
-      console.log("response.status === 401", response.status === 401);
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
 
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
+      // if (response.status === 400 || response.status === 401 ) {
+      //   LogoutAdmin();
+      //   return;
+      // }
       if (!response)
         return {
           error: "This request has no response available",
@@ -283,7 +283,7 @@ export default function useAdmins() {
           },
         }
       );
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         LogoutAdmin();
         return;
       }
@@ -524,9 +524,9 @@ export default function useAdmins() {
       };
       const result = await response.json();
 
-      console.log('RemoteEndpoints.APPROVE_REJECT_BRD', RemoteEndpoints.APPROVE_REJECT_BRD);
-      console.log('Approve result', result);
-      console.log('states.admins.token', states.token);
+      // console.log('RemoteEndpoints.APPROVE_REJECT_BRD', RemoteEndpoints.APPROVE_REJECT_BRD);
+      // console.log('Approve result', result);
+      // console.log('states.admins.token', states.token);
 
       setProcessing(false);
       if (result?.success) {

@@ -154,6 +154,7 @@ export default function AdminRoles({ allRoles }) {
       if (all_Admin_Roles.error) {
         setProcessing(false);
         // if (allPartners.error === 401) {
+        //   LogoutAdmin();
         //   redirect(PageRoutes.adminlogin)
         //   return
         // }

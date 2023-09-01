@@ -130,7 +130,7 @@ export const DropdownMenu2= ({
     >
       <div
         onClick={() => setShowMenu(true)}
-        className="flex justify-between items-center w-[200px] gap-3 text-[14px] leading-[85%] rounded-[5px] border border-white/20 pl-4 pr-3 py-2 bg-white/20 text-white cursor-pointer"
+        className="flex justify-between items-center w-[150px] gap-3 text-[14px] leading-[85%] rounded-[6px] px-3 py-3 bg-white/10 text-white cursor-pointer"
       >
         <span>{selected?.label ?? "Select an option"}</span>
         <svg

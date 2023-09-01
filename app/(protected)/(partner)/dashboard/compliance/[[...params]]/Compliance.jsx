@@ -88,7 +88,7 @@ export default function Compliance({ params }) {
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
 
-  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
+  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);

@@ -22,7 +22,7 @@ import TextInput from "@/app/components/form/TextInput";
 import { ellipsify } from "../../../modules/utilities";
 
 /////// afoo code starts here ////////////////////////////////////////////////////////////
-import PopUp, {SuccessAdminRole} from "@/app/components/PopUps";
+import PopUp from "@/app/components/PopUps";
 import EditAdminRole, {ConfirmAdminRole} from "@/app/components/dashboard/admin/EditAdminRole";
 
 /////// afoo code Ends here ////////////////////////////////////////////////////////////
@@ -81,8 +81,9 @@ export default function Admins({ allAdmins }) {
 
   const [popUp, setPopUp] = useState(false);
   const [confirmRoleChange, setConfirmRoleChange] = useState(false);
-
-
+  const [newAdminRole, setNewAdminRole] = useState("");
+  
+  
 
 
   let all_Admins = null;
@@ -275,8 +276,13 @@ export default function Admins({ allAdmins }) {
   const closePopUp = () => {
     setPopUp(false);
   };
-  const confirmRoleChanges = () => {
+  const confirmRoleChanges = (newAdminRole) => {
+    setNewAdminRole(newAdminRole)
+    if (newAdminRole===''){
+    setConfirmRoleChange(false);
+    }else{
     setConfirmRoleChange(true);
+    }
   };
    /////// afoo code Ends here ////////////////////////////////////////////////////////////
 
@@ -286,20 +292,24 @@ export default function Admins({ allAdmins }) {
 
   return (
     <>
-
-{/* //================this is the popup==============================================================================================================*/}
+      {/* //================this is the popup==============================================================================================================*/}
 
       {popUp && (
         <PopUp closePopUp={closePopUp}>
-            
-            {!confirmRoleChange ? (
-              <EditAdminRole
+          {!confirmRoleChange ? (
+            <EditAdminRole
               closePopUp={closePopUp}
               confirmRoleChanges={confirmRoleChanges}
-            /> 
-            ) : (
-              <ConfirmAdminRole closePopUp={closePopUp} /> // If contactSubmit is true
-            )}
+              currentAdmin={currentAdmin}
+              adminRoles={adminRoles}
+            />
+          ) : (
+            <ConfirmAdminRole
+              closePopUp={closePopUp}
+              currentAdmin={currentAdmin}
+              newAdminRole={newAdminRole}
+            /> // If contactSubmit is true
+          )}
         </PopUp>
       )}
 
@@ -584,6 +594,9 @@ export default function Admins({ allAdmins }) {
 
 
 
+
+
+      
       {showAddAdmin && (
         <div
           id="create_modal"
@@ -806,21 +819,6 @@ export default function Admins({ allAdmins }) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       {detailsModalOpen && (
         <div
           id="details_modal"
@@ -1003,6 +1001,28 @@ export default function Admins({ allAdmins }) {
           </div>
         </div>
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       {confirmDelete && (
         <div

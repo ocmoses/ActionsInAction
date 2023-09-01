@@ -8,6 +8,7 @@ import SelectInputOption from "@/app/components/form/SelectInputOption";
 import ButtonNext from "@/app/components/form/ButtonNext";
 import useErrors from "@/hooks/useErrors";
 import usePartners from "@/hooks/usePartners";
+import useUsers from "@/hooks/useUsers";
 import useProcessing from "@/hooks/useProcessing";
 import FormErrors from "@/app/components/FormErrors";
 import axios from "axios";
@@ -35,6 +36,8 @@ function Compliance() {
   } = usePartners();
 
   console.log("usePartners", usePartners);
+
+  console.log("useUsers()", useUsers());
 
   const [retryTIN, setRetryTIN] = useState(false);
   const [checkingTIN, setCheckingTIN] = useState(false);

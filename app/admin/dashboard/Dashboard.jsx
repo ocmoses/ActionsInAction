@@ -19,6 +19,8 @@ import useApp from "@/hooks/useApp";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
 import Image from "next/image";
 
+import useLogout from "@/hooks/useLogout";
+
 export default function Dashboard({ allPartners }) {
   const { getAllPartners, allCategories, categories } = useAdmins();
   const { processing, setProcessing } = useProcessing();
@@ -32,6 +34,8 @@ export default function Dashboard({ allPartners }) {
   const [page, setPage] = useState(null);
   const [perPage, setPerPage] = useState(null);
   const [onboardingStatus, setOnboardingStatus] = useState(null);
+
+  const {LogoutAdmin} = useLogout();
 
   const get_all_Partner = async () => {
     if (fetchingPartners) return;
@@ -54,7 +58,7 @@ export default function Dashboard({ allPartners }) {
 
   useEffect(() => {
     setProcessing(true);
-    if (allPartners) {
+    if (allPartners && allPartners.partners) {
       if (allPartners.partners?.length) {
         allPartners.partners.map((partner) => {
           filterPartner(partner, categories);
@@ -62,18 +66,22 @@ export default function Dashboard({ allPartners }) {
       }
 
       console.log("allPartners.partners", allPartners.partners);
+      console.log("allPartners", allPartners);
       
       setPartners(allPartners.partners);
       if (allPartners.error) {
         setProcessing(false);
-        // if (allPartners.error === 401) {
-        //   redirect(PageRoutes.adminlogin)
-        //   return
-        // }
+        if (allPartners.error === 401) {
+          LogoutAdmin();
+          redirect(PageRoutes.adminlogin)
+          return
+        }
         setError({ compliance: allPartners.error });
       }
       setNavigation(allPartners.navigation);
       setProcessing(false);
+    }else{
+      LogoutAdmin();
     }
   }, [allPartners]);
 

@@ -25,7 +25,7 @@ import useLogout from "@/hooks/useLogout";
 
 const usePartners = () => {
   const router = useRouter();
-  const {Logout} = useLogout();
+  const {Logout, LogoutAdmin} = useLogout();
   const { setProcessing, tmpUserUUID, setTmpUserUUID } = useProcessing()
   const { updateCategory } = useRegistration()
   const app = useApp()
@@ -562,7 +562,7 @@ const usePartners = () => {
 
       // console.log('states.users.token in usePartners', states.users.token);
       if (response.status === 400 || response.status === 401 ) {
-        Logout();
+        LogoutAdmin();
         return;
       }
       if (!response)

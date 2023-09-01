@@ -25,7 +25,7 @@ export default function MenuBar({ open }) {
 
   const {role} = useUsers();
 
-  console.log("useUsers", useUsers());
+  // console.log("useUsers", useUsers());
 
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -114,7 +114,7 @@ export default function MenuBar({ open }) {
 
       {
         role == "superAdmin" && 
-            <div className={`absolute bottom-0 left-0 pl-2 bg-black`}>
+            <div className={`fixed z-[99] bottom-4 left-0 pl-2 bg-black`}>
               {/* The popup menu */}
               {openSecondaryMenu && <div className="fixed bottom-10 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
                 
@@ -200,27 +200,32 @@ export default function MenuBar({ open }) {
                     
               </div>}
               <hr className="mb-4 bg-gray-500" />
-              <div className="flex items-center space-x-4 pr-8 pb-4">
+              <div className={`flex items-center space-x-3 pb-4 ${open ? "pr-6" : "pr-4"}`}>
                 <div className="flex justify-center items-center cursor-pointer rounded-full w-10 h-10 bg-mtn text-white text-[12px]" 
                     onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
                   <span className="w-10 h-10 flex justify-center items-center">
                     {getPartnerInitials(fullname)}
                   </span>
                 </div>
-                <div>
-                  <div className="font-italic text-white">
-                    {ellipsify(fullname, 12)}
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-white/80">
-                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-                    {ellipsify(email, 12)}
-                  </div>
-                </div>
-                <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                    <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                  </svg>
-                </div>
+                {open && (
+                  <>
+                    <div>
+                      <div className="font-italic text-white">
+                        {ellipsify(fullname, 12)}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-white/80">
+                        {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                        {ellipsify(email, 12)}
+                      </div>
+                    </div>
+                    <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
+                        <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                      </svg>
+                    </div>
+                  </>)
+                }
+                
               </div>
             </div>
       }

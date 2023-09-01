@@ -1,7 +1,7 @@
 import { apiURL } from "@/app/modules/constants";
 
 
-const NOTIFICATION_BASE = "http://" . process.env.NEXT_PUBLIC_NOTIFICATION_IP . "/api/"; 
+const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
 
 
 export const EndPointHeaders = {

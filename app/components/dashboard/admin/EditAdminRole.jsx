@@ -124,7 +124,7 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
 
   const [formData, setFormData] = useState({
     admin_user_uuid: currentAdmin.uuid,
-    role:newAdminRole,
+    role_uuid:newAdminRole,
   });
   console.log("The token is - ", token);
 
@@ -163,7 +163,6 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
         Are you sure you want update this user’s role.
       </h2>
       <p className="mb-5 text-gray-500">
-      {currentAdmin.uuid}<br/>{newAdminRole}<br/>
       {currentAdmin.fullname} will be able to access all aspects of the portal.
       </p>
 

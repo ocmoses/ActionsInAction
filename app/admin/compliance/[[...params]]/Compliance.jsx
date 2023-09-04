@@ -88,19 +88,12 @@ export default function Compliance({ params }) {
     console.log("refreshed", refreshed);
 
     //This is a hack
-    if(refreshed == 0){
+    //This is a hack
+    if (response.status === 401 ) {
 
-      refreshed = 1;
-      location.reload();
+      Router.push('/admin/dashboard');
       return;
-      
-    }
     
-    if (refreshed > 0 && response.status === 401 ) {
-
-        LogoutAdmin();
-        return;
-      
     }
 
 

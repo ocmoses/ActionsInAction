@@ -8,8 +8,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import useAdmins from "@/hooks/useAdmins";
 
 
-
-
+import Success from "@/app/components/toasts/Success";
 
 
 export default function EditAdminRole({closePopUp,confirmRoleChanges,currentAdmin, adminRoles}) {
@@ -88,6 +87,7 @@ export default function EditAdminRole({closePopUp,confirmRoleChanges,currentAdmi
           Save Change
         </button>
       </div>
+      
     </section>
   );
 }
@@ -121,6 +121,9 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
   const {token} = useAdmins();
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
+  const [successToast, setSuccessToast] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+
 
   const [formData, setFormData] = useState({
     admin_user_uuid: currentAdmin.uuid,
@@ -146,7 +149,7 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
             },
           }
         );
-        window.location.reload();
+        roleUpdatedSuccess()
         console.log(response);
      
     } catch (err) {
@@ -156,7 +159,15 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
     }
   };
 
-
+  const roleUpdatedSuccess = () => {
+    setSuccessToast(true);
+    setSuccessMessage('Role Updated Successfully.');
+    setTimeout(() => {
+      setSuccessMessage('Reloading...');
+      window.location.reload();
+    },2000);
+  };
+ 
   return (
     <div className="my-10 text-left animate-[slide-left_1s_ease-in-out]">
       <h2 className="text-white font-mtn-bold text-2xl my-4">
@@ -190,6 +201,7 @@ export const ConfirmAdminRole = ({ closePopUp,currentAdmin, newAdminRole }) => {
         )}
        
       </div>
+      <Success message={successMessage} visible={successToast} action={roleUpdatedSuccess} />
     </div>
   );
 };

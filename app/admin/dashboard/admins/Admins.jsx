@@ -24,7 +24,6 @@ import { ellipsify } from "../../../modules/utilities";
 /////// afoo code starts here ////////////////////////////////////////////////////////////
 import PopUp from "@/app/components/PopUps";
 import EditAdminRole, {ConfirmAdminRole} from "@/app/components/dashboard/admin/EditAdminRole";
-
 /////// afoo code Ends here ////////////////////////////////////////////////////////////
 
 export default function Admins({ allAdmins }) {
@@ -284,6 +283,8 @@ export default function Admins({ allAdmins }) {
     setConfirmRoleChange(true);
     }
   };
+
+
    /////// afoo code Ends here ////////////////////////////////////////////////////////////
 
   
@@ -312,7 +313,7 @@ export default function Admins({ allAdmins }) {
           )}
         </PopUp>
       )}
-
+      
       {/*//==============================================================================================================================*/}
 
       <div id="compliance" className="flex flex-cols pb-12">

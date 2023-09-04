@@ -26,6 +26,7 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
+import Router from "next/router";
 
 export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing();
@@ -87,17 +88,9 @@ export default function Compliance({ params }) {
     console.log("refreshed", refreshed);
 
     //This is a hack
-    if(refreshed == 0){
+    if (response.status === 401 ) {
 
-      refreshed = 1;
-      location.reload();
-      return;
-      
-    }
-    
-    if (refreshed > 0 && response.status === 401 ) {
-
-        LogoutAdmin();
+        Router.push('/admin/dashboard');
         return;
       
     }

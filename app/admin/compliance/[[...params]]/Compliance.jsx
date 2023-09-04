@@ -56,6 +56,9 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const { isSuperadmin } = useRoles();
 
+  //This is a hack
+  let refreshed = 0;
+
   const getPartnerInfo = async (uuid) => {
     setProcessing(true);
     const response = await fetch(
@@ -81,9 +84,23 @@ export default function Compliance({ params }) {
       });
     }
 
+    console.log("refreshed", refreshed);
+
     if (response.status === 401 ) {
-      LogoutAdmin();
-      return;
+
+      console.log("refreshed in 401", refreshed);
+
+      if(!refreshed){
+
+        refreshed = 1;
+        getPartnerInfo(uuid);
+        return;
+        
+      }else{
+        LogoutAdmin();
+        return;
+      }
+      
     }
 
     const result = await response.json();

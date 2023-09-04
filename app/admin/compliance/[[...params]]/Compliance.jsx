@@ -123,6 +123,7 @@ export default function Compliance({ params }) {
   useEffect(() => {
     setProcessing(false);
     setRouteloading(false);
+    location.reload();
   }, []);
   useEffect(() => {
     clearErrors();    

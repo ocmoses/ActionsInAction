@@ -56,6 +56,9 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const { isSuperadmin } = useRoles();
 
+  //This is a hack
+  let refreshed = 0;
+
   const getPartnerInfo = async (uuid) => {
     setProcessing(true);
     const response = await fetch(
@@ -66,7 +69,7 @@ export default function Compliance({ params }) {
         headers: {
           token: token,
           Authorization: `bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
       }
     ).catch((e) => {
@@ -81,10 +84,25 @@ export default function Compliance({ params }) {
       });
     }
 
-    if (response.status === 401 ) {
-      LogoutAdmin();
+    
+    console.log("refreshed", refreshed);
+
+    //This is a hack
+    if(refreshed == 0){
+
+      refreshed = 1;
+      await getPartnerInfo(uuid);
       return;
+      
     }
+    
+    if (refreshed > 0 && response.status === 401 ) {
+
+        LogoutAdmin();
+        return;
+      
+    }
+
 
     const result = await response.json();
     setProcessing(false);

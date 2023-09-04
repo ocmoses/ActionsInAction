@@ -91,7 +91,7 @@ export default function Compliance({ params }) {
     //This is a hack
     if (response.status === 401 ) {
 
-      Router.push('/admin/dashboard');
+      window.location = '/admin/dashboard';
       return;
     
     }

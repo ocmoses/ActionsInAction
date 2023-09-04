@@ -81,7 +81,7 @@ export default function Compliance({ params }) {
       });
     }
 
-    if (response.status === 400 || response.status === 401 ) {
+    if (response.status === 401 ) {
       LogoutAdmin();
       return;
     }

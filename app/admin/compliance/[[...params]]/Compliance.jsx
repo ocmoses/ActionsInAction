@@ -69,7 +69,7 @@ export default function Compliance({ params }) {
         headers: {
           token: token,
           Authorization: `bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
       }
     ).catch((e) => {
@@ -84,10 +84,7 @@ export default function Compliance({ params }) {
       });
     }
 
-<<<<<<< HEAD
-    if (response.status === 401 ) {
-      LogoutAdmin();
-=======
+    
     console.log("refreshed", refreshed);
 
     //This is a hack
@@ -95,7 +92,6 @@ export default function Compliance({ params }) {
 
       refreshed = 1;
       await getPartnerInfo(uuid);
->>>>>>> moses
       return;
       
     }

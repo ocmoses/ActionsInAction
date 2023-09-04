@@ -56,112 +56,66 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const { isSuperadmin } = useRoles();
 
+  const getPartnerInfo = async (uuid) => {
+    setProcessing(true);
+    const response = await fetch(
+      `${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`,
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+        headers: {
+          token: token,
+          Authorization: `bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).catch((e) => {
+      setProcessing(false);
+      return setError({
+        compliance: e.message,
+      });
+    });
+    if (!response){
+      return setError({
+        compliance: "This request has no response data available",
+      });
+    }
+
+    if (response.status === 401 ) {
+      LogoutAdmin();
+      return;
+    }
+
+    const result = await response.json();
+    setProcessing(false);
+    if (result?.success) {
+      const partnerInfo = result.data?.partner;
+      filterPartner(partnerInfo, categories);
+      setPartner(partnerInfo);
+      if (partnerInfo?.categories?.length > 0) {
+        const _category = filterCategory(
+          partnerInfo?.categories[0],
+          partnerInfo
+        );
+        setCategory(_category.category_uuid);
+        setActiveCategory(_category);
+      }
+      return;
+    }
+    setProcessing(false);
+    return setError({
+      compliance:
+        result?.data?.message ??
+        "Something went wrong. Please check your connection and try again",
+    });
+  };
+
   useEffect(() => {
     setProcessing(false);
     setRouteloading(false);
   }, []);
   useEffect(() => {
-    clearErrors();
-    const getPartnerInfo = async (uuid) => {
-      setProcessing(true);
-
-      // var myHeaders = new Headers()
-      // // myHeaders.append("Content-Type", "application/json")
-      // myHeaders.append("Authorization", `Bearer  ${token}`)
-
-      // var urlencoded = new URLSearchParams()
-
-      // var requestOptions = {
-      //   method: "GET",
-      //   headers: myHeaders,
-      //   redirect: "follow",
-      // }
-
-      // fetch(`${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`, requestOptions)
-      //   .then((response) => response.json())
-      //   .then((result) => {
-      //     // const result = await response.json()
-      //     setProcessing(false)
-      //     if (result?.success) {
-      //       const partnerInfo = result.data?.partner
-      //       filterPartner(partnerInfo, categories)
-      //       setPartner(partnerInfo)
-      //       if (partnerInfo?.categories?.length > 0) {
-      //         const _category = filterCategory(
-      //           partnerInfo?.categories[0],
-      //           partnerInfo
-      //         )
-      //         setCategory(_category.category_uuid)
-      //         setActiveCategory(_category)
-      //       }
-      //       return
-      //     }
-      //     setProcessing(false)
-      //     return setError({
-      //       compliance:
-      //         result?.data?.message ??
-      //         "Something went wrong. Please check your connection and try again",
-      //     })
-      //   })
-      //   .catch((error) => {
-      //     console.log("error", error)
-      //     setProcessing(false)
-      //     return setError({
-      //       compliance: error.message,
-      //     })
-      //   })
-
-      const response = await fetch(
-        `${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`,
-        {
-          cache: "no-store",
-          next: { revalidate: 0 },
-          headers: {
-            token: useAdmins().token,
-            Authorization: `bearer ${useAdmins().token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).catch((e) => {
-        setProcessing(false);
-        return setError({
-          compliance: e.message,
-        });
-      });
-      if (!response){
-        return setError({
-          compliance: "This request has no response data available",
-        });
-      }
-
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
-
-      const result = await response.json();
-      setProcessing(false);
-      if (result?.success) {
-        const partnerInfo = result.data?.partner;
-        filterPartner(partnerInfo, categories);
-        setPartner(partnerInfo);
-        if (partnerInfo?.categories?.length > 0) {
-          const _category = filterCategory(
-            partnerInfo?.categories[0],
-            partnerInfo
-          );
-          setCategory(_category.category_uuid);
-          setActiveCategory(_category);
-        }
-        return;
-      }
-      setProcessing(false);
-      return setError({
-        compliance:
-          result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
-      });
-    };
+    clearErrors();    
     if (params?.params?.length > 0) getPartnerInfo(params.params[0]);
   }, [params]);
 

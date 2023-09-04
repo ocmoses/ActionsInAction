@@ -90,7 +90,7 @@ export default function Compliance({ params }) {
     if(refreshed == 0){
 
       refreshed = 1;
-      await getPartnerInfo(uuid);
+      location.reload();
       return;
       
     }

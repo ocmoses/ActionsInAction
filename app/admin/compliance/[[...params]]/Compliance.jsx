@@ -86,22 +86,22 @@ export default function Compliance({ params }) {
 
     console.log("refreshed", refreshed);
 
-    if (response.status === 401 ) {
+    //This is a hack
+    if(refreshed == 0){
 
-      console.log("refreshed in 401", refreshed);
-
-      if(!refreshed){
-
-        refreshed = 1;
-        getPartnerInfo(uuid);
-        return;
-        
-      }else{
-        LogoutAdmin();
-        return;
-      }
+      refreshed = 1;
+      await getPartnerInfo(uuid);
+      return;
       
     }
+    
+    if (refreshed > 0 && response.status === 401 ) {
+
+        LogoutAdmin();
+        return;
+      
+    }
+
 
     const result = await response.json();
     setProcessing(false);

@@ -55,8 +55,8 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role} = useUsers();
 
-  console.log("usePartners() from compliance", usePartners());
-  console.log("useUsers() from compliance", useUsers());
+  // console.log("usePartners() from compliance", usePartners());
+  // console.log("useUsers() from compliance", useUsers());
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -88,10 +88,18 @@ export default function Compliance({ params }) {
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
 
-  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
+  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
+
+  const userStatus = partner.status;
+
+  const APPROVED = "active";
+  let selectedAllRequiredSignatories = false;
+  let directorSigned = false;
+  let delegateSigned = false;
+  let witnessSigned = false;
 
   let selected_admin_users = partner.selected_partner_admin_users;
   let signingDirector = selected_admin_users.find(user => user.role == 'director');
@@ -156,11 +164,38 @@ export default function Compliance({ params }) {
     if (fetchingAdminPartners) return;
     setFetchingAdminPartners(true);
     all_admin_partners_response = await getAllAdminPartners();
-    setAdminPartners(all_admin_partners_response.admin_partners);
     setFetchingAdminPartners(false);
-    if (all_admin_partners_response.error) setError({ error: all_admin_partners_response.error });
-    // setNavigation(all_Admins.navigation);
+
+    if (all_admin_partners_response.error) {
+      setError({ error: all_admin_partners_response.error });
+    }else{
+      // setNavigation(all_Admins.navigation);
+      console.log("Admin_partners", all_admin_partners_response.admin_partners);
+      setAdminPartners(all_admin_partners_response.admin_partners);
+
+      //update signing director, delegate or witness
+      confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
+    }
+    
+
+
   };
+
+  const confirmSignatories = function(selected_admin_users, admin_partners){
+    const selected_director_email = selected_admin_users.find(a => a.role == 'director') ? selected_admin_users.find(a => a.role == 'director').email : null;
+    const selected_delegate_email = selected_admin_users.find(a => a.role == 'delegate') ? selected_admin_users.find(a => a.role == 'delegate').email : null;
+    const selected_witness_email = selected_admin_users.find(a => a.role == 'witness') ? selected_admin_users.find(a => a.role == 'witness').email : null;
+    
+    const admin_partners_emails = all_admin_partners_response.admin_partners.map(a => a.email);
+
+    if((admin_partners_emails.includes(selected_director_email) || 
+                admin_partners_emails.includes(selected_delegate_email)) &&
+                admin_partners_emails.includes(selected_witness_email)){
+      selectedAllRequiredSignatories = true;
+    }else{
+      selectedAllRequiredSignatories = false;
+    }
+  }
 
   const submit_signatories = async (signatories) => {
 
@@ -179,7 +214,12 @@ export default function Compliance({ params }) {
       setSubmitingContractSignatories(true);
       submit_signatories_response = await submitAllSignatories(data);
       setSubmitingContractSignatories(false);
-      if (submit_signatories_response.error) setError({ error: submit_signatories_response.error });
+      if (submit_signatories_response.error) {
+        setError({ error: submit_signatories_response.error });
+      }else{
+        setContractSignatriesModal(false);
+        setContractSignatoriesSuccess(true);
+      }
     }else{
       setError({error: "You must choose a director or delegate and a witness"});
     }
@@ -388,80 +428,79 @@ export default function Compliance({ params }) {
         </div>
       )}
       {/* Only when we have not selected all signees */}
-      {
-        users.role == 'superAdmin' && !((signingDirector || 
-        signingDelegate) && signingWitness) &&
+      {users.role == 'superAdmin' && 
+        userStatus == APPROVED && !selectedAllRequiredSignatories && 
 
         <div className="my-8 max-w-6xl">          
-            <CallToAction
-              style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-              message="Your contract is ready click here to sign"
-              description="Outline contract conditions and give contract warrantees."
-              onclick={() => {showContracts()}}
-              button={'Sign your contract'}
-              color="text-gray-200"
-              desccolor="text-[#999999]"
-              bg='bg-white/10'
-              border="border-transparent"
-              icon={
-                <div className="relative inline-flex">
-                  <svg xmlns="http://www.w3.org/2000/svg" 
+          <CallToAction
+            style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
+            message="Your contract is ready click here to sign"
+            description="Outline contract conditions and give contract warrantees."
+            onclick={() => {showContracts()}}
+            button={'Sign your contract'}
+            color="text-gray-200"
+            desccolor="text-[#999999]"
+            bg='bg-white/10'
+            border="border-transparent"
+            icon={
+              <div className="relative inline-flex">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                  stroke="currentColor" className="w-12 h-12">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" 
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                    stroke="currentColor" className="w-12 h-12">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" fill="yellow" 
-                      className="w-4 h-6 absolute top-8 right-2">
-                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
-                  </svg>
-                </div>            
+                    stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" fill="yellow" 
+                    className="w-4 h-6 absolute top-8 right-2">
+                  <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
+                </svg>
+              </div>            
 
-              }
-            />                        
+            }
+          />                        
         </div>
       }
 
-      { (signingDirector || 
-        signingDelegate) && signingWitness &&
+      { users.role == 'superAdmin' && 
+        userStatus == APPROVED && selectedAllRequiredSignatories &&
 
-          <div className="my-8 max-w-6xl">  
-            <CallToAction
-              style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-              message="Your contract is ready click here to sign"
-              description="Outline contract conditions and give contract warrantees."
-              onclick={() => {showAgreement()}}
-              button={'Sign your contract'}
-              color="text-gray-200"
-              desccolor="text-[#999999]"
-              bg='bg-white/10'
-              border="border-transparent"
-              icon={
-                <div className="relative inline-flex">
-                  <svg xmlns="http://www.w3.org/2000/svg" 
+        <div className="my-8 max-w-6xl">  
+          <CallToAction
+            style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
+            message="Your contract is ready click here to sign"
+            description="Outline contract conditions and give contract warrantees."
+            onclick={() => {showAgreement()}}
+            button={'Sign your contract'}
+            color="text-gray-200"
+            desccolor="text-[#999999]"
+            bg='bg-white/10'
+            border="border-transparent"
+            icon={
+              <div className="relative inline-flex">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                  stroke="currentColor" className="w-12 h-12">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" 
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                    stroke="currentColor" className="w-12 h-12">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" fill="yellow" 
-                      className="w-4 h-6 absolute top-8 right-2">
-                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
-                  </svg>
-                </div>
-                   
-              }
-            />
+                    stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" fill="yellow" 
+                    className="w-4 h-6 absolute top-8 right-2">
+                  <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
+                </svg>
+              </div>
+                  
+            }
+          />
         </div>
       }
       

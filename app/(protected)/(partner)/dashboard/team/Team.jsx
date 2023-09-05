@@ -350,7 +350,7 @@ export default function Team() {
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-white/80">
                                   {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-                                  {adminPartner.phone}
+                                  {adminPartner.phone != "000000000" ? adminPartner.phone : ""}
                                 </div>
                               </div>
                             </div>

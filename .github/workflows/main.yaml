@@ -63,7 +63,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.UNAME }}
           password: ${{ secrets.PASSWD }}
-
+      - name: pull base image
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          docker pull ojtkgsbharb01.mtn.com.ng/amazon-tribe/amazon-tribe-frontend-dev:base
       - name: Build and push dev harbor
         if: github.ref == 'refs/heads/dev'
         uses: docker/build-push-action@v3
@@ -96,7 +99,7 @@ jobs:
             git commit -m "updated values.yml file"
             echo "Done.."
             git push origin dev
-
+##### stage #####
       - name: 'stage nginx conf'
         if: github.ref == 'refs/heads/stage'
         run: |
@@ -117,6 +120,11 @@ jobs:
           username: ${{ secrets.UNAME_STAGE }}
           password: ${{ secrets.PASSWD_STAGE }}
 
+      - name: pull base image
+        if: github.ref == 'refs/heads/stage'
+        run: |
+          docker pull ojtkgprepodharb01.mtn.com.ng/amazon-tribe-frontend/amazon-tribe-frontend:base
+          
       - name: Build and push to stage harbor
         if: github.ref == 'refs/heads/stage'
         uses: docker/build-push-action@v3
@@ -150,6 +158,7 @@ jobs:
             echo "Done.."
             git push origin stage
 
+##### prod #####
       - name: 'Prod nginx conf'
         if: github.ref == 'refs/heads/main'
         run: |
@@ -169,6 +178,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.UNAME_PROD }}
           password: ${{ secrets.PASSWD_PROD }}
+
+      - name: pull base image
+        if: github.ref == 'refs/heads/stage'
+        run: |
+          docker pull ojtkgprodharb01.mtn.com.ng/amazon-tribe-frontend/amazon-tribe-frontend:base
 
       - name: Build and push prod harbor
         if: github.ref == 'refs/heads/main'

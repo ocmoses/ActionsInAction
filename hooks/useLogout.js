@@ -31,8 +31,9 @@ export default function useLogout() {
     await logoutAdmin()
     clearStore()
     actions.app.endLoading("logout")
-    if (typeof window !== "undefined") window.location = PageRoutes.adminlogin
-    else router.push(PageRoutes.adminlogin)
+    // if (typeof window !== "undefined") window.location = PageRoutes.adminlogin
+    // else 
+    router.push(PageRoutes.adminlogin)
   }
 
   return { Logout, LogoutAdmin, logoutAdmin, clearStore }

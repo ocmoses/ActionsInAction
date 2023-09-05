@@ -26,6 +26,7 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
+import Router from "next/router";
 
 export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing();
@@ -87,17 +88,9 @@ export default function Compliance({ params }) {
     console.log("refreshed", refreshed);
 
     //This is a hack
-    if(refreshed == 0){
+    if (response.status === 401 ) {
 
-      refreshed = 1;
-      await getPartnerInfo(uuid);
-      return;
-      
-    }
-    
-    if (refreshed > 0 && response.status === 401 ) {
-
-        LogoutAdmin();
+        window.location = '/admin/dashboard';
         return;
       
     }
@@ -241,7 +234,7 @@ export default function Compliance({ params }) {
                       src={`/assets/flags/${
                         partner?.categories[0].country?.toLowerCase() ?? "ng"
                       }.svg`}
-                      className={"inline mr-2 h-4 rounded-sm h-auto"}
+                      className={"inline mr-2 rounded-sm h-auto"}
                       width={24}
                       height={15}
                       priority

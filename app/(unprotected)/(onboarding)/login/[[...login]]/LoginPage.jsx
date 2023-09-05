@@ -149,7 +149,7 @@ function Login({ params }) {
           >
             {tmpuser?.email
               ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
-              : "Welcome back! please enter your great details"}
+              : "Welcome back! please enter your details"}
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}{" "}

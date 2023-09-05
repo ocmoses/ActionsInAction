@@ -44,7 +44,7 @@ export const ContactUsSuccess = ({ closePopUp }) => {
       <h2 className="text-white font-mtn-bold text-2xl my-4">
         Thanks, we’ll be in touch shortly
       </h2>
-      <p>
+      <p className=" text-gray-400">
         We encourage you to sign up and explore the app while we get back to
         you. Setting up your partner portal account is free, no payment
         required.
@@ -78,7 +78,7 @@ export const PartnerContactUsSuccess = ({ closePopUp }) => {
       <h2 className="text-white font-mtn-bold text-2xl my-4">
         Thanks, we’ll be in touch shortly
       </h2>
-      <p>
+      <p className=" text-gray-400">
         We encourage you to check out our frequently asked questions to find
         answers to common issues.
       </p>

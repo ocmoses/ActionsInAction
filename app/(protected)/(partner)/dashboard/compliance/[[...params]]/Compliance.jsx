@@ -214,7 +214,12 @@ export default function Compliance({ params }) {
       setSubmitingContractSignatories(true);
       submit_signatories_response = await submitAllSignatories(data);
       setSubmitingContractSignatories(false);
-      if (submit_signatories_response.error) setError({ error: submit_signatories_response.error });
+      if (submit_signatories_response.error) {
+        setError({ error: submit_signatories_response.error });
+      }else{
+        setContractSignatriesModal(false);
+        setContractSignatoriesSuccess(true);
+      }
     }else{
       setError({error: "You must choose a director or delegate and a witness"});
     }

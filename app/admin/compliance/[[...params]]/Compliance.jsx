@@ -234,7 +234,7 @@ export default function Compliance({ params }) {
                       src={`/assets/flags/${
                         partner?.categories[0].country?.toLowerCase() ?? "ng"
                       }.svg`}
-                      className={"inline mr-2 h-4 rounded-sm h-auto"}
+                      className={"inline mr-2 rounded-sm h-auto"}
                       width={24}
                       height={15}
                       priority

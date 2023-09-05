@@ -105,7 +105,7 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            Welcome back! please enter your great details
+            Welcome back! please enter your details
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}

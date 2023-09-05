@@ -26,6 +26,7 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
+import Router from "next/router";
 
 export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing();
@@ -88,12 +89,11 @@ export default function Compliance({ params }) {
     console.log("refreshed", refreshed);
 
     //This is a hack
-    //This is a hack
     if (response.status === 401 ) {
 
-      window.location = '/admin/dashboard';
-      return;
-    
+        window.location = '/admin/dashboard';
+        return;
+      
     }
 
 

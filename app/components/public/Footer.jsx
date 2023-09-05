@@ -108,7 +108,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <p>© 2022 MTN Nigeria Communications PLC, All rights reserved.</p>
+            <p className="text-gray-400">© 2022 MTN Nigeria Communications PLC, All rights reserved.</p>
             <div className="flex mx-auto items-center justify-center text-center gap-6 py-4">
               <Link
                 target="_blank"

@@ -55,8 +55,8 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role} = useUsers();
 
-  console.log("usePartners() from compliance", usePartners());
-  console.log("useUsers() from compliance", useUsers());
+  // console.log("usePartners() from compliance", usePartners());
+  // console.log("useUsers() from compliance", useUsers());
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -88,7 +88,7 @@ export default function Compliance({ params }) {
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
 
-  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
+  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
@@ -156,10 +156,23 @@ export default function Compliance({ params }) {
     if (fetchingAdminPartners) return;
     setFetchingAdminPartners(true);
     all_admin_partners_response = await getAllAdminPartners();
-    setAdminPartners(all_admin_partners_response.admin_partners);
     setFetchingAdminPartners(false);
-    if (all_admin_partners_response.error) setError({ error: all_admin_partners_response.error });
-    // setNavigation(all_Admins.navigation);
+    
+    
+
+    if (all_admin_partners_response.error) {
+      setError({ error: all_admin_partners_response.error });
+    }else{
+      // setNavigation(all_Admins.navigation);
+      console.log("Admin_partners", all_admin_partners_response.admin_partners);
+      setAdminPartners(all_admin_partners_response.admin_partners);
+
+      //update signing director, delegate or witness
+
+    }
+    
+
+
   };
 
   const submit_signatories = async (signatories) => {

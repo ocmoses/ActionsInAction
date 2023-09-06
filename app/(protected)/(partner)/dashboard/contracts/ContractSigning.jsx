@@ -9,6 +9,7 @@ import usePartners from "@/hooks/usePartners";
 import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
+import Success from "@/app/components/toasts/Success";
 
 
 
@@ -31,8 +32,10 @@ export default function ContractSigning(){
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
-    const [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
+    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
                                         company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
+
+    const [successDisplay, setSuccessDisplay] = useState(false);                                   
   
     const [clearCanvas, setClearCanvas] = useState(false);
 
@@ -41,7 +44,7 @@ export default function ContractSigning(){
     const [position, setPosition] = useState(null);
     const [canvasWidth, canvasHeight] = [300, 100];
 
-    const [dynamicData, setDynamicData] = useState({});
+    const [dynamicData, setDynamicData] = useState(null);
     const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
 
     const [signatoryRole, setSignatoryRole] = useState("");    
@@ -51,9 +54,10 @@ export default function ContractSigning(){
 
     let selected_admin_users = partner.selected_partner_admin_users;
 
-    console.log("selected_admin_users", selected_admin_users);
-    console.log("useUsers()", useUsers());
-    console.log("usePartners()", usePartners());
+    // console.log("selected_admin_users", selected_admin_users);
+    // console.log("useUsers()", useUsers());
+    // console.log("usePartners()", usePartners());
+
     
     let dynamic_content_response = null;
     let sign_bilateral_contract_response = null;
@@ -101,30 +105,34 @@ export default function ContractSigning(){
     )
 
     const drawLine = (originalPosition, newPosition) => {
-    if (!canvas.current) {
-        return null
-    }
+        
+        if (!canvas.current) {
+            return null
+        }
 
-    const context = canvas.current.getContext('2d')
+        const context = canvas.current.getContext('2d')
 
-    if (context) {
-        context.strokeStyle = 'white'
-        context.lineJoin = 'round'
-        context.lineWidth = 3
+        if (context) {
+            context.strokeStyle = 'white'
+            context.lineJoin = 'round'
+            context.lineWidth = 3
 
-        context.beginPath()
-        context.moveTo(originalPosition.x, originalPosition.y)
-        context.lineTo(newPosition.x, newPosition.y)
-        context.closePath()
+            context.beginPath()
+            context.moveTo(originalPosition.x, originalPosition.y)
+            context.lineTo(newPosition.x, newPosition.y)
+            context.closePath()
 
-        context.stroke()
-    //   handleDraw(context.getImageData(0, 0, width, height))
-    }
+            context.stroke()
+        //   handleDraw(context.getImageData(0, 0, width, height))
+        }
     }
     
-    const imageBase64 = ()  => {
-      const newCanvas = canvas.current;//.getElementById('signature_canvas');
-      return newCanvas.toDataURL("image/png");
+    const imageBase64 =  ()  => {
+      const newCanvas = canvas.current;
+      let image = newCanvas.toDataURL("image/png").replace('data:', '').replace(/^.+,/, '');
+      console.log("newCanvas.toDataURL(image/png);", image);
+      
+      return image;
     }
 
     const clear = (context) => {
@@ -132,13 +140,15 @@ export default function ContractSigning(){
     }
 
     const signContract = () => {
-        //
+        //        
         if(activeSigningTab.selectStyle){
-            //convert canvas content to base64            
-            setData({...data, signature:imageBase64()});
+            // console.log("This is running...");
+            //convert canvas content to base64   
+            const imageSignature = imageBase64();  
+            data = {...data, signature: imageSignature};
         }
 
-        console.log('data', data);
+        console.log('data is now', data);
 
         sign_bilateral_contract(data);
 
@@ -152,8 +162,9 @@ export default function ContractSigning(){
         dynamic_content_response = await getContractDynamicData();
         setGettingDynamicContent(false);
         console.log('dynamic_content_response', dynamic_content_response);
-        if (dynamic_content_response.error) setError({ error: dynamic_content_response.error })
-        else {
+        if (dynamic_content_response.error) {
+            setError({ error: dynamic_content_response.error })
+        } else {
             // console.log('dynamic_content_response', dynamic_content_response);
             setDynamicData(dynamic_content_response.data);                
         }
@@ -171,6 +182,15 @@ export default function ContractSigning(){
             // setContractModal(false); 
             setSigningModal(false);
             //Do some stuff    
+            setSuccessDisplay(true);
+            if(signatoryRole == 'director' || signatoryRole == 'delegate'){
+                setDirectorOrDelegateSigned(true);
+            }else{
+                setWitnessSigned(true);
+            }
+            
+            setDynamicData({...dynamicData, signature_of_signee : [{director_or_delegate_signature: data.signature}] });
+            
         }
     };
 
@@ -194,6 +214,7 @@ export default function ContractSigning(){
     };
 
     const showSigningWindow = (role) => {
+        clearErrors();
         setData({...data, "signatory": role}); 
         setSigningModal(true), 
         window.scrollTo({top:0, behavior: "smooth"});
@@ -219,7 +240,7 @@ export default function ContractSigning(){
             
           }
         //
-    }, [signingModal, clearCanvas]);
+    }, [signingModal, clearCanvas, dynamicData]);
     
 
     return <>
@@ -246,7 +267,7 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
@@ -254,7 +275,7 @@ export default function ContractSigning(){
 
                                 <div>
                                     <div>
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -296,9 +317,9 @@ export default function ContractSigning(){
                             <br /><br />
 
                         <h3>
-                            {dynamicData.company_name}
+                            {dynamicData?.company_name}
                             <br />
-                            (RC No. {dynamicData.rc_no})
+                            (RC No. {dynamicData?.rc_no})
                         </h3>
 
                             <br /><br />
@@ -347,14 +368,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -467,21 +488,21 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <p>
-                        <strong>THIS AGREEMENT</strong> is made on this {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                        <strong>THIS AGREEMENT</strong> is made on this {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                         </p>
 
                         <p>
@@ -497,7 +518,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        <strong>{dynamicData.company_name?.toUpperCase()},</strong> a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. :RC_NO, and having its registered office at :ADDRESS, (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.
+                        <strong>{dynamicData?.company_name?.toUpperCase()},</strong> a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. :RC_NO, and having its registered office at :ADDRESS, (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.
                         </p>
 
                         <p>
@@ -606,14 +627,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -633,7 +654,7 @@ export default function ContractSigning(){
                             </p>
 
                             <p>
-                            1.9.	<strong>“Effective Date”</strong> means {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")};
+                            1.9.	<strong>“Effective Date”</strong> means {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")};
                             </p>
 
                             <p>
@@ -738,14 +759,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -823,7 +844,7 @@ export default function ContractSigning(){
 
                         <div id="subcontent">
                             <p>
-                            3.1.	This Agreement shall commence on the Effective Date and remain in force for a period of {moment(dynamicData.term_of_contract).format("DD/MM/YYYY")}, unless earlier terminated by either of the Parties in accordance with the terms of this Agreement.
+                            3.1.	This Agreement shall commence on the Effective Date and remain in force for a period of {moment(dynamicData?.term_of_contract).format("DD/MM/YYYY")}, unless earlier terminated by either of the Parties in accordance with the terms of this Agreement.
                             </p>
 
                             <p>
@@ -871,14 +892,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -999,14 +1020,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1112,14 +1133,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1206,14 +1227,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1299,14 +1320,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1395,14 +1416,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1484,14 +1505,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1572,14 +1593,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1675,14 +1696,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1777,14 +1798,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1885,14 +1906,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -1995,14 +2016,14 @@ export default function ContractSigning(){
                                     <div className="flex justify-center flex-col w-full ">
                                         <p className="text-white text-center">Created: </p>
                                         <p className="text-white text-center">
-                                            {moment(dynamicData.date_of_contract).format("DD/MM/YYYY")}.
+                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
                                         </p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData.company_name?.toUpperCase()}
+                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
                                     </div>
                                 </div>
                             </div>
@@ -2080,7 +2101,7 @@ export default function ContractSigning(){
                                     <div class="signature">
                                         <p>
                                         For and on behalf of: <br />
-                                        <strong>{dynamicData.company_name?.toUpperCase()} </strong>
+                                        <strong>{dynamicData?.company_name?.toUpperCase()} </strong>
                                         </p>
                                         <p>
                                             Name: :DIRECTOR_DELEGATE_NAME
@@ -2201,7 +2222,7 @@ export default function ContractSigning(){
                                 {
                                     directorOrDelegateSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                        <img src={"data:image/png;base64," + dynamicData.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
+                                        <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
                                     </div>
                                 }
                                 
@@ -2232,7 +2253,7 @@ export default function ContractSigning(){
                                 {
                                     witnessSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                         <img src={"data:image/png;base64," + dynamicData.signature_of_signee[0].witness_signature} className="h-20" />
+                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].witness_signature} className="h-20" />
                                     </div>
                                 }
                             </div>
@@ -2360,7 +2381,7 @@ export default function ContractSigning(){
                                             {!signing &&
                                                 <div className="flex py-4 px-2 space-x-4 justify-end">
                                                     <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setDisableActiveButton(true); setSigningModal(false);}}>Cancel</button>
-                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={() => {signContract()}}>Adopt Sign</button>
+                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={async () => signContract()}>Adopt Sign</button>
                                                 </div>
                                             }
                                             {signing &&
@@ -2458,12 +2479,12 @@ export default function ContractSigning(){
 
                             </div>
                         </div>        
-                    }          
+                    }  
+
+                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false);}, 3000)} />      
 
                 </div>
 
-
-                
            </>
 }
 

@@ -80,6 +80,7 @@ export default function Compliance({ params }) {
   const [selectingService, setSelectingService] = useState(false);
 
   const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
+  const [signatoryRole, setSignatoryRole ] = useState("");
 
   const [creatingPartner, setCreatingPartner] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);

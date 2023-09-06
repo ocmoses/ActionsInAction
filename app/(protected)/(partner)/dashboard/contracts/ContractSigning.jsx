@@ -9,6 +9,7 @@ import usePartners from "@/hooks/usePartners";
 import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
+import Success from "@/app/components/toasts/Success";
 
 
 
@@ -31,8 +32,10 @@ export default function ContractSigning(){
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
-    const [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
+    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
                                         company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
+
+    const [successDisplay, setSuccessDisplay] = useState(false);                                   
   
     const [clearCanvas, setClearCanvas] = useState(false);
 
@@ -101,30 +104,34 @@ export default function ContractSigning(){
     )
 
     const drawLine = (originalPosition, newPosition) => {
-    if (!canvas.current) {
-        return null
-    }
+        
+        if (!canvas.current) {
+            return null
+        }
 
-    const context = canvas.current.getContext('2d')
+        const context = canvas.current.getContext('2d')
 
-    if (context) {
-        context.strokeStyle = 'white'
-        context.lineJoin = 'round'
-        context.lineWidth = 3
+        if (context) {
+            context.strokeStyle = 'white'
+            context.lineJoin = 'round'
+            context.lineWidth = 3
 
-        context.beginPath()
-        context.moveTo(originalPosition.x, originalPosition.y)
-        context.lineTo(newPosition.x, newPosition.y)
-        context.closePath()
+            context.beginPath()
+            context.moveTo(originalPosition.x, originalPosition.y)
+            context.lineTo(newPosition.x, newPosition.y)
+            context.closePath()
 
-        context.stroke()
-    //   handleDraw(context.getImageData(0, 0, width, height))
-    }
+            context.stroke()
+        //   handleDraw(context.getImageData(0, 0, width, height))
+        }
     }
     
-    const imageBase64 = ()  => {
-      const newCanvas = canvas.current;//.getElementById('signature_canvas');
-      return newCanvas.toDataURL("image/png");
+    const imageBase64 =  ()  => {
+      const newCanvas = canvas.current;
+      let image = newCanvas.toDataURL("image/png").replace('data:', '').replace(/^.+,/, '');
+      console.log("newCanvas.toDataURL(image/png);", image);
+      
+      return image;
     }
 
     const clear = (context) => {
@@ -133,12 +140,15 @@ export default function ContractSigning(){
 
     const signContract = () => {
         //
+        
         if(activeSigningTab.selectStyle){
-            //convert canvas content to base64            
-            setData({...data, signature:imageBase64()});
+            // console.log("This is running...");
+            //convert canvas content to base64   
+            const imageSignature = imageBase64();  
+            data = {...data, signature: imageSignature};
         }
 
-        console.log('data', data);
+        console.log('data is now', data);
 
         sign_bilateral_contract(data);
 
@@ -171,6 +181,7 @@ export default function ContractSigning(){
             // setContractModal(false); 
             setSigningModal(false);
             //Do some stuff    
+            setSuccessDisplay(true);
         }
     };
 
@@ -194,6 +205,7 @@ export default function ContractSigning(){
     };
 
     const showSigningWindow = (role) => {
+        clearErrors();
         setData({...data, "signatory": role}); 
         setSigningModal(true), 
         window.scrollTo({top:0, behavior: "smooth"});
@@ -2360,7 +2372,7 @@ export default function ContractSigning(){
                                             {!signing &&
                                                 <div className="flex py-4 px-2 space-x-4 justify-end">
                                                     <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setDisableActiveButton(true); setSigningModal(false);}}>Cancel</button>
-                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={() => {signContract()}}>Adopt Sign</button>
+                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={async () => signContract()}>Adopt Sign</button>
                                                 </div>
                                             }
                                             {signing &&
@@ -2458,11 +2470,11 @@ export default function ContractSigning(){
 
                             </div>
                         </div>        
-                    }          
+                    }  
+
+                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false);}, 3000)} />      
 
                 </div>
-
-
                 
            </>
 }

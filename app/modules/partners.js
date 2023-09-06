@@ -26,8 +26,8 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         cache: "no-store",
         next: { revalidate: 120 },
         headers: {
-          token: Decrypt(token?.value),
-          Authorization: `bearer ${Decrypt(token?.value)}`,
+          token: token?.value,
+          Authorization: `bearer ${token?.value}`,
           "Content-Type": "application/json",
         },
       }

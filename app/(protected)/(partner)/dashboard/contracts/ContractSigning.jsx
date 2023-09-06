@@ -6,6 +6,7 @@ import useErrors from "@/hooks/useErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter } from "next/navigation";
 import usePartners from "@/hooks/usePartners";
+import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 
@@ -19,6 +20,9 @@ export default function ContractSigning(){
         getContractDynamicData,
         downloadContract
       } = usePartners();
+    const {
+        user
+     } = useUsers();
     const [{ errors, setError, clearErrors }] = useErrors(null);
     const router = useRouter();
     const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
@@ -40,6 +44,16 @@ export default function ContractSigning(){
     const [dynamicData, setDynamicData] = useState({});
     const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
 
+    const [signatoryRole, setSignatoryRole] = useState("");    
+    const [haveSigned, setHaveSigned] = useState(false);
+    const [directorOrDelegateSigned, setDirectorOrDelegateSigned] = useState(false);
+    const [witnessSigned, setWitnessSigned] = useState(false);
+
+    let selected_admin_users = partner.selected_partner_admin_users;
+
+    console.log("selected_admin_users", selected_admin_users);
+    console.log("useUsers()", useUsers());
+    console.log("usePartners()", usePartners());
     
     let dynamic_content_response = null;
     let sign_bilateral_contract_response = null;
@@ -179,14 +193,22 @@ export default function ContractSigning(){
         reader.readAsDataURL(file);
     };
 
-    const showDirectorSigning = () => {
-        setData({...data, "signatory": "director"}); 
+    const showSigningWindow = (role) => {
+        setData({...data, "signatory": role}); 
         setSigningModal(true), 
         window.scrollTo({top:0, behavior: "smooth"});
     }
 
     useEffect(() => {
         get_dynamic_content();
+
+        setSignatoryRole(selected_admin_users.find(u => u.email == user.email).role);
+        setHaveSigned(selected_admin_users.find(u => u.email == user.email).has_user_signed != 'no');
+        
+        const hasSignedArray = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate").map(u => u.has_user_signed != 'no');
+        setDirectorOrDelegateSigned(hasSignedArray.includes(true));
+        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no');
+        
         if (canvas.current) {
             const context = canvas.current.getContext('2d');
 
@@ -2168,21 +2190,51 @@ export default function ContractSigning(){
                             <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col">
                                 <h1 className="text-white text-center text-xl font-bold">Director's signature</h1>
 
-                                <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                        onClick={() => showDirectorSigning()}>
-                                    Click to Sign here
-                                </div>
+                                {
+                                    !directorOrDelegateSigned && 
+                                    (signatoryRole == 'director' || signatoryRole == 'delegate') &&
+                                    <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
+                                            onClick={() => showSigningWindow(signatoryRole)}>
+                                        Click to Sign here
+                                    </div>
+                                }
+                                {
+                                    directorOrDelegateSigned &&
+                                    <div className="flex flex-col text-white items-center justify-center w-full h-32">
+                                        <img src={"data:image/png;base64," + dynamicData.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
+                                    </div>
+                                }
+                                
                             </div>
 
                             <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                                { signatoryRole != "witness" && !witnessSigned &&
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                }
 
                                 <h1 className="text-white text-center text-xl font-bold p-4">Witness's Signature</h1>
-                                <p className="text-gray-300 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
-
+                                
+                                {  
+                                    signatoryRole != "witness" && !witnessSigned &&     
+                                        <p className="text-gray-300 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
+                                   
+                                }
+                                {
+                                    signatoryRole == 'witness' && !witnessSigned &&                                     
+                                    <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
+                                            onClick={() => showSigningWindow(signatoryRole)}>
+                                        Click to Sign here
+                                    </div>
+                                }
+                                {
+                                    witnessSigned &&
+                                    <div className="flex flex-col text-white items-center justify-center w-full h-32">
+                                         <img src={"data:image/png;base64," + dynamicData.signature_of_signee[0].witness_signature} className="h-20" />
+                                    </div>
+                                }
                             </div>
 
                         </div>
@@ -2243,9 +2295,10 @@ export default function ContractSigning(){
                                 <TextInput
                                     id="fullname"
                                     label="Full name"
-                                    // value={data.role_name}
+                                    value={user?.fullname}
                                     onChange={(e) => {}
                                     }
+                                    readonly
                                     errors={errors}
                                 />
                                 

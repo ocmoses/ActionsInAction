@@ -60,7 +60,7 @@ export default function Compliance({ params }) {
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
-
+  
   // const [ApprovalStages, setApprovalStages] = useState(null)
   // const [Approvals, setApproval] = useState(null)
   const [showModal, setShowModal] = useState(false);
@@ -231,6 +231,7 @@ export default function Compliance({ params }) {
     setHasNotSigned(selected_admin_users.find(u => u.email == user.email) ? 
                       selected_admin_users.find(u => u.email == user.email).has_user_signed == "no" :
                       true);
+    setSignatoryRole(selected_admin_users.find(u => u.email == user.email).role);
     
 
     directorSigned = selected_admin_users.find(u => u.role == "director") ? selected_admin_users.find(u => u.role == "director").has_user_signed != "no" : false;
@@ -275,6 +276,7 @@ export default function Compliance({ params }) {
     setRouteloading(false);
     
     if(role == 'superAdmin'){
+
       get_service_types();
       get_all_partner_roles();
       get_all_admin_partners();

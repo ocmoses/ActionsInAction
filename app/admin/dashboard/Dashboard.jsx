@@ -71,11 +71,10 @@ export default function Dashboard({ allPartners }) {
       setPartners(allPartners.partners);
       if (allPartners.error) {
         setProcessing(false);
-        if (allPartners.error === 401) {
-          LogoutAdmin();
-          redirect(PageRoutes.adminlogin)
-          return
-        }
+        // if (allPartners.error === 401) {
+        //   redirect(PageRoutes.adminlogin)
+        //   return
+        // }
         setError({ compliance: allPartners.error });
       }
       setNavigation(allPartners.navigation);

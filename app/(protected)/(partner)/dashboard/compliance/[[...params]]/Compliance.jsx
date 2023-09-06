@@ -60,7 +60,7 @@ export default function Compliance({ params }) {
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
-
+  
   // const [ApprovalStages, setApprovalStages] = useState(null)
   // const [Approvals, setApproval] = useState(null)
   const [showModal, setShowModal] = useState(false);
@@ -96,10 +96,13 @@ export default function Compliance({ params }) {
   const userStatus = partner.status;
 
   const APPROVED = "active";
-  let selectedAllRequiredSignatories = false;
+  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
   let directorSigned = false;
   let delegateSigned = false;
   let witnessSigned = false;
+
+  const [isASignatory, setIsASignatory ] = useState(false);
+  const [hasNotSigned, setHasNotSigned] = useState(false);
 
   let selected_admin_users = partner.selected_partner_admin_users;
   let signingDirector = selected_admin_users.find(user => user.role == 'director');
@@ -109,7 +112,6 @@ export default function Compliance({ params }) {
   
   console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
-
 
   let get_service_response = null;
   let partner_select_service_response = null;
@@ -186,15 +188,56 @@ export default function Compliance({ params }) {
     const selected_delegate_email = selected_admin_users.find(a => a.role == 'delegate') ? selected_admin_users.find(a => a.role == 'delegate').email : null;
     const selected_witness_email = selected_admin_users.find(a => a.role == 'witness') ? selected_admin_users.find(a => a.role == 'witness').email : null;
     
-    const admin_partners_emails = all_admin_partners_response.admin_partners.map(a => a.email);
+    let admin_partners_emails = admin_partners.map(a => a.email);
+    
+    //Adding superadmin
+    admin_partners_emails.push(user.email);
+
+    // console.log("selected_admin_users", selected_admin_users);
+    // console.log("selected_director_email", selected_director_email);
+    // console.log("selected_delegate_email", selected_delegate_email);
+    // console.log("selected_witness_email", selected_witness_email);
+    // console.log("admin_partners_emails", admin_partners_emails);
+
+    // console.log("admin_partners_emails.includes(selected_director_email)", admin_partners_emails.includes(selected_director_email));
+    // console.log("admin_partners_emails.includes(selected_witness_email)", admin_partners_emails.includes(selected_witness_email));
+    // console.log("(admin_partners_emails.includes(selected_director_email) || admin_partners_emails.includes(selected_delegate_email)) && admin_partners_emails.includes(selected_witness_email)", 
+    //               (admin_partners_emails.includes(selected_director_email) || 
+    //               admin_partners_emails.includes(selected_delegate_email)) &&
+    //               admin_partners_emails.includes(selected_witness_email));
+
+    
 
     if((admin_partners_emails.includes(selected_director_email) || 
                 admin_partners_emails.includes(selected_delegate_email)) &&
                 admin_partners_emails.includes(selected_witness_email)){
-      selectedAllRequiredSignatories = true;
+      setSelectedAllRequiredSignatories(true);
     }else{
-      selectedAllRequiredSignatories = false;
+      setSelectedAllRequiredSignatories(false);
     }
+
+    console.log("userStatus == APPROVED", userStatus == APPROVED);
+
+    if(selected_director_email.includes(user.email)){
+      setIsASignatory(true);
+    }else if(selected_delegate_email.includes(user.email)){
+      setIsASignatory(true);
+    }else if(selected_delegate_email.includes(user.email)){
+      setIsASignatory(true);
+    }else{
+      setIsASignatory(false);
+    }
+
+    setHasNotSigned(selected_admin_users.find(u => u.email == user.email) ? 
+                      selected_admin_users.find(u => u.email == user.email).has_user_signed == "no" :
+                      true);
+    setSignatoryRole(selected_admin_users.find(u => u.email == user.email).role);
+    
+
+    directorSigned = selected_admin_users.find(u => u.role == "director") ? selected_admin_users.find(u => u.role == "director").has_user_signed != "no" : false;
+    delegateSigned = selected_admin_users.find(u => u.role == "delegate") ? selected_admin_users.find(u => u.role == "delegate").has_user_signed != "no" : false;
+    witnessSigned = selected_admin_users.find(u => u.role == "witness") ? selected_admin_users.find(u => u.role == "witness").has_user_signed != "no" : false;   
+
   }
 
   const submit_signatories = async (signatories) => {
@@ -233,6 +276,7 @@ export default function Compliance({ params }) {
     setRouteloading(false);
     
     if(role == 'superAdmin'){
+
       get_service_types();
       get_all_partner_roles();
       get_all_admin_partners();
@@ -466,8 +510,11 @@ export default function Compliance({ params }) {
         </div>
       }
 
-      { users.role == 'superAdmin' && 
-        userStatus == APPROVED && selectedAllRequiredSignatories &&
+      { userStatus == APPROVED && selectedAllRequiredSignatories &&  
+        //You were selected 
+        isASignatory &&
+        //you have not signed
+        hasNotSigned &&
 
         <div className="my-8 max-w-6xl">  
           <CallToAction

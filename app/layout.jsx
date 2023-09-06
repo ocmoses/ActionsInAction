@@ -18,7 +18,7 @@ const getServerSession = async () => {
     const nextCookies = cookies();
     // User session
     const token = nextCookies.has("auth-token")
-      ? Decrypt(nextCookies.get("auth-token")?.value)
+      ? nextCookies.get("auth-token")?.value
       : null;
     const partnerid = nextCookies.has("partnerid")
       ? nextCookies.get("partnerid")?.value
@@ -28,10 +28,10 @@ const getServerSession = async () => {
       : null;
     // Admin session
     const adminToken = nextCookies.has("token")
-      ? Decrypt(nextCookies.get("token")?.value)
+      ? nextCookies.get("token")?.value
       : null;
     const uuid = nextCookies.has("uuid")
-      ? Decrypt(nextCookies.get("uuid")?.value)
+      ? nextCookies.get("uuid")?.value
       : null;
     if (uuid) {
       try {

@@ -288,11 +288,11 @@ export const set_admin_token = (token, uuid, req, res) => {
   const maxAge = 60 * 60 * 24;
   if (token) {
     // SET COOKIES
-    const encryptedAuthToken = Encrypt(token)
-    const encryptedUserId = Encrypt(uuid) 
+    // const encryptedAuthToken = Encrypt(token)
+    // const encryptedUserId = Encrypt(uuid) 
     // const decryptedAuthToken = Decrypt(encryptedAuthToken)
-    // const encryptedAuthToken = token;
-    // const encryptedUserId = uuid;
+    const encryptedAuthToken = token;
+    const encryptedUserId = uuid;
     setCookie("token", encryptedAuthToken, {
       req,
       res,

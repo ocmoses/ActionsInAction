@@ -22,7 +22,8 @@ export default function ContractSigning(){
         downloadContract
       } = usePartners();
     const {
-        user
+        user,
+        refreshSession
      } = useUsers();
     const [{ errors, setError, clearErrors }] = useErrors(null);
     const router = useRouter();
@@ -188,6 +189,8 @@ export default function ContractSigning(){
             }else{
                 setWitnessSigned(true);
             }
+
+            refreshSession();
             
             setDynamicData({...dynamicData, signature_of_signee : [{director_or_delegate_signature: data.signature}] });
             
@@ -223,8 +226,8 @@ export default function ContractSigning(){
     useEffect(() => {
         get_dynamic_content();
 
-        setSignatoryRole(selected_admin_users.find(u => u.email == user.email).role);
-        setHaveSigned(selected_admin_users.find(u => u.email == user.email).has_user_signed != 'no');
+        setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
+        setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
         
         const hasSignedArray = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate").map(u => u.has_user_signed != 'no');
         setDirectorOrDelegateSigned(hasSignedArray.includes(true));
@@ -240,7 +243,7 @@ export default function ContractSigning(){
             
           }
         //
-    }, [signingModal, clearCanvas, dynamicData]);
+    }, [signingModal, clearCanvas]);
     
 
     return <>
@@ -2208,9 +2211,21 @@ export default function ContractSigning(){
 
                         <div className="flex space-x-4 my-8">
 
-                            <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col">
-                                <h1 className="text-white text-center text-xl font-bold">Director's signature</h1>
+                            <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
+                                { !directorOrDelegateSigned && 
+                                    (signatoryRole == undefined || signatoryRole == null) &&
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-8">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                }
+                                <h1 className="text-white text-center text-xl font-bold mt-8">Director's signature</h1>
 
+                                {  
+                                    !directorOrDelegateSigned && 
+                                    (signatoryRole == undefined || signatoryRole == null) &&
+                                        <p className="text-gray-300 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
+                                   
+                                }
                                 {
                                     !directorOrDelegateSigned && 
                                     (signatoryRole == 'director' || signatoryRole == 'delegate') &&
@@ -2219,9 +2234,10 @@ export default function ContractSigning(){
                                         Click to Sign here
                                     </div>
                                 }
+                                
                                 {
                                     directorOrDelegateSigned &&
-                                    <div className="flex flex-col text-white items-center justify-center w-full h-32">
+                                    <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
                                     </div>
                                 }

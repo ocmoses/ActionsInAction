@@ -26,6 +26,8 @@ import { fieldsCounts, fieldCounts } from "@/app/modules/constants";
 import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
+import moment from "moment";
+
 
 
 export default function Compliance({ params }) {
@@ -49,11 +51,13 @@ export default function Compliance({ params }) {
     getAllServices,
     partnerSelectService,
     createPartner,
-    submitAllSignatories
+    submitAllSignatories,
+    downloadSignedContract,
+    getContractDynamicData
   } = usePartners();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
-  const {user, role} = useUsers();
+  const {user, role, refreshSession} = useUsers();
 
   // console.log("usePartners() from compliance", usePartners());
   // console.log("useUsers() from compliance", useUsers());
@@ -104,6 +108,9 @@ export default function Compliance({ params }) {
 
   const [isASignatory, setIsASignatory ] = useState(false);
   const [hasNotSigned, setHasNotSigned] = useState(false);
+  const [allHaveSigned, setAllHaveSigned] = useState(false);
+
+  const [dynamicData, setDynamicData] = useState(null);
 
   let selected_admin_users = partner.selected_partner_admin_users;
   let signingDirector = selected_admin_users.find(user => user.role == 'director');
@@ -111,7 +118,7 @@ export default function Compliance({ params }) {
   let signingWitness = selected_admin_users.find(user => user.role == 'witness');
 
   
-  console.log("selected_admin_users", selected_admin_users);
+  // console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
 
   let get_service_response = null;
@@ -209,9 +216,12 @@ export default function Compliance({ params }) {
 
     
 
-    if((admin_partners_emails.includes(selected_director_email) || 
-                admin_partners_emails.includes(selected_delegate_email)) &&
-                admin_partners_emails.includes(selected_witness_email)){
+    if(selected_director_email){
+
+    }
+    if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
+                (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
+                (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
       setSelectedAllRequiredSignatories(true);
     }else{
       setSelectedAllRequiredSignatories(false);
@@ -219,20 +229,28 @@ export default function Compliance({ params }) {
 
     console.log("userStatus == APPROVED", userStatus == APPROVED);
 
-    if(selected_director_email.includes(user.email)){
+    if(selected_director_email && selected_director_email.includes(user.email)){
       setIsASignatory(true);
-    }else if(selected_delegate_email.includes(user.email)){
+    }else if(selected_delegate_email && selected_delegate_email.includes(user.email)){
       setIsASignatory(true);
-    }else if(selected_delegate_email.includes(user.email)){
+    }else if(selected_witness_email && selected_witness_email.includes(user.email)){
       setIsASignatory(true);
     }else{
       setIsASignatory(false);
     }
 
-    setHasNotSigned(selected_admin_users.find(u => u.email == user.email) ? 
-                      selected_admin_users.find(u => u.email == user.email).has_user_signed == "no" :
-                      true);
-    setSignatoryRole(selected_admin_users.find(u => u.email == user.email).role);
+    if(selected_admin_users.length){
+      setHasNotSigned(selected_admin_users.find(u => u.email == user.email) ? 
+          selected_admin_users.find(u => u.email == user.email).has_user_signed == "no" :
+          true);
+
+      setAllHaveSigned(selected_admin_users.filter(u => u.has_user_signed != 'no').length >= 2);
+    }
+
+    console.log("selected_admin_users", selected_admin_users);
+    console.log("allHaveSigned", allHaveSigned);
+    
+    setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
     
 
     directorSigned = selected_admin_users.find(u => u.role == "director") ? selected_admin_users.find(u => u.role == "director").has_user_signed != "no" : false;
@@ -263,12 +281,27 @@ export default function Compliance({ params }) {
       }else{
         setContractSignatriesModal(false);
         setContractSignatoriesSuccess(true);
+        refreshSession();
       }
     }else{
       setError({error: "You must choose a director or delegate and a witness"});
     }
     
   };
+
+  const get_dynamic_content = async () => {
+    if (gettingDynamicContent) return;
+    setGettingDynamicContent(true);
+    dynamic_content_response = await getContractDynamicData();
+    setGettingDynamicContent(false);
+    console.log('dynamic_content_response', dynamic_content_response);
+    if (dynamic_content_response.error) {
+        setError({ error: dynamic_content_response.error })
+    } else {
+        // console.log('dynamic_content_response', dynamic_content_response);
+        setDynamicData(dynamic_content_response.data);                
+    }
+}
 
 
   useEffect(() => {
@@ -280,9 +313,10 @@ export default function Compliance({ params }) {
 
       get_service_types();
       get_all_partner_roles();
-      get_all_admin_partners();
-  
+        
     }
+    get_dynamic_content();
+    get_all_admin_partners();
     
     if(signingDirector){
       setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
@@ -325,7 +359,7 @@ export default function Compliance({ params }) {
       router.push(`/dashboard/compliance/${categories[0].uuid}`);
     }
     // console.log({ partner })
-  }, [partner, params, selectedCategory]);
+  }, [partner, params, selectedCategory, allHaveSigned]);
 
   
   const handleOpenDrawer = (stage) => {
@@ -511,11 +545,14 @@ export default function Compliance({ params }) {
         </div>
       }
 
-      { userStatus == APPROVED && selectedAllRequiredSignatories &&  
-        //You were selected 
-        isASignatory &&
-        //you have not signed
-        hasNotSigned &&
+      {( (users.role == 'superAdmin' && selectedAllRequiredSignatories && !allHaveSigned) ||
+          
+          (userStatus == APPROVED &&       
+          selectedAllRequiredSignatories &&  
+          //You were selected 
+          isASignatory &&
+          //you have not signed
+          hasNotSigned) ) &&
 
         <div className="my-8 max-w-6xl">  
           <CallToAction
@@ -550,12 +587,14 @@ export default function Compliance({ params }) {
             }
           />
         </div>
-      }
+      }             
       
-      {/* 
-      <div className="my-8 max-w-6xl">
-        {
-          //Contract has been signed
+      {
+
+        allHaveSigned &&
+
+        <div className="my-8 max-w-6xl">
+          
           <CallToAction
             style={{border: "1px solid rgba(255,255,255,.1)"}}
             message="Your contract has been signed"
@@ -565,13 +604,15 @@ export default function Compliance({ params }) {
               <div className="py-1 px-3 rounded-full bg-[#00FF0020] text-white flex justify-center items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" className="w-6 h-6">
                   <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full">11/07/2023</span>
+                </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full"> {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}</span>
               </div>
-              <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-                  <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
-                </svg>
-              </div> 
+              <a href={downloadSignedContract()} target="_blank">
+                <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                    <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </a>               
               <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
                   <path fill-rule="evenodd" d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
@@ -603,9 +644,11 @@ export default function Compliance({ params }) {
 
             }
           />
-        }
+
+        </div> 
+      }
         
-      </div> */}      
+          
       {/* Just for tests ends here */}
 
       {/* {processing && (
@@ -1278,7 +1321,7 @@ export default function Compliance({ params }) {
       }
       {      
         contractSignatoriesSuccess && 
-        <div id="contract_success_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "contract_success_modal") {setContractSignatoriesSuccess(false);}}}>
+        <div id="contract_success_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" >
           <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
             
             <div className="flex pt-8 pb-4 justify-center items-center">
@@ -1295,7 +1338,7 @@ export default function Compliance({ params }) {
  
             <div className="">              
               <div className="flex py-4 px-2 space-x-4 justify-center">
-                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false);}}>Continue</button>
+                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false); refreshSession();}}>Continue</button>
               </div>              
             </div>
 

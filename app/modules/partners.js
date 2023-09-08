@@ -2,13 +2,10 @@ import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 import { cookies } from "next/headers";
 import { Decrypt } from "./utilities";
 import useLogout from "@/hooks/useLogout";
-import {useStoreState} from "easy-peasy";
-
 
 export const getAllPartners = async (page, perPage, contractStatus) => {
 
-  const {LogoutAdmin} = useLogout();
-  const states = useStoreState((state) => state);
+  // const {Logout} = useLogout();
 
   try {
     const params = [];
@@ -30,7 +27,7 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
         next: { revalidate: 120 },
         headers: {
           token: token?.value,
-          Authorization: `bearer ${states.users.token}`,
+          Authorization: `bearer ${token?.value}`,
           "Content-Type": "application/json",
         },
       }

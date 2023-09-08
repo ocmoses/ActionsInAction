@@ -54,6 +54,7 @@ const doLogin = async (body, req, res) => {
     };
   return { success: true, error: null, data: { user, token: authtoken } };
 };
+
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
@@ -63,6 +64,9 @@ export default async function handler(req, res) {
     const body = JSON.parse(req.body);
     const categoriesData = await getCategories(process.env.APIKEY);
     const loginData = await doLogin(body, req, res);
+
+    // console.log("loginData", loginData);
+
     const [User, categories] = await Promise.all([loginData, categoriesData]);
     if (User.error)
       return res

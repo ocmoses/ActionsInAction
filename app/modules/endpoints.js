@@ -1,8 +1,6 @@
 import { apiURL } from "@/app/modules/constants";
 
-
-const NOTIFICATION_BASE = "http://10.1.44.43/api/"; //"http://10.1.29.142/api/";
-
+const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -68,10 +66,11 @@ const RemoteEndpoints = {
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
+
   //Notifications
   GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
-  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notifications/read/:notification-uuid`,
+  MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notification/read/:notification-uuid/:user-uuid`,
   ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
@@ -83,21 +82,31 @@ const RemoteEndpoints = {
   CREATE_ROLE: `${apiURL}/v2/admin/create-role`,
   DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
 
+  GET_RESOLUTION_DOCUMENTS: `${apiURL}/v2/admin/board-resolution-documents`,
+  APPROVE_REJECT_BRD: `${apiURL}/v2/admin/board-resolution-documents/approve-or-reject`,
   ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
   ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
   ALL_PARTNER_PRIVILEGES: `${apiURL}/v2/partner-user/partner-user-role-privileges`,
   CREATE_PARTNER: `${apiURL}/v2/partner-user/add-partner-user`,
   DELETE_PARTNER: `${apiURL}/v2/partner-user/delete-partner-user`,
+  SET_UP_PASSWORD: `${apiURL}/v2/partner-user/setup-password`,
 
   GET_SERVICES: `${apiURL}/v2/contract/service-types`,
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
+  DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:type`,
 
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
+
 //Admin Reports
-  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`
+  PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
+  PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
+  PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
+  UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
 
 }
 export default RemoteEndpoints

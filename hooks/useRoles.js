@@ -48,7 +48,7 @@ const useRoles = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         Logout();
         return;
       }
@@ -110,7 +110,7 @@ const useRoles = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         LogoutAdmin();
         return;
       }

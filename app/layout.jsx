@@ -9,6 +9,8 @@ import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
 
+import ContactUsPopUp from "@/app/components/PopUps"
+
 import './modules/bootstrap';
 
 const getServerSession = async () => {
@@ -94,12 +96,9 @@ const getServerSession = async () => {
         const response = await fetch(RemoteEndpoints.AUTH_USER, {
           headers: {
             apikey,
-            apikey,
             "Content-Type": "application/json",
             // redirect: "follow",
-            // redirect: "follow",
             referrerPolicy: "no-referrer",
-            Authorization: `bearer ${authToken}`,
             Authorization: `bearer ${authToken}`,
           },
         }).catch((error) => {
@@ -134,7 +133,6 @@ const getServerSession = async () => {
             return { success: false, error: data.error, data: null };
           return {
             success: false,
-            error: "No data was return from the server. Please try again",
             error: "No data was return from the server. Please try again",
             data: null,
           };
@@ -205,8 +203,10 @@ export default async function RootLayout({ children }) {
         </html>
       ) : ( */}
       <html lang="en">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <head />
         <body>
+       {/* <ContactUsPopUp/>*/}
           <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
           <Providers>

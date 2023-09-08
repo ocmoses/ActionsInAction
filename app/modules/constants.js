@@ -56,9 +56,9 @@ export const validities = {
   nlrc_lottery: "10 years",
   nlrc_sport_betting: "5 years",
   nlrc_mobile_lottery: "5 years",
-  shortcode: "1 years",
+  shortcode: "2 years",
   shortcode_2: "2 years",
-  shortcode_pricing: "1 years",
+  shortcode_pricing: "2 years",
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 };
@@ -1181,6 +1181,13 @@ export const approvalFields = {
     type: "form",
     approval: ["SPRM"],
     stage: "accountinfo",
+  },
+  board_resolution_document: {
+    title: "Board Resolution Document",
+    categories: ["VAS", "RMS", "AGR"],
+    type: "form",
+    approval: ["SPRM"],
+    stage: "board_resolution_document",
   },
 };
 

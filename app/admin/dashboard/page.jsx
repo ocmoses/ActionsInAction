@@ -1,8 +1,6 @@
-"use client"
 import Dashboard from "./Dashboard";
-import useAdmins from "@/hooks/useAdmins";
+import { getAllPartners } from "@/app/modules/partners";
 export default async function DashboardPage() {
-  const {getAllPartners} = useAdmins();
-  const all_partners = await getAllPartners();
-  return <Dashboard allPartners={all_partners} />;
+  const allPartners = await getAllPartners();
+  return <Dashboard allPartners={allPartners} />;
 }

@@ -11,7 +11,6 @@ import { PageRoutes } from "@/app/modules/menu";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
-import usePartners from "@/hooks/usePartners";
 import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
@@ -55,6 +54,9 @@ export default function Dashboard({ allPartners }) {
     if ((onboardingStatus || perPage, page)) {
       get_all_Partner();
     }
+  }, [page, onboardingStatus, perPage]);
+
+  useEffect(() => {
     setProcessing(true);
     if (allPartners && allPartners.partners) {
       if (allPartners.partners?.length) {
@@ -80,7 +82,7 @@ export default function Dashboard({ allPartners }) {
     }else{
       LogoutAdmin();
     }
-  }, [allPartners, page, onboardingStatus, perPage]);
+  }, [allPartners]);
 
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true);

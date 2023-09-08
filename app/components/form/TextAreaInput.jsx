@@ -1,0 +1,73 @@
+"use client";
+import { useState } from "react";
+import { EyeOpenIcon, EyeCloseIcon } from "../Icons";
+import FormErrors from "@/app/components/FormErrors";
+export default function TextAreaInput({
+  id,
+  label,
+  disabled,
+  value,
+  onChange,
+  onKeyUp,
+  onBlur,
+  type,
+  border,
+  bg,
+  margin,
+  errors,
+}) {
+  const [Type, setType] = useState(type ?? "text");
+
+  const TogglePassword = () => {
+    setType((oldState) => (oldState === "text" ? "password" : "text"));
+  };
+  return (
+    <div className={margin ? margin + " " : "mb-6 "}>
+      <div
+        className={
+          (border ? border + " " : "border-1 ") +
+          (bg ? bg + " " : "bg-[#212121] ") +
+          "relative z-0  w-full group  border-[#333333] rounded-[10px]"
+        }
+      >
+        <textarea
+          type={Type}
+          id={id}
+          name={id}
+          disabled={disabled}
+          value={value}
+          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent autofill:!bg-inherit active:!bg-transparent placeholder-transparent rounded-lg border-0 focus:outline-none focus:ring-mtn peer"
+          placeholder={label}
+          autoComplete="new-password"
+          onChange={onChange}
+          onKeyUp={onKeyUp}
+          onBlur={onBlur}
+          style={{
+            fontStyle: "normal",
+            fontWeight: 400,
+          }}
+        >
+        </textarea>
+        <label
+          htmlFor={id}
+          className="absolute text-lg top-0 left-5 peer-focus:top-0 text-gray-600 duration-300 transform peer-placeholder-shown:top-5"
+        >
+          {label}
+        </label>
+        {type && type.toLowerCase() === "password" && (
+          <div
+            onClick={TogglePassword}
+            className="flex justify-center items-center cursor-pointer absolute top-0 right-0 bottom-0 text-white/50 mr-4"
+          >
+            {Type === "password" ? (
+              <EyeCloseIcon iconClass="w-[24px] h-[20px]" />
+            ) : (
+              <EyeOpenIcon iconClass="w-[24px] h-[20px]" />
+            )}
+          </div>
+        )}
+      </div>
+      {errors && <FormErrors error={errors[id]} />}
+    </div>
+  );
+}

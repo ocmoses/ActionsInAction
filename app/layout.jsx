@@ -13,6 +13,8 @@ import { apikey } from "@/app/modules/constants";
 import usePartners from "@/hooks/usePartners";
 import {useStoreState} from 'easy-peasy';
 
+import ContactUsPopUp from "@/app/components/PopUps"
+
 import './modules/bootstrap';
 
 const getServerSession = async () => {
@@ -217,8 +219,10 @@ export default async function RootLayout({ children }) {
         </html>
       ) : ( */}
       <html lang="en">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <head />
         <body>
+       {/* <ContactUsPopUp/>*/}
           <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
           <Providers>

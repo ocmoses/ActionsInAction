@@ -5,6 +5,7 @@ import ComplianceCategories from "@/app/components/dashboard/compliance/Complian
 import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
+import useLogout from "@/hooks/useLogout";
 import FormErrors from "@/app/components/FormErrors";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
@@ -25,6 +26,7 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
+import Router from "next/router";
 
 export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing();
@@ -45,110 +47,86 @@ export default function Compliance({ params }) {
     setActiveStage,
   } = useAdmins();
 
+  const {LogoutAdmin} = useLogout();
+
+
+  // console.log("useAdmins from admin compliance", useAdmins());
+
   const [category, setCategory] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
   const { isSuperadmin } = useRoles();
+
+  //This is a hack
+  let refreshed = 0;
+
+  const getPartnerInfo = async (uuid) => {
+    setProcessing(true);
+    const response = await fetch(
+      `${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`,
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+        headers: {
+          token: token,
+          Authorization: `bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      }
+    ).catch((e) => {
+      setProcessing(false);
+      return setError({
+        compliance: e.message,
+      });
+    });
+    if (!response){
+      return setError({
+        compliance: "This request has no response data available",
+      });
+    }
+
+    
+    console.log("refreshed", refreshed);
+
+    //This is a hack
+    if (response.status === 401 ) {
+
+        window.location = '/admin/dashboard';
+        return;
+      
+    }
+
+
+    const result = await response.json();
+    setProcessing(false);
+    if (result?.success) {
+      const partnerInfo = result.data?.partner;
+      filterPartner(partnerInfo, categories);
+      setPartner(partnerInfo);
+      if (partnerInfo?.categories?.length > 0) {
+        const _category = filterCategory(
+          partnerInfo?.categories[0],
+          partnerInfo
+        );
+        setCategory(_category.category_uuid);
+        setActiveCategory(_category);
+      }
+      return;
+    }
+    setProcessing(false);
+    return setError({
+      compliance:
+        result?.data?.message ??
+        "Something went wrong. Please check your connection and try again",
+    });
+  };
 
   useEffect(() => {
     setProcessing(false);
     setRouteloading(false);
   }, []);
   useEffect(() => {
-    clearErrors();
-    const getPartnerInfo = async (uuid) => {
-      setProcessing(true);
-
-      // var myHeaders = new Headers()
-      // // myHeaders.append("Content-Type", "application/json")
-      // myHeaders.append("Authorization", `Bearer  ${token}`)
-
-      // var urlencoded = new URLSearchParams()
-
-      // var requestOptions = {
-      //   method: "GET",
-      //   headers: myHeaders,
-      //   redirect: "follow",
-      // }
-
-      // fetch(`${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`, requestOptions)
-      //   .then((response) => response.json())
-      //   .then((result) => {
-      //     // const result = await response.json()
-      //     setProcessing(false)
-      //     if (result?.success) {
-      //       const partnerInfo = result.data?.partner
-      //       filterPartner(partnerInfo, categories)
-      //       setPartner(partnerInfo)
-      //       if (partnerInfo?.categories?.length > 0) {
-      //         const _category = filterCategory(
-      //           partnerInfo?.categories[0],
-      //           partnerInfo
-      //         )
-      //         setCategory(_category.category_uuid)
-      //         setActiveCategory(_category)
-      //       }
-      //       return
-      //     }
-      //     setProcessing(false)
-      //     return setError({
-      //       compliance:
-      //         result?.data?.message ??
-      //         "Something went wrong. Please check your connection and try again",
-      //     })
-      //   })
-      //   .catch((error) => {
-      //     console.log("error", error)
-      //     setProcessing(false)
-      //     return setError({
-      //       compliance: error.message,
-      //     })
-      //   })
-
-      const response = await fetch(
-        `${RemoteEndpoints.ADMIN_PARTNETINFO}/${uuid}`,
-        {
-          cache: "no-store",
-          next: { revalidate: 0 },
-          headers: {
-            token: token,
-            Authorization: `bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).catch((e) => {
-        setProcessing(false);
-        return setError({
-          compliance: e.message,
-        });
-      });
-      if (!response)
-        return setError({
-          compliance: "This request has no response data available",
-        });
-      const result = await response.json();
-      setProcessing(false);
-      if (result?.success) {
-        const partnerInfo = result.data?.partner;
-        filterPartner(partnerInfo, categories);
-        setPartner(partnerInfo);
-        if (partnerInfo?.categories?.length > 0) {
-          const _category = filterCategory(
-            partnerInfo?.categories[0],
-            partnerInfo
-          );
-          setCategory(_category.category_uuid);
-          setActiveCategory(_category);
-        }
-        return;
-      }
-      setProcessing(false);
-      return setError({
-        compliance:
-          result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
-      });
-    };
+    clearErrors();    
     if (params?.params?.length > 0) getPartnerInfo(params.params[0]);
   }, [params]);
 
@@ -207,7 +185,7 @@ export default function Compliance({ params }) {
     setOpenDrawer(true);
   };
   return (
-    <div className="max-w-[1158px] mx-auto py-12 px-16">
+    <div className="max-w-[1158px] mx-auto py-12 px-16 min-h-screen">
       <Link href="/admin/dashboard/">
         <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
           <svg
@@ -257,7 +235,7 @@ export default function Compliance({ params }) {
                       src={`/assets/flags/${
                         partner?.categories[0].country?.toLowerCase() ?? "ng"
                       }.svg`}
-                      className={"inline mr-2 h-4 rounded-sm h-auto"}
+                      className={"inline mr-2 rounded-sm h-auto"}
                       width={24}
                       height={15}
                       priority

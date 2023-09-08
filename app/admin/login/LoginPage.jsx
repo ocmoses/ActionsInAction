@@ -22,7 +22,7 @@ function Login({ params }) {
   );
   const { clearStore } = useLogout();
   const [data, setData] = useState({
-    username: process.env.NODE_ENV === "production" ? "" : "olabodg",
+    username: process.env.NODE_ENV === "production" ? "" : "afoo",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   useEffect(() => {
@@ -73,8 +73,7 @@ function Login({ params }) {
   };
   return (
     <>
-      
-      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto">
+      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto min-h-screen">
         <form method="POST" onSubmit={handleLogin}>
           <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
             <span
@@ -106,7 +105,7 @@ function Login({ params }) {
               color: "#999999",
             }}
           >
-            Welcome back! please enter your great details
+            Welcome back! please enter your details
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}

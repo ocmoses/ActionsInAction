@@ -1,4 +1,6 @@
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
+import { cookies } from "next/headers";
+import { Decrypt } from "./utilities";
 import useLogout from "@/hooks/useLogout";
 import {useStoreState} from "easy-peasy";
 
@@ -14,6 +16,11 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
     if (perPage) params.push(`per_page=${perPage}`);
     if (contractStatus) params.push(`contract_status=${contractStatus}`);
 
+    const cookieStore = cookies();
+
+    // console.log("cookieStore", cookieStore);
+
+    const token = cookieStore.get("token");
     const response = await fetch(
       `${RemoteEndpoints.ALL_PARTNERS}?${
         params.length > 0 ? params.join("&") : ""
@@ -33,7 +40,6 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
       LogoutAdmin();
       return;
     }
-
     const result = await response.json();
     if (result?.success) {
       const partners = result.data?.partners.data;

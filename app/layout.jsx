@@ -1,5 +1,3 @@
-"use client"
-
 import "@/styles/globals.css";
 import Providers from "@/app/Providers";
 import Session from "@/app/Session";
@@ -7,26 +5,16 @@ import ResponsiveLabel from "@/app/components/ResponsiveLabel";
 import RouteLoader from "@/app/components/RouteLoader";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { userData, Decrypt } from "@/app/modules/utilities";
-// import { cookies } from "next/headers";
+import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
-import usePartners from "@/hooks/usePartners";
-import {useStoreState} from 'easy-peasy';
 
 import ContactUsPopUp from "@/app/components/PopUps"
 
 import './modules/bootstrap';
 
 const getServerSession = async () => {
-
-  const { partner } = usePartners();
-  const states = useStoreState((state) => state);
-
-  console.log("====partner from layout===", partner);
-  console.log("====states from layout===", states);
-
   try {
-
     const nextCookies = cookies();
     // User session
     const token = nextCookies.has("auth-token")
@@ -108,12 +96,9 @@ const getServerSession = async () => {
         const response = await fetch(RemoteEndpoints.AUTH_USER, {
           headers: {
             apikey,
-            apikey,
             "Content-Type": "application/json",
             // redirect: "follow",
-            // redirect: "follow",
             referrerPolicy: "no-referrer",
-            Authorization: `bearer ${authToken}`,
             Authorization: `bearer ${authToken}`,
           },
         }).catch((error) => {
@@ -148,7 +133,6 @@ const getServerSession = async () => {
             return { success: false, error: data.error, data: null };
           return {
             success: false,
-            error: "No data was return from the server. Please try again",
             error: "No data was return from the server. Please try again",
             data: null,
           };

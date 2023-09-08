@@ -100,7 +100,7 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const APPROVED = "active";
+  const APPROVED = "approved";
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
   let directorSigned = false;
   let delegateSigned = false;

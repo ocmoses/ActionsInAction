@@ -4,7 +4,7 @@ import useLogout from "@/hooks/useLogout";
 import { useEffect, useState } from "react";
 import { filterCategory, getstages } from "@/app/modules/utilities";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { filterPartner } from "@/app/modules/utilities";
+import { filterPartner, Decrypt } from "@/app/modules/utilities";
 import { useRouter } from "next/navigation";
 import RemoteEndpoints, { NextEndPoints } from "@/app/modules/endpoints";
 
@@ -35,6 +35,8 @@ export default function useAdmins() {
   const getStages = (category, categories) => {
     return getstages(category, categories);
   };
+
+  // console.log("states from within useAdmin", states);
   
   const getAllPartners = async (page, perPage, contractStatus) => {
     try {
@@ -131,14 +133,14 @@ export default function useAdmins() {
         }
       );
 
-      console.log("response", response);
-      console.log("response.status", response.status);
-      console.log("response.status === 401", response.status === 401);
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
 
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
+      // if (response.status === 400 || response.status === 401 ) {
+      //   LogoutAdmin();
+      //   return;
+      // }
       if (!response)
         return {
           error: "This request has no response available",
@@ -188,6 +190,80 @@ export default function useAdmins() {
     }
   };
 
+  const getAllBoardResolutionDocuments = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_RESOLUTION_DOCUMENTS}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+
+      if (result?.success) {
+
+        const brds = result?.data['board-resolution-documents'].data;
+        
+        const navigation = {
+          current_page: result?.data['board-resolution-documents'].current_page,
+          first_page_url: result?.data['board-resolution-documents'].first_page_url,
+          from: result?.data['board-resolution-documents'].from,
+          last_page: result?.data['board-resolution-documents'].last_page,
+          last_page_url: result?.data['board-resolution-documents'].last_page_url,
+          links: result?.data['board-resolution-documents'].links,
+          next_page_url: result?.data['board-resolution-documents'].next_page_url,
+          path: result?.data['board-resolution-documents'].path,
+          per_page: result?.data['board-resolution-documents'].per_page,
+          prev_page_url: result?.data['board-resolution-documents'].prev_page_url,
+          to: result?.data['board-resolution-documents'].to,
+          total: result?.data['board-resolution-documents'].total,
+        };
+
+        // console.log('brds', brds);
+
+        return {
+          brds,
+          navigation,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const getAllDepartments = async (page, perPage) => {
     try {
       const params = [];
@@ -207,7 +283,7 @@ export default function useAdmins() {
           },
         }
       );
-      if (response.status === 400 || response.status === 401 ) {
+      if (response.status === 401 ) {
         LogoutAdmin();
         return;
       }
@@ -293,6 +369,12 @@ export default function useAdmins() {
         console.log("error", error);
         return { success: false, error: error };
       });
+      
+      
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
       console.log({ response });
       if (!response)
         return {
@@ -340,11 +422,17 @@ export default function useAdmins() {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
-      console.log('RemoteEndpoints.CREATE_ADMIN', RemoteEndpoints.CREATE_ADMIN);
-      console.log('Create result', result);
-      console.log('states.admins.token', states.token);
+      // console.log('RemoteEndpoints.CREATE_ADMIN', RemoteEndpoints.CREATE_ADMIN);
+      // console.log('Create result', result);
+      // console.log('states.admins.token', states.token);
 
       setProcessing(false);
       if (result?.success) {
@@ -393,11 +481,17 @@ export default function useAdmins() {
       return {
         error: "This request has no response available",
       };
+
+      if (response.status === 400 || response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
       const result = await response.json();
 
-      console.log('RemoteEndpoints.DELETE_ADMIN', RemoteEndpoints.DELETE_ADMIN);
-      console.log('Create result', result);
-      console.log('states.token', states.token);
+      // console.log('RemoteEndpoints.DELETE_ADMIN', RemoteEndpoints.DELETE_ADMIN);
+      // console.log('Create result', result);
+      // console.log('states.token', states.token);
 
       setProcessing(false);
       if (result?.success) {
@@ -424,9 +518,60 @@ export default function useAdmins() {
     }
   };
 
+  const approveOrRejectBrd = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.APPROVE_REJECT_BRD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
 
+      // console.log('RemoteEndpoints.APPROVE_REJECT_BRD', RemoteEndpoints.APPROVE_REJECT_BRD);
+      // console.log('Approve result', result);
+      // console.log('states.admins.token', states.token);
 
-/// //////////////////////////////////////////afolabi's functions starts here
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Approval/rejection message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  /// //////////////////////////////////////////afolabi's functions starts here
   const fetchData = async (url, apikey) => {
     try {
       const response = await axios.get(
@@ -444,10 +589,7 @@ export default function useAdmins() {
       return {success: false, message: error.message}
     }
   };
-
-
-/// //////////////////////////////////////////afolabi's functions Ends here
-
+  /// //////////////////////////////////////////afolabi's functions Ends here
 
 
   return {
@@ -463,6 +605,8 @@ export default function useAdmins() {
     createAdmin,
     getAllDepartments,
     deleteAdmin,
-    fetchData
+    fetchData,
+    getAllBoardResolutionDocuments,
+    approveOrRejectBrd
   };
 }

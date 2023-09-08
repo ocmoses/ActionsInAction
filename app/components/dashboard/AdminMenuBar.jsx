@@ -89,9 +89,9 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      <div className={`absolute bottom-0 left-0 pl-2`}>
+      <div className={`fixed z-[99] bottom-4 left-0 pl-2 bg-black`}>
         {/* The popup menu */}
-        {openSecondaryMenu && <div className="fixed bottom-10 left-3 z-10 bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
+        {openSecondaryMenu && <div className="fixed bottom-10 left-3 z-[9999] bg-black border-1 border-gray-700 rounded-lg shadow-lg p-4 text-white w-72">
           
           <div className="flex items-center space-x-3">
             <div className="relative flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
@@ -109,8 +109,8 @@ export default function MenuBar({ open }) {
               </div>                
             </div>
             <div className="cursor-pointer absolute top-0 right-0" onClick={() => setOpenSecondaryMenu(false)}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-                  <path strokeLinecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div> 
           </div>
@@ -123,7 +123,7 @@ export default function MenuBar({ open }) {
                 !open && "tooltip tooltip-right tooltip-mtn"
               }`}
               data-tip={'Team'}
-              onClick={() => {setOpenSecondaryMenu(false); window.location = '/admin/dashboard/admins'}}
+              onClick={() => {setOpenSecondaryMenu(false);}}
             >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@ export default function MenuBar({ open }) {
                 !open && "tooltip tooltip-right tooltip-mtn"
               }`}
               data-tip={'Team'}
-              onClick={() => {setOpenSecondaryMenu(false); window.location = '/admin/dashboard/admin-roles'}}
+              onClick={() => {setOpenSecondaryMenu(false);}}
             >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -174,28 +174,33 @@ export default function MenuBar({ open }) {
           </Link>
               
         </div>}
-        <hr className="mb-8 bg-gray-500" />
-        <div className="flex items-center space-x-3 pb-4">
+        <hr className="mb-4 bg-gray-500" />
+        <div className={`flex items-center space-x-3 pb-4 ${open ? "pr-8" : "pr-2"}`}>
           <div className="flex justify-center items-center cursor-pointer rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2"
               onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
             <span>
               {getPartnerInitials(fullname)}
             </span>
           </div>
-          <div>
-            <div className="font-italic text-white">
-              {fullname}
-            </div>
-            <div className="flex items-center gap-4 text-sm text-white/80">
-              {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-              {email}
-            </div>
-          </div>
-          <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
-              <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-            </svg>
-          </div>
+          {open && (
+            <>
+              <div>
+                <div className="font-italic text-white">
+                  {fullname}
+                </div>
+                <div className="flex items-center gap-4 text-sm text-white/80">
+                  {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                  {email}
+                </div>
+              </div>
+              <div className={`cursor-pointer`} onClick={() => setOpenSecondaryMenu(!openSecondaryMenu)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
+                  <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                </svg>
+              </div>            
+            </>)
+          }
+          
         </div>
       </div>
     </ul>

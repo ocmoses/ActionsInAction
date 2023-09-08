@@ -6,6 +6,7 @@ import Compliance from "@/app/components/dashboard/compliance_stages/Compliance"
 import Ncclicense from "@/app/components/dashboard/compliance_stages/Ncclicense";
 import Nlrclicense from "@/app/components/dashboard/compliance_stages/Nlrclicense";
 import Shortcode from "@/app/components/dashboard/compliance_stages/Shortcode";
+import BoardResolutionDocument from "@/app/components/dashboard/compliance_stages/BoardResolutionDocument";
 import Indemnity from "@/app/components/dashboard/compliance_stages/Indemnity";
 import Accountinfo from "@/app/components/dashboard/compliance_stages/Accountinfo";
 import Activities from "@/app/components/dashboard/compliance/Activities";
@@ -19,19 +20,19 @@ export default function ComplianceDetail({ activeStage, category }) {
   const [navlabels, setNavLabels] = useState({ prev: null, next: null });
 
   const Stages = getStages(category, categories);
-  const navigation = Stages.forms;
+  const navigation = Stages?.forms;
 
   useEffect(() => {
-    setFeedbacks(category.feedbacks[activeStage]);
+    setFeedbacks(category?.feedbacks[activeStage]);
   }, [activeStage, category]);
 
   useEffect(() => {
-    const index = navigation.indexOf(activeStage);
-    const next = index === navigation.length - 1 ? index : index + 1;
+    const index = navigation?.indexOf(activeStage);
+    const next = index === navigation?.length - 1 ? index : index + 1;
     const prev = index === 0 ? index : index - 1;
     setNavLabels({
-      prev: forms[navigation[prev]].shortname,
-      next: forms[navigation[next]].shortname,
+      prev: (forms && navigation && prev) ? forms[navigation[prev]].shortname : "",
+      next: (forms && navigation && next) ? forms[navigation[next]].shortname: "",
     });
   }, [activeStage]);
 
@@ -94,6 +95,9 @@ export default function ComplianceDetail({ activeStage, category }) {
           )}
           {activeStage === "accountinfo" && (
             <Accountinfo category={category} stage={activeStage} />
+          )}
+          {activeStage === "board_resolution_document" && (
+            <BoardResolutionDocument category={category} stage={activeStage} />
           )}
         </div>
         {view === "activities" && (

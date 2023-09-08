@@ -79,6 +79,7 @@ export default function AdminRoles({ allRoles }) {
     if (fetchingAdminRoles) return;
     setFetchingAdminRoles(true);
     all_Admin_Roles = await getAllAdminRoles(page, perPage);
+    // console.log("all_Admin_Roles", all_Admin_Roles);
     setAdminRoles(all_Admin_Roles.admin_roles);
     setFetchingAdminRoles(false);
     if (all_Admin_Roles.error) setError({ error: all_Admin_Roles.error });
@@ -153,6 +154,7 @@ export default function AdminRoles({ allRoles }) {
       if (all_Admin_Roles.error) {
         setProcessing(false);
         // if (allPartners.error === 401) {
+        //   LogoutAdmin();
         //   redirect(PageRoutes.adminlogin)
         //   return
         // }
@@ -285,7 +287,7 @@ export default function AdminRoles({ allRoles }) {
                           {/* Role members */}
                           <td>
                             <div>
-                              {getMembers(role)}
+                              {role.number_of_users}
                             </div>
                           </td>
                           <td>

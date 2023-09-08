@@ -56,7 +56,7 @@ export default function ComplianceDrawer({
                   </div>
                   <div className="flex flex-col">
                     <span className=" text-white text-[16px]">
-                      {forms[activeStage].shortname}
+                      {forms[activeStage]?.shortname ?? activeStage}
                     </span>
                     <span className=" text-[#999999] text-[12px]">
                       {category?.category_name}

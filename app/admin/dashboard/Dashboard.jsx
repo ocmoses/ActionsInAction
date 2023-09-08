@@ -11,6 +11,7 @@ import { PageRoutes } from "@/app/modules/menu";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
+import usePartners from "@/hooks/usePartners";
 import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
@@ -18,6 +19,8 @@ import { redirect, useRouter } from "next/navigation";
 import useApp from "@/hooks/useApp";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
 import Image from "next/image";
+
+import useLogout from "@/hooks/useLogout";
 
 export default function Dashboard({ allPartners }) {
   const { getAllPartners, allCategories, categories } = useAdmins();
@@ -33,6 +36,8 @@ export default function Dashboard({ allPartners }) {
   const [perPage, setPerPage] = useState(null);
   const [onboardingStatus, setOnboardingStatus] = useState(null);
 
+  const {LogoutAdmin} = useLogout();
+
   const get_all_Partner = async () => {
     if (fetchingPartners) return;
     setFetchingPartners(true);
@@ -46,19 +51,21 @@ export default function Dashboard({ allPartners }) {
   };
 
   useEffect(() => {
+    
     if ((onboardingStatus || perPage, page)) {
       get_all_Partner();
     }
-  }, [page, onboardingStatus, perPage]);
-
-  useEffect(() => {
     setProcessing(true);
-    if (allPartners) {
+    if (allPartners && allPartners.partners) {
       if (allPartners.partners?.length) {
         allPartners.partners.map((partner) => {
           filterPartner(partner, categories);
         });
       }
+
+      console.log("allPartners.partners", allPartners.partners);
+      console.log("allPartners", allPartners);
+      
       setPartners(allPartners.partners);
       if (allPartners.error) {
         setProcessing(false);
@@ -70,8 +77,10 @@ export default function Dashboard({ allPartners }) {
       }
       setNavigation(allPartners.navigation);
       setProcessing(false);
+    }else{
+      LogoutAdmin();
     }
-  }, [allPartners]);
+  }, [allPartners, page, onboardingStatus, perPage]);
 
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true);

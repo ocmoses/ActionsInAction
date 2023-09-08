@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
@@ -40,8 +40,6 @@ function Login({ params }) {
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   const [notVerified, setNotVerified] = useState(null);
-
-  let canvasRef = useRef(null);
 
   useEffect(() => {
     setForm(null);
@@ -149,7 +147,7 @@ function Login({ params }) {
           >
             {tmpuser?.email
               ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
-              : "Welcome back! please enter your great details"}
+              : "Welcome back! please enter your details"}
           </p>
           <div className="mb-6">
             {!success && errors && <FormErrors error={errors["login"]} />}{" "}
@@ -205,8 +203,6 @@ function Login({ params }) {
           </div>
         </div>
       </form>
-
-      <canvas width="400" height="200" ref={canvasRef}></canvas>
       
     </>
   );

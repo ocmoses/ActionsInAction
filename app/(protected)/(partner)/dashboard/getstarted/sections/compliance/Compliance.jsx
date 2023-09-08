@@ -8,6 +8,7 @@ import SelectInputOption from "@/app/components/form/SelectInputOption";
 import ButtonNext from "@/app/components/form/ButtonNext";
 import useErrors from "@/hooks/useErrors";
 import usePartners from "@/hooks/usePartners";
+import useUsers from "@/hooks/useUsers";
 import useProcessing from "@/hooks/useProcessing";
 import FormErrors from "@/app/components/FormErrors";
 import axios from "axios";
@@ -33,6 +34,10 @@ function Compliance() {
     checkUpdateStatus,
     nextStage,
   } = usePartners();
+
+  console.log("usePartners", usePartners);
+
+  console.log("useUsers()", useUsers());
 
   const [retryTIN, setRetryTIN] = useState(false);
   const [checkingTIN, setCheckingTIN] = useState(false);
@@ -495,8 +500,11 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Hidden for now
-                    verifyTIN(e.target.value);
-                    Validate("tin_no");
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyTIN(e.target.value);
+                    //   Validate("tin_no");
+                    // }
+                    
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -543,7 +551,10 @@ function Compliance() {
                   onChange={handleFormChange}
                   onBlur={(e) => {
                     // Suspending this for now
-                    // verifyCAC()
+                    // if(process.env.NODE_ENV == 'production'){
+                    //   verifyCAC();
+                    // }
+                    
                   }}
                   errors={errors}
                   margin="mb-1"
@@ -576,8 +587,9 @@ function Compliance() {
                 </div>
               </div>
             </div>
-            {data.valid_tin === "yes" && data.valid_cac === "yes" && (
-              <>
+            {/* {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
+              (process.env.NODE_ENV != 'production')) && ( 
+              <>*/}
                 <FileInputWrapper>
                   <FileInput
                     id="tin_file"
@@ -643,8 +655,10 @@ function Compliance() {
                       )}
                     </div>
                   )}
-              </>
-            )}
+              
+              {/*</>
+             )}  */}
+            
           </>
         )}
       </form>

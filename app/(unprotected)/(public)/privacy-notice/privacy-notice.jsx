@@ -505,9 +505,9 @@ export default function Privacy() {
             </div>
         </div>
 
-        <div className="w-full mt-20 mx-auto lg:max-w-[1158px] relative">
+        <br/><br/>
           <Footer />
-        </div>
+        
       </div>
     </>
   );

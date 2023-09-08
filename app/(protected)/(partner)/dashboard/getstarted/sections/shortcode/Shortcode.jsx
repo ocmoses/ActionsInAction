@@ -776,7 +776,7 @@ function Shortcode() {
             <FileInput
               id="pricing_file"
               doc_id="pricing_doc"
-              label="Short code document"
+              label="Pricing document"
               key={`pricing_file-${shortcodeSet}}`}
               value={
                 formdata.shortcode_pricing.pricing_file?.name

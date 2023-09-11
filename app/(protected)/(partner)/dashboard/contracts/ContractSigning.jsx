@@ -2497,7 +2497,7 @@ export default function ContractSigning(){
                         </div>        
                     }  
 
-                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false);}, 3000)} />      
+                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false); location.reload()}, 3000)} />      
 
                 </div>
 

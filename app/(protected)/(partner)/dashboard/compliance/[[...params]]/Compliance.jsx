@@ -102,9 +102,9 @@ export default function Compliance({ params }) {
 
   const APPROVED = "active";
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
-  let directorSigned = false; 
-  let delegateSigned = false; 
-  let witnessSigned = false;  
+  let directorSigned = false;
+  let delegateSigned = false;
+  let witnessSigned = false;
 
   const [isASignatory, setIsASignatory ] = useState(false);
   const [hasNotSigned, setHasNotSigned] = useState(false);
@@ -155,6 +155,7 @@ export default function Compliance({ params }) {
         // console.log('partner_select_service_response', partner_select_service_response);
         setContractModal(false); 
         setContractSignatriesModal(true);
+
     }
   };
 

@@ -89,6 +89,8 @@ export default function Compliance({ params }) {
   const [creatingPartner, setCreatingPartner] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
   const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
+  const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
+
   const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
@@ -101,7 +103,7 @@ export default function Compliance({ params }) {
   const userStatus = partner.status;
 
   const APPROVED = "active";
-  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
+  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
   let directorSigned = false;
   let delegateSigned = false;
   let witnessSigned = false;
@@ -127,6 +129,7 @@ export default function Compliance({ params }) {
   let all_Roles = null;
   let all_admin_partners_response = null;
   let submit_signatories_response = null;
+  let dynamic_content_response =  null;
 
   const get_service_types = async () => {
     clearErrors();
@@ -186,9 +189,8 @@ export default function Compliance({ params }) {
       //update signing director, delegate or witness
       confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
     }
-    
 
-
+     
   };
 
   const confirmSignatories = function(selected_admin_users, admin_partners){
@@ -216,9 +218,6 @@ export default function Compliance({ params }) {
 
     
 
-    if(selected_director_email){
-
-    }
     if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
                 (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
                 (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
@@ -226,8 +225,6 @@ export default function Compliance({ params }) {
     }else{
       setSelectedAllRequiredSignatories(false);
     }
-
-    console.log("userStatus == APPROVED", userStatus == APPROVED);
 
     if(selected_director_email && selected_director_email.includes(user.email)){
       setIsASignatory(true);
@@ -314,9 +311,9 @@ export default function Compliance({ params }) {
       get_service_types();
       get_all_partner_roles();
         
-    }
-    get_dynamic_content();
+    }    
     get_all_admin_partners();
+    get_dynamic_content();
     
     if(signingDirector){
       setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
@@ -326,10 +323,9 @@ export default function Compliance({ params }) {
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
     
-  }, []);
+  }, [isASignatory]);
 
   useEffect(() => {
-    
   }, [partner.approvalStages]);
 
   useEffect(() => {
@@ -339,6 +335,7 @@ export default function Compliance({ params }) {
   }, [openDrawer]);
 
   useEffect(() => {
+    
     if (partner && params.params?.length > 0) {
       filterFields(partner);
       filterComplianceRequirements(partner);
@@ -359,7 +356,15 @@ export default function Compliance({ params }) {
       router.push(`/dashboard/compliance/${categories[0].uuid}`);
     }
     // console.log({ partner })
-  }, [partner, params, selectedCategory, allHaveSigned]);
+
+   console.log("userStatus == APPROVED", userStatus == APPROVED) 
+   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+   console.log("isASignatory", isASignatory)
+   console.log("hasNotSigned", hasNotSigned)
+
+  }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
+
+  
 
   
   const handleOpenDrawer = (stage) => {
@@ -547,12 +552,13 @@ export default function Compliance({ params }) {
 
       {( (users.role == 'superAdmin' && selectedAllRequiredSignatories && !allHaveSigned) ||
           
-          (userStatus == APPROVED &&       
-          selectedAllRequiredSignatories &&  
+          (userStatus == APPROVED && 
+          selectedAllRequiredSignatories && 
           //You were selected 
-          isASignatory &&
-          //you have not signed
-          hasNotSigned) ) &&
+          // isASignatory && 
+          //you have not signed 
+          hasNotSigned
+          ) ) && 
 
         <div className="my-8 max-w-6xl">  
           <CallToAction

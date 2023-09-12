@@ -67,7 +67,7 @@ function Navbar() {
             </div>
           )}
           {session && session.status === "unauthenticated" && (
-            <div className="flex gap-3 max-[380px]:hidden">
+            <div className="flex gap-3 max-[700px]:hidden">
               <Button onClick={goToRegister} label="Register" />
               <Link
                 href="/login"

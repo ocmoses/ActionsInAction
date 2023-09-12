@@ -9,7 +9,7 @@ function NavLinks() {
     { href: "/faq", text: "FAQ", active: pathname === "/faq" },
   ]
   return (
-    <nav className="hidden sm:flex space-x-10">
+    <nav className="space-x-10 max-[700px]:hidden">
       {links.map((link) => (
         <Link href={link.href} key={link.text}>
           <span

@@ -125,23 +125,23 @@ export default function Terms() {
       sectionId: "section_20",
     },
   ];
-//// fo sticky sidebar
-useEffect(() => {
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const threshold = 300;
+  //// fo sticky sidebar
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const threshold = 300;
 
-    if (scrollY > threshold) {
-      setIsSticky(true);
-    } else {
-      setIsSticky(false);
-    }
-  };
-  window.addEventListener("scroll", handleScroll);
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+      if (scrollY > threshold) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -149,18 +149,20 @@ useEffect(() => {
         <div className="w-full mx-auto lg:max-w-[1158px] relative">
           <Navbar />
         </div>
+
         <div className="pt-8 lg:pt-[70px] flex flex-col items-start w-full">
           {/* Discover  Our Partner Portal */}
           <div className="w-full mx-auto lg:max-w-[1158px] relative">
             <div className="flex flex-col gap-0 w-full lg:max-w-[1170px] mx-auto">
-              <h3 className="text-mtn text-center text-[20px] font-mtn font-semibold mb-6">
+              <h3 className="text-mtn text-center text-[20px] font-mtn font-semibold max-[520px]:text-[16px]">
                 MTN Partner Portal T & C
               </h3>
 
-              <p className=" text-white text-center tracking-[-4%] font-mtn-extrabold text-[24px] leading-[32px] sm:text-[40px] sm:leading-[44px] md:text-[80px] md:leading-[54px] pb-5">
+              <h1 className=" text-white text-center font-mtn-extrabold text-[80px] max-[700px]:text-[60px] max-[520px]:text-[40px]">
                 Terms of Use
-              </p>
-              <p className=" text-white text-center font-mtn-extralight text-[18px] leading-[22px] sm:text-[16px] sm:leading-[28px] p-4 sm:pb-0 max-w-[480px] mx-auto font-semibold">
+              </h1>
+
+              <p className=" text-white text-center font-mtn-extralight font-semibold text-[18px] max-[520px]:text-[14px] ">
                 Last Updated: May 7, 2023
               </p>
             </div>

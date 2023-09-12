@@ -2,9 +2,6 @@
 import Image from "next/image";
 
 
-
-
-
 export default function PopUp({ closePopUp, children }) {
   return (
     <div

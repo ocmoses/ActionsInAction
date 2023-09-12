@@ -153,7 +153,7 @@ export default function Privacy() {
               <ul
                 className={`${
                   isSticky ? "sticky top-0 overflow-y-auto" : ""
-                } h-screen w-[208px] border-r-1 border-white/10 border-solid list-disc list-outside flex flex-col gap-[30px] px-[12px] py-[15px]  max-[700px]:hidden`}
+                } h-screen w-[250px] border-r-1 border-white/10 border-solid list-disc list-outside flex flex-col gap-[30px] px-[12px] py-[15px]  max-[700px]:hidden`}
               >
                 {LinkList.map((title) => (
                   <li
@@ -166,7 +166,7 @@ export default function Privacy() {
                 ))}
               </ul>
 
-              <div className="min-h-[400px] md:w-[calc(100%-208px)] text-[16px] text-white/70  font-mtn-light">
+              <div className="min-h-[400px] md:w-[calc(100%-250px)] text-[16px] text-white/70  font-mtn-light">
                 <p>
                   We respect your right to privacy, it is very important to us,
                   and we take the protection of your privacy and ensuring the
@@ -998,6 +998,7 @@ export default function Privacy() {
             </div>
           </div>
         </div>
+
         <br />
         <br />
         <Footer />

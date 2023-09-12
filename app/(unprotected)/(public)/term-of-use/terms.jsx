@@ -129,7 +129,7 @@ export default function Terms() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const threshold = 300;
+      const threshold = 500;
 
       if (scrollY > threshold) {
         setIsSticky(true);

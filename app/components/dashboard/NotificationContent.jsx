@@ -131,6 +131,7 @@ export default function NotificationContent(){
                         )): <div className="p-12 text-white/50 flex w-full justify-center items-center"> No notifications found</div>
 
                     }
+
                   </div>
               </div>
 

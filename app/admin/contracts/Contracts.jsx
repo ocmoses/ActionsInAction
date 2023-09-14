@@ -276,7 +276,7 @@ export default function Contracts() {
                             {/* Contract status */}
                             <td>
                               <div className="flex gap-0 flex-col">
-                                <span className="text-white">{contract.contract_status}</span>
+                                <span className={`text-white text-sm px-1 inline-block w-16 rounded ${contract.contract_status == "expired" ? 'bg-red-400' : (contract.contract_status == "pending" ? 'bg-grey-500' : 'bg-green-700')}`}>{capitalizeFirst(contract.contract_status)}</span>
                                 {/* <span className="text-gray-500">Value added services</span> */}
                               </div>
                             </td>

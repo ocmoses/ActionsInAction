@@ -27,7 +27,6 @@ import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
 import moment from "moment";
-import Modal from "app/components/Modal";
 
 
 

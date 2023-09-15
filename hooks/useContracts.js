@@ -23,12 +23,15 @@ const useContracts = () => {
   const getAllContracts = async (page, perPage) => {
 
     return [{
+        title: "CVE0-003",
         contract_status: "expired",
         contract_id: "123esrs",
         company: "ABC",
         start_date: "today",
         due_date: "tomorrow"
-    }, {
+    }, 
+    {
+        title: "CVE0-180",
         contract_status: "active",
         contract_id: "123esrs",
         company: "XYZ",
@@ -36,6 +39,7 @@ const useContracts = () => {
         due_date: "11/11/2023"
     },
     {
+        title: "CVE0-000",
         contract_status: "active",
         contract_id: "123esrs",
         company: "XYZ",
@@ -43,6 +47,7 @@ const useContracts = () => {
         due_date: "11/11/2023"
     },
     {
+        title: "CVE0-123",
         contract_status: "active",
         contract_id: "123esrs",
         company: "XYZ",

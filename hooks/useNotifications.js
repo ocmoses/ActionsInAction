@@ -144,6 +144,61 @@ export default function useNotifications(){
       }
     };
 
+    const markUnarchived = async (uuid) => {
+      try {
+            
+        setProcessing(true);
+        const response = await fetch(
+          `${RemoteEndpoints.UNARCHIVE_NOTIFICATION
+                      .replace(':notification-uuid', uuid)
+                      .replace(':user-uuid', users.user.uuid)}`,
+          {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            // method: 'PUT',
+            headers: {
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+            },
+          }
+        );
+        // if (response.status === 401) {
+        //   redirect(NextEndPoints.LOGIN_ADMIN)
+        //   return
+        // }
+        
+
+        if (!response)
+          return {
+            error: "This request has no response available",
+          };
+
+
+        // console.log('Archive response', response);
+
+        const result = await response.json();
+        console.log('Archive result', result);
+        setProcessing(false);
+        if (result?.success) {    
+          return {
+            success: result.success
+          };
+        }
+        return {
+          error:
+            result?.message ??
+            "Something went wrong. Please check your connection and try again",
+        };
+      } catch (error) {
+        console.log({ error });
+        return {
+          error:
+            error.message ??
+            "Something went wrong. Please check your connection and try again",
+        };
+      }
+    };
+
     const markRead = async (uuid) => {
       try {
             
@@ -192,6 +247,54 @@ export default function useNotifications(){
       }
     };
 
+    const markUnread = async (uuid) => {
+      try {
+            
+        setProcessing(true);
+        const response = await fetch(
+          `${RemoteEndpoints.MARK_NOTIFICATION_UNREAD
+                      .replace(':notification-uuid', uuid)
+                      .replace(':user-uuid', users.user.uuid)}`,
+          {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            // method: 'PUT',
+            headers: {
+              // "Content-Type": "application/json",
+              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+            },
+          }
+        );
+        
+        if (!response){
+          return {
+            error: "This request has no response available",
+          };
+        }
+        // console.log('Mark read response', response);
+        const result = await response.json();
+        console.log('Mark read result', result);
+        setProcessing(false);
+        if (result?.success) {    
+          return {
+            success: result.success
+          };
+        }
+        return {
+          error:
+            result?.message ??
+            "Something went wrong. Please check your connection and try again",
+        };
+      } catch (error) {
+        console.log({ error });
+        return {
+          error:
+            error.message ??
+            "Something went wrong. Please check your connection and try again",
+        };
+      }
+    };
+
     return {notification, notifications, setNotification, setNotifications, 
-          getNotifications, tryArchive, markRead};
+          getNotifications, tryArchive, markRead, markUnarchived, markUnread};
 }

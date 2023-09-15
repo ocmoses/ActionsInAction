@@ -27,7 +27,6 @@ import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
 import moment from "moment";
-import Modal from "app/components/Modal";
 
 
 
@@ -384,7 +383,7 @@ export default function Compliance({ params }) {
     if(weHaveAgreed){
       setAgreementModal(true);
     }else{
-      router.push("dashboard/contracts/")
+      router.push("dashboard/contracts/execution")
     }
     
   }

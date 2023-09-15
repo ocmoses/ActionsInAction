@@ -89,9 +89,14 @@ export default function Compliance({ params }) {
   const [creatingPartner, setCreatingPartner] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
   const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
+  const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
+
   const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
+
+  const [agreementModal, setAgreementModal] = useState(false);
+  const [acceptingAgreement, setAcceptingAgreement] = useState(false);
 
   const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
@@ -100,8 +105,8 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const APPROVED = "approved";
-  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
+  const APPROVED = "active";
+  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
   let directorSigned = false;
   let delegateSigned = false;
   let witnessSigned = false;
@@ -127,6 +132,7 @@ export default function Compliance({ params }) {
   let all_Roles = null;
   let all_admin_partners_response = null;
   let submit_signatories_response = null;
+  let dynamic_content_response =  null;
 
   const get_service_types = async () => {
     clearErrors();
@@ -186,9 +192,8 @@ export default function Compliance({ params }) {
       //update signing director, delegate or witness
       confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
     }
-    
 
-
+     
   };
 
   const confirmSignatories = function(selected_admin_users, admin_partners){
@@ -216,9 +221,6 @@ export default function Compliance({ params }) {
 
     
 
-    if(selected_director_email){
-
-    }
     if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
                 (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
                 (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
@@ -226,8 +228,6 @@ export default function Compliance({ params }) {
     }else{
       setSelectedAllRequiredSignatories(false);
     }
-
-    console.log("userStatus == APPROVED", userStatus == APPROVED);
 
     if(selected_director_email && selected_director_email.includes(user.email)){
       setIsASignatory(true);
@@ -301,8 +301,7 @@ export default function Compliance({ params }) {
         // console.log('dynamic_content_response', dynamic_content_response);
         setDynamicData(dynamic_content_response.data);                
     }
-}
-
+  }
 
   useEffect(() => {
     
@@ -314,9 +313,9 @@ export default function Compliance({ params }) {
       get_service_types();
       get_all_partner_roles();
         
-    }
-    get_dynamic_content();
+    }    
     get_all_admin_partners();
+    get_dynamic_content();
     
     if(signingDirector){
       setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
@@ -326,10 +325,9 @@ export default function Compliance({ params }) {
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
     
-  }, []);
+  }, [isASignatory]);
 
   useEffect(() => {
-    
   }, [partner.approvalStages]);
 
   useEffect(() => {
@@ -339,6 +337,7 @@ export default function Compliance({ params }) {
   }, [openDrawer]);
 
   useEffect(() => {
+    
     if (partner && params.params?.length > 0) {
       filterFields(partner);
       filterComplianceRequirements(partner);
@@ -359,7 +358,13 @@ export default function Compliance({ params }) {
       router.push(`/dashboard/compliance/${categories[0].uuid}`);
     }
     // console.log({ partner })
-  }, [partner, params, selectedCategory, allHaveSigned]);
+
+   console.log("userStatus == APPROVED", userStatus == APPROVED) 
+   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+   console.log("isASignatory", isASignatory)
+   console.log("hasNotSigned", hasNotSigned)
+
+  }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
 
   
   const handleOpenDrawer = (stage) => {
@@ -375,7 +380,12 @@ export default function Compliance({ params }) {
 
   const showAgreement = () => {
     //Get all contracts and display
-    router.push("dashboard/contracts/")
+    if(weHaveAgreed){
+      setAgreementModal(true);
+    }else{
+      router.push("dashboard/contracts/execution")
+    }
+    
   }
 
   const selectService = (name) => {
@@ -508,7 +518,7 @@ export default function Compliance({ params }) {
       )}
       {/* Only when we have not selected all signees */}
       {users.role == 'superAdmin' && 
-        userStatus == APPROVED && !selectedAllRequiredSignatories && 
+        userStatus == APPROVED && !selectedAllRequiredSignatories ? 
 
         <div className="my-8 max-w-6xl">          
           <CallToAction
@@ -542,113 +552,108 @@ export default function Compliance({ params }) {
 
             }
           />                        
-        </div>
-      }
+        </div> : (
+          allHaveSigned ? 
 
-      {( (users.role == 'superAdmin' && selectedAllRequiredSignatories && !allHaveSigned) ||
-          
-          (userStatus == APPROVED &&       
-          selectedAllRequiredSignatories &&  
-          //You were selected 
-          isASignatory &&
-          //you have not signed
-          hasNotSigned) ) &&
-
-        <div className="my-8 max-w-6xl">  
-          <CallToAction
-            style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-            message="Your contract is ready click here to sign"
-            description="Outline contract conditions and give contract warrantees."
-            onclick={() => {showAgreement()}}
-            button={'Sign your contract'}
-            color="text-gray-200"
-            desccolor="text-[#999999]"
-            bg='bg-white/10'
-            border="border-transparent"
-            icon={
-              <div className="relative inline-flex">
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                  stroke="currentColor" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                    stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" fill="yellow" 
-                    className="w-4 h-6 absolute top-8 right-2">
-                  <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
-                </svg>
-              </div>
-                  
-            }
-          />
-        </div>
-      }             
-      
-      {
-
-        allHaveSigned &&
-
-        <div className="my-8 max-w-6xl">
-          
-          <CallToAction
-            style={{border: "1px solid rgba(255,255,255,.1)"}}
-            message="Your contract has been signed"
-            description="Outline contract conditions and give contract warrantees."
-            onclick={() => showAgreement()}
-            feedback={<div className="flex space-x-2 items-center">
-              <div className="py-1 px-3 rounded-full bg-[#00FF0020] text-white flex justify-center items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" className="w-6 h-6">
-                  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full"> {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}</span>
-              </div>
-              <a href={downloadSignedContract()} target="_blank">
+          <div className="my-8 max-w-6xl">
+            
+            <CallToAction
+              style={{border: "1px solid rgba(255,255,255,.1)"}}
+              message="Your contract has been signed"
+              description="Outline contract conditions and give contract warrantees."
+              onclick={() => showAgreement()}
+              feedback={<div className="flex space-x-2 items-center">
+                <div className="py-1 px-3 rounded-full bg-[#00FF0020] text-white flex justify-center items-center space-x-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" className="w-6 h-6">
+                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                  </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full"> {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}</span>
+                </div>
+                <a href={downloadSignedContract()} target="_blank">
+                  <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+                      <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </a>               
                 <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-                    <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>            
+              </div>}
+              color="text-gray-200"
+              desccolor="text-[#999999]"
+              bg='bg-white/10'
+              border="border-transparent"
+              icon={
+                <div className="relative inline-flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                    stroke="currentColor" className="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" fill="currentColor" 
+                      className="w-4 h-6 absolute top-8 right-2">
+                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
+                  </svg>
+                </div>            
+
+              }
+            />
+
+          </div> : (
+            ( (users.role == 'superAdmin' && selectedAllRequiredSignatories && !allHaveSigned) ||
+          
+            (userStatus == APPROVED && 
+            selectedAllRequiredSignatories && 
+            //You were selected 
+            // isASignatory && 
+            //you have not signed 
+            hasNotSigned
+            ) ) ? 
+  
+          <div className="my-8 max-w-6xl">  
+            <CallToAction
+              style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
+              message="Your contract is ready click here to sign"
+              description="Outline contract conditions and give contract warrantees."
+              onclick={() => {showAgreement()}}
+              button={'Sign your contract'}
+              color="text-gray-200"
+              desccolor="text-[#999999]"
+              bg='bg-white/10'
+              border="border-transparent"
+              icon={
+                <div className="relative inline-flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                    stroke="currentColor" className="w-12 h-12">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                      stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" fill="yellow" 
+                      className="w-4 h-6 absolute top-8 right-2">
+                    <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
                   </svg>
                 </div>
-              </a>               
-              <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-                  <path fill-rule="evenodd" d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
-                </svg>
-              </div>            
-            </div>}
-            color="text-gray-200"
-            desccolor="text-[#999999]"
-            bg='bg-white/10'
-            border="border-transparent"
-            icon={
-              <div className="relative inline-flex">
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                  stroke="currentColor" className="w-12 h-12">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                    stroke="currentColor" className="w-6 h-6 absolute top-4 left-3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" fill="currentColor" 
-                    className="w-4 h-6 absolute top-8 right-2">
-                  <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd" />
-                </svg>
-              </div>            
-
-            }
-          />
-
-        </div> 
+                    
+              }
+            />
+          </div> : ""
+          )
+        )
       }
-        
-          
       {/* Just for tests ends here */}
 
       {/* {processing && (
@@ -1344,6 +1349,50 @@ export default function Compliance({ params }) {
 
           </div>
         </div>        
+      }
+
+      {      
+        agreementModal && 
+        <div id="agreement_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "agreement_modal") {setAgreementModal(false);}}}>
+          <div id="actualModal" className=" pb-28 relative px-10 border-2 border-gray-500 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[600px] h-[500px]">
+            <div className="flex pt-8 pb-4">
+              <div className="text-white text-2xl mb-4 flex-1">Accept Terms</div>              
+            </div>
+
+            <div className="overflow-y-scroll">
+            
+              <div className="flex flex-col space-y-2">
+                <p className="text-gray-400">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet odio commodo, hendrerit urna sed, mattis ex. Sed dignissim sapien id ipsum fermentum, non imperdiet sem condimentum. Pellentesque consequat et quam ut venenatis. Suspendisse dictum sapien id odio sodales pretium. Etiam fermentum augue vitae lectus iaculis condimentum. Curabitur sit amet libero ornare, facilisis enim quis, vulputate justo. Nunc semper nibh eu justo dignissim laoreet. Mauris et venenatis lectus, vel mattis dolor. Nulla aliquet feugiat semper. Cras enim libero, aliquet eu condimentum sed, tristique at tortor. Nam justo enim, vulputate id elit quis, tincidunt egestas mi.
+                </p>
+                <p className="text-gray-400">
+                Maecenas suscipit a sapien eu bibendum. Curabitur in urna non ligula facilisis bibendum id at sapien. In ut nulla turpis. Curabitur tristique turpis id laoreet malesuada. Nam tristique orci lectus, consectetur tempor ex rutrum vitae. Aenean congue fringilla auctor. Sed tempus sed tellus vel placerat. Donec pharetra arcu quis laoreet mollis. Nulla iaculis arcu nec quam laoreet elementum. Donec fermentum, neque ut vestibulum faucibus, metus ante varius ante, eu sodales ipsum tortor nec ipsum. Suspendisse ultrices justo id tincidunt interdum. Fusce vel ultricies elit.
+                </p>
+                <p className="text-gray-400">
+                Praesent molestie arcu eget pharetra tempus. Aenean placerat arcu libero, id consequat nulla mattis ut. Phasellus lacus felis, vehicula ac mauris id, dignissim maximus quam. Praesent at semper enim. Morbi id vehicula ligula. Quisque nec nisl in lorem condimentum mollis. Etiam dolor augue, convallis eget imperdiet eget, viverra et justo. Sed aliquet, magna nec gravida sollicitudin, nisi sem bibendum erat, ut tincidunt nibh ipsum eget nulla. Vestibulum et consequat ex. Donec sed nulla commodo, placerat augue sed, posuere lacus.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="absolute z-10 left-0 bottom-0 border-t-1 border-white/20 w-full p-4">
+            {!acceptingAgreement &&
+                <div className="flex py-4 px-2 space-x-4 justify-end">                    
+                  <input type="checkbox" className="w-6 h-6 rounded bg-black/20" />
+                  <label className="text-white ml-1">
+                    By clicking this checkbox, I agree to the terms in this document
+                  </label>
+                  <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" disabled={disableActiveButton} onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'witness').uuid);}}>Proceed</button>
+                </div>
+              }
+              {acceptingAgreement &&
+                <div className="flex px-4">
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                </div>
+              }
+            </div>
+          </div>
+        </div>  
       }
     </div>
   );

@@ -1,7 +1,7 @@
 import { apiURL } from "@/app/modules/constants";
 
 
-const NOTIFICATION_BASE = "http://10.1.44.43/api/"; 
+const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
 
 
 export const EndPointHeaders = {
@@ -74,6 +74,8 @@ const RemoteEndpoints = {
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
   MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notification/read/:notification-uuid/:user-uuid`,
   ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
+  MARK_NOTIFICATION_UNREAD: `${NOTIFICATION_BASE}notification/unread/:notification-uuid/:user-uuid`,
+  UNARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/unarchive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,

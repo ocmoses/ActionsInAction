@@ -398,6 +398,7 @@ const usePartners = () => {
   }
 
   const resendEmail = async (email, email_type) => {
+    
     setProcessing(true)
 
     const { data: resendEmailData, error: resendEmailError } = await fetchData(

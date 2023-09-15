@@ -674,7 +674,7 @@ export default function Contracts() {
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>
-                              <div className="flex items-center flex-col">
+                              <div className="flex flex-col">
                                 
                                   <div className=" text-white">
                                     {contract.title}

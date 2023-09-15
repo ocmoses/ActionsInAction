@@ -1,5 +1,5 @@
-import ContractSigning from "./ContractSigning";
+import Contracts from "./Contracts";
 
-export default function Contract() {
-  return <ContractSigning />;
+export default async function Page() {
+  return <Contracts />;
 }

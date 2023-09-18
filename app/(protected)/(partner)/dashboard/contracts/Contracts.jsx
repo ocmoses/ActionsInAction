@@ -122,6 +122,7 @@ export default function Contracts() {
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
 
+
   const userStatus = partner.status;
 
   const APPROVED = "active";
@@ -326,7 +327,11 @@ export default function Contracts() {
   useEffect(() => {
     clearErrors();
     setProcessing(false);
-    getAllContracts().then(resp => setContracts(resp));
+    getAllContracts().then(resp => {
+      console.log("resp", resp);
+      setContracts(resp.contracts); 
+      setNavigation(resp.navigation)
+    });
 
     if(role == 'superAdmin'){
 
@@ -345,7 +350,7 @@ export default function Contracts() {
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
     
-  }, [isASignatory]);
+  }, [contracts, navigation, isASignatory]);
 
   return (
     <>
@@ -670,7 +675,7 @@ export default function Contracts() {
                       </th>                     
                     </tr>
 
-                    {contracts && contracts.map(contract => 
+                    {contracts?.map(contract => 
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>

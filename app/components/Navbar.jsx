@@ -38,7 +38,7 @@ function Navbar() {
       )}
       {/*//==============================================================================================================================*/}
 
-      <div className="w-full max-w-[1158px] px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto  z-10 relative  max-[700px]:border-b-1 max-[700px]:border-white/10 max-[700px]:pb-6">
+      <div className="w-full max-w-[1158px] px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto z-50 relative  max-[700px]:border-b-1 max-[700px]:border-white/10 max-[700px]:pb-6">
         <div className="w-full mx-auto flex justify-between items-center max-[700px]:w-[96%]">
           <div className="flex items-center">
             <Link

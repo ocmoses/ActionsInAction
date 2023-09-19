@@ -5,6 +5,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { apikey } from "@/app/modules/constants";
 import PartnerStatisticsReport, {
   PartnerReportBarChart,
+  PartnerFilterList,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
@@ -322,6 +323,7 @@ export default function Approvals() {
                 </div>
               </div>
             </div>
+            <PartnerFilterList/>
           </div>
         </section>
       </div>

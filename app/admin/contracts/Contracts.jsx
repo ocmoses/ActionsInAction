@@ -24,6 +24,7 @@ import FilePreviewModal from "@/app/components/FilePreviewModal";
 
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
+import RemoteEndpoints from "@/app/modules/endpoints";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
@@ -69,7 +70,12 @@ export default function Contracts() {
   useEffect(() => {
     clearErrors();
     setProcessing(false);
-    getAllContracts().then(resp => setContracts(resp));
+    // getAllContracts().then(resp => setContracts(resp));
+    getAllContracts().then(resp => {
+      console.log("resp", resp);
+      setContracts(resp.contracts); 
+      setNavigation(resp.navigation);
+    });
   },[]);
 
   return (
@@ -256,19 +262,19 @@ export default function Contracts() {
                       </th>                     
                     </tr>
 
-                    {contracts && contracts.map(contract => 
+                    {contracts?.map(contract => 
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>
                               <div className="flex items-center">
                                 <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                                   <span>
-                                    {getPartnerInitials(contract.company)}
+                                    {getPartnerInitials(contract.contract)}
                                   </span>
                                 </div>
                                 <div>
                                   <div className=" text-white">
-                                    {contract.company}
+                                    {contract.contract}
                                   </div>                                
                                 </div>
                               </div>                              
@@ -296,17 +302,18 @@ export default function Contracts() {
                             <td>
                               <div>
                               {
-                                moment(contract.due_date ?? moment())
+                                moment(contract.contract_expiration ?? moment())
                                 .format("DD/MM/YYYY")
                               }
                               </div>
                             </td>
                             
                             <td>
+                              
                               <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg> <span className="text-white text-sm">Download</span>
+                                </svg> <a href={`${contract.contract_status == 'active' ? RemoteEndpoints.DOWNLOAD_CONTRACT.replace(':partner_uuid', contract.partner_uuid).replace(':type', 'signed') : RemoteEndpoints.DOWNLOAD_CONTRACT.replace(':partner_uuid', contract.partner_uuid).replace(':type', 'not_signed')}`}><span className="text-white text-sm">Download</span></a>
                               </div>
                             </td>
                             

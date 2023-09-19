@@ -26,7 +26,7 @@ import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
-  const [contracts, setContracts] = useState(null);
+  const [contracts, setContracts] = useState([]);
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
@@ -330,7 +330,7 @@ export default function Contracts() {
     getAllContracts().then(resp => {
       console.log("resp", resp);
       setContracts(resp.contracts); 
-      setNavigation(resp.navigation)
+      setNavigation(resp.navigation);
     });
 
     if(role == 'superAdmin'){
@@ -350,7 +350,7 @@ export default function Contracts() {
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
     
-  }, [contracts, navigation, isASignatory]);
+  }, [isASignatory]);
 
   return (
     <>

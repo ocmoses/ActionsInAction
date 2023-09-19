@@ -24,6 +24,8 @@ import FilePreviewModal from "@/app/components/FilePreviewModal";
 
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { decodedTextSpanIntersectsWith } from "typescript";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
@@ -65,11 +67,25 @@ export default function Contracts() {
   const [filterModal, setFilterModal] = useState(false);
   const [search, setSearch] = useState({date: true, keyword: false, status: false});
 
+  const [selectedDateRange, setSelectedDateRange] = useState(null);
+
+  let searchTags = {
+                      date_range: {from:"", to:""},
+                      keywords: [],
+                      status: []                  
+                    };
+
+  const doSearch = () => {
+    //To be impl
+    console.log("searchTags", searchTags);  
+  };
+
     
   useEffect(() => {
     clearErrors();
     setProcessing(false);
-    getAllContracts().then(resp => setContracts(resp));
+    getAllContracts().then(resp => {setContracts(resp.contracts); setNavigation(resp.navigation)});
+    
   },[]);
 
   return (
@@ -102,7 +118,7 @@ export default function Contracts() {
             </div>
             {
               filterModal && 
-              <div className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex`}>
+              <div id="filter_modal" className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex`}>
                 <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col  space-y-4">
                   
                   <div className={`${search.date ? 'bg-white/20' : ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`} 
@@ -149,24 +165,66 @@ export default function Contracts() {
                     search.date && 
                     <div className="flex flex-col space-y-4">
                       <div className="p-2 rounded-xl border-1 border-white/20 flex text-white items-center justify-center">
-                        <input id="search-from" onFocus={() => document.getElementById("search-from").type = "date"} onBlur={() => document.getElementById("search-from").type = "text"} 
-                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" placeholder="From" /> - 
-                        <input id="search-from2" onFocus={() => document.getElementById("search-from2").type = "date"} onBlur={() => document.getElementById("search-from2").type = "text"} 
-                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" placeholder="To" />
+                        <input id="search-from" 
+                                onFocus={() => document.getElementById("search-from").type = "date"} 
+                                onBlur={() => document.getElementById("search-from").type = "text"} 
+                                onChange={(e) => {
+                                            searchTags.date_range = {...searchTags.date_range, from: e.target.value};                                            
+                                            doSearch(); 
+                                            setSelectedDateRange('from_to')
+                                          }
+                                        } 
+                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
+                                placeholder="From" /> - 
+                        <input id="search-from2" 
+                                onFocus={() => document.getElementById("search-from2").type = "date"} 
+                                onBlur={() => document.getElementById("search-from2").type = "text"} 
+                                onChange={(e) => {
+                                                searchTags.date_range = {...searchTags.date_range, to: e.target.value}; 
+                                                doSearch(); 
+                                                setSelectedDateRange('from_to')
+                                              }
+                                          }
+                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
+                                placeholder="To" />
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-auto">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'last_30_days' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(30, 'd').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')} };  
+                                          doSearch(); 
+                                          setSelectedDateRange('last_30_days')
+                                        }
+                                }>
                         <span className="flex-1">Last 30 days</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'this_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-MM-01'), to: moment().format('YYYY-MM-DD')} };  
+                                          doSearch(); 
+                                          setSelectedDateRange('this_month')
+                                        }
+                                }>
                         <span className="flex-1">This month</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'last_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(1, 'months').format('YYYY-MM-01'), to: moment().subtract(1, 'months').format('YYYY-MM-') + moment().subtract(1, 'months').daysInMonth()} };  
+                                          doSearch(); 
+                                          setSelectedDateRange('last_month')
+                                        }
+                                }>
                         <span className="flex-1">Last month</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'this_year' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-01-01'), to: moment().format('YYYY-MM-DD')} };  
+                                          doSearch(); 
+                                          setSelectedDateRange('this_year')
+                                        }
+                                }>
                         <span className="flex-1">This year</span>
                       </div>
                     </div>
@@ -179,6 +237,7 @@ export default function Contracts() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
+                          onKeyUp={(e) => {if(e.key == 'Enter'){searchTags.keywords.push(e.target.value); doSearch(); e.target.value = ""; }}}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />
                       </div>
                       <span className="text-gray-400 text-sm">Find a contract by searching for a partner by their name</span>
@@ -189,7 +248,15 @@ export default function Contracts() {
                     <div className="flex flex-col space-y-4">
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  searchTags.status.push('active')
+                                }else{
+                                  searchTags.status = searchTags.status.filter(a => a != 'active')
+                                }
+                                doSearch();
+                              }}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Active</p>
@@ -197,7 +264,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  searchTags.status.push('suspended')
+                                }else{
+                                  searchTags.status = searchTags.status.filter(a => a != 'suspended')
+                                }
+                                doSearch();
+                              }}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Suspended</p>
@@ -205,7 +280,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  searchTags.status.push('pending')
+                                }else{
+                                  searchTags.status = searchTags.status.filter(a => a != 'pending')
+                                }
+                                doSearch();
+                              }}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Pending</p>
@@ -213,7 +296,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  searchTags.status.push('expired')
+                                }else{
+                                  searchTags.status = searchTags.status.filter(a => a != 'expired')
+                                }
+                                doSearch();
+                              }}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Expired</p>
@@ -263,12 +354,12 @@ export default function Contracts() {
                               <div className="flex items-center">
                                 <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                                   <span>
-                                    {getPartnerInitials(contract.company)}
+                                    {getPartnerInitials(contract.contract)}
                                   </span>
                                 </div>
                                 <div>
                                   <div className=" text-white">
-                                    {contract.company}
+                                    {contract.contract}
                                   </div>                                
                                 </div>
                               </div>                              
@@ -306,7 +397,7 @@ export default function Contracts() {
                               <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg> <span className="text-white text-sm">Download</span>
+                                </svg> <a href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(':partner_uuid', contract.partner_uuid).replace(':type', 'signed')}`}><span className="text-white text-sm">Download</span></a>
                               </div>
                             </td>
                             

@@ -36,7 +36,7 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "princemorpheus@gmail.com",
+        : "moses.ocho@mtn.com",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   const [notVerified, setNotVerified] = useState(null);

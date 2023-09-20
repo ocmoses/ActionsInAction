@@ -333,8 +333,10 @@ export default function Contracts() {
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
                           onKeyUp={(e) => {
                             if(e.key == 'Enter'){
-                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
-                              doSearch(); 
+                              if(e.target.value.trim() != ""){
+                                setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                                doSearch(); 
+                              }                              
                               e.target.value = ""; 
                             }
                           }}

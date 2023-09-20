@@ -91,8 +91,8 @@ const useContracts = () => {
 
       const result = await response.json();
 
-      // console.log('RemoteEndpoints.ALL_ADMIN_ROLES', RemoteEndpoints.ALL_ADMIN_ROLES);
-      // console.log('All Admin Roles', result);
+      // console.log('RemoteEndpoints.GET_ALL_CONTRACTS', RemoteEndpoints.GET_ALL_CONTRACTS);
+      // console.log('ALL CONTRACTS', result);
       // console.log('states.admins.token', states.admins.token);
 
       setProcessing(false);

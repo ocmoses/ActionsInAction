@@ -747,9 +747,11 @@ export default function Contracts() {
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
                           onKeyUp={(e) => {
                             if(e.key == 'Enter'){
-                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
-                              doSearch(); 
-                              e.target.value = ""; 
+                              if(e.target.value.trim() != ""){
+                                setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                                doSearch(); 
+                              } 
+                              e.target.value = "";
                             }
                           }}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />

@@ -435,12 +435,12 @@ export default function Contracts() {
     });
 
     document.addEventListener('click', function(e){
-      if(!filterRef.current.contains(e.target)){
+      if(filterRef.current && !filterRef.current.contains(e.target)){
         setFilterModal(false);
       }
     }, true);
     
-  }, [contracts, navigation, isASignatory]);
+  }, [isASignatory]);
 
   
   useEffect(() => {
@@ -452,9 +452,6 @@ export default function Contracts() {
 
   return (
     <>
-
-
-      
       <div id="contract_page" className="flex flex-cols pb-12 min-h-screen" onClick={(e) => {if(filterModal && e.target.id == 'contract_page'){setFilterModal(false)}}}>
         <div className="w-full pt-[72px] px-12 mx-auto">
           <div className="flex justify-between items-center">
@@ -613,12 +610,17 @@ export default function Contracts() {
             </div>
           )}
 
-          <div className="my-4 w-full relative" >
+          <div className="my-4 w-full relative flex" >
             <div className="border-1 border-white/20 rounded-full py-2 inline-flex items-center justify-center cursor-pointer" 
                   onClick={() => setFilterModal(!filterModal)}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6 ml-6 mt-1">
                 <path d="M6 12v-1h4v1H6zM4 7h8v1H4V7zm10-4v1H2V3h12z"/>
               </svg>  <span className="mr-6 text-white">Add Filter</span>
+            </div>
+            <div className="ml-4 border-l-2 border-white/20 flex-1 my-1 px-4 flex items-center">
+              {
+                filterTags
+              }
             </div>
             {
               filterModal && 
@@ -745,9 +747,11 @@ export default function Contracts() {
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
                           onKeyUp={(e) => {
                             if(e.key == 'Enter'){
-                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
-                              doSearch(); 
-                              e.target.value = ""; 
+                              if(e.target.value.trim() != ""){
+                                setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                                doSearch(); 
+                              } 
+                              e.target.value = "";
                             }
                           }}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />

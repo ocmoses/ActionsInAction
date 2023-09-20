@@ -60,6 +60,8 @@ export default function Compliance({ params }) {
   const {user, role, refreshSession} = useUsers();
 
   // console.log("usePartners() from compliance", usePartners());
+  console.log("Contract status", partner.contract_status);
+
   // console.log("useUsers() from compliance", useUsers());
 
   const [allServices, setAllServices] = useState([]); 
@@ -526,7 +528,7 @@ export default function Compliance({ params }) {
             message="Your contract is ready click here to sign"
             description="Outline contract conditions and give contract warrantees."
             onclick={() => {showContracts()}}
-            button={'Sign your contract'}
+            button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
             color="text-gray-200"
             desccolor="text-[#999999]"
             bg='bg-white/10'
@@ -624,7 +626,7 @@ export default function Compliance({ params }) {
               message="Your contract is ready click here to sign"
               description="Outline contract conditions and give contract warrantees."
               onclick={() => {showAgreement()}}
-              button={'Sign your contract'}
+              button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
               color="text-gray-200"
               desccolor="text-[#999999]"
               bg='bg-white/10'

@@ -452,9 +452,6 @@ export default function Contracts() {
 
   return (
     <>
-
-
-      
       <div id="contract_page" className="flex flex-cols pb-12 min-h-screen" onClick={(e) => {if(filterModal && e.target.id == 'contract_page'){setFilterModal(false)}}}>
         <div className="w-full pt-[72px] px-12 mx-auto">
           <div className="flex justify-between items-center">
@@ -745,9 +742,11 @@ export default function Contracts() {
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
                           onKeyUp={(e) => {
                             if(e.key == 'Enter'){
-                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
-                              doSearch(); 
-                              e.target.value = ""; 
+                              if(e.target.value.trim() != ""){
+                                setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                                doSearch(); 
+                              } 
+                              e.target.value = "";
                             }
                           }}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   getPartnerInitials,
   filterPartner,
@@ -25,7 +25,7 @@ import FilePreviewModal from "@/app/components/FilePreviewModal";
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import { decodedTextSpanIntersectsWith } from "typescript";
+import FilterTag from "@/app/components/FilterTag";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
@@ -69,29 +69,116 @@ export default function Contracts() {
 
   const [selectedDateRange, setSelectedDateRange] = useState(null);
 
-  let searchTags = {
+  const [searchTags, setSearchTags] = useState({
                       date_range: {from:"", to:""},
                       keywords: [],
                       status: []                  
-                    };
+                    });
+  const [filterTags, setFilterTags] = useState([]);
+  const [filteredContracts, setFilteredContracts] = useState([]);
+  const filterRef = useRef(null);
 
   const doSearch = () => {
-    //To be impl
-    console.log("searchTags", searchTags);  
+    //To be impl    
+    console.log("searchTags", searchTags); 
+    console.log("contracts", contracts); 
+    console.log("filteredContracts", filteredContracts); 
+
+    displayFilters(); 
+    let filtered = contracts ?? [];
+    if(searchTags.date_range.from != "" && searchTags.date_range.to != ""){
+      filtered = filtered
+                  .filter(contract => moment(contract.created_at)
+                                              .isBetween(searchTags.date_range.from, searchTags.date_range.to)
+                          );
+    }
+    if(searchTags.keywords.length != 0){
+      searchTags.keywords.forEach(keyword => {
+        filtered = filtered
+                      .filter(contract => contract.contract_id.toLowerCase().includes(keyword.toLowerCase()) 
+                                          || contract.contract.toLowerCase().includes(keyword.toLowerCase()));
+      });      
+    }
+
+    if(searchTags.status.length != 0){
+      searchTags.status.forEach(aStatus => {
+        filtered = filtered.filter(contract => contract.contract_status == aStatus);
+      });      
+    }
+
+    setFilteredContracts(filtered);
+  };
+
+  const displayFilters = () => {
+    let filterTags = [];
+    if(searchTags.date_range.from != "" && searchTags.date_range.to != ""){
+      filterTags.push(<FilterTag message={`From ${searchTags.date_range.from} to ${searchTags.date_range.to}`} action={() => {removeFilter("date_range")}} />);
+    }
+    if(searchTags.keywords.length != 0){
+      searchTags.keywords.forEach(keyword => {
+        filterTags.push(<FilterTag message={`${keyword}`} action={() => {removeFilter(`keyword***${keyword}`)}} />);
+      });      
+    }
+
+    if(searchTags.status.length != 0){
+      searchTags.status.forEach(aStatus => {
+        filterTags.push(<FilterTag message={`${aStatus}`} action={() => {removeFilter(`status***${aStatus}`)}} />);
+      });      
+    }
+
+    if(!filterTags.length){
+      setFilterTags(<span className="text-sm text-gray-500">No filters applied</span>);
+    }else{
+      setFilterTags(filterTags);
+    }    
+  };
+
+  const removeFilter = (filter) => {
+    
+    if(filter =='date_range'){
+      setSearchTags({...searchTags, date_range: {from:"", to:""}});       
+    }else if(filter.includes('keyword***')){
+      const key = filter.split("***")[1];
+      setSearchTags({...searchTags, keywords: searchTags.keywords.filter(k => k != key)}); 
+    }else if(filter.includes('status***')){
+      const key = filter.split("***")[1];
+      setSearchTags({...searchTags, status: searchTags.status.filter(k => k != key)}); 
+    }
+    
+    
   };
 
     
   useEffect(() => {
     clearErrors();
     setProcessing(false);
-    getAllContracts().then(resp => {setContracts(resp.contracts); setNavigation(resp.navigation)});
+    getAllContracts().then(resp => {
+                            setContracts(resp.contracts); 
+                            setFilteredContracts(resp.contracts); 
+                            setNavigation(resp.navigation)
+                          });
+
+    document.addEventListener('click', function(e){
+      if(!filterRef.current.contains(e.target)){
+        setFilterModal(false);
+      }
+    }, true);
+
+    
     
   },[]);
+
+  useEffect(() => {
+    clearErrors();
+    setProcessing(false);
+    displayFilters();
+    doSearch();
+  }, [searchTags, selectedDateRange]);
 
   return (
     <>
       
-      <div id="contract_page" className="flex flex-cols pb-12 min-h-screen" onClick={(e) => {if(filterModal && e.target.id == 'contract_page'){setFilterModal(false)}}}>
+      <div id="contract_page" className="flex flex-cols pb-12 min-h-screen" >
         <div className="w-full pt-[72px] px-12 mx-auto">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
@@ -109,16 +196,21 @@ export default function Contracts() {
             </div>
           )}
 
-          <div className="my-4 w-full relative" >
+          <div className="my-4 w-full relative flex" >
             <div className="border-1 border-white/20 rounded-full py-2 inline-flex items-center justify-center cursor-pointer" 
                   onClick={() => setFilterModal(!filterModal)}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6 ml-6 mt-1">
                 <path d="M6 12v-1h4v1H6zM4 7h8v1H4V7zm10-4v1H2V3h12z"/>
               </svg>  <span className="mr-6 text-white">Add Filter</span>
             </div>
+            <div className="ml-4 border-l-2 border-white/20 flex-1 my-1 px-4 flex items-center">
+              {
+                filterTags
+              }
+            </div>
             {
               filterModal && 
-              <div id="filter_modal" className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex`}>
+              <div id="filter_modal" ref={filterRef} className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex mt-10`}>
                 <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col  space-y-4">
                   
                   <div className={`${search.date ? 'bg-white/20' : ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`} 
@@ -166,23 +258,25 @@ export default function Contracts() {
                     <div className="flex flex-col space-y-4">
                       <div className="p-2 rounded-xl border-1 border-white/20 flex text-white items-center justify-center">
                         <input id="search-from" 
+                                value={`${searchTags.date_range.from}`}
                                 onFocus={() => document.getElementById("search-from").type = "date"} 
                                 onBlur={() => document.getElementById("search-from").type = "text"} 
                                 onChange={(e) => {
-                                            searchTags.date_range = {...searchTags.date_range, from: e.target.value};                                            
+                                            setSearchTags({...searchTags, date_range : {...searchTags.date_range, from: e.target.value}});                                 
+                                            setSelectedDateRange('from_to');
                                             doSearch(); 
-                                            setSelectedDateRange('from_to')
                                           }
                                         } 
                                 className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
                                 placeholder="From" /> - 
                         <input id="search-from2" 
+                                value={`${searchTags.date_range.to}`}
                                 onFocus={() => document.getElementById("search-from2").type = "date"} 
                                 onBlur={() => document.getElementById("search-from2").type = "text"} 
                                 onChange={(e) => {
-                                                searchTags.date_range = {...searchTags.date_range, to: e.target.value}; 
-                                                doSearch(); 
+                                                setSearchTags({...searchTags, date_range: {...searchTags.date_range, to: e.target.value}});
                                                 setSelectedDateRange('from_to')
+                                                doSearch();
                                               }
                                           }
                                 className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
@@ -193,36 +287,36 @@ export default function Contracts() {
                       </div>
                       <div className={`${selectedDateRange == 'last_30_days' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
                         onClick={(e) => {
-                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(30, 'd').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')} };  
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(30, 'd').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('last_30_days');
                                           doSearch(); 
-                                          setSelectedDateRange('last_30_days')
                                         }
                                 }>
                         <span className="flex-1">Last 30 days</span>
                       </div>
                       <div className={`${selectedDateRange == 'this_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
                         onClick={(e) => {
-                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-MM-01'), to: moment().format('YYYY-MM-DD')} };  
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-MM-01'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('this_month');
                                           doSearch(); 
-                                          setSelectedDateRange('this_month')
                                         }
                                 }>
                         <span className="flex-1">This month</span>
                       </div>
                       <div className={`${selectedDateRange == 'last_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
                         onClick={(e) => {
-                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(1, 'months').format('YYYY-MM-01'), to: moment().subtract(1, 'months').format('YYYY-MM-') + moment().subtract(1, 'months').daysInMonth()} };  
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(1, 'months').format('YYYY-MM-01'), to: moment().subtract(1, 'months').format('YYYY-MM-') + moment().subtract(1, 'months').daysInMonth()} });  
+                                          setSelectedDateRange('last_month');
                                           doSearch(); 
-                                          setSelectedDateRange('last_month')
                                         }
                                 }>
                         <span className="flex-1">Last month</span>
                       </div>
                       <div className={`${selectedDateRange == 'this_year' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
                         onClick={(e) => {
-                                          searchTags = {...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-01-01'), to: moment().format('YYYY-MM-DD')} };  
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-01-01'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('this_year');
                                           doSearch(); 
-                                          setSelectedDateRange('this_year')
                                         }
                                 }>
                         <span className="flex-1">This year</span>
@@ -237,7 +331,13 @@ export default function Contracts() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
-                          onKeyUp={(e) => {if(e.key == 'Enter'){searchTags.keywords.push(e.target.value); doSearch(); e.target.value = ""; }}}
+                          onKeyUp={(e) => {
+                            if(e.key == 'Enter'){
+                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                              doSearch(); 
+                              e.target.value = ""; 
+                            }
+                          }}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />
                       </div>
                       <span className="text-gray-400 text-sm">Find a contract by searching for a partner by their name</span>
@@ -251,12 +351,12 @@ export default function Contracts() {
                             <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
                               onChange={(e) => {
                                 if(e.target.checked){
-                                  searchTags.status.push('active')
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'active']});
                                 }else{
-                                  searchTags.status = searchTags.status.filter(a => a != 'active')
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'active')});                                  
                                 }
                                 doSearch();
-                              }}/>
+                              }} checked={`${searchTags.status.includes('active') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Active</p>
@@ -267,12 +367,12 @@ export default function Contracts() {
                             <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
                               onChange={(e) => {
                                 if(e.target.checked){
-                                  searchTags.status.push('suspended')
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'suspended']});
                                 }else{
-                                  searchTags.status = searchTags.status.filter(a => a != 'suspended')
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'suspended')});                                  
                                 }
                                 doSearch();
-                              }}/>
+                              }} checked={`${searchTags.status.includes('suspended') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Suspended</p>
@@ -283,12 +383,12 @@ export default function Contracts() {
                             <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
                               onChange={(e) => {
                                 if(e.target.checked){
-                                  searchTags.status.push('pending')
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'pending']});
                                 }else{
-                                  searchTags.status = searchTags.status.filter(a => a != 'pending')
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'pending')});                                  
                                 }
                                 doSearch();
-                              }}/>
+                              }} checked={`${searchTags.status.includes('pending') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Pending</p>
@@ -299,12 +399,12 @@ export default function Contracts() {
                             <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
                               onChange={(e) => {
                                 if(e.target.checked){
-                                  searchTags.status.push('expired')
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'expired']});
                                 }else{
-                                  searchTags.status = searchTags.status.filter(a => a != 'expired')
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'expired')});                                  
                                 }
                                 doSearch();
-                              }}/>
+                              }} checked={`${searchTags.status.includes('expired') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Expired</p>
@@ -347,7 +447,7 @@ export default function Contracts() {
                       </th>                     
                     </tr>
 
-                    {contracts && contracts.map(contract => 
+                    {filteredContracts && filteredContracts.map(contract => 
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>

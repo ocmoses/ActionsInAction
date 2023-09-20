@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   getPartnerInitials,
   filterPartner,
@@ -23,9 +23,10 @@ import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import {useStoreState} from 'easy-peasy';
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
+import FilterTag from "@/app/components/FilterTag";
 
 export default function Contracts() {
-  const {getAllContracts} = useContracts();
+  const {partnerGetAllContracts} = useContracts();
   const [contracts, setContracts] = useState(null);
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -71,10 +72,6 @@ export default function Contracts() {
   const [perPage, setPerPage] = useState(null);
 
   const [displaySuccess, setDisplaySuccess] = useState(false);
-
-  const [filterModal, setFilterModal] = useState(false);
-  const [search, setSearch] = useState({date: true, keyword: false, status: false});
-
 
   const {user, role, refreshSession} = useUsers();
 
@@ -137,12 +134,14 @@ export default function Contracts() {
 
   const [dynamicData, setDynamicData] = useState(null);
 
+  const filterRef = useRef(null);
+
   let selected_admin_users = partner.selected_partner_admin_users;
   let signingDirector = selected_admin_users.find(user => user.role == 'director');
   let signingDelegate = selected_admin_users.find(user => user.role == 'delegate');
   let signingWitness = selected_admin_users.find(user => user.role == 'witness');
 
-  
+    
   // console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
 
@@ -153,6 +152,89 @@ export default function Contracts() {
   let all_admin_partners_response = null;
   let submit_signatories_response = null;
   let dynamic_content_response =  null;
+
+  const [filterModal, setFilterModal] = useState(false);
+  const [search, setSearch] = useState({date: true, keyword: false, status: false});
+
+  const [selectedDateRange, setSelectedDateRange] = useState(null);
+
+  const [searchTags, setSearchTags] = useState({
+                      date_range: {from:"", to:""},
+                      keywords: [],
+                      status: []                  
+                    });
+  const [filterTags, setFilterTags] = useState([]);
+  const [filteredContracts, setFilteredContracts] = useState([]);
+
+  const doSearch = () => {
+    //To be impl    
+    console.log("searchTags", searchTags); 
+    console.log("contracts", contracts); 
+    console.log("filteredContracts", filteredContracts); 
+
+    displayFilters(); 
+    let filtered = contracts ?? [];
+    if(searchTags.date_range.from != "" && searchTags.date_range.to != ""){
+      filtered = filtered
+                  .filter(contract => moment(contract.created_at)
+                                              .isBetween(searchTags.date_range.from, searchTags.date_range.to)
+                          );
+    }
+    if(searchTags.keywords.length != 0){
+      searchTags.keywords.forEach(keyword => {
+        filtered = filtered
+                      .filter(contract => contract.contract_id.toLowerCase().includes(keyword.toLowerCase()) 
+                                          || contract.contract.toLowerCase().includes(keyword.toLowerCase()));
+      });      
+    }
+
+    if(searchTags.status.length != 0){
+      searchTags.status.forEach(aStatus => {
+        filtered = filtered.filter(contract => contract.contract_status == aStatus);
+      });      
+    }
+
+    setFilteredContracts(filtered);
+  };
+
+  const displayFilters = () => {
+    let filterTags = [];
+    if(searchTags.date_range.from != "" && searchTags.date_range.to != ""){
+      filterTags.push(<FilterTag message={`From ${searchTags.date_range.from} to ${searchTags.date_range.to}`} action={() => {removeFilter("date_range")}} />);
+    }
+    if(searchTags.keywords.length != 0){
+      searchTags.keywords.forEach(keyword => {
+        filterTags.push(<FilterTag message={`${keyword}`} action={() => {removeFilter(`keyword***${keyword}`)}} />);
+      });      
+    }
+
+    if(searchTags.status.length != 0){
+      searchTags.status.forEach(aStatus => {
+        filterTags.push(<FilterTag message={`${aStatus}`} action={() => {removeFilter(`status***${aStatus}`)}} />);
+      });      
+    }
+
+    if(!filterTags.length){
+      setFilterTags(<span className="text-sm text-gray-500">No filters applied</span>);
+    }else{
+      setFilterTags(filterTags);
+    }    
+  };
+
+  const removeFilter = (filter) => {
+    
+    if(filter =='date_range'){
+      setSearchTags({...searchTags, date_range: {from:"", to:""}});       
+    }else if(filter.includes('keyword***')){
+      const key = filter.split("***")[1];
+      setSearchTags({...searchTags, keywords: searchTags.keywords.filter(k => k != key)}); 
+    }else if(filter.includes('status***')){
+      const key = filter.split("***")[1];
+      setSearchTags({...searchTags, status: searchTags.status.filter(k => k != key)}); 
+    }
+    
+    
+  };
 
   const get_service_types = async () => {
     clearErrors();
@@ -327,11 +409,7 @@ export default function Contracts() {
   useEffect(() => {
     clearErrors();
     setProcessing(false);
-    getAllContracts().then(resp => {
-      console.log("resp", resp);
-      setContracts(resp.contracts); 
-      setNavigation(resp.navigation)
-    });
+    
 
     if(role == 'superAdmin'){
 
@@ -349,8 +427,28 @@ export default function Contracts() {
     }else if(signingWitness){
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
+
+    partnerGetAllContracts().then(resp => {
+      console.log("resp", resp);
+      setContracts(resp.contracts); 
+      setNavigation(resp.navigation)
+    });
+
+    document.addEventListener('click', function(e){
+      if(!filterRef.current.contains(e.target)){
+        setFilterModal(false);
+      }
+    }, true);
     
   }, [contracts, navigation, isASignatory]);
+
+  
+  useEffect(() => {
+    clearErrors();
+    setProcessing(false);
+    displayFilters();
+    doSearch();
+  }, [searchTags, selectedDateRange]);
 
   return (
     <>
@@ -524,7 +622,7 @@ export default function Contracts() {
             </div>
             {
               filterModal && 
-              <div className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex`}>
+              <div id="filter_modal" ref={filterRef} className={`border-1 border-white/20 w-[600px] absolute left-4 z-[9999] bg-[#121212] rounded-xl shadow-xl flex mt-10`}>
                 <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col  space-y-4">
                   
                   <div className={`${search.date ? 'bg-white/20' : ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`} 
@@ -571,24 +669,68 @@ export default function Contracts() {
                     search.date && 
                     <div className="flex flex-col space-y-4">
                       <div className="p-2 rounded-xl border-1 border-white/20 flex text-white items-center justify-center">
-                        <input id="search-from" onFocus={() => document.getElementById("search-from").type = "date"} onBlur={() => document.getElementById("search-from").type = "text"} 
-                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" placeholder="From" /> - 
-                        <input id="search-from2" onFocus={() => document.getElementById("search-from2").type = "date"} onBlur={() => document.getElementById("search-from2").type = "text"} 
-                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" placeholder="To" />
+                        <input id="search-from" 
+                                value={`${searchTags.date_range.from}`}
+                                onFocus={() => document.getElementById("search-from").type = "date"} 
+                                onBlur={() => document.getElementById("search-from").type = "text"} 
+                                onChange={(e) => {
+                                            setSearchTags({...searchTags, date_range : {...searchTags.date_range, from: e.target.value}});                                 
+                                            setSelectedDateRange('from_to');
+                                            doSearch(); 
+                                          }
+                                        } 
+                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
+                                placeholder="From" /> - 
+                        <input id="search-from2" 
+                                value={`${searchTags.date_range.to}`}
+                                onFocus={() => document.getElementById("search-from2").type = "date"} 
+                                onBlur={() => document.getElementById("search-from2").type = "text"} 
+                                onChange={(e) => {
+                                                setSearchTags({...searchTags, date_range: {...searchTags.date_range, to: e.target.value}});
+                                                setSelectedDateRange('from_to')
+                                                doSearch();
+                                              }
+                                          }
+                                className="border-0 bg-white/60 text-white rounded-xl color-white p-2 w-[150px]" 
+                                placeholder="To" />
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-auto">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'last_30_days' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(30, 'd').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('last_30_days');
+                                          doSearch(); 
+                                        }
+                                }>
                         <span className="flex-1">Last 30 days</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'this_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-MM-01'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('this_month');
+                                          doSearch(); 
+                                        }
+                                }>
                         <span className="flex-1">This month</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'last_month' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().subtract(1, 'months').format('YYYY-MM-01'), to: moment().subtract(1, 'months').format('YYYY-MM-') + moment().subtract(1, 'months').daysInMonth()} });  
+                                          setSelectedDateRange('last_month');
+                                          doSearch(); 
+                                        }
+                                }>
                         <span className="flex-1">Last month</span>
                       </div>
-                      <div className="rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20">
+                      <div className={`${selectedDateRange == 'this_year' ? 'bg-white/20 m-2': ''} rounded-lg p-2 text-white flex w-full items-center cursor-pointer hover:bg-white/20`}
+                        onClick={(e) => {
+                                          setSearchTags({...searchTags, date_range: {...searchTags.date_range, from: moment().format('YYYY-01-01'), to: moment().format('YYYY-MM-DD')} });  
+                                          setSelectedDateRange('this_year');
+                                          doSearch(); 
+                                        }
+                                }>
                         <span className="flex-1">This year</span>
                       </div>
                     </div>
@@ -601,6 +743,13 @@ export default function Contracts() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                         <input onBlur={() => {/* Search here*/}} placeholder="Search for a partner"
+                          onKeyUp={(e) => {
+                            if(e.key == 'Enter'){
+                              setSearchTags({...searchTags, keywords: [...searchTags.keywords, e.target.value]}); 
+                              doSearch(); 
+                              e.target.value = ""; 
+                            }
+                          }}
                           className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2" />
                       </div>
                       <span className="text-gray-400 text-sm">Find a contract by searching for a partner by their name</span>
@@ -611,7 +760,15 @@ export default function Contracts() {
                     <div className="flex flex-col space-y-4">
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'active']});
+                                }else{
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'active')});                                  
+                                }
+                                doSearch();
+                              }} checked={`${searchTags.status.includes('active') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Active</p>
@@ -619,7 +776,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'suspended']});
+                                }else{
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'suspended')});                                  
+                                }
+                                doSearch();
+                              }} checked={`${searchTags.status.includes('suspended') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Suspended</p>
@@ -627,7 +792,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'pending']});
+                                }else{
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'pending')});                                  
+                                }
+                                doSearch();
+                              }} checked={`${searchTags.status.includes('pending') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Pending</p>
@@ -635,7 +808,15 @@ export default function Contracts() {
                       </div>
                       <div className="flex ">
                         <div className="w-10 flex mr-1">
-                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" 
+                              onChange={(e) => {
+                                if(e.target.checked){
+                                  setSearchTags({...searchTags, status: [...searchTags.status, 'expired']});
+                                }else{
+                                  setSearchTags({...searchTags, status: searchTags.status.filter(a => a != 'expired')});                                  
+                                }
+                                doSearch();
+                              }} checked={`${searchTags.status.includes('expired') ? 'checked' : ''}`}/>
                         </div>
                         <div>
                             <p className="text-gray-300">Expired</p>

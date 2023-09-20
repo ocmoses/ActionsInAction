@@ -70,7 +70,7 @@ export default function Compliance({ params }) {
         headers: {
           token: token,
           Authorization: `bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
       }
     ).catch((e) => {
@@ -85,6 +85,7 @@ export default function Compliance({ params }) {
       });
     }
 
+    
     console.log("refreshed", refreshed);
 
     //This is a hack

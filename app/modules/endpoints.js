@@ -101,6 +101,7 @@ const RemoteEndpoints = {
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
   CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
   DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:type`,
+  GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
 
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 

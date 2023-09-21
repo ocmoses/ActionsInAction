@@ -941,6 +941,9 @@ export const filterCategory = (category, partnerInfo) => {
 
   const approvals = category.compliance_approvals;
   const feedbacks = category.compliance_feedbacks;
+  ///////////////
+  const approvalStatuses = category.category_field_approval_status;
+
   category.approvedFields = {};
   category.approvedStages = {};
   if (approvals?.length > 0) {
@@ -973,7 +976,7 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] = approval?.status;
+        ][approval?.field] =  approvalStatuses[approval?.field] //approval?.status;
       }
     });
   }

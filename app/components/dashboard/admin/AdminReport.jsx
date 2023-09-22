@@ -210,7 +210,7 @@ export const PartnerFilterList = () => {
             </th>
           </tr>
           {/* ======================================================================================================================================================= */}
-          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/5">
             <td>
               <div className="flex items-center space-x-3">
                 <input

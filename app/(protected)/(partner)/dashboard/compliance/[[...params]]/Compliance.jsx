@@ -327,7 +327,7 @@ export default function Compliance({ params }) {
   }, [isASignatory]);
 
   useEffect(() => {
-  }, [partner.approvalStages]);
+  }, [partner.approvalStages, Stages]);
 
   useEffect(() => {
     let html = document.getElementsByTagName("html");
@@ -355,6 +355,9 @@ export default function Compliance({ params }) {
 
       setSelectedCategory(_filtered_selectedCategory);
       const _stages = getStages(_filtered_selectedCategory, categories);
+
+      console.log("_stages", _stages);
+
       setStages(_stages);
     }else{
       router.push(`/dashboard/compliance/${categories[0].uuid}`);

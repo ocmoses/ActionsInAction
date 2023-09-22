@@ -185,7 +185,7 @@ export default function Compliance({ params }) {
       setError({ error: all_admin_partners_response.error });
     }else{
       // setNavigation(all_Admins.navigation);
-      console.log("Admin_partners", all_admin_partners_response.admin_partners);
+      // console.log("Admin_partners", all_admin_partners_response.admin_partners);
       setAdminPartners(all_admin_partners_response.admin_partners);
 
       //update signing director, delegate or witness

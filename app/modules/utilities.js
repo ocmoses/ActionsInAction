@@ -976,7 +976,7 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] =  approvalStatuses[approval?.field] //approval?.status;
+        ][approval?.field] =  approval?.status; //approvalStatuses[approval?.field];
       }
     });
   }

@@ -48,6 +48,7 @@ const RemoteEndpoints = {
 
   GET_BOARD_RESOLUTION_DOCS: `${apiURL}/v2/admin/board-resolution-documents`,
   GET_ALL_SIGNED_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts?partner_uuid=:partner_uuid`,
+  PARTNER_GET_ALL_CONTRACTS: `${apiURL}/v2/contract/get-partner-contracts/:partner_uuid`,
 
   //these ones would be changed to v2 later
   COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,

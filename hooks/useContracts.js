@@ -5,6 +5,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import useLogout from "@/hooks/useLogout";
 import usePartners from "@/hooks/usePartners";
 import useUsers from "@/hooks/useUsers";
+import { apikey } from "@/app/modules/constants";
 
 
 const useContracts = () => {
@@ -175,11 +176,12 @@ const useContracts = () => {
 
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.GET_ALL_CONTRACTS}?partner_uuid=${partner.uuid}`,
+        `${RemoteEndpoints.PARTNER_GET_ALL_CONTRACTS.replace(':partner_uuid', partner.uuid)}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
           headers: {
+            apikey,
             token: user.token,
             "Content-Type": "application/json",
             Authorization: `bearer ${user.token}`,

@@ -229,9 +229,13 @@ export default function ContractSigning(){
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
         
-        const hasSignedArray = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate").map(u => u.has_user_signed != 'no');
+        let directorOrDelegate = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate");
+
+        console.log("directorOrDelegate", directorOrDelegate);
+
+        const hasSignedArray = directorOrDelegate.length ? directorOrDelegate.map(u => u != undefined && u.has_user_signed != 'no') : [];
         setDirectorOrDelegateSigned(hasSignedArray.includes(true));
-        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no');
+        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness') ? selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no' : false);
         
         if (canvas.current) {
             const context = canvas.current.getContext('2d');
@@ -2238,7 +2242,7 @@ export default function ContractSigning(){
                                 {
                                     directorOrDelegateSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
-                                        <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
+                                        <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-24" />
                                     </div>
                                 }
                                 
@@ -2269,7 +2273,7 @@ export default function ContractSigning(){
                                 {
                                     witnessSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].witness_signature} className="h-20" />
+                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />
                                     </div>
                                 }
                             </div>

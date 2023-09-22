@@ -71,7 +71,7 @@ export default function CategoryStageStatus({ stage, category, partner }) {
 
     counts = {};
 
-    const stageApprovals = Object.keys(ApprovalStages[stage][Object.keys(ApprovalStages[stage])[0]]);
+    const stageApprovals = ApprovalStages[stage] ? Object.keys(ApprovalStages[stage][Object.keys(ApprovalStages[stage])[0]]) : [];
 
     // console.log("ApprovalStage stageApprovals", stageApprovals);
 
@@ -79,6 +79,7 @@ export default function CategoryStageStatus({ stage, category, partner }) {
     let approved = 0;
     let rejected = 0;
     let corrected = 0;
+    let pending = 0;
     let status = 'approved';
 
     for(let entry of stageApprovals){
@@ -99,7 +100,9 @@ export default function CategoryStageStatus({ stage, category, partner }) {
                         
     }
 
-    if(approved == total){
+    if(stageApprovals.length == 0){
+      status = 'pending';
+    }else if(approved == total){
       status = 'approved';
     }else if(rejected > 0){
       status = 'rejected';
@@ -112,6 +115,7 @@ export default function CategoryStageStatus({ stage, category, partner }) {
     counts.approved = approved;
     counts.corrected = corrected;
     counts.rejected = rejected;
+    counts.pending = pending;
     counts.status = status;
   }  
   

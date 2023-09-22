@@ -10,6 +10,8 @@ export default function ComplianceCategories({
   onclick,
   partner,
 }) {
+
+  
   const { admin } = useAdmins();
   const { isSuperadmin } = useRoles();
   return (

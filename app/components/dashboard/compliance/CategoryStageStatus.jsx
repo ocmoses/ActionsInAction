@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function CategoryStageStatus({ stage, category, partner }) {
 
-  console.log("stage___", stage);
+  // console.log("stage___", stage);
 
   const { isSuperadmin } = useRoles();
   const { admin } = useAdmins();

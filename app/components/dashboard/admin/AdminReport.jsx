@@ -38,6 +38,23 @@ export default function PartnerStatisticsReport({
   );
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const PartnerReportBarChart = () => {
   useEffect(() => {
     let config = {
@@ -573,5 +590,58 @@ export const PartnerFilterList = () => {
         </tbody>
       </table>
     </section>
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const PartnerFilterTitle = ({ title }) => {
+
+  return (
+    <div className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="mr-[15px]"
+      >
+        <g id="vuesax/linear/arrow-up">
+          <g id="arrow-up">
+            <path
+              id="Vector"
+              d="M12.0072 9.71587L12.0072 3.99302L6.28433 3.99302"
+              stroke="#888888"
+              stroke-width="1.5"
+              stroke-miterlimit="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_2"
+              d="M3.99302 12.0068L11.9268 4.07309"
+              stroke="#888888"
+              stroke-width="1.5"
+              stroke-miterlimit="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+        </g>
+      </svg>
+    {title}
+  </div>
   );
 };

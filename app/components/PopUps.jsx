@@ -6,7 +6,7 @@ export default function PopUp({ closePopUp, children }) {
   return (
     <div
       id="modal_flyout"
-      className="w-screen flex justify-center items-center h-screen fixed z-50 top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
+      className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
       onClick={(e) => {
         e.target.id == "modal_flyout" && closePopUp();
       }}

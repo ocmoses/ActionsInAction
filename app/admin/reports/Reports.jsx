@@ -8,6 +8,7 @@ import { apikey } from "@/app/modules/constants";
 import PartnerStatisticsReport, {
   PartnerReportBarChart,
   PartnerFilterList,
+  PartnerFilterTitle,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
@@ -501,48 +502,34 @@ export default function Approvals() {
                           </div>
                         </div>
 
-
-
                         <div className="flex-1 p-4 min-h-[300px] bg-white/5">
                           {search.date && (
                             <div className="flex flex-col space-y-4">
                               <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
-                              <TextInput
-                                id="name"
-                                label="From"
-                                type="date"
-                                name="name"
-                                
-                              />
+                                <TextInput
+                                  id="name"
+                                  label="From"
+                                  type="date"
+                                  name="name"
+                                />
 
-                              <TextInput
-                                id="name"
-                                label="To"
-                                type="date"
-                                name="name"
-                                
-                              />   
+                                <TextInput
+                                  id="name"
+                                  label="To"
+                                  type="date"
+                                  name="name"
+                                />
                               </div>
 
                               <div className="flex flex-col gap-2">
-
-                                <div className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10">
-                                  <span className="mr-[15px]">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <g id="vuesax/linear/arrow-up">
-                                      <g id="arrow-up">
-                                      <path id="Vector" d="M12.0072 9.71587L12.0072 3.99302L6.28433 3.99302" stroke="#888888" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                      <path id="Vector_2" d="M3.99302 12.0068L11.9268 4.07309" stroke="#888888" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                      </g>
-                                      </g>
-                                    </svg>
-                                  </span> Last 30 days
-                                </div>
-
-                                
+                                <h3>Show results for</h3>
+                                <PartnerFilterTitle title="Last 30 Days"/>
+                                <PartnerFilterTitle title="This Month"/>
+                                <PartnerFilterTitle title="Last Month"/>
+                                <PartnerFilterTitle title="This Year"/>
+                                <PartnerFilterTitle title="Last Year"/>
+                                <PartnerFilterTitle title="All Time"/>
                               </div>
-
-                              
                             </div>
                           )}
                           {search.category && (

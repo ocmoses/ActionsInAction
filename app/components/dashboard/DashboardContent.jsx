@@ -246,7 +246,7 @@ export default function GetStarted({ type }) {
                             style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
                             message="Your contract is ready click here to continue"
                             description="Outline contract conditions and give contract warrantees."
-                            onclick={() => {location = '/dashboard/contracts'}}
+                            onclick={() => {location = '/dashboard/compliance'}}
                             button='Continue'
                             color="text-gray-200"
                             desccolor="text-[#999999]"

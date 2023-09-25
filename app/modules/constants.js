@@ -1392,3 +1392,10 @@ export const roles = [
     title: "procurement-anager",
   },
 ];
+
+export const user_statuses = {
+  ACTIVE: "active",
+  APPROVED: "approved"
+}
+
+

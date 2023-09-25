@@ -22,7 +22,7 @@ import ComplianceCategories from "@/app/components/dashboard/partners/Compliance
 import { useRouter } from "next/navigation";
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import TextInput from "@/app/components/form/TextInput";
-import { fieldsCounts, fieldCounts } from "@/app/modules/constants";
+import { fieldsCounts, user_statuses } from "@/app/modules/constants";
 import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
@@ -104,7 +104,6 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const APPROVED = "approved";
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
   let directorSigned = false;
   let delegateSigned = false;
@@ -364,7 +363,7 @@ export default function Compliance({ params }) {
     }
     // console.log({ partner })
 
-   console.log("userStatus == APPROVED", userStatus == APPROVED) 
+   console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
    console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
    console.log("isASignatory", isASignatory)
    console.log("hasNotSigned", hasNotSigned)
@@ -523,7 +522,7 @@ export default function Compliance({ params }) {
       )}
       {/* Only when we have not selected all signees */}
       {users.role == 'superAdmin' && 
-        userStatus == APPROVED && !selectedAllRequiredSignatories ? 
+        userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories ? 
 
         <div className="my-8 max-w-6xl">          
           <CallToAction
@@ -615,7 +614,7 @@ export default function Compliance({ params }) {
           </div> : (
             ( (users.role == 'superAdmin' && selectedAllRequiredSignatories && !allHaveSigned) ||
           
-            (userStatus == APPROVED && 
+            (userStatus == user_statuses.APPROVED && 
             selectedAllRequiredSignatories && 
             //You were selected 
             // isASignatory && 

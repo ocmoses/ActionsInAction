@@ -59,8 +59,7 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role, refreshSession} = useUsers();
 
-  // console.log("usePartners() from compliance", usePartners());
-  // console.log("useUsers() from compliance", useUsers());
+  console.log("Contract status", partner.contract_status);
 
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
@@ -105,7 +104,7 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const APPROVED = "active";
+  const APPROVED = "approved";
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
   let directorSigned = false;
   let delegateSigned = false;
@@ -186,7 +185,7 @@ export default function Compliance({ params }) {
       setError({ error: all_admin_partners_response.error });
     }else{
       // setNavigation(all_Admins.navigation);
-      console.log("Admin_partners", all_admin_partners_response.admin_partners);
+      // console.log("Admin_partners", all_admin_partners_response.admin_partners);
       setAdminPartners(all_admin_partners_response.admin_partners);
 
       //update signing director, delegate or witness
@@ -328,7 +327,7 @@ export default function Compliance({ params }) {
   }, [isASignatory]);
 
   useEffect(() => {
-  }, [partner.approvalStages]);
+  }, [partner.approvalStages, Stages]);
 
   useEffect(() => {
     let html = document.getElementsByTagName("html");
@@ -351,8 +350,14 @@ export default function Compliance({ params }) {
         _selectedCategory,
         partner
       );
+
+      console.log("_filtered_selectedCategory", _filtered_selectedCategory);
+
       setSelectedCategory(_filtered_selectedCategory);
       const _stages = getStages(_filtered_selectedCategory, categories);
+
+      console.log("_stages", _stages);
+
       setStages(_stages);
     }else{
       router.push(`/dashboard/compliance/${categories[0].uuid}`);
@@ -390,7 +395,7 @@ export default function Compliance({ params }) {
 
   const selectService = (name) => {
     //make server call...
-    console.log("Partner here: ", partner);
+    // console.log("Partner here: ", partner);
     const data = {
                     partner_uuid: `${partner.uuid}`, 
                     service_type: [name]
@@ -424,7 +429,7 @@ export default function Compliance({ params }) {
 
   const create_partner = async (data) => {
 
-    console.log('create_data', data);
+    // console.log('create_data', data);
     
 
     let formData = new FormData();
@@ -526,7 +531,7 @@ export default function Compliance({ params }) {
             message="Your contract is ready click here to sign"
             description="Outline contract conditions and give contract warrantees."
             onclick={() => {showContracts()}}
-            button={'Sign your contract'}
+            button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
             color="text-gray-200"
             desccolor="text-[#999999]"
             bg='bg-white/10'
@@ -624,7 +629,7 @@ export default function Compliance({ params }) {
               message="Your contract is ready click here to sign"
               description="Outline contract conditions and give contract warrantees."
               onclick={() => {showAgreement()}}
-              button={'Sign your contract'}
+              button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
               color="text-gray-200"
               desccolor="text-[#999999]"
               bg='bg-white/10'

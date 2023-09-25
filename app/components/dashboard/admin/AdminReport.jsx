@@ -645,3 +645,26 @@ export const PartnerFilterTitle = ({ title }) => {
   </div>
   );
 };
+
+
+
+
+
+export const PartnerFilterCheck = ({ title, summary }) => {
+
+  return (
+    <div className="flex ">
+      <div className="w-10 flex mr-1">
+        <input
+          type="checkbox"
+          className="h-6 w-6 rounded-lg bg-black/40"
+        />
+      </div>
+      <div>
+        <span className="text-white">{title}</span><br/>
+        <span className="text-gray-400 text-[13px]">{summary}</span>
+      </div>
+    </div>
+  );
+};
+

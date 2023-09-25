@@ -9,6 +9,7 @@ import PartnerStatisticsReport, {
   PartnerReportBarChart,
   PartnerFilterList,
   PartnerFilterTitle,
+  PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
@@ -47,7 +48,6 @@ export default function Approvals() {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchReport();
   }, []);
 
@@ -523,92 +523,55 @@ export default function Approvals() {
 
                               <div className="flex flex-col gap-2">
                                 <h3>Show results for</h3>
-                                <PartnerFilterTitle title="Last 30 Days"/>
-                                <PartnerFilterTitle title="This Month"/>
-                                <PartnerFilterTitle title="Last Month"/>
-                                <PartnerFilterTitle title="This Year"/>
-                                <PartnerFilterTitle title="Last Year"/>
-                                <PartnerFilterTitle title="All Time"/>
+                                <PartnerFilterTitle title="Last 30 Days" />
+                                <PartnerFilterTitle title="This Month" />
+                                <PartnerFilterTitle title="Last Month" />
+                                <PartnerFilterTitle title="This Year" />
+                                <PartnerFilterTitle title="Last Year" />
+                                <PartnerFilterTitle title="All Time" />
                               </div>
                             </div>
                           )}
+
                           {search.category && (
-                            <div className="flex flex-col space-y-4 px-2">
-                              <div className="border-1 border-white/20 rounded-xl p-2 flex items-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="gray"
-                                  className="w-6 h-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                                  />
-                                </svg>
-                                <input
-                                  onBlur={() => {
-                                    /* Search here*/
-                                  }}
-                                  placeholder="Search for a partner"
-                                  className="border-0 bg-transparent focus:border-0 focus:border-transparent active:border-0 active:border-transparent text-white p-2 w-full ml-2"
-                                />
-                              </div>
-                              <span className="text-gray-400 text-sm">
-                                Find a contract by searching for a partner by
-                                their name
-                              </span>
+                            <div className="flex flex-col space-y-4">
+                              <PartnerFilterCheck
+                                title="Value added services"
+                                summary="Non-core services or features that are beyond the standard voice calls."
+                              />
+                              <PartnerFilterCheck
+                                title="Rich media service"
+                                summary="Digital Services players, offering value-added services."
+                              />
+                              <PartnerFilterCheck
+                                title="Aggregator"
+                                summary="Provide a concentration point to limit the number of devices that will."
+                              />
+                              <PartnerFilterCheck
+                                title="Marketplace"
+                                summary="Providers who offer apps developed specifically for easy, convenient shopping"
+                              />
                             </div>
                           )}
+
                           {search.status && (
                             <div className="flex flex-col space-y-4">
-                              <div className="flex ">
-                                <div className="w-10 flex mr-1">
-                                  <input
-                                    type="checkbox"
-                                    className="h-6 w-6 rounded-lg bg-black/40"
-                                  />
-                                </div>
-                                <div>
-                                  <p className="text-gray-300">Active</p>
-                                </div>
-                              </div>
-                              <div className="flex ">
-                                <div className="w-10 flex mr-1">
-                                  <input
-                                    type="checkbox"
-                                    className="h-6 w-6 rounded-lg bg-black/40"
-                                  />
-                                </div>
-                                <div>
-                                  <p className="text-gray-300">Suspended</p>
-                                </div>
-                              </div>
-                              <div className="flex ">
-                                <div className="w-10 flex">
-                                  <input
-                                    type="checkbox"
-                                    className="h-6 w-6 rounded-lg bg-black/40"
-                                  />
-                                </div>
-                                <div>
-                                  <p className="text-gray-300">Pending</p>
-                                </div>
-                              </div>
-                              <div className="flex ">
-                                <div className="w-10 flex mr-1">
-                                  <input
-                                    type="checkbox"
-                                    className="h-6 w-6 rounded-lg bg-black/40"
-                                  />
-                                </div>
-                                <div>
-                                  <p className="text-gray-300">Expired</p>
-                                </div>
-                              </div>
+                              <PartnerFilterCheck
+                                title="Active"
+                                summary="Contract is still active"
+                              />
+                              <PartnerFilterCheck
+                                title="Expired"
+                                summary="Contract has expired"
+                              />
+                              <PartnerFilterCheck
+                                title="Expiring in 30 days"
+                                summary="Contract is expiring soon"
+                              />
+                              <PartnerFilterCheck
+                                title="In review"
+                                summary="Contract has not started"
+                              />
                             </div>
                           )}
                         </div>

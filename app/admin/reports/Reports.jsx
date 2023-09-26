@@ -333,7 +333,7 @@ export default function Approvals() {
                         <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
                           <div
                             className={`${
-                              search.date ? "bg-white/20 text-white" : ""
+                              search.date ? "bg-white/20 text-white" : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -381,7 +381,7 @@ export default function Approvals() {
 
                           <div
                             className={`${
-                              search.category ? "bg-white/20 text-white" : ""
+                              search.category ? "bg-white/20 text-white" : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -459,7 +459,7 @@ export default function Approvals() {
 
                           <div
                             className={`${
-                              search.status ? "bg-white/20 text-white" : ""
+                              search.status ? "bg-white/20 text-white" : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -531,7 +531,7 @@ export default function Approvals() {
                               </div>
 
                               <div className="flex flex-col gap-2">
-                                <h3>Show results for</h3>
+                                <h3 className="text-gray-400">Show results for</h3>
                                 <PartnerFilterTitle title="Last 30 Days" />
                                 <PartnerFilterTitle title="This Month" />
                                 <PartnerFilterTitle title="Last Month" />

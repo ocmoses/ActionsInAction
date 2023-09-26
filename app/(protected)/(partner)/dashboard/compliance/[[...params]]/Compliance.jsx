@@ -384,11 +384,11 @@ export default function Compliance({ params }) {
 
   const showAgreement = () => {
     //Get all contracts and display
-    if(weHaveAgreed){
-      setAgreementModal(true);
-    }else{
+    // if(weHaveAgreed){
+    //   setAgreementModal(true);
+    // }else{
       router.push("dashboard/contracts/execution")
-    }
+    // }
     
   }
 

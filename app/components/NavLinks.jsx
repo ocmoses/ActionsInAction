@@ -35,7 +35,7 @@ export const NavLinksMobile = () => {
     { href: "/faq", text: "FAQ", active: pathname === "/faq" },
   ]
   return (
-    <nav className="flex flex-col gap-8 py-[30px]">
+    <nav className="flex flex-col gap-8 py-[30px] z-50">
       {links.map((link) => (
         <Link href={link.href} key={link.text}>
           <span

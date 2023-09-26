@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import TextInput from "@/app/components/form/TextInput";
 //import useAdmins from "@/hooks/useAdmins";
@@ -18,6 +18,7 @@ export default function Approvals() {
   const [reportStatistics, setReportStatistics] = useState(null);
   const [fetching, setFetching] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
+  const filterRef = useRef(null);
   const [search, setSearch] = useState({
     date: true,
     category: false,
@@ -49,6 +50,13 @@ export default function Approvals() {
       }
     };
     fetchReport();
+
+    document.addEventListener('click', function(e){
+      if(!filterRef.current.contains(e.target)){
+        setFilterModal(false);
+      }
+    }, true);
+    
   }, []);
 
   return (
@@ -317,7 +325,8 @@ export default function Approvals() {
                   </div>
 
                   {filterModal && (
-                    <div
+                    <div 
+                    ref={filterRef}
                       className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl `}
                     >
                       <div className="flex">

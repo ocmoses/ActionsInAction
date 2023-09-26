@@ -55,7 +55,7 @@ export default function ContractSigning(){
 
     let selected_admin_users = partner.selected_partner_admin_users;
 
-    // console.log("selected_admin_users", selected_admin_users);
+    console.log("selected_admin_users", selected_admin_users);
     // console.log("useUsers()", useUsers());
     // console.log("usePartners()", usePartners());
 
@@ -222,6 +222,8 @@ export default function ContractSigning(){
         setSigningModal(true), 
         window.scrollTo({top:0, behavior: "smooth"});
     }
+
+    console.log("signatoryRole", signatoryRole);
 
     useEffect(() => {
         get_dynamic_content();

@@ -56,7 +56,7 @@ export default function Approvals() {
         setFilterModal(false);
       }
     }, true);
-    
+
   }, []);
 
   return (
@@ -327,7 +327,7 @@ export default function Approvals() {
                   {filterModal && (
                     <div 
                     ref={filterRef}
-                      className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl `}
+                      className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out]`}
                     >
                       <div className="flex">
                         <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
@@ -513,7 +513,7 @@ export default function Approvals() {
 
                         <div className="flex-1 p-4 min-h-[300px] bg-white/5">
                           {search.date && (
-                            <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                               <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
                                 <TextInput
                                   id="name"
@@ -543,7 +543,7 @@ export default function Approvals() {
                           )}
 
                           {search.category && (
-                            <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                               <PartnerFilterCheck
                                 title="Value added services"
                                 summary="Non-core services or features that are beyond the standard voice calls."
@@ -564,7 +564,7 @@ export default function Approvals() {
                           )}
 
                           {search.status && (
-                            <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                               <PartnerFilterCheck
                                 title="Active"
                                 summary="Contract is still active"

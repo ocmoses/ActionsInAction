@@ -903,6 +903,10 @@ export const filterPartner = (partnerInfo, Categories) => {
   return partnerInfo;
 };
 export const filterCategory = (category, partnerInfo) => {
+
+  console.log("category: ", category);
+  console.log("partnerInfo: ", partnerInfo);
+
   if (!category) return category;
   if (!partnerInfo) return category;
   // return category
@@ -976,7 +980,7 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] =  approval?.status; //approvalStatuses[approval?.field];
+        ][approval?.field] =  approvalStatuses[approval?.field]; //approval?.status; //
       }
     });
   }

@@ -359,7 +359,7 @@ export default function Compliance({ params }) {
 
       setStages(_stages);
     }else{
-      router.push(`/dashboard/compliance/${categories[0].uuid}`);
+      router.push(`/dashboard/compliance/${partner?.categories[0].category_uuid}`);
     }
     // console.log({ partner })
 

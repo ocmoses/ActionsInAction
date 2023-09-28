@@ -33,17 +33,17 @@ export default function CategoryStageStatus({ stage, category, partner }) {
     }
 
     setApprovalStage(approving);
-
     
   }, [partner.approvalStages, category]);
 
   let dept;
   let counts;
 
-  console.log("Approvals", Approvals);
-  console.log("ApprovalStages", ApprovalStages);
+  // console.log("Approvals", Approvals);
+  // console.log("ApprovalStages", ApprovalStages);
 
   try{
+
     if (Approvals) {
       if (!isSuperadmin() && admin && admin.department_code) {
         dept = admin.department_code;      

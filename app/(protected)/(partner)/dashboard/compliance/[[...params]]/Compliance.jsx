@@ -350,6 +350,7 @@ export default function Compliance({ params }) {
         partner
       );
 
+      console.log("_selectedCategory", _selectedCategory);
       console.log("_filtered_selectedCategory", _filtered_selectedCategory);
 
       setSelectedCategory(_filtered_selectedCategory);
@@ -359,14 +360,14 @@ export default function Compliance({ params }) {
 
       setStages(_stages);
     }else{
-      router.push(`/dashboard/compliance/${categories[0].uuid}`);
+      router.push(`/dashboard/compliance/${partner?.categories[0].category_uuid}`);
     }
     // console.log({ partner })
 
-   console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
-   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
-   console.log("isASignatory", isASignatory)
-   console.log("hasNotSigned", hasNotSigned)
+  //  console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
+  //  console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+  //  console.log("isASignatory", isASignatory);
+  //  console.log("hasNotSigned", hasNotSigned);
 
   }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
 

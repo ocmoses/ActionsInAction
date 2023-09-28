@@ -16,6 +16,7 @@ import { COUNTRIES } from "@/app/modules/countries";
 import { STATES } from "@/app/modules/states";
 import Portal from "@/app/components/Portal";
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function ComplianceLabelPartners({
   field,
@@ -30,7 +31,11 @@ export default function ComplianceLabelPartners({
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState(null);
 
-  const Approvals = partnerApprovals(partner, category);
+  const [ApprovalStages, setApprovalStages] = useState(null);
+  const [ApprovalStage, setApprovalStage] = useState(null);
+  const [Approvals, setApproval] = useState(null);
+
+  // console.log("Approvals: ", Approvals);
 
   // console.log({ type })
   // console.log({ field })
@@ -90,6 +95,33 @@ export default function ComplianceLabelPartners({
     });
     setShowModal(true);
   };
+
+  useEffect(() => {
+    const _approvals = partnerApprovals(partner, category);
+    const _approvalStages = partner.approvalStages;
+
+    setApproval(_approvals);
+    setApprovalStages(_approvalStages[category.category_uuid]);
+
+    /////////////////////
+    let approving  = "";
+    for(let i in _approvalStages[category.category_uuid]){
+      if(i == stage){
+        approving = i+"";
+        break;
+      }
+      // console.log("i in approval stage", i + " is " + (i == stage));
+    }
+
+    setApprovalStage(approving);
+
+    console.log("_approvals: ", _approvals);
+    // console.log("_approvalStages: ", _approvalStages);
+    // console.log("approving: ", approving);
+
+  }, []);
+
+  
 
   return (
     <>
@@ -339,3 +371,4 @@ export default function ComplianceLabelPartners({
     </>
   );
 }
+

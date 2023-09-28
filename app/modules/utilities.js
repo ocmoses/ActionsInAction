@@ -1265,6 +1265,10 @@ export const filterApprovalFields = (partner) => {
 
 export const partnerApprovals = (partner, category) => {
   if (!category || !partner) return;
+
+  console.log("partner?.approvalStages", partner?.approvalStages);
+  console.log("category", category);
+
   const Approvals = partner?.approvalStages[category.category_uuid];
   let stageApprovals = {};
   let stageFields = {};
@@ -1277,6 +1281,7 @@ export const partnerApprovals = (partner, category) => {
         Approvals && Approvals[stage] ? Approvals[stage] : {};
       stageFields[stage] =
         fieldCounts && fieldCounts[stage] ? fieldCounts[stage] : {};
+        // console.log("stageFields[stage]", stageFields[stage]);
     }
   });
   const Rejections = {};
@@ -1301,7 +1306,7 @@ export const partnerApprovals = (partner, category) => {
   }
   const StageApprovals = {
     counts: { fields: {}, status: {}, rejections: Rejections },
-  };
+  };  
   if (!Util.isEmpty(stageFields)) {
     for (const _stage in stageFields) {
       if (!StageApprovals[_stage])
@@ -1320,7 +1325,15 @@ export const partnerApprovals = (partner, category) => {
           },
         };
 
-      for (const _dept in stageFields[_stage]) {
+
+      let _dept = "";
+      for(const depart in Approvals[_stage]){
+        _dept = depart;
+        break;
+      }     
+
+      
+      // for (const _dept in stageFields[_stage]) {        
         if (stageFields[_stage][_dept]?.fields?.length > 0) {
           stageFields[_stage][_dept].fields.map((field) => {
             if (!shortcodeApprovalFieldsArray.includes(field)) {
@@ -1421,7 +1434,7 @@ export const partnerApprovals = (partner, category) => {
             else StageApprovals[_stage][_dept].counts.status = "processing";
           }
         }
-      }
+      // }
       if (
         StageApprovals[_stage]?.counts?.approved ===
         StageApprovals[_stage]?.counts?.count

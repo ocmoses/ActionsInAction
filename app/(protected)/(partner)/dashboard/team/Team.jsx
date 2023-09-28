@@ -210,9 +210,9 @@ export default function Team() {
     const reader = new FileReader();
     reader.onloadend = () => {
         // Use a regex to remove data url part
-        const base64String = reader.result
-            .replace('data:', '')
-            .replace(/^.+,/, '');
+        const base64String = reader.result;
+            // .replace('data:', '')
+            // .replace(/^.+,/, '');
 
         // console.log('base64String', base64String);
         setData({...data, file:base64String});

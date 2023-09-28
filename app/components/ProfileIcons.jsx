@@ -1,12 +1,13 @@
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useStoreState } from "easy-peasy";
+
 import UserAvartar from "@/app/components/UserAvartar";
 import Notifications from "@/app/components/Notifications";
-import { useStoreState } from "easy-peasy";
-import Image from "next/image";
-
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
-
-import { useState } from "react";
+import { PageRoutes } from "@/app/modules/menu";
 import PopUp, { PartnerContactUsSuccess } from "@/app/components/PopUps";
 import PartnerContactUsForm from "@/app/components/contactus/PartnerContactUsForm";
 
@@ -86,32 +87,38 @@ export default function ProfileIcons() {
                 Help and support
               </h2>
 
-              <div className="flex flex-row gap-3 justify-center w-full min-h-[120px] rounded-[5px] p-2 text-[14px]  hover:bg-white/10">
-                <div>
-                  <Image
-                    priority
-                    src="/assets/icons/ChatCircleText.png"
-                    width={60}
-                    height={60}
-                  />
+              <Link
+                href={PageRoutes.faq}
+                target="_blank"
+                rel="noopener noreferrer"
+                className=""
+              >
+                <div className="flex flex-row gap-3 justify-center w-full min-h-[120px] rounded-[5px] p-2 text-[14px]  hover:bg-white/10">
+                  <div>
+                    <Image
+                      priority
+                      src="/assets/icons/ChatCircleText.png"
+                      width={60}
+                      height={60}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-white">Frequently asked questions</h3>
+                    <p>
+                      If you have general questions , check out our FAQs where
+                      you might find the answer you're after even quicker.
+                    </p>
+                  </div>
+                  <div>
+                    <Image
+                      priority
+                      src="/assets/icons/CaretRight.png"
+                      width={50}
+                      height={50}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-white">Frequently asked questions</h3>
-                  <p>
-                    If you have general questions , check out our FAQs where you
-                    might find the answer you're after even quicker.
-                  </p>
-                </div>
-                <div>
-                  <Image
-                    priority
-                    src="/assets/icons/CaretRight.png"
-                    width={50}
-                    height={50}
-                  />
-                </div>
-              </div>
-
+              </Link>
               <div
                 className="flex flex-row gap-3 justify-center  w-full min-h-[120px] rounded-[5px] p-2 text-[14px] hover:bg-white/10"
                 onClick={openPopUp}

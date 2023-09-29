@@ -10,6 +10,7 @@ import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
+import { capitalizeFirst } from "../../../../../modules/utilities";
 
 
 
@@ -53,9 +54,14 @@ export default function ContractSigning(){
     const [directorOrDelegateSigned, setDirectorOrDelegateSigned] = useState(false);
     const [witnessSigned, setWitnessSigned] = useState(false);
 
+    const [uploadedFile, setUploadedFile] = useState(false);    
+    const [reset, setReset] = useState(Date.now());
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+
     let selected_admin_users = partner.selected_partner_admin_users;
 
     console.log("selected_admin_users", selected_admin_users);
+    console.log("user: ", user);
     // console.log("useUsers()", useUsers());
     // console.log("usePartners()", usePartners());
 
@@ -205,9 +211,9 @@ export default function ContractSigning(){
         const reader = new FileReader();
         reader.onloadend = () => {
             // Use a regex to remove data url part
-            const base64String = reader.result;
-                // .replace('data:', '')
-                // .replace(/^.+,/, '');
+            const base64String = reader.result
+                .replace('data:', '')
+                .replace(/^.+,/, '');
 
             // console.log('base64String', base64String);
             setData({...data, signature:base64String});
@@ -2206,14 +2212,17 @@ export default function ContractSigning(){
 
                     <div className="max-w-4xl px-0 my-4">
                         <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
-                        <div className="flex ">
-                            <div className="w-10 flex mr-4">
-                                <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
-                            </div>
-                            <div>
-                                <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
-                            </div>
-                        </div>
+                        {
+                            signatoryRole && !haveSigned &&
+                            (<div className="flex ">
+                                <div className="w-10 flex mr-4">
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                </div>
+                                <div>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                </div>
+                            </div>)
+                        }
 
                         <div className="flex space-x-4 my-8">
 
@@ -2233,7 +2242,7 @@ export default function ContractSigning(){
                                    
                                 }
                                 {
-                                    !directorOrDelegateSigned && 
+                                    !directorOrDelegateSigned && acceptedTerms &&
                                     (signatoryRole == 'director' || signatoryRole == 'delegate') &&
                                     <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
                                             onClick={() => showSigningWindow(signatoryRole)}>
@@ -2244,7 +2253,12 @@ export default function ContractSigning(){
                                 {
                                     directorOrDelegateSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
-                                        <img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-24" />
+                                        {
+                                            dynamicData?.signature_of_signee[0]?.director_or_delegate_signature.includes("data:image/png;base64,") ?  
+                                            (<img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />) :
+                                            (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />)
+
+                                        }
                                     </div>
                                 }
                                 
@@ -2261,12 +2275,12 @@ export default function ContractSigning(){
                                 <h1 className="text-white text-center text-xl font-bold p-4">Witness's Signature</h1>
                                 
                                 {  
-                                    signatoryRole != "witness" && !witnessSigned &&     
+                                    signatoryRole != "witness" && !witnessSigned &&  
                                         <p className="text-gray-300 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
                                    
                                 }
                                 {
-                                    signatoryRole == 'witness' && !witnessSigned &&                                     
+                                    signatoryRole == 'witness' && !witnessSigned && acceptedTerms &&                                   
                                     <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
                                             onClick={() => showSigningWindow(signatoryRole)}>
                                         Click to Sign here
@@ -2275,8 +2289,13 @@ export default function ContractSigning(){
                                 {
                                     witnessSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                        {/* "data:image/png;base64," +  */}
-                                         <img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />
+                                        {
+                                            dynamicData?.signature_of_signee[0]?.witness_signature.includes("data:image/png;base64,") ?  
+                                            (<img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />) :
+                                            (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />)
+
+                                        }
+                                         
                                     </div>
                                 }
                             </div>
@@ -2324,7 +2343,8 @@ export default function ContractSigning(){
                     }  
 
                     {signingModal && 
-                        <div id="signing_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}>
+                        <div id="signing_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" > 
+                        {/* onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}> */}
                             <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[550px] pb-4">
                                 <div className="flex pt-8 pb-4">
                                     <div className="text-white text-2xl mb-4 flex-1">Adopt a Signature</div>                                
@@ -2339,10 +2359,11 @@ export default function ContractSigning(){
                                 <TextInput
                                     id="fullname"
                                     label="Full name"
-                                    value={user?.fullname}
+                                    value={`${capitalizeFirst(user?.first_name)} ${capitalizeFirst(user?.last_name)}`}
                                     onChange={(e) => {}
                                     }
                                     readonly
+                                    disabled
                                     errors={errors}
                                 />
                                 
@@ -2440,8 +2461,15 @@ export default function ContractSigning(){
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                                                         <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                                                     </svg>
-                                                    <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
-                                                    <input type="file" className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".png" onChange={(e) => {convertFile(e)}}/>                   
+                                                    {
+                                                        uploadedFile ? 
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" onClick={() => {setReset(Date.now()); setUploadedFile(false); }}>
+                                                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
+                                                        </svg>
+                                                        :
+                                                        <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
+                                                    }
+                                                    <input type="file" className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".png" onChange={(e) => {convertFile(e); setUploadedFile(true)}}/>                   
                                                 </div>
 
                                             </div>          

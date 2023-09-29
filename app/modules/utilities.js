@@ -1805,7 +1805,7 @@ export function titleCase(text){
 }
 
 export function capitalizeFirst(string){
-  if(!string.length){
+  if(!string || !string.length){
     return "";
   }
 

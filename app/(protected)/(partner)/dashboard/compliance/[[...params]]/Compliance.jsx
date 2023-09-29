@@ -528,7 +528,7 @@ export default function Compliance({ params }) {
         <div className="my-8 max-w-6xl">          
           <CallToAction
             style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-            message="Your contract is ready click here to sign"
+            message="Your contract is ready. Click here to sign"
             description="Outline contract conditions and give contract warrantees."
             onclick={() => {showContracts()}}
             button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
@@ -626,7 +626,7 @@ export default function Compliance({ params }) {
           <div className="my-8 max-w-6xl">  
             <CallToAction
               style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-              message="Your contract is ready click here to sign"
+              message="Your contract is ready. Click here to sign"
               description="Outline contract conditions and give contract warrantees."
               onclick={() => {showAgreement()}}
               button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}

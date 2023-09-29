@@ -244,7 +244,7 @@ export default function GetStarted({ type }) {
                           {
                            userStatus == user_statuses.APPROVED ? (<CallToAction
                             style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-                            message="Your contract is ready click here to continue"
+                            message="Your contract is ready. Click here to continue"
                             description="Outline contract conditions and give contract warrantees."
                             onclick={() => {location = '/dashboard/compliance'}}
                             button='Continue'
@@ -275,7 +275,7 @@ export default function GetStarted({ type }) {
                           />  ) :                           
                           FinalApproval.partner ? (
                             <CallToAction
-                              message="Your contract is ready, click here to sign"
+                              message="Your contract is ready. Click here to sign"
                               description="Describe the event and give further instructions if needed, include a call to action"
                               onclick={() => showAgreement(true)}
                               label="Take action"
@@ -350,7 +350,7 @@ export default function GetStarted({ type }) {
                         <>
                           {FinalApproval.partner ? (
                             <CallToAction
-                              message="Your contract is ready, click here to sign"
+                              message="Your contract is ready. Click here to sign"
                               description="Describe the event and give further instructions if needed, include a call to action"
                               onclick={() => showAgreement(true)}
                               label="Take action"

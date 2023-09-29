@@ -2244,7 +2244,7 @@ export default function ContractSigning(){
                                 {
                                     directorOrDelegateSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
-                                        <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-24" />
+                                        <img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-24" />
                                     </div>
                                 }
                                 
@@ -2275,7 +2275,8 @@ export default function ContractSigning(){
                                 {
                                     witnessSigned &&
                                     <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />
+                                        {/* "data:image/png;base64," +  */}
+                                         <img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />
                                     </div>
                                 }
                             </div>

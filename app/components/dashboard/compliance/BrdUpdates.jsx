@@ -9,10 +9,10 @@ import {
   InfoIcon,
 } from "@/app/components/Icons";
 
-export default function BrdUpdates({ closePopUp }) {
+export default function BrdUpdates({ closePopUp, submitBrd }) {
   const [file, setFile] = useState(null);
   const [doc, setDoc] = useState(null);
-  const [error, setError] = useState("");
+  const [errorMessage, seteErrorMessage] = useState("");
 
   useEffect(() => {
     setFile(null);
@@ -26,22 +26,19 @@ export default function BrdUpdates({ closePopUp }) {
     const filesize = file["size"];
 
     if (validImageTypes.includes(fileType)) {
-      // console.log("doc", value)
       setDoc({
         file_name: file.name,
         file_size: file.size,
       });
       setFile(file);
-      setError("");
+      seteErrorMessage("");
     } else {
       setDoc({
         file_name: null,
-        file_path: null,
         file_size: null,
-        file_type: null,
       });
       setFile(null);
-      setError("Only PDF files are allowed");
+      seteErrorMessage("Only PDF files are allowed");
     }
   };
 
@@ -71,7 +68,7 @@ export default function BrdUpdates({ closePopUp }) {
                       <FileUploadIcon />
                     </div>
 
-                    <div className="flex text-[#999999]">
+                    <div className="text-[#999999]">
                       <p>
                         Upload <br />
                         <span className="text-white font-mtn-bold">
@@ -80,6 +77,11 @@ export default function BrdUpdates({ closePopUp }) {
                         <br />
                         Drag and drop here or
                       </p>
+                      {errorMessage && (
+                        <p className="text-red-500 text-sm font-italic">
+                          {errorMessage}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -132,7 +134,8 @@ export default function BrdUpdates({ closePopUp }) {
         >
           Back
         </button>
-        <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full">
+        <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+        onClick={submitBrd}>
           Add
         </button>
       </div>

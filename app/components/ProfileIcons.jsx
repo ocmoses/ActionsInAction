@@ -10,6 +10,11 @@ import usePartners from "@/hooks/usePartners";
 import { PageRoutes } from "@/app/modules/menu";
 import PopUp, { PartnerContactUsSuccess } from "@/app/components/PopUps";
 import PartnerContactUsForm from "@/app/components/contactus/PartnerContactUsForm";
+import BrdUpdates from "@/app/components/dashboard/compliance/BrdUpdates";
+
+
+
+
 
 export default function ProfileIcons() {
   const {
@@ -28,10 +33,16 @@ export default function ProfileIcons() {
   // console.log("User Object", states.users.token)
   const [popUp, setPopUp] = useState(false);
   const [contactSubmit, setContactSubmit] = useState(false);
+  const [brdFrom, setBrdFrom] = useState(false);
   const openPopUp = () => {
     setPopUp(true);
     setContactSubmit(false);
   };
+  const openBrdPopUp = () => {
+    setPopUp(true);
+    setBrdFrom(true);
+  };
+
   const closePopUp = () => {
     setPopUp(false);
   };
@@ -47,16 +58,22 @@ export default function ProfileIcons() {
 
       {popUp && (
         <PopUp closePopUp={closePopUp}>
-          {!contactSubmit ? (
-            <PartnerContactUsForm
-              closePopUp={closePopUp}
-              submitForm={submitContact}
-              partnerName={user.first_name}
-              partnerEmail={user.email}
-              token={states.users.token}
-            /> // If contactSubmit is false
+          {brdFrom ? (
+            <BrdUpdates closePopUp={closePopUp} /> // If contactSubmit is true
           ) : (
-            <PartnerContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+            <>
+              {!contactSubmit ? (
+                <PartnerContactUsForm
+                  closePopUp={closePopUp}
+                  submitForm={submitContact}
+                  partnerName={user.first_name}
+                  partnerEmail={user.email}
+                  token={states.users.token}
+                /> // If contactSubmit is false
+              ) : (
+                <PartnerContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+              )}
+            </>
           )}
         </PopUp>
       )}
@@ -83,7 +100,10 @@ export default function ProfileIcons() {
           {/*//===the help layer===========================================================================================================================*/}
           <div className=" w-[320px] min-h-[300px] ml-[-280px] rounded-[5px] bg-[#111111] border-1 border-white/20 hidden group-hover/help:block">
             <div className="p-2 pt-0 flex flex-col gap-3">
-              <h2 className="text-white h-[50px]  border-b border-b-white/20 leading-[50px]">
+              <h2
+                className="text-white h-[50px]  border-b border-b-white/20 leading-[50px]"
+                onClick={openBrdPopUp}
+              >
                 Help and support
               </h2>
 

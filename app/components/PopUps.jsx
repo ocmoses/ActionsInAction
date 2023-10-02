@@ -21,6 +21,10 @@ export default function PopUp({ closePopUp, children }) {
   );
 }
 
+
+
+
+
 export const ContactUsSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -52,6 +56,13 @@ export const ContactUsSuccess = ({ closePopUp }) => {
   );
 };
 
+
+
+
+
+
+
+
 export const PartnerContactUsSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -81,6 +92,13 @@ export const PartnerContactUsSuccess = ({ closePopUp }) => {
     </div>
   );
 };
+
+
+
+
+
+
+
 
 export const MobileMenu = ({ closeMobileMenu }) => {
   return (

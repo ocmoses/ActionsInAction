@@ -8,13 +8,9 @@ import Notifications from "@/app/components/Notifications";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { PartnerContactUsSuccess } from "@/app/components/PopUps";
+import PopUp, { PartnerContactUsSuccess, BrdUpdatesSuccess } from "@/app/components/PopUps";
 import PartnerContactUsForm from "@/app/components/contactus/PartnerContactUsForm";
 import BrdUpdates from "@/app/components/dashboard/compliance/BrdUpdates";
-
-
-
-
 
 export default function ProfileIcons() {
   const {
@@ -34,13 +30,10 @@ export default function ProfileIcons() {
   const [popUp, setPopUp] = useState(false);
   const [contactSubmit, setContactSubmit] = useState(false);
   const [brdFrom, setBrdFrom] = useState(false);
+  const [submitBrdFrom, setSubmitBrdFrom] = useState(false);
   const openPopUp = () => {
     setPopUp(true);
     setContactSubmit(false);
-  };
-  const openBrdPopUp = () => {
-    setPopUp(true);
-    setBrdFrom(true);
   };
 
   const closePopUp = () => {
@@ -51,6 +44,15 @@ export default function ProfileIcons() {
     setContactSubmit(true);
   };
 
+  const openBrdPopUp = () => {
+    setPopUp(true);
+    setBrdFrom(true);
+    setSubmitBrdFrom(false);
+  };
+  const submitBrd = () => {
+    setSubmitBrdFrom(true);
+  };
+
   // console.log('notifications from adminProfileIcons', notifications)
   return (
     <>
@@ -59,7 +61,13 @@ export default function ProfileIcons() {
       {popUp && (
         <PopUp closePopUp={closePopUp}>
           {brdFrom ? (
-            <BrdUpdates closePopUp={closePopUp} /> // If contactSubmit is true
+            <>
+              {!submitBrdFrom ? (
+                <BrdUpdates closePopUp={closePopUp} submitBrd={submitBrd} /> // If contactSubmit is true
+              ) : (
+                <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+              )}
+            </>
           ) : (
             <>
               {!contactSubmit ? (

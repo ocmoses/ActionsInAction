@@ -350,6 +350,7 @@ export default function Compliance({ params }) {
         partner
       );
 
+      console.log("_selectedCategory", _selectedCategory);
       console.log("_filtered_selectedCategory", _filtered_selectedCategory);
 
       setSelectedCategory(_filtered_selectedCategory);
@@ -359,14 +360,14 @@ export default function Compliance({ params }) {
 
       setStages(_stages);
     }else{
-      router.push(`/dashboard/compliance/${categories[0].uuid}`);
+      router.push(`/dashboard/compliance/${partner?.categories[0].category_uuid}`);
     }
     // console.log({ partner })
 
-   console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
-   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
-   console.log("isASignatory", isASignatory)
-   console.log("hasNotSigned", hasNotSigned)
+  //  console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
+  //  console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+  //  console.log("isASignatory", isASignatory);
+  //  console.log("hasNotSigned", hasNotSigned);
 
   }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
 
@@ -384,11 +385,11 @@ export default function Compliance({ params }) {
 
   const showAgreement = () => {
     //Get all contracts and display
-    if(weHaveAgreed){
-      setAgreementModal(true);
-    }else{
+    // if(weHaveAgreed){
+    //   setAgreementModal(true);
+    // }else{
       router.push("dashboard/contracts/execution")
-    }
+    // }
     
   }
 
@@ -527,7 +528,7 @@ export default function Compliance({ params }) {
         <div className="my-8 max-w-6xl">          
           <CallToAction
             style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-            message="Your contract is ready click here to sign"
+            message="Your contract is ready. Click here to sign"
             description="Outline contract conditions and give contract warrantees."
             onclick={() => {showContracts()}}
             button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}
@@ -625,7 +626,7 @@ export default function Compliance({ params }) {
           <div className="my-8 max-w-6xl">  
             <CallToAction
               style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-              message="Your contract is ready click here to sign"
+              message="Your contract is ready. Click here to sign"
               description="Outline contract conditions and give contract warrantees."
               onclick={() => {showAgreement()}}
               button={partner.contract_status == 'expired' ? 'Renew your contract' : 'Sign your contract'}

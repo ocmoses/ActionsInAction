@@ -199,16 +199,16 @@ export default function Compliance({ params }) {
     const selected_delegate_email = selected_admin_users.find(a => a.role == 'delegate') ? selected_admin_users.find(a => a.role == 'delegate').email : null;
     const selected_witness_email = selected_admin_users.find(a => a.role == 'witness') ? selected_admin_users.find(a => a.role == 'witness').email : null;
     
-    let admin_partners_emails = admin_partners.map(a => a.email);
+    let admin_partners_emails = selected_admin_users.map(a => a.email);
     
     //Adding superadmin
     admin_partners_emails.push(user.email);
 
     // console.log("selected_admin_users", selected_admin_users);
-    // console.log("selected_director_email", selected_director_email);
+    // console.log("selected_director_email", selected_director_email);s
     // console.log("selected_delegate_email", selected_delegate_email);
     // console.log("selected_witness_email", selected_witness_email);
-    // console.log("admin_partners_emails", admin_partners_emails);
+    console.log("admin_partners_emails", admin_partners_emails);
 
     // console.log("admin_partners_emails.includes(selected_director_email)", admin_partners_emails.includes(selected_director_email));
     // console.log("admin_partners_emails.includes(selected_witness_email)", admin_partners_emails.includes(selected_witness_email));
@@ -364,10 +364,10 @@ export default function Compliance({ params }) {
     }
     // console.log({ partner })
 
-  //  console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
-  //  console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
-  //  console.log("isASignatory", isASignatory);
-  //  console.log("hasNotSigned", hasNotSigned);
+   console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
+   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+   console.log("isASignatory", isASignatory);
+   console.log("hasNotSigned", hasNotSigned);
 
   }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
 

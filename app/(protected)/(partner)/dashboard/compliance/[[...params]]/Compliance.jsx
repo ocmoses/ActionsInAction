@@ -219,9 +219,9 @@ export default function Compliance({ params }) {
 
     
 
-    if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
-                (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
-                (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
+    if((selected_director_email && admin_partners_emails && admin_partners_emails.includes(selected_director_email) || 
+                (selected_delegate_email && admin_partners_emails && admin_partners_emails.includes(selected_delegate_email))) &&
+                (selected_witness_email && admin_partners_emails && admin_partners_emails.includes(selected_witness_email))){
       setSelectedAllRequiredSignatories(true);
     }else{
       setSelectedAllRequiredSignatories(false);

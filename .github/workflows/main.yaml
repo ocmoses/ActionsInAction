@@ -164,7 +164,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: stage
-          repository: gkhhgcl/helm-chart
+          #repository: gkhhgcl/helm-chart
+          # new helm repo
+          repository: MTNNigeria/Helm-Charts
           token: ${{ secrets.my_pat }}
 
       - name: Update stage helm repo

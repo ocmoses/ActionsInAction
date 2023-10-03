@@ -8,9 +8,8 @@ import Notifications from "@/app/components/Notifications";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { PartnerContactUsSuccess, BrdUpdatesSuccess } from "@/app/components/PopUps";
+import PopUp, { PartnerContactUsSuccess} from "@/app/components/PopUps";
 import PartnerContactUsForm from "@/app/components/contactus/PartnerContactUsForm";
-import BrdUpdates from "@/app/components/dashboard/compliance/BrdUpdates";
 
 export default function ProfileIcons() {
   const {
@@ -29,8 +28,7 @@ export default function ProfileIcons() {
   // console.log("User Object", states.users.token)
   const [popUp, setPopUp] = useState(false);
   const [contactSubmit, setContactSubmit] = useState(false);
-  const [brdFrom, setBrdFrom] = useState(false);
-  const [submitBrdFrom, setSubmitBrdFrom] = useState(false);
+  
   const openPopUp = () => {
     setPopUp(true);
     setContactSubmit(false);
@@ -44,15 +42,6 @@ export default function ProfileIcons() {
     setContactSubmit(true);
   };
 
-  const openBrdPopUp = () => {
-    setPopUp(true);
-    setBrdFrom(true);
-    setSubmitBrdFrom(false);
-  };
-  const submitBrd = () => {
-    setSubmitBrdFrom(true);
-  };
-
   // console.log('notifications from adminProfileIcons', notifications)
   return (
     <>
@@ -60,16 +49,6 @@ export default function ProfileIcons() {
 
       {popUp && (
         <PopUp closePopUp={closePopUp}>
-          {brdFrom ? (
-            <>
-              {!submitBrdFrom ? (
-                <BrdUpdates closePopUp={closePopUp} submitBrd={submitBrd} /> // If contactSubmit is true
-              ) : (
-                <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
-              )}
-            </>
-          ) : (
-            <>
               {!contactSubmit ? (
                 <PartnerContactUsForm
                   closePopUp={closePopUp}
@@ -81,8 +60,6 @@ export default function ProfileIcons() {
               ) : (
                 <PartnerContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
               )}
-            </>
-          )}
         </PopUp>
       )}
 
@@ -110,7 +87,7 @@ export default function ProfileIcons() {
             <div className="p-2 pt-0 flex flex-col gap-3">
               <h2
                 className="text-white h-[50px]  border-b border-b-white/20 leading-[50px]"
-                onClick={openBrdPopUp}
+                
               >
                 Help and support
               </h2>

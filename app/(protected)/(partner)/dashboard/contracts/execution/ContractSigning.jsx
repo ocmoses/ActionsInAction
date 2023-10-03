@@ -85,30 +85,30 @@ export default function ContractSigning(){
     }, [])
 
     const getCoordinates = (event) => {
-    if (!canvas.current) {
-        return null
-    }
+        if (!canvas.current) {
+            return null
+        }
 
-    const x = event.pageX || event.touches[0].pageX
-    const y = event.pageY || event.touches[0].pageY
+        const x = event.pageX || event.touches[0].pageX
+        const y = event.pageY || event.touches[0].pageY
 
-    return {
-        x: x - canvas.current.offsetLeft,
-        y: y - canvas.current.offsetTop
-    }
+        return {
+            x: x - canvas.current.offsetLeft,
+            y: y - canvas.current.offsetTop
+        }
     }
 
     const onMove = useCallback(
-    (event) => {
-        if (drawing) {
-        const newPosition = getCoordinates(event)
-        if (position && newPosition) {
-            drawLine(position, newPosition)
-            setPosition(newPosition)
-        }
-        }
-    },
-    [drawing, position]
+        (event) => {
+            if (drawing) {
+                const newPosition = getCoordinates(event)
+                if (position && newPosition) {
+                    drawLine(position, newPosition)
+                    setPosition(newPosition)
+                }
+            }
+        },
+        [drawing, position]
     )
 
     const drawLine = (originalPosition, newPosition) => {

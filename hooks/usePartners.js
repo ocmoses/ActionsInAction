@@ -270,8 +270,7 @@ const usePartners = () => {
       case "userinfo":
         setProcessing(true)
         const responseUserinfo = await Axios.post(
-          "http:/10.1.44.40/api/v2/auth/register/userinfo",
-          // RemoteEndpoints.USERINFO,
+          RemoteEndpoints.USERINFO,
           userdata,
           {
             headers: {

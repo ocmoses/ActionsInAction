@@ -49,6 +49,10 @@ export default function ContractSigning(){
     const [dynamicData, setDynamicData] = useState(null);
     const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
 
+    const [directorOrDelegate, setDirectorOrDelegate] = useState(null);
+    const [witness, setWitness] = useState(null);
+    const [signee, setSignee] = useState(null);
+
     const [signatoryRole, setSignatoryRole] = useState("");    
     const [haveSigned, setHaveSigned] = useState(false);
     const [directorOrDelegateSigned, setDirectorOrDelegateSigned] = useState(false);
@@ -62,6 +66,7 @@ export default function ContractSigning(){
 
     console.log("selected_admin_users", selected_admin_users);
     console.log("user: ", user);
+    console.log("partner: ", partner);
     // console.log("useUsers()", useUsers());
     // console.log("usePartners()", usePartners());
 
@@ -237,12 +242,26 @@ export default function ContractSigning(){
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
         
-        let directorOrDelegate = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate");
+        let directorOrDelegate = selected_admin_users.find(u => u.role == "director" || u.role == "delegate");
+        let witness = selected_admin_users.find(u => u.role == "witness");
+
+        setDirectorOrDelegate(directorOrDelegate);
+        setWitness(witness);
+
+        let signee = (signatoryRole == 'director' || signatoryRole == 'delegate') && directorOrDelegate ? 
+                        `${capitalizeFirst(directorOrDelegate.firstname)} ${capitalizeFirst(directorOrDelegate.lastname)}` :
+                        (signatoryRole == 'director' || signatoryRole == 'delegate') && !directorOrDelegate ? 
+                        `${capitalizeFirst(user.first_name)} ${capitalizeFirst(user.last_name)}` :
+                        signatoryRole == 'witness' && witness ? 
+                        `${capitalizeFirst(witness.firstname)} ${capitalizeFirst(witness.lastname)}` :
+                        "";
+
+        setSignee(signee);
 
         console.log("directorOrDelegate", directorOrDelegate);
+        console.log("witness", witness);
 
-        const hasSignedArray = directorOrDelegate.length ? directorOrDelegate.map(u => u != undefined && u.has_user_signed != 'no') : [];
-        setDirectorOrDelegateSigned(hasSignedArray.includes(true));
+        setDirectorOrDelegateSigned(directorOrDelegate && directorOrDelegate.has_user_signed != 'no' ?  true : false);
         setWitnessSigned(selected_admin_users.find(u => u.role == 'witness') ? selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no' : false);
         
         if (canvas.current) {
@@ -2213,7 +2232,22 @@ export default function ContractSigning(){
                     <div className="max-w-4xl px-0 my-4">
                         <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
                         {
-                            signatoryRole && !haveSigned &&
+                            signatoryRole && 
+                            (signatoryRole == 'director' || signatoryRole == 'witness') && 
+                            !haveSigned &&
+                            (<div className="flex ">
+                                <div className="w-10 flex mr-4">
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                </div>
+                                <div>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                </div>
+                            </div>)
+                        }
+                        {
+                            signatoryRole && signatoryRole == 'witness' && 
+                            directorOrDelegateSigned && 
+                            !haveSigned &&
                             (<div className="flex ">
                                 <div className="w-10 flex mr-4">
                                     <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
@@ -2227,8 +2261,10 @@ export default function ContractSigning(){
                         <div className="flex space-x-4 my-8">
 
                             <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
-                                { !directorOrDelegateSigned && 
-                                    (signatoryRole == undefined || signatoryRole == null) &&
+                                { (!directorOrDelegateSigned && 
+                                    (signatoryRole == undefined || signatoryRole == null)) || 
+                                    (!directorOrDelegateSigned && 
+                                    signatoryRole == 'witness') &&
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-8">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -2240,6 +2276,11 @@ export default function ContractSigning(){
                                     (signatoryRole == undefined || signatoryRole == null) &&
                                         <p className="text-gray-300 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
                                    
+                                }
+                                {
+                                    !directorOrDelegateSigned && 
+                                    signatoryRole == 'witness' &&
+                                    <p className="text-gray-300 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
                                 }
                                 {
                                     !directorOrDelegateSigned && acceptedTerms &&
@@ -2264,18 +2305,18 @@ export default function ContractSigning(){
                                 
                             </div>
 
-                            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
+                            <div className="px-4 w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center">
 
-                                { signatoryRole != "witness" && !witnessSigned &&
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
+                                { signatoryRole != "witness" && !witnessSigned && 
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-10">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 }
 
-                                <h1 className="text-white text-center text-xl font-bold p-4">Witness's Signature</h1>
+                                <h1 className="text-white text-center text-xl font-bold p-4 mt-6">Witness's Signature</h1>
                                 
-                                {  
-                                    signatoryRole != "witness" && !witnessSigned &&  
+                                {                                      
+                                    signatoryRole != 'witness' && !witnessSigned &&  
                                         <p className="text-gray-300 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
                                    
                                 }
@@ -2359,7 +2400,7 @@ export default function ContractSigning(){
                                 <TextInput
                                     id="fullname"
                                     label="Full name"
-                                    value={`${capitalizeFirst(user?.first_name)} ${capitalizeFirst(user?.last_name)}`}
+                                    value={signee && signee}
                                     onChange={(e) => {}
                                     }
                                     readonly

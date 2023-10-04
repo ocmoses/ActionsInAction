@@ -9,18 +9,30 @@ import {
   InfoIcon,
 } from "@/app/components/Icons";
 
+import { apikey } from "@/app/modules/constants";
+import axios from "axios";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import RemoteEndpoints from "@/app/modules/endpoints";
 
-export default function BrdUpdates({ closePopUp, submitBrd }) {
-  const [file, setFile] = useState(null);
+export default function BrdUpdates({
+  closePopUp,
+  submitBrd,
+  loginPartnerID,
+  token,
+}) {
   const [doc, setDoc] = useState(null);
-  const [errorMessage, seteErrorMessage] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [sendAction, setSendAction] = useState(false);
+  const [formData, setFormData] = useState({
+    partner_uuid: loginPartnerID,
+    file: null,
+  });
+  const [fileSize, setfFileSize] = useState(null);
   useEffect(() => {
-    setFile(null);
     setDoc(null);
   }, []);
 
-  const handleFile = (e) => {
+  const handleFileChange = (e) => {
     const validImageTypes = ["application/pdf"];
     let file = e.target.files[0];
     const fileType = file["type"];
@@ -31,16 +43,54 @@ export default function BrdUpdates({ closePopUp, submitBrd }) {
         file_name: file.name,
         file_size: file.size,
       });
-      setFile(file);
-      seteErrorMessage("");
+      setfFileSize(filesize)
+      setErrorMessage("");
     } else {
       setDoc({
         file_name: null,
         file_size: null,
       });
-      setFile(null);
-      seteErrorMessage("Only PDF files are allowed");
+      setErrorMessage("Only PDF files are allowed");
     }
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      clearError();
+      if (fileSize <= 0) {
+        setErrorMessage("Upload The New BRD!");
+      } else {
+        const formDataToSend = new FormData();
+        formDataToSend.append("partner_uuid", formData.partner_uuid);
+        formDataToSend.append("file", formData.file);
+        setSendAction(true);
+        const response = await axios.post(
+          RemoteEndpoints.CORRECTED_RESOLUTION_DOCUMENTS,
+          formDataToSend,
+          {
+            headers: {
+              apikey: apikey,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        submitBrd();
+        console.log(response);
+      }
+    } catch (err) {
+      setSendAction(false);
+      setErrorMessage(err.message);
+      console.log(setErrorMessage, err);
+    }
+  };
+  const clearError = () => {
+    setErrorMessage(null);
   };
 
   return (
@@ -54,9 +104,10 @@ export default function BrdUpdates({ closePopUp, submitBrd }) {
             <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
               <input
                 type="file"
-                onChange={handleFile}
+                onChange={handleFileChange}
                 className="hidden"
                 name="files"
+                id="files"
                 accept=".pdf,.PDF"
               />
 
@@ -78,11 +129,6 @@ export default function BrdUpdates({ closePopUp, submitBrd }) {
                         <br />
                         Drag and drop here or
                       </p>
-                      {errorMessage && (
-                        <p className="text-red-500 text-sm font-italic">
-                          {errorMessage}
-                        </p>
-                      )}
                     </div>
                   </div>
 
@@ -129,39 +175,37 @@ export default function BrdUpdates({ closePopUp, submitBrd }) {
       </FileInputWrapper>
 
       <div className="flex gap-2 justify-end mt-4">
+        {errorMessage && (
+          <p className="text-red-500 text-sm font-italic">
+            {errorMessage}
+            <br />
+          </p>
+        )}
         <button
           className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
           onClick={closePopUp}
         >
           Back
         </button>
-        <button
-          className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={submitBrd}
-        >
-          Add
-        </button>
+        {sendAction ? (
+          <TailSpinPreloader width={40} height={40} fill="#efb703" />
+        ) : (
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={handleSubmit}
+          >
+            Add
+          </button>
+        )}
       </div>
     </section>
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-export const BrdRejectedAlert = ({openBrdPopUp, rejected}) => {
-  console.log({rejected})
+export const BrdRejectedAlert = ({ openBrdPopUp, rejected }) => {
+  //console.log({ rejected });
   return (
     <>
- 
       <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
         <div className="p-[24px] ">
           <div className="flex flex-row gap-3">
@@ -182,9 +226,11 @@ export const BrdRejectedAlert = ({openBrdPopUp, rejected}) => {
             <div className="flex flex-col gap-3">
               <div className="text-gray-500 ">
                 <p>
-                  <span className="text-white">
-                    Your board resolution document has ({rejected.length}) issues for {rejected[0].delegate_name}
-                  </span>
+                <span className="text-white">Your board resolution document has issues </span>
+                  {/* <span className="text-white">
+                    Your board resolution document has ({rejected.length})
+                    issues for {rejected[0].delegate_name}
+                  </span> */}
                   <br />
                   Reason: The document you submitted doesn’t show enough proof
                   of progress.

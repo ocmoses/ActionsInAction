@@ -37,6 +37,7 @@ export default function GetStarted({ type }) {
   const {
     session: { user },
   } = useUsers();
+  console.log(user)
   const {
     partner,
     category,
@@ -388,26 +389,32 @@ export default function GetStarted({ type }) {
 
               {/* //================this is the popup==============================================================================================================*/}
 
-              {popUp && (
-                <PopUp closePopUp={closePopUp}>
-                  {!submitBrdFrom ? (
-                    <BrdUpdates closePopUp={closePopUp} submitBrd={submitBrd} /> // If contactSubmit is true
-                  ) : (
-                    <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+              {rejectedTeam?.rejected?.length > 0 && (
+                <>
+                  {popUp && (
+                    <PopUp closePopUp={closePopUp}>
+                      {!submitBrdFrom ? (
+                        <BrdUpdates
+                          closePopUp={closePopUp}
+                          submitBrd={submitBrd}
+                          loginPartnerID={partner.uuid}
+                          token={user.token}
+                        /> // If contactSubmit is true
+                      ) : (
+                        <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+                      )}
+                    </PopUp>
                   )}
-                </PopUp>
+
+                  <BrdRejectedAlert
+                    openBrdPopUp={openBrdPopUp}
+                    rejected={rejectedTeam?.rejected}//this is all regjected deligates
+                  />
+                </>
               )}
 
-              {rejectedTeam?.rejected?.length > 0 && (
-                <BrdRejectedAlert
-                  openBrdPopUp={openBrdPopUp}
-                  rejected={rejectedTeam?.rejected}
-                />
-              )}
               {/*//==============================================================================================================================*/}
-              
-              
-              
+
               {partner?.onboarding_type === "migrated" && (
                 <>
                   {partner?.is_login === "no" ? (

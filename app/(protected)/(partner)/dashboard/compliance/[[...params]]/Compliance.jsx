@@ -59,8 +59,6 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role, refreshSession} = useUsers();
 
-  console.log("Contract status", partner.contract_status);
-
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
   
@@ -104,7 +102,7 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
+  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
   let directorSigned = false;
   let delegateSigned = false;
   let witnessSigned = false;

@@ -1037,7 +1037,12 @@ export default function Compliance({ params }) {
             <div className="flex pt-8 pb-4">
               <div className="text-white text-2xl mb-4 flex-1">Add a director</div>
               <div className="cursor-pointer">
-                <p className="text-yellow-500 text-xs underline">I'm a director</p>
+                <p onClick={() => {
+                    setSignatories({...signatories, director: {firstname: user.first_name, lastname: user.last_name, email: user.email}}); 
+                    setAddDirectorModal(false); setContractSignatriesModal(true);
+                    }
+                  } 
+                className="text-yellow-500 text-xs underline">I'm a director</p>
               </div> 
             </div>
 
@@ -1348,7 +1353,7 @@ export default function Compliance({ params }) {
  
             <div className="">              
               <div className="flex py-4 px-2 space-x-4 justify-center">
-                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false); refreshSession();}}>Continue</button>
+                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false); refreshSession(); location.reload();}}>Continue</button>
               </div>              
             </div>
 

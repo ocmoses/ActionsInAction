@@ -1710,6 +1710,12 @@ export const getFinalApproval = (partner) => {
   status.partner =
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
   status.count = categoryStatus;
+
+  console.log("pending", pending);
+  console.log("corrected", corrected);
+  console.log("rejected", rejected);
+  console.log("categoryStatus", categoryStatus);
+
   return status;
 };
 export const getstages = (category, categories) => {

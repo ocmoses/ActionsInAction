@@ -65,6 +65,8 @@ export default function PartnerContactUsForm({ closePopUp, submitForm, partnerNa
     fetchSubjects();
   }, []);
 
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

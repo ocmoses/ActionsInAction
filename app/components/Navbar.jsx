@@ -116,7 +116,7 @@ function Navbar() {
                   />
                 </svg>
                 {/*//===the help layer===========================================================================================================================*/}
-                <div className="absolute w-[140px] min-h-[100px] ml-[-100px] mt-6 rounded-[5px] bg-[#1B1B1B] hidden group-hover/help:block">
+                <div className="absolute w-[140px] min-h-[100px] ml-[-100px] mt-6 rounded-[5px] bg-[#1B1B1B] hidden group-hover/help:block animate-[slide-up-fade_1s_ease-in-out]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
@@ -137,13 +137,13 @@ function Navbar() {
                       rel="noopener noreferrer"
                       className=""
                     >
-                      <li className="p-[10px] leading-[25px] text-white rounded-[5px] hover:bg-white/10">
+                      <li className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10">
                         FAQ
                       </li>
                     </Link>
                     <li
                       onClick={openPopUp}
-                      className="p-[10px] leading-[25px] text-white rounded-[5px] hover:bg-white/10"
+                      className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10"
                     >
                       Contact Us
                     </li>

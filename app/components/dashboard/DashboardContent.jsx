@@ -42,6 +42,7 @@ export default function GetStarted({ type }) {
     nextStage,
   } = usePartners();
 
+
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
     const _finalApproval = getFinalApproval(partner);

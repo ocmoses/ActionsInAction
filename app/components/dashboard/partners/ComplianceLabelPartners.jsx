@@ -39,7 +39,7 @@ export default function ComplianceLabelPartners({
 
   // console.log({ type })
   // console.log({ field })
-  // console.log({ category })
+  console.log("category in compliance label: ",  category);
   // console.log({ category_shortcode })
 
   const updateField = () => {
@@ -234,7 +234,6 @@ export default function ComplianceLabelPartners({
                       {type === "shortcodes" && (
                         <>
                           <span className="text-white/80 text-[14px] font-bold">
-                            Here
                             {category_shortcode.shortcode?.shortcodes?.length >
                               0 &&
                               category_shortcode.shortcode?.shortcodes?.join(

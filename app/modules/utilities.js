@@ -904,7 +904,7 @@ export const filterPartner = (partnerInfo, Categories) => {
 };
 export const filterCategory = (category, partnerInfo) => {
 
-  console.log("category: ", category);
+  console.log("selected category: ", category);
   console.log("partnerInfo: ", partnerInfo);
 
   if (!category) return category;
@@ -980,10 +980,20 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] =  approvalStatuses[approval?.field]; //approval?.status; //
+        ][approval?.field] =  approval?.status; // approvalStatuses[approval?.field]; //
       }
     });
   }
+
+  // category.approvedFields[category.category_uuid]
+  // ["SPRM"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+  // category.approvedStages[category.category_uuid]
+  // ["shortcode"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+
+  console.log("category.approvedFields in the end", category.approvedFields);
+  console.log("category.approvedStages in the end", category.approvedStages);
   category.feedbacks = {};
   if (feedbacks?.length > 0) {
     feedbacks.map((feedback) => {
@@ -1710,6 +1720,12 @@ export const getFinalApproval = (partner) => {
   status.partner =
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
   status.count = categoryStatus;
+
+  console.log("pending", pending);
+  console.log("corrected", corrected);
+  console.log("rejected", rejected);
+  console.log("categoryStatus", categoryStatus);
+
   return status;
 };
 export const getstages = (category, categories) => {

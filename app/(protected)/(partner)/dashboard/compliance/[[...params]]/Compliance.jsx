@@ -59,8 +59,6 @@ export default function Compliance({ params }) {
   const { setRouteloading } = useApp();
   const {user, role, refreshSession} = useUsers();
 
-  console.log("Contract status", partner.contract_status);
-
   const [allServices, setAllServices] = useState([]); 
   const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
   
@@ -104,7 +102,7 @@ export default function Compliance({ params }) {
 
   const userStatus = partner.status;
 
-  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
+  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
   let directorSigned = false;
   let delegateSigned = false;
   let witnessSigned = false;
@@ -199,16 +197,16 @@ export default function Compliance({ params }) {
     const selected_delegate_email = selected_admin_users.find(a => a.role == 'delegate') ? selected_admin_users.find(a => a.role == 'delegate').email : null;
     const selected_witness_email = selected_admin_users.find(a => a.role == 'witness') ? selected_admin_users.find(a => a.role == 'witness').email : null;
     
-    let admin_partners_emails = admin_partners.map(a => a.email);
+    let admin_partners_emails = selected_admin_users.map(a => a.email);
     
     //Adding superadmin
     admin_partners_emails.push(user.email);
 
     // console.log("selected_admin_users", selected_admin_users);
-    // console.log("selected_director_email", selected_director_email);
+    // console.log("selected_director_email", selected_director_email);s
     // console.log("selected_delegate_email", selected_delegate_email);
     // console.log("selected_witness_email", selected_witness_email);
-    // console.log("admin_partners_emails", admin_partners_emails);
+    console.log("admin_partners_emails", admin_partners_emails);
 
     // console.log("admin_partners_emails.includes(selected_director_email)", admin_partners_emails.includes(selected_director_email));
     // console.log("admin_partners_emails.includes(selected_witness_email)", admin_partners_emails.includes(selected_witness_email));
@@ -219,9 +217,9 @@ export default function Compliance({ params }) {
 
     
 
-    if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
-                (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
-                (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
+    if((selected_director_email && admin_partners_emails && admin_partners_emails.includes(selected_director_email) || 
+                (selected_delegate_email && admin_partners_emails && admin_partners_emails.includes(selected_delegate_email))) &&
+                (selected_witness_email && admin_partners_emails && admin_partners_emails.includes(selected_witness_email))){
       setSelectedAllRequiredSignatories(true);
     }else{
       setSelectedAllRequiredSignatories(false);
@@ -364,10 +362,10 @@ export default function Compliance({ params }) {
     }
     // console.log({ partner })
 
-  //  console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
-  //  console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
-  //  console.log("isASignatory", isASignatory);
-  //  console.log("hasNotSigned", hasNotSigned);
+   console.log("userStatus == user_statuses.APPROVED", userStatus == user_statuses.APPROVED) 
+   console.log("selectedAllRequiredSignatories",  selectedAllRequiredSignatories);
+   console.log("isASignatory", isASignatory);
+   console.log("hasNotSigned", hasNotSigned);
 
   }, [partner, params, selectedCategory, isASignatory, selectedAllRequiredSignatories]);
 
@@ -1037,7 +1035,12 @@ export default function Compliance({ params }) {
             <div className="flex pt-8 pb-4">
               <div className="text-white text-2xl mb-4 flex-1">Add a director</div>
               <div className="cursor-pointer">
-                <p className="text-yellow-500 text-xs underline">I'm a director</p>
+                <p onClick={() => {
+                    setSignatories({...signatories, director: {firstname: user.first_name, lastname: user.last_name, email: user.email}}); 
+                    setAddDirectorModal(false); setContractSignatriesModal(true);
+                    }
+                  } 
+                className="text-yellow-500 text-xs underline">I'm a director</p>
               </div> 
             </div>
 
@@ -1348,7 +1351,7 @@ export default function Compliance({ params }) {
  
             <div className="">              
               <div className="flex py-4 px-2 space-x-4 justify-center">
-                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false); refreshSession();}}>Continue</button>
+                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setContractSignatoriesSuccess(false); refreshSession(); location.reload();}}>Continue</button>
               </div>              
             </div>
 

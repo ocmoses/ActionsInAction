@@ -116,13 +116,15 @@ export default function Approvals() {
     if (approve_brd_response.error) setError({ error: approve_brd_response.error });
   };
 
-  const rejectBrd = async () => {
+  const rejectBrd = async (reason) => {
     //TODO
     clearErrors();
 
     approvalData.status = "rejected";
 
-    // console.log("approvalData", approvalData);
+    approvalData.feedback = reason.rejection_reason;
+
+    // console.log("RejectData", reason);
 
     if (approving) return;
     setApproving(true);
@@ -427,7 +429,7 @@ export default function Approvals() {
                       yestext="Reject"
                       notext="Cancel"
                       type="reject"
-                      onYes={() => rejectBrd()}
+                      onYes={(reason) => rejectBrd(reason)}
                       onNo={cancel}
                     />
                   )}

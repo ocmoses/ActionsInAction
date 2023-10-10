@@ -102,9 +102,12 @@ export default function GetStarted({ type }) {
 
   //////////afoo code////////////////////////////////////////////////////////////////////////////
   const [rejectedTeam, setRejectedTeam] = useState([]);
+  const [brdComplains, setBrdComplains] = useState(false);
+  
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    setBrdComplains(true)
     const partnerCat = [];
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
@@ -222,9 +225,11 @@ export default function GetStarted({ type }) {
   };
   const closePopUp = () => {
     setPopUp(false);
+    setBrdComplains(false)
   };
   const submitBrd = () => {
     setSubmitBrdFrom(true);
+   
   };
   //////////end code////////////////////////////////////////////////////////////////////////////
   return (
@@ -390,7 +395,7 @@ export default function GetStarted({ type }) {
 
               {/* //================this is the popup==============================================================================================================*/}
 
-              {rejectedTeam?.rejected?.length > 0 && (
+              {rejectedTeam?.rejected?.length > 0 && brdComplains &&(
                 <>
                   {popUp && (
                     <PopUp closePopUp={closePopUp}>

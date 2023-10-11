@@ -26,6 +26,21 @@ export default function Shortcode({ category, stage }) {
                       />
                     </>
                   )}
+                  {/* {approvalFields[
+                    `shortcodes-${
+                      shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
+                    }`
+                  ]?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field={`shortcodes-${
+                        shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
+                      }`}
+                      type="shortcodes"
+                    />
+                  )} */}
                   {approvalFields[
                     `shortcode_doc-${
                       shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid

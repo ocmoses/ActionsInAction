@@ -17,6 +17,8 @@ import {
 } from "@/app/modules/constants";
 import Image from "next/image";
 
+
+
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
     data,
@@ -902,13 +904,30 @@ export const filterPartner = (partnerInfo, Categories) => {
   }
   return partnerInfo;
 };
+
+
 export const filterCategory = (category, partnerInfo) => {
 
   console.log("selected category: ", category);
   console.log("partnerInfo: ", partnerInfo);
 
+  
+
   if (!category) return category;
   if (!partnerInfo) return category;
+
+
+
+  ///////////////////////////////////////////////////////////////////////////////
+  const teamStatus = {}
+  partnerInfo.board_resolution_documents?.map(info=>{
+    if(typeof teamStatus[info.status]  === "undefined") teamStatus[info.status] = []
+    teamStatus[info.status].push(info)
+  })
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+
   // return category
   const validations = [];
   for (const validation in category.validation) {
@@ -918,6 +937,7 @@ export const filterCategory = (category, partnerInfo) => {
     )
       validations.push(validation);
   }
+
   if (
     partnerInfo?.master &&
     partnerInfo?.master?.category_uuid !== category.category_uuid
@@ -1002,8 +1022,14 @@ export const filterCategory = (category, partnerInfo) => {
       category.feedbacks[feedback?.category_stage].push(feedback);
     });
   }
+  //////////////////////////////////////////////////////////////////
+  category.teamStatus = teamStatus
+  //////////////////////////////////////////////////////////////////
   return category;
 };
+
+
+
 export const getStatuses = (status, counts) => {
   let bg =
     status === "approved"

@@ -10,6 +10,7 @@ import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
+import { capitalizeFirst } from "../../../../../modules/utilities";
 
 
 
@@ -43,19 +44,29 @@ export default function ContractSigning(){
     const canvas = useRef(null);
     const [drawing, setDrawing] = useState(false);
     const [position, setPosition] = useState(null);
-    const [canvasWidth, canvasHeight] = [300, 100];
+    const [canvasWidth, canvasHeight] = [350, 120];
 
     const [dynamicData, setDynamicData] = useState(null);
     const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
+
+    const [directorOrDelegate, setDirectorOrDelegate] = useState(null);
+    const [witness, setWitness] = useState(null);
+    const [signee, setSignee] = useState(null);
 
     const [signatoryRole, setSignatoryRole] = useState("");    
     const [haveSigned, setHaveSigned] = useState(false);
     const [directorOrDelegateSigned, setDirectorOrDelegateSigned] = useState(false);
     const [witnessSigned, setWitnessSigned] = useState(false);
 
+    const [uploadedFile, setUploadedFile] = useState(false);    
+    const [reset, setReset] = useState(Date.now());
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+
     let selected_admin_users = partner.selected_partner_admin_users;
 
-    // console.log("selected_admin_users", selected_admin_users);
+    console.log("selected_admin_users", selected_admin_users);
+    console.log("user: ", user);
+    console.log("partner: ", partner);
     // console.log("useUsers()", useUsers());
     // console.log("usePartners()", usePartners());
 
@@ -79,30 +90,30 @@ export default function ContractSigning(){
     }, [])
 
     const getCoordinates = (event) => {
-    if (!canvas.current) {
-        return null
-    }
+        if (!canvas.current) {
+            return null
+        }
 
-    const x = event.pageX || event.touches[0].pageX
-    const y = event.pageY || event.touches[0].pageY
+        const x = event.pageX || event.touches[0].pageX
+        const y = event.pageY || event.touches[0].pageY
 
-    return {
-        x: x - canvas.current.offsetLeft,
-        y: y - canvas.current.offsetTop
-    }
+        return {
+            x: x - canvas.current.offsetLeft,
+            y: y - canvas.current.offsetTop
+        }
     }
 
     const onMove = useCallback(
-    (event) => {
-        if (drawing) {
-        const newPosition = getCoordinates(event)
-        if (position && newPosition) {
-            drawLine(position, newPosition)
-            setPosition(newPosition)
-        }
-        }
-    },
-    [drawing, position]
+        (event) => {
+            if (drawing) {
+                const newPosition = getCoordinates(event)
+                if (position && newPosition) {
+                    drawLine(position, newPosition)
+                    setPosition(newPosition)
+                }
+            }
+        },
+        [drawing, position]
     )
 
     const drawLine = (originalPosition, newPosition) => {
@@ -114,7 +125,7 @@ export default function ContractSigning(){
         const context = canvas.current.getContext('2d')
 
         if (context) {
-            context.strokeStyle = 'white'
+            context.strokeStyle = 'black'
             context.lineJoin = 'round'
             context.lineWidth = 3
 
@@ -223,15 +234,35 @@ export default function ContractSigning(){
         window.scrollTo({top:0, behavior: "smooth"});
     }
 
+    console.log("signatoryRole", signatoryRole);
+
     useEffect(() => {
         get_dynamic_content();
 
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
         
-        const hasSignedArray = selected_admin_users.filter(u => u.role == "director" || u.role == "delegate").map(u => u.has_user_signed != 'no');
-        setDirectorOrDelegateSigned(hasSignedArray.includes(true));
-        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no');
+        let directorOrDelegate = selected_admin_users.find(u => u.role == "director" || u.role == "delegate");
+        let witness = selected_admin_users.find(u => u.role == "witness");
+
+        setDirectorOrDelegate(directorOrDelegate);
+        setWitness(witness);
+
+        let signee = (signatoryRole == 'director' || signatoryRole == 'delegate') && directorOrDelegate ? 
+                        `${capitalizeFirst(directorOrDelegate.firstname)} ${capitalizeFirst(directorOrDelegate.lastname)}` :
+                        (signatoryRole == 'director' || signatoryRole == 'delegate') && !directorOrDelegate ? 
+                        `${capitalizeFirst(user.first_name)} ${capitalizeFirst(user.last_name)}` :
+                        signatoryRole == 'witness' && witness ? 
+                        `${capitalizeFirst(witness.firstname)} ${capitalizeFirst(witness.lastname)}` :
+                        "";
+
+        setSignee(signee);
+
+        console.log("directorOrDelegate", directorOrDelegate);
+        console.log("witness", witness);
+
+        setDirectorOrDelegateSigned(directorOrDelegate && directorOrDelegate.has_user_signed != 'no' ?  true : false);
+        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness') ? selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no' : false);
         
         if (canvas.current) {
             const context = canvas.current.getContext('2d');
@@ -2200,114 +2231,156 @@ export default function ContractSigning(){
 
                     <div className="max-w-4xl px-0 my-4">
                         <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
-                        <div className="flex ">
-                            <div className="w-10 flex mr-4">
-                                <input type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                        {
+                            signatoryRole && 
+                            (signatoryRole == 'director' || signatoryRole == 'delegate') && 
+                            !haveSigned &&
+                            (<div className="flex ">
+                                <div className="w-10 flex mr-4">
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                </div>
+                                <div>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                </div>
+                            </div>)
+                        }
+                        {
+                            signatoryRole && signatoryRole == 'witness' && 
+                            directorOrDelegateSigned && 
+                            !haveSigned &&
+                            (<div className="flex ">
+                                <div className="w-10 flex mr-4">
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                </div>
+                                <div>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                </div>
+                            </div>)
+                        }
+
+                        <div className="rounded-xl bg-white p-4 w-full mt-4">
+
+                            <div className="flex space-x-4 my-4">
+
+                                <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
+                                    { (!directorOrDelegateSigned && 
+                                        (signatoryRole == undefined || signatoryRole == null)) || 
+                                        (!directorOrDelegateSigned && 
+                                        signatoryRole == 'witness') &&
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-8">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    }
+                                    <h1 className="text-gray-600 text-center text-xl font-bold mt-8">Director's signature</h1>
+
+                                    {  
+                                        !directorOrDelegateSigned && 
+                                        (signatoryRole == undefined || signatoryRole == null) &&
+                                            <p className="text-gray-600 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
+                                    
+                                    }
+                                    {
+                                        !directorOrDelegateSigned && 
+                                        signatoryRole == 'witness' &&
+                                        <p className="text-gray-600 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
+                                    }
+                                    {
+                                        !directorOrDelegateSigned && acceptedTerms &&
+                                        (signatoryRole == 'director' || signatoryRole == 'delegate') &&
+                                        <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
+                                                onClick={() => showSigningWindow(signatoryRole)}>
+                                            Click to Sign here
+                                        </div>
+                                    }
+                                    
+                                    {
+                                        directorOrDelegateSigned &&
+                                        <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
+                                            {
+                                                dynamicData?.signature_of_signee[0]?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />)
+
+                                            }
+                                        </div>
+                                    }
+                                    
+                                </div>
+
+                                <div className="px-4 w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center">
+
+                                    { signatoryRole != "witness" && !witnessSigned && 
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-10">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    }
+
+                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4 mt-6">Witness's Signature</h1>
+                                    
+                                    {                                      
+                                        signatoryRole != 'witness' && !witnessSigned &&  
+                                            <p className="text-gray-600 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
+                                    
+                                    }
+                                    {
+                                        signatoryRole == 'witness' && !witnessSigned && acceptedTerms &&                                   
+                                        <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
+                                                onClick={() => showSigningWindow(signatoryRole)}>
+                                            Click to Sign here
+                                        </div>
+                                    }
+                                    {
+                                        witnessSigned &&
+                                        <div className="flex flex-col text-gray-600 items-center justify-center w-full h-32">
+                                            {
+                                                dynamicData?.signature_of_signee[0]?.witness_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />)
+
+                                            }
+                                            
+                                        </div>
+                                    }
+                                </div>
+
                             </div>
-                            <div>
-                                <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
-                            </div>
-                        </div>
 
-                        <div className="flex space-x-4 my-8">
+                            <div className="flex space-x-4 my-4">
 
-                            <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
-                                { !directorOrDelegateSigned && 
-                                    (signatoryRole == undefined || signatoryRole == null) &&
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-8">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                }
-                                <h1 className="text-white text-center text-xl font-bold mt-8">Director's signature</h1>
+                                <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
 
-                                {  
-                                    !directorOrDelegateSigned && 
-                                    (signatoryRole == undefined || signatoryRole == null) &&
-                                        <p className="text-gray-300 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
-                                   
-                                }
-                                {
-                                    !directorOrDelegateSigned && 
-                                    (signatoryRole == 'director' || signatoryRole == 'delegate') &&
-                                    <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                            onClick={() => showSigningWindow(signatoryRole)}>
-                                        Click to Sign here
-                                    </div>
-                                }
-                                
-                                {
-                                    directorOrDelegateSigned &&
-                                    <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
-                                        <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].director_or_delegate_signature} className="h-24" />
-                                    </div>
-                                }
-                                
-                            </div>
-
-                            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
-
-                                { signatoryRole != "witness" && !witnessSigned &&
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                }
 
-                                <h1 className="text-white text-center text-xl font-bold p-4">Witness's Signature</h1>
-                                
-                                {  
-                                    signatoryRole != "witness" && !witnessSigned &&     
-                                        <p className="text-gray-300 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
-                                   
-                                }
-                                {
-                                    signatoryRole == 'witness' && !witnessSigned &&                                     
-                                    <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                            onClick={() => showSigningWindow(signatoryRole)}>
-                                        Click to Sign here
-                                    </div>
-                                }
-                                {
-                                    witnessSigned &&
-                                    <div className="flex flex-col text-white items-center justify-center w-full h-32">
-                                         <img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0].witness_signature} className="h-20" />
-                                    </div>
-                                }
-                            </div>
+                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4">MTN's Signature</h1>
+                                    <p className="text-gray-600 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
 
-                        </div>
+                                </div>
 
-                        <div className="flex space-x-4 my-8">
+                                <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
 
-                            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4">MTN's Signature</h1>
+                                    <p className="text-gray-600 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
 
-                                <h1 className="text-white text-center text-xl font-bold p-4">MTN's Signature</h1>
-                                <p className="text-gray-300 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
-
-                            </div>
-
-                            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-
-                                <h1 className="text-white text-center text-xl font-bold p-4">MTN's Signature</h1>
-                                <p className="text-gray-300 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
+                                </div>
 
                             </div>
 
                         </div>
+
+                        
 
                     </div>     
 
                     {!submitingContractSignatures &&
                         <div className="flex py-4 px-2 space-x-4 justify-end max-w-4xl">
-                            <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {}}>Back</button>
-                            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {router.back()}}>Finish</button>
+                            <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {location = "/dashboard/compliance"}}>Back</button>
+                            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {location = "/dashboard/contracts"}}>Finish</button>
                         </div>
                     }
                     {submitingContractSignatures &&
@@ -2317,7 +2390,8 @@ export default function ContractSigning(){
                     }  
 
                     {signingModal && 
-                        <div id="signing_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}>
+                        <div id="signing_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" > 
+                        {/* onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}> */}
                             <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[550px] pb-4">
                                 <div className="flex pt-8 pb-4">
                                     <div className="text-white text-2xl mb-4 flex-1">Adopt a Signature</div>                                
@@ -2332,10 +2406,11 @@ export default function ContractSigning(){
                                 <TextInput
                                     id="fullname"
                                     label="Full name"
-                                    value={user?.fullname}
+                                    value={signee && signee}
                                     onChange={(e) => {}
                                     }
                                     readonly
+                                    disabled
                                     errors={errors}
                                 />
                                 
@@ -2364,7 +2439,7 @@ export default function ContractSigning(){
 
                                             </div>          
 
-                                            <div className="rounded-xl bg-black border-1 border-dashed border-gray-200 flex p-2 w-full space-x-4 items-center justify-center">
+                                            <div className="rounded-xl bg-white border-1 border-dashed border-gray-200 flex p-2 w-full space-x-4 items-center justify-center">
 
                                                 <canvas
                                                     ref={canvas}
@@ -2433,8 +2508,15 @@ export default function ContractSigning(){
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
                                                         <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
                                                     </svg>
-                                                    <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
-                                                    <input type="file" className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".png" onChange={(e) => {convertFile(e)}}/>                   
+                                                    {
+                                                        uploadedFile ? 
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" onClick={() => {setReset(Date.now()); setUploadedFile(false); }}>
+                                                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
+                                                        </svg>
+                                                        :
+                                                        <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
+                                                    }
+                                                    <input type="file" className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".png" onChange={(e) => {convertFile(e); setUploadedFile(true)}}/>                   
                                                 </div>
 
                                             </div>          
@@ -2497,7 +2579,7 @@ export default function ContractSigning(){
                         </div>        
                     }  
 
-                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false);}, 3000)} />      
+                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false); location.reload()}, 3000)} />      
 
                 </div>
 

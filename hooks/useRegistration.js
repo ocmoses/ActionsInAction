@@ -83,13 +83,15 @@ const useRegistration = () => {
       timeout: process.env.NEXT_PUBLIC_TIMEOUT,
       timeout: process.env.NEXT_PUBLIC_TIMEOUT,
     }).catch((e) => {
+      // console.log("Compliance error", e);
       setProcessing(false);
       return {
         success: false,
-        error: `${e.message}. Please check you connection`,
-        data: null,
+        error: `${e.response.data.data.message}`,
+        data: e.response.data.data,
       };
     });
+    
     if (!response) {
       setProcessing(false);
       return {
@@ -103,7 +105,7 @@ const useRegistration = () => {
 
     if (!success) {
       setProcessing(false);
-      return { success: false, error: data.message, data: null };
+      return { success: false, error: data.message, data: data };
     }
     return { success: true, error: null, data: data };
   };

@@ -127,7 +127,7 @@ export default function Confirm({
               {onNo && (
                 <button
                   onClick={onNo}
-                  className="bg-white/60 hover:bg-white/90 px-4 py-1 rounded-full text-[11px]"
+                  className="bg-white/60 hover:bg-white/90 px-4 py-1 rounded-full text-[11px] text-gray-600"
                 >
                   {notext ?? "No"}
                 </button>

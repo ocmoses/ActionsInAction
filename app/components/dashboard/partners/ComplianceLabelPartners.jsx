@@ -16,6 +16,7 @@ import { COUNTRIES } from "@/app/modules/countries";
 import { STATES } from "@/app/modules/states";
 import Portal from "@/app/components/Portal";
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function ComplianceLabelPartners({
   field,
@@ -30,11 +31,15 @@ export default function ComplianceLabelPartners({
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState(null);
 
-  const Approvals = partnerApprovals(partner, category);
+  const [ApprovalStages, setApprovalStages] = useState(null);
+  const [ApprovalStage, setApprovalStage] = useState(null);
+  const [Approvals, setApproval] = useState(null);
+
+  // console.log("Approvals: ", Approvals);
 
   // console.log({ type })
   // console.log({ field })
-  // console.log({ category })
+  console.log("category in compliance label: ",  category);
   // console.log({ category_shortcode })
 
   const updateField = () => {
@@ -90,6 +95,33 @@ export default function ComplianceLabelPartners({
     });
     setShowModal(true);
   };
+
+  useEffect(() => {
+    const _approvals = partnerApprovals(partner, category);
+    const _approvalStages = partner.approvalStages;
+
+    setApproval(_approvals);
+    setApprovalStages(_approvalStages[category.category_uuid]);
+
+    /////////////////////
+    let approving  = "";
+    for(let i in _approvalStages[category.category_uuid]){
+      if(i == stage){
+        approving = i+"";
+        break;
+      }
+      // console.log("i in approval stage", i + " is " + (i == stage));
+    }
+
+    setApprovalStage(approving);
+
+    console.log("_approvals: ", _approvals);
+    // console.log("_approvalStages: ", _approvalStages);
+    // console.log("approving: ", approving);
+
+  }, []);
+
+  
 
   return (
     <>
@@ -202,7 +234,6 @@ export default function ComplianceLabelPartners({
                       {type === "shortcodes" && (
                         <>
                           <span className="text-white/80 text-[14px] font-bold">
-                            Here
                             {category_shortcode.shortcode?.shortcodes?.length >
                               0 &&
                               category_shortcode.shortcode?.shortcodes?.join(
@@ -339,3 +370,4 @@ export default function ComplianceLabelPartners({
     </>
   );
 }
+

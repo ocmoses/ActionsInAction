@@ -11,16 +11,18 @@ import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
+import RemoteEndPoints, {
+  NextEndPoints,
+} from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
 import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
 
+import LoginOtp from "./otp/LoginOtp"
+
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
-
-  
 
   const { resendEmail } = usePartners();
   const { tmpuser, setTmpUser } = useUsers();
@@ -42,6 +44,10 @@ function Login({ params }) {
     password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
   });
   const [notVerified, setNotVerified] = useState(null);
+
+  ///////afoo///////////////////////////////////////////////////////////
+  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(false);
+  /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     setForm(null);
@@ -127,12 +133,12 @@ function Login({ params }) {
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User:  loginData?.data,
-      token:  loginData?.data?.login_token?.access_token,
+      User: loginData?.data,
+      token: loginData?.data?.login_token?.access_token,
       type: "user",
-      role: loginData?.data['login-user-role']
+      role: loginData?.data["login-user-role"],
     };
-    
+
     app.setStoreStates(serverSession, loginData?.categories, "login");
 
     const redirect =
@@ -141,106 +147,120 @@ function Login({ params }) {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard;
+        //: PageRoutes.dashboard;
+        : getOtp();
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
     return router.replace(redirect);
   };
 
+
+
+  const getOtp = () => {
+    setGetPartnerLoginOtp(true);
+  };
+
   return (
     <>
-      <form method="POST" onSubmit={handleLogin}>
-        <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
-          <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
-            <span
-              style={{
-                fontStyle: "normal",
-                fontWeight: 700,
-                fontSize: "36px",
-                lineHeight: "40px",
-              }}
-            >
-              Y’ello
-              {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
-            </span>
-            <Image
-              src="/assets/icons/yello-hand.svg"
-              alt="Yello"
-              priority
-              width={36}
-              height={36}
-              className="h-auto animate-bounce"
-            />
-          </h1>
-          <p
-            className="font-hairline flex-wrap mb-16"
-            style={{
-              fontStyle: "normal",
-              fontWeight: 400,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#999999",
-            }}
-          >
-            {tmpuser?.email
-              ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
-              : "Welcome back! please enter your details"}
-          </p>
-          <div className="mb-6">
-            {!success && errors && <FormErrors error={errors["login"]} />}{" "}
-            {!success && notVerified && (
+      {!getPartnerLoginOtp && (
+        <form method="POST" onSubmit={handleLogin}>
+          <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
+            <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
               <span
-                className="text-[#999999] cursor-pointer hover:text-white/70"
-                onClick={() => resendEmail(notVerified?.email, "new")}
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  fontSize: "36px",
+                  lineHeight: "40px",
+                }}
               >
-                Click here to resend verification link
+                Y’ello
+                {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
               </span>
-            )}
-            <>
-              {errors && <FormErrors error={errors["verify"]} />}
-              {success && <FormErrors success={success} />}
-            </>
-          </div>
-          <div className="w-full">
-            <div className="flex flex-col">
-              <TextInput
-                id="email"
-                label="Email address"
-                value={data.email}
-                onChange={handleFormChange}
-                errors={errors}
+              <Image
+                src="/assets/icons/yello-hand.svg"
+                alt="Yello"
+                priority
+                width={36}
+                height={36}
+                className="h-auto animate-bounce"
               />
-              <TextInput
-                id="password"
-                label="Password"
-                type="Password"
-                value={data.password}
-                onChange={handleFormChange}
-                errors={errors}
-              />
-            </div>
-            <Link
-              href={`${PageRoutes.passwordreset}/reset`}
-              className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+            </h1>
+            <p
+              className="font-hairline flex-wrap mb-16"
               style={{
                 fontStyle: "normal",
                 fontWeight: 400,
-                fontSize: "14px",
-                lineHeight: "20px",
-                textDecorationLine: "underline",
+                fontSize: "16px",
+                lineHeight: "24px",
+                color: "#999999",
               }}
             >
-              Reset your password?
-            </Link>
-            {processing ? (
-              <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
-              <Button label="Continue" />
-            )}
+              {tmpuser?.email
+                ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
+                : "Welcome back! please enter your details"}
+            </p>
+            <div className="mb-6">
+              {!success && errors && <FormErrors error={errors["login"]} />}{" "}
+              {!success && notVerified && (
+                <span
+                  className="text-[#999999] cursor-pointer hover:text-white/70"
+                  onClick={() => resendEmail(notVerified?.email, "new")}
+                >
+                  Click here to resend verification link
+                </span>
+              )}
+              <>
+                {errors && <FormErrors error={errors["verify"]} />}
+                {success && <FormErrors success={success} />}
+              </>
+            </div>
+            <div className="w-full">
+              <div className="flex flex-col">
+                <TextInput
+                  id="email"
+                  label="Email address"
+                  value={data.email}
+                  onChange={handleFormChange}
+                  errors={errors}
+                />
+                <TextInput
+                  id="password"
+                  label="Password"
+                  type="Password"
+                  value={data.password}
+                  onChange={handleFormChange}
+                  errors={errors}
+                />
+              </div>
+              <Link
+                href={`${PageRoutes.passwordreset}/reset`}
+                className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Reset your password?
+              </Link>
+              {processing ? (
+                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+              ) : (
+                <>
+                  <Button label="Continue" />
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </form>
-      
+        </form>
+      )}
+
+      {getPartnerLoginOtp && (
+        <LoginOtp user_email={data.email}/>
+      )}
     </>
   );
 }

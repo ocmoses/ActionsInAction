@@ -10,7 +10,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter } from "next/navigation";
 import ProfileIcons from "@/app/components/ProfileIcons";
 import { PageRoutes } from "@/app/modules/menu";
-import PopUp, { ContactUsSuccess,MobileMenu } from "@/app/components/PopUps";
+import PopUp, { ContactUsSuccess, MobileMenu } from "@/app/components/PopUps";
 import ContactUsForm from "@/app/components/contactus/ContactUsForm";
 function Navbar() {
   const { session } = useUsers();
@@ -27,14 +27,14 @@ function Navbar() {
   const [contactSubmit, setContactSubmit] = useState(false);
   const openPopUp = () => {
     setPopUp(true);
-    setContactSubmit(false); 
+    setContactSubmit(false);
   };
   const closePopUp = () => {
-    setPopUp(false); 
+    setPopUp(false);
   };
 
   const submitContact = () => {
-    setContactSubmit(true); 
+    setContactSubmit(true);
   };
 
   const openMobileMenu = () => {
@@ -49,14 +49,13 @@ function Navbar() {
       {popUp && (
         <PopUp closePopUp={closePopUp}>
           {!contactSubmit ? (
-            <ContactUsForm closePopUp={closePopUp}  submitForm={submitContact}/>    // If contactSubmit is false
+            <ContactUsForm closePopUp={closePopUp} submitForm={submitContact} /> // If contactSubmit is false
           ) : (
             <ContactUsSuccess closePopUp={closePopUp} /> // If contactSubmit is true
           )}
         </PopUp>
       )}
       {/*//==============================================================================================================================*/}
-
 
       {/* //================this is the popup==============================================================================================================*/}
       {popUpMobileMenu && (
@@ -94,7 +93,14 @@ function Navbar() {
           )}
           {session && session.status === "unauthenticated" && (
             <div className="flex gap-3 max-[700px]:hidden">
-              <div className=" text-[#888888] cursor-pointer p-2 group/help">
+              <Button onClick={goToRegister} label="Register" />
+              <Link
+                href="/login"
+                className="rounded-full border-[1px] border-white/20 px-[30px]  text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl  py-1 lg:py-3"
+              >
+                Login
+              </Link>
+              <div className=" text-[#FFF] cursor-pointer p-2 group/help">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -110,83 +116,41 @@ function Navbar() {
                   />
                 </svg>
                 {/*//===the help layer===========================================================================================================================*/}
-                <div className="absolute w-[320px] min-h-[300px] ml-[-280px] rounded-[5px] bg-[#111111] border-1 border-white/20 hidden group-hover/help:block">
-                  <div className="p-2 pt-0 flex flex-col gap-3">
-                    <h2 className="text-white h-[50px]  border-b border-b-white/20 leading-[50px]">
-                      Help and support
-                    </h2>
-
+                <div className="absolute w-[140px] min-h-[100px] ml-[-100px] mt-6 rounded-[5px] bg-[#1B1B1B] hidden group-hover/help:block animate-[slide-up-fade_1s_ease-in-out]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="19"
+                    viewBox="0 0 32 19"
+                    fill="none"
+                    className=" absolute mt-[-15px] right-[10px]"
+                  >
+                    <path
+                      d="M15.4851 0.785174C15.9222 0.323501 16.6945 0.309286 17.0962 0.75552L31.2674 16.4999C31.8181 17.1118 31.2813 18.0658 30.3843 18.0693L14.961 18.1307L1.1943 18.1858C0.312955 18.1894 -0.122659 17.268 0.466281 16.6461L15.4851 0.785174Z"
+                      fill="#1B1B1B"
+                    />
+                  </svg>
+                  <ul className=" flex flex-col gap-1 p-2">
                     <Link
                       href={PageRoutes.faq}
                       target="_blank"
                       rel="noopener noreferrer"
                       className=""
                     >
-                      <div className="flex flex-row gap-3 justify-center w-full min-h-[120px] rounded-[5px] p-2 text-[14px]  hover:bg-white/10">
-                        <div>
-                          <Image
-                            priority
-                            src="/assets/icons/ChatCircleText.png"
-                            width={60}
-                            height={60}
-                          />
-                        </div>
-                        <div>
-                          <h3 className="text-white">Frequently asked questions</h3>
-                          <p>
-                            If you have general questions , check out our FAQs where
-                            you might find the answer you're after even quicker.
-                          </p>
-                        </div>
-                        <div>
-                          <Image
-                            priority
-                            src="/assets/icons/CaretRight.png"
-                            width={50}
-                            height={50}
-                          />
-                        </div>
-                      </div>
+                      <li className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10">
+                        FAQ
+                      </li>
                     </Link>
-                    <div
-                      className="flex flex-row gap-3 justify-center  w-full min-h-[120px] rounded-[5px] p-2 text-[14px] hover:bg-white/10"
+                    <li
                       onClick={openPopUp}
+                      className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10"
                     >
-                      <div>
-                        <Image
-                          priority
-                          src="/assets/icons/EnvelopeSimple.png"
-                          width={40}
-                          height={40}
-                        />
-                      </div>
-                      <div>
-                        <h3 className="text-white">Contact us</h3>
-                        <p>
-                          Let us know what problem you are facing. We’ll be in touch
-                          shortly.
-                        </p>
-                      </div>
-                      <div>
-                        <Image
-                          priority
-                          src="/assets/icons/CaretRight.png"
-                          width={30}
-                          height={30}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                      Contact Us
+                    </li>
+                  </ul>
                 </div>
                 {/*//==============================================================================================================================*/}
               </div>
-              <Button onClick={goToRegister} label="Register" />
-              <Link
-                href="/login"
-                className="rounded-full text-white transition ease-in-out 5000 text-md md:text-lg lg:text-xl px-3 py-1 lg:py-3"
-              >
-                Login
-              </Link>
             </div>
           )}
 

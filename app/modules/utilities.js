@@ -16,6 +16,9 @@ import {
   getApprovalFields,
 } from "@/app/modules/constants";
 import Image from "next/image";
+import { isCancelException } from "react-pdf/dist/cjs/shared/utils";
+
+
 
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
@@ -902,9 +905,30 @@ export const filterPartner = (partnerInfo, Categories) => {
   }
   return partnerInfo;
 };
+
+
 export const filterCategory = (category, partnerInfo) => {
+
+  console.log("selected category: ", category);
+  console.log("partnerInfo: ", partnerInfo);
+
+  
+
   if (!category) return category;
   if (!partnerInfo) return category;
+
+
+
+  ///////////////////////////////////////////////////////////////////////////////
+  const teamStatus = {}
+  partnerInfo.board_resolution_documents?.map(info=>{
+    if(typeof teamStatus[info.status]  === "undefined") teamStatus[info.status] = []
+    teamStatus[info.status].push(info)
+  })
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+
   // return category
   const validations = [];
   for (const validation in category.validation) {
@@ -914,6 +938,7 @@ export const filterCategory = (category, partnerInfo) => {
     )
       validations.push(validation);
   }
+
   if (
     partnerInfo?.master &&
     partnerInfo?.master?.category_uuid !== category.category_uuid
@@ -941,6 +966,9 @@ export const filterCategory = (category, partnerInfo) => {
 
   const approvals = category.compliance_approvals;
   const feedbacks = category.compliance_feedbacks;
+  ///////////////
+  const approvalStatuses = category.category_field_approval_status;
+
   category.approvedFields = {};
   category.approvedStages = {};
   if (approvals?.length > 0) {
@@ -973,10 +1001,20 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] = approval?.status;
+        ][approval?.field] =  approval?.status; // approvalStatuses[approval?.field]; //
       }
     });
   }
+
+  // category.approvedFields[category.category_uuid]
+  // ["SPRM"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+  // category.approvedStages[category.category_uuid]
+  // ["shortcode"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+
+  console.log("category.approvedFields in the end", category.approvedFields);
+  console.log("category.approvedStages in the end", category.approvedStages);
   category.feedbacks = {};
   if (feedbacks?.length > 0) {
     feedbacks.map((feedback) => {
@@ -985,8 +1023,14 @@ export const filterCategory = (category, partnerInfo) => {
       category.feedbacks[feedback?.category_stage].push(feedback);
     });
   }
+  //////////////////////////////////////////////////////////////////
+  category.teamStatus = teamStatus
+  //////////////////////////////////////////////////////////////////
   return category;
 };
+
+
+
 export const getStatuses = (status, counts) => {
   let bg =
     status === "approved"
@@ -1258,6 +1302,10 @@ export const filterApprovalFields = (partner) => {
 
 export const partnerApprovals = (partner, category) => {
   if (!category || !partner) return;
+
+  console.log("partner?.approvalStages", partner?.approvalStages);
+  console.log("category", category);
+
   const Approvals = partner?.approvalStages[category.category_uuid];
   let stageApprovals = {};
   let stageFields = {};
@@ -1270,6 +1318,7 @@ export const partnerApprovals = (partner, category) => {
         Approvals && Approvals[stage] ? Approvals[stage] : {};
       stageFields[stage] =
         fieldCounts && fieldCounts[stage] ? fieldCounts[stage] : {};
+        // console.log("stageFields[stage]", stageFields[stage]);
     }
   });
   const Rejections = {};
@@ -1294,7 +1343,7 @@ export const partnerApprovals = (partner, category) => {
   }
   const StageApprovals = {
     counts: { fields: {}, status: {}, rejections: Rejections },
-  };
+  };  
   if (!Util.isEmpty(stageFields)) {
     for (const _stage in stageFields) {
       if (!StageApprovals[_stage])
@@ -1312,8 +1361,18 @@ export const partnerApprovals = (partner, category) => {
                 : {},
           },
         };
+      
 
-      for (const _dept in stageFields[_stage]) {
+      try{
+
+        let _dept = "";
+        for(const depart in Approvals[_stage]){
+          _dept = depart;
+          break;
+        }     
+
+      
+        // for (const _dept in stageFields[_stage]) {        
         if (stageFields[_stage][_dept]?.fields?.length > 0) {
           stageFields[_stage][_dept].fields.map((field) => {
             if (!shortcodeApprovalFieldsArray.includes(field)) {
@@ -1412,19 +1471,126 @@ export const partnerApprovals = (partner, category) => {
             )
               StageApprovals[_stage][_dept].counts.status = "corrected";
             else StageApprovals[_stage][_dept].counts.status = "processing";
+          }else{
+            throw new Exception("");
+          }
+        }
+      // }
+
+      }catch(e){
+        for (const _dept in stageFields[_stage]) {        
+          if (stageFields[_stage][_dept]?.fields?.length > 0) {
+            stageFields[_stage][_dept].fields.map((field) => {
+              if (!shortcodeApprovalFieldsArray.includes(field)) {
+                if (!StageApprovals[_stage][_dept])
+                  StageApprovals[_stage][_dept] = {
+                    counts: {
+                      pending: 0,
+                      approved: 0,
+                      rejected: 0,
+                      corrected: 0,
+                      count: 0,
+                      rejections:
+                        Approvals &&
+                        _stage in Approvals &&
+                        _dept in Approvals[_stage]
+                          ? Approvals[_stage][_dept]?.rejections
+                          : {},
+                    },
+                  };
+                if (
+                  Approvals &&
+                  _stage in Approvals &&
+                  Approvals[_stage] &&
+                  _dept in Approvals[_stage] &&
+                  Approvals[_stage][_dept] &&
+                  field in Approvals[_stage][_dept]
+                ) {
+                  StageApprovals[_stage][_dept][field] =
+                    Approvals[_stage][_dept][field];
+
+                  if (!StageApprovals[_stage]?.counts?.fields[field])
+                    StageApprovals[_stage].counts.fields[field] = [];
+                  StageApprovals[_stage].counts.fields[field].push(
+                    Approvals[_stage][_dept][field]
+                  );
+
+                  if (!StageApprovals?.counts?.fields[field])
+                    StageApprovals.counts.fields[field] = [];
+                  StageApprovals.counts.fields[field].push(
+                    Approvals[_stage][_dept][field]
+                  );
+                  switch (Approvals[_stage][_dept][field]) {
+                    case "approved":
+                      StageApprovals[_stage].counts.approved++;
+                      StageApprovals[_stage][_dept].counts.approved++;
+                      break;
+                    case "rejected":
+                      StageApprovals[_stage].counts.rejected++;
+                      StageApprovals[_stage][_dept].counts.rejected++;
+                      break;
+                    case "corrected":
+                      StageApprovals[_stage].counts.corrected++;
+                      StageApprovals[_stage][_dept].counts.corrected++;
+                      break;
+                  }
+                } else {
+                  StageApprovals[_stage][_dept][field] = "pending";
+                  StageApprovals[_stage].counts.pending++;
+                  StageApprovals[_stage][_dept].counts.pending++;
+
+                  if (!StageApprovals[_stage]?.counts?.fields[field])
+                    StageApprovals[_stage].counts.fields[field] = [];
+                  StageApprovals[_stage].counts.fields[field].push("pending");
+
+                  if (!StageApprovals.counts?.fields[field])
+                    StageApprovals.counts.fields[field] = [];
+                  StageApprovals.counts.fields[field].push("pending");
+                }
+                StageApprovals[_stage].counts.count++;
+                StageApprovals[_stage][_dept].counts.count++;
+              }
+            });
+            // console.log({ StageApprovals, _stage, _dept })
+            // console.log({ coun: StageApprovals[_stage][_dept]?.counts })
+            if (StageApprovals[_stage][_dept]?.counts) {
+              if (
+                StageApprovals[_stage][_dept]?.counts?.approved ===
+                StageApprovals[_stage][_dept]?.counts?.count
+              )
+                StageApprovals[_stage][_dept].counts.status = "approved";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.pending ===
+                StageApprovals[_stage][_dept]?.counts?.count
+              )
+                StageApprovals[_stage][_dept].counts.status = "pending";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.rejected ===
+                  StageApprovals[_stage][_dept]?.counts?.count ||
+                StageApprovals[_stage][_dept]?.counts?.rejected > 0
+              )
+                StageApprovals[_stage][_dept].counts.status = "rejected";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.corrected ===
+                  StageApprovals[_stage][_dept]?.counts?.count ||
+                StageApprovals[_stage][_dept]?.counts?.corrected > 0
+              )
+                StageApprovals[_stage][_dept].counts.status = "corrected";
+              else StageApprovals[_stage][_dept].counts.status = "processing";
+            }
           }
         }
       }
       if (
-        StageApprovals[_stage]?.counts?.approved ===
-        StageApprovals[_stage]?.counts?.count
-      )
-        StageApprovals[_stage].counts.status = "approved";
-      else if (
         StageApprovals[_stage]?.counts.pending ===
         StageApprovals[_stage]?.counts.count
       )
         StageApprovals[_stage].counts.status = "pending";
+      else if (
+        StageApprovals[_stage]?.counts?.approved ===
+        StageApprovals[_stage]?.counts?.count
+      )
+        StageApprovals[_stage].counts.status = "approved";
       else if (
         StageApprovals[_stage]?.counts.rejected ===
           StageApprovals[_stage]?.counts.count ||
@@ -1581,6 +1747,12 @@ export const getFinalApproval = (partner) => {
   status.partner =
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
   status.count = categoryStatus;
+
+  console.log("pending", pending);
+  console.log("corrected", corrected);
+  console.log("rejected", rejected);
+  console.log("categoryStatus", categoryStatus);
+
   return status;
 };
 export const getstages = (category, categories) => {
@@ -1676,7 +1848,7 @@ export function titleCase(text){
 }
 
 export function capitalizeFirst(string){
-  if(!string.length){
+  if(!string || !string.length){
     return "";
   }
 

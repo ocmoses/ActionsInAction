@@ -46,6 +46,7 @@ const RemoteEndpoints = {
 
   GET_BOARD_RESOLUTION_DOCS: `${apiURL}/v2/admin/board-resolution-documents`,
   GET_ALL_SIGNED_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts?partner_uuid=:partner_uuid`,
+  PARTNER_GET_ALL_CONTRACTS: `${apiURL}/v2/contract/get-partner-contracts/:partner_uuid`,
 
   //these ones would be changed to v2 later
   COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
@@ -72,6 +73,8 @@ const RemoteEndpoints = {
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
   MARK_NOTIFICATION_READ: `${NOTIFICATION_BASE}notification/read/:notification-uuid/:user-uuid`,
   ARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/archive/:notification-uuid/:user-uuid`,
+  MARK_NOTIFICATION_UNREAD: `${NOTIFICATION_BASE}notification/unread/:notification-uuid/:user-uuid`,
+  UNARCHIVE_NOTIFICATION: `${NOTIFICATION_BASE}notification/unarchive/:notification-uuid/:user-uuid`,
 
   ALL_ADMINS: `${apiURL}/v2/admin/admin-users`,
   ALL_ADMIN_ROLES: `${apiURL}/v2/admin/portal-user-roles/admin`,
@@ -83,6 +86,7 @@ const RemoteEndpoints = {
   DELETE_ROLE: `${apiURL}/v2/admin/delete-role`,
 
   GET_RESOLUTION_DOCUMENTS: `${apiURL}/v2/admin/board-resolution-documents`,
+  CORRECTED_RESOLUTION_DOCUMENTS: `${apiURL}/v2/partner-user/correct-board-resolution-document`,
   APPROVE_REJECT_BRD: `${apiURL}/v2/admin/board-resolution-documents/approve-or-reject`,
   ALL_ADMIN_PARTNERS: `${apiURL}/v2/partner-user/partner-admin-users/:partner-uuid`,
   ALL_PARTNER_ROLES: `${apiURL}/v2/partner-user/partner-user-roles`,
@@ -97,6 +101,7 @@ const RemoteEndpoints = {
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
   CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
   DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:type`,
+  GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
 
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 

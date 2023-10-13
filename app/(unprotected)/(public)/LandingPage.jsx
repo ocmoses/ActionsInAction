@@ -50,9 +50,9 @@ export default function LandingPage() {
 
   return (
     <>
-      <main className="flex flex-col items-start px-8 xl:px-0 m-0 pb-2xl w-full relative bg-[url('/assets/pic/hero-bg.png')] bg-contain  sm:bg-right-top bg-no-repeat">
-        <div className="w-full h-full mx-auto max-w-[1158px] relative">
-          <Navbar />
+      <main className="flex flex-col items-start  xl:px-0 m-0 pb-2xl w-full relative bg-[url('/assets/pic/hero-bg.png')] bg-contain  sm:bg-right-top bg-no-repeat">
+      <Navbar />
+       <div className="w-full h-full mx-auto max-w-[1158px] relative px-8">
           <div className="font-mtn z-20 relative mt-[80px]">
             {/* Hero Box */}
             <div className="flex flex-col items-center w-full">

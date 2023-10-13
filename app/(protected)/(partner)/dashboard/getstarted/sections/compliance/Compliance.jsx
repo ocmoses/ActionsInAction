@@ -412,7 +412,9 @@ function Compliance() {
       return setError({ cac_file: `CAC certificate is required` });
     }
     const result = await registerPartner("compliance", data);
+    console.log("result", result);
     if (result) {
+      
       // console.log({ category })
       scrollToTop("onboardinglayout");
       if (result?.error) return setError({ compliance: result.error });

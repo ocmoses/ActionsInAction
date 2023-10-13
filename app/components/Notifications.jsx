@@ -60,6 +60,7 @@ export default function Notifications({count=0}){
                     strokeWidth={1.5}
                     stroke="currentColor"
                     className="w-6 h-6"
+                    onClick={() => {window.location = "/dashboard/notifications"}}
                     >
                     <path
                         strokeLinecap="round"

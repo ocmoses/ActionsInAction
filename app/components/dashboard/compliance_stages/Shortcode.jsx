@@ -13,7 +13,7 @@ export default function Shortcode({ category, stage }) {
                   key={shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid}
                   className="flex flex-col items-start gap-4 w-full rounded-xl p-3 mb-6 bg-[#030303]"
                 >
-                  {approvalFields.shortcodes?.approval && (
+                  {/* {approvalFields.shortcodes?.approval && (
                     <>
                       <ComplianceLabel
                         category={category}
@@ -25,6 +25,21 @@ export default function Shortcode({ category, stage }) {
                         type="shortcodes"
                       />
                     </>
+                  )} */}
+                  {approvalFields[
+                    `shortcodes-${
+                      shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
+                    }`
+                  ]?.approval && (
+                    <ComplianceLabel
+                      category={category}
+                      category_shortcode={shtcd}
+                      stage={stage}
+                      field={`shortcodes-${
+                        shtcd.uuid ? shtcd.uuid : shtcd.shortcode_uuid
+                      }`}
+                      type="shortcodes"
+                    />
                   )}
                   {/* {approvalFields[
                     `shortcodes-${

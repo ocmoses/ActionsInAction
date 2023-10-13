@@ -11,7 +11,12 @@ import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import { TailSpinPreloader } from "@/app/components/Icons";
 
-export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmail, token }) {
+
+
+
+
+
+export default function PartnerContactUsForm({ closePopUp, submitForm, partnerName, partnerEmail, token }) {
   ////////////////////////////////////fetch subject to the select field//////////////////////////////
   const [getSubjects, setGetSubjects] = useState(null);
   const [fetching, setFetching] = useState(false);
@@ -60,6 +65,8 @@ export default function PopUp({ closePopUp, submitForm, partnerName, partnerEmai
     fetchSubjects();
   }, []);
 
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

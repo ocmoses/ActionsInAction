@@ -16,6 +16,7 @@ import {
   getApprovalFields,
 } from "@/app/modules/constants";
 import Image from "next/image";
+import { isCancelException } from "react-pdf/dist/cjs/shared/utils";
 
 
 
@@ -1365,13 +1366,13 @@ export const partnerApprovals = (partner, category) => {
       try{
 
         let _dept = "";
-      for(const depart in Approvals[_stage]){
-        _dept = depart;
-        break;
-      }     
+        for(const depart in Approvals[_stage]){
+          _dept = depart;
+          break;
+        }     
 
       
-      // for (const _dept in stageFields[_stage]) {        
+        // for (const _dept in stageFields[_stage]) {        
         if (stageFields[_stage][_dept]?.fields?.length > 0) {
           stageFields[_stage][_dept].fields.map((field) => {
             if (!shortcodeApprovalFieldsArray.includes(field)) {
@@ -1470,126 +1471,126 @@ export const partnerApprovals = (partner, category) => {
             )
               StageApprovals[_stage][_dept].counts.status = "corrected";
             else StageApprovals[_stage][_dept].counts.status = "processing";
+          }else{
+            throw new Exception("");
           }
         }
       // }
 
       }catch(e){
-      for (const _dept in stageFields[_stage]) {        
-        if (stageFields[_stage][_dept]?.fields?.length > 0) {
-          stageFields[_stage][_dept].fields.map((field) => {
-            if (!shortcodeApprovalFieldsArray.includes(field)) {
-              if (!StageApprovals[_stage][_dept])
-                StageApprovals[_stage][_dept] = {
-                  counts: {
-                    pending: 0,
-                    approved: 0,
-                    rejected: 0,
-                    corrected: 0,
-                    count: 0,
-                    rejections:
-                      Approvals &&
-                      _stage in Approvals &&
-                      _dept in Approvals[_stage]
-                        ? Approvals[_stage][_dept]?.rejections
-                        : {},
-                  },
-                };
-              if (
-                Approvals &&
-                _stage in Approvals &&
-                Approvals[_stage] &&
-                _dept in Approvals[_stage] &&
-                Approvals[_stage][_dept] &&
-                field in Approvals[_stage][_dept]
-              ) {
-                StageApprovals[_stage][_dept][field] =
-                  Approvals[_stage][_dept][field];
+        for (const _dept in stageFields[_stage]) {        
+          if (stageFields[_stage][_dept]?.fields?.length > 0) {
+            stageFields[_stage][_dept].fields.map((field) => {
+              if (!shortcodeApprovalFieldsArray.includes(field)) {
+                if (!StageApprovals[_stage][_dept])
+                  StageApprovals[_stage][_dept] = {
+                    counts: {
+                      pending: 0,
+                      approved: 0,
+                      rejected: 0,
+                      corrected: 0,
+                      count: 0,
+                      rejections:
+                        Approvals &&
+                        _stage in Approvals &&
+                        _dept in Approvals[_stage]
+                          ? Approvals[_stage][_dept]?.rejections
+                          : {},
+                    },
+                  };
+                if (
+                  Approvals &&
+                  _stage in Approvals &&
+                  Approvals[_stage] &&
+                  _dept in Approvals[_stage] &&
+                  Approvals[_stage][_dept] &&
+                  field in Approvals[_stage][_dept]
+                ) {
+                  StageApprovals[_stage][_dept][field] =
+                    Approvals[_stage][_dept][field];
 
-                if (!StageApprovals[_stage]?.counts?.fields[field])
-                  StageApprovals[_stage].counts.fields[field] = [];
-                StageApprovals[_stage].counts.fields[field].push(
-                  Approvals[_stage][_dept][field]
-                );
+                  if (!StageApprovals[_stage]?.counts?.fields[field])
+                    StageApprovals[_stage].counts.fields[field] = [];
+                  StageApprovals[_stage].counts.fields[field].push(
+                    Approvals[_stage][_dept][field]
+                  );
 
-                if (!StageApprovals?.counts?.fields[field])
-                  StageApprovals.counts.fields[field] = [];
-                StageApprovals.counts.fields[field].push(
-                  Approvals[_stage][_dept][field]
-                );
-                switch (Approvals[_stage][_dept][field]) {
-                  case "approved":
-                    StageApprovals[_stage].counts.approved++;
-                    StageApprovals[_stage][_dept].counts.approved++;
-                    break;
-                  case "rejected":
-                    StageApprovals[_stage].counts.rejected++;
-                    StageApprovals[_stage][_dept].counts.rejected++;
-                    break;
-                  case "corrected":
-                    StageApprovals[_stage].counts.corrected++;
-                    StageApprovals[_stage][_dept].counts.corrected++;
-                    break;
+                  if (!StageApprovals?.counts?.fields[field])
+                    StageApprovals.counts.fields[field] = [];
+                  StageApprovals.counts.fields[field].push(
+                    Approvals[_stage][_dept][field]
+                  );
+                  switch (Approvals[_stage][_dept][field]) {
+                    case "approved":
+                      StageApprovals[_stage].counts.approved++;
+                      StageApprovals[_stage][_dept].counts.approved++;
+                      break;
+                    case "rejected":
+                      StageApprovals[_stage].counts.rejected++;
+                      StageApprovals[_stage][_dept].counts.rejected++;
+                      break;
+                    case "corrected":
+                      StageApprovals[_stage].counts.corrected++;
+                      StageApprovals[_stage][_dept].counts.corrected++;
+                      break;
+                  }
+                } else {
+                  StageApprovals[_stage][_dept][field] = "pending";
+                  StageApprovals[_stage].counts.pending++;
+                  StageApprovals[_stage][_dept].counts.pending++;
+
+                  if (!StageApprovals[_stage]?.counts?.fields[field])
+                    StageApprovals[_stage].counts.fields[field] = [];
+                  StageApprovals[_stage].counts.fields[field].push("pending");
+
+                  if (!StageApprovals.counts?.fields[field])
+                    StageApprovals.counts.fields[field] = [];
+                  StageApprovals.counts.fields[field].push("pending");
                 }
-              } else {
-                StageApprovals[_stage][_dept][field] = "pending";
-                StageApprovals[_stage].counts.pending++;
-                StageApprovals[_stage][_dept].counts.pending++;
-
-                if (!StageApprovals[_stage]?.counts?.fields[field])
-                  StageApprovals[_stage].counts.fields[field] = [];
-                StageApprovals[_stage].counts.fields[field].push("pending");
-
-                if (!StageApprovals.counts?.fields[field])
-                  StageApprovals.counts.fields[field] = [];
-                StageApprovals.counts.fields[field].push("pending");
+                StageApprovals[_stage].counts.count++;
+                StageApprovals[_stage][_dept].counts.count++;
               }
-              StageApprovals[_stage].counts.count++;
-              StageApprovals[_stage][_dept].counts.count++;
+            });
+            // console.log({ StageApprovals, _stage, _dept })
+            // console.log({ coun: StageApprovals[_stage][_dept]?.counts })
+            if (StageApprovals[_stage][_dept]?.counts) {
+              if (
+                StageApprovals[_stage][_dept]?.counts?.approved ===
+                StageApprovals[_stage][_dept]?.counts?.count
+              )
+                StageApprovals[_stage][_dept].counts.status = "approved";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.pending ===
+                StageApprovals[_stage][_dept]?.counts?.count
+              )
+                StageApprovals[_stage][_dept].counts.status = "pending";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.rejected ===
+                  StageApprovals[_stage][_dept]?.counts?.count ||
+                StageApprovals[_stage][_dept]?.counts?.rejected > 0
+              )
+                StageApprovals[_stage][_dept].counts.status = "rejected";
+              else if (
+                StageApprovals[_stage][_dept]?.counts?.corrected ===
+                  StageApprovals[_stage][_dept]?.counts?.count ||
+                StageApprovals[_stage][_dept]?.counts?.corrected > 0
+              )
+                StageApprovals[_stage][_dept].counts.status = "corrected";
+              else StageApprovals[_stage][_dept].counts.status = "processing";
             }
-          });
-          // console.log({ StageApprovals, _stage, _dept })
-          // console.log({ coun: StageApprovals[_stage][_dept]?.counts })
-          if (StageApprovals[_stage][_dept]?.counts) {
-            if (
-              StageApprovals[_stage][_dept]?.counts?.approved ===
-              StageApprovals[_stage][_dept]?.counts?.count
-            )
-              StageApprovals[_stage][_dept].counts.status = "approved";
-            else if (
-              StageApprovals[_stage][_dept]?.counts?.pending ===
-              StageApprovals[_stage][_dept]?.counts?.count
-            )
-              StageApprovals[_stage][_dept].counts.status = "pending";
-            else if (
-              StageApprovals[_stage][_dept]?.counts?.rejected ===
-                StageApprovals[_stage][_dept]?.counts?.count ||
-              StageApprovals[_stage][_dept]?.counts?.rejected > 0
-            )
-              StageApprovals[_stage][_dept].counts.status = "rejected";
-            else if (
-              StageApprovals[_stage][_dept]?.counts?.corrected ===
-                StageApprovals[_stage][_dept]?.counts?.count ||
-              StageApprovals[_stage][_dept]?.counts?.corrected > 0
-            )
-              StageApprovals[_stage][_dept].counts.status = "corrected";
-            else StageApprovals[_stage][_dept].counts.status = "processing";
           }
         }
       }
-
-      }
-      
       if (
-        StageApprovals[_stage]?.counts?.approved ===
-        StageApprovals[_stage]?.counts?.count
-      )
-        StageApprovals[_stage].counts.status = "approved";
-      else if (
         StageApprovals[_stage]?.counts.pending ===
         StageApprovals[_stage]?.counts.count
       )
         StageApprovals[_stage].counts.status = "pending";
+      else if (
+        StageApprovals[_stage]?.counts?.approved ===
+        StageApprovals[_stage]?.counts?.count
+      )
+        StageApprovals[_stage].counts.status = "approved";
       else if (
         StageApprovals[_stage]?.counts.rejected ===
           StageApprovals[_stage]?.counts.count ||

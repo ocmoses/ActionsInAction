@@ -339,6 +339,18 @@ function Shortcode() {
     setActiveform("shortcode");
   };
   const goToPricing = () => {
+    // console.log("collected shortcode", shtcde);
+    // return;
+
+    if(shtcde.trim() != ""){
+      processKeyUp();
+      return;
+    }
+    
+    if(shtcde.trim() == '' && formdata.shortcode.shortcodes.length == 0){
+      return setError({ shortcode: `Shortcode is required` });
+    }
+
     if (!processKeyUp()) return;
     clearErrors();
     if (

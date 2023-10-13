@@ -193,7 +193,7 @@ export const forms = {
     form: "ncclicense",
     title: "Provide your company's NCC license details",
     label: "NCC license detail",
-    shortname: "VAC license",
+    shortname: "VAS license",
     subtitle: "",
     listdesc: "VAS License Number, VAS License Issue Date, etc",
     hand: "",
@@ -1392,3 +1392,10 @@ export const roles = [
     title: "procurement-anager",
   },
 ];
+
+export const user_statuses = {
+  ACTIVE: "active",
+  APPROVED: "approved"
+}
+
+

@@ -132,14 +132,12 @@ export default function FileInputAsync({
                       <>
                         <p className="text-[#999999]">
                           Drag and drop or choose file
-                          Drag and drop or choose file
                         </p>
                         <p className="text-[#999999]">PDF file (5mb max)</p>
                       </>
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
-                        <span className="whitespace-normal text-red-600 text-[13px]">
                         <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>
@@ -179,7 +177,6 @@ export default function FileInputAsync({
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">
-                        <span className="whitespace-normal text-red-600 text-[13px]">
                         <span className="whitespace-normal text-red-600 text-[13px]">
                           {errors ? errors[id] : message ? message : ""}
                         </span>

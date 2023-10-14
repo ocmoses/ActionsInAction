@@ -62,6 +62,7 @@ function MultiFileInput({ id, label, onChange, border, bg, margin, errors }) {
                       src={URL.createObjectURL(file)}
                     />
                   </div>
+                  {/* Nothing was changed here */}
                   <span className="truncate w-44">{file.name}</span>
                 </div>
                 <div

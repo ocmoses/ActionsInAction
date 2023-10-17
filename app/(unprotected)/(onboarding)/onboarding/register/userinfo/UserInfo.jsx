@@ -48,6 +48,7 @@ function UserInfo({ designations }) {
   });
 
   useEffect(() => {
+   setProcessing(false);
     setForm("userinfo");
     setProcessing(false);
     clearErrors();
@@ -55,6 +56,7 @@ function UserInfo({ designations }) {
     scrollToTop("onboardinglayout");
   }, []);
   useEffect(() => {
+   setProcessing(false);
     if (designations.error) setError({ userinfo: designations.error });
     else clearErrors();
   }, [designations]);
@@ -170,6 +172,7 @@ function UserInfo({ designations }) {
   const [countrycode, setCountrycode] = useState(partner?.countrycode ?? "234");
 
   useEffect(() => {
+   setProcessing(false);
     setData((prevState) => ({
       ...prevState,
       country: country,

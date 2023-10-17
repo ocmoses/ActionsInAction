@@ -38,17 +38,17 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "afolabi.o@eleadersnetwork.com",
-    password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
+        : "moses.ocho@mtn.com",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   const [notVerified, setNotVerified] = useState(null);
 
   useEffect(() => {
+    
     setForm(null);
-    setProcessing(false);
     clearErrors();
     setNotVerified(null);
-    
+    setProcessing(false);
   }, []);
   const handleFormChange = (e) => {
     removeError(e.target.id);

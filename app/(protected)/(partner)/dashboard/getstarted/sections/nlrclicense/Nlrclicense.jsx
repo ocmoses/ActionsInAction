@@ -52,6 +52,7 @@ function NlrcLicense() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -90,6 +91,7 @@ function NlrcLicense() {
     }
   }, [category]);
   useEffect(() => {
+   setProcessing(false);
     setForm("nlrclicense");
     setProcessing(false);
     scrollToTop("onboardinglayout");
@@ -159,6 +161,7 @@ function NlrcLicense() {
 
   const [selectField, setSelectField] = useState(null);
   useEffect(() => {
+   setProcessing(false);
     removeError(selectField);
     Validate(selectField);
   }, [selectField, data]);

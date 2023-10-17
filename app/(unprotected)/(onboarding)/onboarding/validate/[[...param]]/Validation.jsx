@@ -134,6 +134,7 @@ export default function RegisterValidation({ params }) {
     }
   };
   useEffect(() => {
+   setProcessing(false);
     if (params?.type === "new") {
       ValidateNewUser();
     } else {

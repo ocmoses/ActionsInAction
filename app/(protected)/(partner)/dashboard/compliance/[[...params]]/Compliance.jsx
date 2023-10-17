@@ -300,6 +300,7 @@ export default function Compliance({ params }) {
   }
 
   useEffect(() => {
+   setProcessing(false);
     
     setProcessing(false);
     setRouteloading(false);
@@ -324,15 +325,18 @@ export default function Compliance({ params }) {
   }, []);
 
   useEffect(() => {
+   setProcessing(false);
   }, [partner.approvalStages, Stages]);
 
   useEffect(() => {
+   setProcessing(false);
     let html = document.getElementsByTagName("html");
     if (openDrawer) html[0].style["overflow-y"] = "hidden";
     else html[0].style["overflow-y"] = "auto";
   }, [openDrawer]);
 
   useEffect(() => {
+   setProcessing(false);
     
     if (partner && params.params?.length > 0) {
       filterFields(partner);

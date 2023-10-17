@@ -23,7 +23,7 @@
     "crypto-js": "^4.1.1",
     "daisyui": "^2.45.0",
     "easy-peasy": "^5.2.0",
-    "framer-motion": "^8.0.1",
+    "framer-motion": "^8.5.5",
     "install": "^0.13.0",
     "konva": "^9.2.0",
     "laravel-echo": "^1.15.1",

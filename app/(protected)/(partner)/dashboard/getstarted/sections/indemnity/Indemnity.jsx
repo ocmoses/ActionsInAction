@@ -51,6 +51,7 @@ function Indemnity() {
 
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -85,6 +86,7 @@ function Indemnity() {
     }
   }, [category]);
   useEffect(() => {
+   setProcessing(false);
     setForm("indemnity");
     setProcessing(false);
     scrollToTop("onboardinglayout");

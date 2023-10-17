@@ -222,6 +222,7 @@ export default function Admins({ allAdmins }) {
   };
 
   useEffect(() => {
+   setProcessing(false);
     get_all_admins();
     get_all_admin_roles();
     get_all_admin_privileges();
@@ -229,6 +230,7 @@ export default function Admins({ allAdmins }) {
   }, [page, perPage]);
 
   useEffect(() => {
+   setProcessing(false);
     // setProcessing(true);
     if (all_Admins) {
       setAdmins(all_Admins.admin_users);

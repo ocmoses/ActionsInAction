@@ -57,6 +57,7 @@ export default function CategoryDetail({
     });
   };
   useEffect(() => {
+   setProcessing(false);
     if (!Util.isEmpty(new_category)) {
       setCurrentCategory(new_category, partner);
       const { nextstage: NextStage } = nextStage(new_category, partner);

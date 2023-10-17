@@ -42,6 +42,7 @@ function CompanyDetail() {
   const [isMasterData, setIsMasterData] = useState(false);
   const [tinData, setTinData] = useState(null);
   useEffect(() => {
+   setProcessing(false);
     const Category =
       partner.master &&
       partner.sections[partner.master.category_uuid]?.companydetail &&
@@ -99,12 +100,14 @@ function CompanyDetail() {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm("companydetail");
     setProcessing(false);
     scrollToTop("onboardinglayout");
   }, []);
   const [states, setStates] = useState([]);
   useEffect(() => {
+   setProcessing(false);
     setStates(
       data.country
         ? STATES.filter((state) => state.country_code === data.country)
@@ -145,6 +148,7 @@ function CompanyDetail() {
   };
   const [selectField, setSelectField] = useState(null);
   useEffect(() => {
+   setProcessing(false);
     removeError(selectField);
     Validate(selectField);
   }, [selectField, data]);

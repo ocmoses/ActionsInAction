@@ -50,6 +50,7 @@ function Ncclicense() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     const Category =
       partner.master &&
       partner.sections[partner.master.category_uuid]?.ncclicense &&
@@ -82,6 +83,7 @@ function Ncclicense() {
       });
   }, [category]);
   useEffect(() => {
+   setProcessing(false);
     setForm("ncclicense");
     setProcessing(false);
     scrollToTop("onboardinglayout");

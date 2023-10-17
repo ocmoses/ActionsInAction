@@ -224,6 +224,7 @@ export default function Team() {
   
 
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
     setData({...data, partner_uuid: partner.uuid});
     

@@ -22,12 +22,12 @@ function Login({ params }) {
   );
   const { clearStore } = useLogout();
   const [data, setData] = useState({
-    username: process.env.NODE_ENV === "production" ? "" : "afoo",
+    username: process.env.NODE_ENV === "production" ? "" : "mosesoc",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   useEffect(() => {
+   setProcessing(false);
     setForm(null);
-    setProcessing(false);
     clearErrors();
   }, []);
   const handleFormChange = (e) => {

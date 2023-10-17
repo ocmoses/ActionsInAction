@@ -52,6 +52,7 @@ export default function Dashboard({ allPartners }) {
   };
 
   useEffect(() => {
+   setProcessing(false);
     
     if ((onboardingStatus || perPage, page)) {
       get_all_Partner();
@@ -59,6 +60,7 @@ export default function Dashboard({ allPartners }) {
   }, [page, onboardingStatus, perPage]);
 
   useEffect(() => {
+   setProcessing(false);
     setProcessing(true);
     if (allPartners && allPartners.partners) {
       if (allPartners.partners?.length) {

@@ -68,6 +68,7 @@ function Compliance() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+    setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -116,6 +117,7 @@ function Compliance() {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm("compliance");
     setProcessing(false);
     scrollToTop("onboardinglayout");
@@ -354,6 +356,8 @@ function Compliance() {
     verifyTIN(data.tin_no)
   };
   useEffect(() => {
+   setProcessing(false);
+    setProcessing(false);
     if (retryTIN) verifyTIN(data.tin_no);
   }, [retryTIN]);
 

@@ -41,6 +41,7 @@ export default function Accountinfo() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -70,6 +71,7 @@ export default function Accountinfo() {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
     setForm("accountinfo");
     setProcessing(false);

@@ -29,6 +29,8 @@ export const NextEndPoints = {
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v2/auth/login`,
+  ACCEPT_AUTH0_OTP: `${apiURL}/v2/auth/accept-otp`,
+  RESEND_AUTH0_OTP: `${apiURL}/v2/auth/resend-otp`,
   LOGOUT: `${apiURL}/v2/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,

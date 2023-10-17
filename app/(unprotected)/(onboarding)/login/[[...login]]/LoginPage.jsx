@@ -18,7 +18,7 @@ import { PageRoutes } from "@/app/modules/menu";
 import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
 
-import LoginOtp from "./otp/LoginOtp"
+import LoginOtp from "./otp/LoginOtp";
 
 function Login({ params }) {
   const router = useRouter();
@@ -47,6 +47,7 @@ function Login({ params }) {
 
   ///////afoo///////////////////////////////////////////////////////////
   const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(false);
+  const [sessionItems, setSessionItems] = useState("");
   /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
@@ -54,8 +55,8 @@ function Login({ params }) {
     setProcessing(false);
     clearErrors();
     setNotVerified(null);
-    
   }, []);
+
   const handleFormChange = (e) => {
     removeError(e.target.id);
     setData((prevState) => ({
@@ -63,6 +64,7 @@ function Login({ params }) {
       [e.target.id]: e.target.value,
     }));
   };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     clearErrors();
@@ -85,38 +87,7 @@ function Login({ params }) {
     });
     const result = await response.json();
 
-    console.log("result", result);
-
-    // result.data.data.partners[0].categories[0].compliance_approvals.push({
-    //   "id": 104,
-    //   "uuid": "9bcfff39-060e-4cfb-9007-e77b1c2e9259",
-    //   "partner_uuid": "d68d5393-e84a-4f57-8586-a55f97cde68d",
-    //   "category_uuid": "4f4f8e28-91ed-11ed-bd03-acde48001122",
-    //   "category_stage": "shortcode",
-    //   "admin_user": {
-    //       "id": 28,
-    //       "uuid": "8ca51afd-3cf3-4ab0-8c26-a122b3ef0a72",
-    //       "username": "mosesoc",
-    //       "fullname": "Moses",
-    //       "email": "moses.ocho@mtn.com",
-    //       "department": "Charging VAS and Financial Services NG",
-    //       "department_code": "LEGA",
-    //       "role": "be85a2d2-ed8c-11ed-8379-acde48001122",
-    //       "created_at": "2023-06-13T12:19:20.000000Z",
-    //       "updated_at": "2023-06-13T12:19:20.000000Z"
-    //   },
-    //   "field": "shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb",
-    //   "status": "approved",
-    //   "feedback": "Shortcodes approved",
-    //   "admin_department": "SPRM",
-    //   "created_by": "8ca51afd-3cf3-4ab0-8c26-a122b3ef0a72",
-    //   "updated_by": null,
-    //   "created_at": "2023-09-26T09:07:27.000000Z",
-    //   "updated_at": "2023-09-26T09:07:27.000000Z"
-    // });
-
-    // result.data.data.partners[0].categories[0]
-    //       .category_field_approval_status.shortcodes[0]["shortcodes"] = "approved";
+    //console.log("result", result);
 
     const { data: loginData, error: loginError } = result;
     if (!loginData) {
@@ -140,24 +111,23 @@ function Login({ params }) {
     };
 
     app.setStoreStates(serverSession, loginData?.categories, "login");
+    setGetPartnerLoginOtp(true);
+    setSessionItems(result);
+  };
 
+  const logInWithAuthZero = () => {
     const redirect =
       params &&
       params?.length &&
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        //: PageRoutes.dashboard;
-        : getOtp();
+        : PageRoutes.dashboard;
+    //: getOtp();
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    return router.replace(redirect);
-  };
-
-
-
-  const getOtp = () => {
-    setGetPartnerLoginOtp(true);
+    //return router.replace(redirect);
+    location.reload();
   };
 
   return (
@@ -259,7 +229,10 @@ function Login({ params }) {
       )}
 
       {getPartnerLoginOtp && (
-        <LoginOtp user_email={data.email}/>
+        <LoginOtp
+          sessionItems={sessionItems}
+          logInWithAuthZero={logInWithAuthZero}
+        />
       )}
     </>
   );

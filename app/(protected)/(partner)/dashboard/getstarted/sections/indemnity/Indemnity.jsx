@@ -233,9 +233,9 @@ function Indemnity() {
 
         {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
-            {processing ? (
+            {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
+            ) : ( */}
               <div className="flex items-center gap-4">
                 {/* <ButtonPrev
                   onClick={() => moveToPrevForm("indemnity")}
@@ -249,7 +249,7 @@ function Indemnity() {
                   label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
                 />
               </div>
-            )}
+            {/* )} */}
           </div>
         )}
       </form>

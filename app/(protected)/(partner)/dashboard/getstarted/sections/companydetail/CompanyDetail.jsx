@@ -263,13 +263,13 @@ function CompanyDetail() {
         />
         {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
-            {processing ? (
+            {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
+            ) : ( */}
               <ButtonNext
                 label={checkUpdateStatus("companydetail") ? "Update" : "Next"}
               />
-            )}
+            {/* )} */}
           </div>
         )}
       </form>

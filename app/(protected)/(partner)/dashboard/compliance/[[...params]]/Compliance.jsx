@@ -321,7 +321,7 @@ export default function Compliance({ params }) {
       setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
     }
     
-  }, [isASignatory]);
+  }, []);
 
   useEffect(() => {
   }, [partner.approvalStages, Stages]);
@@ -386,7 +386,7 @@ export default function Compliance({ params }) {
     // if(weHaveAgreed){
     //   setAgreementModal(true);
     // }else{
-      router.push("dashboard/contracts/execution")
+      router.push("/dashboard/contracts/execution")
     // }
     
   }

@@ -34,10 +34,7 @@ import moment from "moment";
 export default function Compliance({ params }) {
   const users = useStoreState((state) => state.users);
   // console.log("usePartners:....", usePartners());
-  const router = useRouter();
-  const {getAllPartnerRoles} = useRoles();
-  const { processing, setProcessing } = useProcessing();  
-  const [{ errors, setError, clearErrors }] = useErrors(null);
+  const router = useRouter();  
   const {getAllPartnerRoles} = useRoles();
   const { processing, setProcessing } = useProcessing();  
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -503,8 +500,6 @@ export default function Compliance({ params }) {
   return (
     // max-w-[1158px]
     <div className="mx-auto py-12 px-16 flex-grow">
-    // max-w-[1158px]
-    <div className="mx-auto py-12 px-16 flex-grow">
       <div onClick={() => router.push("dashboard/")} className="mb-12">
         <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
           <svg
@@ -815,8 +810,7 @@ export default function Compliance({ params }) {
           <TailSpinPreloader width={40} height={40} fill="#efb703" />
         </div>
       )} */}
-      {selectedCategory && (
-      )} */}
+      
       {selectedCategory && (
         <>
           <div className="grin grid-cols-1 space-y-3 sm:flex justify-between items-center space-x-3 mb-20">

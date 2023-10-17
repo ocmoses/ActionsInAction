@@ -37,6 +37,8 @@ export default function Dashboard({ allPartners }) {
 
   const {LogoutAdmin} = useLogout();
 
+  console.log("allPartners", allPartners);
+
   const get_all_Partner = async () => {
     if (fetchingPartners) return;
     setFetchingPartners(true);

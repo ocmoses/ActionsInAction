@@ -43,6 +43,7 @@ function Login({ params }) {
   });
   const [notVerified, setNotVerified] = useState(null);
 
+
   useEffect(() => {
     
     setForm(null);
@@ -132,6 +133,7 @@ function Login({ params }) {
       type: "user",
       role: loginData?.data['login-user-role']
     };
+    
     
     app.setStoreStates(serverSession, loginData?.categories, "login");
 
@@ -240,6 +242,7 @@ function Login({ params }) {
           </div>
         </div>
       </form>
+      
       
     </>
   );

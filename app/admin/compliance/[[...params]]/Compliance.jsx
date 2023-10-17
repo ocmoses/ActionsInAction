@@ -6,6 +6,7 @@ import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
 import useLogout from "@/hooks/useLogout";
+import useLogout from "@/hooks/useLogout";
 import FormErrors from "@/app/components/FormErrors";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";

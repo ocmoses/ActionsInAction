@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+<<<<<<<<< Temporary merge branch 1
+  reactStrictMode: true,
+}
+=========
   compiler: {
     removeConsole: process.env.NODE_ENV === "production" ? true : false,
   },

@@ -86,7 +86,7 @@ export default function Dashboard({ allPartners }) {
 
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true);
-    router.push(`admin/compliance/${uuid}`);
+    router.push(`/admin/compliance/${uuid}`);
   };
   return (
     <>

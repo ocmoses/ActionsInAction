@@ -8,7 +8,6 @@ import Pusher from 'pusher-js';
 import { useEffect } from 'react';
 
 // useEffect(() => {
-
     window._ = _;
 
     window.axios = axios;

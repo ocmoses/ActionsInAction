@@ -153,9 +153,9 @@ export default function Approvals() {
 
     
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
-    get_brds()
-    setProcessing(false);
+    get_brds();
     
   },[]);
 

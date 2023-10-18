@@ -39,6 +39,7 @@ const usePartners = () => {
   const [allCategories, setAllCategories] = useState([])
 
   useEffect(() => {
+   setProcessing(false);
     const Categories = {}
     if (categories?.length > 0) {
       categories.map((category) => {
@@ -49,6 +50,7 @@ const usePartners = () => {
   }, [categories])
 
   useEffect(() => {
+   setProcessing(false);
     if (!rejectionReasons) app.getRejectionReasons()
   }, [rejectionReasons])
 

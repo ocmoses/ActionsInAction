@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
+   setProcessing(false);
     console.log(error.toString());
   }, [error]);
 

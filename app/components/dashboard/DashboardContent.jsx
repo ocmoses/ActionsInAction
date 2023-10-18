@@ -77,12 +77,12 @@ export default function GetStarted({ type }) {
     setShowModal(status);
   };
 
-  const userStatus = partner.status;
+  const userStatus = partner?.status;
 
   useEffect(() => {
    setProcessing(false);
     setCategoriesData(categories);
-  }, [categories]);
+  }, [partner, categories]);
 
   const [validation, setValidation] = useState({
     required: [],
@@ -137,7 +137,7 @@ export default function GetStarted({ type }) {
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
-        partner.allowedCategories.includes(category.category_code)
+        partner?.allowedCategories.includes(category.category_code)
     );
     setPartnerActiveCategories(newCatArray);
     setPartnerCategories(partnerCat);

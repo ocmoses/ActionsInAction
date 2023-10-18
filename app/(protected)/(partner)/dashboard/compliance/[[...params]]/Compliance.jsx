@@ -101,7 +101,7 @@ export default function Compliance({ params }) {
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
 
-  const userStatus = partner.status;
+  const userStatus = partner?.status;
 
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(false);
   let directorSigned = false;

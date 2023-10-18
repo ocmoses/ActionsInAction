@@ -32,8 +32,11 @@ export default function MenuBar({ open }) {
 
 
   const getFullname = () => {
-    setFullname(ellipsify(partners[0]?.company_name, 10));
-    setEmail(ellipsify(partners[0]?.email));
+    try{
+      setFullname(partners ? ellipsify(partners[0]?.company_name, 10): "");
+      setEmail(ellipsify(partners[0]?.email));
+    }catch(e){
+    }    
   };
 
   useEffect(() => {

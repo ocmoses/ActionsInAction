@@ -37,6 +37,7 @@ function SetUpPassword({ params: { params } }) {
 
 
   useEffect(() => {
+   setProcessing(false);
     setData((oldState) => ({
       ...oldState,
       link_token: params?.length > 0 ? params[0] : "",
@@ -45,6 +46,7 @@ function SetUpPassword({ params: { params } }) {
   }, [params]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm("setpassword");
     setProcessing(false);
     clearErrors();

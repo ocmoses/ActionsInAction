@@ -30,6 +30,7 @@ function SetPassword({ params: { params } }) {
     type: "",
   });
   useEffect(() => {
+   setProcessing(false);
     setData((oldState) => ({
       ...oldState,
       type: params?.length > 0 ? params[0] : "",
@@ -40,6 +41,7 @@ function SetPassword({ params: { params } }) {
   const { registerPartner } = usePartners();
 
   useEffect(() => {
+   setProcessing(false);
     setForm("setpassword");
     setProcessing(false);
     clearErrors();

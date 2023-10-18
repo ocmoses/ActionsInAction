@@ -51,6 +51,7 @@ export default function GetStarted({ type }) {
 
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
@@ -79,6 +80,7 @@ export default function GetStarted({ type }) {
   const userStatus = partner.status;
 
   useEffect(() => {
+   setProcessing(false);
     setCategoriesData(categories);
   }, [categories]);
 
@@ -89,12 +91,14 @@ export default function GetStarted({ type }) {
   });
 
   useEffect(() => {
+   setProcessing(false);
     setActiveCategory(tmpCat);
     const validation = setValidationRules(tmpCat);
     setValidation(validation);
   }, [tmpCat]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
@@ -107,6 +111,7 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+   setProcessing(false);
     setBrdComplains(true)
     const partnerCat = [];
     const partnerActiveCat = [];

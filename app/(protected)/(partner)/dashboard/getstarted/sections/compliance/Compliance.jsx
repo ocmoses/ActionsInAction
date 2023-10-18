@@ -68,6 +68,7 @@ function Compliance() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+    setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -116,6 +117,7 @@ function Compliance() {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm("compliance");
     setProcessing(false);
     scrollToTop("onboardinglayout");
@@ -351,9 +353,11 @@ function Compliance() {
       return;
     }
 
-    // verifyTIN(data.tin_no)
+    verifyTIN(data.tin_no)
   };
   useEffect(() => {
+   setProcessing(false);
+    setProcessing(false);
     if (retryTIN) verifyTIN(data.tin_no);
   }, [retryTIN]);
 
@@ -630,13 +634,13 @@ function Compliance() {
                 {!isMasterData &&
                   partner?.contract_status === "not_started" && (
                     <div className="mt-6">
-                      {processing ? (
+                      {/* {processing ? (
                         <TailSpinPreloader
                           width={40}
                           height={40}
                           fill="#efb703"
                         />
-                      ) : (
+                      ) : ( */}
                         <div className="flex items-center gap-4">
                           {/* <ButtonPrev
                           onClick={() => moveToPrevForm("compliance")}
@@ -654,7 +658,7 @@ function Compliance() {
                             }
                           />
                         </div>
-                      )}
+                      {/* )} */}
                     </div>
                   )}
               

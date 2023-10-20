@@ -1393,9 +1393,14 @@ export const roles = [
   },
 ];
 
+export const questionnaire_pending = "This partner has not submitted any questionaire";
+
 export const user_statuses = {
   ACTIVE: "active",
   APPROVED: "approved"
 }
+
+export const questionnaire_link = "http://10.1.44.25/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-40.docx";
+
 
 

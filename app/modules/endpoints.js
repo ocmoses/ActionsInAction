@@ -113,5 +113,10 @@ const RemoteEndpoints = {
   PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
   UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
 
+  //questionnaire
+  GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
+  SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
+  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`
+  
 }
 export default RemoteEndpoints

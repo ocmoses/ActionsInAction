@@ -4,8 +4,12 @@ import useErrors from "@/hooks/useErrors";
 import usePartners from "@/hooks/usePartners";
 import {useState} from "react";
 import  ListIcon from "../icons/ListIcon";
-import FileInputWrapper from "../form/FileInputWrapper";
 import FileInput from "../form/FileInput";
+import {questionnaire_link} from "@/app/modules/constants";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
+import Success from "@/app/components/toasts/Success";
+import FormErrors from "@/app/components/FormErrors";
+import { TailSpinPreloader } from "@/app/components/Icons";
 
 export default function CategoryCard({
   category,
@@ -19,12 +23,42 @@ export default function CategoryCard({
   const [uploading, setUploading] = useState(false);
   const [data, setData] = useState({questionairre_doc: null});
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
+  const {sendQuestionnaire} = useQuestionnaire();
+  const {partner} = usePartners();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successToast, setSuccessToast] = useState(false);
+  const successAction = () => setTimeout(() => { 
+                                                  setSuccessToast(false),                                                   
+                                                  selectCategory(category);
+                                                  setShowQuestionare(false);
+                                                }, 3000);
+  const {processing} = useProcessing();
 
-  const handleFormChange = () => {
-
+  const handleFormChange = (e) => {
+    setData({...data, questionairre_doc: e.target.value});
+    console.log("file", data.questionairre_doc);
   }
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
+
+    if(!data.questionairre_doc){
+      setError({error: "No file chosen"});
+    }else{
+      clearErrors();
+    }
+    
+    let formData = new FormData();
+    formData.append("partner_uuid", partner.uuid);
+    formData.append("file", data.questionairre_doc);
+
+    let response = await sendQuestionnaire(formData);
+
+    if(response.message){
+      setSuccessMessage(response.message);
+      setSuccessToast(true);
+    }else{
+      setError({error: response.error});
+    }
 
   }
 
@@ -37,6 +71,7 @@ export default function CategoryCard({
     <>
       <div
         onClick={() => (!disabled ? (pendingQuestionare ? setShowQuestionare(true) : selectCategory(category)) : {})}
+        // onClick={() => (!disabled ? selectCategory(category) : {})}
         className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] px-6 py-4 block ${
           disabled
             ? "cursor-not-allowed bg-white/10 text-white/70"
@@ -81,11 +116,11 @@ export default function CategoryCard({
                 (<>
                   <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                     <p className="text-gray-400 mt-4">Download</p>
-                    <a href="#" className="font-mtn text-lg text-yellow-500 text-center underline">Download Supplier Questionairre</a>
+                    <a href={questionnaire_link} className="font-mtn text-md text-yellow-500 text-center underline">Download Supplier Questionairre</a>
                   </div>
                   <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                     <p className="text-gray-400 mt-4">Upload</p>
-                    <span onClick={() => setUploading(true)} className="font-mtn text-lg text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
+                    <span onClick={() => setUploading(true)} className="font-mtn text-md text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
                   </div>
                 </>)
               }
@@ -93,9 +128,9 @@ export default function CategoryCard({
                 (<>
                   <div className="w-full relative">
                     <FileInput
-                      id="questionairre"
-                      doc_id="questionairre_doc"
-                      label="Supplier Questionairre"
+                      id="questionnaire"
+                      doc_id="questionnaire_doc"
+                      label="Supplier Questionnaire"
                       value={data.questionairre_doc}
                       onChange={handleFormChange}
                       errors={errors}
@@ -112,6 +147,8 @@ export default function CategoryCard({
               
             </div>
 
+            
+
             <div className="w-full justify-center">
             
               <p className="text-gray-400 text-sm mt-4 text-center">
@@ -121,14 +158,27 @@ export default function CategoryCard({
 
             </div>
 
-            <div className="w-full p-4 flex justify-center">
+            <div className="w-full p-4 flex justify-center flex-col items-center">
+                {errors && errors["error"] && (
+                  <div className="mb-6">
+                  <FormErrors error={errors["error"]} />
+                  </div>
+                )}
                 {
-                  !uploading && 
-                  <button className="bg-black rounded-full py-4 px-12" disabled>Submit and Continue</button>
+                  !uploading && (<button className="bg-black rounded-full py-4 px-12" disabled>Submit and Continue</button>)
+                                   
                 }
                 {
-                  uploading && 
+                  uploading && !processing && 
                   <button className="bg-mtn rounded-full py-4 px-12 font-bold" onClick={() => handleSubmission()}>Submit and Continue</button>
+                }
+                {
+                  uploading && processing &&
+                  (
+                    <div className="flex justify-center items-center">
+                      <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                    </div>
+                  )
                 }
                 
             </div>
@@ -136,6 +186,8 @@ export default function CategoryCard({
           </div>
         </div>  
       }
+
+      <Success message={successMessage} visible={successToast} action={successAction} />
     </>
     
   );

@@ -27,6 +27,7 @@ import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
 import { user_statuses } from "@/app/modules/constants";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -79,10 +80,14 @@ export default function GetStarted({ type }) {
 
   const userStatus = partner?.status;
 
+  const {getQuestionnaireStatus} = useQuestionnaire();
+
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
+
   useEffect(() => {
    setProcessing(false);
     setCategoriesData(categories);
-  }, [partner, categories]);
+  }, [partner, categories, toFillQuestionnaire]);
 
   const [validation, setValidation] = useState({
     required: [],
@@ -102,6 +107,24 @@ export default function GetStarted({ type }) {
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
+  }, []);
+
+ 
+
+  useEffect(() => {
+    let check = () => 
+    getQuestionnaireStatus().then(response => {
+      // console.log("Questionnaire response", response);
+      if(response.message == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else{
+        setToFillQuestionnaire(false);
+      }
+    }).catch(error => setError({error: error.response.data.message}));
+
+    check();
+
+
   }, []);
 
   //////////afoo code////////////////////////////////////////////////////////////////////////////
@@ -630,6 +653,7 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+              
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 !showProgress && (
@@ -645,6 +669,7 @@ export default function GetStarted({ type }) {
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
                           disabled={partner?.edittable}
+                          pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}
                   </div>

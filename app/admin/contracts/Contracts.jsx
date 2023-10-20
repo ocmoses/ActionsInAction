@@ -150,8 +150,8 @@ export default function Contracts() {
 
     
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
-    setProcessing(false);
     getAllContracts().then(resp => {
                             setContracts(resp.contracts); 
                             setFilteredContracts(resp.contracts); 
@@ -169,6 +169,7 @@ export default function Contracts() {
   },[]);
 
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
     setProcessing(false);
     displayFilters();

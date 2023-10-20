@@ -41,6 +41,7 @@ export default function Accountinfo() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -70,6 +71,7 @@ export default function Accountinfo() {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
     setForm("accountinfo");
     setProcessing(false);
@@ -208,14 +210,14 @@ export default function Accountinfo() {
 
         {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
-            {processing ? (
+            {/* {processing ? (
               <TailSpinPreloader
                 width={40}
                 iconClass="mt-6"
                 height={40}
                 fill="#efb703"
               />
-            ) : (
+            ) : ( */}
               <div className="flex items-center gap-4">
                 {/* <ButtonPrev
                   onClick={() => moveToPrevForm("accountinfo")}
@@ -229,7 +231,7 @@ export default function Accountinfo() {
                   label={checkUpdateStatus("accountinfo") ? "Update" : "Next"}
                 />
               </div>
-            )}
+            {/* )} */}
           </div>
         )}
       </form>

@@ -52,6 +52,7 @@ function NlrcLicense() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -90,6 +91,7 @@ function NlrcLicense() {
     }
   }, [category]);
   useEffect(() => {
+   setProcessing(false);
     setForm("nlrclicense");
     setProcessing(false);
     scrollToTop("onboardinglayout");
@@ -159,6 +161,7 @@ function NlrcLicense() {
 
   const [selectField, setSelectField] = useState(null);
   useEffect(() => {
+   setProcessing(false);
     removeError(selectField);
     Validate(selectField);
   }, [selectField, data]);
@@ -265,9 +268,9 @@ function NlrcLicense() {
 
         {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-6">
-            {processing ? (
+            {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
+            ) : ( */}
               <div className="flex items-center gap-4">
                 {/* <ButtonPrev
                   onClick={() => moveToPrevForm("nlrclicense")}
@@ -281,7 +284,7 @@ function NlrcLicense() {
                   label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}
                 />
               </div>
-            )}
+            {/* )} */}
           </div>
         )}
       </form>

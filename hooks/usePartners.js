@@ -39,6 +39,7 @@ const usePartners = () => {
   const [allCategories, setAllCategories] = useState([])
 
   useEffect(() => {
+   setProcessing(false);
     const Categories = {}
     if (categories?.length > 0) {
       categories.map((category) => {
@@ -49,6 +50,7 @@ const usePartners = () => {
   }, [categories])
 
   useEffect(() => {
+   setProcessing(false);
     if (!rejectionReasons) app.getRejectionReasons()
   }, [rejectionReasons])
 
@@ -64,6 +66,7 @@ const usePartners = () => {
     optional: [],
     allForms: [],
   })
+
   const setValidationRules = (category) => {
     const required = []
     const list = []
@@ -101,6 +104,7 @@ const usePartners = () => {
     setCategory(category)
     setValidationRules(category)
   }
+
   const getPartner = async (uuid) => {
     const result = await proxyFetch(`${apiURL}/v1/auth/partner-info/${uuid}`, {
       cache: "no-store",
@@ -120,10 +124,12 @@ const usePartners = () => {
     setCategory(category)
     setValidationRules(category)
   }
+
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage
     return progress[stage] && parseInt(progress[stage]) ? true : false
   }
+
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null
     const { percent, stages } = partner.progress
@@ -159,9 +165,11 @@ const usePartners = () => {
     if (!nextstage) nextstage = PageRoutes.dashboard
     return { percent, nextstage }
   }
+
   const nextStage = (category, partner) => {
     return getNextStage(category, partner)
   }
+  
   const getStages = (category, categories) => {
     if (!category) return
     return getstages(category, categories)

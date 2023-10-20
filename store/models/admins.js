@@ -14,6 +14,14 @@ const admins = {
   partner: null,
   Stages: null,
   activeStage: null,
+  categories: [],
+  stages: stages,
+  activeApproval: null,
+  activeCategory: null,
+  approving: false,
+  partner: null,
+  Stages: null,
+  activeStage: null,
 
   clear: action((state) => {
     state.admins = null;
@@ -28,6 +36,7 @@ const admins = {
     state.Stages = null;
     state.activeStage = null;
   }),
+  isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   fullname: computed((state) => {
     return state.admin?.uuid !== null ? `${state.admin?.username}` : null;

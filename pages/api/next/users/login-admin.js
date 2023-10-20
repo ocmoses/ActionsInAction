@@ -8,6 +8,7 @@ const doLogin = async (body, req, res) => {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      Accept: "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",
@@ -53,6 +54,7 @@ const doLogin = async (body, req, res) => {
     };
   return { success: true, error: null, data: { user, token: authtoken } };
 };
+
 export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {

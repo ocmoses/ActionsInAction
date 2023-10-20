@@ -72,6 +72,7 @@ function Shortcode() {
   const { title, subtitle, hand, required } = forms["shortcode"];
   const [pageTitle, setPageTitle] = useState(title);
   useEffect(() => {
+   setProcessing(false);
     setPageTitle(
       activeform === "pricing"
         ? "Provide your short code pricing details"
@@ -80,6 +81,7 @@ function Shortcode() {
   }, [activeform]);
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   useEffect(() => {
+   setProcessing(false);
     setForm("shortcode");
     setProcessing(false);
     setShortcodeSet(0);
@@ -88,6 +90,7 @@ function Shortcode() {
   }, []);
   const [isMasterData, setIsMasterData] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     if (category) {
       const Category =
         partner.master &&
@@ -184,7 +187,6 @@ function Shortcode() {
   const formShortcodeArray = (shtcd) => {
     const input = shtcd
       ?.replaceAll(";", ",")
-      .replaceAll(",", ",")
       .replaceAll(" ", ",")
       .replaceAll(".", ",");
     if (!input) return null;
@@ -825,9 +827,9 @@ function Shortcode() {
         </div>
         {!isMasterData && partner?.contract_status === "not_started" && (
           <div className="mt-8">
-            {processing ? (
+            {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
+            ) : ( */}
               !activeform && (
                 <div className="flex items-center gap-4">
                   {/* <ButtonPrev
@@ -845,7 +847,7 @@ function Shortcode() {
                   />
                 </div>
               )
-            )}
+            {/* )} */}
           </div>
         )}
       </form>

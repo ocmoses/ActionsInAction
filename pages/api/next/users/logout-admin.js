@@ -11,6 +11,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         token: token,
+        token: token,
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",

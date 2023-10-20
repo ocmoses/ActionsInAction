@@ -20,10 +20,12 @@ export default function LandingPage() {
       id: "2",
       faq: "What do I need to register?",
       ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
+      ans: `They are specific requirements needed to partner with us.  <a className="hover:text-white" href="${PageRoutes.register}">Kindly click on this link to get the detailed requirement</a>.`,
     },
     {
       id: "3",
       faq: "How long does the documentation verification take?",
+      ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
       ans: `In 14 days, all documents submitted will be verified. To check the status of your document verification, <a className="hover:text-white" href="${PageRoutes.login}">click here</a>.`,
     },
     {
@@ -98,6 +100,7 @@ export default function LandingPage() {
                   className="rounded-full flex justify-between items-center px-[42px] py-2 text-black bg-mtn hover:bg-mtn-400 border-2 border-mtn"
                   noicon="yes"
                 />
+                
                 <Button
                   href={"/discover"}
                   label="Discover more"
@@ -496,6 +499,10 @@ export default function LandingPage() {
                           openFaq === f.id ? "flex" : "hidden"
                         } rounded-lg bg-black px-3 py-4`}
                       >
+                        <p
+                          className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
+                          dangerouslySetInnerHTML={{ __html: f.ans }}
+                        ></p>
                         <p
                           className="text-white/60 font-mtn-extralight text-[18px] leading-[24px]"
                           dangerouslySetInnerHTML={{ __html: f.ans }}

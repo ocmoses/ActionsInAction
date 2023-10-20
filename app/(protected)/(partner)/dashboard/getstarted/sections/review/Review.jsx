@@ -10,8 +10,8 @@ export default function Review({ setIsOnboarding, setTmpCat }) {
 
   const { title, subtitle, hand } = forms["review"];
   useEffect(() => {
+   setProcessing(false);
     setForm("review");
-    setProcessing(false);
   }, []);
 
   return (

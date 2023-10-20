@@ -26,12 +26,14 @@ export default function PartnerWelcome({ resource }) {
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
 
   useEffect(() => {
+   setProcessing(false);
     setForm("partnerwelcome");
     setProcessing(false);
     clearErrors();
     setRouteloading(false);
   }, []);
   useEffect(() => {
+   setProcessing(false);
     setData((oldState) => ({
       ...oldState,
       email_type:

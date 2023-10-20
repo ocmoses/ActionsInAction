@@ -139,6 +139,7 @@ export default function AdminRoles({ allRoles }) {
   };
 
   useEffect(() => {
+   setProcessing(false);
     
     get_all_admin_roles();
     get_all_admin_privileges();
@@ -147,6 +148,7 @@ export default function AdminRoles({ allRoles }) {
   }, [page, perPage]);
 
   useEffect(() => {
+   setProcessing(false);
     // setProcessing(true);
     if (all_Admin_Roles) {
       

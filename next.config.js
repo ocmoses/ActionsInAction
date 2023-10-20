@@ -13,7 +13,4 @@ module.exports = {
       "10.1.44.25"
     ],
   },
-  experimental: {
-    appDir: true,
-  },
 };

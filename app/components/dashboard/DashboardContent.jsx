@@ -27,6 +27,7 @@ import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
 import { user_statuses } from "@/app/modules/constants";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -51,6 +52,7 @@ export default function GetStarted({ type }) {
 
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
@@ -76,11 +78,16 @@ export default function GetStarted({ type }) {
     setShowModal(status);
   };
 
-  const userStatus = partner.status;
+  const userStatus = partner?.status;
+
+  const {getQuestionnaireStatus} = useQuestionnaire();
+
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   useEffect(() => {
+   setProcessing(false);
     setCategoriesData(categories);
-  }, [categories]);
+  }, [partner, categories, toFillQuestionnaire]);
 
   const [validation, setValidation] = useState({
     required: [],
@@ -89,15 +96,35 @@ export default function GetStarted({ type }) {
   });
 
   useEffect(() => {
+   setProcessing(false);
     setActiveCategory(tmpCat);
     const validation = setValidationRules(tmpCat);
     setValidation(validation);
   }, [tmpCat]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
+  }, []);
+
+ 
+
+  useEffect(() => {
+    let check = () => 
+    getQuestionnaireStatus().then(response => {
+      // console.log("Questionnaire response", response);
+      if(response.message == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else{
+        setToFillQuestionnaire(false);
+      }
+    }).catch(error => setError({error: error.response.data.message}));
+
+    check();
+
+
   }, []);
 
   //////////afoo code////////////////////////////////////////////////////////////////////////////
@@ -107,6 +134,7 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+   setProcessing(false);
     setBrdComplains(true)
     const partnerCat = [];
     const partnerActiveCat = [];
@@ -132,7 +160,7 @@ export default function GetStarted({ type }) {
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
-        partner.allowedCategories.includes(category.category_code)
+        partner?.allowedCategories.includes(category.category_code)
     );
     setPartnerActiveCategories(newCatArray);
     setPartnerCategories(partnerCat);
@@ -625,6 +653,7 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+              
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 !showProgress && (
@@ -640,6 +669,7 @@ export default function GetStarted({ type }) {
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
                           disabled={partner?.edittable}
+                          pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}
                   </div>

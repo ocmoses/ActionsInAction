@@ -11,10 +11,12 @@ export default function FileInputAsync({
   onChange,
   allowedtypes,
   maxSize,
+  maxSize,
   value,
   bg,
   margin,
   errors,
+  disabled,
   disabled,
 }) {
   const [file, setFile] = useState(null);
@@ -38,6 +40,7 @@ export default function FileInputAsync({
       setDoc({
         file_name: file.name,
         file_path: null,
+        file_size: file.size,
         file_size: file.size,
         file_type: file.type.split("/")[1],
       });
@@ -163,7 +166,7 @@ export default function FileInputAsync({
                         <p className="text-[#999999] mt-0">
                           {doc ? getFileSizeText(doc.file_size) : "0"}
                         </p>
-                      </>
+                      </>                      
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">

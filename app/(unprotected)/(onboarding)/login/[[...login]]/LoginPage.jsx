@@ -47,7 +47,7 @@ function Login({ params }) {
 
   ///////afoo///////////////////////////////////////////////////////////
   const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(false);
-  const [sessionItems, setSessionItems] = useState("");
+  const [sessionItems, setSessionItems] = useState();
   /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
@@ -108,6 +108,7 @@ function Login({ params }) {
       token: loginData?.data?.login_token?.access_token,
       type: "user",
       role: loginData?.data["login-user-role"],
+
     };
 
     app.setStoreStates(serverSession, loginData?.categories, "login");

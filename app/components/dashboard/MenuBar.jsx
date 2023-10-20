@@ -75,8 +75,12 @@ export default function MenuBar({ open }) {
           </Link>
         </li>
       )}
+      
+
+
       {PartnerMenu.map((menu) => {
         return (
+          
           <li key={menu.label}>
             <Link
               href={menu.route}

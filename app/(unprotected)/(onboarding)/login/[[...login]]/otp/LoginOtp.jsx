@@ -7,14 +7,27 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import { TailSpinPreloader } from "@/app/components/Icons";
+import useUsers from "@/hooks/useUsers";
+import useApp from "@/hooks/useApp";
+
+
+
 
 export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
-  console.log("New sesstion Items", sessionItems);
+  const { data: loginData } = sessionItems;
+  console.log("the login data is ", loginData);
+
+const app = useApp();
+
 
   const [timer, setTimer] = useState(180);
   const [showResendLink, setShowResendLink] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
+
+
+  const { user, setUser } = useUsers();
+  //console.log("the user is ", user);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -30,7 +43,7 @@ export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
   }, [timer]);
 
   const [formData, setFormData] = useState({
-    email: sessionItems.data.data.user.email,
+    email: loginData.data.user.email,
     otp: "",
   });
 
@@ -42,7 +55,7 @@ export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
     });
   };
 
-  const token = sessionItems.data.data.access_token;
+  const token = loginData.data.access_token;
   //console.log("the login token is = ", token);
   const acceptOtp = async (e) => {
     e.preventDefault();
@@ -64,12 +77,27 @@ export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
             },
           }
         );
+        //user.auth0Tken = response.data.authZero.access_token
+        
         // console.log(response);
         // const access_token = response.data.authZero.access_token;
         // console.log("the auth0 acess token is ", access_token)
         if ("access_token" in response.data.authZero) {
+          const serverSession = {
+            status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
+            User: loginData?.data,
+            token: loginData?.data?.login_token?.access_token,
+            type: "user",
+            role: loginData?.data["login-user-role"],
+            auth0_access_token: response.data.authZero.access_token
+          };
+      
+          app.setStoreStates(serverSession, loginData?.categories, "login");
+
+
+           console.log("the serverSession details is = ", serverSession);
           //setErrorMessage("Correct OTP");
-          logInWithAuthZero();
+          //logInWithAuthZero();
         } else {
           setErrorMessage("Invalid OTP");
           setSendAction(false);
@@ -80,6 +108,9 @@ export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
       console.log(setErrorMessage, err);
     }
   };
+
+
+
   const clearError = () => {
     setErrorMessage(null);
   };
@@ -116,7 +147,7 @@ export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
           </h1>
           <p className="font-hairline font-mtn flex-wrap text-[16px] text-white/70 mb-10">
             We sent a six-digit code to{" "}
-            <span className="text-mtn">{sessionItems.data.data.user.email}</span>.
+            <span className="text-mtn">{loginData.data.user.email}</span>.
             This helps us keep your account secure by verifying it’s really you
           </p>
           <TextInput

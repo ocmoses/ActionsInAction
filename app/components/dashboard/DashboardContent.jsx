@@ -26,8 +26,9 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
+import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -84,6 +85,10 @@ export default function GetStarted({ type }) {
 
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
+  const [questionnaireAlert, setQuestionnaireAlert] = useState(true);
+  const [showQuestionare, setShowQuestionare] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState(null);
+
   useEffect(() => {
    setProcessing(false);
     setCategoriesData(categories);
@@ -114,13 +119,17 @@ export default function GetStarted({ type }) {
   useEffect(() => {
     let check = () => 
     getQuestionnaireStatus().then(response => {
-      // console.log("Questionnaire response", response);
-      if(response.message == questionnaire_pending){
+      console.log("Questionnaire status response", response);
+      console.log("response.status", response.status == 'rejected');
+      if(response.status == 'rejected'){
+        setQuestionnaireAlert(true);        
+        setRejectionReason(response.rejectionReason);
+      }else if(response.message && response.message == questionnaire_pending){
         setToFillQuestionnaire(true);
-      }else{
+      }else {
         setToFillQuestionnaire(false);
       }
-    }).catch(error => setError({error: error.response.data.message}));
+    }).catch(error => setError({error: error.message}));
 
     check();
 
@@ -421,9 +430,35 @@ export default function GetStarted({ type }) {
                 </div>
               )}
 
+              {questionnaireAlert && 
+                (<>
+                  <div className="w-full p-4 px-6 rounded-lg border-1 border-white/10 bg-white/5 flex space-x-4 mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" className="w-6 h-6">
+                      <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="text-white text-lg">Supplier Questionnaire</p>
+                      <p className="text-white/40 mb-4">There is one or more issues flagged in your supplier questionnaire</p>
+
+                      <span onClick={() => setShowQuestionare(true)} 
+                        className="p-2 px-4 mb-2 border-1 border-white/40 text-white/80 rounded-full hover:bg-white/10 inline-block cursor-pointer text-sm">
+                          Review
+                      </span>
+
+                    </div>
+                  </div>
+                  {
+                    showQuestionare && (
+                    <QuestionnaireModal hide={() => setToFillQuestionnaire(false)} 
+                                        action={() => setQuestionnaireAlert(false)}
+                                        rejectionReason={rejectionReason} />)
+                  }
+                </>)
+              }
+
               {/* //================this is the popup==============================================================================================================*/}
 
-              {rejectedTeam?.rejected?.length > 0 && brdComplains &&(
+              {rejectedTeam?.rejected?.length > 0 && brdComplains && (
                 <>
                   {popUp && (
                     <PopUp closePopUp={closePopUp}>
@@ -761,6 +796,7 @@ export default function GetStarted({ type }) {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
+      
     </>
   );
 }

@@ -154,7 +154,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: stage
-          repository: gkhhgcl/helm-chart
+          #repository: gkhhgcl/helm-chart
+          # new helm repo
+          repository: MTNNigeria/Helm-Charts
           token: ${{ secrets.my_pat }}
 
       - name: Update stage helm repo
@@ -223,3 +225,23 @@ jobs:
             git commit -m "updated values.yml file"
             echo "Done.."
             git push origin prod
+
+# add dast scan
+ Dast_scan:
+   needs: deployment
+   runs-on: self-hosted
+   name: Scan URL with OWASP ZAP
+   steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: main
+    - name: Dev - ZAP Scan
+      uses: zaproxy/action-full-scan@v0.7.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+        target: 'http://10.1.29.123'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
+        artifact_name: AMZ-tribe-frontend-dev-report 

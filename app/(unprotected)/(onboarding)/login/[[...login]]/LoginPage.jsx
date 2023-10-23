@@ -26,6 +26,7 @@ function Login({ params }) {
 
   const { resendEmail } = usePartners();
   const { tmpuser, setTmpUser } = useUsers();
+  //console.log("the tempUser is ", tmpuser)
   const { processing, setProcessing, setForm } = useProcessing();
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -40,7 +41,7 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "afolabi.o@eleadersnetwork.com",
+        : "sunaf4real@gmail.com",
     password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
   });
   
@@ -109,7 +110,6 @@ function Login({ params }) {
       token: loginData?.data?.login_token?.access_token,
       type: "user",
       role: loginData?.data["login-user-role"],
-
     };
 
     app.setStoreStates(serverSession, loginData?.categories, "login");

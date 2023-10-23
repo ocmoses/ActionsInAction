@@ -7,28 +7,24 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import useUsers from "@/hooks/useUsers";
-import useApp from "@/hooks/useApp";
 
+export default function LoginOtp(props) {
+  const { data: loginData } = props.sessionItems;
 
-
-
-export default function LoginOtp({ sessionItems, logInWithAuthZero }) {
-  const { data: loginData } = sessionItems;
-  console.log("the login data is ", loginData);
-
-const app = useApp();
-
-
-  const [timer, setTimer] = useState(180);
+  const [timer, setTimer] = useState(5);
   const [showResendLink, setShowResendLink] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
 
 
-  const { user, setUser } = useUsers();
-  //console.log("the user is ", user);
+  /////// for any errorhandler, there must be clear error function
+  const [errorMessage, setErrorMessage] = useState(null);
+  const clearError = () => {
+    setErrorMessage(null);
+  };
+  ////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////// countdown on OTP recipient
   useEffect(() => {
     const countdown = setInterval(() => {
       if (timer > 0) {
@@ -38,9 +34,34 @@ const app = useApp();
         clearInterval(countdown);
       }
     }, 1000);
-    // Clear the interval when the component unmounts
     return () => clearInterval(countdown);
   }, [timer]);
+
+///////////////////////////////////// end countdown on resend OTP recipient
+  const resendOTP  = async () => {
+    setShowResendLink(false);
+    setTimer(5);
+    try {
+        const response = await axios.post(
+          RemoteEndpoints.RESEND_AUTH0_OTP,
+          formData,
+          {
+            headers: {
+              apikey: apikey,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        ////// send auth0 OTP
+    } catch (err) {
+      console.log(setErrorMessage, err);
+    }
+  };
+///////////////////////////////////// end countdown on OTP recipient
+
+
+
+
 
   const [formData, setFormData] = useState({
     email: loginData.data.user.email,
@@ -56,10 +77,9 @@ const app = useApp();
   };
 
   const token = loginData.data.access_token;
-  //console.log("the login token is = ", token);
+  
   const acceptOtp = async (e) => {
     e.preventDefault();
-
     const otp = formData.otp;
     try {
       clearError();
@@ -77,28 +97,15 @@ const app = useApp();
             },
           }
         );
-        //user.auth0Tken = response.data.authZero.access_token
-        
-        // console.log(response);
-        // const access_token = response.data.authZero.access_token;
-        // console.log("the auth0 acess token is ", access_token)
+       // console.log("The response on Auth0 Authentication is ",response);
+
         if ("access_token" in response.data.authZero) {
-          const serverSession = {
-            status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-            User: loginData?.data,
-            token: loginData?.data?.login_token?.access_token,
-            type: "user",
-            role: loginData?.data["login-user-role"],
-            auth0_access_token: response.data.authZero.access_token
-          };
-      
-          app.setStoreStates(serverSession, loginData?.categories, "login");
+         sessionStorage.setItem('auth0Data', JSON.stringify(response.data.authZero));
+         //setErrorMessage("Correct OTP");
+         props.logInWithAuthZero();
 
-
-           console.log("the serverSession details is = ", serverSession);
-          //setErrorMessage("Correct OTP");
-          //logInWithAuthZero();
         } else {
+          
           setErrorMessage("Invalid OTP");
           setSendAction(false);
         }
@@ -108,35 +115,6 @@ const app = useApp();
       console.log(setErrorMessage, err);
     }
   };
-
-
-
-  const clearError = () => {
-    setErrorMessage(null);
-  };
-
-  const resendOTP  = async () => {
-    try {
-        const response = await axios.post(
-          RemoteEndpoints.RESEND_AUTH0_OTP,
-          formData,
-          {
-            headers: {
-              apikey: apikey,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setShowResendLink(false);
-        setTimer(180);
-    } catch (err) {
-      console.log(setErrorMessage, err);
-    }
-  };
-
-
-
-
 
   return (
     <>

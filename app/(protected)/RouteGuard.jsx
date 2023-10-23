@@ -6,19 +6,30 @@ import useUsers from "@/hooks/useUsers";
 import useLogout from "@/hooks/useLogout";
 
 export default function RouteGuard({ children }) {
+  const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
+
   const { session } = useUsers();
   const router = useRouter();
   const segments = useSelectedLayoutSegments();
   const dologout = useLogout();
+
+  const currentUrl = window.location.pathname;
+
   useEffect(() => {
-     console.log("session from route guard: ", session );
-    if (session) {
-      if (session?.status === "unauthenticated") {
-        const currentUrl = window.location.pathname;
+
+      if (auth0Data==null) {
         if (session?.user?.uuid) dologout.clearStore();
         if (currentUrl !== "/") router.push(`/login${currentUrl}`);
+        
+      } else {
+        if (session) {
+          if (session?.status === "unauthenticated") {
+            if (session?.user?.uuid) dologout.clearStore();
+            if (currentUrl !== "/") router.push(`/login${currentUrl}`);
+          }
+        }
       }
-    }
+    
   }, [session, router]);
   return (
     <>

@@ -7,7 +7,7 @@ import {
   titleCase,
   getInitials
 } from "@/app/modules/utilities";
-import { status_type, statusOptions, request_types } from "@/app/modules/constants";
+import { status_type, statusOptions, request_types, docPrefix } from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -148,7 +148,7 @@ export default function Requests() {
           "request_id": questionnaire.id,
           "created_at": questionnaire.created_at,
           "status": questionnaire.status,
-          "file_name": questionnaire.answered_questionaire?.replace("http://10.1.44.25/dms/PARTNER_ONBOARDING/", "") ?? "",
+          "file_name": questionnaire.answered_questionaire?.replace(docPrefix, "") ?? "",
           "file_path": questionnaire.answered_questionaire ?? "",
           "partner_uuid": questionnaire.partner_uuid,
           "uuid": questionnaire.uuid

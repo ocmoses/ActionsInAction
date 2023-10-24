@@ -4,6 +4,7 @@ interface Props {
   fill?: string;
   iconClass?: string;
   size?: any;
+  initials?: string;
 }
 import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
@@ -657,5 +658,15 @@ export function DecreaseArrow({ iconClass }: Props) {
         d="M30,15V28.59L1.71.29.29,1.71,28.59,30H16v2H31a1,1,0,0,0,1-1V15Z"
       />
     </svg>
+  );
+}
+
+export function CompanyInitial({ initials}: Props) {
+  return (
+    <div
+      className="w-12 h-12 bg-white/80 rounded-full flex flex-col justify-center items-center text-md text-gray-700 font-bold"
+    >
+      <span>{initials}</span>      
+    </div>
   );
 }

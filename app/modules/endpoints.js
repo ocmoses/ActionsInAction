@@ -116,7 +116,8 @@ const RemoteEndpoints = {
   //questionnaire
   GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
   SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
-  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`
-  
+  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`,
+  GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
+  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`
 }
 export default RemoteEndpoints

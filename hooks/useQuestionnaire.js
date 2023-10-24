@@ -64,14 +64,14 @@ export default function useQuestionnaire(){
             
             
             if (!response)
-            return {
-            error: "This request has no response available",
+                return {
+                error: "This request has no response available",
             };
 
-            if (response.status === 401 ) {
-                Logout();
-                return;
-            }
+            // if (response.status === 401 ) {
+            //     Logout();
+            //     return;
+            // }
 
             // console.log('Create response', response.text);
 
@@ -84,11 +84,15 @@ export default function useQuestionnaire(){
             setProcessing(false);
             if (result?.success) {
                 const message = result.data?.message;
+                const status = result.data?.status;
+                const rejectionReason = result.data?.reasons_for_rejection;
                 
                 // console.log('Retrieval message', message);
 
                 return {
-                    message
+                    message,
+                    status,
+                    rejectionReason
                 };
             }
             return {

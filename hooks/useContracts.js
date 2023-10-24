@@ -208,6 +208,7 @@ const useContracts = () => {
       setProcessing(false);
       if (result?.success) {
         const contracts = result.data?.contracts.data;
+        contracts.forEach(c => c.status = c.contract_status);
         
         // console.log('Admin roles retrieved', admin_roles);
         const navigation = {

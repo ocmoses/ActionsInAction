@@ -449,7 +449,7 @@ export default function GetStarted({ type }) {
                   </div>
                   {
                     showQuestionare && (
-                    <QuestionnaireModal hide={() => setToFillQuestionnaire(false)} 
+                    <QuestionnaireModal hide={() => setShowQuestionare(false)} 
                                         action={() => setQuestionnaireAlert(false)}
                                         rejectionReason={rejectionReason} />)
                   }

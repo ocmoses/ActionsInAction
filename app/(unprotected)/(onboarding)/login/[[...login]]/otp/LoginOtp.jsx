@@ -11,7 +11,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 export default function LoginOtp(props) {
   const { data: loginData } = props.sessionItems;
 
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(30);
   const [showResendLink, setShowResendLink] = useState(false);
   const [sendAction, setSendAction] = useState(false);
 
@@ -40,7 +40,7 @@ export default function LoginOtp(props) {
 ///////////////////////////////////// end countdown on resend OTP recipient
   const resendOTP  = async () => {
     setShowResendLink(false);
-    setTimer(5);
+    setTimer(30);
     try {
         const response = await axios.post(
           RemoteEndpoints.RESEND_AUTH0_OTP,

@@ -32,11 +32,6 @@ export const PartnerMenu = [
     route: "/dashboard/contracts",
   },
   
-  {
-    label: "Services Configuration",
-    icon: "",
-    route: "",
-  }
   // {
   //   label: "Payment",
   //   icon: "",

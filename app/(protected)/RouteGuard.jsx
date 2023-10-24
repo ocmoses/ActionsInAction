@@ -1,21 +1,22 @@
 "use client";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useRouter, useSelectedLayoutSegments } from "next/navigation";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import useUsers from "@/hooks/useUsers";
 import useLogout from "@/hooks/useLogout";
 
 export default function RouteGuard({ children }) {
-  const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
-
+ 
   const { session } = useUsers();
   const router = useRouter();
   const segments = useSelectedLayoutSegments();
   const dologout = useLogout();
 
-  const currentUrl = window.location.pathname;
+  
 
   useEffect(() => {
+      const currentUrl = window.location.pathname;
+      const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
 
       if (auth0Data==null) {
         if (session?.user?.uuid) dologout.clearStore();

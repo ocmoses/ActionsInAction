@@ -117,7 +117,7 @@ export default function Requests() {
     setRequests(requests);    
 
     requests.sort((a, b) => a.request_date > b.request_date ? -1 : a.request_date < b.request_date ? 1 : 0);
-    setFilteredRequests(requests);
+    // setFilteredRequests(requests);
 
     console.log("Requests", requests);
 
@@ -266,14 +266,14 @@ export default function Requests() {
     
   useEffect(() => {
     setProcessing(false);
-    clearErrors();
-    get_questionnaires(); 
+    clearErrors();    
     get_brds();
+    get_questionnaires(); 
          
   },[]);
 
-  // useEffect(() => {
-  // }, [filteredRequests]);
+  useEffect(() => {
+  }, [filteredRequests]);
 
   return (
       <>
@@ -385,7 +385,7 @@ export default function Requests() {
                 </tbody>
               </table>
               {
-                !(filteredRequests && pagedRequests) ?  
+                filteredRequests.length == 0 && pagedRequests.length == 0 ?  
                 (<EmptyTable list={'Requests'} />) : 
                 (<TablePager list={filteredRequests} action={setPagedRequests} />)
               }

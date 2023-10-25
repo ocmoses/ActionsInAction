@@ -26,6 +26,7 @@ import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Contracts() {
@@ -58,13 +59,14 @@ export default function Contracts() {
   const [displaySuccess, setDisplaySuccess] = useState(false);
 
   const [filteredContracts, setFilteredContracts] = useState([]);
+  const [pagedContracts, setPagedContracts] = useState([]);
 
     
   useEffect(() => {
    setProcessing(false);
     clearErrors();
     getAllContracts().then(resp => {
-      console.log("All contracts", resp.contracts);
+                            console.log("All contracts", resp.contracts);
                             resp.contracts.forEach(c => c.status = c.contract_status);
                             setContracts(resp.contracts); 
                             setFilteredContracts(resp.contracts); 
@@ -82,7 +84,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {navigation?.total}
+                {contracts?.length}
               </span>
             </div>
             
@@ -126,7 +128,7 @@ export default function Contracts() {
                       </th>                     
                     </tr>
 
-                    {filteredContracts && filteredContracts.map(contract => 
+                    {pagedContracts && pagedContracts.map(contract => 
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>
@@ -186,9 +188,9 @@ export default function Contracts() {
                   </tbody>
                 </table>
                 {
-                  (!filteredContracts || filteredContracts.length) == 0 ?  
+                  (filteredContracts.length == 0 && pagedContracts.length == 0) ?  
                   (<EmptyTable list={'Contracts'} />) : 
-                  (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+                  (<TablePager list={filteredContracts} action={setPagedContracts}/>)
                 }
               </>
             

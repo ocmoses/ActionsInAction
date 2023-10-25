@@ -7,9 +7,9 @@ import { useStoreState } from "easy-peasy";
 
 export default function TablePager({list, action, perPage=5, pages=null}){
 
-    // if(!list){
-    //     return;
-    // }
+    if(!list){
+        return;
+    }
 
     const { setProcessing } = useProcessing();
     const userStates = useStoreState((action) => action.users);
@@ -49,7 +49,12 @@ export default function TablePager({list, action, perPage=5, pages=null}){
     useEffect(() => {      
       setLinks(pageLinks);
       action(list.slice(pageLinks[0]?.start, pageLinks[0]?.end));
+      setCurrentPage(0);
     }, [list]);
+
+    useEffect(() => { 
+        
+      }, [pageLinks]);
 
 
     const getChunk = async (chunk) => {
@@ -151,17 +156,21 @@ export default function TablePager({list, action, perPage=5, pages=null}){
     return (
         <div className="w-full p-2 flex justify-between">
             <span onClick={handlePreviousClick} 
-                    className={`inline-block p-2 border-1 w-20 rounded-full text-center text-xs m-3
+                    className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
                                 ${currentPage == 0 ? 
                                     'text-white/20 border-white/20' : 
                                     'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}>
                     Previous
             </span>
 
-
+            <div className="flex space-x-4 justify-center items-center text-white/80 text-sm">
+                {
+                    `Page ${currentPage + 1} of ${pageLinks.length}`
+                }
+            </div>
 
             <span onClick={handleNextClick} 
-                    className={`inline-block p-2 border-1 w-20 rounded-full text-center text-xs m-3
+                    className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
                                 ${currentPage == pageLinks.length-1 ? 
                                     'text-white/20 border-white/20' : 
                                     'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}>
@@ -170,6 +179,9 @@ export default function TablePager({list, action, perPage=5, pages=null}){
         </div>
 
         
-    )
+    );
+
+    
 
 }
+

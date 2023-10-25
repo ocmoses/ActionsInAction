@@ -25,6 +25,8 @@ import FilePreviewModal from "@/app/components/FilePreviewModal";
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Requests() {
   const {
@@ -69,6 +71,7 @@ export default function Requests() {
 
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
+  const [pagedRequests, setPagedRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const activeStage = selectedRequest != null ? selectedRequest?.request_type : "Request Approval";
@@ -264,10 +267,13 @@ export default function Requests() {
   useEffect(() => {
     setProcessing(false);
     clearErrors();
+    get_questionnaires(); 
     get_brds();
-    get_questionnaires();  
-     
+         
   },[]);
+
+  // useEffect(() => {
+  // }, [filteredRequests]);
 
   return (
       <>
@@ -320,7 +326,7 @@ export default function Requests() {
                     </th>                      
                   </tr>
 
-                  {filteredRequests && filteredRequests.length > 0 && filteredRequests.map(request => 
+                  {pagedRequests && pagedRequests.length > 0 && pagedRequests.map(request => 
                     <tr 
                         className="border-b border-b-white/10 cursor-pointer bg-transparent" key={request.uuid}
                     >
@@ -375,80 +381,14 @@ export default function Requests() {
                           
                     </tr>)
                   }
+                  
                 </tbody>
               </table>
-              <div className="w-full flex justify-end">
-                {!Util.isEmpty(navigation) &&
-                  navigation.links?.length > 0 &&
-                  navigation.links.map((nav, index) => {
-                    let link = null;
-                    if (index === 0) {
-                      if (nav.url) {
-                      }
-                      link = (
-                        <div className="flex p-2 text-white">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                            />
-                          </svg>
-                        </div>
-                      );
-                    } else if (index === navigation.links.length - 1) {
-                      link = (
-                        <div className="flex p-2 text-white">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                            />
-                          </svg>
-                        </div>
-                      );
-                    } else {
-                      if (nav.url) {
-                        link = nav.active ? (
-                          <div className="flex p-2 text-white bg-white/30">
-                            {index}
-                          </div>
-                        ) : (
-                          <div
-                            onClick={() => setPage(index)}
-                            className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                          >
-                            {index}
-                          </div>
-                        );
-                      } else {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            {nav.label}
-                          </div>
-                        );
-                      }
-                    }
-
-                    return link;
-                  })}
-              </div>
-              
+              {
+                !(filteredRequests && pagedRequests) ?  
+                (<EmptyTable list={'Requests'} />) : 
+                (<TablePager list={filteredRequests} action={setPagedRequests} />)
+              }
             </div>
           </div>
         </div>

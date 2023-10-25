@@ -8,6 +8,7 @@
     "prettier": "prettier --write \"{,!(.next)/**/}*.{js,ts,jsx,tsx,mjs,json}\""
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.14.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@heroicons/react": "^2.0.13",

@@ -26,6 +26,7 @@ import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Filter from "@/app/components/Filter";
+import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
@@ -184,77 +185,11 @@ export default function Contracts() {
                     }
                   </tbody>
                 </table>
-                <div className="w-full flex justify-end">
-                  {!Util.isEmpty(navigation) &&
-                    navigation.links?.length > 0 &&
-                    navigation.links.map((nav, index) => {
-                      let link = null;
-                      if (index === 0) {
-                        if (nav.url) {
-                        }
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else if (index === navigation.links.length - 1) {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else {
-                        if (nav.url) {
-                          link = nav.active ? (
-                            <div className="flex p-2 text-white bg-white/30">
-                              {index}
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => setPage(index)}
-                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                            >
-                              {index}
-                            </div>
-                          );
-                        } else {
-                          link = (
-                            <div className="flex p-2 text-white">
-                              {nav.label}
-                            </div>
-                          );
-                        }
-                      }
-
-                      return link;
-                    })}
-                </div>
+                {
+                  (!filteredContracts || filteredContracts.length) == 0 ?  
+                  (<EmptyTable list={'Contracts'} />) : 
+                  (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+                }
               </>
             
           </div>

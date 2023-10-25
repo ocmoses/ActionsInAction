@@ -22,6 +22,8 @@ import usePartners from "@/hooks/usePartners";
 import {useStoreState} from 'easy-peasy';
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Contracts() {
   const {partnerGetAllContracts} = useContracts();
@@ -40,6 +42,10 @@ export default function Contracts() {
     downloadSignedContract,
     getContractDynamicData
   } = usePartners();
+
+  if(!partner){
+    location.reload();
+  }
 
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
@@ -65,9 +71,6 @@ export default function Contracts() {
 
 
   const router = useRouter();
-  const [navigation, setNavigation] = useState([]);
-  const [page, setPage] = useState(null);
-  const [perPage, setPerPage] = useState(null);
 
   const [displaySuccess, setDisplaySuccess] = useState(false);
 
@@ -112,13 +115,12 @@ export default function Contracts() {
   const [agreementModal, setAgreementModal] = useState(false);
   const [acceptingAgreement, setAcceptingAgreement] = useState(false);
 
-  const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
+  const [data, setData] = useState({partner_uuid: partner?.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
   const [disableActiveButton, setDisableActiveButton] = useState(true);
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
-
-
-  const userStatus = partner.status;
+  
+  const userStatus = partner?.status;
 
   const APPROVED = "active";
   const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
@@ -131,6 +133,8 @@ export default function Contracts() {
   const [allHaveSigned, setAllHaveSigned] = useState(false);
 
   const [dynamicData, setDynamicData] = useState(null);
+
+  const [pages, setPages] = useState(null);
 
   let selected_admin_users = partner.selected_partner_admin_users;
   let signingDirector = selected_admin_users.find(user => user.role == 'director');
@@ -192,7 +196,6 @@ export default function Contracts() {
     setPartnerRoles(all_Roles.partner_roles);
     setFetchingPartnerRoles(false);
     if (all_Roles.error) setError({ error: all_Roles.error });
-    // setNavigation(all_Admins.navigation);
   };
 
   const get_all_admin_partners = async () => {
@@ -204,7 +207,6 @@ export default function Contracts() {
     if (all_admin_partners_response.error) {
       setError({ error: all_admin_partners_response.error });
     }else{
-      // setNavigation(all_Admins.navigation);
       console.log("Admin_partners", all_admin_partners_response.admin_partners);
       setAdminPartners(all_admin_partners_response.admin_partners);
 
@@ -349,9 +351,10 @@ export default function Contracts() {
     partnerGetAllContracts().then(resp => {
       console.log("resp", resp);
       let contracts = resp.contracts;
+      let pages = resp.pages;
       setContracts(contracts); 
+      setPages(pages);
       setFilteredContracts(contracts); 
-      setNavigation(resp.navigation)
     });
 
        
@@ -371,7 +374,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {navigation?.total}
+                {pages?.total}
               </span>
             </div>
             
@@ -601,77 +604,11 @@ export default function Contracts() {
                     }
                   </tbody>
                 </table>
-                <div className="w-full flex justify-end">
-                  {!Util.isEmpty(navigation) &&
-                    navigation.links?.length > 0 &&
-                    navigation.links.map((nav, index) => {
-                      let link = null;
-                      if (index === 0) {
-                        if (nav.url) {
-                        }
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else if (index === navigation.links.length - 1) {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else {
-                        if (nav.url) {
-                          link = nav.active ? (
-                            <div className="flex p-2 text-white bg-white/30">
-                              {index}
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => setPage(index)}
-                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                            >
-                              {index}
-                            </div>
-                          );
-                        } else {
-                          link = (
-                            <div className="flex p-2 text-white">
-                              {nav.label}
-                            </div>
-                          );
-                        }
-                      }
-
-                      return link;
-                    })}
-                </div>
+                {
+                  (!filteredContracts || filteredContracts.length) == 0 ?  
+                  (<EmptyTable list={'Contracts'} />) : 
+                  (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+                }
               </>
             
           </div>

@@ -1402,6 +1402,8 @@ export const user_statuses = {
 
 export const questionnaire_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
 
+export const conduct_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+
 export const docPrefix = "http://10.1.44.25/dms/PARTNER_ONBOARDING/";
 
 export const request_types = {

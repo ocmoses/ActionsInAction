@@ -262,13 +262,16 @@ export const PartnerFilterTitle = ({ title }) => {
 
 
 
-export const PartnerFilterCheck = ({ title, summary }) => {
+export const PartnerFilterCheck = ({ title, summary, value, checked, onChange }) => {
 
   return (
     <div className="flex ">
       <div className="w-10 flex mr-1">
         <input
           type="checkbox"
+          value={value}
+          checked={checked}
+          onChange={onChange}
           className="h-6 w-6 rounded-lg bg-black/40"
         />
       </div>

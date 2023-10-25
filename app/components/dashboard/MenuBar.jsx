@@ -70,7 +70,7 @@ export default function MenuBar({ open }) {
           {iframe == "DSM" && (
             <>
               <OtherServicesPopUps closeServicePopUp={closeServicePopUp} title="DSM Service Configuration">
-                <Iframe url="http://10.1.29.123" />
+                <Iframe url="https://smdev.mtn.com.ng/DSDP/PartnerPortalLoginApi" />
               </OtherServicesPopUps>
             </>
           )}

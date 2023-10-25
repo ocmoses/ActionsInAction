@@ -17,7 +17,7 @@ export default function RouteGuard({ children }) {
   useEffect(() => {
       const currentUrl = window.location.pathname;
       const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
-
+      
       if (auth0Data==null) {
         if (session?.user?.uuid) dologout.clearStore();
         if (currentUrl !== "/") router.push(`/login${currentUrl}`);

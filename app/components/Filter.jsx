@@ -55,7 +55,7 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
                 for(const akey of keysArray){
                     for(const keyword of searchTags.keywords){                        
                         if(listItem[akey] && keyword){
-                            if(listItem[akey].toLowerCase().includes(keyword.toLowerCase())){
+                            if(listItem[akey]?.toLowerCase().includes(keyword?.toLowerCase())){
                                 if(!finalList.includes(listItem)){
                                     finalList.push(listItem);                                                               
                                 }
@@ -75,7 +75,7 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
             let finalList = [];
             for(const aStatus of searchTags.status){
                 for(const aFiltered of filtered){
-                    if(aFiltered['status'].toLowerCase() == aStatus.toLowerCase()){
+                    if(aFiltered['status']?.toLowerCase() == aStatus?.toLowerCase()){
                         if(!finalList.includes(aFiltered)){
                             finalList.push(aFiltered);
                         }

@@ -24,15 +24,18 @@ export default function Approvals() {
     category: false,
     status: false,
   });
+
+  const [filteredRecords, setFilteredRecords] = useState(null);
+
+
+
+
+
+
   useEffect(() => {
+
+
     const fetchReport = async () => {
-      // const api_key = apikey
-      // const response = await fetchData(RemoteEndpoints.PARTNER_STATISTICS, api_key)
-      // if(response.success){
-      //   setReportStatistics(response.data);
-      // } else {
-      //   console.error("Error fetching data:", response.message);
-      // }
       if (fetching) return;
       try {
         setFetching(true);
@@ -41,23 +44,63 @@ export default function Approvals() {
             apikey: apikey,
           },
         });
-        console.log("this is my response", response);
+       // console.log("this is my response", response);
         setFetching(false);
         setReportStatistics(response.data.data);
       } catch (error) {
         setFetching(false);
-        console.error("Error fetching data:", error);
+        //console.error("Error fetching data:", error);
       }
     };
     fetchReport();
 
-    document.addEventListener('click', function(e){
-      if(!filterRef.current.contains(e.target)){
+    document.addEventListener('click', function(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
         setFilterModal(false);
       }
     }, true);
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    const filterReport = async () => {
+    try {
+      const filteringResponse = await axios.get(RemoteEndpoints.PARTNER_FILTERING, {
+        headers: {
+          apikey: apikey,
+        },
+      });
+      console.log("this is my filteringResponse", filteringResponse);
+      setFilteredRecords(filteringResponse.data.data);
+    } catch (error) {
+      console.error("Error filteringResponse data:", error);
+    }
+    };
+    filterReport();
+
+
+
+
+
+
+
+
+
+
   }, []);
+
+
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -515,18 +558,16 @@ export default function Approvals() {
                           {search.date && (
                             <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                               <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
-                                <TextInput
-                                  id="name"
+                                <TextInput 
                                   label="From"
                                   type="date"
-                                  name="name"
+                                 
                                 />
 
                                 <TextInput
-                                  id="name"
                                   label="To"
                                   type="date"
-                                  name="name"
+                                 
                                 />
                               </div>
 
@@ -684,7 +725,481 @@ export default function Approvals() {
                 </button>
               </div>
             </div>
-            <PartnerFilterList />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <section>
+      <table className="table w-full transparent">
+        <tbody>
+          {/* head */}
+          <tr className="border-b border-b-white/40 text-11">
+            <th>
+              <input
+                type="checkbox"
+                className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
+              />
+              <span className="text-[13px]">Company</span>
+            </th>
+            <th>
+              <span className="text-[13px]">Category</span>
+            </th>
+            <th>
+              <span className="text-[13px]">Date</span>
+            </th>
+            <th>
+              <span className="text-[13px]">Status</span>
+            </th>
+            <th>
+              <span className="text-[13px]"></span>
+            </th>
+          </tr>
+
+
+
+
+{/* ======================================================================================================================================================= */}
+          {filteredRecords?.map((record) => (
+             
+
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/5"  key={record.index}>
+            <td>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                />
+                <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                  <span>M</span>
+                </div>
+                <div>
+                  <div className="font-bold text-white">
+                  {record.company}
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-white/80">
+                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                    {record.email}
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div className="flex flex-row">
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                  <span>V</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>R</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>+1</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p>Jan 10, 2023</p>
+            </td>
+            <td>
+              <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                >
+                  <circle cx="4" cy="4" r="3" fill="#2C9958" />
+                </svg>
+                <span className="text-[12px] text-white">Active</span>
+              </div>
+            </td>
+
+            <td>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </td>
+          </tr>
+
+
+
+
+
+
+            ))}
+          
+          {/* ======================================================================================================================================================= */}
+         {/* ======================================================================================================================================================= */}
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+            <td>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                />
+                <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                  <span>M</span>
+                </div>
+                <div>
+                  <div className="font-bold text-white">
+                    MTN Nigeria Limited
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-white/80">
+                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                    sunaf4real@gmail.com
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div className="flex flex-row">
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                  <span>V</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>R</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>+1</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p>Jan 10, 2023</p>
+            </td>
+            <td>
+              <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                >
+                  <circle cx="4" cy="4" r="3" fill="#396587" />
+                </svg>
+                <span className="text-[12px] text-white">In Review</span>
+              </div>
+            </td>
+
+            <td>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </td>
+          </tr>
+          {/* ======================================================================================================================================================= */}
+          {/* ======================================================================================================================================================= */}
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+            <td>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                />
+                <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                  <span>M</span>
+                </div>
+                <div>
+                  <div className="font-bold text-white">
+                    MTN Nigeria Limited
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-white/80">
+                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                    sunaf4real@gmail.com
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div className="flex flex-row">
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                  <span>V</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>R</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>+1</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p>Jan 10, 2023</p>
+            </td>
+            <td>
+              <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                >
+                  <circle cx="4" cy="4" r="3" fill="#FFCB03" />
+                </svg>
+                <span className="text-[12px] text-white">30 Days Left</span>
+              </div>
+            </td>
+
+            <td>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </td>
+          </tr>
+          {/* ======================================================================================================================================================= */}
+          {/* ======================================================================================================================================================= */}
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+            <td>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                />
+                <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                  <span>M</span>
+                </div>
+                <div>
+                  <div className="font-bold text-white">
+                    MTN Nigeria Limited
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-white/80">
+                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                    sunaf4real@gmail.com
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div className="flex flex-row">
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                  <span>V</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>R</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>+1</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p>Jan 10, 2023</p>
+            </td>
+            <td>
+              <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                >
+                  <circle cx="4" cy="4" r="3" fill="#FE0302" />
+                </svg>
+                <span className="text-[12px] text-white">Expired</span>
+              </div>
+            </td>
+
+            <td>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </td>
+          </tr>
+          {/* ======================================================================================================================================================= */}
+          {/* ======================================================================================================================================================= */}
+          <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+            <td>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                />
+                <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                  <span>M</span>
+                </div>
+                <div>
+                  <div className="font-bold text-white">
+                    MTN Nigeria Limited
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-white/80">
+                    {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                    sunaf4real@gmail.com
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div className="flex flex-row">
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                  <span>V</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>R</span>
+                </div>
+                <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                  <span>+1</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <p>Jan 10, 2023</p>
+            </td>
+            <td>
+              <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="8"
+                  height="8"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                >
+                  <circle cx="4" cy="4" r="3" fill="#FFCB03" />
+                </svg>
+                <span className="text-[12px] text-white">30 Days Left</span>
+              </div>
+            </td>
+
+            <td>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </td>
+          </tr>
+          {/* ======================================================================================================================================================= */}
+  
+        </tbody>
+      </table>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
           </div>
         </section>
       </div>

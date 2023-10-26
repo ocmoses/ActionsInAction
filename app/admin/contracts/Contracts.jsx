@@ -26,6 +26,8 @@ import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Contracts() {
   const {getAllContracts} = useContracts();
@@ -57,13 +59,14 @@ export default function Contracts() {
   const [displaySuccess, setDisplaySuccess] = useState(false);
 
   const [filteredContracts, setFilteredContracts] = useState([]);
+  const [pagedContracts, setPagedContracts] = useState([]);
 
     
   useEffect(() => {
    setProcessing(false);
     clearErrors();
     getAllContracts().then(resp => {
-      console.log("All contracts", resp.contracts);
+                            console.log("All contracts", resp.contracts);
                             resp.contracts.forEach(c => c.status = c.contract_status);
                             setContracts(resp.contracts); 
                             setFilteredContracts(resp.contracts); 
@@ -81,7 +84,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {navigation?.total}
+                {contracts?.length}
               </span>
             </div>
             
@@ -125,7 +128,7 @@ export default function Contracts() {
                       </th>                     
                     </tr>
 
-                    {filteredContracts && filteredContracts.map(contract => 
+                    {pagedContracts && pagedContracts.map(contract => 
                       <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                             {/* Company */}
                             <td>
@@ -184,77 +187,11 @@ export default function Contracts() {
                     }
                   </tbody>
                 </table>
-                <div className="w-full flex justify-end">
-                  {!Util.isEmpty(navigation) &&
-                    navigation.links?.length > 0 &&
-                    navigation.links.map((nav, index) => {
-                      let link = null;
-                      if (index === 0) {
-                        if (nav.url) {
-                        }
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else if (index === navigation.links.length - 1) {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else {
-                        if (nav.url) {
-                          link = nav.active ? (
-                            <div className="flex p-2 text-white bg-white/30">
-                              {index}
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => setPage(index)}
-                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                            >
-                              {index}
-                            </div>
-                          );
-                        } else {
-                          link = (
-                            <div className="flex p-2 text-white">
-                              {nav.label}
-                            </div>
-                          );
-                        }
-                      }
-
-                      return link;
-                    })}
-                </div>
+                {
+                  (filteredContracts.length == 0 && pagedContracts.length == 0) ?  
+                  (<EmptyTable list={'Contracts'} />) : 
+                  (<TablePager list={filteredContracts} action={setPagedContracts}/>)
+                }
               </>
             
           </div>

@@ -30,13 +30,8 @@ export const PartnerMenu = [
             </svg>
           </div>,
     route: "/dashboard/contracts",
-  }
+  },
   
-  // {
-  //   label: "Services",
-  //   icon: "",
-  //   route: "",
-  // },
   // {
   //   label: "Payment",
   //   icon: "",

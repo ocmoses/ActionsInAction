@@ -41,6 +41,7 @@ const useApp = () => {
             localStorage.setItem("lastname", serverSession.User.user.last_name);
             localStorage.setItem("email", serverSession.User.user.email);
             localStorage.setItem("user", serverSession.User.user);
+            //localStorage.setItem("auth0_access_token", serverSession.auth0_access_token);
           }
 
           if(serverSession.role != undefined && serverSession.role != null){

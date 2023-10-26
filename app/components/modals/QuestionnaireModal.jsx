@@ -4,7 +4,7 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import useProcessing from "@/hooks/useProcessing";
 import useErrors from "@/hooks/useErrors";
 import usePartners from "@/hooks/usePartners";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ListIcon from "../icons/ListIcon";
 import CancelIcon from "../icons/CancelIcon";
 import FileInput from "../form/FileInput";
@@ -46,6 +46,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
 
     if(!data.questionairre_doc){
       setError({error: "No file chosen"});
+      return;
     }else{
       clearErrors();
     }
@@ -64,11 +65,15 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
     }
 
   }
+
+  useEffect(() => {
+    clearErrors();
+  }, []);
     
     return (
         <>
             <div id="questionare_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "questionare_modal") {hide()}}}>
-                <div id="actualModal" className=" pb-12 relative px-10 rounded-xl shadow-xl bg-[#131313] inline-flex flex-col w-[600px]">
+                <div id="actualModal" className=" pb-12 relative px-10 rounded-xl shadow-xl bg-[#131313] inline-flex flex-col w-[550px]">
                     <CancelIcon action={() => hide()} />
                     <div className="flex pt-8 pb-4 justify-center w-full">
                         <ListIcon />                            

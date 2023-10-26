@@ -13,6 +13,15 @@ import PartnerStatisticsReport, {
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
+function formatDate(inputDate) {
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  const formattedDate = new Date(inputDate).toLocaleDateString(
+    undefined,
+    options
+  );
+  return formattedDate;
+}
+
 export default function Approvals() {
   //const { fetchData }=  useAdmins()
   const [reportStatistics, setReportStatistics] = useState(null);
@@ -24,15 +33,15 @@ export default function Approvals() {
     category: false,
     status: false,
   });
+
+  const [records, setRecords] = useState([]);
+  const [filteredRecords, setFilteredRecords] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+
   useEffect(() => {
     const fetchReport = async () => {
-      // const api_key = apikey
-      // const response = await fetchData(RemoteEndpoints.PARTNER_STATISTICS, api_key)
-      // if(response.success){
-      //   setReportStatistics(response.data);
-      // } else {
-      //   console.error("Error fetching data:", response.message);
-      // }
       if (fetching) return;
       try {
         setFetching(true);
@@ -41,23 +50,79 @@ export default function Approvals() {
             apikey: apikey,
           },
         });
-        console.log("this is my response", response);
+        // console.log("this is my response", response);
         setFetching(false);
         setReportStatistics(response.data.data);
       } catch (error) {
         setFetching(false);
-        console.error("Error fetching data:", error);
+        //console.error("Error fetching data:", error);
       }
     };
     fetchReport();
 
-    document.addEventListener('click', function(e){
-      if(!filterRef.current.contains(e.target)){
-        setFilterModal(false);
-      }
-    }, true);
+    document.addEventListener(
+      "click",
+      function (e) {
+        if (filterRef.current && !filterRef.current.contains(e.target)) {
+          setFilterModal(false);
+        }
+      },
+      true
+    );
 
+    const filterReport = async () => {
+      try {
+        const filteringResponse = await axios.get(
+          RemoteEndpoints.PARTNER_FILTERING,
+          {
+            headers: {
+              apikey: apikey,
+            },
+          }
+        );
+        setRecords(filteringResponse.data.data);
+        setFilteredRecords(filteringResponse.data.data); // Initially, filteredRecords is set to all records
+      } catch (error) {
+        console.error("Error filteringResponse records:", error);
+      }
+    };
+
+    filterReport();
   }, []);
+
+  useEffect(() => {
+    // Filter records based on user input when filter criteria change
+    const filtered = records.filter((record) => {
+      if (
+        (startDate && new Date(record.date) < new Date(startDate)) ||
+        (endDate && new Date(record.date) > new Date(endDate))
+      ) {
+        return false;
+      }
+
+      if (
+        selectedStatuses.length > 0 &&
+        !selectedStatuses.includes(record.status)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    setFilteredRecords(filtered);
+  }, [startDate, endDate, selectedStatuses, records]);
+
+  function handleStatusChange(e) {
+    const value = e.target.value;
+    if (e.target.checked) {
+      setSelectedStatuses([...selectedStatuses, value]);
+    } else {
+      setSelectedStatuses(
+        selectedStatuses.filter((status) => status !== value)
+      );
+    }
+  }
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -325,15 +390,17 @@ export default function Approvals() {
                   </div>
 
                   {filterModal && (
-                    <div 
-                    ref={filterRef}
+                    <div
+                      ref={filterRef}
                       className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out]`}
                     >
                       <div className="flex">
                         <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
                           <div
                             className={`${
-                              search.date ? "bg-white/20 text-white" : "text-gray-400"
+                              search.date
+                                ? "bg-white/20 text-white"
+                                : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -381,7 +448,9 @@ export default function Approvals() {
 
                           <div
                             className={`${
-                              search.category ? "bg-white/20 text-white" : "text-gray-400"
+                              search.category
+                                ? "bg-white/20 text-white"
+                                : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -459,7 +528,9 @@ export default function Approvals() {
 
                           <div
                             className={`${
-                              search.status ? "bg-white/20 text-white" : "text-gray-400"
+                              search.status
+                                ? "bg-white/20 text-white"
+                                : "text-gray-400"
                             }
                             rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
@@ -516,22 +587,24 @@ export default function Approvals() {
                             <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                               <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
                                 <TextInput
-                                  id="name"
                                   label="From"
                                   type="date"
-                                  name="name"
+                                  value={startDate}
+                                  onChange={(e) => setStartDate(e.target.value)}
                                 />
 
                                 <TextInput
-                                  id="name"
                                   label="To"
                                   type="date"
-                                  name="name"
+                                  value={endDate}
+                                  onChange={(e) => setEndDate(e.target.value)}
                                 />
                               </div>
 
                               <div className="flex flex-col gap-2">
-                                <h3 className="text-gray-400">Show results for</h3>
+                                <h3 className="text-gray-400">
+                                  Show results for
+                                </h3>
                                 <PartnerFilterTitle title="Last 30 Days" />
                                 <PartnerFilterTitle title="This Month" />
                                 <PartnerFilterTitle title="Last Month" />
@@ -568,10 +641,16 @@ export default function Approvals() {
                               <PartnerFilterCheck
                                 title="Active"
                                 summary="Contract is still active"
+                                value="active"
+                                checked={selectedStatuses.includes("active")}
+                                onChange={handleStatusChange}
                               />
                               <PartnerFilterCheck
                                 title="Expired"
                                 summary="Contract has expired"
+                                value="expired"
+                                checked={selectedStatuses.includes("expired")}
+                                onChange={handleStatusChange}
                               />
                               <PartnerFilterCheck
                                 title="Expiring in 30 days"
@@ -580,6 +659,9 @@ export default function Approvals() {
                               <PartnerFilterCheck
                                 title="In review"
                                 summary="Contract has not started"
+                                value="new"
+                                checked={selectedStatuses.includes("new")}
+                                onChange={handleStatusChange}
                               />
                             </div>
                           )}
@@ -684,7 +766,114 @@ export default function Approvals() {
                 </button>
               </div>
             </div>
-            <PartnerFilterList />
+
+            <section>
+              <table className="table w-full transparent">
+                <tbody>
+                  {/* head */}
+                  <tr className="border-b border-b-white/40 text-11">
+                    <th>
+                      <input
+                        type="checkbox"
+                        className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
+                      />
+                      <span className="text-[13px]">Company</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Category</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Date</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Status</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]"></span>
+                    </th>
+                  </tr>
+
+                  {/* ======================================================================================================================================================= */}
+                  {filteredRecords?.map((record) => (
+                    <tr
+                      className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/5"
+                      key={record.index}
+                    >
+                      <td>
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                          />
+                          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                            <span>M</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-white">
+                              {record.company}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-white/80">
+                              {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                              {record.email}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div className="flex flex-row">
+                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
+                            <span>V</span>
+                          </div>
+                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                            <span>R</span>
+                          </div>
+                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                            <span>+1</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p>{formatDate(record.date)}</p>
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="8"
+                            height="8"
+                            viewBox="0 0 8 8"
+                            fill="none"
+                          >
+                            <circle cx="4" cy="4" r="3" fill="#2C9958" />
+                          </svg>
+                          <span className="text-[12px] text-white capitalize">
+                            {record.status}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            stroke-linejoin="round"
+                            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                          />
+                        </svg>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
           </div>
         </section>
       </div>

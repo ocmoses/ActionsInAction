@@ -27,6 +27,8 @@ export const NextEndPoints = {
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v2/auth/login`,
+  ACCEPT_AUTH0_OTP: `${apiURL}/v2/auth/accept-otp`,
+  RESEND_AUTH0_OTP: `${apiURL}/v2/auth/resend-otp`,
   LOGOUT: `${apiURL}/v2/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
@@ -108,6 +110,7 @@ const RemoteEndpoints = {
 
 //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PARTNER_FILTERING: `${apiURL}/v2/reporting/partner-reports`,
   PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
   PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
   PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,

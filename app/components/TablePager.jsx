@@ -158,7 +158,7 @@ export default function TablePager({list, action, perPage=5, pages=null}){
             <span onClick={handlePreviousClick} 
                     className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
                                 ${currentPage == 0 ? 
-                                    'text-white/20 border-white/20' : 
+                                    'text-white/20 border-white/20 cursor-not-allowed' : 
                                     'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}>
                     Previous
             </span>
@@ -172,7 +172,7 @@ export default function TablePager({list, action, perPage=5, pages=null}){
             <span onClick={handleNextClick} 
                     className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
                                 ${currentPage == pageLinks.length-1 ? 
-                                    'text-white/20 border-white/20' : 
+                                    'text-white/20 border-white/20 cursor-not-allowed' : 
                                     'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}>
                     Next
             </span>

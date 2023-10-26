@@ -36,9 +36,8 @@ import BrdUpdates, {
 } from "@/app/components/dashboard/compliance/BrdUpdates";
 
 export default function GetStarted({ type }) {
-  const {
-    session: { user },
-  } = useUsers();
+  const {session: { user },} = useUsers();
+  
   console.log(user)
   const {
     partner,
@@ -49,6 +48,8 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners();
+
+//console.log("this is partner feedback", partner);
 
 
   const [FinalApproval, setFinalApproval] = useState(false);

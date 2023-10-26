@@ -86,7 +86,7 @@ export default function GetStarted({ type }) {
 
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
-  const [questionnaireAlert, setQuestionnaireAlert] = useState(true);
+  const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
@@ -130,7 +130,7 @@ export default function GetStarted({ type }) {
       }else {
         setToFillQuestionnaire(false);
       }
-    }).catch(error => setError({error: error.message}));
+    }).catch(error => {console.log(error); setError({error: error.message})});
 
     check();
 

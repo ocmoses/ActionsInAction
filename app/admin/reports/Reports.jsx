@@ -34,13 +34,17 @@ export default function Approvals() {
     status: false,
   });
 
-  const [records, setRecords] = useState([]);
-  const [filteredRecords, setFilteredRecords] = useState([]);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of items to display per page
 
   useEffect(() => {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     const fetchReport = async () => {
       if (fetching) return;
       try {
@@ -59,7 +63,32 @@ export default function Approvals() {
       }
     };
     fetchReport();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  }, []);
 
+  const fetchData = async () => {
+    try {
+      const filteringResponse = await axios.get(
+        RemoteEndpoints.PARTNER_FILTERING,
+        {
+          headers: {
+            apikey: apikey,
+          },
+        }
+      );
+      console.log(
+        "the filteringResponse is ",
+        filteringResponse.data.data.data
+      );
+      setData(filteringResponse.data.data.data);
+      //setFilteredData(filteringResponse.data.data.data);
+    } catch (error) {
+      console.error("Error filteringResponse records:", error);
+    }
+  };
+
+  useEffect(() => {
+    ////// bring out search modals
     document.addEventListener(
       "click",
       function (e) {
@@ -69,60 +98,95 @@ export default function Approvals() {
       },
       true
     );
-
-    const filterReport = async () => {
-      try {
-        const filteringResponse = await axios.get(
-          RemoteEndpoints.PARTNER_FILTERING,
-          {
-            headers: {
-              apikey: apikey,
-            },
-          }
-        );
-        setRecords(filteringResponse.data.data);
-        setFilteredRecords(filteringResponse.data.data); // Initially, filteredRecords is set to all records
-      } catch (error) {
-        console.error("Error filteringResponse records:", error);
-      }
-    };
-
-    filterReport();
+    ///////////////////////////////////////////////////
+    fetchData(); //// run fetch api
   }, []);
 
+  // useEffect(() => {
+  //   // Perform client-side filtering based on date range and selectedStatus
+  //   if (Array.isArray(data)) {
+  //     const filtered = data.filter((record) => {
+  //       const recordDate = new Date(record.date);
+  //       const start = startDate ? new Date(startDate) : null;
+  //       const end = endDate ? new Date(endDate) : null;
+
+  //       if (selectedStatus.length > 0 && !selectedStatus.includes(record.status)) {
+  //         return false;
+  //       }
+
+  //       if (start && recordDate < start) {
+  //         return false;
+  //       }
+
+  //       if (end && recordDate > end) {
+  //         return false;
+  //       }
+
+  //       return true;
+  //     });
+
+  //     setFilteredData(filtered);
+  //   }
+  // }, [startDate, endDate, selectedStatus, data]);
+
+  // const handleStatusChange = (event) => {
+  //   const status = event.target.value;
+  //   if (selectedStatus.includes(status)) {
+  //     setSelectedStatus(selectedStatus.filter((s) => s !== status));
+  //   } else {
+  //     setSelectedStatus([...selectedStatus, status]);
+  //   }
+  // };
+
   useEffect(() => {
-    // Filter records based on user input when filter criteria change
-    const filtered = records.filter((record) => {
-      if (
-        (startDate && new Date(record.date) < new Date(startDate)) ||
-        (endDate && new Date(record.date) > new Date(endDate))
-      ) {
-        return false;
-      }
+    // Perform client-side filtering based on date range and selectedStatus
+    if (Array.isArray(data)) {
+      const filtered = data.filter((record) => {
+        const recordDate = new Date(record.date);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
 
-      if (
-        selectedStatuses.length > 0 &&
-        !selectedStatuses.includes(record.status)
-      ) {
-        return false;
-      }
+        if (
+          selectedStatus.length > 0 &&
+          !selectedStatus.includes(record.status)
+        ) {
+          return false;
+        }
 
-      return true;
-    });
+        if (start && recordDate < start) {
+          return false;
+        }
 
-    setFilteredRecords(filtered);
-  }, [startDate, endDate, selectedStatuses, records]);
+        if (end && recordDate > end) {
+          return false;
+        }
 
-  function handleStatusChange(e) {
-    const value = e.target.value;
-    if (e.target.checked) {
-      setSelectedStatuses([...selectedStatuses, value]);
-    } else {
-      setSelectedStatuses(
-        selectedStatuses.filter((status) => status !== value)
-      );
+        return true;
+      });
+
+      setFilteredData(filtered);
     }
-  }
+  }, [startDate, endDate, selectedStatus, data]);
+
+  const handleStatusChange = (event) => {
+    const status = event.target.value;
+    if (selectedStatus.includes(status)) {
+      setSelectedStatus(selectedStatus.filter((s) => s !== status));
+    } else {
+      setSelectedStatus([...selectedStatus, status]);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate the start and end indices for the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  // Slice the filtered data to display only the items for the current page
+  const pageData = filteredData.slice(startIndex, endIndex);
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -402,7 +466,7 @@ export default function Approvals() {
                                 ? "bg-white/20 text-white"
                                 : "text-gray-400"
                             }
-                            rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
                               if (!search.date) {
                                 setSearch({
@@ -452,7 +516,7 @@ export default function Approvals() {
                                 ? "bg-white/20 text-white"
                                 : "text-gray-400"
                             }
-                            rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+                  rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
                               if (!search.category) {
                                 setSearch({
@@ -532,7 +596,7 @@ export default function Approvals() {
                                 ? "bg-white/20 text-white"
                                 : "text-gray-400"
                             }
-                            rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
                             onClick={() => {
                               if (!search.status) {
                                 setSearch({
@@ -642,14 +706,14 @@ export default function Approvals() {
                                 title="Active"
                                 summary="Contract is still active"
                                 value="active"
-                                checked={selectedStatuses.includes("active")}
+                                checked={selectedStatus.includes("active")}
                                 onChange={handleStatusChange}
                               />
                               <PartnerFilterCheck
                                 title="Expired"
                                 summary="Contract has expired"
                                 value="expired"
-                                checked={selectedStatuses.includes("expired")}
+                                checked={selectedStatus.includes("expired")}
                                 onChange={handleStatusChange}
                               />
                               <PartnerFilterCheck
@@ -660,7 +724,7 @@ export default function Approvals() {
                                 title="In review"
                                 summary="Contract has not started"
                                 value="new"
-                                checked={selectedStatuses.includes("new")}
+                                checked={selectedStatus.includes("new")}
                                 onChange={handleStatusChange}
                               />
                             </div>
@@ -767,37 +831,40 @@ export default function Approvals() {
               </div>
             </div>
 
-            <section>
-              <table className="table w-full transparent">
-                <tbody>
-                  {/* head */}
-                  <tr className="border-b border-b-white/40 text-11">
-                    <th>
-                      <input
-                        type="checkbox"
-                        className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
-                      />
-                      <span className="text-[13px]">Company</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Category</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Date</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Status</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]"></span>
-                    </th>
-                  </tr>
+            {/*//==============================================================================================================================*/}
 
-                  {/* ======================================================================================================================================================= */}
-                  {filteredRecords?.map((record) => (
+            <table className="table w-full transparent">
+              <tbody>
+                {/* head */}
+                <tr className="border-b border-b-white/40 text-11">
+                  <th>
+                    <input
+                      type="checkbox"
+                      className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
+                    />
+                    <span className="text-[13px]">Company</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Category</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Date</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Status</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]"></span>
+                  </th>
+                </tr>
+
+                {/*//==============================================================================================================================*/}
+
+                {Array.isArray(filteredData) ? (
+                  filteredData.map((record) => (
                     <tr
                       className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/5"
-                      key={record.index}
+                      key={record.refid}
                     >
                       <td>
                         <div className="flex items-center space-x-3">
@@ -870,10 +937,28 @@ export default function Approvals() {
                         </svg>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
+                  ))
+                ) : (
+                  <p>No matching records found.</p>
+                )}
+                {/*//==============================================================================================================================*/}
+              </tbody>
+            </table>
+            {/*//==============================================================================================================================*/}
+            <div>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={endIndex >= filteredData.length}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </section>
       </div>

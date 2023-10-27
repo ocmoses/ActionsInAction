@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   getPartnerInitials,
   filterPartner,
@@ -51,6 +51,8 @@ export default function Requests() {
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
 
+  const [showOthersTextbox, setShowOthersTextbox] = useState(false);
+
   let [approvalData, setApprovalData] = useState({
                                           board_document_uuid: "",
                                           partner_uuid: "",
@@ -73,6 +75,8 @@ export default function Requests() {
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [pagedRequests, setPagedRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const [typedReason, setTypedReason] = useState("");
 
   const activeStage = selectedRequest != null ? selectedRequest?.request_type : "Request Approval";
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -114,16 +118,14 @@ export default function Requests() {
       }
     }
 
-    setRequests(requests);    
-
     requests.sort((a, b) => a.request_date > b.request_date ? -1 : a.request_date < b.request_date ? 1 : 0);
-    // setFilteredRequests(requests);
+    
+    setRequests(requests);
+    setFilteredRequests(requests);
 
     console.log("Requests", requests);
 
     setBrds(get_brd_response.brds);
-    setNavigation(get_brd_response.navigation);
-
     clearErrors();
 
     setFetchingBRD(false);
@@ -156,20 +158,17 @@ export default function Requests() {
           "partner_uuid": questionnaire.partner_uuid,
           "uuid": questionnaire.uuid
         });
-      }
-      
+      }      
     }
-
-    setRequests(requests);
 
     requests.sort((a, b) => a.request_date > b.request_date ? -1 : a.request_date < b.request_date ? 1 : 0);
 
+    setRequests(requests);
     setFilteredRequests(requests);
     
     console.log("Requests after questionnaires", requests);
 
     setQuestionnaires(get_questionnaire_response.questionnaires);
-    // setNavigation(get_questionnaire_response.navigation);
 
     clearErrors();
 
@@ -237,7 +236,18 @@ export default function Requests() {
         reject_request_response = await approveOrRejectBrd(approvalData);
         break;
       case request_types.SUPPLIER_QUESTION: 
-        approvalData.rejection_reason = reason.rejection_reason;           
+      console.log("reason.rejection_reason before call", reason.rejection_reason)
+        if(!reason.rejection_reason || reason.rejection_reason == "Others"){
+          if(typedReason.trim() != ""){
+            approvalData.rejection_reason = typedReason;       
+          }else{
+            setError({error: "Please enter a valid rejection reason"});
+            return;
+          }
+          
+        }else{
+          approvalData.rejection_reason = reason.rejection_reason;  
+        }
         reject_request_response = await approveOrRejectQuestionnaire(approvalData);
         break;
     }
@@ -263,16 +273,20 @@ export default function Requests() {
     setReject(false);
   };
 
+  const handleChange = (e) => {
+    setTypedReason(e.target.value);
+    console.log("TYped reason", typedReason);
+  }
+
     
   useEffect(() => {
     setProcessing(false);
     clearErrors();    
     get_brds();
-    get_questionnaires(); 
-         
-  },[]);
+    get_questionnaires();
+  },[]);  
 
-  useEffect(() => {
+  useEffect(() => {  
   }, [filteredRequests]);
 
   return (
@@ -283,7 +297,7 @@ export default function Requests() {
               <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
                 <h2>Requests</h2>
                 <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                  {requests?.length}
+                  {filteredRequests?.length}
                 </span>
               </div>
               
@@ -407,7 +421,7 @@ export default function Requests() {
           <div className="border-1 border-white/20 rounded-xl p-4 flex mx-4 relative">
 
             {
-              (approve || reject) &&
+              (approve || reject) && 
                 <div className={`absolute left-0 top-0 w-full p-3 border border-[#212121] rounded-[8px] z-10 bg-[#313131]`} >
                 {approve && (
                   <Confirm
@@ -415,7 +429,7 @@ export default function Requests() {
                     notext="No"
                     type="approve"
                     onYes={() => approveRequest()}
-                    onNo={cancel}
+                    onNo={cancel}                    
                   />
                 )}
                 {reject && (
@@ -425,6 +439,7 @@ export default function Requests() {
                     type="reject"
                     onYes={(reason) => rejectRequest(reason)}
                     onNo={cancel}
+                    othersAction={setShowOthersTextbox}
                   />
                 )}
               </div>
@@ -465,9 +480,66 @@ export default function Requests() {
                                 
 
             </div>
-            
-
           </div>
+          
+          {
+              showOthersTextbox && (
+                <div className="border-1 border-white/20 m-4 ml-8 rounded-xl flex flex-col relative">
+                  <textarea 
+                        onKeyUp={(e) => handleChange(e)} onBlur={(e) => handleChange(e)}
+                        className="rounded p-4 mb-4 border-1 border-white/40 bg-white/20 text-white m-4" 
+                        rows="6" >
+                  </textarea>
+
+                  <div className="border-t border-white/40 py-2 px-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+
+                    <span className="text-sm text-white/80 ml-2">
+                      Partner will be notified
+                    </span>
+
+                    <div className=" ml-auto">
+                      {
+                        !approving && (<>
+                          <span 
+                            onClick={() => {setShowOthersTextbox(false); cancel(); setTypedReason("")}}
+                            className="border-1 border-white/20 p-2 px-4 rounded-full text-white text-sm hover:bg-white/20 cursor-pointer">
+                            Cancel
+                          </span>
+
+                          <span 
+                            onClick={(reason) => rejectRequest(reason)}
+                            className="border-1 border-red-200 p-2 px-4 rounded-full text-white text-sm hover:bg-white/20 cursor-pointer ml-2">
+                            Decline
+                          </span>
+                        </>)
+                      }
+                      {
+                        approving && <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                      }
+                      
+                    </div>
+                    
+
+                  </div>
+                  
+                </div>
+
+                
+                
+              )
+
+              
+          }
+
+          {errors && errors["error"] && (
+            <div className="mb-6 ml-8">
+              <FormErrors error={errors["error"]} />
+            </div>
+          )}
+            
         </ComplianceDrawer>    
 
         <Success message={successMessage} visible={successToast} action={successAction} />      

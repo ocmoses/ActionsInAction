@@ -73,13 +73,8 @@ export default function useQuestionnaire(){
             //     return;
             // }
 
-            // console.log('Create response', response.text);
-
+           
             const result = await response.json();
-
-            // console.log('RemoteEndpoints.SEND_QUESTIONNAIRE', RemoteEndpoints.SEND_QUESTIONNAIRE);
-            // console.log('Create result', result);
-            // console.log('users.token', users.token);
 
             setProcessing(false);
             if (result?.success) {
@@ -87,15 +82,13 @@ export default function useQuestionnaire(){
                 const status = result.data?.status;
                 const rejectionReason = result.data?.reasons_for_rejection;
                 
-                // console.log('Retrieval message', message);
-
                 return {
                     message,
                     status,
                     rejectionReason
                 };
             }
-            console.log('Result', result);
+            
             return {
                 error:
                     result?.data?.message ??

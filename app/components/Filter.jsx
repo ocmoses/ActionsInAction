@@ -31,6 +31,8 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
     const [filteredList, setFilteredList] = useState([]);
     const filterRef = useRef(null);
 
+    console.log("List entered", list);
+
     const doSearch = () => {
          
         displayFilters(); 
@@ -55,15 +57,20 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
                 for(const akey of keysArray){
                     for(const keyword of searchTags.keywords){                        
                         if(listItem[akey] && keyword){
+                          try{
+                            console.log("listItem[akey]", listItem[akey]);
                             if(listItem[akey]?.toLowerCase().includes(keyword?.toLowerCase())){
                                 if(!finalList.includes(listItem)){
                                     finalList.push(listItem);                                                               
                                 }
                                 break; 
                                 
-                            }                        
-                        }
-                        
+                            }   
+                          }catch(e){
+
+                          }
+                                                 
+                        }                        
                     }
                     
                 }

@@ -43,7 +43,7 @@ export default function Dashboard({ allPartners }) {
 
   const {LogoutAdmin} = useLogout();
 
-  console.log("allPartners", allPartners);
+  // console.log("allPartners", allPartners);
 
   const get_all_Partner = async () => {
     if (fetchingPartners) return;
@@ -75,8 +75,17 @@ export default function Dashboard({ allPartners }) {
         });
       }
 
-      console.log("allPartners.partners", allPartners.partners);
-      console.log("allPartners", allPartners);
+      for(let partner of allPartners.partners){
+        if(partner.submitted_on){
+          partner.status = "Submitted";
+          partner.created_at = partner.submitted_on;
+        }else{
+          partner.status = "Not submitted";
+        }
+      }
+
+      // console.log("allPartners.partners", allPartners.partners);
+      // console.log("allPartners", allPartners);
       
       setPartners(allPartners.partners);
       setAllFilteredPartners(allPartners.partners);
@@ -107,7 +116,7 @@ export default function Dashboard({ allPartners }) {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Applicants</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {allPartners?.length}
+                {allFilteredPartners?.length}
               </span>
             </div>
             
@@ -123,10 +132,10 @@ export default function Dashboard({ allPartners }) {
 
           <div className="w-full mt-10 min-h-screen">
 
-            <Filter list={allPartners} 
+            <Filter list={allPartners.partners} 
                   filterAction={setAllFilteredPartners} 
                   keysArray={['uuid', 'company_name', 'Percent', 'email']} 
-                  statusArray={['active', 'suspended', 'pending', 'expired']} />
+                  statusArray={['Submitted', 'Not submitted']} />
 
             {/* {processing && (
               <div className="flex justify-center items-center">

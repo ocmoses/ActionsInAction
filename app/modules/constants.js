@@ -1412,4 +1412,13 @@ export const request_types = {
   SUPPLIER_QUESTION: "Supplier Question"
 }
 
+export const role_types = {
+  SUPER_ADMIN: "superAdmin",
+  ADMIN: "admin",
+  DIRECTOR: "director",
+  WITNESS: "witness",
+  DELEGATE: "delegate"
+}
+
+
 

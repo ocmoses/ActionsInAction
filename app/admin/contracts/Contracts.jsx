@@ -52,9 +52,6 @@ export default function Contracts() {
   const [reject, setReject] = useState(false);
 
   const router = useRouter();
-  const [navigation, setNavigation] = useState([]);
-  const [page, setPage] = useState(null);
-  const [perPage, setPerPage] = useState(null);
 
   const [displaySuccess, setDisplaySuccess] = useState(false);
 
@@ -69,8 +66,7 @@ export default function Contracts() {
                             console.log("All contracts", resp.contracts);
                             resp.contracts.forEach(c => c.status = c.contract_status);
                             setContracts(resp.contracts); 
-                            setFilteredContracts(resp.contracts); 
-                            setNavigation(resp.navigation)
+                            setFilteredContracts(resp.contracts);
                           });  
     
   },[]);
@@ -84,7 +80,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {contracts?.length}
+                {filteredContracts?.length}
               </span>
             </div>
             

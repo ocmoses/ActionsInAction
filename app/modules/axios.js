@@ -3,7 +3,7 @@ import { apiURL, apikey } from "./constants.js"
 // create an axios instance
 const Axios = axios.create({
   baseURL: apiURL,
-  withCredentials: false, // send cookies when cross-domain requests
+  withCredentials: false, 
   timeout: 30000, // request timeout
 })
 Axios.defaults.headers.common["apikey"] = apikey

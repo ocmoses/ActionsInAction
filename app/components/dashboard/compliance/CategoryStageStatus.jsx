@@ -19,6 +19,8 @@ export default function CategoryStageStatus({ stage, category, partner }) {
     fieldsCounts();
     const _approvals = partnerApprovals(partner, category);
     const _approvalStages = partner.approvalStages;
+
+    console.log("Partner Approvals in category stage status", _approvals);
     setApproval(_approvals);
     setApprovalStages(_approvalStages[category.category_uuid]);
 
@@ -108,12 +110,12 @@ export default function CategoryStageStatus({ stage, category, partner }) {
 
   // }catch(e){
     if (Approvals) {
-        if (!isSuperadmin() && admin && admin.department_code) {
-          dept = admin.department_code;
-          counts =
-            stage in Approvals && Approvals[stage][dept]?.counts
-              ? Approvals[stage][dept]?.counts
-            : null;
+      if (!isSuperadmin() && admin && admin.department_code) {
+        dept = admin.department_code;
+        counts =
+          stage in Approvals && Approvals[stage][dept]?.counts
+            ? Approvals[stage][dept]?.counts
+          : null;
       } else {
         counts = Approvals[stage]?.counts;
       }
@@ -123,7 +125,6 @@ export default function CategoryStageStatus({ stage, category, partner }) {
   
   // console.log("Approval stage", ApprovalStage);
 
-  
   
 
   // console.log({ stage, counts })

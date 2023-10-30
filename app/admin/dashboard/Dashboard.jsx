@@ -20,6 +20,9 @@ import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
 import Image from "next/image";
 
 import useLogout from "@/hooks/useLogout";
+import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Dashboard({ allPartners }) {
   const { getAllPartners, allCategories, categories } = useAdmins();
@@ -35,7 +38,12 @@ export default function Dashboard({ allPartners }) {
   const [perPage, setPerPage] = useState(null);
   const [onboardingStatus, setOnboardingStatus] = useState(null);
 
+  const [allFilteredPartners, setAllFilteredPartners] = useState([]);
+  const [allPagedPartners, setAllPagedPartners] = useState([]);
+
   const {LogoutAdmin} = useLogout();
+
+  // console.log("allPartners", allPartners);
 
   const get_all_Partner = async () => {
     if (fetchingPartners) return;
@@ -50,6 +58,7 @@ export default function Dashboard({ allPartners }) {
   };
 
   useEffect(() => {
+   setProcessing(false);
     
     if ((onboardingStatus || perPage, page)) {
       get_all_Partner();
@@ -57,6 +66,7 @@ export default function Dashboard({ allPartners }) {
   }, [page, onboardingStatus, perPage]);
 
   useEffect(() => {
+   setProcessing(false);
     setProcessing(true);
     if (allPartners && allPartners.partners) {
       if (allPartners.partners?.length) {
@@ -65,10 +75,21 @@ export default function Dashboard({ allPartners }) {
         });
       }
 
-      console.log("allPartners.partners", allPartners.partners);
-      console.log("allPartners", allPartners);
+      for(let partner of allPartners.partners){
+        if(partner.submitted_on){
+          partner.status = "Submitted";
+          partner.created_at = partner.submitted_on;
+        }else{
+          partner.status = "Not submitted";
+        }
+      }
+
+      // console.log("allPartners.partners", allPartners.partners);
+      // console.log("allPartners", allPartners);
       
       setPartners(allPartners.partners);
+      setAllFilteredPartners(allPartners.partners);
+
       if (allPartners.error) {
         setProcessing(false);
         // if (allPartners.error === 401) {
@@ -77,7 +98,6 @@ export default function Dashboard({ allPartners }) {
         // }
         setError({ compliance: allPartners.error });
       }
-      setNavigation(allPartners.navigation);
       setProcessing(false);
     }else{
       LogoutAdmin();
@@ -86,7 +106,7 @@ export default function Dashboard({ allPartners }) {
 
   const goToPartnerDetail = (uuid) => {
     setRouteloading(true);
-    router.push(`admin/compliance/${uuid}`);
+    router.push(`/admin/compliance/${uuid}`);
   };
   return (
     <>
@@ -96,48 +116,10 @@ export default function Dashboard({ allPartners }) {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Applicants</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {navigation?.total}
+                {allFilteredPartners?.length}
               </span>
             </div>
-            <div className="flex items-center gap-6 grow-0">
-              <div className="flex items-center gap-2 rounded-full pl-3 bg-white/10">
-                <span className="text-[12px] text-[#999999]">Rows</span>
-                <DropdownMenu
-                  options={[
-                    { value: "5", label: "5" },
-                    { value: "10", label: "10" },
-                    { value: "20", label: "20" },
-                    { value: "50", label: "50" },
-                    { value: "100", label: "100" },
-                    { value: "200", label: "200" },
-                  ]}
-                  defaultvalue={{
-                    value: "10",
-                    label: "10",
-                  }}
-                  onselect={(option) => {
-                    setPage(1);
-                    setPerPage(option.value);
-                  }}
-                  align="right"
-                />
-              </div>
-              <div className="flex items-center gap-2 rounded-full pl-3 bg-white/10">
-                <span className="text-[12px] text-[#999999]">Status</span>
-                <DropdownMenu
-                  options={statusOptions}
-                  defaultvalue={{
-                    value: "processing",
-                    label: status_type.processing,
-                  }}
-                  onselect={(option) => {
-                    setPage(1);
-                    setOnboardingStatus(option.value);
-                  }}
-                  align="right"
-                />
-              </div>
-            </div>
+            
           </div>
 
           {errors && errors["compliance"] && (
@@ -146,18 +128,26 @@ export default function Dashboard({ allPartners }) {
             </div>
           )}
 
+          
+
           <div className="w-full mt-10 min-h-screen">
+
+            <Filter list={allPartners.partners} 
+                  filterAction={setAllFilteredPartners} 
+                  keysArray={['uuid', 'company_name', 'Percent', 'email']} 
+                  statusArray={['Submitted', 'Not submitted']} />
+
             {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               </div>
             )}
             {!processing && ( */}
-              <>
+              <div className="border-1 border-white/20 rounded-lg">
                 <table className="table w-full transparent">
                   <tbody>
                     {/* head */}
-                    <tr className="border-b border-b-white/40 text-11">
+                    <tr className="border-b border-b-white/40 text-11 bg-white/20">
                       <th>
                         <span className="text-[13px]">Company</span>
                       </th>
@@ -177,8 +167,8 @@ export default function Dashboard({ allPartners }) {
 
                     {/* row 1 */}
 
-                    {Partners &&
-                      Partners?.map((partner) => (
+                    {allPagedPartners &&
+                      allPagedPartners?.map((partner) => (
                         <tr
                           key={partner.uuid}
                           className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/20"
@@ -290,78 +280,12 @@ export default function Dashboard({ allPartners }) {
                     {/* row 2 */}
                   </tbody>
                 </table>
-                <div className="w-full flex justify-end">
-                  {!Util.isEmpty(navigation) &&
-                    navigation.links?.length > 0 &&
-                    navigation.links.map((nav, index) => {
-                      let link = null;
-                      if (index === 0) {
-                        if (nav.url) {
-                        }
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else if (index === navigation.links.length - 1) {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else {
-                        if (nav.url) {
-                          link = nav.active ? (
-                            <div className="flex p-2 text-white bg-white/30">
-                              {index}
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => setPage(index)}
-                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                            >
-                              {index}
-                            </div>
-                          );
-                        } else {
-                          link = (
-                            <div className="flex p-2 text-white">
-                              {nav.label}
-                            </div>
-                          );
-                        }
-                      }
-
-                      return link;
-                    })}
-                </div>
-              </>
+                {
+                  (allFilteredPartners.length == 0 && allPagedPartners.length == 0) ?  
+                  (<EmptyTable list={'Partners'} />) : 
+                  (<TablePager list={allFilteredPartners} action={setAllPagedPartners}/>)
+                }
+              </div>
             {/* )} */}
           </div>
         </div>

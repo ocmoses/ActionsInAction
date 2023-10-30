@@ -208,26 +208,21 @@ const useContracts = () => {
       setProcessing(false);
       if (result?.success) {
         const contracts = result.data?.contracts.data;
+        contracts.forEach(c => c.status = c.contract_status);
         
         // console.log('Admin roles retrieved', admin_roles);
-        const navigation = {
-          current_page: result?.data?.contracts?.current_page,
+        const pages = {
           first_page_url: result?.data?.contracts?.first_page_url,
-          from: result?.data?.contracts?.from,
           last_page: result?.data?.contracts?.last_page,
           last_page_url: result?.data?.contracts?.last_page_url,
           links: result?.data?.contracts?.links,
-          next_page_url: result?.data?.contracts?.next_page_url,
-          path: result?.data?.contracts?.path,
-          per_page: result?.data?.contracts?.per_page,
-          prev_page_url: result?.data?.contracts?.prev_page_url,
-          to: result?.data?.contracts?.to,
           total: result?.data?.contracts?.total,
+          key: 'contracts'
         };
 
         return {
           contracts,
-          navigation
+          pages
         };
       }
       return {

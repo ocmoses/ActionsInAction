@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 
-export default function Success({visible=false, message, action}){
+export default function Success({visible=false, message, action=null}){
 
     useEffect(() => {
         if(visible){
-            action();
+            if(typeof(action) === 'function'){
+                action();
+            }            
         }
     }, [visible]);
 

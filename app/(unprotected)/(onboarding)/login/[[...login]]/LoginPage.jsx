@@ -41,8 +41,8 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "sunaf4real@gmail.com",
-    password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
+        : "moses.ocho@mtn.com",
+    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   
   const [notVerified, setNotVerified] = useState(null);
@@ -53,8 +53,8 @@ function Login({ params }) {
   /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    
     setForm(null);
-    setProcessing(false);
     clearErrors();
     setNotVerified(null);
   }, []);

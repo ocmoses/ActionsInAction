@@ -1,8 +1,6 @@
 import { apiURL } from "@/app/modules/constants";
 
-
 const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
-
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -118,5 +116,11 @@ const RemoteEndpoints = {
   PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
   UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
 
+  //questionnaire
+  GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
+  SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
+  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`,
+  GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
+  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`
 }
 export default RemoteEndpoints

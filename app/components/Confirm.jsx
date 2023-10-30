@@ -12,11 +12,14 @@ export default function Confirm({
   onNo,
   type,
   feedback,
+  othersAction
 }) {
   const [reason, setReason] = useState(null);
   const [showReason, setShowReason] = useState(false);
   const { rejectionReasons, approving, setApproving } = useAdmins();
   const [{ errors, clearErrors }] = useErrors(null);
+
+  const [hide, setHide] = useState(false);
 
   useEffect(() => {
     setApproving(false);
@@ -27,6 +30,13 @@ export default function Confirm({
     onYes(reason);
   };
   const handleSetReason = (_reason) => {
+    if(_reason.rejection_reason == "Others"){
+      othersAction(true);
+      setHide(true);
+      return;
+    }
+    othersAction(false);  
+    setHide(false);  
     setReason(_reason);
     setShowReason(false);
   };
@@ -81,6 +91,7 @@ export default function Confirm({
                       ? reason?.rejection_reason
                       : "Select a reason for rejection"
                     }
+                    
                   </div>
                   <div
                     style={{
@@ -110,7 +121,7 @@ export default function Confirm({
               <TailSpinPreloader width={30} height={30} fill="#efb703" />
             </div>
           )}
-          {!approving && (
+          {!approving && !hide && (
             <div className="flex-none">
               {onYes && (
                 <button

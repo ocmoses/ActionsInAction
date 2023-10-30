@@ -15,6 +15,8 @@ export const getCategories = async (apikey) => {
         success: false,
         error:
           "Error reaching the server. Please check your connection and try again",
+        error:
+          "Error reaching the server. Please check your connection and try again",
         data: null,
       };
     });
@@ -29,6 +31,8 @@ export const getCategories = async (apikey) => {
     if (!(result = await response?.json()))
       return {
         success: false,
+        error:
+          "Error reaching the server. Please check your connection and try again",
         error:
           "Error reaching the server. Please check your connection and try again",
         data: null,
@@ -52,6 +56,7 @@ export const getCategories = async (apikey) => {
     // throw new Error("Something went wrong. Please check your connection")
     return {
       success: false,
+      error: `Something went wrong. Please check your connection`,
       error: `Something went wrong. Please check your connection`,
       data: null,
     };

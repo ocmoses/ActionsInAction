@@ -11,6 +11,7 @@ import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import { OtherServicesPopUps } from "@/app/components/PopUps";
 import Iframe from "@/app/components/otherservices/Iframes";
+import RemoteEndpoints from "@/app/modules/endpoints";
 
 
 export default function MenuBar({ open }) {
@@ -73,7 +74,7 @@ export default function MenuBar({ open }) {
           {iframe == "DSM" && (
             <>
               <OtherServicesPopUps closeServicePopUp={closeServicePopUp} title="DSM Service Configuration">
-                <Iframe url="https://smdev.mtn.com.ng/DSDP/PartnerPortalLoginApi" />
+                <Iframe url={RemoteEndpoints.DSM_ENDPOINT} />
               </OtherServicesPopUps>
             </>
           )}

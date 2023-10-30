@@ -55,6 +55,7 @@ export default function Compliance({ params }) {
     submitAllSignatories,
     downloadSignedContract,
     getContractDynamicData
+    
   } = usePartners();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
@@ -92,6 +93,7 @@ export default function Compliance({ params }) {
   const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(false);
+  const [reset, setReset] = useState(Date.now());
 
   const [agreementModal, setAgreementModal] = useState(false);
   const [acceptingAgreement, setAcceptingAgreement] = useState(false);
@@ -131,19 +133,7 @@ export default function Compliance({ params }) {
   let submit_signatories_response = null;
   let dynamic_content_response =  null;
 
-  const get_service_types = async () => {
-    clearErrors();
-    if (gettingServiceTypes) return;
-    setGettingServiceTypes(true);
-    get_service_response = await getAllServices();
-    setGettingServiceTypes(false);
-    // console.log('get_service_response', get_service_response);
-    if (get_service_response.error) setError({ error: get_service_response.error })
-    else {
-        // console.log('get_service_response', get_service_response);
-        setAllServices(get_service_response.service_types);
-    }
-  };
+  
 
   const partner_select_service = async (data) => {
 
@@ -525,7 +515,7 @@ export default function Compliance({ params }) {
         </div>
       )}
       {/* Only when we have not selected all signees */}
-      {users.role == 'superAdmin' && 
+      {users?.role == 'superAdmin' && 
         userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories ? 
 
         <div className="my-8 max-w-6xl">          
@@ -1408,7 +1398,7 @@ export default function Compliance({ params }) {
           </div>
         </div>  
       }
-      {      
+      {/* {      
         contractModal && 
         <div id="contracts_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "contracts_modal") {setContractModal(false);}}}>
           <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[500px] pb-4">
@@ -1448,10 +1438,9 @@ export default function Compliance({ params }) {
               )
             }
            
-            {/* Add services here */}
           </div>
         </div>        
-      }
+      } */}
       {      
         contractSignatriesModal && 
         <div id="contracts_signatries_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "contracts_signatries_modal") {setContractModal(false);}}}>

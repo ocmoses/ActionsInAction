@@ -33,7 +33,6 @@ export default function Dashboard({ allPartners }) {
   const [fetchingPartners, setFetchingPartners] = useState(false);
   const router = useRouter();
   const { setRouteloading } = useApp();
-  const [navigation, setNavigation] = useState(null);
   const [page, setPage] = useState(null);
   const [perPage, setPerPage] = useState(null);
   const [onboardingStatus, setOnboardingStatus] = useState(null);

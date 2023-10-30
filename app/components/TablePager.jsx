@@ -49,12 +49,14 @@ export default function TablePager({list, action, perPage=5, pages=null}){
     useEffect(() => {      
       setLinks(pageLinks);
       action(list.slice(pageLinks[0]?.start, pageLinks[0]?.end));
-      setCurrentPage(0);
+      if(currentPage > 0){
+        setCurrentPage(0);
+      }      
     }, [list]);
 
     useEffect(() => { 
         
-      }, [pageLinks]);
+      }, []);
 
 
     const getChunk = async (chunk) => {

@@ -73,7 +73,7 @@ export default function useAdmins() {
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
-        const partners = result.data?.partners.data;
+        const partners = result.data?.partners;
         if (partners.length > 0)
           partners.map((partner) => {
             filterPartner(partner, states.categories);

@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   getPartnerInitials,
   filterPartner,
   Util,
   titleCase
 } from "@/app/modules/utilities";
-import { status_type, statusOptions } from "@/app/modules/constants";
+import { status_type, statusOptions, role_types} from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
 import {capitalizeFirst} from "@/app/modules/utilities";
 import { TailSpinPreloader } from "@/app/components/Icons";
@@ -18,30 +18,48 @@ import moment from "moment";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import Success from "@/app/components/toasts/Success";
 import useUsers from "@/hooks/useUsers";
-import usePartners from "@/hooks/usePartners";
+import useRoles from "@/hooks/useRoles";
 import {useStoreState} from 'easy-peasy';
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
+import {ContractContext} from "./ContractProvider";
+
+import SelectServiceModal from "@/app/components/modals/SelectServiceModal";
+import ContractSignatoriesModal from "@/app/components/modals/ContractSignatoriesModal";
 
 export default function Contracts() {
-  const {partnerGetAllContracts} = useContracts();
+
+  const {
+    partner,
+    contractStatus,
+    userStatus,
+    selectedAllRequiredSignatories,
+    isASignatory,
+    signatoryRole,
+    allHaveSigned,
+    hasSigned,
+    isPartner,
+    partnerGetAllContracts,
+    getAllAdminPartners,
+    submitAllSignatories,
+    downloadSignedContract,
+    getContractDynamicData,
+    signingDirector,
+    signingDelegate,
+    signingWitness
+  } = useContext(ContractContext);
+
+  const {getAllPartnerRoles} = useRoles();
+
+  console.log("context", partner);
+
   const [contracts, setContracts] = useState(null);
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
   const users = useStoreState((state) => state.users);
-  const {
-    partner,
-    getAllAdminPartners,
-    getAllServices,
-    partnerSelectService,
-    createPartner,
-    submitAllSignatories,
-    downloadSignedContract,
-    getContractDynamicData
-  } = usePartners();
 
   if(!partner){
     location.reload();
@@ -72,22 +90,13 @@ export default function Contracts() {
 
   const router = useRouter();
 
-  const [displaySuccess, setDisplaySuccess] = useState(false);
-
   const {user, role, refreshSession} = useUsers();
 
   // console.log("usePartners() from compliance", usePartners());
   // console.log("useUsers() from compliance", useUsers());
 
-  const [allServices, setAllServices] = useState([]); 
-  const [gettingServiceTypes, setGettingServiceTypes] = useState(false);
-  
-  // const [ApprovalStages, setApprovalStages] = useState(null)
-  // const [Approvals, setApproval] = useState(null)
   const [showModal, setShowModal] = useState(false);
 
-  const [contractModal, setContractModal] = useState(false);
-  const [contractSignatriesModal, setContractSignatriesModal] = useState(false);
   const [submitingContractSignatories, setSubmitingContractSignatories] = useState(false);
   const [selectDirectorModal, setSelectDirectorModal] = useState(false);  
   const [addDirectorModal, setAddDirectorModal] = useState(false);
@@ -101,7 +110,6 @@ export default function Contracts() {
   const [selectingService, setSelectingService] = useState(false);
 
   const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
-  const [signatoryRole, setSignatoryRole ] = useState("");
 
   const [creatingPartner, setCreatingPartner] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
@@ -120,27 +128,12 @@ export default function Contracts() {
 
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
   
-  const userStatus = partner?.status;
 
-  const APPROVED = "active";
-  const [selectedAllRequiredSignatories, setSelectedAllRequiredSignatories ] = useState(true);
-  let directorSigned = false;
-  let delegateSigned = false;
-  let witnessSigned = false;
-
-  const [isASignatory, setIsASignatory ] = useState(false);
-  const [hasNotSigned, setHasNotSigned] = useState(false);
-  const [allHaveSigned, setAllHaveSigned] = useState(false);
+  const APPROVED = "approved";
 
   const [dynamicData, setDynamicData] = useState(null);
 
   const [pages, setPages] = useState(null);
-
-  let selected_admin_users = partner.selected_partner_admin_users;
-  let signingDirector = selected_admin_users.find(user => user.role == 'director');
-  let signingDelegate = selected_admin_users.find(user => user.role == 'delegate');
-  let signingWitness = selected_admin_users.find(user => user.role == 'witness');
-
     
   // console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
@@ -155,38 +148,8 @@ export default function Contracts() {
 
 
   const [filteredContracts, setFilteredContracts] = useState([]);
+  const [pagedContracts, setPagedContracts] = useState([]);
 
-
-  const get_service_types = async () => {
-    clearErrors();
-    if (gettingServiceTypes) return;
-    setGettingServiceTypes(true);
-    get_service_response = await getAllServices();
-    setGettingServiceTypes(false);
-    // console.log('get_service_response', get_service_response);
-    if (get_service_response.error) setError({ error: get_service_response.error })
-    else {
-        // console.log('get_service_response', get_service_response);
-        setAllServices(get_service_response.service_types);
-    }
-  };
-
-  const partner_select_service = async (data) => {
-
-    clearErrors();
-    if (selectingService) return;
-    setSelectingService(true);
-    partner_select_service_response = await partnerSelectService(data);
-    setSelectingService(false);
-    // console.log('partner_select_service_response', partner_select_service_response);
-    if (partner_select_service_response.error) setError({ error: partner_select_service_response.error })
-    else {
-        // console.log('partner_select_service_response', partner_select_service_response);
-        setContractModal(false); 
-        setContractSignatriesModal(true);
-
-    }
-  };
 
   const get_all_partner_roles = async () => {
     clearErrors();
@@ -211,74 +174,10 @@ export default function Contracts() {
       setAdminPartners(all_admin_partners_response.admin_partners);
 
       //update signing director, delegate or witness
-      confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
+      // confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
     }
-
      
   };
-
-  const confirmSignatories = function(selected_admin_users, admin_partners){
-    const selected_director_email = selected_admin_users.find(a => a.role == 'director') ? selected_admin_users.find(a => a.role == 'director').email : null;
-    const selected_delegate_email = selected_admin_users.find(a => a.role == 'delegate') ? selected_admin_users.find(a => a.role == 'delegate').email : null;
-    const selected_witness_email = selected_admin_users.find(a => a.role == 'witness') ? selected_admin_users.find(a => a.role == 'witness').email : null;
-    
-    let admin_partners_emails = admin_partners.map(a => a.email);
-    
-    //Adding superadmin
-    admin_partners_emails.push(user.email);
-
-    // console.log("selected_admin_users", selected_admin_users);
-    // console.log("selected_director_email", selected_director_email);
-    // console.log("selected_delegate_email", selected_delegate_email);
-    // console.log("selected_witness_email", selected_witness_email);
-    // console.log("admin_partners_emails", admin_partners_emails);
-
-    // console.log("admin_partners_emails.includes(selected_director_email)", admin_partners_emails.includes(selected_director_email));
-    // console.log("admin_partners_emails.includes(selected_witness_email)", admin_partners_emails.includes(selected_witness_email));
-    // console.log("(admin_partners_emails.includes(selected_director_email) || admin_partners_emails.includes(selected_delegate_email)) && admin_partners_emails.includes(selected_witness_email)", 
-    //               (admin_partners_emails.includes(selected_director_email) || 
-    //               admin_partners_emails.includes(selected_delegate_email)) &&
-    //               admin_partners_emails.includes(selected_witness_email));
-
-    
-
-    if((selected_director_email && admin_partners_emails.includes(selected_director_email) || 
-                (selected_delegate_email && admin_partners_emails.includes(selected_delegate_email))) &&
-                (selected_witness_email && admin_partners_emails.includes(selected_witness_email))){
-      setSelectedAllRequiredSignatories(true);
-    }else{
-      setSelectedAllRequiredSignatories(false);
-    }
-
-    if(selected_director_email && selected_director_email.includes(user.email)){
-      setIsASignatory(true);
-    }else if(selected_delegate_email && selected_delegate_email.includes(user.email)){
-      setIsASignatory(true);
-    }else if(selected_witness_email && selected_witness_email.includes(user.email)){
-      setIsASignatory(true);
-    }else{
-      setIsASignatory(false);
-    }
-
-    if(selected_admin_users.length){
-      setHasNotSigned(selected_admin_users.find(u => u.email == user.email) ? 
-          selected_admin_users.find(u => u.email == user.email).has_user_signed == "no" :
-          true);
-
-      setAllHaveSigned(selected_admin_users.filter(u => u.has_user_signed != 'no').length >= 2);
-    }
-
-    console.log("selected_admin_users", selected_admin_users);
-    console.log("allHaveSigned", allHaveSigned);
-    
-    setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
-    
-
-    directorSigned = selected_admin_users.find(u => u.role == "director") ? selected_admin_users.find(u => u.role == "director").has_user_signed != "no" : false;
-    delegateSigned = selected_admin_users.find(u => u.role == "delegate") ? selected_admin_users.find(u => u.role == "delegate").has_user_signed != "no" : false;
-    witnessSigned = selected_admin_users.find(u => u.role == "witness") ? selected_admin_users.find(u => u.role == "witness").has_user_signed != "no" : false;   
-
-  }
 
   const submit_signatories = async (signatories) => {
 
@@ -331,23 +230,15 @@ export default function Contracts() {
     setProcessing(false);
     
 
-    if(role == 'superAdmin'){
+    if(user?.role == role_types.SUPER_ADMIN){
 
-      get_service_types();
       get_all_partner_roles();
         
     }    
-    get_all_admin_partners();
-    get_dynamic_content();
+    // get_all_admin_partners();
+    // get_dynamic_content();
     
-    if(signingDirector){
-      setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
-    }else if(signingDelegate){
-      setSignatories({...signatories, delegate: {email: signingDelegate.email, firstname: signingDelegate.firstname, lastname: signingDelegate.lastname}});
-    }else if(signingWitness){
-      setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
-    }
-
+   
     partnerGetAllContracts().then(resp => {
       console.log("resp", resp);
       let contracts = resp.contracts;
@@ -355,16 +246,12 @@ export default function Contracts() {
       setContracts(contracts); 
       setPages(pages);
       setFilteredContracts(contracts); 
+      setPagedContracts(contracts); 
     });
 
        
-  }, [isASignatory]);
-
-  
-  useEffect(() => {
-    setProcessing(false);
-    clearErrors();
   }, []);
+
 
   return (
     <>
@@ -374,7 +261,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {pages?.total}
+                {filteredContracts?.total}
               </span>
             </div>
             
@@ -531,89 +418,90 @@ export default function Contracts() {
                   keysArray={['contract', 'contract_id', 'contract_type']} 
                   statusArray={['active', 'suspended', 'pending', 'expired']} />
 
-          <div className="w-full mt-10 border-1 border-white/20 rounded-lg">
+          <div className="w-full md:max-w-6xl mt-10 border-1 border-white/20 rounded-lg">
             
-              <>
-                <table className="table w-full transparent ">
-                  <tbody>
-                    {/* head */}
-                    <tr className="border-b border-b-white/40 text-11 bg-white/20 ">
-                      <th>
-                        <span className="text-[13px]">Contract</span>
-                      </th>
-                      <th>
-                        <span className="text-[13px]">Status</span>
-                      </th>
-                      <th>
-                        <span className="text-[13px]">Start date</span>
-                      </th> 
-                      <th>
-                        <span className="text-[13px]">End date</span>
-                      </th> 
-                      <th>
-                        <span className="text-[13px]">PDF</span>
-                      </th>                     
-                    </tr>
+            <table className="table w-full transparent ">
+              <tbody>
+                {/* head */}
+                <tr className="border-b border-b-white/40 text-11 bg-white/20 ">
+                  <th>
+                    <span className="text-[13px]">Contract</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Status</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Start date</span>
+                  </th> 
+                  <th>
+                    <span className="text-[13px]">End date</span>
+                  </th> 
+                  <th>
+                    <span className="text-[13px]">PDF</span>
+                  </th>                     
+                </tr>
 
-                    {filteredContracts?.map(contract => 
-                      <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
-                            {/* Company */}
-                            <td>
-                              <div className="flex flex-col">
-                                
-                                  <div className=" text-white">
-                                    {contract.contract_id}
-                                  </div> 
-                                  <span className="text-sm">abscdagah.io</span>                               
-                                
-                              </div>                              
-                            </td>
-                            {/* Contract status */}
-                            <td>
-                              <div className="flex gap-0 flex-col">
-                                <span className={`text-white text-sm px-1 inline-block w-16 rounded ${contract.contract_status == "expired" ? 'bg-red-400' : (contract.contract_status == "pending" ? 'bg-grey-500' : 'bg-green-700')}`}>{capitalizeFirst(contract.contract_status)}</span>
-                                {/* <span className="text-gray-500">Value added services</span> */}
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                              {
-                                moment(contract.created_at ?? moment())
-                                .format("DD/MM/YYYY")
-                              }
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                              {
-                                moment(contract.due_date ?? moment())
-                                .format("DD/MM/YYYY")
-                              }
-                              </div>
-                            </td>
+                {pagedContracts?.map(contract => 
+                  <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+                        {/* Company */}
+                        <td>
+                          <div className="flex flex-col">
                             
-                            <td>
-                              <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg> <span className="text-white text-sm">Download</span>
-                              </div>
-                            </td>
+                              <div className=" text-white">
+                                {contract.contract_id}
+                              </div> 
+                              <span className="text-sm">abscdagah.io</span>                               
                             
-                      </tr>)
-                    }
-                  </tbody>
-                </table>
-                {
-                  (!filteredContracts || filteredContracts.length) == 0 ?  
-                  (<EmptyTable list={'Contracts'} />) : 
-                  (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+                          </div>                              
+                        </td>
+                        {/* Contract status */}
+                        <td>
+                          <div className="flex gap-0 flex-col">
+                            <span className={`text-white text-sm px-1 inline-block w-16 rounded ${contract.contract_status == "expired" ? 'bg-red-400' : (contract.contract_status == "pending" ? 'bg-grey-500' : 'bg-green-700')}`}>{capitalizeFirst(contract.contract_status)}</span>
+                            {/* <span className="text-gray-500">Value added services</span> */}
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                          {
+                            moment(contract.created_at ?? moment())
+                            .format("DD/MM/YYYY")
+                          }
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                          {
+                            moment(contract.due_date ?? moment())
+                            .format("DD/MM/YYYY")
+                          }
+                          </div>
+                        </td>
+                        
+                        <td>
+                          <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg> <span className="text-white text-sm">Download</span>
+                          </div>
+                        </td>
+                        
+                  </tr>)
                 }
-              </>
-            
+              </tbody>
+            </table>
+            {
+              (!filteredContracts || filteredContracts.length) == 0 ?  
+              (<EmptyTable list={'Contracts'} />) : 
+              (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+            }
+
           </div>
         </div>
       </div>
+
+      <SelectServiceModal />
+      <ContractSignatoriesModal />
       
       <Success message={successMessage} visible={successToast} action={successAction} />
     </>

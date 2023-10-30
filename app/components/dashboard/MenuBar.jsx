@@ -42,7 +42,7 @@ export default function MenuBar({ open }) {
 
   const [openSecondaryMenu, setOpenSecondaryMenu] = useState(false);
 
-  const { role } = useUsers();
+  const { user } = useUsers();
 
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -157,7 +157,7 @@ export default function MenuBar({ open }) {
         );
       })}
 
-      {role == "superAdmin" && (
+      {user?.role == "superAdmin" && (
         <div className={`fixed z-[99] bottom-4 left-0 pl-2 bg-black`}>
           {/* The popup menu */}
           {openSecondaryMenu && (

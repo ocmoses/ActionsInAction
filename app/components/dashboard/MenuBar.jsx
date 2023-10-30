@@ -10,7 +10,7 @@ import { getPartnerInitials } from "@/app/modules/utilities";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import { OtherServicesPopUps } from "@/app/components/PopUps";
-import Iframe from "@/app/components/otherservices/iframes";
+import Iframe from "@/app/components/otherservices/Iframes";
 
 
 export default function MenuBar({ open }) {

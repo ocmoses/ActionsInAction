@@ -128,8 +128,8 @@ function Login({ params }) {
     //: getOtp();
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    //return router.replace(redirect);
-    location.reload();
+    return router.replace(redirect);
+    //location.reload();
   };
 
   return (

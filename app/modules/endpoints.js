@@ -121,6 +121,8 @@ const RemoteEndpoints = {
   SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
   GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`,
   GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
-  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`
+  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`,
+
+  DSM_ENDPOINT: `/dashboard/dsm`
 }
 export default RemoteEndpoints

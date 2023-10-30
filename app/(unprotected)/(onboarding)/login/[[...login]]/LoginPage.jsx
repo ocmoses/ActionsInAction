@@ -41,8 +41,8 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "moses.ocho@mtn.com",
-    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+        : "sunaf4real@gmail.com",
+    password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
   });
   
   const [notVerified, setNotVerified] = useState(null);
@@ -128,8 +128,8 @@ function Login({ params }) {
     //: getOtp();
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    //return router.replace(redirect);
-    location.reload();
+    return router.replace(redirect);
+    //location.reload();
   };
 
   return (

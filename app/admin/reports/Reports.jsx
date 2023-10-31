@@ -22,6 +22,14 @@ function formatDate(inputDate) {
   return formattedDate;
 }
 
+function renewalDaysLeft(tdate){
+  const today = new Date();
+  const targetedDate = new Date(tdate);
+ const  daysLeft_ = targetedDate - today;
+ const daysLeft = Math.ceil(daysLeft_ / (1000 * 60 * 60 * 24));
+  return daysLeft;
+}
+
 export default function Reports() {
   const [reportStatistics, setReportStatistics] = useState(null);
   const [loadingReportStatistics, setLoadingReportStatistics] = useState(false);
@@ -57,6 +65,7 @@ export default function Reports() {
   useEffect(() => {
     fetchReport();
   }, []);
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const [data, setData] = useState([]);
@@ -71,7 +80,6 @@ export default function Reports() {
     currentPage: 1,
     lastPage: null,
   });
-  
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   const fetchPartnerList = async (page) => {
@@ -90,9 +98,9 @@ export default function Reports() {
       setPartnerListData(partner_list_data);
       setData(all_partner_list_per_page);
       setNavPages({
-       // ...navPages, // Spread the current state
-        currentPage: partner_list_data.current_page, 
-        lastPage: partner_list_data.last_page,// Set the currentPage to 2
+        // ...navPages, // Spread the current state
+        currentPage: partner_list_data.current_page,
+        lastPage: partner_list_data.last_page, // Set the currentPage to 2
       });
     } catch (error) {
       console.error("Error fetching partners list :", error);
@@ -139,7 +147,7 @@ export default function Reports() {
 
         return true;
       });
-//sfhsiioshohoi//////////////////////
+      //sfhsiioshohoi//////////////////////
       setFilteredData(filtered);
     }
   }, [startDate, endDate, selectedStatus, data]);
@@ -159,48 +167,35 @@ export default function Reports() {
       fetchPartnerList(navPages.currentPage - 1); // Fetch the previous page
     }
   };
-  
+
   const handleNextClick = () => {
     if (navPages.currentPage < navPages.lastPage) {
-    fetchPartnerList(navPages.currentPage + 1); // Fetch the next page
+      fetchPartnerList(navPages.currentPage + 1); // Fetch the next page
     }
   };
 
-
-
-
-
   const downloadTableAsCSV = () => {
-    const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
-    const rows = table.querySelectorAll('tr');
-    
-    let csvContent = 'data:text/csv;charset=utf-8,';
+    const table = document.getElementById("myTable"); // Replace 'myTable' with your table's ID
+    const rows = table.querySelectorAll("tr");
+
+    let csvContent = "data:text/csv;charset=utf-8,";
     rows.forEach((row) => {
-      const cols = row.querySelectorAll('td');
+      const cols = row.querySelectorAll("td");
       const rowArray = [];
       cols.forEach((col) => {
         rowArray.push(col.innerText);
       });
-      const rowCSV = rowArray.join(',');
-      csvContent += rowCSV + '\n';
+      const rowCSV = rowArray.join(",");
+      csvContent += rowCSV + "\n";
     });
 
     const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'partnerReport.csv'); // Set the filename for the downloaded CSV file
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "partnerReport.csv"); // Set the filename for the downloaded CSV file
     document.body.appendChild(link);
     link.click();
   };
-
-  // const downloadTableAsPDF = () => {
-  //   const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
-  //   const doc = new jsPDF();
-  //   doc.autoTable({ html: '#myTable' }); // Use the table ID
-  //   doc.save('partnerReport.pdf');
-  // };
-
-
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -742,6 +737,9 @@ export default function Reports() {
                               <PartnerFilterCheck
                                 title="Expiring in 30 days"
                                 summary="Contract is expiring soon"
+                                value="Days Left"
+                                checked={selectedStatus.includes("Days Left")}
+                                onChange={handleStatusChange}
                               />
                               <PartnerFilterCheck
                                 title="In review"
@@ -777,7 +775,7 @@ export default function Reports() {
                   {/*//===the help layer===========================================================================================================================*/}
                   <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333] hidden group-hover/download:block">
                     <div className=" flex flex-col text-[16px] ">
-                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 " >
+                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -794,7 +792,10 @@ export default function Reports() {
                         </svg>
                         PDF
                       </div>
-                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10" onClick={downloadTableAsCSV}>
+                      <div
+                        className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10"
+                        onClick={downloadTableAsCSV}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -871,8 +872,9 @@ export default function Reports() {
                     <span className="text-[13px]">Category</span>
                   </th>
                   <th>
-                    <span className="text-[13px]">Date</span>
+                    <span className="text-[13px]"> Date</span>
                   </th>
+                  
                   <th>
                     <span className="text-[13px]">Status</span>
                   </th>
@@ -938,19 +940,56 @@ export default function Reports() {
                       <td>
                         <p>{formatDate(record.date)}</p>
                       </td>
+                      
                       <td>
                         <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="8"
-                            height="8"
-                            viewBox="0 0 8 8"
-                            fill="none"
-                          >
-                            <circle cx="4" cy="4" r="3" fill="#2C9958" />
-                          </svg>
+                          {record.status === "active" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="8"
+                              height="8"
+                              viewBox="0 0 8 8"
+                              fill="#2C9958"
+                            >
+                              <circle cx="4" cy="4" r="3" />
+                            </svg>
+                          ) : record.status === "new" ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="8"
+                              height="8"
+                              viewBox="0 0 8 8"
+                              fill="#396587"
+                            >
+                              <circle cx="4" cy="4" r="3" />
+                            </svg>
+                          ) : record.status === "expired" || (renewalDaysLeft(record.expiration) >= 0 && renewalDaysLeft(record.expiration) < 30)  ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="8"
+                              height="8"
+                              viewBox="0 0 8 8"
+                              fill="none"
+                            >
+                              <circle cx="4" cy="4" r="3" fill="#FE0302" />
+                            </svg>
+                          )  : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="8"
+                              height="8"
+                              viewBox="0 0 8 8"
+                              fill="none"
+                            >
+                              <circle cx="4" cy="4" r="3" fill="#FFCB03" />
+                            </svg>
+                          )}
+
                           <span className="text-[12px] text-white capitalize">
-                            {record.status}
+                          {
+                            renewalDaysLeft(record.expiration) >= 0 && renewalDaysLeft(record.expiration) < 30 ? `${renewalDaysLeft(record.expiration)} Days Left` : record.status
+                          }
+                            
                           </span>
                         </div>
                       </td>
@@ -985,9 +1024,11 @@ export default function Reports() {
               <button
                 onClick={handlePreviousClick}
                 className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${navPages.currentPage <=1 ? 
-                  'text-white/20 border-white/20 cursor-not-allowed' : 
-                  'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
+                ${
+                  navPages.currentPage <= 1
+                    ? "text-white/20 border-white/20 cursor-not-allowed"
+                    : "text-white/80 border-white/40 cursor-pointer hover:bg-white/10"
+                }`}
               >
                 Previous
               </button>
@@ -999,9 +1040,11 @@ export default function Reports() {
               <button
                 onClick={handleNextClick}
                 className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${navPages.currentPage >= partnerListData.last_page ? 
-                  'text-white/20 border-white/20 cursor-not-allowed' : 
-                  'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
+                ${
+                  navPages.currentPage >= partnerListData.last_page
+                    ? "text-white/20 border-white/20 cursor-not-allowed"
+                    : "text-white/80 border-white/40 cursor-pointer hover:bg-white/10"
+                }`}
               >
                 Next
               </button>

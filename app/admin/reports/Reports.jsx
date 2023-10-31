@@ -67,7 +67,10 @@ export default function Reports() {
   const [endDate, setEndDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState([]);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [navPages, setNavPages] = useState({
+    currentPage: 1,
+    lastPage: null,
+  });
   
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +89,11 @@ export default function Reports() {
       const all_partner_list_per_page = partnerListResponse.data.data.data;
       setPartnerListData(partner_list_data);
       setData(all_partner_list_per_page);
-      setCurrentPage(partner_list_data.current_page);
+      setNavPages({
+       // ...navPages, // Spread the current state
+        currentPage: partner_list_data.current_page, 
+        lastPage: partner_list_data.last_page,// Set the currentPage to 2
+      });
     } catch (error) {
       console.error("Error fetching partners list :", error);
     }
@@ -103,8 +110,8 @@ export default function Reports() {
       },
       true
     );
-    fetchPartnerList(currentPage); //// run fetch api
-  }, [currentPage]);
+    fetchPartnerList(navPages.currentPage); //// run fetch api
+  }, [navPages.currentPage]);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
@@ -147,13 +154,15 @@ export default function Reports() {
   };
 
   const handlePreviousClick = () => {
-    if (currentPage > 1) {
-      fetchPartnerList(currentPage - 1); // Fetch the previous page
+    if (navPages.currentPage > 1) {
+      fetchPartnerList(navPages.currentPage - 1); // Fetch the previous page
     }
   };
   
   const handleNextClick = () => {
-    fetchPartnerList(currentPage + 1); // Fetch the next page
+    if (navPages.currentPage < navPages.lastPage) {
+    fetchPartnerList(navPages.currentPage + 1); // Fetch the next page
+    }
   };
 
   return (
@@ -939,7 +948,7 @@ export default function Reports() {
               <button
                 onClick={handlePreviousClick}
                 className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${currentPage <=1 ? 
+                ${navPages.currentPage <=1 ? 
                   'text-white/20 border-white/20 cursor-not-allowed' : 
                   'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
               >
@@ -947,13 +956,13 @@ export default function Reports() {
               </button>
 
               <div className="flex space-x-4 justify-center items-center text-white/80 text-sm">
-                {`Page ${currentPage} of ${partnerListData.last_page}`}
+                {`Page ${navPages.currentPage} of ${navPages.lastPage}`}
               </div>
 
               <button
                 onClick={handleNextClick}
                 className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${currentPage >= partnerListData.last_page ? 
+                ${navPages.currentPage >= partnerListData.last_page ? 
                   'text-white/20 border-white/20 cursor-not-allowed' : 
                   'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
               >

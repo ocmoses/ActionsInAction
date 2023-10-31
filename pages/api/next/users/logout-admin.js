@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
     if (hasCookie("partnerid", { req, res }))
       deleteCookie("partnerid", { req, res });
-      localStorage.clear();
+      
     res.status(200).json({ success: true, error: null, data: null });
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });

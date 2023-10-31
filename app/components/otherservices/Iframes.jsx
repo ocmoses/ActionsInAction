@@ -104,6 +104,6 @@ import axios from 'axios';
 
 export default function Iframe({ url }) {
   return (
-    <iframe frameBorder="0" width="100%" height="400" src={url} ></iframe>
+    <iframe name="dsmiframe" frameBorder="0" className="h-[100%] w-[100%]" src={url} ></iframe>
   );
 }

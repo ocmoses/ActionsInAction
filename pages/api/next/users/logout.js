@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${decrypted}`,
-        Authorization: `bearer ${decrypted}`,
+        token: decrypted
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",

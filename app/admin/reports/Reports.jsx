@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { getPartnerInitials } from "@/app/modules/utilities";
+import { TailSpinPreloader } from "@/app/components/Icons";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import TextInput from "@/app/components/form/TextInput";
-//import useAdmins from "@/hooks/useAdmins";
 import { apikey } from "@/app/modules/constants";
 import PartnerStatisticsReport, {
   PartnerReportBarChart,
-  PartnerFilterList,
   PartnerFilterTitle,
   PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
@@ -22,10 +22,10 @@ function formatDate(inputDate) {
   return formattedDate;
 }
 
-export default function Approvals() {
-  //const { fetchData }=  useAdmins()
+export default function Reports() {
   const [reportStatistics, setReportStatistics] = useState(null);
-  const [fetching, setFetching] = useState(false);
+  const [loadingReportStatistics, setLoadingReportStatistics] = useState(false);
+
   const [filterModal, setFilterModal] = useState(false);
   const filterRef = useRef(null);
   const [search, setSearch] = useState({
@@ -34,56 +34,61 @@ export default function Approvals() {
     status: false,
   });
 
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState([]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Number of items to display per page
-
-  useEffect(() => {
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    const fetchReport = async () => {
-      if (fetching) return;
-      try {
-        setFetching(true);
-        const response = await axios.get(RemoteEndpoints.PARTNER_STATISTICS, {
-          headers: {
-            apikey: apikey,
-          },
-        });
-        // console.log("this is my response", response);
-        setFetching(false);
-        setReportStatistics(response.data.data);
-      } catch (error) {
-        setFetching(false);
-        //console.error("Error fetching data:", error);
-      }
-    };
-    fetchReport();
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  }, []);
-
-  const fetchData = async () => {
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  const fetchReport = async () => {
     try {
-      const filteringResponse = await axios.get(
-        RemoteEndpoints.PARTNER_FILTERING,
+      setLoadingReportStatistics(true);
+      const reportStatisticsResponse = await axios.get(
+        RemoteEndpoints.PARTNER_STATISTICS,
         {
           headers: {
             apikey: apikey,
           },
         }
       );
-      console.log(
-        "the filteringResponse is ",
-        filteringResponse.data.data.data
-      );
-      setData(filteringResponse.data.data.data);
-      //setFilteredData(filteringResponse.data.data.data);
+      setReportStatistics(reportStatisticsResponse.data.data);
+      setLoadingReportStatistics(false);
     } catch (error) {
-      console.error("Error filteringResponse records:", error);
+      console.error("Error Loading Statistics data:", error);
+      setLoadingReportStatistics(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReport();
+  }, []);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const [data, setData] = useState([]);
+  const [loadingPartnerList, setLoadingPartnerList] = useState(false);
+  const [partnerListData, setPartnerListData] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  const fetchPartnerList = async (page) => {
+    try {
+      setLoadingPartnerList(true);
+      const partnerListResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_LIST}?page=${page}`,
+        {
+          headers: {
+            apikey: apikey,
+          },
+        }
+      );
+      const partner_list_data = partnerListResponse.data.data;
+      const all_partner_list_per_page = partnerListResponse.data.data.data;
+      setPartnerListData(partner_list_data);
+      setData(all_partner_list_per_page);
+      setCurrentPage(partner_list_data.current_page);
+    } catch (error) {
+      console.error("Error fetching partners list :", error);
     }
   };
 
@@ -98,45 +103,9 @@ export default function Approvals() {
       },
       true
     );
-    ///////////////////////////////////////////////////
-    fetchData(); //// run fetch api
-  }, []);
-
-  // useEffect(() => {
-  //   // Perform client-side filtering based on date range and selectedStatus
-  //   if (Array.isArray(data)) {
-  //     const filtered = data.filter((record) => {
-  //       const recordDate = new Date(record.date);
-  //       const start = startDate ? new Date(startDate) : null;
-  //       const end = endDate ? new Date(endDate) : null;
-
-  //       if (selectedStatus.length > 0 && !selectedStatus.includes(record.status)) {
-  //         return false;
-  //       }
-
-  //       if (start && recordDate < start) {
-  //         return false;
-  //       }
-
-  //       if (end && recordDate > end) {
-  //         return false;
-  //       }
-
-  //       return true;
-  //     });
-
-  //     setFilteredData(filtered);
-  //   }
-  // }, [startDate, endDate, selectedStatus, data]);
-
-  // const handleStatusChange = (event) => {
-  //   const status = event.target.value;
-  //   if (selectedStatus.includes(status)) {
-  //     setSelectedStatus(selectedStatus.filter((s) => s !== status));
-  //   } else {
-  //     setSelectedStatus([...selectedStatus, status]);
-  //   }
-  // };
+    fetchPartnerList(currentPage); //// run fetch api
+  }, [currentPage]);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     // Perform client-side filtering based on date range and selectedStatus
@@ -177,16 +146,15 @@ export default function Approvals() {
     }
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handlePreviousClick = () => {
+    if (currentPage > 1) {
+      fetchPartnerList(currentPage - 1); // Fetch the previous page
+    }
   };
-
-  // Calculate the start and end indices for the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  // Slice the filtered data to display only the items for the current page
-  const pageData = filteredData.slice(startIndex, endIndex);
+  
+  const handleNextClick = () => {
+    fetchPartnerList(currentPage + 1); // Fetch the next page
+  };
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -194,10 +162,19 @@ export default function Approvals() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Partners</h2>
+            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
+              {partnerListData.total}
+            </span>
           </div>
         </div>
 
-        {reportStatistics && (
+        {loadingReportStatistics && (
+          <div className="flex justify-center items-center w-screen h-screen">
+            <TailSpinPreloader width={72} height={72} fill="#efb703" />
+          </div>
+        )}
+
+        {!loadingReportStatistics && reportStatistics && (
           <section id="partner_statistics">
             <div className="m-auto my-10  flex flex-row gap-[10px] flex-wrap">
               {/* Reports for partners */}
@@ -889,6 +866,17 @@ export default function Approvals() {
 
                       <td>
                         <div className="flex flex-row">
+                          <div
+                            title={record.category}
+                            className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]"
+                          >
+                            <span>
+                              {getPartnerInitials(
+                                record.category.toUpperCase()
+                              )}
+                            </span>
+                          </div>
+                          {/*
                           <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
                             <span>V</span>
                           </div>
@@ -898,6 +886,7 @@ export default function Approvals() {
                           <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
                             <span>+1</span>
                           </div>
+                          */}
                         </div>
                       </td>
                       <td>
@@ -945,20 +934,34 @@ export default function Approvals() {
               </tbody>
             </table>
             {/*//==============================================================================================================================*/}
-            <div>
+
+            <div className="w-full p-2 flex justify-between">
               <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                onClick={handlePreviousClick}
+                className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
+                ${currentPage <=1 ? 
+                  'text-white/20 border-white/20 cursor-not-allowed' : 
+                  'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
               >
                 Previous
               </button>
+
+              <div className="flex space-x-4 justify-center items-center text-white/80 text-sm">
+                {`Page ${currentPage} of ${partnerListData.last_page}`}
+              </div>
+
               <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={endIndex >= filteredData.length}
+                onClick={handleNextClick}
+                className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
+                ${currentPage >= partnerListData.last_page ? 
+                  'text-white/20 border-white/20 cursor-not-allowed' : 
+                  'text-white/80 border-white/40 cursor-pointer hover:bg-white/10'}`}
               >
                 Next
               </button>
             </div>
+
+            {/*//==============================================================================================================================*/}
           </div>
         </section>
       </div>

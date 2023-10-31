@@ -166,6 +166,42 @@ export default function Reports() {
     }
   };
 
+
+
+
+
+  const downloadTableAsCSV = () => {
+    const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
+    const rows = table.querySelectorAll('tr');
+    
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    rows.forEach((row) => {
+      const cols = row.querySelectorAll('td');
+      const rowArray = [];
+      cols.forEach((col) => {
+        rowArray.push(col.innerText);
+      });
+      const rowCSV = rowArray.join(',');
+      csvContent += rowCSV + '\n';
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'partnerReport.csv'); // Set the filename for the downloaded CSV file
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  // const downloadTableAsPDF = () => {
+  //   const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
+  //   const doc = new jsPDF();
+  //   doc.autoTable({ html: '#myTable' }); // Use the table ID
+  //   doc.save('partnerReport.pdf');
+  // };
+
+
+
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
       <div className="w-full pt-[72px] px-12 mx-auto">
@@ -741,7 +777,7 @@ export default function Reports() {
                   {/*//===the help layer===========================================================================================================================*/}
                   <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333] hidden group-hover/download:block">
                     <div className=" flex flex-col text-[16px] ">
-                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 ">
+                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 " >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -758,7 +794,7 @@ export default function Reports() {
                         </svg>
                         PDF
                       </div>
-                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10">
+                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10" onClick={downloadTableAsCSV}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -820,7 +856,7 @@ export default function Reports() {
 
             {/*//==============================================================================================================================*/}
 
-            <table className="table w-full transparent">
+            <table className="table w-full transparent" id="myTable">
               <tbody>
                 {/* head */}
                 <tr className="border-b border-b-white/40 text-11">

@@ -1,48 +1,22 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { getPartnerInitials } from "@/app/modules/utilities";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import TextInput from "@/app/components/form/TextInput";
+
 import { apikey } from "@/app/modules/constants";
+import FilteringFlyout, {
+  DownloadFlyout,
+} from "@/app/components/dashboard/admin/filtering_component/AdminReportFilteringFlyout";
 import PartnerStatisticsReport, {
   PartnerReportBarChart,
-  PartnerFilterTitle,
-  PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
-function formatDate(inputDate) {
-  const options = { year: "numeric", month: "short", day: "numeric" };
-  const formattedDate = new Date(inputDate).toLocaleDateString(
-    undefined,
-    options
-  );
-  return formattedDate;
-}
-
-function renewalDaysLeft(tdate){
-  const today = new Date();
-  const targetedDate = new Date(tdate);
- const  daysLeft_ = targetedDate - today;
- const daysLeft = Math.ceil(daysLeft_ / (1000 * 60 * 60 * 24));
-  return daysLeft;
-}
-
 export default function Reports() {
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
   const [reportStatistics, setReportStatistics] = useState(null);
   const [loadingReportStatistics, setLoadingReportStatistics] = useState(false);
-
-  const [filterModal, setFilterModal] = useState(false);
-  const filterRef = useRef(null);
-  const [search, setSearch] = useState({
-    date: true,
-    category: false,
-    status: false,
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
   const fetchReport = async () => {
     try {
       setLoadingReportStatistics(true);
@@ -61,140 +35,95 @@ export default function Reports() {
       setLoadingReportStatistics(false);
     }
   };
-
   useEffect(() => {
     fetchReport();
   }, []);
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  const [data, setData] = useState([]);
-  const [loadingPartnerList, setLoadingPartnerList] = useState(false);
-  const [partnerListData, setPartnerListData] = useState(false);
-  const [filteredData, setFilteredData] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState([]);
-
-  const [navPages, setNavPages] = useState({
-    currentPage: 1,
-    lastPage: null,
-  });
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-  const fetchPartnerList = async (page) => {
+  const [filterModal, setFilterModal] = useState(false);
+  const [downloadModal, setDownloadModal] = useState(false);
+  const [partnerData, setPartnerData] = useState([]);
+  const [loadingPartnerList, setLoadingPartnerList] = useState(false);
+
+  const [startDate, setStartDate] = useState(""); // Start date for the date range
+  const [endDate, setEndDate] = useState(""); // End date for the date range
+
+
+
+  const fetchPartnerList = async () => {
     try {
       setLoadingPartnerList(true);
       const partnerListResponse = await axios.get(
-        `${RemoteEndpoints.PARTNER_LIST}?page=${page}`,
+        RemoteEndpoints.PARTNER_LIST,
         {
           headers: {
             apikey: apikey,
           },
         }
       );
-      const partner_list_data = partnerListResponse.data.data;
-      const all_partner_list_per_page = partnerListResponse.data.data.data;
-      setPartnerListData(partner_list_data);
-      setData(all_partner_list_per_page);
-      setNavPages({
-        // ...navPages, // Spread the current state
-        currentPage: partner_list_data.current_page,
-        lastPage: partner_list_data.last_page, // Set the currentPage to 2
-      });
+      setPartnerData(partnerListResponse.data.data);
+      setLoadingPartnerList(false);
     } catch (error) {
-      console.error("Error fetching partners list :", error);
+      console.error("Error Loading Statistics data:", error);
+      setLoadingPartnerList(false);
     }
   };
 
   useEffect(() => {
-    ////// bring out search modals
-    document.addEventListener(
-      "click",
-      function (e) {
-        if (filterRef.current && !filterRef.current.contains(e.target)) {
-          setFilterModal(false);
-        }
-      },
-      true
-    );
-    fetchPartnerList(navPages.currentPage); //// run fetch api
-  }, [navPages.currentPage]);
+    fetchPartnerList();
+    
+  }, []);
+
+  const closeFilterModal = () => {
+  setFilterModal(false);
+  };
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    // Perform client-side filtering based on date range and selectedStatus
-    if (Array.isArray(data)) {
-      const filtered = data.filter((record) => {
-        const recordDate = new Date(record.date);
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
+  const filterDataByDateRange = () => {
+    return partnerData.filter((partner) => {
+      if (!startDate && !endDate) {
+        return true; // No date range filter applied, return all data
+      }
 
-        if (
-          selectedStatus.length > 0 &&
-          !selectedStatus.includes(record.status)
-        ) {
-          return false;
-        }
+      const partnerDate = new Date(partner.date);
+      if (startDate && partnerDate < startDate) {
+        return false; // Partner date is earlier than the start date
+      }
 
-        if (start && recordDate < start) {
-          return false;
-        }
+      if (endDate && partnerDate > endDate) {
+        return false; // Partner date is later than the end date
+      }
 
-        if (end && recordDate > end) {
-          return false;
-        }
-
-        return true;
-      });
-      //sfhsiioshohoi//////////////////////
-      setFilteredData(filtered);
-    }
-  }, [startDate, endDate, selectedStatus, data]);
-
-  ////////////////////////////////////////////////////////////////////////
-  const handleStatusChange = (event) => {
-    const status = event.target.value;
-    if (selectedStatus.includes(status)) {
-      setSelectedStatus(selectedStatus.filter((s) => s !== status));
-    } else {
-      setSelectedStatus([...selectedStatus, status]);
-    }
-  };
-
-  const handlePreviousClick = () => {
-    if (navPages.currentPage > 1) {
-      fetchPartnerList(navPages.currentPage - 1); // Fetch the previous page
-    }
-  };
-
-  const handleNextClick = () => {
-    if (navPages.currentPage < navPages.lastPage) {
-      fetchPartnerList(navPages.currentPage + 1); // Fetch the next page
-    }
-  };
-
-  const downloadTableAsCSV = () => {
-    const table = document.getElementById("myTable"); // Replace 'myTable' with your table's ID
-    const rows = table.querySelectorAll("tr");
-
-    let csvContent = "data:text/csv;charset=utf-8,";
-    rows.forEach((row) => {
-      const cols = row.querySelectorAll("td");
-      const rowArray = [];
-      cols.forEach((col) => {
-        rowArray.push(col.innerText);
-      });
-      const rowCSV = rowArray.join(",");
-      csvContent += rowCSV + "\n";
+      return true; // Partner date falls within the selected date range
     });
+  };
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "partnerReport.csv"); // Set the filename for the downloaded CSV file
-    document.body.appendChild(link);
-    link.click();
+  const filteredData = filterDataByDateRange();
+
+  const [selectedStatus, setSelectedStatus] = useState([]); // Array to hold selected status options
+  const [selectedCategory, setSelectedCategory] = useState([]); // Array to hold selected category options
+
+  const handleStatusChange = (e) => {
+    const value = e.target.value;
+    setSelectedStatus((prevSelectedStatus) => {
+      if (prevSelectedStatus.includes(value)) {
+        return prevSelectedStatus.filter((status) => status !== value);
+      } else {
+        return [...prevSelectedStatus, value];
+      }
+    });
+  };
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setSelectedCategory((prevSelectedCategory) => {
+      if (prevSelectedCategory.includes(value)) {
+        return prevSelectedCategory.filter((category) => category !== value);
+      } else {
+        return [...prevSelectedCategory, value];
+      }
+    });
   };
 
   return (
@@ -203,11 +132,18 @@ export default function Reports() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Partners</h2>
-            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-              {partnerListData.total}
-            </span>
+            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"></span>
           </div>
         </div>
+
+
+
+
+
+
+
+
+
 
         {loadingReportStatistics && (
           <div className="flex justify-center items-center w-screen h-screen">
@@ -215,844 +151,386 @@ export default function Reports() {
           </div>
         )}
 
-        {!loadingReportStatistics && reportStatistics && (
-          <section id="partner_statistics">
-            <div className="m-auto my-10  flex flex-row gap-[10px] flex-wrap">
-              {/* Reports for partners */}
-              <PartnerStatisticsReport
-                title="NEW PARTNER"
-                count={reportStatistics.onboarding_stats.partners.new}
-                percentage={
-                  reportStatistics.onboarding_stats.partners_past_month.new ===
-                  0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.onboarding_stats.partners.new -
-                          reportStatistics.onboarding_stats.partners_past_month
-                            .new) /
-                          reportStatistics.onboarding_stats.partners_past_month
-                            .new) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.onboarding_stats.partners.new <
-                  reportStatistics.onboarding_stats.partners_past_month.new
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+        {reportStatistics && (
+          <>
+            <section id="partner_statistics">
+              <div className="m-auto my-10  flex flex-row gap-[10px] flex-wrap">
+                {/* Reports for partners */}
+                <PartnerStatisticsReport
+                  title="NEW PARTNER"
+                  count={reportStatistics.onboarding_stats.partners.new}
+                  percentage={
+                    reportStatistics.onboarding_stats.partners_past_month
+                      .new === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.onboarding_stats.partners.new -
+                            reportStatistics.onboarding_stats
+                              .partners_past_month.new) /
+                            reportStatistics.onboarding_stats
+                              .partners_past_month.new) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.onboarding_stats.partners.new <
+                    reportStatistics.onboarding_stats.partners_past_month.new
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="EXISTING PARTNER"
-                count={reportStatistics.onboarding_stats.partners.existing}
-                percentage={
-                  reportStatistics.onboarding_stats.partners_past_month
-                    .existing === 0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.onboarding_stats.partners.existing -
-                          reportStatistics.onboarding_stats.partners_past_month
-                            .existing) /
-                          reportStatistics.onboarding_stats.partners_past_month
-                            .existing) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.onboarding_stats.partners.new <
-                  reportStatistics.onboarding_stats.partners_past_month.new
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                <PartnerStatisticsReport
+                  title="EXISTING PARTNER"
+                  count={reportStatistics.onboarding_stats.partners.existing}
+                  percentage={
+                    reportStatistics.onboarding_stats.partners_past_month
+                      .existing === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.onboarding_stats.partners
+                            .existing -
+                            reportStatistics.onboarding_stats
+                              .partners_past_month.existing) /
+                            reportStatistics.onboarding_stats
+                              .partners_past_month.existing) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.onboarding_stats.partners.new <
+                    reportStatistics.onboarding_stats.partners_past_month.new
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="APPROVED PARTNER"
-                count={reportStatistics.compliance_stats.compliance.approved}
-                percentage={
-                  reportStatistics.compliance_stats.compliance_past_month
-                    .approved === 0
-                    ? "0.00"
-                    : Math.abs(
-                        ((reportStatistics.compliance_stats.compliance
-                          .approved -
-                          reportStatistics.compliance_stats
-                            .compliance_past_month.approved) /
-                          reportStatistics.compliance_stats
-                            .compliance_past_month.approved) *
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.compliance_stats.compliance.approved <
-                  reportStatistics.compliance_stats.compliance_past_month
-                    .approved
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                <PartnerStatisticsReport
+                  title="APPROVED PARTNER"
+                  count={reportStatistics.compliance_stats.compliance.approved}
+                  percentage={
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .approved === 0
+                      ? "0.00"
+                      : Math.abs(
+                          ((reportStatistics.compliance_stats.compliance
+                            .approved -
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.approved) /
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.approved) *
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.compliance_stats.compliance.approved <
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .approved
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="PARTNERS IN REVIEW"
-                count={reportStatistics.compliance_stats.compliance.in_review}
-                percentage={
-                  reportStatistics.compliance_stats.compliance_past_month
-                    .in_review === 0
-                    ? "0.00"
-                    : Math.abs(
-                        ((reportStatistics.compliance_stats.compliance
-                          .in_review -
-                          reportStatistics.compliance_stats
-                            .compliance_past_month.in_review) /
-                          reportStatistics.compliance_stats
-                            .compliance_past_month.in_review) *
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.compliance_stats.compliance.in_review <
-                  reportStatistics.compliance_stats.compliance_past_month
-                    .in_review
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                <PartnerStatisticsReport
+                  title="PARTNERS IN REVIEW"
+                  count={reportStatistics.compliance_stats.compliance.in_review}
+                  percentage={
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .in_review === 0
+                      ? "0.00"
+                      : Math.abs(
+                          ((reportStatistics.compliance_stats.compliance
+                            .in_review -
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.in_review) /
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.in_review) *
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.compliance_stats.compliance.in_review <
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .in_review
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              {/* Reports for contracts */}
-              <PartnerStatisticsReport
-                title="ACTIVE CONTRACTS"
-                count={reportStatistics.contracting_stats.contracts.active}
-                percentage={
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .active === 0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.contracting_stats.contracts.active -
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.active) /
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.active) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.contracting_stats.contracts.active <
-                  reportStatistics.contracting_stats.contracts_past_month.active
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                {/* Reports for contracts */}
+                <PartnerStatisticsReport
+                  title="ACTIVE CONTRACTS"
+                  count={reportStatistics.contracting_stats.contracts.active}
+                  percentage={
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .active === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.contracting_stats.contracts
+                            .active -
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.active) /
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.active) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.contracting_stats.contracts.active <
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .active
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="INACTIVE CONTRACTS"
-                count={reportStatistics.contracting_stats.contracts.inactive}
-                percentage={
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .inactive === 0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.contracting_stats.contracts
-                          .inactive -
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.inactive) /
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.inactive) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.contracting_stats.contracts.inactive <
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .inactive
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                <PartnerStatisticsReport
+                  title="INACTIVE CONTRACTS"
+                  count={reportStatistics.contracting_stats.contracts.inactive}
+                  percentage={
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .inactive === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.contracting_stats.contracts
+                            .inactive -
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.inactive) /
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.inactive) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.contracting_stats.contracts.inactive <
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .inactive
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="EXPIRING CONTRACTS"
-                count={
-                  reportStatistics.contracting_stats.contracts.expiring_soon
-                }
-                percentage={
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .expiring_soon === 0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.contracting_stats.contracts
-                          .expiring_soon -
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.expiring_soon) /
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.expiring_soon) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.contracting_stats.contracts.expiring_soon <
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .expiring_soon
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
+                <PartnerStatisticsReport
+                  title="EXPIRING CONTRACTS"
+                  count={
+                    reportStatistics.contracting_stats.contracts.expiring_soon
+                  }
+                  percentage={
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .expiring_soon === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.contracting_stats.contracts
+                            .expiring_soon -
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.expiring_soon) /
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.expiring_soon) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.contracting_stats.contracts.expiring_soon <
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .expiring_soon
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
 
-              <PartnerStatisticsReport
-                title="TOTAL CONTRACTS"
-                count={
-                  reportStatistics.contracting_stats.contracts.active +
-                  reportStatistics.contracting_stats.contracts.inactive +
-                  reportStatistics.contracting_stats.contracts.expiring_soon
-                }
-                percentage={
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .expiring_soon === 0
-                    ? "0.00"
-                    : Math.abs(
-                        (((reportStatistics.contracting_stats.contracts
-                          .expiring_soon -
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.expiring_soon) /
-                          reportStatistics.contracting_stats
-                            .contracts_past_month.expiring_soon) *
-                          100) /
-                          100
-                      ).toFixed(2)
-                }
-                rate={
-                  reportStatistics.contracting_stats.contracts.expiring_soon <
-                  reportStatistics.contracting_stats.contracts_past_month
-                    .expiring_soon
-                    ? "DOWN"
-                    : "UP"
-                }
-              />
-            </div>
-          </section>
+                <PartnerStatisticsReport
+                  title="TOTAL CONTRACTS"
+                  count={
+                    reportStatistics.contracting_stats.contracts.active +
+                    reportStatistics.contracting_stats.contracts.inactive +
+                    reportStatistics.contracting_stats.contracts.expiring_soon
+                  }
+                  percentage={
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .expiring_soon === 0
+                      ? "0.00"
+                      : Math.abs(
+                          (((reportStatistics.contracting_stats.contracts
+                            .expiring_soon -
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.expiring_soon) /
+                            reportStatistics.contracting_stats
+                              .contracts_past_month.expiring_soon) *
+                            100) /
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.contracting_stats.contracts.expiring_soon <
+                    reportStatistics.contracting_stats.contracts_past_month
+                      .expiring_soon
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
+              </div>
+            </section>
+          </>
         )}
 
+
+
+
+
+
         {/*<section id="partner_reporting_bar_charts">
-          <div className="bg-white/10 min-h-[250px] min-w-[280px]">
-          
-            <PartnerReportBarChart/>
-          </div>
-      </section>*/}
-
-        <section id="partner_reporting_filtering">
-          <div className="bg-white/10 min-h-[250px] min-w-[280px] rounded-lg animate-[slide-down-fade_1s_ease-in-out]">
-            <div className="flex flex-col  gap-3 px-5 py-5">
-              <h2 className="mb-[15px] text-white">PARTNER LIST</h2>
-
-              <div id="filtering" className="justify-between flex flex-row">
-                <div className="flex flex-row gap-3">
-                  <div
-                    className="flex items-center gap-2 rounded-full bg-white/10 p-1 px-3 hover:bg-gray-500 cursor-pointer"
-                    onClick={() => setFilterModal(!filterModal)}
-                  >
-                    <span className="text-[12px] text-white">Add Filter</span>
-                    <svg
-                      className="w-4 h-4"
-                      fill="white"
-                      viewBox="0 0 32 32"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
-                    </svg>
+                  <div className="bg-white/10 min-h-[250px] min-w-[280px]">
+                  
+                    <PartnerReportBarChart/>
                   </div>
+              </section>
+            */}
 
-                  <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
-                    No filters applied
-                  </div>
 
-                  {filterModal && (
-                    <div
-                      ref={filterRef}
-                      className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out]`}
-                    >
-                      <div className="flex">
-                        <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
-                          <div
-                            className={`${
-                              search.date
-                                ? "bg-white/20 text-white"
-                                : "text-gray-400"
-                            }
-                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
-                            onClick={() => {
-                              if (!search.date) {
-                                setSearch({
-                                  ...search,
-                                  date: true,
-                                  category: false,
-                                  status: false,
-                                });
-                              }
-                            }}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M14 4V3.006C14 2.45 13.55 2 12.994 2H11V3H10V2H6V3H5V2H3.006C2.45 2 2 2.45 2 3.006V12.994C2 13.55 2.45 14 3.006 14H12.994C13.55 14 14 13.55 14 12.994V5H2V4H14ZM11 1H12.994C14.102 1 15 1.897 15 3.006V12.994C15.0001 13.2575 14.9483 13.5184 14.8476 13.7618C14.7468 14.0053 14.599 14.2264 14.4127 14.4127C14.2264 14.599 14.0053 14.7468 13.7618 14.8476C13.5184 14.9483 13.2575 15.0001 12.994 15H3.006C2.74253 15.0001 2.48162 14.9483 2.23818 14.8476C1.99474 14.7468 1.77355 14.599 1.58725 14.4127C1.40095 14.2264 1.25319 14.0053 1.15243 13.7618C1.05167 13.5184 0.999869 13.2575 1 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0H6V1H10V0H11V1ZM4 7H6V8H4V7ZM7 7H9V8H7V7ZM10 7H12V8H10V7ZM4 9H6V10H4V9ZM7 9H9V10H7V9ZM10 9H12V10H10V9ZM4 11H6V12H4V11ZM7 11H9V12H7V11ZM10 11H12V12H10V11Z"
-                                fill="#888888"
-                              />
-                            </svg>
-                            &nbsp; &nbsp;
-                            <span className="flex-1">Date</span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                              />
-                            </svg>
-                          </div>
 
-                          <div
-                            className={`${
-                              search.category
-                                ? "bg-white/20 text-white"
-                                : "text-gray-400"
-                            }
-                  rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
-                            onClick={() => {
-                              if (!search.category) {
-                                setSearch({
-                                  ...search,
-                                  date: false,
-                                  category: true,
-                                  status: false,
-                                });
-                              }
-                            }}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="17"
-                              height="16"
-                              viewBox="0 0 17 16"
-                              fill="none"
-                            >
-                              <path
-                                d="M15.3334 11.94C15.3467 12.44 15.2134 12.9133 14.9734 13.32C14.84 13.56 14.66 13.78 14.46 13.96C14 14.3867 13.3934 14.6467 12.72 14.6667C11.7467 14.6867 10.8867 14.1867 10.4134 13.42C10.16 13.0267 10.0067 12.5533 10 12.0533C9.98003 11.2133 10.3534 10.4533 10.9534 9.95333C11.4067 9.58 11.98 9.34667 12.6067 9.33334C14.08 9.30001 15.3 10.4667 15.3334 11.94Z"
-                                stroke="#888888"
-                                stroke-width="1.5"
-                                stroke-miterlimit="10"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M11.6267 12.02L12.3 12.66L13.6934 11.3133"
-                                stroke="#888888"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M2.1134 4.96002L8.00006 8.36668L13.8467 4.98"
-                                stroke="#888888"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M8 14.4067V8.36002"
-                                stroke="#888888"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M14.4067 6.11335V9.8867C14.4067 9.92003 14.4067 9.94667 14.4 9.98C13.9334 9.57334 13.3334 9.33336 12.6667 9.33336C12.04 9.33336 11.46 9.55336 11 9.92003C10.3867 10.4067 10 11.16 10 12C10 12.5 10.14 12.9734 10.3867 13.3734C10.4467 13.48 10.52 13.58 10.6 13.6734L9.38005 14.3467C8.62005 14.7734 7.38004 14.7734 6.62004 14.3467L3.06004 12.3734C2.25337 11.9267 1.59338 10.8067 1.59338 9.8867V6.11335C1.59338 5.19335 2.25337 4.07336 3.06004 3.62669L6.62004 1.65334C7.38004 1.22668 8.62005 1.22668 9.38005 1.65334L12.94 3.62669C13.7467 4.07336 14.4067 5.19335 14.4067 6.11335Z"
-                                stroke="#888888"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
-                            &nbsp; &nbsp;
-                            <span className="flex-1">Category</span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                              />
-                            </svg>
-                          </div>
 
-                          <div
-                            className={`${
-                              search.status
-                                ? "bg-white/20 text-white"
-                                : "text-gray-400"
-                            }
-                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
-                            onClick={() => {
-                              if (!search.status) {
-                                setSearch({
-                                  ...search,
-                                  date: false,
-                                  category: false,
-                                  status: true,
-                                });
-                              }
-                            }}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                            >
-                              <g clip-path="url(#clip0_7467_2654)">
-                                <path
-                                  d="M6.25466 14.9697L0.996535 9.71156C0.681335 9.39636 0.599855 9.24924 0.54625 9.07239C0.492645 8.89553 0.492645 8.71466 0.54625 8.5378C0.599856 8.36094 0.681336 8.21382 0.996535 7.89862L7.43011 1.46504C7.61269 1.28246 7.68246 1.22592 7.7686 1.17205C7.85473 1.11818 7.94233 1.0819 8.04132 1.05908C8.14032 1.03627 8.22964 1.02692 8.48784 1.02692L13.6606 1.02692C14.1056 1.02692 14.267 1.07313 14.4298 1.15998C14.5926 1.24683 14.7204 1.37431 14.8077 1.53685C14.895 1.69938 14.9417 1.86063 14.943 2.30565L14.958 7.45589C14.9588 7.71475 14.9496 7.80437 14.9269 7.90372C14.9042 8.00307 14.8679 8.09101 14.814 8.17747C14.76 8.26392 14.7034 8.33394 14.5203 8.51699L8.0676 14.9697C7.7524 15.2849 7.60529 15.3664 7.42843 15.42C7.25157 15.4736 7.0707 15.4736 6.89384 15.42C6.71698 15.3664 6.56986 15.2849 6.25466 14.9697ZM7.3605 14.2626L13.8132 7.80988C13.9054 7.71769 13.9393 7.6819 13.9548 7.66289C13.9572 7.63849 13.9584 7.58918 13.958 7.4588L13.943 2.30856C13.9425 2.12775 13.9401 2.06363 13.9348 2.03431C13.9055 2.02913 13.8414 2.02692 13.6606 2.02692H8.48784C8.35764 2.02692 8.30839 2.02822 8.28402 2.03069C8.26503 2.04618 8.22929 2.08008 8.13722 2.17215L1.70364 8.60573C1.57566 8.73371 1.53183 8.78067 1.51475 8.80509C1.53183 8.82952 1.57566 8.87647 1.70364 9.00446L6.96177 14.2626C7.08975 14.3906 7.13671 14.4344 7.16113 14.4515C7.18556 14.4344 7.23251 14.3906 7.3605 14.2626ZM12.3327 3.6556C13.1138 4.43665 13.1138 5.70298 12.3327 6.48402C11.5517 7.26507 10.2853 7.26507 9.50428 6.48402C8.72323 5.70298 8.72323 4.43665 9.50428 3.6556C10.2853 2.87455 11.5517 2.87455 12.3327 3.6556ZM11.6256 4.3627C11.2351 3.97218 10.6019 3.97218 10.2114 4.3627C9.82086 4.75323 9.82086 5.38639 10.2114 5.77692C10.6019 6.16744 11.2351 6.16744 11.6256 5.77692C12.0161 5.38639 12.0161 4.75323 11.6256 4.3627ZM6.80758 11.28L4.68626 9.15865C4.491 8.96338 4.491 8.6468 4.68626 8.45154C4.88152 8.25628 5.1981 8.25628 5.39337 8.45154L7.51469 10.5729C7.70995 10.7681 7.70995 11.0847 7.51469 11.28C7.31942 11.4752 7.00284 11.4752 6.80758 11.28ZM8.22179 9.86575L6.10047 7.74443C5.90521 7.54917 5.90521 7.23259 6.10047 7.03733C6.29573 6.84206 6.61232 6.84206 6.80758 7.03733L8.9289 9.15865C9.12416 9.35391 9.12416 9.67049 8.9289 9.86575C8.73364 10.061 8.41706 10.061 8.22179 9.86575Z"
-                                  fill="#888888"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_7467_2654">
-                                  <rect width="16" height="16" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                            &nbsp; &nbsp;
-                            <span className="flex-1">Status</span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                              />
-                            </svg>
-                          </div>
-                        </div>
 
-                        <div className="flex-1 p-4 min-h-[300px] bg-white/5">
-                          {search.date && (
-                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
-                              <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
-                                <TextInput
-                                  label="From"
-                                  type="date"
-                                  value={startDate}
-                                  onChange={(e) => setStartDate(e.target.value)}
-                                />
 
-                                <TextInput
-                                  label="To"
-                                  type="date"
-                                  value={endDate}
-                                  onChange={(e) => setEndDate(e.target.value)}
-                                />
-                              </div>
 
-                              <div className="flex flex-col gap-2">
-                                <h3 className="text-gray-400">
-                                  Show results for
-                                </h3>
-                                <PartnerFilterTitle title="Last 30 Days" />
-                                <PartnerFilterTitle title="This Month" />
-                                <PartnerFilterTitle title="Last Month" />
-                                <PartnerFilterTitle title="This Year" />
-                                <PartnerFilterTitle title="Last Year" />
-                                <PartnerFilterTitle title="All Time" />
-                              </div>
-                            </div>
-                          )}
 
-                          {search.category && (
-                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
-                              <PartnerFilterCheck
-                                title="Value added services"
-                                summary="Non-core services or features that are beyond the standard voice calls."
-                              />
-                              <PartnerFilterCheck
-                                title="Rich media service"
-                                summary="Digital Services players, offering value-added services."
-                              />
-                              <PartnerFilterCheck
-                                title="Aggregator"
-                                summary="Provide a concentration point to limit the number of devices that will."
-                              />
-                              <PartnerFilterCheck
-                                title="Marketplace"
-                                summary="Providers who offer apps developed specifically for easy, convenient shopping"
-                              />
-                            </div>
-                          )}
 
-                          {search.status && (
-                            <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
-                              <PartnerFilterCheck
-                                title="Active"
-                                summary="Contract is still active"
-                                value="active"
-                                checked={selectedStatus.includes("active")}
-                                onChange={handleStatusChange}
-                              />
-                              <PartnerFilterCheck
-                                title="Expired"
-                                summary="Contract has expired"
-                                value="expired"
-                                checked={selectedStatus.includes("expired")}
-                                onChange={handleStatusChange}
-                              />
-                              <PartnerFilterCheck
-                                title="Expiring in 30 days"
-                                summary="Contract is expiring soon"
-                                value="Days Left"
-                                checked={selectedStatus.includes("Days Left")}
-                                onChange={handleStatusChange}
-                              />
-                              <PartnerFilterCheck
-                                title="In review"
-                                summary="Contract has not started"
-                                value="new"
-                                checked={selectedStatus.includes("new")}
-                                onChange={handleStatusChange}
-                              />
-                            </div>
-                          )}
-                        </div>
+
+
+
+
+
+
+
+
+
+        {!loadingPartnerList && partnerData && (
+          <>
+            <section id="partner_reporting_filtering">
+              <div className="bg-white/10 min-h-[250px] min-w-[280px] rounded-lg animate-[slide-down-fade_1s_ease-in-out]">
+                <div className="flex flex-col  gap-3 px-5 py-5">
+                  <h2 className="mb-[15px] text-white">PARTNER LIST</h2>
+
+                  <div id="filtering" className="justify-between flex flex-row">
+                    <div className="flex flex-row gap-3">
+                      {/* Add Filter button */}
+                      <div
+                        className="flex items-center gap-2 rounded-full bg-white/10 p-1 px-3 hover:bg-gray-500 cursor-pointer"
+                        onClick={() => setFilterModal(!filterModal)}
+                      >
+                        <span className="text-[12px] text-white">
+                          Add Filter
+                        </span>
+                        <svg
+                          className="w-4 h-4"
+                          fill="white"
+                          viewBox="0 0 32 32"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
+                        </svg>
                       </div>
+
+                      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
+                        No filters applied
+                      </div>
+
+                      {filterModal && <FilteringFlyout close={closeFilterModal} startDate={startDate} endDate={endDate} />}
                     </div>
-                  )}
+
+                    <button
+                      className="h-[35px] w-[130px] py-[8px] px-[15px] items-center  text-white text-[12px] rounded-full hover:bg-gray-500 cursor-pointer border-1 border-white/10"
+                      onClick={() => setDownloadModal(!downloadModal)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        className="w-[14px]  inline-block mr-1"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                        />
+                      </svg>
+                      Download
+                      {downloadModal && <DownloadFlyout />}
+                    </button>
+                  </div>
                 </div>
 
-                <button className="h-[35px] w-[130px] py-[8px] px-[15px] items-center  text-white text-[12px] rounded-full hover:bg-gray-500 cursor-pointer border-1 border-white/10 group/download">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    className="w-[14px]  inline-block mr-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-                    />
-                  </svg>
-                  Download
-                  {/*//===the help layer===========================================================================================================================*/}
-                  <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333] hidden group-hover/download:block">
-                    <div className=" flex flex-col text-[16px] ">
-                      <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 ">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          className="w-[14px]  inline-block mr-1"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-                          />
-                        </svg>
-                        PDF
-                      </div>
-                      <div
-                        className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10"
-                        onClick={downloadTableAsCSV}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.25 15.75V20.25H13.875"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M4.875 15.75L8.25 20.25"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M8.25 15.75L4.875 20.25"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M16.5 19.875C16.9063 20.1781 17.3994 20.3424 17.9062 20.3438C18.75 20.3437 19.5 20.0625 19.5 19.125C19.5 17.625 16.5 18.2812 16.5 16.875C16.5 16.125 17.0625 15.6562 17.9062 15.6562C18.4131 15.6576 18.9062 15.8219 19.3125 16.125"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M4.5 12V3.75C4.5 3.55109 4.57902 3.36032 4.71967 3.21967C4.86032 3.07902 5.05109 3 5.25 3H14.25L19.5 8.25V12"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M14.25 3V8.25H19.5"
-                            stroke="#999999"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                        XLS
-                      </div>
-                    </div>
-                  </div>
-                  {/*//==============================================================================================================================*/}
-                </button>
-              </div>
-            </div>
-
-            {/*//==============================================================================================================================*/}
-
-            <table className="table w-full transparent" id="myTable">
-              <tbody>
-                {/* head */}
-                <tr className="border-b border-b-white/40 text-11">
-                  <th>
-                    <input
-                      type="checkbox"
-                      className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
-                    />
-                    <span className="text-[13px]">Company</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Category</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]"> Date</span>
-                  </th>
-                  
-                  <th>
-                    <span className="text-[13px]">Status</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]"></span>
-                  </th>
-                </tr>
-
                 {/*//==============================================================================================================================*/}
 
-                {Array.isArray(filteredData) ? (
-                  filteredData.map((record) => (
-                    <tr
-                      className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/5"
-                      key={record.refid}
-                    >
+                <table className="table w-full transparent" id="myTable">
+                  <tr className="border-b border-b-white/40 text-11">
+                    <td>
+                      <input
+                        type="checkbox"
+                        className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
+                      />
+                      <span className="text-[13px] font-bold">Company</span>
+                    </td>
+                    <td>
+                      <span className="text-[13px] font-bold">Category</span>
+                    </td>
+                    <td>
+                      <span className="text-[13px] font-bold"> Date</span>
+                    </td>
+
+                    <td>
+                      <span className="text-[13px] font-bold">Status</span>
+                    </td>
+                    <td>
+                      <span className="text-[13px] font-bold"></span>
+                    </td>
+                  </tr>
+
+                  {filteredData.map((partner, index) => (
+                    <tr className="border-b border-b-white/40 text-11">
+                      <td key={index}>
+                        <input
+                          type="checkbox"
+                          className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
+                        />
+                        <span className="text-[13px] font-bold">
+                          {partner.company}
+                        </span>
+                      </td>
                       <td>
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="checkbox"
-                            className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
-                          />
-                          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                            <span>M</span>
-                          </div>
-                          <div>
-                            <div className="font-bold text-white">
-                              {record.company}
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-white/80">
-                              {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-                              {record.email}
-                            </div>
-                          </div>
-                        </div>
+                        <span className="text-[13px] font-bold">
+                          {partner.category}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-[13px] font-bold">
+                          {" "}
+                          {partner.date}
+                        </span>
                       </td>
 
                       <td>
-                        <div className="flex flex-row">
-                          <div
-                            title={record.category}
-                            className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]"
-                          >
-                            <span>
-                              {getPartnerInitials(
-                                record.category.toUpperCase()
-                              )}
-                            </span>
-                          </div>
-                          {/*
-                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]">
-                            <span>V</span>
-                          </div>
-                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
-                            <span>R</span>
-                          </div>
-                          <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
-                            <span>+1</span>
-                          </div>
-                          */}
-                        </div>
+                        <span className="text-[13px] font-bold">
+                          {partner.status}
+                        </span>
                       </td>
                       <td>
-                        <p>{formatDate(record.date)}</p>
-                      </td>
-                      
-                      <td>
-                        <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
-                          {record.status === "active" ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="8"
-                              height="8"
-                              viewBox="0 0 8 8"
-                              fill="#2C9958"
-                            >
-                              <circle cx="4" cy="4" r="3" />
-                            </svg>
-                          ) : record.status === "new" ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="8"
-                              height="8"
-                              viewBox="0 0 8 8"
-                              fill="#396587"
-                            >
-                              <circle cx="4" cy="4" r="3" />
-                            </svg>
-                          ) : record.status === "expired" || (renewalDaysLeft(record.expiration) >= 0 && renewalDaysLeft(record.expiration) < 30)  ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="8"
-                              height="8"
-                              viewBox="0 0 8 8"
-                              fill="none"
-                            >
-                              <circle cx="4" cy="4" r="3" fill="#FE0302" />
-                            </svg>
-                          )  : (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="8"
-                              height="8"
-                              viewBox="0 0 8 8"
-                              fill="none"
-                            >
-                              <circle cx="4" cy="4" r="3" fill="#FFCB03" />
-                            </svg>
-                          )}
-
-                          <span className="text-[12px] text-white capitalize">
-                          {
-                            renewalDaysLeft(record.expiration) >= 0 && renewalDaysLeft(record.expiration) < 30 ? `${renewalDaysLeft(record.expiration)} Days Left` : record.status
-                          }
-                            
-                          </span>
-                        </div>
-                      </td>
-
-                      <td>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            stroke-linejoin="round"
-                            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                          />
-                        </svg>
+                        <span className="text-[13px] font-bold"></span>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <p>No matching records found.</p>
-                )}
-                {/*//==============================================================================================================================*/}
-              </tbody>
-            </table>
-            {/*//==============================================================================================================================*/}
-
-            <div className="w-full p-2 flex justify-between">
-              <button
-                onClick={handlePreviousClick}
-                className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${
-                  navPages.currentPage <= 1
-                    ? "text-white/20 border-white/20 cursor-not-allowed"
-                    : "text-white/80 border-white/40 cursor-pointer hover:bg-white/10"
-                }`}
-              >
-                Previous
-              </button>
-
-              <div className="flex space-x-4 justify-center items-center text-white/80 text-sm">
-                {`Page ${navPages.currentPage} of ${navPages.lastPage}`}
+                  ))}
+                </table>
               </div>
-
-              <button
-                onClick={handleNextClick}
-                className={`inline-block p-2 border-1 w-20 rounded-full text-center text-sm m-3
-                ${
-                  navPages.currentPage >= partnerListData.last_page
-                    ? "text-white/20 border-white/20 cursor-not-allowed"
-                    : "text-white/80 border-white/40 cursor-pointer hover:bg-white/10"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-
-            {/*//==============================================================================================================================*/}
-          </div>
-        </section>
+            </section>
+          </>
+        )}
       </div>
     </div>
   );

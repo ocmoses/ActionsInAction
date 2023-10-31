@@ -144,6 +144,7 @@ export default function Reports() {
     }
   }, [startDate, endDate, selectedStatus, data]);
 
+  ////////////////////////////////////////////////////////////////////////
   const handleStatusChange = (event) => {
     const status = event.target.value;
     if (selectedStatus.includes(status)) {

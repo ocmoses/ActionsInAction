@@ -17,7 +17,7 @@ export default function RegistrationForm() {
       id="submitService"
       action="https://smdev.mtn.com.ng/DSDP/PartnerPortalLoginApi"
       method="POST"
-      target='dsmiframe'
+     
     >
         <input type="hidden" id="access_token" name="access_token" required value={auth0Data.access_token} />
         <input type="hidden" id="refresh_token" name="refresh_token" required value={auth0Data.refresh_token} />

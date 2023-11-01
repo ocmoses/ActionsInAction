@@ -44,12 +44,14 @@ const useContracts = () => {
   const [newSignatoryRole, setNewSignatoryRole] = useState("");
   const [adminPartners, setAdminPartners] = useState([]);
 
+  const [agreementModal, setAgreementModal] = useState(false);    
   const [selectServiceModal, setSelectServiceModal] = useState(false);
   const [addSignatoryModal, setAddSignatoryModal] = useState(false);
   const [selectSignatoryModal, setSelectSignatoryModal] = useState(false);
   const [contractSignatriesModal, setContractSignatriesModal] = useState(false);
   const [chooseSignatoryModal, setChooseSignatoryModal] = useState(false);
 
+  const [acceptingAgreement, setAcceptingAgreement] = useState(false);
   const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
   const [submitingContractSignatories, setSubmitingContractSignatories] = useState(false);
   const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
@@ -393,6 +395,8 @@ const useContracts = () => {
     
     signatories,
     setSignatories,
+    agreementModal, 
+    setAgreementModal,
     selectServiceModal, 
     setSelectServiceModal,
     selectSignatoryModal, 
@@ -404,6 +408,8 @@ const useContracts = () => {
     chooseSignatoryModal, 
     setChooseSignatoryModal,
 
+    acceptingAgreement, 
+    setAcceptingAgreement,
     allowSubmitSignatories, 
     setAllowSubmitSignatories,
     submitingContractSignatories, 

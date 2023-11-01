@@ -28,6 +28,9 @@ import {ContractContext} from "./ContractProvider";
 
 import SelectServiceModal from "@/app/components/modals/SelectServiceModal";
 import ContractSignatoriesModal from "@/app/components/modals/ContractSignatoriesModal";
+import AddSignatoryModal from "@/app/components/modals/AddSignatoryModal";
+import ChooseSignatoryModal from "@/app/components/modals/ChooseSignatoryModal";
+import SuccessFeedbackModal from "@/app/components/modals/SuccessFeedbackModal";
 
 export default function Contracts() {
 
@@ -261,7 +264,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {filteredContracts?.total}
+                {filteredContracts?.length}
               </span>
             </div>
             
@@ -491,9 +494,9 @@ export default function Contracts() {
               </tbody>
             </table>
             {
-              (!filteredContracts || filteredContracts.length) == 0 ?  
+              (filteredContracts.length == 0 && pagedContracts.length == 0) ?  
               (<EmptyTable list={'Contracts'} />) : 
-              (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+              (<TablePager list={filteredContracts} action={setPagedContracts}/>)
             }
 
           </div>
@@ -502,6 +505,9 @@ export default function Contracts() {
 
       <SelectServiceModal />
       <ContractSignatoriesModal />
+      <AddSignatoryModal />
+      <ChooseSignatoryModal />
+      <SuccessFeedbackModal />
       
       <Success message={successMessage} visible={successToast} action={successAction} />
     </>

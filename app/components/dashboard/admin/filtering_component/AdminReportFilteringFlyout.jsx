@@ -5,8 +5,7 @@ import {
   PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
 
-export default function FilteringFlyout(close, startDate, endDate) {
-  
+export default function FilteringFlyout(props) {
   const filterRef = useRef(null);
   const [search, setSearch] = useState({
     date: true,
@@ -20,13 +19,52 @@ export default function FilteringFlyout(close, startDate, endDate) {
       "click",
       function (e) {
         if (filterRef.current && !filterRef.current.contains(e.target)) {
-          close();
+          props.closeAction();
         }
       },
       true
     );
-  }, []);
+  }, [props.closeAction]);
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const filterDataByDateRange = (startDate, endDate) => {
+    return props.filteredData.filter((partner) => {
+      if (!startDate && !endDate) {
+        return true; // No date range filter applied, return all data
+      }
+
+      const partnerDate = new Date(partner.date);
+      if (startDate && partnerDate < startDate) {
+        return false; // Partner date is earlier than the start date
+      }
+
+      if (endDate && partnerDate > endDate) {
+        return false; // Partner date is later than the end date
+      }
+
+      return true; // Partner date falls within the selected date range
+    });
+  };
+
+  useEffect(() => {
+    // Update the filteredData whenever the props.filteredData changes
+    const newFilteredData = filterDataByDateRange(startDate, endDate);
+    props.handleFilterByDateRange(newFilteredData)
+    // Log the value to the console
+    //console.log("New Filtered Data:", newFilteredData);
+  }, [startDate, endDate]);
+
+  const handleStartDateChange = (e) => {
+    const newStartDate = e.target.value ? new Date(e.target.value) : startDate;
+    setStartDate(newStartDate);
+  };
+  
+  const handleEndDateChange = (e) => {
+    const newEndDate = e.target.value ? new Date(e.target.value) : endDate;
+    setEndDate(newEndDate);
+  };
   return (
     <div
       ref={filterRef}
@@ -222,14 +260,14 @@ export default function FilteringFlyout(close, startDate, endDate) {
                   label="From"
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(new Date(e.target.value))}
+                  onChange={handleStartDateChange}
                 />
 
                 <TextInput
                   label="To"
                   type="date"
                   value={endDate}
-                  onChange={(e) => setEndDate(new Date(e.target.value))}
+                  onChange={handleEndDateChange}
                 />
               </div>
 
@@ -300,6 +338,28 @@ export default function FilteringFlyout(close, startDate, endDate) {
 }
 
 export const DownloadFlyout = () => {
+  const downloadTableAsCSV = () => {
+    const table = document.getElementById("myTable"); // Replace 'myTable' with your table's ID
+    const rows = table.querySelectorAll("tr");
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    rows.forEach((row) => {
+      const cols = row.querySelectorAll("td");
+      const rowArray = [];
+      cols.forEach((col) => {
+        rowArray.push(col.innerText);
+      });
+      const rowCSV = rowArray.join(",");
+      csvContent += rowCSV + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "partnerReport.csv"); // Set the filename for the downloaded CSV file
+    document.body.appendChild(link);
+    link.click();
+  };
   return (
     <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333]">
       <div className=" flex flex-col text-[16px] ">
@@ -320,7 +380,10 @@ export const DownloadFlyout = () => {
           </svg>
           PDF
         </div>
-        <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10">
+        <div
+          className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10"
+          onClick={downloadTableAsCSV}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

@@ -45,11 +45,10 @@ export default function Reports() {
   const [downloadModal, setDownloadModal] = useState(false);
   const [partnerData, setPartnerData] = useState([]);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
 
-  const [startDate, setStartDate] = useState(""); // Start date for the date range
-  const [endDate, setEndDate] = useState(""); // End date for the date range
-
-
+  const [startDate, setStartDate] = useState('2023-08-16');
+  const [endDate, setEndDate] = useState('2023-08-24');
 
   const fetchPartnerList = async () => {
     try {
@@ -63,6 +62,7 @@ export default function Reports() {
         }
       );
       setPartnerData(partnerListResponse.data.data);
+      setFilteredData(partnerListResponse.data.data);
       setLoadingPartnerList(false);
     } catch (error) {
       console.error("Error Loading Statistics data:", error);
@@ -72,59 +72,20 @@ export default function Reports() {
 
   useEffect(() => {
     fetchPartnerList();
-    
   }, []);
 
   const closeFilterModal = () => {
-  setFilterModal(false);
+    setFilterModal(false);
   };
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-  const filterDataByDateRange = () => {
-    return partnerData.filter((partner) => {
-      if (!startDate && !endDate) {
-        return true; // No date range filter applied, return all data
-      }
-
-      const partnerDate = new Date(partner.date);
-      if (startDate && partnerDate < startDate) {
-        return false; // Partner date is earlier than the start date
-      }
-
-      if (endDate && partnerDate > endDate) {
-        return false; // Partner date is later than the end date
-      }
-
-      return true; // Partner date falls within the selected date range
-    });
+  
+  const handleFilterByDateRange = (fetchedData) => {
+    setFilteredData(fetchedData);
   };
 
-  const filteredData = filterDataByDateRange();
 
-  const [selectedStatus, setSelectedStatus] = useState([]); // Array to hold selected status options
-  const [selectedCategory, setSelectedCategory] = useState([]); // Array to hold selected category options
 
-  const handleStatusChange = (e) => {
-    const value = e.target.value;
-    setSelectedStatus((prevSelectedStatus) => {
-      if (prevSelectedStatus.includes(value)) {
-        return prevSelectedStatus.filter((status) => status !== value);
-      } else {
-        return [...prevSelectedStatus, value];
-      }
-    });
-  };
 
-  const handleCategoryChange = (e) => {
-    const value = e.target.value;
-    setSelectedCategory((prevSelectedCategory) => {
-      if (prevSelectedCategory.includes(value)) {
-        return prevSelectedCategory.filter((category) => category !== value);
-      } else {
-        return [...prevSelectedCategory, value];
-      }
-    });
-  };
+ 
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -135,15 +96,6 @@ export default function Reports() {
             <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"></span>
           </div>
         </div>
-
-
-
-
-
-
-
-
-
 
         {loadingReportStatistics && (
           <div className="flex justify-center items-center w-screen h-screen">
@@ -378,11 +330,6 @@ export default function Reports() {
           </>
         )}
 
-
-
-
-
-
         {/*<section id="partner_reporting_bar_charts">
                   <div className="bg-white/10 min-h-[250px] min-w-[280px]">
                   
@@ -390,23 +337,6 @@ export default function Reports() {
                   </div>
               </section>
             */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         {!loadingPartnerList && partnerData && (
           <>
@@ -440,7 +370,13 @@ export default function Reports() {
                         No filters applied
                       </div>
 
-                      {filterModal && <FilteringFlyout close={closeFilterModal} startDate={startDate} endDate={endDate} />}
+                      {filterModal && (
+                        <FilteringFlyout
+                          closeAction={closeFilterModal}
+                          filteredData={filteredData}
+                          handleFilterByDateRange={handleFilterByDateRange}
+                        />
+                      )}
                     </div>
 
                     <button

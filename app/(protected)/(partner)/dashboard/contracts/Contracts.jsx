@@ -26,8 +26,12 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 import {ContractContext} from "./ContractProvider";
 
+import AgreementModal from "@/app/components/modals/AgreementModal";
 import SelectServiceModal from "@/app/components/modals/SelectServiceModal";
 import ContractSignatoriesModal from "@/app/components/modals/ContractSignatoriesModal";
+import AddSignatoryModal from "@/app/components/modals/AddSignatoryModal";
+import ChooseSignatoryModal from "@/app/components/modals/ChooseSignatoryModal";
+import SuccessFeedbackModal from "@/app/components/modals/SuccessFeedbackModal";
 
 export default function Contracts() {
 
@@ -94,39 +98,11 @@ export default function Contracts() {
 
   // console.log("usePartners() from compliance", usePartners());
   // console.log("useUsers() from compliance", useUsers());
-
-  const [showModal, setShowModal] = useState(false);
-
-  const [submitingContractSignatories, setSubmitingContractSignatories] = useState(false);
-  const [selectDirectorModal, setSelectDirectorModal] = useState(false);  
-  const [addDirectorModal, setAddDirectorModal] = useState(false);
-  const [addingDirector, setAddingDirector] = useState(false);  
-  const [addDelegateModal, setAddDelegateModal] = useState(false);
-  const [addingDelegate, setAddingDelegate] = useState(false);
-  const [addWitnessModal, setAddWitnessModal] = useState(false);
-  const [addingWitness, setAddingWitness] = useState(false);
-  const [contractSignatoriesSuccess, setContractSignatoriesSuccess] = useState(false);
-
-  const [selectingService, setSelectingService] = useState(false);
-
-  const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
-
-  const [creatingPartner, setCreatingPartner] = useState(false);
+  
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
-  const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
   const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
 
-  const [adminPartners, setAdminPartners] = useState([]);
   const [partnerRoles, setPartnerRoles] = useState([]);
-  const [uploadedFile, setUploadedFile] = useState(false);
-
-  const [agreementModal, setAgreementModal] = useState(false);
-  const [acceptingAgreement, setAcceptingAgreement] = useState(false);
-
-  const [data, setData] = useState({partner_uuid: partner?.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
-  const [disableActiveButton, setDisableActiveButton] = useState(true);
-
-  const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
   
 
   const APPROVED = "approved";
@@ -138,12 +114,7 @@ export default function Contracts() {
   // console.log("selected_admin_users", selected_admin_users);
   // console.log("signingDirector", signingDirector);
 
-  let get_service_response = null;
-  let partner_select_service_response = null;
-  let create_partner_response = null;
   let all_Roles = null;
-  let all_admin_partners_response = null;
-  let submit_signatories_response = null;
   let dynamic_content_response =  null;
 
 
@@ -159,54 +130,6 @@ export default function Contracts() {
     setPartnerRoles(all_Roles.partner_roles);
     setFetchingPartnerRoles(false);
     if (all_Roles.error) setError({ error: all_Roles.error });
-  };
-
-  const get_all_admin_partners = async () => {
-    if (fetchingAdminPartners) return;
-    setFetchingAdminPartners(true);
-    all_admin_partners_response = await getAllAdminPartners();
-    setFetchingAdminPartners(false);
-
-    if (all_admin_partners_response.error) {
-      setError({ error: all_admin_partners_response.error });
-    }else{
-      console.log("Admin_partners", all_admin_partners_response.admin_partners);
-      setAdminPartners(all_admin_partners_response.admin_partners);
-
-      //update signing director, delegate or witness
-      // confirmSignatories(selected_admin_users, all_admin_partners_response.admin_partners);
-    }
-     
-  };
-
-  const submit_signatories = async (signatories) => {
-
-    let data = {"email": []};
-
-    console.log("signatories", signatories);
-
-    for(let prop in signatories){
-      if(signatories[prop]){
-        data.email.push(signatories[prop].email);
-      }      
-    }
-
-    if((signatories.director || signatories.delegate) && signatories.witness){
-      if (submitingContractSignatories) return;
-      setSubmitingContractSignatories(true);
-      submit_signatories_response = await submitAllSignatories(data);
-      setSubmitingContractSignatories(false);
-      if (submit_signatories_response.error) {
-        setError({ error: submit_signatories_response.error });
-      }else{
-        setContractSignatriesModal(false);
-        setContractSignatoriesSuccess(true);
-        refreshSession();
-      }
-    }else{
-      setError({error: "You must choose a director or delegate and a witness"});
-    }
-    
   };
 
   const get_dynamic_content = async () => {
@@ -261,7 +184,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {filteredContracts?.total}
+                {filteredContracts?.length}
               </span>
             </div>
             
@@ -491,18 +414,22 @@ export default function Contracts() {
               </tbody>
             </table>
             {
-              (!filteredContracts || filteredContracts.length) == 0 ?  
+              (filteredContracts.length == 0 && pagedContracts.length == 0) ?  
               (<EmptyTable list={'Contracts'} />) : 
-              (<TablePager list={filteredContracts} action={setFilteredContracts}/>)
+              (<TablePager list={filteredContracts} action={setPagedContracts}/>)
             }
 
           </div>
         </div>
       </div>
 
+      <AgreementModal />
       <SelectServiceModal />
       <ContractSignatoriesModal />
-      
+      <AddSignatoryModal />
+      <ChooseSignatoryModal />
+      <SuccessFeedbackModal />
+
       <Success message={successMessage} visible={successToast} action={successAction} />
     </>
   );

@@ -1,5 +1,5 @@
 
-import GenericModal from "./GenericModal";
+import GenericModal from "./GenericModal.jsx";
 import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useEffect, useContext, useState } from "react";
@@ -75,11 +75,11 @@ export default function SelectServiceModal({visible, closeAction, callback}){
     }, []);
 
     return (selectServiceModal && 
-            <GenericModal id="select_service_modal" width={500} closeAction={closeAction}>
+            <GenericModal id="select_service_modal" width={500} closeAction={() => setSelectServiceModal(false)}>
                 <>
                     <div className="flex pt-8">
                         <div className="text-white text-2xl mb-4 flex-1">Select a service to renew</div>
-                        <div className="cursor-pointer" onClick={closeAction}>
+                        <div className="cursor-pointer" onClick={() => setSelectServiceModal(false)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>

@@ -1,25 +1,38 @@
 
-import GenericModal from "./GenericModal";
+import GenericModal from "./GenericModal.jsx";
 import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useEffect, useContext, useState } from "react";
 import useErrors from "@/hooks/useErrors";
+import useUsers from "@/hooks/useUsers";
 import { ContractContext } from "../../(protected)/(partner)/dashboard/contracts/ContractProvider";
 import { role_types } from "@/app/modules/constants";
+import TextInput from "../form/TextInput.jsx";
 
 
-export default function AddSignatoryModal({visible, signatory, closeAction, callback}){
+export default function AddSignatoryModal(){
 
     const {
-        user,
+        data,
+        setData,
+        resetData,
+
         partner,
         createPartner,
         partnerRoles,
         signatories,
         setSignatories,
         addSignatoryModal,
-        setAddSignatoryModal
+        setAddSignatoryModal,
+        contractSignatriesModal,
+        setContractSignatriesModal,
+
+        newSignatoryRole,
     } = useContext(ContractContext);
+
+    const {user} = useUsers();
+
+    console.log("partnerRoles", partnerRoles);
 
     const confirmMessage = {
         director: "By clicking this checkbox I agree that the user I've entered is a director of the Company and is authorized to sign this contract on behalf of the company",
@@ -27,9 +40,8 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
         witness: "By clicking this checkbox I agree that the user I've entered is a witness of the Company and is authorized to sign this contract on behalf of the company"
     };
 
-    const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
-    const [creatingPartner, setCreatingPartner] = useState(true);
+    const [creatingPartner, setCreatingPartner] = useState(false);
     
     const [uploadedFile, setUploadedFile] = useState(false);
     const [reset, setReset] = useState(Date.now());
@@ -52,9 +64,14 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
           setError({error: "Please enter user email"});
           return;
         }
+
+        if(data.phone.trim() == ""){
+            setError({error: "Please enter user phone number"});
+            return;
+          }
     
         //delegates require board resolution documents
-        if(data.role == partnerRoles.find((role) => role.role_name == 'delegate').uuid && !uploadedFile){
+        if(data.role == partnerRoles.find((role) => role.role_name == role_types.DELEGATE).uuid && !uploadedFile){
             setError({error: "Please select a file"});
             return;
         }
@@ -83,22 +100,20 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
         else {
             console.log('create_partner_response', create_partner_response);
             
-            if(data.role == partnerRoles.find(role => role.role_name == 'director').uuid){
+            if(data.role == partnerRoles.find(role => role.role_name == role_types.DIRECTOR).uuid){
               setSignatories({...signatories, director: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-            }else if(data.role == partnerRoles.find(role => role.role_name == 'delegate').uuid){
+            }else if(data.role == partnerRoles.find(role => role.role_name == role_types.DELEGATE).uuid){
               setSignatories({...signatories, delegate: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
-            }else if(data.role == partnerRoles.find(role => role.role_name == 'witness').uuid){
+            }else if(data.role == partnerRoles.find(role => role.role_name == role_types.WITNESS).uuid){
               setSignatories({...signatories, witness: {email: data.email, firstname: data.firstname, lastname: data.lastname}});
             }
             
         }
     
-        setData({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
+        resetData();
     
         setCreatingPartner(false);
-        setAddDirectorModal(false);
-        setAddDelegateModal(false);
-        setAddWitnessModal(false);
+        setAddSignatoryModal(false);
         setContractSignatriesModal(true);
         setDisableActiveButton(true);
         // setNavigation(all_AdminRoles.navigation);
@@ -106,18 +121,15 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
     
     useEffect(() => {
 
-    }, [partnerRoles]);
+    }, [partnerRoles, newSignatoryRole, data]);
 
-    useEffect(() => {
-        
-    }, []);
 
     return (addSignatoryModal && 
-            <GenericModal id="contract_signatories_modal" width={500} height={550} closeAction={closeAction}>
+            <GenericModal id="contract_signatories_modal" width={500} height={550} closeAction={() => setAddSignatoryModal(false)}>
                 <>
                     <div className="flex pt-8 pb-4">
-                        <div className="text-white text-2xl mb-4 flex-1">Add a {signatory}</div>
-                        {signatory == role_types.DIRECTOR && 
+                        <div className="text-white text-2xl mb-4 flex-1">Add a {newSignatoryRole}</div>
+                        {newSignatoryRole == role_types.DIRECTOR && 
                             <div className="cursor-pointer" onClick={() => {
                                     setSignatories({...signatories, director: {firstname: user.first_name, lastname: user.last_name, email: user.email}}); 
                                     setAddSignatoryModal(false); 
@@ -184,7 +196,26 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
                         errors={errors}
                     />
 
-                    { signatory == role_types.DELEGATE &&
+                    <TextInput
+                        id="phone"
+                        label="Phone"
+                        // value={data.phone}
+                        onChange={
+                            (e) => {
+                                clearErrors();
+                                setData({...data, phone: e.target.value.trim()});
+                            }
+                        }
+                        onBlur={
+                            (e) => {
+                                clearErrors();
+                                setData({...data, phone: e.target.value.trim()});
+                            }
+                        }
+                        errors={errors}
+                    />
+
+                    { newSignatoryRole == role_types.DELEGATE &&
                         <div className="mb-4 rounded-lg bg-white/20 flex p-2">              
 
                             <div className="rounded-lg bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
@@ -227,21 +258,21 @@ export default function AddSignatoryModal({visible, signatory, closeAction, call
                             <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
                         </div>
                         <div>
-                            <p className="text-gray-500">{confirmMessage[signatory]}</p>
+                            <p className="text-gray-500">{confirmMessage[newSignatoryRole]}</p>
                         </div>
                     </div>
 
                     <div className="">
-                    {!creatingPartner && partnerRoles.length > 0 &&
+                    {!creatingPartner && partnerRoles?.length > 0 &&
                         <div className="flex py-4 px-2 space-x-4 justify-end">
                         <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  
-                            onClick={() => {setAddDelegateModal(false); setContractSignatriesModal(true);}}>Back</button>
+                            onClick={() => {setAddSignatoryModal(false); setContractSignatriesModal(true);}}>Back</button>
                         <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" 
                             disabled={disableActiveButton} 
-                            onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == 'delegate').uuid);}}>Add</button>
+                            onClick={() => {handleCreate(partnerRoles.find(role => role.role_name == newSignatoryRole).uuid);}}>Add</button>
                         </div>
                     }
-                    {(creatingPartner || partnerRoles.length == 0) &&
+                    {(creatingPartner || partnerRoles?.length == 0) &&
                         <div className="flex px-4">
                         <TailSpinPreloader width={40} height={40} fill="#efb703" />
                         </div>

@@ -1,21 +1,35 @@
 
-import GenericModal from "./GenericModal";
+import GenericModal from "./GenericModal.jsx";
 import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useEffect, useContext, useState } from "react";
 import useErrors from "@/hooks/useErrors";
 import { ContractContext } from "../../(protected)/(partner)/dashboard/contracts/ContractProvider";
+import { role_types } from "@/app/modules/constants.js";
 
 
 export default function ContractSignatoriesModal(){
 
     const {
+        data, 
+        setData,
+        resetData,        
+        setNewSignatoryRole,
+        selectNewSignatoryRole,
+
         partner,
         createPartner,
+        partnerRoles,
         signatories,
         setSignatories,
+        submitSignatories,
         contractSignatriesModal,
         setContractSignatriesModal,
+        addSignatoryModal,
+        setAddSignatoryModal,
+        chooseSignatoryModal, 
+        setChooseSignatoryModal,
+
         submitingContractSignatories,
         setSubmitingContractSignatories,
         submitingContractSignatures,
@@ -24,7 +38,6 @@ export default function ContractSignatoriesModal(){
         setAllowSubmitSignatories
     } = useContext(ContractContext);
 
-    const [data, setData] = useState({partner_uuid: partner.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
     const [creatingPartner, setCreatingPartner] = useState(true);
 
@@ -69,11 +82,19 @@ export default function ContractSignatoriesModal(){
         setContractSignatriesModal(true);
         setDisableActiveButton(true);
         // setNavigation(all_AdminRoles.navigation);
-    }        
+    }   
+    
+    const showAddSignatoryModal = (role) => {
+        resetData();
+        setNewSignatoryRole(role);
+        setContractSignatriesModal(false); 
+        selectNewSignatoryRole(role); 
+        setAddSignatoryModal(true);
+    }
 
     useEffect(() => {
         
-    }, []);
+    }, [partnerRoles]);
 
     return (contractSignatriesModal && 
             <GenericModal id="contract_signatories_modal" width={550} height={600} closeAction={() => setContractSignatriesModal(false)}>
@@ -107,14 +128,14 @@ export default function ContractSignatoriesModal(){
                                     }
                                 </div>
                             </div>
-                            <div className="flex-1 flex flex-col justify-center " onClick={() => setSelectDirectorModal(true)}>
+                            <div className="flex-1 flex flex-col justify-center " >
                                 <p className="text-white text-md mb-2">A company director</p>
                                 {
                                     !signatories.director ?
-                                    (<div className="flex flex-col group">
+                                    (<div className="flex flex-col group"  onClick={() => {setNewSignatoryRole(role_types.DIRECTOR); setContractSignatriesModal(false); setChooseSignatoryModal(true);}}>
                                 
                                         <span className="text-gray-300 text-xs cursor-pointer group-hover:hidden" 
-                                            onClick={() => {setContractSignatriesModal(false); setSelectDirectorModal(true);}}>
+                                            onClick={() => {setNewSignatoryRole(role_types.DIRECTOR); setContractSignatriesModal(false); setChooseSignatoryModal(true);}}>
                                         A company director as stated in the company incorporation documents
                                         </span>
                                         <span className="text-yellow-500 text-xs hidden group-hover:block w-[200px] border-1 border-yellow-500 py-1 px-4 rounded-full cursor-pointer">
@@ -135,9 +156,7 @@ export default function ContractSignatoriesModal(){
                                 !signatories.director ? 
                                 (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
                                     onClick={() => {
-                                        setContractSignatriesModal(false); 
-                                        setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'director').uuid}); 
-                                        setAddDirectorModal(true);
+                                        showAddSignatoryModal(role_types.DIRECTOR);
                                     }
                                     }>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
@@ -168,7 +187,7 @@ export default function ContractSignatoriesModal(){
                             <p className="text-white text-md mb-2">A company delegate</p>
                             {!signatories.delegate ?
                                 (<span className="text-gray-300 text-xs cursor-pointer" 
-                                        onClick={() => {setContractSignatriesModal(false); setSelectDelegateModal(true);}}>
+                                        onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.DELEGATE);}}>
                                     A person nominated by the company to sign. Requires a board resolution document
                                 </span>):
                                 (<span className="flex text-gray-300 text-xs">
@@ -181,7 +200,7 @@ export default function ContractSignatoriesModal(){
                         <div className="w-16 flex justify-center items-center">
                             {
                                 !signatories.delegate ? 
-                                (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'delegate').uuid}); setAddDelegateModal(true);}}>
+                                (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.DELEGATE)}}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
@@ -224,7 +243,7 @@ export default function ContractSignatoriesModal(){
                             <div className="w-16 flex justify-center items-center">
                                 {
                                     !signatories.witness ? 
-                                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); setData({...data, role: partnerRoles.find(a_role => a_role.role_name == 'witness').uuid}); setAddWitnessModal(true);}}>
+                                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.WITNESS)}}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>

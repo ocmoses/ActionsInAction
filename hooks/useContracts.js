@@ -17,23 +17,7 @@ const useContracts = () => {
   const states = useStoreState((state) => state);
 
   console.log("states from useContracts", states);
-
-  const {getAllPartnerRoles} = useRoles();
-
-  const [partnerRoles, setPartnerRoles] = useState([]);
-  const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
-  const [selectServiceModal, setSelectServiceModal] = useState(true);
-  const [addSignatoryModal, setAddSignatoryModal] = useState(false);
-  const [selectSignatoryModal, setSelectSignatoryModal] = useState(false);
-  const [contractSignatriesModal, setContractSignatriesModal] = useState(false);
-
-  const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
-  const [submitingContractSignatories, setSubmitingContractSignatories] = useState(false);
-  const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
-
-  const [{ errors, setError, clearErrors }] = useErrors(null);
-
- 
+  
   const {
     partner,
     partnerSelectService,
@@ -53,17 +37,36 @@ const useContracts = () => {
     getAllServices,
   } = usePartners();
 
-  const [data, setData] = useState({partner_uuid: partner?.uuid, phone: '000000000', firstname: "", lastname: "", email: "", role: ""});
+  const {getAllPartnerRoles} = useRoles();
+
+  const [partnerRoles, setPartnerRoles] = useState([]);
+  const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
+  const [newSignatoryRole, setNewSignatoryRole] = useState("");
+  const [adminPartners, setAdminPartners] = useState([]);
+
+  const [selectServiceModal, setSelectServiceModal] = useState(false);
+  const [addSignatoryModal, setAddSignatoryModal] = useState(false);
+  const [selectSignatoryModal, setSelectSignatoryModal] = useState(false);
+  const [contractSignatriesModal, setContractSignatriesModal] = useState(false);
+  const [chooseSignatoryModal, setChooseSignatoryModal] = useState(false);
+
+  const [allowSubmitSignatories, setAllowSubmitSignatories] = useState(false);
+  const [submitingContractSignatories, setSubmitingContractSignatories] = useState(false);
+  const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
+  const [contractSignatoriesSuccess, setContractSignatoriesSuccess] = useState(false);  
+
+  const [{ errors, setError, clearErrors }] = useErrors(null);
+
+ 
+
+  //data for creating signatories
+  const [data, setData] = useState({partner_uuid: partner?.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
   
   const {user} = useUsers();
 
   const {Logout, LogoutAdmin} = useLogout();
 
   const {admin} = useAdmins();
-
-  console.log('useUsers from within useContracts', useUsers());
-  console.log('useAdmins from within useContracts', useAdmins());
-  console.log('usePartner from within useContracts', usePartners());
 
   // console.log('User from within useContracts', states.users);
 
@@ -269,22 +272,11 @@ const useContracts = () => {
 
       setProcessing(false);
       if (result?.success) {
-        const contracts = result.data?.contracts.data;
+        const contracts = result.data?.contracts;
         contracts.forEach(c => c.status = c.contract_status);
-        
-        // console.log('Admin roles retrieved', admin_roles);
-        const pages = {
-          first_page_url: result?.data?.contracts?.first_page_url,
-          last_page: result?.data?.contracts?.last_page,
-          last_page_url: result?.data?.contracts?.last_page_url,
-          links: result?.data?.contracts?.links,
-          total: result?.data?.contracts?.total,
-          key: 'contracts'
-        };
-
+       
         return {
-          contracts,
-          pages
+          contracts
         };
       }
       return {
@@ -302,6 +294,60 @@ const useContracts = () => {
     }
   };
 
+  const resetData = () => {
+    setData({...data, partner_uuid: partner?.uuid, phone: '000000000', firstname: "", lastname: "", email: "", 
+                  role: ""});
+  }
+
+  const selectNewSignatoryRole = (role) => {
+
+    setNewSignatoryRole(role);
+    
+    switch(role){
+      case role_types.DIRECTOR: setData({...data, role: partnerRoles?.find(r => r.role_name == role_types.DIRECTOR)?.uuid});
+        break;
+      case role_types.DELEGATE: setData({...data, role: partnerRoles?.find(r => r.role_name == role_types.DELEGATE)?.uuid});
+        break;
+      case role_types.WITNESS: setData({...data, role: partnerRoles?.find(r => r.role_name == role_types.WITNESS)?.uuid});
+        break;
+      default: break;
+    }
+
+  }
+
+  const submitSignatories = () => {
+    submit_signatories(signatories);
+  }
+
+  const submit_signatories = async (signatories) => {
+
+    let data = {"email": []};
+
+    console.log("signatories", signatories);
+
+    for(let prop in signatories){
+      if(signatories[prop]){
+        data.email.push(signatories[prop].email);
+      }      
+    }
+
+    if((signatories.director || signatories.delegate) && signatories.witness){
+      if (submitingContractSignatories) return;
+      setSubmitingContractSignatories(true);
+      let submit_signatories_response = await submitAllSignatories(data);
+      setSubmitingContractSignatories(false);
+      if (submit_signatories_response.error) {
+        setError({ error: submit_signatories_response.error });
+      }else{
+        setContractSignatriesModal(false);
+        setContractSignatoriesSuccess(true);
+        refreshSession();
+      }
+    }else{
+      setError({error: "You must choose a director or delegate and a witness"});
+    }
+    
+  };
   
   useEffect(() => {
     if(!admin){
@@ -309,6 +355,10 @@ const useContracts = () => {
         .then(resp => resp.partner_roles ? setPartnerRoles(resp.partner_roles) : setError({ error: resp.error }) )
         .catch(error =>  setError({ error: "Error fetching roles" }));
     }
+
+    getAllAdminPartners()
+      .then(resp => resp.admin_partners ? setAdminPartners(resp.admin_partners) : setError({ error: resp.error }) )
+      .catch(error =>  setError({ error: "Error fetching admin partners" }));
           
   }, []);
  
@@ -332,7 +382,14 @@ const useContracts = () => {
     signingWitness,
     partnerGetAllContracts,
     partnerRoles,
+    adminPartners,
 
+    data, 
+    setData,
+    resetData,
+    newSignatoryRole,
+    setNewSignatoryRole,
+    selectNewSignatoryRole,
     
     signatories,
     setSignatories,
@@ -344,13 +401,18 @@ const useContracts = () => {
     setAddSignatoryModal,
     contractSignatriesModal, 
     setContractSignatriesModal,
+    chooseSignatoryModal, 
+    setChooseSignatoryModal,
 
     allowSubmitSignatories, 
     setAllowSubmitSignatories,
     submitingContractSignatories, 
     setSubmitingContractSignatories,
+    submitSignatories,
     submitingContractSignatures, 
-    setSubmitingContractSignatures
+    setSubmitingContractSignatures,
+    contractSignatoriesSuccess, 
+    setContractSignatoriesSuccess
   };
 };
 

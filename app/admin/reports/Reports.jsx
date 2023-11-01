@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { getPartnerInitials } from "@/app/modules/utilities";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import RemoteEndpoints from "@/app/modules/endpoints";
-
 import { apikey } from "@/app/modules/constants";
 import FilteringFlyout, {
   DownloadFlyout,
@@ -13,15 +12,6 @@ import PartnerStatisticsReport, {
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 import moment from "moment";
-
-// function formatDate(inputDate) {
-//   const date = new Date(inputDate);
-//   if (isNaN(date)) {
-//     return "Invalid Date";
-//   }
-//   const options = { year: "numeric", month: "short", day: "numeric" };
-//   return date.toLocaleDateString(undefined, options);
-// }
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,14 +41,15 @@ export default function Reports() {
   }, []);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   const [filterModal, setFilterModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
 
-  //const [_filterData, _setFilterData] = useState([]);
+  const [searchedData, setSearchedData] = useState([]);
+
   const statusColour = {
     active: "#2C9958",
     new: "#396587",
@@ -79,7 +70,9 @@ export default function Reports() {
             },
           }
         );
+        setSearchedData(partnerListResponse.data.data);
         setFilteredData(partnerListResponse.data.data);
+
         setLoadingPartnerList(false);
       } catch (error) {
         console.error("Error Loading Statistics data:", error);
@@ -90,11 +83,24 @@ export default function Reports() {
     fetchPartnerList();
   }, []);
 
+  const filterRecord = (
+    startDate,
+    endDate,
+    selectedStatus,
+    selectedCategory
+  ) => {
+    console.log("the startDate _1", startDate);
+    console.log("the endDate _1", endDate);
+    console.log("the selectedStatus _1", selectedStatus);
+    console.log("the selectedCategory _1", selectedCategory);
 
-
-  const filterRecord = (startDate, endDate, selectedStatus, selectedCategory) => {
-    const filtered = filteredData.filter((item) => {
-      if (!startDate && !endDate && selectedStatus.length === 0 && selectedCategory.length === 0) {
+    const filtered = searchedData.filter((item) => {
+      if (
+        !startDate &&
+        !endDate &&
+        selectedStatus.length === 0 &&
+        selectedCategory.length === 0
+      ) {
         return true;
       }
       // Apply date range filter
@@ -103,7 +109,10 @@ export default function Reports() {
         (!endDate || item.date <= endDate)
       ) {
         // Apply status filter
-        if (selectedStatus.length === 0 || selectedStatus.includes(item.status)) {
+        if (
+          selectedStatus.length === 0 ||
+          selectedStatus.includes(item.status)
+        ) {
           // Apply category filter
           if (
             selectedCategory.length === 0 ||
@@ -116,29 +125,9 @@ export default function Reports() {
       return false;
     });
     setFilteredData(filtered);
-    
+
+    console.log("the filtered _1", filtered);
   };
-  
-  // ...
-  
-  useEffect(() => {
-    filterRecord(null, null, [], []);
-    //setFilteredData(filteredData);
-  }, [filteredData]);
-  
-  // ...
-  
-  
-
-
-
-
-
-
-
-
-
-
 
   const closeFilterModal = () => {
     setFilterModal(false);
@@ -427,12 +416,15 @@ export default function Reports() {
                         No filters applied
                       </div>
 
-                      {filterModal && (
+                      
                         <FilteringFlyout
                           closeAction={closeFilterModal}
                           filterRecord={filterRecord}
+                          className={`${
+                            filterModal ? "block" : "hidden"
+                          }`}
                         />
-                      )}
+                      
                     </div>
 
                     <button
@@ -526,11 +518,7 @@ export default function Reports() {
                       </td>
                       <td>
                         <span className="text-[13px] font-bold">
-                          {moment(partner.date ?? moment()).format(
-                            "DD/MM/YYYY"
-                          )}
-
-                         
+                          {partner.date}
                         </span>
                       </td>
 

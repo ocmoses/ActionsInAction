@@ -13,43 +13,20 @@ export default function FilteringFlyout(props) {
     status: false,
   });
 
-  // ///////////////get today's date////////////////////////////////////////////
-  //   const today = new Date();
-  //   const year = today.getFullYear();
-  //   const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-based
-  //   const day = String(today.getDate()).padStart(2, '0');
-  //   const todaysDate = `${year}-${month}-${day}`;
-  // //////////////////////////////////////////////////////////////////
-  //   const [startDate, setStartDate] = useState("");
-  //   const [endDate, setEndDate] = useState(todaysDate);
-  //   const [statusFilter, setStatusFilter] = useState("");
-  //   const [categoryFilter, setCategoryFilter] = useState("");
+  ///////////////get today's date////////////////////////////////////////////
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+    const day = String(today.getDate()).padStart(2, '0');
+    const todaysDate = `${year}-${month}-${day}`;
+///////////////end of get today's date////////////////////////////////////////////
 
-  //   const handleCategoryChange = (category) => {
-  //     // Create a new array with the selected categories
-  //     const updatedCategoryFilter = categoryFilter.includes(category)
-  //       ? categoryFilter.filter((item) => item !== category)
-  //       : [...categoryFilter, category];
-  //     setCategoryFilter(updatedCategoryFilter);
-  //   };
 
-  // useEffect(() => {
-  //   ////// bring out search modals
-  //   document.addEventListener(
-  //     "click",
-  //     function (e) {
-  //       if (filterRef.current && !filterRef.current.contains(e.target)) {
-  //         props.closeAction();
-  //       }
-  //     },
-  //     true
-  //   );
+ 
 
-  //   props.filterRecord(startDate, endDate, statusFilter, categoryFilter);
-  // }, [startDate, endDate, statusFilter, categoryFilter]);
 
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(todaysDate);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
 
@@ -64,14 +41,34 @@ export default function FilteringFlyout(props) {
       },
       true
     );
+    console.log("the startDate", startDate);
+    console.log("the endDate", endDate);
+    console.log("the selectedStatus", selectedStatus);
+    console.log("the selectedCategory", selectedCategory);
 
     props.filterRecord(startDate, endDate, selectedStatus, selectedCategory);
+    
   }, [startDate, endDate, selectedStatus, selectedCategory]);
+
+
+  const getLast30Days = () => {
+    const today = new Date();
+    const last30Days = new Date(today);
+    last30Days.setDate(today.getDate() - 30);
+
+    setStartDate(last30Days.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+  };
+
+
+  useEffect(() => {
+    getLast30Days();
+  }, []);
 
   return (
     <div
       ref={filterRef}
-      className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out]`}
+      className={`border-1 border-white/20 w-[650px] absolute mt-[38px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out] ${props.className}`}
     >
       <div className="flex">
         <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
@@ -276,7 +273,7 @@ export default function FilteringFlyout(props) {
 
               <div className="flex flex-col gap-2">
                 <h3 className="text-gray-400">Show results for</h3>
-                <PartnerFilterTitle title="Last 30 Days" />
+                <PartnerFilterTitle title="Last 30 Days" last30Days={getLast30Days} />
                 <PartnerFilterTitle title="This Month" />
                 <PartnerFilterTitle title="Last Month" />
                 <PartnerFilterTitle title="This Year" />

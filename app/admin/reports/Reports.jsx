@@ -12,6 +12,16 @@ import PartnerStatisticsReport, {
   PartnerReportBarChart,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
+import moment from "moment";
+
+// function formatDate(inputDate) {
+//   const date = new Date(inputDate);
+//   if (isNaN(date)) {
+//     return "Invalid Date";
+//   }
+//   const options = { year: "numeric", month: "short", day: "numeric" };
+//   return date.toLocaleDateString(undefined, options);
+// }
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,57 +45,104 @@ export default function Reports() {
       setLoadingReportStatistics(false);
     }
   };
+
   useEffect(() => {
     fetchReport();
   }, []);
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   const [filterModal, setFilterModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
-  const [partnerData, setPartnerData] = useState([]);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
 
-  const [startDate, setStartDate] = useState('2023-08-16');
-  const [endDate, setEndDate] = useState('2023-08-24');
-
-  const fetchPartnerList = async () => {
-    try {
-      setLoadingPartnerList(true);
-      const partnerListResponse = await axios.get(
-        RemoteEndpoints.PARTNER_LIST,
-        {
-          headers: {
-            apikey: apikey,
-          },
-        }
-      );
-      setPartnerData(partnerListResponse.data.data);
-      setFilteredData(partnerListResponse.data.data);
-      setLoadingPartnerList(false);
-    } catch (error) {
-      console.error("Error Loading Statistics data:", error);
-      setLoadingPartnerList(false);
-    }
+  //const [_filterData, _setFilterData] = useState([]);
+  const statusColour = {
+    active: "#2C9958",
+    new: "#396587",
+    in_review: "#396587",
+    expired: "#FE0302",
+    others: "#FFCB03",
   };
 
   useEffect(() => {
+    const fetchPartnerList = async () => {
+      try {
+        setLoadingPartnerList(true);
+        const partnerListResponse = await axios.get(
+          RemoteEndpoints.PARTNER_LIST,
+          {
+            headers: {
+              apikey: apikey,
+            },
+          }
+        );
+        setFilteredData(partnerListResponse.data.data);
+        setLoadingPartnerList(false);
+      } catch (error) {
+        console.error("Error Loading Statistics data:", error);
+        setLoadingPartnerList(false);
+      }
+    };
+
     fetchPartnerList();
   }, []);
+
+
+
+  const filterRecord = (startDate, endDate, selectedStatus, selectedCategory) => {
+    const filtered = filteredData.filter((item) => {
+      if (!startDate && !endDate && selectedStatus.length === 0 && selectedCategory.length === 0) {
+        return true;
+      }
+      // Apply date range filter
+      if (
+        (!startDate || item.date >= startDate) &&
+        (!endDate || item.date <= endDate)
+      ) {
+        // Apply status filter
+        if (selectedStatus.length === 0 || selectedStatus.includes(item.status)) {
+          // Apply category filter
+          if (
+            selectedCategory.length === 0 ||
+            selectedCategory.includes(item.category)
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+    setFilteredData(filtered);
+    
+  };
+  
+  // ...
+  
+  useEffect(() => {
+    filterRecord(null, null, [], []);
+    //setFilteredData(filteredData);
+  }, [filteredData]);
+  
+  // ...
+  
+  
+
+
+
+
+
+
+
+
+
+
 
   const closeFilterModal = () => {
     setFilterModal(false);
   };
-  
-  const handleFilterByDateRange = (fetchedData) => {
-    setFilteredData(fetchedData);
-  };
-
-
-
-
- 
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -338,7 +395,7 @@ export default function Reports() {
               </section>
             */}
 
-        {!loadingPartnerList && partnerData && (
+        {!loadingPartnerList && filteredData && (
           <>
             <section id="partner_reporting_filtering">
               <div className="bg-white/10 min-h-[250px] min-w-[280px] rounded-lg animate-[slide-down-fade_1s_ease-in-out]">
@@ -373,8 +430,7 @@ export default function Reports() {
                       {filterModal && (
                         <FilteringFlyout
                           closeAction={closeFilterModal}
-                          filteredData={filteredData}
-                          handleFilterByDateRange={handleFilterByDateRange}
+                          filterRecord={filterRecord}
                         />
                       )}
                     </div>
@@ -430,35 +486,90 @@ export default function Reports() {
                   </tr>
 
                   {filteredData.map((partner, index) => (
-                    <tr className="border-b border-b-white/40 text-11">
+                    <tr className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150">
                       <td key={index}>
-                        <input
-                          type="checkbox"
-                          className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-5 outline-none appearance-none"
-                        />
-                        <span className="text-[13px] font-bold">
-                          {partner.company}
-                        </span>
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+                          />
+                          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                            <span>{getPartnerInitials(partner.company)}</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-white">
+                              {partner.company}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-white/80">
+                              {partner.email}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex flex-row">
+                          <div
+                            title={partner.category}
+                            className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]"
+                          >
+                            <span>{getPartnerInitials(partner.category)}</span>
+                          </div>
+                          {/*
+                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
+                          <span>R</span>
+                        </div>
+                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
+                          <span>+1</span>
+                        </div>
+                        */}
+                        </div>
                       </td>
                       <td>
                         <span className="text-[13px] font-bold">
-                          {partner.category}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-[13px] font-bold">
-                          {" "}
-                          {partner.date}
+                          {moment(partner.date ?? moment()).format(
+                            "DD/MM/YYYY"
+                          )}
+
+                         
                         </span>
                       </td>
 
                       <td>
-                        <span className="text-[13px] font-bold">
-                          {partner.status}
-                        </span>
+                        <div className="flex items-center gap-2 rounded-full bg-white/10 p-2 px-3 cursor-pointer float-left">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="8"
+                            height="8"
+                            viewBox="0 0 8 8"
+                            fill="none"
+                          >
+                            <circle
+                              cx="4"
+                              cy="4"
+                              r="3"
+                              fill={statusColour[partner.status]}
+                            />
+                          </svg>
+                          <span className="text-[12px] text-white">
+                            {partner.status}
+                          </span>
+                        </div>
                       </td>
                       <td>
-                        <span className="text-[13px] font-bold"></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            stroke-linejoin="round"
+                            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                          />
+                        </svg>
                       </td>
                     </tr>
                   ))}

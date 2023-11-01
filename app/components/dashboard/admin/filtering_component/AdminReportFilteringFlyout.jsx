@@ -13,6 +13,46 @@ export default function FilteringFlyout(props) {
     status: false,
   });
 
+  // ///////////////get today's date////////////////////////////////////////////
+  //   const today = new Date();
+  //   const year = today.getFullYear();
+  //   const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+  //   const day = String(today.getDate()).padStart(2, '0');
+  //   const todaysDate = `${year}-${month}-${day}`;
+  // //////////////////////////////////////////////////////////////////
+  //   const [startDate, setStartDate] = useState("");
+  //   const [endDate, setEndDate] = useState(todaysDate);
+  //   const [statusFilter, setStatusFilter] = useState("");
+  //   const [categoryFilter, setCategoryFilter] = useState("");
+
+  //   const handleCategoryChange = (category) => {
+  //     // Create a new array with the selected categories
+  //     const updatedCategoryFilter = categoryFilter.includes(category)
+  //       ? categoryFilter.filter((item) => item !== category)
+  //       : [...categoryFilter, category];
+  //     setCategoryFilter(updatedCategoryFilter);
+  //   };
+
+  // useEffect(() => {
+  //   ////// bring out search modals
+  //   document.addEventListener(
+  //     "click",
+  //     function (e) {
+  //       if (filterRef.current && !filterRef.current.contains(e.target)) {
+  //         props.closeAction();
+  //       }
+  //     },
+  //     true
+  //   );
+
+  //   props.filterRecord(startDate, endDate, statusFilter, categoryFilter);
+  // }, [startDate, endDate, statusFilter, categoryFilter]);
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
+
   useEffect(() => {
     ////// bring out search modals
     document.addEventListener(
@@ -24,47 +64,10 @@ export default function FilteringFlyout(props) {
       },
       true
     );
-  }, [props.closeAction]);
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+    props.filterRecord(startDate, endDate, selectedStatus, selectedCategory);
+  }, [startDate, endDate, selectedStatus, selectedCategory]);
 
-  const filterDataByDateRange = (startDate, endDate) => {
-    return props.filteredData.filter((partner) => {
-      if (!startDate && !endDate) {
-        return true; // No date range filter applied, return all data
-      }
-
-      const partnerDate = new Date(partner.date);
-      if (startDate && partnerDate < startDate) {
-        return false; // Partner date is earlier than the start date
-      }
-
-      if (endDate && partnerDate > endDate) {
-        return false; // Partner date is later than the end date
-      }
-
-      return true; // Partner date falls within the selected date range
-    });
-  };
-
-  useEffect(() => {
-    // Update the filteredData whenever the props.filteredData changes
-    const newFilteredData = filterDataByDateRange(startDate, endDate);
-    props.handleFilterByDateRange(newFilteredData)
-    // Log the value to the console
-    //console.log("New Filtered Data:", newFilteredData);
-  }, [startDate, endDate]);
-
-  const handleStartDateChange = (e) => {
-    const newStartDate = e.target.value ? new Date(e.target.value) : startDate;
-    setStartDate(newStartDate);
-  };
-  
-  const handleEndDateChange = (e) => {
-    const newEndDate = e.target.value ? new Date(e.target.value) : endDate;
-    setEndDate(newEndDate);
-  };
   return (
     <div
       ref={filterRef}
@@ -260,14 +263,14 @@ export default function FilteringFlyout(props) {
                   label="From"
                   type="date"
                   value={startDate}
-                  onChange={handleStartDateChange}
+                  onChange={(e) => setStartDate(e.target.value)}
                 />
 
                 <TextInput
                   label="To"
                   type="date"
                   value={endDate}
-                  onChange={handleEndDateChange}
+                  onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
 
@@ -288,21 +291,30 @@ export default function FilteringFlyout(props) {
               <PartnerFilterCheck
                 title="Value added services"
                 summary="Non-core services or features that are beyond the standard voice calls."
-                value="Value Added Services"
-                checked={selectedCategory.includes("Value Added Services")}
-                onChange={handleCategoryChange}
+                value="Value added services"
+                checked={selectedCategory.includes("Value added services")}
+                onChange={() => toggleCategory("Value added services")}
               />
               <PartnerFilterCheck
                 title="Rich media service"
                 summary="Digital Services players, offering value-added services."
+                value="Rich media service"
+                checked={selectedCategory.includes("Rich media service")}
+                onChange={() => toggleCategory("Rich media service")}
               />
               <PartnerFilterCheck
                 title="Aggregator"
                 summary="Provide a concentration point to limit the number of devices that will."
+                value="Aggregator"
+                checked={selectedCategory.includes("Aggregator")}
+                onChange={() => toggleCategory("Aggregator")}
               />
               <PartnerFilterCheck
                 title="Marketplace"
                 summary="Providers who offer apps developed specifically for easy, convenient shopping"
+                value="Marketplace"
+                checked={selectedCategory.includes("Marketplace")}
+                onChange={() => toggleCategory("Marketplace")}
               />
             </div>
           )}
@@ -313,21 +325,29 @@ export default function FilteringFlyout(props) {
                 title="Active"
                 summary="Contract is still active"
                 value="active"
+                checked={selectedStatus.includes("active")}
+                onChange={() => toggleStatus("active")}
               />
               <PartnerFilterCheck
                 title="Expired"
                 summary="Contract has expired"
                 value="expired"
+                checked={selectedStatus.includes("expired")}
+                onChange={() => toggleStatus("expired")}
               />
               <PartnerFilterCheck
                 title="Expiring in 30 days"
                 summary="Contract is expiring soon"
-                value="Days Left"
+                value="active"
+                checked={selectedStatus.includes("active")}
+                onChange={() => toggleStatus("active")}
               />
               <PartnerFilterCheck
                 title="In review"
                 summary="Contract has not started"
                 value="new"
+                checked={selectedStatus.includes("new")}
+                onChange={() => toggleStatus("new")}
               />
             </div>
           )}
@@ -335,6 +355,22 @@ export default function FilteringFlyout(props) {
       </div>
     </div>
   );
+
+  function toggleStatus(status) {
+    setSelectedStatus((prevStatus) =>
+      prevStatus.includes(status)
+        ? prevStatus.filter((s) => s !== status)
+        : [...prevStatus, status]
+    );
+  }
+
+  function toggleCategory(category) {
+    setSelectedCategory((prevCategory) =>
+      prevCategory.includes(category)
+        ? prevCategory.filter((c) => c !== category)
+        : [...prevCategory, category]
+    );
+  }
 }
 
 export const DownloadFlyout = () => {

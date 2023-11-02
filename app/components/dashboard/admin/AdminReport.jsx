@@ -218,10 +218,10 @@ export const PartnerFilterList = () => {
 
 
 
-export const PartnerFilterTitle = ({ title }) => {
+export const PartnerFilterTitle = ({ title, action }) => {
 
   return (
-    <div className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10">
+    <div onClick={action} className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10">
       <svg
         width="16"
         height="16"

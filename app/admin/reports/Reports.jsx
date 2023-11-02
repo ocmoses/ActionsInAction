@@ -11,7 +11,7 @@ import PartnerStatisticsReport, {
   PartnerReportBarChart,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
-import moment from "moment";
+
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-  const [filterModal, setFilterModal] = useState(false);
+  
   const [downloadModal, setDownloadModal] = useState(false);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
@@ -89,10 +89,7 @@ export default function Reports() {
     selectedStatus,
     selectedCategory
   ) => {
-    console.log("the startDate _1", startDate);
-    console.log("the endDate _1", endDate);
-    console.log("the selectedStatus _1", selectedStatus);
-    console.log("the selectedCategory _1", selectedCategory);
+    
 
     const filtered = searchedData.filter((item) => {
       if (
@@ -125,13 +122,8 @@ export default function Reports() {
       return false;
     });
     setFilteredData(filtered);
-
-    console.log("the filtered _1", filtered);
   };
 
-  const closeFilterModal = () => {
-    setFilterModal(false);
-  };
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -393,36 +385,9 @@ export default function Reports() {
 
                   <div id="filtering" className="justify-between flex flex-row">
                     <div className="flex flex-row gap-3">
-                      {/* Add Filter button */}
-                      <div
-                        className="flex items-center gap-2 rounded-full bg-white/10 p-1 px-3 hover:bg-gray-500 cursor-pointer"
-                        onClick={() => setFilterModal(!filterModal)}
-                      >
-                        <span className="text-[12px] text-white">
-                          Add Filter
-                        </span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="white"
-                          viewBox="0 0 32 32"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
-                        </svg>
-                      </div>
-
-                      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
-                        No filters applied
-                      </div>
-
-                      
+                      {/* Add Filter button */}                      
                         <FilteringFlyout
-                          closeAction={closeFilterModal}
                           filterRecord={filterRecord}
-                          className={`${
-                            filterModal ? "block" : "hidden"
-                          }`}
                         />
                       
                     </div>
@@ -506,6 +471,7 @@ export default function Reports() {
                           >
                             <span>{getPartnerInitials(partner.category)}</span>
                           </div>
+                         
                           {/*
                         <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
                           <span>R</span>

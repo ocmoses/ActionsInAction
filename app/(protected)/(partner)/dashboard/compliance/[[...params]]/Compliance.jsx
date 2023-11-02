@@ -20,13 +20,9 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import ComplianceCategories from "@/app/components/dashboard/partners/ComplianceCategories";
 import { useRouter } from "next/navigation";
-import CallToAction from "@/app/components/dashboard/partners/CallToAction";
-import TextInput from "@/app/components/form/TextInput";
-import { fieldsCounts, user_statuses } from "@/app/modules/constants";
 import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
-import moment from "moment";
 
 
 export default function Compliance({ params }) {
@@ -139,15 +135,7 @@ export default function Compliance({ params }) {
     }    
     get_all_admin_partners();
     // get_dynamic_content();
-    
-    // if(signingDirector){
-    //   setSignatories({...signatories, director: {email: signingDirector.email, firstname: signingDirector.firstname, lastname: signingDirector.lastname}});
-    // }else if(signingDelegate){
-    //   setSignatories({...signatories, delegate: {email: signingDelegate.email, firstname: signingDelegate.firstname, lastname: signingDelegate.lastname}});
-    // }else if(signingWitness){
-    //   setSignatories({...signatories, witness: {email: signingWitness.email, firstname: signingWitness.firstname, lastname: signingWitness.lastname}});
-    // }
-    
+        
   }, []);
 
   useEffect(() => {
@@ -200,17 +188,6 @@ export default function Compliance({ params }) {
     setActiveStage(stage);
     setOpenDrawer(true);
   };
-
-
-  const showAgreement = () => {
-    //Get all contracts and display
-    // if(weHaveAgreed){
-    //   setAgreementModal(true);
-    // }else{
-      router.push("/dashboard/contracts/execution")
-    // }
-    
-  }
 
 
   return (
@@ -312,7 +289,7 @@ export default function Compliance({ params }) {
         </>
       )}
       
-      {/* {      
+      {      
         agreementModal && 
         <div id="agreement_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "agreement_modal") {setAgreementModal(false);}}}>
           <div id="actualModal" className=" pb-28 relative px-10 border-2 border-gray-500 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[600px] h-[500px]">
@@ -354,7 +331,7 @@ export default function Compliance({ params }) {
             </div>
           </div>
         </div>  
-      } */}
+      }
     </div>
   );
 }

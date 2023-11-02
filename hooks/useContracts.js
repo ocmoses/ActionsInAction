@@ -8,6 +8,7 @@ import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
 import { apikey, role_types } from "@/app/modules/constants";
 import {useState, useEffect} from "react";
 
@@ -38,6 +39,7 @@ const useContracts = () => {
   } = usePartners();
 
   const {getAllPartnerRoles} = useRoles();
+  const {getQuestionnaireStatus} = useQuestionnaire();
 
   const [partnerRoles, setPartnerRoles] = useState([]);
   const [signatories, setSignatories] = useState({director: null, delegate: null, witness: null});
@@ -350,6 +352,24 @@ const useContracts = () => {
     }
     
   };
+
+  const checkQuestionnaireStatus = () => 
+    getQuestionnaireStatus().then(response => {
+      console.log("Questionnaire status response", response);
+      console.log("response.status", response.status);
+      console.log("response.error", response.error);
+      if(response.status == 'rejected'){
+        setQuestionnaireAlert(true);        
+        setRejectionReason(response.rejectionReason);
+      }else if(response.error && response.error == questionnaire_pending){
+        setQuestionnaireAlert(true); 
+      }else if(response.message && response.message == questionnaire_pending){
+        setQuestionnaireAlert(true); 
+      }else {
+        setQuestionnaireAlert(false); 
+        setToFillQuestionnaire(false);        
+      }
+    }).catch(error => {console.log(error.response); setError({error: error.message})});
   
   useEffect(() => {
     if(!admin){
@@ -418,7 +438,10 @@ const useContracts = () => {
     submitingContractSignatures, 
     setSubmitingContractSignatures,
     contractSignatoriesSuccess, 
-    setContractSignatoriesSuccess
+    setContractSignatoriesSuccess,
+
+    downloadSignedContract,
+    checkQuestionnaireStatus
   };
 };
 

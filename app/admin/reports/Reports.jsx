@@ -127,7 +127,7 @@ export default function Reports() {
     });
     setFilteredData(filtered);
   };
-  const [pagedContracts, setPagedContracts] = useState([]);
+ 
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -135,7 +135,9 @@ export default function Reports() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Partners</h2>
-            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"></span>
+            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
+              {searchedData.length}
+            </span>
           </div>
         </div>
 
@@ -422,7 +424,7 @@ export default function Reports() {
 
                 {/*//==============================================================================================================================*/}
 
-                <table className="table w-full transparent" id="myTable">
+                <table className="table w-full transparent " id="myTable">
                   <tr className="border-b border-b-white/40 text-11">
                     <td>
                       <input
@@ -458,10 +460,10 @@ export default function Reports() {
                             <span>{getPartnerInitials(partner.company)}</span>
                           </div>
                           <div>
-                            <div className="font-bold text-white">
+                            <div className="font-bold text-[#ccc]">
                               {partner.company}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-white/80">
+                            <div className="flex items-center gap-4 text-sm">
                               {partner.email}
                             </div>
                           </div>
@@ -508,7 +510,7 @@ export default function Reports() {
                               fill={statusColour[partner.status]}
                             />
                           </svg>
-                          <span className="text-[12px] text-white">
+                          <span className="text-[12px] text-[#ccc]">
                             {partner.status}
                           </span>
                         </div>

@@ -5,6 +5,9 @@ import {
   PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 export default function FilteringFlyout(props) {
   const [filterModal, setFilterModal] = useState(false);
   const filterRef = useRef(null);
@@ -106,7 +109,7 @@ export default function FilteringFlyout(props) {
       </div>{" "}
       <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
         <span>{startDate ? `${startDate} - ${endDate}` : "No filters applied"}</span>{" "}
-        <span className="text-mtn cursor-pointer pl-3" onClick={clearFilter}>Reset Filter</span>
+        {startDate && (<span className="text-mtn cursor-pointer pl-3" onClick={clearFilter}>Reset Filter</span>)}
       </div>
       <div
         ref={filterRef}
@@ -446,10 +449,29 @@ export const DownloadFlyout = () => {
     document.body.appendChild(link);
     link.click();
   };
+
+
+
+  const [pdfContent, setPdfContent] = useState(null);
+
+  const generatePDF = () => {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const content = document.getElementById('myTable'); // Replace 'table-content' with the ID of your table
+
+    html2canvas(content).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+      pdf.save('partnerReport.pdf');
+    });
+
+    setPdfContent(pdf);
+  };
+
   return (
     <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333]">
       <div className=" flex flex-col text-[16px] ">
-        <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 ">
+        <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 " onClick={generatePDF}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

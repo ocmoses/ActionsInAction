@@ -26,7 +26,9 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending } from "@/app/modules/constants";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
+import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -34,9 +36,8 @@ import BrdUpdates, {
 } from "@/app/components/dashboard/compliance/BrdUpdates";
 
 export default function GetStarted({ type }) {
-  const {
-    session: { user },
-  } = useUsers();
+  const {session: { user },} = useUsers();
+  
   console.log(user)
   const {
     partner,
@@ -48,9 +49,12 @@ export default function GetStarted({ type }) {
     nextStage,
   } = usePartners();
 
+//console.log("this is partner feedback", partner);
+
 
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
+   setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
@@ -76,11 +80,20 @@ export default function GetStarted({ type }) {
     setShowModal(status);
   };
 
-  const userStatus = partner.status;
+  const userStatus = partner?.status;
+
+  const {getQuestionnaireStatus} = useQuestionnaire();
+
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
+
+  const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+  const [showQuestionare, setShowQuestionare] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState(null);
 
   useEffect(() => {
+   setProcessing(false);
     setCategoriesData(categories);
-  }, [categories]);
+  }, [partner, categories, toFillQuestionnaire]);
 
   const [validation, setValidation] = useState({
     required: [],
@@ -89,15 +102,42 @@ export default function GetStarted({ type }) {
   });
 
   useEffect(() => {
+   setProcessing(false);
     setActiveCategory(tmpCat);
     const validation = setValidationRules(tmpCat);
     setValidation(validation);
   }, [tmpCat]);
 
   useEffect(() => {
+   setProcessing(false);
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
+  }, []);
+
+ 
+
+  useEffect(() => {
+    let check = () => 
+    getQuestionnaireStatus().then(response => {
+      console.log("Questionnaire status response", response);
+      console.log("response.status", response.status);
+      console.log("response.error", response.error);
+      if(response.status == 'rejected'){
+        setQuestionnaireAlert(true);        
+        setRejectionReason(response.rejectionReason);
+      }else if(response.error && response.error == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else if(response.message && response.message == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else {
+        setToFillQuestionnaire(false);        
+      }
+    }).catch(error => {console.log(error.response); setError({error: error.message})});
+
+    check();
+
+
   }, []);
 
   //////////afoo code////////////////////////////////////////////////////////////////////////////
@@ -107,6 +147,7 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+   setProcessing(false);
     setBrdComplains(true)
     const partnerCat = [];
     const partnerActiveCat = [];
@@ -132,7 +173,7 @@ export default function GetStarted({ type }) {
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
-        partner.allowedCategories.includes(category.category_code)
+        partner?.allowedCategories.includes(category.category_code)
     );
     setPartnerActiveCategories(newCatArray);
     setPartnerCategories(partnerCat);
@@ -393,9 +434,35 @@ export default function GetStarted({ type }) {
                 </div>
               )}
 
+              {questionnaireAlert && 
+                (<>
+                  <div className="w-full p-4 px-6 rounded-lg border-1 border-white/10 bg-white/5 flex space-x-4 mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" className="w-6 h-6">
+                      <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="text-white text-lg">Supplier Questionnaire</p>
+                      <p className="text-white/40 mb-4">There is one or more issues flagged in your supplier questionnaire</p>
+
+                      <span onClick={() => setShowQuestionare(true)} 
+                        className="p-2 px-4 mb-2 border-1 border-white/40 text-white/80 rounded-full hover:bg-white/10 inline-block cursor-pointer text-sm">
+                          Review
+                      </span>
+
+                    </div>
+                  </div>
+                  {
+                    showQuestionare && (
+                    <QuestionnaireModal hide={() => setShowQuestionare(false)} 
+                                        action={() => setQuestionnaireAlert(false)}
+                                        rejectionReason={rejectionReason} />)
+                  }
+                </>)
+              }
+
               {/* //================this is the popup==============================================================================================================*/}
 
-              {rejectedTeam?.rejected?.length > 0 && brdComplains &&(
+              {rejectedTeam?.rejected?.length > 0 && brdComplains && (
                 <>
                   {popUp && (
                     <PopUp closePopUp={closePopUp}>
@@ -625,6 +692,7 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+              
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 !showProgress && (
@@ -640,6 +708,7 @@ export default function GetStarted({ type }) {
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
                           disabled={partner?.edittable}
+                          pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}
                   </div>
@@ -731,6 +800,7 @@ export default function GetStarted({ type }) {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
+      
     </>
   );
 }

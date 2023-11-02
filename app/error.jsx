@@ -91,6 +91,7 @@ export default function Error({ error, reset }) {
       >
         Retry
       </button>
+      
     </div>
   );
 }

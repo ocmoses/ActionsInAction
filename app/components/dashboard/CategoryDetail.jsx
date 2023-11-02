@@ -57,6 +57,7 @@ export default function CategoryDetail({
     });
   };
   useEffect(() => {
+   setProcessing(false);
     if (!Util.isEmpty(new_category)) {
       setCurrentCategory(new_category, partner);
       const { nextstage: NextStage } = nextStage(new_category, partner);
@@ -98,6 +99,7 @@ export default function CategoryDetail({
             <div className="">
               <h3 className="text-white text-lg font-bold">Get started</h3>
               <p className="text-md text-[#999999]">
+                For regulatory compliance, we'll require the following
                 For regulatory compliance, we'll require the following
                 informations from our{" "}
                 {category.category_code === "AGR" ? (

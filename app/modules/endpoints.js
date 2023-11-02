@@ -1,8 +1,6 @@
 import { apiURL } from "@/app/modules/constants";
 
-
 const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
-
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -29,6 +27,8 @@ export const NextEndPoints = {
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v2/auth/login`,
+  ACCEPT_AUTH0_OTP: `${apiURL}/v2/auth/accept-otp`,
+  RESEND_AUTH0_OTP: `${apiURL}/v2/auth/resend-otp`,
   LOGOUT: `${apiURL}/v2/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
@@ -110,10 +110,19 @@ const RemoteEndpoints = {
 
 //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PARTNER_LIST: `${apiURL}/v2/reporting/partner-reports`,
   PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
   PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
   PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
   UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
 
+  //questionnaire
+  GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
+  SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
+  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`,
+  GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
+  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`,
+
+  DSM_ENDPOINT: `/dashboard/dsm`
 }
 export default RemoteEndpoints

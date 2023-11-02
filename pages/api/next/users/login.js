@@ -10,6 +10,7 @@ const doLogin = async (body, req, res, categories) => {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      Accept: "application/json",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer",

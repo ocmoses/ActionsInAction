@@ -11,6 +11,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         token: token,
+        Authorization: `bearer ${token}`
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",
@@ -26,6 +27,7 @@ export default async function handler(req, res) {
 
     if (hasCookie("partnerid", { req, res }))
       deleteCookie("partnerid", { req, res });
+      
     res.status(200).json({ success: true, error: null, data: null });
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });

@@ -131,7 +131,7 @@ export default function GetStarted({ type }) {
       }else if(response.message && response.message == questionnaire_pending){
         setToFillQuestionnaire(true);
       }else {
-        setToFillQuestionnaire(false);
+        setToFillQuestionnaire(false);        
       }
     }).catch(error => {console.log(error.response); setError({error: error.message})});
 

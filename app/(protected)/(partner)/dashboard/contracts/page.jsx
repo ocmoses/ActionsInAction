@@ -1,5 +1,8 @@
 import Contracts from "./Contracts";
+import ContractProvider from "./ContractProvider";
 
 export default async function Page() {
-  return <Contracts />;
+  return (<ContractProvider>
+            <Contracts />
+          </ContractProvider>);
 }

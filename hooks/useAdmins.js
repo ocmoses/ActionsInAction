@@ -73,7 +73,7 @@ export default function useAdmins() {
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
-        const partners = result.data?.partners.data;
+        const partners = result.data?.partners;
         if (partners.length > 0)
           partners.map((partner) => {
             filterPartner(partner, states.categories);
@@ -244,11 +244,70 @@ export default function useAdmins() {
           total: result?.data['board-resolution-documents'].total,
         };
 
-        // console.log('brds', brds);
+        console.log('brds', brds);
 
         return {
           brds,
           navigation,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const getAllQuestionnaire = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_ALL_QUESTIONNAIRE_RESPONSE}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+
+
+      console.log("All Questionnairre response", result);
+
+      if (result?.success) {
+
+        const questionnaires = result?.data;
+
+        return {
+          questionnaires
         };
       }
       return {
@@ -555,6 +614,59 @@ export default function useAdmins() {
     }
   };
 
+  const approveOrRejectQuestionnaire = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.APPROVE_REJECT_QUESTIONNAIRE}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      // console.log('RemoteEndpoints.APPROVE_REJECT_BRD', RemoteEndpoints.APPROVE_REJECT_BRD);
+      // console.log('Approve result', result);
+      // console.log('states.admins.token', states.token);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Approval/rejection message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
   /// //////////////////////////////////////////afolabi's functions starts here
   const fetchData = async (url, apikey) => {
     try {
@@ -591,6 +703,8 @@ export default function useAdmins() {
     deleteAdmin,
     fetchData,
     getAllBoardResolutionDocuments,
-    approveOrRejectBrd
+    approveOrRejectBrd,
+    getAllQuestionnaire,
+    approveOrRejectQuestionnaire 
   };
 }

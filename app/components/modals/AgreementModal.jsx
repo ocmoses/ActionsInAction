@@ -25,6 +25,17 @@ export default function ChooseSignatoryModal(){
     
     const [disableActiveButton, setDisableActiveButton] = useState(true);
 
+    const acceptAgreement = () => {
+
+        setAcceptingAgreement(true);
+
+        setAcceptingAgreement(false);
+
+
+        router.push("/dashboard/contracts/execution");
+
+    }    
+
     useEffect(() => {
 
     }, []);

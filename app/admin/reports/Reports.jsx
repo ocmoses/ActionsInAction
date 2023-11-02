@@ -12,6 +12,10 @@ import PartnerStatisticsReport, {
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
 
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
+
+
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +127,7 @@ export default function Reports() {
     });
     setFilteredData(filtered);
   };
-
+  const [pagedContracts, setPagedContracts] = useState([]);
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -442,7 +446,7 @@ export default function Reports() {
                     </td>
                   </tr>
 
-                  {filteredData.map((partner, index) => (
+                  { filteredData.map((partner, index) => (
                     <tr className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150">
                       <td key={index}>
                         <div className="flex items-center space-x-3">
@@ -528,6 +532,10 @@ export default function Reports() {
                     </tr>
                   ))}
                 </table>
+                
+                   
+                  <TablePager list={searchedData} action={setFilteredData}/>
+                
               </div>
             </section>
           </>

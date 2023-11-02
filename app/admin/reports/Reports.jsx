@@ -11,7 +11,11 @@ import PartnerStatisticsReport, {
   PartnerReportBarChart,
 } from "@/app/components/dashboard/admin/AdminReport";
 import axios from "axios";
-import moment from "moment";
+
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
+
+
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +47,7 @@ export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-  const [filterModal, setFilterModal] = useState(false);
+  
   const [downloadModal, setDownloadModal] = useState(false);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
@@ -89,10 +93,7 @@ export default function Reports() {
     selectedStatus,
     selectedCategory
   ) => {
-    console.log("the startDate _1", startDate);
-    console.log("the endDate _1", endDate);
-    console.log("the selectedStatus _1", selectedStatus);
-    console.log("the selectedCategory _1", selectedCategory);
+    
 
     const filtered = searchedData.filter((item) => {
       if (
@@ -125,13 +126,8 @@ export default function Reports() {
       return false;
     });
     setFilteredData(filtered);
-
-    console.log("the filtered _1", filtered);
   };
-
-  const closeFilterModal = () => {
-    setFilterModal(false);
-  };
+ 
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -139,7 +135,9 @@ export default function Reports() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Partners</h2>
-            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"></span>
+            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
+              {searchedData.length}
+            </span>
           </div>
         </div>
 
@@ -393,36 +391,9 @@ export default function Reports() {
 
                   <div id="filtering" className="justify-between flex flex-row">
                     <div className="flex flex-row gap-3">
-                      {/* Add Filter button */}
-                      <div
-                        className="flex items-center gap-2 rounded-full bg-white/10 p-1 px-3 hover:bg-gray-500 cursor-pointer"
-                        onClick={() => setFilterModal(!filterModal)}
-                      >
-                        <span className="text-[12px] text-white">
-                          Add Filter
-                        </span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="white"
-                          viewBox="0 0 32 32"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
-                        </svg>
-                      </div>
-
-                      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
-                        No filters applied
-                      </div>
-
-                      
+                      {/* Add Filter button */}                      
                         <FilteringFlyout
-                          closeAction={closeFilterModal}
                           filterRecord={filterRecord}
-                          className={`${
-                            filterModal ? "block" : "hidden"
-                          }`}
                         />
                       
                     </div>
@@ -453,7 +424,7 @@ export default function Reports() {
 
                 {/*//==============================================================================================================================*/}
 
-                <table className="table w-full transparent" id="myTable">
+                <table className="table w-full transparent " id="myTable">
                   <tr className="border-b border-b-white/40 text-11">
                     <td>
                       <input
@@ -477,7 +448,7 @@ export default function Reports() {
                     </td>
                   </tr>
 
-                  {filteredData.map((partner, index) => (
+                  { filteredData.map((partner, index) => (
                     <tr className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150">
                       <td key={index}>
                         <div className="flex items-center space-x-3">
@@ -489,10 +460,10 @@ export default function Reports() {
                             <span>{getPartnerInitials(partner.company)}</span>
                           </div>
                           <div>
-                            <div className="font-bold text-white">
+                            <div className="font-bold text-[#ccc]">
                               {partner.company}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-white/80">
+                            <div className="flex items-center gap-4 text-sm">
                               {partner.email}
                             </div>
                           </div>
@@ -506,6 +477,7 @@ export default function Reports() {
                           >
                             <span>{getPartnerInitials(partner.category)}</span>
                           </div>
+                         
                           {/*
                         <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
                           <span>R</span>
@@ -538,7 +510,7 @@ export default function Reports() {
                               fill={statusColour[partner.status]}
                             />
                           </svg>
-                          <span className="text-[12px] text-white">
+                          <span className="text-[12px] text-[#ccc]">
                             {partner.status}
                           </span>
                         </div>
@@ -562,6 +534,10 @@ export default function Reports() {
                     </tr>
                   ))}
                 </table>
+                
+                   
+                  <TablePager list={searchedData} action={setFilteredData}/>
+                
               </div>
             </section>
           </>

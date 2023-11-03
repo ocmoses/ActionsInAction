@@ -24,7 +24,6 @@
     "daisyui": "^2.45.0",
     "easy-peasy": "^5.2.0",
     "framer-motion": "^8.5.5",
-    "html2canvas": "^1.4.1",
     "install": "^0.13.0",
     "jspdf": "^2.5.1",
     "laravel-echo": "^1.15.1",

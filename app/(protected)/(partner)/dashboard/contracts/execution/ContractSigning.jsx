@@ -171,19 +171,19 @@ export default function ContractSigning(){
 
     }
 
-    const get_dynamic_content = async () => {
-        if (gettingDynamicContent) return;
-        setGettingDynamicContent(true);
-        dynamic_content_response = await getContractDynamicData();
-        setGettingDynamicContent(false);
-        console.log('dynamic_content_response', dynamic_content_response);
-        if (dynamic_content_response.error) {
-            setError({ error: dynamic_content_response.error })
-        } else {
-            // console.log('dynamic_content_response', dynamic_content_response);
-            setDynamicData(dynamic_content_response.data);                
-        }
-    }
+    // const get_dynamic_content = async () => {
+    //     if (gettingDynamicContent) return;
+    //     setGettingDynamicContent(true);
+    //     dynamic_content_response = await getContractDynamicData();
+    //     setGettingDynamicContent(false);
+    //     console.log('dynamic_content_response', dynamic_content_response);
+    //     if (dynamic_content_response.error) {
+    //         setError({ error: dynamic_content_response.error })
+    //     } else {
+    //         // console.log('dynamic_content_response', dynamic_content_response);
+    //         setDynamicData(dynamic_content_response.data);                
+    //     }
+    // }
 
     const sign_bilateral_contract = async (data) => {
         if (signing) return;
@@ -241,7 +241,7 @@ export default function ContractSigning(){
 
     useEffect(() => {
       setProcessing(false);
-        get_dynamic_content();
+        // get_dynamic_content();
 
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');

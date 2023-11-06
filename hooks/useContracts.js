@@ -9,7 +9,7 @@ import useUsers from "@/hooks/useUsers";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
-import { apikey, role_types } from "@/app/modules/constants";
+import { apikey, role_types, questionnaire_pending} from "@/app/modules/constants";
 import {useState, useEffect} from "react";
 
 
@@ -75,6 +75,8 @@ const useContracts = () => {
   // console.log('User from within useContracts', states.users);
 
   const { setProcessing } = useProcessing();
+
+  const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
 
   let currentContract = null; //Is there a current contract
   const contractStatus = partner?.contract_status; //What is the user's contract status

@@ -121,33 +121,22 @@ export default function GetStarted({ type }) {
   }, []);
 
   useEffect(() => {
-    let check = () =>
-      getQuestionnaireStatus()
-        .then((response) => {
-          console.log("Questionnaire status response", response);
-          console.log("response.status", response.status);
-          console.log("response.error", response.error);
-          if (response.status == "rejected") {
-            setQuestionnaireAlert(true);
-            setRejectionReason(response.rejectionReason);
-          } else if (
-            response.error &&
-            response.error == questionnaire_pending
-          ) {
-            setToFillQuestionnaire(true);
-          } else if (
-            response.message &&
-            response.message == questionnaire_pending
-          ) {
-            setToFillQuestionnaire(true);
-          } else {
-            setToFillQuestionnaire(false);
-          }
-        })
-        .catch((error) => {
-          console.log(error.response);
-          setError({ error: error.message });
-        });
+    let check = () => 
+    getQuestionnaireStatus().then(response => {
+      console.log("Questionnaire status response", response);
+      console.log("response.status", response.status);
+      console.log("response.error", response.error);
+      if(response.status == 'rejected'){
+        setQuestionnaireAlert(true);        
+        setRejectionReason(response.rejectionReason);
+      }else if(response.error && response.error == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else if(response.message && response.message == questionnaire_pending){
+        setToFillQuestionnaire(true);
+      }else {
+        setToFillQuestionnaire(false);        
+      }
+    }).catch(error => {console.log(error.response); setError({error: error.message})});
 
     check();
   }, []);
@@ -357,7 +346,7 @@ export default function GetStarted({ type }) {
                               message="Your contract is ready. Click here to continue"
                               description="Outline contract conditions and give contract warrantees."
                               onclick={() => {
-                                location = "/dashboard/compliance";
+                                location = "/dashboard/contracts";
                               }}
                               button="Continue"
                               color="text-gray-200"

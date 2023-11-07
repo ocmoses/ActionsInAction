@@ -34,11 +34,17 @@ import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
+import GracePeriodExtensionForm, {
+  GracePeriodSuccess,
+  GracePeriodRejectedAlert,
+} from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
 export default function GetStarted({ type }) {
-  const {session: { user },} = useUsers();
-  
-  console.log(user)
+  const {
+    session: { user },
+  } = useUsers();
+
+  console.log(user);
   const {
     partner,
     category,
@@ -49,12 +55,11 @@ export default function GetStarted({ type }) {
     nextStage,
   } = usePartners();
 
-//console.log("this is partner feedback", partner);
-
+  //console.log("this is partner feedback", partner);
 
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
@@ -82,7 +87,7 @@ export default function GetStarted({ type }) {
 
   const userStatus = partner?.status;
 
-  const {getQuestionnaireStatus} = useQuestionnaire();
+  const { getQuestionnaireStatus } = useQuestionnaire();
 
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
@@ -91,7 +96,7 @@ export default function GetStarted({ type }) {
   const [rejectionReason, setRejectionReason] = useState(null);
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setCategoriesData(categories);
   }, [partner, categories, toFillQuestionnaire]);
 
@@ -102,20 +107,18 @@ export default function GetStarted({ type }) {
   });
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setActiveCategory(tmpCat);
     const validation = setValidationRules(tmpCat);
     setValidation(validation);
   }, [tmpCat]);
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
   }, []);
-
- 
 
   useEffect(() => {
     let check = () => 
@@ -136,19 +139,17 @@ export default function GetStarted({ type }) {
     }).catch(error => {console.log(error.response); setError({error: error.message})});
 
     check();
-
-
   }, []);
 
   //////////afoo code////////////////////////////////////////////////////////////////////////////
   const [rejectedTeam, setRejectedTeam] = useState([]);
   const [brdComplains, setBrdComplains] = useState(false);
-  
+
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-   setProcessing(false);
-    setBrdComplains(true)
+    setProcessing(false);
+    setBrdComplains(true);
     const partnerCat = [];
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
@@ -266,13 +267,33 @@ export default function GetStarted({ type }) {
   };
   const closePopUp = () => {
     setPopUp(false);
-    setBrdComplains(false)
+    setBrdComplains(false);
   };
   const submitBrd = () => {
     setSubmitBrdFrom(true);
-   
   };
   //////////end code////////////////////////////////////////////////////////////////////////////
+
+  //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
+
+  const [gracePeriodAlert, setGracePeriodAlert] = useState(true);
+  const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
+  const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
+
+  const openGracePeriodForm = () => {
+    setPopUpGracePeriodForm(true);
+    
+  };
+  const submitGracePeriodForm = () => {
+    setGracePeriodSubmit(true);
+  };
+
+  const closeGracePeriodForm = () => {
+    setPopUpGracePeriodForm(false);
+    setGracePeriodSubmit(false);
+  };
+  //////////end code////////////////////////////////////////////////////////////////////////////
+
   return (
     <>
       {isOnboarding && (
@@ -434,31 +455,47 @@ export default function GetStarted({ type }) {
                 </div>
               )}
 
-              {questionnaireAlert && 
-                (<>
+              {questionnaireAlert && (
+                <>
                   <div className="w-full p-4 px-6 rounded-lg border-1 border-white/10 bg-white/5 flex space-x-4 mt-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" className="w-6 h-6">
-                      <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="red"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <div>
-                      <p className="text-white text-lg">Supplier Questionnaire</p>
-                      <p className="text-white/40 mb-4">There is one or more issues flagged in your supplier questionnaire</p>
+                      <p className="text-white text-lg">
+                        Supplier Questionnaire
+                      </p>
+                      <p className="text-white/40 mb-4">
+                        There is one or more issues flagged in your supplier
+                        questionnaire
+                      </p>
 
-                      <span onClick={() => setShowQuestionare(true)} 
-                        className="p-2 px-4 mb-2 border-1 border-white/40 text-white/80 rounded-full hover:bg-white/10 inline-block cursor-pointer text-sm">
-                          Review
+                      <span
+                        onClick={() => setShowQuestionare(true)}
+                        className="p-2 px-4 mb-2 border-1 border-white/40 text-white/80 rounded-full hover:bg-white/10 inline-block cursor-pointer text-sm"
+                      >
+                        Review
                       </span>
-
                     </div>
                   </div>
-                  {
-                    showQuestionare && (
-                    <QuestionnaireModal hide={() => setShowQuestionare(false)} 
-                                        action={() => setQuestionnaireAlert(false)}
-                                        rejectionReason={rejectionReason} />)
-                  }
-                </>)
-              }
+                  {showQuestionare && (
+                    <QuestionnaireModal
+                      hide={() => setShowQuestionare(false)}
+                      action={() => setQuestionnaireAlert(false)}
+                      rejectionReason={rejectionReason}
+                    />
+                  )}
+                </>
+              )}
 
               {/* //================this is the popup==============================================================================================================*/}
 
@@ -481,7 +518,33 @@ export default function GetStarted({ type }) {
 
                   <BrdRejectedAlert
                     openBrdPopUp={openBrdPopUp}
-                    rejected={rejectedTeam?.rejected}//this is all regjected deligates
+                    rejected={rejectedTeam?.rejected} //this is all regjected deligates
+                  />
+                </>
+              )}
+
+              {/*//==============================================================================================================================*/}
+
+              {/* //================this is lisense grace period==============================================================================================================*/}
+
+              {gracePeriodAlert && (
+                <>
+                  {popUpGracePeriodForm && (
+                    <PopUp closePopUp={closePopUp}>
+                      {!gracePeriodSubmit ? (
+                        <GracePeriodExtensionForm
+                          closePopUp={closeGracePeriodForm}
+                          submitGracePeriodForm={submitGracePeriodForm}
+                        /> // If gracePeriodSubmit is false
+                      ) : (
+                        <GracePeriodSuccess closePopUp={closeGracePeriodForm} /> // If gracePeriodSubmit is true
+                      )}
+                    </PopUp>
+                  )}
+
+                  <GracePeriodRejectedAlert
+                    openGracePeriodForm={openGracePeriodForm}
+                    rejected={rejectedTeam?.rejected} //this is all regjected deligates
                   />
                 </>
               )}
@@ -692,7 +755,7 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-              
+
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 !showProgress && (
@@ -800,7 +863,6 @@ export default function GetStarted({ type }) {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
-      
     </>
   );
 }

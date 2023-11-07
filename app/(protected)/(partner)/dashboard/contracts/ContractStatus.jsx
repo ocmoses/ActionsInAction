@@ -3,6 +3,7 @@ import {ContractContext} from "./ContractProvider";
 import {useState, useContext} from "react";
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import useUsers from "@/hooks/useUsers";
+import usePartners from "@/hooks/usePartners";
 import {contract_statuses, user_statuses} from "@/app/modules/constants";
 
 export default function Contracts() {
@@ -19,6 +20,9 @@ export default function Contracts() {
     } = useContext(ContractContext);
 
     const {user} = useUsers();
+    const {partner} = usePartners();
+
+    console.log("partner", partner);
 
     if(contractStatus == contract_statuses.EXPIRED){
         return (<Renew />);

@@ -192,21 +192,10 @@ export default async function RootLayout({ children }) {
   console.log({ error });
   return (
     <>
-      {/* {error ? (
-        <html lang="en">
-          <head />
-          <body>
-            <div className="flex w-full h-screen items-center justify-center text-white/40">
-              {error}
-            </div>
-          </body>
-        </html>
-      ) : ( */}
       <html lang="en">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <head />
         <body>
-       {/* <ContactUsPopUp/>*/}
           <div id="portals" className="relative z-50"></div>
           {process.env.NODE_ENV === "development" && <ResponsiveLabel />}
           <Providers>

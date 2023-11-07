@@ -12,12 +12,12 @@ import ProfileIcons from "@/app/components/ProfileIcons";
 import { PageRoutes } from "@/app/modules/menu";
 import PopUp, { ContactUsSuccess, MobileMenu } from "@/app/components/PopUps";
 import ContactUsForm from "@/app/components/contactus/ContactUsForm";
+
+
 function Navbar() {
   const { session } = useUsers();
   const { setRouteloading } = useApp();
   const router = useRouter();
-  const [popUpMobileMenu, setPopUpMobileMenu] = useState(false);
-
   const goToRegister = () => {
     setRouteloading(true);
     router.push(PageRoutes.register);
@@ -25,6 +25,10 @@ function Navbar() {
 
   const [popUp, setPopUp] = useState(false);
   const [contactSubmit, setContactSubmit] = useState(false);
+  const [popUpMobileMenu, setPopUpMobileMenu] = useState(false);
+
+  
+
   const openPopUp = () => {
     setPopUp(true);
     setContactSubmit(false);
@@ -43,6 +47,7 @@ function Navbar() {
   const closeMobileMenu = () => {
     setPopUpMobileMenu(false);
   };
+
   return (
     <>
       {/* //================this is the popup==============================================================================================================*/}
@@ -62,6 +67,10 @@ function Navbar() {
         <MobileMenu closeMobileMenu={closeMobileMenu}></MobileMenu>
       )}
       {/*//==============================================================================================================================*/}
+
+
+
+
 
       <div className="w-full max-w-[1158px] px-0 pt-6 pb-10 md:pt-12 md:pb-16 mx-auto z-50 relative  max-[700px]:border-b-1 max-[700px]:border-white/10 max-[700px]:pb-6">
         <div className="w-full mx-auto flex justify-between items-center max-[700px]:w-[96%]">
@@ -146,6 +155,13 @@ function Navbar() {
                       className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10"
                     >
                       Contact Us
+                    </li>
+
+                    <li
+                      onClick={openGracePeriodForm}
+                      className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10"
+                    >
+                      Grace Period
                     </li>
                   </ul>
                 </div>

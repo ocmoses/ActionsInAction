@@ -670,3 +670,13 @@ export function CompanyInitial({ initials}: Props) {
     </div>
   );
 }
+
+export function CompanyLogo({ initials}: Props) {
+  return (
+    <div
+      className="w-24 h-24 bg-white/10 border-1 border-white/40 rounded-full flex flex-col justify-center items-center text-2xl text-white/80 font-bold"
+    >
+      <span>{initials}</span>      
+    </div>
+  );
+}

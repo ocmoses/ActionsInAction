@@ -128,7 +128,7 @@ export default function GracePeriodExtensionForm({
                       <p>
                         Upload <br />
                         <span className="text-white font-mtn-bold">
-                        Proof of renewal in-progress
+                          Proof of renewal in-progress
                         </span>
                         <br />
                         Drag and drop here or
@@ -278,22 +278,20 @@ export const GracePeriodRejectedAlert = ({ openGracePeriodForm, rejected }) => {
                     Your license expires in 60 days{" "}
                   </span>
                   <br />
-                  Upload your renewed license to avoid service distruption. If your renewal is still in progress, apply for an extension.
+                  Upload your renewed license to avoid service distruption. If
+                  your renewal is still in progress, apply for an extension.
                 </p>
               </div>
               <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={openGracePeriodForm}
-                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-              >
-                Extend Expiration
-              </button>
-              <button
-                onClick={openGracePeriodForm}
-                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-              >
-                Upload new license
-              </button>
+                <button
+                  onClick={openGracePeriodForm}
+                  className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                >
+                  Extend Expiration
+                </button>
+                <button className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                  Upload new license
+                </button>
               </div>
             </div>
           </div>

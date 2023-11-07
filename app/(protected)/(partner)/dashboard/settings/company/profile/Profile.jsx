@@ -77,7 +77,66 @@ export default function Profile() {
             </div>
             <div className="flex-1 flex items-start">
                 <CompanyLogo initials={getInitials(partner?.company_name).toUpperCase()} />
+            </div>            
+          </div>
+
+          {/* Company legal address */}
+          <div className="bg-white/10 rounded-xl p-8 flex flex-col md:flex-row w-full mt-4">
+            <div className="w-[300px]">
+                <span className="text-lg text-white/80">
+                    Company legal address
+                </span><br/>
+                <span className="text-lg text-white/40">
+                    The office or residence where you and your team work day-to-day.
+                </span>
             </div>
+            <div className="flex-1 flex items-start">
+                <p className="text-white/60 w-full md:max-w-[250px]">
+                    {partner?.company_address ?? `660 Mission St Floor 4 San Francisco, CA 94105 United States`}
+                </p>
+            </div>            
+          </div>
+
+          {/* Company contact person */}
+          <div className="bg-white/10 rounded-xl p-8 flex flex-col md:flex-row w-full mt-4">
+            <div className="w-[300px]">
+                <span className="text-lg text-white/80">
+                    Contact person
+                </span><br/>
+                <span className="text-lg text-white/40">
+                    This will your company’s primary point of contact.
+                </span>
+            </div>
+            <div className="flex-1 flex items-start flex-col">
+                <p className="text-white/60 w-full md:max-w-[250px]">
+                    {partner?.contact_person ?? `John Doe`}
+                </p>
+                <p className="text-white/40 w-full md:max-w-[250px]">
+                    {partner?.company_email ?? `email@email.com`}
+                </p>
+            </div>            
+          </div>
+
+            {/* Shortcodes */}
+          <h1 className="text-3xl mt-8 font-bold text-white/80">Shortcodes</h1>
+
+          <div className="bg-white/10 rounded-xl p-8 flex flex-col md:flex-row w-full mt-4">
+            <div className="w-[300px]">
+                <span className="text-lg text-white/80">
+                    Contact person
+                </span><br/>
+                <span className="text-lg text-white/40">
+                    This will your company’s primary point of contact.
+                </span>
+            </div>
+            <div className="flex-1 flex items-start flex-col">
+                <p className="text-white/60 w-full md:max-w-[250px]">
+                    {partner?.contact_person ?? `John Doe`}
+                </p>
+                <p className="text-white/40 w-full md:max-w-[250px]">
+                    {partner?.company_email ?? `email@email.com`}
+                </p>
+            </div>            
           </div>
 
           

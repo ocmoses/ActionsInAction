@@ -1420,5 +1420,12 @@ export const role_types = {
   DELEGATE: "delegate"
 }
 
+export const contract_statuses = {
+  PROCESSING: "processing",
+  NOT_STARTED: "not_started",
+  EXPIRED: "expired",
+  ACTIVE: "active"
+}
+
 
 

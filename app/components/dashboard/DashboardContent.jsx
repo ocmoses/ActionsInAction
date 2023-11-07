@@ -131,7 +131,7 @@ export default function GetStarted({ type }) {
       }else if(response.message && response.message == questionnaire_pending){
         setToFillQuestionnaire(true);
       }else {
-        setToFillQuestionnaire(false);
+        setToFillQuestionnaire(false);        
       }
     }).catch(error => {console.log(error.response); setError({error: error.message})});
 
@@ -325,7 +325,7 @@ export default function GetStarted({ type }) {
                               message="Your contract is ready. Click here to continue"
                               description="Outline contract conditions and give contract warrantees."
                               onclick={() => {
-                                location = "/dashboard/compliance";
+                                location = "/dashboard/contracts";
                               }}
                               button="Continue"
                               color="text-gray-200"

@@ -29,10 +29,12 @@ function Layout({ children }) {
             <div
               className={` ${
                 open ? "w-[250px]" : "w-[60px] "
-              } hidden md:flex h-full py-[36px] px-3 duration-300`}
+              } hidden md:flex h-full duration-300`}
             >
               <div className="flex-1">
-                <MenuBar open={open}/>
+                <MenuBar open={open} 
+                          openAction={() => setOpen(true)} 
+                          closeAction={() => setOpen(false)} />
               </div>
             </div>
             <div className="h-full flex-1 relative pb-[50px] bg-[#030303] grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">

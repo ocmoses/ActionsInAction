@@ -86,8 +86,8 @@ export default function AddSignatoryModal() {
   };
 
   const create_partner = async (data) => {
-    const teamEmail = data.get("email");
-   // console.log("Data to be posted is ", teamEmail);
+    const teamEmail = data.email;
+     //console.log("Data to be posted is ", teamEmail);
 
     if (!Util.validateEmail(teamEmail)) {
       setError({ error: "Your email address is not valid" });

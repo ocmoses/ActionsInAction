@@ -8,6 +8,7 @@ export const EndPointHeaders = {
   redirect: "follow",
   referrerPolicy: "no-referrer",
 };
+
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
   LOGOUT: "/api/next/users/logout",

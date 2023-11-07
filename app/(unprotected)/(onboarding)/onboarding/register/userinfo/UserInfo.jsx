@@ -55,14 +55,23 @@ function UserInfo({ designations }) {
     setRouteloading(false);
     scrollToTop("onboardinglayout");
   }, []);
+
+
+
   useEffect(() => {
    setProcessing(false);
     if (designations.error) setError({ userinfo: designations.error });
     else clearErrors();
   }, [designations]);
 
+
+
+
+
+
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [lastEmailChecked, setLastEmailChecked] = useState(null);
+
   const checkIsFreeEmail = async (email) => {
     removeError("email");
     if (!Util.validateEmail(data["email"]))
@@ -111,6 +120,10 @@ function UserInfo({ designations }) {
       }
     }
   };
+
+
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -231,6 +244,7 @@ function UserInfo({ designations }) {
             </p>
           )}
         </div>
+
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector

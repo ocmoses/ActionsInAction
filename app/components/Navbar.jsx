@@ -156,13 +156,6 @@ function Navbar() {
                     >
                       Contact Us
                     </li>
-
-                    <li
-                      onClick={openGracePeriodForm}
-                      className="p-[10px] leading-[25px] text-white rounded-[5px] transition duration-[1s] ease-in-out hover:bg-white/10"
-                    >
-                      Grace Period
-                    </li>
                   </ul>
                 </div>
                 {/*//==============================================================================================================================*/}

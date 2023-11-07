@@ -55,7 +55,7 @@ export default function GetStarted({ type }) {
     nextStage,
   } = usePartners();
 
-  console.log("this is partner feedback", partner);
+ // console.log("this is partner feedback", partner);
 
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {

@@ -22,8 +22,7 @@ import TextInput from "@/app/components/form/TextInput";
 import { ellipsify } from "@/app/modules/utilities";
 import freeemails from "@/app/modules/freeemails.json";
 export default function Team() {
-  const { getAllAdminPartners, createPartner, deletePartner, partner } =
-    usePartners();
+  const { getAllAdminPartners, createPartner, deletePartner, partner } = usePartners();
   const { getAllPartnerRoles, getAllPartnerPrivileges } = useRoles();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -37,12 +36,12 @@ export default function Team() {
   let [data, setData] = useState({
     firstname: "",
     lastname: "",
-    partner_uuid: "",
+    partner_uuid: partner.uuid,
     email: "",
     role: "",
     phone: "",
   });
-
+//console.log("the partner uuid is ", partner.uuid)
   const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
   const [fetchingPartnerPrivileges, setFetchingPartnerPrivileges] =

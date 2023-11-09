@@ -313,7 +313,7 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
 
           <li>
             <Link
-              onClick={() => openServicePopUp('DSM')}
+              onClick={openServicePopUp("DSM")}
               href="#"
               className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
                 !open && "tooltip tooltip-right tooltip-mtn"

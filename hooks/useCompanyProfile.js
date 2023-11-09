@@ -35,13 +35,15 @@ const useCompanyProfile = () => {
 
   const [addShortcodeDialogue, setAddShortcodeDialogue] = useState(false);
   const [addShortcodeModal, setAddShortcodeModal] = useState(false);
+
+  const [addVASLicenseDialogue, setAddVASLicenseDialogue] = useState(false);
+  const [addVASLicenseModal, setAddVASLicenseModal] = useState(false);
   
   const {admin} = useAdmins();
 
   // console.log('User from within useContracts', states.users);
 
   const { setProcessing } = useProcessing();  
-
   
 
   const isSuperadmin = () => user?.role == 'superAdmin'; //or admin role is superadmin
@@ -64,7 +66,11 @@ const useCompanyProfile = () => {
     addShortcodeDialogue, 
     setAddShortcodeDialogue,
     addShortcodeModal, 
-    setAddShortcodeModal
+    setAddShortcodeModal,
+    addVASLicenseDialogue, 
+    setAddVASLicenseDialogue,
+    addVASLicenseModal, 
+    setAddVASLicenseModal
   };
 };
 

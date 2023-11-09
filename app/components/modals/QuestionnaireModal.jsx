@@ -54,6 +54,8 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
     let formData = new FormData();
     formData.append("partner_uuid", partner.uuid);
     formData.append("file", data.questionairre_doc);
+    //normaly it is will be checked
+    formData.append("code_of_conduct", "YES"); 
 
     let response = await sendQuestionnaire(formData);
 

@@ -112,8 +112,6 @@ export default function Contracts() {
   const [partnerRoles, setPartnerRoles] = useState([]);
   
 
-  const APPROVED = "approved";
-
   const [dynamicData, setDynamicData] = useState(null);
 
   const [pages, setPages] = useState(null);

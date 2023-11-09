@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   getPartnerInitials,
   filterPartner,
@@ -11,13 +11,24 @@ import { TailSpinPreloader, CompanyLogo, DialIcon } from "@/app/components/Icons
 import Success from "@/app/components/toasts/Success";
 import FormErrors from "@/app/components/FormErrors";
 import useErrors from "@/hooks/useErrors";
-import usePartners from "@/hooks/usePartners";
 import useProcessing from "@/hooks/useProcessing";
+import {ProfileContext} from "./ProfileProvider";
+import ChangeAddressDialogue from "@/app/components/modals/ChangeAddressDialogue";
+import ChangeAddressModal from "@/app/components/modals/ChangeAddressModal";
+import ProfileSuccessModal from "@/app/components/modals/ProfileSuccessModal";
+import AddShortcodeDialogue from "@/app/components/modals/AddShortcodeDialogue";
+import AddShortcodeModal from "@/app/components/modals/AddShortcodeModal";
 
 
 export default function Profile() {
 
-  const { partner } = usePartners();
+    const {
+        partner, 
+        isSuperadmin,
+        setChangeAddressDialogue,
+        setAddShortcodeDialogue,
+        setAddShortcodeModal
+    } = useContext(ProfileContext);
 
   console.log("Partner", partner);
     
@@ -28,6 +39,14 @@ export default function Profile() {
   const successAction = () => setTimeout(() => {
                                                   setSuccessToast(false)
                                                 }, 3000);
+
+  
+
+  console.log("isSuperadmin", isSuperadmin);
+    clearErrors();
+  useEffect(() => {
+
+  }, []);
 
   return (
     <>
@@ -103,7 +122,7 @@ export default function Profile() {
                 </p>
             </div> 
 
-            <div className="ml-auto inline-flex items-start">
+            <div className="ml-auto inline-flex items-start" onClick={() => setChangeAddressDialogue(true)}>
                 <span className=" px-4 py-2 border-1 border-white/20 rounded-full
                         text-white/80 cursor-pointer hover:bg-white/5">
                     Update
@@ -134,7 +153,7 @@ export default function Profile() {
           </div>
 
           {/* Shortcodes */}
-          <div className="flex justify-between items-end">
+          <div className="flex justify-between items-end" onClick={() => setAddShortcodeDialogue(true)}>
                 <h1 className="text-3xl mt-8 font-bold text-white/80">Shortcodes</h1>
 
                 <span className="px-4 py-2 border-1 border-white/20 rounded-full
@@ -267,6 +286,12 @@ export default function Profile() {
           
         </div>
       </div>
+
+      <ChangeAddressDialogue />
+      <ChangeAddressModal />
+      <AddShortcodeDialogue />
+      <AddShortcodeModal />
+      <ProfileSuccessModal />
 
       <Success message={successMessage} visible={successToast} action={successAction} />
     </>

@@ -1,5 +1,8 @@
 import Profile from "./Profile";
+import ProfileProvider from "./ProfileProvider";
 
 export default function Page(){
-    return <Profile />
+    return (<ProfileProvider>
+                <Profile />
+            </ProfileProvider>)
 }

@@ -43,11 +43,7 @@ export default function Profile() {
   
 
   console.log("isSuperadmin", isSuperadmin);
-    clearErrors();
-  useEffect(() => {
-
-  }, []);
-
+  
   return (
     <>
       <div id="profile_page" className="flex flex-cols pb-12 min-h-screen" >

@@ -59,6 +59,44 @@ export const PartnerMenu = [
   // },
 ];
 
+export const PartnerCompanySettingsMenu = [
+  {
+    label: "Company Profile",
+    route: "/dashboard/settings/company/profile"
+  },
+  {
+    label: "Compliance",
+    route: "/dashboard/settings/company/compliance"
+  },
+  {
+    label: "Services",
+    route: "/dashboard/settings/company/services"
+  },
+  {
+    label: "API Tokens",
+    route: "/dashboard/settings/company/api-tokens"
+  },
+  {
+    label: "Audit Logs",
+    route: "/dashboard/settings/company/audit-logs"
+  }
+];
+
+export const PartnerPersonalSettingsMenu = [
+  {
+    label: "My Profile",
+    route: "/dashboard/settings/personal/my-profile"
+  },
+  {
+    label: "Notifications",
+    route: "/dashboard/settings/personal/notifications"
+  },
+  {
+    label: "Security",
+    route: "/dashboard/settings/personal/security"
+  }
+];
+
 
 export const AdminMenu = [
   {

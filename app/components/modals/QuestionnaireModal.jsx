@@ -35,7 +35,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                                                   action();
                                                   hide();
                                                 }, 3000);
-  const {processing} = useProcessing();
+  const {processing, setProcessing} = useProcessing();
 
   const handleFormChange = (e) => {
     setData({...data, questionairre_doc: e.target.value});
@@ -68,6 +68,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
 
   useEffect(() => {
     clearErrors();
+    setProcessing(false);
   }, []);
     
     return (
@@ -113,7 +114,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                             </div>
                             <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                                 <p className="text-gray-400">Upload</p>
-                                <span onClick={() => setUploading(true)} className="font-mtn text-md text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
+                                <span onClick={() => {setUploading(true); setProcessing(false)}} className="font-mtn text-md text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
                             </div>
                         </div>)
                         }

@@ -494,6 +494,7 @@ export default function Reports() {
                       </td>
                       <td>
                         <span className="text-[13px] font-bold">
+                        {partner.status =='expired'}
                           {partner.date}
                         </span>
                       </td>

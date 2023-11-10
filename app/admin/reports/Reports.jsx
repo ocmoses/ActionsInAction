@@ -16,6 +16,24 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 
+function calculateDaysLeft(targetDate) {
+  const currentDate = new Date();
+  const targetDateObj = new Date(targetDate);
+  const thirtyDaysFromNow = new Date();
+  thirtyDaysFromNow.setDate(currentDate.getDate() + 30);
+
+  if (targetDateObj < thirtyDaysFromNow) {
+    // Calculate the difference in days
+    const timeDifference = thirtyDaysFromNow - targetDateObj;
+    const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    return daysLeft;
+  } else {
+    return 0; // The provided date is not within the 30-day window
+  }
+}
+
+
+
 
 export default function Reports() {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +94,6 @@ export default function Reports() {
         );
         setSearchedData(partnerListResponse.data.data);
         setFilteredData(partnerListResponse.data.data);
-
         setLoadingPartnerList(false);
       } catch (error) {
         console.error("Error Loading Statistics data:", error);
@@ -494,8 +511,12 @@ export default function Reports() {
                       </td>
                       <td>
                         <span className="text-[13px] font-bold">
-                        {partner.status =='expired'}
-                          {partner.date}
+                        {
+                        (partner.status =='expired')?
+                        (partner.expiration):
+                        (partner.date)
+                        }
+                          
                         </span>
                       </td>
 
@@ -512,11 +533,24 @@ export default function Reports() {
                               cx="4"
                               cy="4"
                               r="3"
-                              fill={statusColour[partner.status]}
+                             
+                              fill= {
+                                partner.status == 'active' && calculateDaysLeft(partner.expiration) !== 0 ? (
+                                  statusColour['others']
+                                ) : (
+                                  statusColour[partner.status]
+                                )
+                              }
                             />
                           </svg>
                           <span className="text-[12px] text-[#ccc]">
-                            {partner.status}
+                          {
+                            partner.status == 'active' && calculateDaysLeft(partner.expiration) !== 0 ? (
+                              <p>{calculateDaysLeft(partner.expiration)} days left</p>
+                            ) : (
+                              <p>{partner.status}</p>
+                            )
+                          }
                           </span>
                         </div>
                       </td>

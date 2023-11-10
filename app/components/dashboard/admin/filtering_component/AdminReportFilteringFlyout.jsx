@@ -89,7 +89,11 @@ export default function FilteringFlyout(props) {
   };
 
   
-
+  const getAllTime = () => {
+    const today = new Date();
+    setStartDate("");
+    setEndDate(today.toISOString().split("T")[0]);
+  };
 
 
   const [filterTags, setFilterTags] = useState([]);
@@ -108,7 +112,7 @@ export default function FilteringFlyout(props) {
 
     if(selectedCategory.length != 0){
       selectedCategory.forEach(eCategory => {
-        filterTags.push(<FilterTag message={`${eCategory}`} action={() => {removeFilter(`status***${eCategory}`)}} />);
+        filterTags.push(<FilterTag message={`${eCategory}`} action={() => {removeFilter(`category***${eCategory}`)}} />);
         });      
     }
 
@@ -119,7 +123,17 @@ export default function FilteringFlyout(props) {
     }    
 };
 
-
+const removeFilter = (filter) => {
+  if(filter =='date_range'){
+    getAllTime();      
+  }else if(filter.includes('category***')){
+      const key = filter.split("***")[1];
+      toggleCategory(key);
+  }else if(filter.includes('status***')){
+      const key = filter.split("***")[1];
+      toggleStatus(key);
+  }
+};
 
 
 
@@ -367,7 +381,7 @@ export default function FilteringFlyout(props) {
                     title="Last 1 Year"
                     action={getLast1Year}
                   />
-                  <PartnerFilterTitle title="All Time"/>
+                  <PartnerFilterTitle title="All Time" action={getAllTime}/>
                 </div>
               </div>
             )}

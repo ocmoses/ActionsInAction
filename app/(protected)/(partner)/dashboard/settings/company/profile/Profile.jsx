@@ -18,8 +18,7 @@ import ChangeAddressModal from "@/app/components/modals/ChangeAddressModal";
 import ProfileSuccessModal from "@/app/components/modals/ProfileSuccessModal";
 import AddShortcodeDialogue from "@/app/components/modals/AddShortcodeDialogue";
 import AddShortcodeModal from "@/app/components/modals/AddShortcodeModal";
-import AddVASLicenseDialogue from "@/app/components/modals/AddVASLicenseDialogue";
-import AddVASLicenseModal from "@/app/components/modals/AddVASLicenseModal";
+
 
 
 export default function Profile() {
@@ -31,6 +30,7 @@ export default function Profile() {
         setAddShortcodeDialogue,
         setAddShortcodeModal,
         setAddVASLicenseDialogue
+
     } = useContext(ProfileContext);
 
   console.log("Partner", partner);
@@ -247,6 +247,7 @@ export default function Profile() {
 
           {/* VAS */}
           <div className="flex justify-between items-end" onClick={() => setAddVASLicenseDialogue(true)} >
+
                 <h1 className="text-3xl mt-8 font-bold text-white/80">VAS License</h1>
 
                 <span className="px-4 py-2 border-1 border-white/20 rounded-full
@@ -292,7 +293,7 @@ export default function Profile() {
       <AddShortcodeModal />
       <AddVASLicenseDialogue />
       <AddVASLicenseModal />
-      
+
       <ProfileSuccessModal />
 
       <Success message={successMessage} visible={successToast} action={successAction} />

@@ -51,7 +51,7 @@ export default function Reports() {
   const [downloadModal, setDownloadModal] = useState(false);
   const [loadingPartnerList, setLoadingPartnerList] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
-
+  const [pagedData, setPagedData] = useState([]);
   const [searchedData, setSearchedData] = useState([]);
 
   const statusColour = {
@@ -87,13 +87,11 @@ export default function Reports() {
     fetchPartnerList();
   }, []);
 
-  const filterRecord = (
-    startDate,
-    endDate,
-    selectedStatus,
-    selectedCategory
-  ) => {
-    
+
+
+
+
+  const filterRecord = (startDate,endDate,selectedStatus,selectedCategory ) => {
 
     const filtered = searchedData.filter((item) => {
       if (
@@ -125,9 +123,17 @@ export default function Reports() {
       }
       return false;
     });
+    console.log("This is ths current filtered data", filtered)
     setFilteredData(filtered);
+    setPagedData(filtered);
   };
  
+
+
+  // useEffect(() => {
+
+  // }, [filtered]);
+
 
   return (
     <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -135,9 +141,6 @@ export default function Reports() {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Partners</h2>
-            <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-              {searchedData.length}
-            </span>
           </div>
         </div>
 
@@ -203,31 +206,7 @@ export default function Reports() {
                   }
                 />
 
-                <PartnerStatisticsReport
-                  title="APPROVED PARTNER"
-                  count={reportStatistics.compliance_stats.compliance.approved}
-                  percentage={
-                    reportStatistics.compliance_stats.compliance_past_month
-                      .approved === 0
-                      ? "0.00"
-                      : Math.abs(
-                          ((reportStatistics.compliance_stats.compliance
-                            .approved -
-                            reportStatistics.compliance_stats
-                              .compliance_past_month.approved) /
-                            reportStatistics.compliance_stats
-                              .compliance_past_month.approved) *
-                            100
-                        ).toFixed(2)
-                  }
-                  rate={
-                    reportStatistics.compliance_stats.compliance.approved <
-                    reportStatistics.compliance_stats.compliance_past_month
-                      .approved
-                      ? "DOWN"
-                      : "UP"
-                  }
-                />
+                
 
                 <PartnerStatisticsReport
                   title="PARTNERS IN REVIEW"
@@ -250,6 +229,32 @@ export default function Reports() {
                     reportStatistics.compliance_stats.compliance.in_review <
                     reportStatistics.compliance_stats.compliance_past_month
                       .in_review
+                      ? "DOWN"
+                      : "UP"
+                  }
+                />
+
+                <PartnerStatisticsReport
+                  title="TOTAL PARTNER"
+                  count={reportStatistics.onboarding_stats.partners.all}
+                  percentage={
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .approved === 0
+                      ? "0.00"
+                      : Math.abs(
+                          ((reportStatistics.compliance_stats.compliance
+                            .approved -
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.approved) /
+                            reportStatistics.compliance_stats
+                              .compliance_past_month.approved) *
+                            100
+                        ).toFixed(2)
+                  }
+                  rate={
+                    reportStatistics.compliance_stats.compliance.approved <
+                    reportStatistics.compliance_stats.compliance_past_month
+                      .approved
                       ? "DOWN"
                       : "UP"
                   }
@@ -343,8 +348,7 @@ export default function Reports() {
                   title="TOTAL CONTRACTS"
                   count={
                     reportStatistics.contracting_stats.contracts.active +
-                    reportStatistics.contracting_stats.contracts.inactive +
-                    reportStatistics.contracting_stats.contracts.expiring_soon
+                    reportStatistics.contracting_stats.contracts.inactive
                   }
                   percentage={
                     reportStatistics.contracting_stats.contracts_past_month
@@ -448,7 +452,7 @@ export default function Reports() {
                     </td>
                   </tr>
 
-                  { filteredData.map((partner, index) => (
+                  {filteredData.slice(0,5).map((partner, index) => (
                     <tr className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150">
                       <td key={index}>
                         <div className="flex items-center space-x-3">
@@ -535,8 +539,13 @@ export default function Reports() {
                   ))}
                 </table>
                 
+                {
+                  (pagedData.length == 0 && filteredData.length == 0) ?  
+                  (<EmptyTable list={'Record'} />) : 
+                  (<TablePager list={pagedData} action={setFilteredData}/>)
+                }
                    
-                  <TablePager list={searchedData} action={setFilteredData}/>
+                 
                 
               </div>
             </section>

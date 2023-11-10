@@ -80,10 +80,7 @@ function UserInfo({ designations }) {
       const Email = email.split("@");
 
       if (freeemails.includes(Email[1])) {
-        setError({
-          email:
-            "Free email service account is not allowed. Please use a corporate email",
-        });
+        setError({email: "Free email service account is not allowed. Please use a corporate email"});
       }
     } else {
       if (process.env.NODE_ENV === "development") return;
@@ -100,20 +97,13 @@ function UserInfo({ designations }) {
           const { data } = response;
           setLastEmailChecked(email);
           if (!data)
-            setError({
-              email: "Something went wrong while verifying your email",
-            });
+            setError({email: "Something went wrong while verifying your email"});
           const { is_free, error } = data;
           if (error) setError({ email: error });
           if (is_free)
-            setError({
-              email:
-                "Free email service account is not allowed. Please use a corporate email",
-            });
+            setError({email:"Free email service account is not allowed. Please use a corporate email"});
         } else {
-          setError({
-            email: "Something went wrong while verifying your email",
-          });
+          setError({email: "Something went wrong while verifying your email"});
         }
       } catch (error) {
         setError({ email: "An error occured while verifying your email" });

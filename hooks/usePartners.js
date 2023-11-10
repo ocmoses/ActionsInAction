@@ -651,11 +651,14 @@ const usePartners = () => {
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.messsage;
+        const contract_id = result.data?.contract_id;
         
         console.log('Selected message', message);
+        console.log('Contract ID', contract_id);
 
         return {
-          message
+          message,
+          contract_id
         };
       }
       return {

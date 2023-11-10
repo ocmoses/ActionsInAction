@@ -25,7 +25,6 @@ export default function SelectServiceModal({visible, closeAction, callback}){
     const [{ errors, setError, clearErrors }] = useErrors(null);
 
     let get_service_response = null;
-    let partner_select_service_response = null;
 
     const get_service_types = async () => {
         clearErrors();
@@ -57,7 +56,7 @@ export default function SelectServiceModal({visible, closeAction, callback}){
         clearErrors();
         if (selectingService) return;
         setSelectingService(true);
-        partner_select_service_response = await partnerSelectService(data);
+        let partner_select_service_response = await partnerSelectService(data);
         setSelectingService(false);
         // console.log('partner_select_service_response', partner_select_service_response);
         if (partner_select_service_response.error) setError({ error: partner_select_service_response.error })
@@ -65,6 +64,8 @@ export default function SelectServiceModal({visible, closeAction, callback}){
             // console.log('partner_select_service_response', partner_select_service_response);
             
             setSelectServiceModal(false); 
+            //let's hold this here
+            localStorage.setItem("contractId", partner_select_service_response.contract_id);
             setContractSignatriesModal(true);
     
         }

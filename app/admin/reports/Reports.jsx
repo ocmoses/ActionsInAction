@@ -534,7 +534,7 @@ export default function Reports() {
                 <td> Status </td>
               </tr>
               {pagedData.map((partner, index) => (
-                <tr key={index}>
+              <tr key={index}>
                 <td> {partner.company} </td>
                 <td> {partner.email} </td>
                 <td> {partner.category} </td>

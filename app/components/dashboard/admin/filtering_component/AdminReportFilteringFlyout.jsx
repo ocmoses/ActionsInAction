@@ -567,17 +567,22 @@ export const DownloadFlyout = () => {
 
   const generatePDF = () => {
     const pdf = new jsPDF('p', 'mm', 'a4');
-
-    const content = document.getElementById('myTable'); // Replace 'table-content' with the ID of your table
-
+  
+    const content = document.getElementById('myTable'); // Replace 'myTable' with the ID of your table
+  
+    // Make the table visible
+    content.style.display = 'block'; // You can use 'block' or any other suitable display style
+  
     html2canvas(content).then((canvas) => {
+      // After capturing, hide the table again
+      content.style.display = 'none'; // Set the display style back to 'none'
+  
       const imgData = canvas.toDataURL('image/png');
       pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
       pdf.save('partnerReport.pdf');
     });
-
-    setPdfContent(pdf);
   };
+  
 
   return (
     <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333]">

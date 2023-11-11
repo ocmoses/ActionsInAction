@@ -10,8 +10,6 @@ import html2canvas from 'html2canvas';
 import FilterTag from "@/app/components/FilterTag";
 
 
-
-
 export default function FilteringFlyout(props) {
   const [filterModal, setFilterModal] = useState(false);
   const filterRef = useRef(null);
@@ -20,7 +18,6 @@ export default function FilteringFlyout(props) {
     category: false,
     status: false,
   });
-
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
   const year = today.getFullYear();
@@ -29,27 +26,17 @@ export default function FilteringFlyout(props) {
   const todaysDate = `${year}-${month}-${day}`;
   ///////////////end of get today's date////////////////////////////////////////////
 
-  const [startDate, setStartDate] = useState("");
+
+   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(todaysDate);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [filterTags, setFilterTags] = useState([]);
 
-  useEffect(() => {
-    ////// bring out search modals
-    document.addEventListener(
-      "click",
-      function (e) {
-        if (filterRef.current && !filterRef.current.contains(e.target)) {
-          setFilterModal(false);
-        }
-      },
-      true
-    );
-    displayFilters();
 
-    props.filterRecord(startDate, endDate, selectedStatus, selectedCategory);
-  }, [startDate, endDate, selectedStatus, selectedCategory]);
+ 
 
+  
   const getLast30Days = () => {
     const today = new Date();
     const last30Days = new Date(today);
@@ -88,7 +75,6 @@ export default function FilteringFlyout(props) {
     setEndDate(today.toISOString().split("T")[0]);
   };
 
-  
   const getAllTime = () => {
     const today = new Date();
     setStartDate("");
@@ -96,8 +82,8 @@ export default function FilteringFlyout(props) {
   };
 
 
-  const [filterTags, setFilterTags] = useState([]);
-
+  
+///// to display filtered
   const displayFilters = () => {
     let filterTags = [];
     if(startDate != ""){
@@ -122,7 +108,9 @@ export default function FilteringFlyout(props) {
         setFilterTags(filterTags);
     }    
 };
+///// end to display filtered
 
+///// to remove  filtered
 const removeFilter = (filter) => {
   if(filter =='date_range'){
     getAllTime();      
@@ -134,8 +122,46 @@ const removeFilter = (filter) => {
       toggleStatus(key);
   }
 };
+///// end to remove  filtered
+  
 
 
+  useEffect(() => {
+    ////// bring out search modals
+    document.addEventListener(
+      "click",
+      function (e) {
+        if (filterRef.current && !filterRef.current.contains(e.target)) {
+          setFilterModal(false);
+        }
+      },
+      true
+    );
+  }, []);
+  
+  useEffect(() => {
+    displayFilters();
+
+    const filtered = props.searchedData.filter((item) => {
+
+      if ( !startDate && !endDate && selectedStatus.length === 0 &&  selectedCategory.length === 0 ) {
+        return true;
+      }
+      // Apply date range filter
+      if ( (!startDate || item.date >= startDate) && (!endDate || item.date <= endDate) ) {
+        // Apply status filter
+        if (  selectedStatus.length === 0 || selectedStatus.includes(item.status) ) {
+          // Apply category filter
+          if ( selectedCategory.length === 0 || selectedCategory.includes(item.category)  ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+
+    props.filterRecord(filtered);
+  }, [props.searchedData, startDate, endDate, selectedStatus, selectedCategory]);
 
   return (
     <>
@@ -435,13 +461,7 @@ const removeFilter = (filter) => {
                   checked={selectedStatus.includes("expired")}
                   onChange={() => toggleStatus("expired")}
                 />
-               {/*  <PartnerFilterCheck
-                  title="Expiring in 30 days"
-                  summary="Contract is expiring soon"
-                  value="active"
-                  checked={selectedStatus.includes("active")}
-                  onChange={() => toggleStatus("active")}
-                />*/}
+               
                 <PartnerFilterCheck
                   title="In review"
                   summary="Contract has not started"
@@ -464,6 +484,7 @@ const removeFilter = (filter) => {
     </>
   );
 
+
   function toggleStatus(status) {
     setSelectedStatus((prevStatus) =>
       prevStatus.includes(status)
@@ -472,6 +493,7 @@ const removeFilter = (filter) => {
     );
   }
 
+
   function toggleCategory(category) {
     setSelectedCategory((prevCategory) =>
       prevCategory.includes(category)
@@ -479,6 +501,7 @@ const removeFilter = (filter) => {
         : [...prevCategory, category]
     );
   }
+  
 }
 
 

@@ -244,4 +244,4 @@ jobs:
        target: 'http://10.1.44.40'
        rules_file_name: '.zap/rules.tsv'
        cmd_options: '-a'
-       artifact_name: AMZ-Tribe-backend-stage-report              
+       artifact_name: AMZ-Tribe-frontend-stage-report              

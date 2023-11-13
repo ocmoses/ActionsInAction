@@ -134,7 +134,6 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
             setSearchTags({...searchTags, status: searchTags.status.filter(k => k != key)}); 
         }
     
-    
     };
     
     useEffect(() => {

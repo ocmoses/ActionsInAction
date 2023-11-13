@@ -18,6 +18,8 @@ import ChangeAddressModal from "@/app/components/modals/ChangeAddressModal";
 import ProfileSuccessModal from "@/app/components/modals/ProfileSuccessModal";
 import AddShortcodeDialogue from "@/app/components/modals/AddShortcodeDialogue";
 import AddShortcodeModal from "@/app/components/modals/AddShortcodeModal";
+import AddVASLicenseDialogue from "@/app/components/modals/AddVASLicenseDialogue";
+import AddVASLicenseModal from "@/app/components/modals/AddVASLicenseModal";
 
 
 

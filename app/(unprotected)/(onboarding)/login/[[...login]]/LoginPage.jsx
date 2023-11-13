@@ -41,7 +41,7 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "sunaf4real@gmail.com",
+        : "afolabi.o@eleadersnetwork.com",
     password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
   });
   

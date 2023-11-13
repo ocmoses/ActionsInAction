@@ -7,6 +7,8 @@ import {
 
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import FilterTag from "@/app/components/FilterTag";
+
 
 export default function FilteringFlyout(props) {
   const [filterModal, setFilterModal] = useState(false);
@@ -16,7 +18,6 @@ export default function FilteringFlyout(props) {
     category: false,
     status: false,
   });
-
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
   const year = today.getFullYear();
@@ -25,26 +26,17 @@ export default function FilteringFlyout(props) {
   const todaysDate = `${year}-${month}-${day}`;
   ///////////////end of get today's date////////////////////////////////////////////
 
-  const [startDate, setStartDate] = useState("");
+
+   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(todaysDate);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [filterTags, setFilterTags] = useState([]);
 
-  useEffect(() => {
-    ////// bring out search modals
-    document.addEventListener(
-      "click",
-      function (e) {
-        if (filterRef.current && !filterRef.current.contains(e.target)) {
-          setFilterModal(false);
-        }
-      },
-      true
-    );
 
-    props.filterRecord(startDate, endDate, selectedStatus, selectedCategory);
-  }, [startDate, endDate, selectedStatus, selectedCategory]);
+ 
 
+  
   const getLast30Days = () => {
     const today = new Date();
     const last30Days = new Date(today);
@@ -83,12 +75,93 @@ export default function FilteringFlyout(props) {
     setEndDate(today.toISOString().split("T")[0]);
   };
 
-  const clearFilter = () => {
+  const getAllTime = () => {
+    const today = new Date();
     setStartDate("");
-    setEndDate(todaysDate);
-    setSelectedStatus([]);
-    setSelectedCategory([]);
+    setEndDate(today.toISOString().split("T")[0]);
   };
+
+
+  
+///// to display filtered
+  const displayFilters = () => {
+    let filterTags = [];
+    if(startDate != ""){
+        filterTags.push(<FilterTag message={`From ${startDate} to ${endDate}`} action={() => {removeFilter("date_range")}} />);
+    }
+   
+    if(selectedStatus.length != 0){
+      selectedStatus.forEach(eStatus => {
+        filterTags.push(<FilterTag message={`${eStatus}`} action={() => {removeFilter(`status***${eStatus}`)}} />);
+        });      
+    }
+
+    if(selectedCategory.length != 0){
+      selectedCategory.forEach(eCategory => {
+        filterTags.push(<FilterTag message={`${eCategory}`} action={() => {removeFilter(`category***${eCategory}`)}} />);
+        });      
+    }
+
+    if(!filterTags.length){
+        setFilterTags(<span className="text-sm text-gray-500">No filters applied</span>);
+    }else{
+        setFilterTags(filterTags);
+    }    
+};
+///// end to display filtered
+
+///// to remove  filtered
+const removeFilter = (filter) => {
+  if(filter =='date_range'){
+    getAllTime();      
+  }else if(filter.includes('category***')){
+      const key = filter.split("***")[1];
+      toggleCategory(key);
+  }else if(filter.includes('status***')){
+      const key = filter.split("***")[1];
+      toggleStatus(key);
+  }
+};
+///// end to remove  filtered
+  
+
+
+  useEffect(() => {
+    ////// bring out search modals
+    document.addEventListener(
+      "click",
+      function (e) {
+        if (filterRef.current && !filterRef.current.contains(e.target)) {
+          setFilterModal(false);
+        }
+      },
+      true
+    );
+  }, []);
+  
+  useEffect(() => {
+    displayFilters();
+
+    const filtered = props.searchedData.filter((item) => {
+
+      if ( !startDate && !endDate && selectedStatus.length === 0 &&  selectedCategory.length === 0 ) {
+        return true;
+      }
+      // Apply date range filter
+      if ( (!startDate || item.date >= startDate) && (!endDate || item.date <= endDate) ) {
+        // Apply status filter
+        if (  selectedStatus.length === 0 || selectedStatus.includes(item.status) ) {
+          // Apply category filter
+          if ( selectedCategory.length === 0 || selectedCategory.includes(item.category)  ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+
+    props.filterRecord(filtered);
+  }, [props.searchedData, startDate, endDate, selectedStatus, selectedCategory]);
 
   return (
     <>
@@ -107,9 +180,10 @@ export default function FilteringFlyout(props) {
           <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
         </svg>
       </div>{" "}
-      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0">
-        <span>{startDate ? `${startDate} - ${endDate}` : "No filters applied"}</span>{" "}
-        {startDate && (<span className="text-mtn cursor-pointer pl-3" onClick={clearFilter}>Reset Filter</span>)}
+      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0 flex">
+              {
+                filterTags
+              }
       </div>
       <div
         ref={filterRef}
@@ -333,7 +407,7 @@ export default function FilteringFlyout(props) {
                     title="Last 1 Year"
                     action={getLast1Year}
                   />
-                  <PartnerFilterTitle title="All Time" action={clearFilter} />
+                  <PartnerFilterTitle title="All Time" action={getAllTime}/>
                 </div>
               </div>
             )}
@@ -387,16 +461,17 @@ export default function FilteringFlyout(props) {
                   checked={selectedStatus.includes("expired")}
                   onChange={() => toggleStatus("expired")}
                 />
-                <PartnerFilterCheck
-                  title="Expiring in 30 days"
-                  summary="Contract is expiring soon"
-                  value="active"
-                  checked={selectedStatus.includes("active")}
-                  onChange={() => toggleStatus("active")}
-                />
+               
                 <PartnerFilterCheck
                   title="In review"
                   summary="Contract has not started"
+                  value="in_review"
+                  checked={selectedStatus.includes("in_review")}
+                  onChange={() => toggleStatus("in_review")}
+                />
+                <PartnerFilterCheck
+                  title="New"
+                  summary="Just Registered"
                   value="new"
                   checked={selectedStatus.includes("new")}
                   onChange={() => toggleStatus("new")}
@@ -409,6 +484,7 @@ export default function FilteringFlyout(props) {
     </>
   );
 
+
   function toggleStatus(status) {
     setSelectedStatus((prevStatus) =>
       prevStatus.includes(status)
@@ -417,6 +493,7 @@ export default function FilteringFlyout(props) {
     );
   }
 
+
   function toggleCategory(category) {
     setSelectedCategory((prevCategory) =>
       prevCategory.includes(category)
@@ -424,7 +501,41 @@ export default function FilteringFlyout(props) {
         : [...prevCategory, category]
     );
   }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const DownloadFlyout = () => {
   const downloadTableAsCSV = () => {
@@ -456,17 +567,22 @@ export const DownloadFlyout = () => {
 
   const generatePDF = () => {
     const pdf = new jsPDF('p', 'mm', 'a4');
-
-    const content = document.getElementById('myTable'); // Replace 'table-content' with the ID of your table
-
+  
+    const content = document.getElementById('myTable'); // Replace 'myTable' with the ID of your table
+  
+    // Make the table visible
+    content.style.display = 'block'; // You can use 'block' or any other suitable display style
+  
     html2canvas(content).then((canvas) => {
+      // After capturing, hide the table again
+      content.style.display = 'none'; // Set the display style back to 'none'
+  
       const imgData = canvas.toDataURL('image/png');
       pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
       pdf.save('partnerReport.pdf');
     });
-
-    setPdfContent(pdf);
   };
+  
 
   return (
     <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333]">

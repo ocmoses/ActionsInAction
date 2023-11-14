@@ -23,7 +23,9 @@ export default function useLogout() {
     await logout()
     clearStore()
     actions.app.endLoading("logout")
-    router.push(PageRoutes.home)
+    if (typeof window !== "undefined") window.location = PageRoutes.login
+    else 
+    router.push(PageRoutes.login)
   }
   const LogoutAdmin = async () => {
     localStorage.clear();

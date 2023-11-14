@@ -1,12 +1,10 @@
 
 import GenericModal from "./GenericModal.jsx";
-import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useEffect, useContext, useState } from "react";
 import useErrors from "@/hooks/useErrors";
 import useUsers from "@/hooks/useUsers";
 import { ContractContext } from "../../(protected)/(partner)/dashboard/contracts/ContractProvider";
-import { role_types } from "@/app/modules/constants";
 
 
 export default function ChooseSignatoryModal(){

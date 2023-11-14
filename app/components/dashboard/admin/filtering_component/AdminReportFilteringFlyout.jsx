@@ -32,7 +32,7 @@ export default function FilteringFlyout(props) {
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [filterTags, setFilterTags] = useState([]);
-
+  const [clearFilter, setClearFilter] = useState(false);
 
  
 
@@ -103,8 +103,10 @@ export default function FilteringFlyout(props) {
     }
 
     if(!filterTags.length){
-        setFilterTags(<span className="text-sm text-gray-500">No filters applied</span>);
+        setFilterTags(<span className="text-sm text-gray-500 pt-1">No filters applied</span>);
+        setClearFilter(false);
     }else{
+      setClearFilter(true);
         setFilterTags(filterTags);
     }    
 };
@@ -124,7 +126,22 @@ const removeFilter = (filter) => {
 };
 ///// end to remove  filtered
   
-
+///// to clear  filtered
+const clearAllFilter = () => {
+  getAllTime(); 
+  if(selectedCategory.length != 0){
+    selectedCategory.forEach(eCategory => {
+      removeFilter(`category***${eCategory}`);
+      });      
+  }
+  if(selectedStatus.length != 0){
+    selectedStatus.forEach(eStatus => {
+      removeFilter(`status***${eStatus}`);
+      });      
+  }
+};
+///// end to clear  filtered
+  
 
   useEffect(() => {
     ////// bring out search modals
@@ -181,9 +198,15 @@ const removeFilter = (filter) => {
         </svg>
       </div>{" "}
       <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0 flex">
-              {
-                filterTags
-              }
+        {filterTags}
+        {clearFilter && (
+          <span
+            className="text-sm text-[#FFCB03] pt-1 cursor-pointer"
+            onClick={clearAllFilter}
+          >
+            Reset Filters
+          </span>
+        )}
       </div>
       <div
         ref={filterRef}
@@ -407,7 +430,7 @@ const removeFilter = (filter) => {
                     title="Last 1 Year"
                     action={getLast1Year}
                   />
-                  <PartnerFilterTitle title="All Time" action={getAllTime}/>
+                  <PartnerFilterTitle title="All Time" action={getAllTime} />
                 </div>
               </div>
             )}
@@ -461,7 +484,7 @@ const removeFilter = (filter) => {
                   checked={selectedStatus.includes("expired")}
                   onChange={() => toggleStatus("expired")}
                 />
-               
+
                 <PartnerFilterCheck
                   title="In review"
                   summary="Contract has not started"

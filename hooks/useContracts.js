@@ -59,6 +59,9 @@ const useContracts = () => {
   const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
   const [contractSignatoriesSuccess, setContractSignatoriesSuccess] = useState(false);  
 
+
+  const [showContractCategoryModal, setShowContractCategoryModal] = useState(false);
+
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
  
@@ -443,7 +446,10 @@ const useContracts = () => {
     setContractSignatoriesSuccess,
 
     downloadSignedContract,
-    checkQuestionnaireStatus
+    checkQuestionnaireStatus,
+
+    showContractCategoryModal, 
+    setShowContractCategoryModal
   };
 };
 

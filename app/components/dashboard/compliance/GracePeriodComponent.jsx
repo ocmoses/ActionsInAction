@@ -1,30 +1,27 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 import { getFileSizeText } from "@/app/modules/utilities";
-import {
-  FileUploadIcon,
-  FileUploadActiveIcon,
-  InfoIcon,
-} from "@/app/components/Icons";
-
+import {FileUploadIcon, FileUploadActiveIcon, InfoIcon,} from "@/app/components/Icons";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import usePartners from "@/hooks/usePartners";
+import { useStoreState } from "easy-peasy";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
-export default function GracePeriodExtensionForm({
-  closePopUp,
-  submitGracePeriodForm,
-}) {
+export default function GracePeriodExtensionForm({closePopUp, submitGracePeriodForm,}) {
+  const {partner} = usePartners();
+  const states = useStoreState((state) => state);
+
   const [doc, setDoc] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [sendAction, setSendAction] = useState(false);
   const [formData, setFormData] = useState({
-    //partner_uuid: loginPartnerID,
+    partner_uuid: partner?.uuid,
     file: null,
+    indemnity_clause: "YES",
   });
   const [fileSize, setfFileSize] = useState(null);
   useEffect(() => {
@@ -63,30 +60,35 @@ export default function GracePeriodExtensionForm({
     try {
       clearError();
       if (fileSize <= 0) {
-        setErrorMessage("Upload The New BRD!");
+        setErrorMessage("Upload  Proof of Renewal!");
       } else {
         setSendAction(true);
-        // const formDataToSend = new FormData();
-        // formDataToSend.append("partner_uuid", formData.partner_uuid);
-        // formDataToSend.append("file", formData.file);
+        const formDataToSend = new FormData();
+        formDataToSend.append("partner_uuid", formData.partner_uuid);
+        formDataToSend.append("file", formData.file);
+        formDataToSend.append("indemnity_clause", formData.indemnity_clause);
 
-        // const response = await axios.post(
-        //   RemoteEndpoints.CORRECTED_RESOLUTION_DOCUMENTS,
-        //   formDataToSend,
-        //   {
-        //     headers: {
-        //       apikey: apikey,
-        //      Authorization: `Bearer ${token}`,
-        //     },
-        //   }
-        // );
-        submitGracePeriodForm();
-        //console.log(response);
+        const response = await axios.post(
+          RemoteEndpoints.SUBMIT_LICENSE_GRACE_PERIOD_REQUEST,
+          formDataToSend,
+          {
+            headers: {
+              apikey: apikey,
+              Authorization: `Bearer ${states.users.token}`,
+            },
+          }
+        );
+        console.log("response data", response);
+        if (response?.success) {
+          submitGracePeriodForm();
+        }else{
+          setErrorMessage(response.data.message);
+        }
       }
     } catch (err) {
+      console.log(err)
       setSendAction(false);
-      // setErrorMessage(err.message);
-      // console.log(setErrorMessage, err);
+      setErrorMessage(err.response.data.data.message);
     }
   };
   const clearError = () => {
@@ -102,6 +104,12 @@ export default function GracePeriodExtensionForm({
         Are you in the process of renewing your license, please upload a proff
         to show progress.
       </p>
+      {errorMessage && (
+          <p className="text-red-500 text-sm font-italic">
+            {errorMessage}
+            <br />
+          </p>
+        )}
       <FileInputWrapper>
         <div className="p-[8px] w-full rounded-[10px]">
           <label>
@@ -192,12 +200,7 @@ export default function GracePeriodExtensionForm({
       </div>
 
       <div className="flex gap-2 justify-end mt-4">
-        {errorMessage && (
-          <p className="text-red-500 text-sm font-italic">
-            {errorMessage}
-            <br />
-          </p>
-        )}
+       
         <button
           className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
           onClick={closePopUp}
@@ -250,7 +253,7 @@ export const GracePeriodSuccess = ({ closePopUp }) => {
   );
 };
 
-export const GracePeriodRejectedAlert = ({ openGracePeriodForm, rejected }) => {
+export const GracePeriodRejectedAlert = ({ openGracePeriodForm, licenseValidityDays }) => {
   //console.log({ rejected });
   return (
     <>
@@ -275,7 +278,7 @@ export const GracePeriodRejectedAlert = ({ openGracePeriodForm, rejected }) => {
               <div className="text-gray-500 ">
                 <p>
                   <span className="text-white">
-                    Your license expires in 60 days{" "}
+                    Your license expires in {licenseValidityDays} days{" "}
                   </span>
                   <br />
                   Upload your renewed license to avoid service distruption. If

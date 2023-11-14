@@ -30,12 +30,13 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
   const {partner} = usePartners();
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
+  const [sendingQuestionnaire, setSendingQuestionnaire] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const successAction = () => setTimeout(() => { 
                                                   setSuccessToast(false),                                                   
                                                   action();
                                                   hide();
                                                 }, 3000);
-  const {processing, setProcessing} = useProcessing();
 
   const handleFormChange = (e) => {
     setData({...data, questionairre_doc: e.target.value});
@@ -50,14 +51,24 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
     }else{
       clearErrors();
     }
+
+    if(!acceptedTerms){
+        setError({error: "You must agree to the terms"});
+        return; 
+    }else{
+        clearErrors();
+    }
     
     let formData = new FormData();
     formData.append("partner_uuid", partner.uuid);
     formData.append("file", data.questionairre_doc);
-    //normaly it is will be checked
-    formData.append("code_of_conduct", "YES"); 
+    
+    //normaly it will be checked
+    formData.append("code_of_conduct", "YES");      
 
+    setSendingQuestionnaire(true);
     let response = await sendQuestionnaire(formData);
+    setSendingQuestionnaire(false);
 
     if(response.message){
       setSuccessMessage(response.message);
@@ -70,7 +81,6 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
 
   useEffect(() => {
     clearErrors();
-    setProcessing(false);
   }, []);
     
     return (
@@ -116,7 +126,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                             </div>
                             <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                                 <p className="text-gray-400">Upload</p>
-                                <span onClick={() => {setUploading(true); setProcessing(false)}} className="font-mtn text-md text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
+                                <span onClick={() => {setUploading(true);}} className="font-mtn text-md text-yellow-500 text-center underline cursor-pointer">Upload Supplier Questionairre</span>
                             </div>
                         </div>)
                         }
@@ -143,11 +153,11 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                         
                     </div>
 
-                    <div className="w-full justify-center">
+                    <div className="w-full flex space-x-2">
                     
-                        <p className="text-gray-400 text-sm mt-4 text-center">
-                        By clicking "Submit and continue", I agree that I have read and understood<br />
-                        <a href="#" className="text-white underline">MTN Supplier Code of Conduct.</a> and agree to it
+                        <input onChange={(e) => {e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false); clearErrors();}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 mt-4 ml-4" />
+                        <p className="text-gray-400 text-sm mt-4">
+                        By clicking "Submit and continue" I agree that I’ve read and understood <a href="https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Supplier-Code-of-Conduct-(3)_2023-10-31-04-04.pdf" target="_blank" className="text-white underline">MTN Supplier Code of Conduct.</a>. and agree to it.
                         </p>
 
                     </div>
@@ -163,11 +173,11 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                                             
                         }
                         {
-                            uploading && !processing && 
+                            uploading && !sendingQuestionnaire && 
                             <button className="bg-mtn rounded-full py-4 px-12 font-bold" onClick={() => handleSubmission()}>Submit and Continue</button>
                         }
                         {
-                            uploading && processing &&
+                            uploading && sendingQuestionnaire &&
                             (
                             <div className="flex justify-center items-center">
                                 <TailSpinPreloader width={40} height={40} fill="#efb703" />

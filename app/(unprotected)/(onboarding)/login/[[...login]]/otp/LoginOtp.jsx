@@ -97,7 +97,7 @@ export default function LoginOtp(props) {
             },
           }
         );
-       // console.log("The response on Auth0 Authentication is ",response);
+       //console.log("The response on Auth0 Authentication is ",response);
 
         if ("access_token" in response.data.authZero) {
          sessionStorage.setItem('auth0Data', JSON.stringify(response.data.authZero));
@@ -106,7 +106,7 @@ export default function LoginOtp(props) {
 
         } else {
           
-          setErrorMessage("Invalid OTP");
+          setErrorMessage(response.data.authZero.error_description);
           setSendAction(false);
         }
       }

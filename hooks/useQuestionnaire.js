@@ -76,6 +76,8 @@ export default function useQuestionnaire(){
            
             const result = await response.json();
 
+            console.log("getQuestionnaire", result);
+
             setProcessing(false);
             if (result?.success) {
                 const message = result.data?.message;

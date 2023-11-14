@@ -42,6 +42,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
           </button>
         </div>
         <div className="px-4 py-2 w-full h-[95%]">
+
           {isPdf && (
             <embed
               className="preview"
@@ -50,6 +51,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
               type="application/pdf"
             />
           )}
+
           {isDoc && (
             <iframe
               className="preview"
@@ -59,6 +61,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
               )}`}
             />
           )}
+
           {isVideo && (
             <video
               className="preview"
@@ -68,6 +71,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
               <source src={filePath} type={`video/${fileExtension}`} />
             </video>
           )}
+
           {isAudio && (
             <audio
               className="preview"
@@ -77,6 +81,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
               <source src={filePath} type={`audio/${fileExtension}`} />
             </audio>
           )}
+          
         </div>
       </div>
     </div>

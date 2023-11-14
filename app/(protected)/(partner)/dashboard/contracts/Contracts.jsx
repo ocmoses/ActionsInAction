@@ -32,6 +32,7 @@ import ContractSignatoriesModal from "@/app/components/modals/ContractSignatorie
 import AddSignatoryModal from "@/app/components/modals/AddSignatoryModal";
 import ChooseSignatoryModal from "@/app/components/modals/ChooseSignatoryModal";
 import SuccessFeedbackModal from "@/app/components/modals/SuccessFeedbackModal";
+import ContractCategoryModal from "@/app/components/modals/ContractCategoryModal";
 import ContractStatus from "./ContractStatus";
 
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
@@ -327,6 +328,7 @@ export default function Contracts() {
         </div>
       </div>
 
+      <ContractCategoryModal />
       <AgreementModal />
       <SelectServiceModal />
       <ContractSignatoriesModal />

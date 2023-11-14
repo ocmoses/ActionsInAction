@@ -124,6 +124,11 @@ const RemoteEndpoints = {
   GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
   APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`,
 
-  DSM_ENDPOINT: `/dashboard/dsm`
+//service integration
+  DSM_ENDPOINT: `/dashboard/dsm`,
+
+//Grace Period
+  PARTNER_LICENSE_VALIDITY_REMAINDER: `${apiURL}/v2/contract/license/get-license-validity-remainder/`,
+  SUBMIT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/contract/license/submit-license-grace-period-request`,
 }
 export default RemoteEndpoints

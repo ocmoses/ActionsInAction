@@ -39,6 +39,10 @@ import GracePeriodExtensionForm, {
   GracePeriodRejectedAlert,
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
+import { useStoreState } from "easy-peasy";
+import axios from "axios";
+
+
 export default function GetStarted({ type }) {
   const {
     session: { user },
@@ -54,9 +58,9 @@ export default function GetStarted({ type }) {
     setCurrentCategory,
     nextStage,
   } = usePartners();
-
- // console.log("this is partner feedback", partner);
-
+//////////////////////////////////////////////////////////////////
+  const states = useStoreState((state) => state);
+////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
     setProcessing(false);
@@ -276,9 +280,47 @@ export default function GetStarted({ type }) {
 
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
-  const [gracePeriodAlert, setGracePeriodAlert] = useState(true);
+  const [gracePeriodAlert, setGracePeriodAlert] = useState(false);
+  const [licenseValidityDays, setLicenseValidityDays] = useState(61);
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
+
+
+
+  const checkForLicenseExpiry = async () => {
+    try {
+      const checkLicenseValidityResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      if ("license_validity_days" in checkLicenseValidityResponse.data.data) {
+        const licenseValidityDaysLeft=checkLicenseValidityResponse.data.data.license_validity_days;
+        if (licenseValidityDaysLeft>0 && licenseValidityDaysLeft<60){
+          setLicenseValidityDays(checkLicenseValidityResponse.data.data.license_validity_days);
+          setGracePeriodAlert(true);
+        }
+       } 
+    } catch (error) {
+      return setError({
+        dashboard:
+          "Something went wrong. Please check your connection and try again",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkForLicenseExpiry();
+  }, [partner]);
+
+
+
+
 
   const openGracePeriodForm = () => {
     setPopUpGracePeriodForm(true);
@@ -544,7 +586,7 @@ export default function GetStarted({ type }) {
 
                   <GracePeriodRejectedAlert
                     openGracePeriodForm={openGracePeriodForm}
-                    rejected={rejectedTeam?.rejected} //this is all regjected deligates
+                    licenseValidityDays={licenseValidityDays} 
                   />
                 </>
               )}

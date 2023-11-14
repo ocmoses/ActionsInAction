@@ -186,10 +186,9 @@ export default function Contracts() {
        
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {      
     checkQuestionnaireStatus();
   }, []);
-
 
   return (
     <>

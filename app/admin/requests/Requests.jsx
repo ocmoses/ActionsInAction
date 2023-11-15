@@ -95,7 +95,7 @@ export default function Requests() {
 
   const [checks, setChecks] = useState({1:0, 2:0, 3:0});
 
-  const [data, setData] = useState({content_provider_share: ""});
+  const [data, setData] = useState({content_provider_share: "", mtn_share: ""});
 
   let get_brd_response = null;
   let approve_request_response = null;
@@ -747,9 +747,9 @@ export default function Requests() {
             
           </div>
 
-          <div className="flex flex-col space-y-8 border-b border-white/20 pb-8">
+          <div className="flex flex-col space-y-1">
 
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 my-6">
               <p className="text-white">Revenue allocation</p>
             </div>
 
@@ -760,7 +760,7 @@ export default function Requests() {
                 <span className="text-white/40">0% to 40%</span>
               </div> 
 
-              <div className="flex space-x-4 w-20 relative">
+              <div className="flex space-x-4 w-24 relative">
                 <TextInput
                   id="content_provider_share"
                   label=""
@@ -770,16 +770,38 @@ export default function Requests() {
                   errors={errors}
                   disabled={false}
                 />
+                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
               </div>
 
+              
             </div>
 
             <div className="flex space-x-2 justify-between">
 
-              
+              <div>
+                <p className="text-white">MTN share</p>
+                <span className="text-white/40">60%</span>
+              </div> 
 
+              <div className="flex space-x-4 w-24 relative">
+                <TextInput
+                  id="mtn_share"
+                  label=""
+                  value={data.mtn_share}
+                  onChange={handleFormChange}
+                  onBlur={() => {}}
+                  errors={errors}
+                  disabled={false}
+                />
+                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
+              </div>
+              
             </div>
             
+          </div>
+
+          <div className="flex justify-end">
+            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {}}>Finish</button>
           </div>
 
         </SideDrawer>

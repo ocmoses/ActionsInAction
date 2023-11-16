@@ -74,7 +74,9 @@ export default function  GracePeriodAlert({ status, openGracePeriodForm, license
             </div>
           </div>
         </div>
+
       ) : (
+        
         <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
           <div className="p-[24px] ">
             <div className="flex flex-row gap-3">

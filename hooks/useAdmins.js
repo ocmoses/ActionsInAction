@@ -227,28 +227,12 @@ export default function useAdmins() {
 
       if (result?.success) {
 
-        const brds = result?.data['board-resolution-documents'].data;
+        const brds = result?.data['board-resolution-documents'];
         
-        const navigation = {
-          current_page: result?.data['board-resolution-documents'].current_page,
-          first_page_url: result?.data['board-resolution-documents'].first_page_url,
-          from: result?.data['board-resolution-documents'].from,
-          last_page: result?.data['board-resolution-documents'].last_page,
-          last_page_url: result?.data['board-resolution-documents'].last_page_url,
-          links: result?.data['board-resolution-documents'].links,
-          next_page_url: result?.data['board-resolution-documents'].next_page_url,
-          path: result?.data['board-resolution-documents'].path,
-          per_page: result?.data['board-resolution-documents'].per_page,
-          prev_page_url: result?.data['board-resolution-documents'].prev_page_url,
-          to: result?.data['board-resolution-documents'].to,
-          total: result?.data['board-resolution-documents'].total,
-        };
-
         console.log('brds', brds);
 
         return {
-          brds,
-          navigation,
+          brds
         };
       }
       return {
@@ -324,6 +308,60 @@ export default function useAdmins() {
       };
     }
   };
+
+  const getAllRevenueShare = async () => {
+
+    return {
+      revenue_share: [
+        {
+            "id": 11,
+            "uuid": "79d22cfc-5244-460b-b1fa-fb912wcc29263",
+            "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d654a817",
+            "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-3523101da5f2",
+            "status": "pending",
+            "status_date": "2023-10-10",
+            "status_by": "sunaf4real@mtn.com",
+            "user_company_type": null,
+            "company_name": "MTN Nigeria",
+            "created_at": "2023-10-10T12:49:19.000000Z",
+            "updated_at": "2023-10-10T14:06:23.000000Z",
+            "request_id": "RSH-79d52",
+            "email": "afolabi.o@eleadersnetwork.com"
+        },
+        {
+          "id": 11,
+          "uuid": "79d22cfc-5244-460b-b1fa-2w3ecc29263",
+          "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2r5t817",
+          "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
+          "status": "pending",
+          "status_date": "2023-10-10",
+          "status_by": "sunaf4real@mtn.com",
+          "user_company_type": null,
+          "company_name": "MTN Nigeria",
+          "created_at": "2023-10-10T12:49:19.000000Z",
+          "updated_at": "2023-10-10T14:06:23.000000Z",
+          "request_id": "RSH-79d92",
+          "email": "afolabi.o@eleadersnetwork.com"
+        },
+        {
+          "id": 11,
+          "uuid": "79d22cfc-5244-460b-b1fa-fb900c123w63",
+          "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2254rf17",
+          "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
+          "status": "pending",
+          "status_date": "2023-10-10",
+          "status_by": "sunaf4real@mtn.com",
+          "user_company_type": null,
+          "company_name": "MTN Nigeria",
+          "created_at": "2023-10-10T12:49:19.000000Z",
+          "updated_at": "2023-10-10T14:06:23.000000Z",
+          "request_id": "RSH-79022",
+          "email": "afolabi.o@eleadersnetwork.com"
+        }
+      ]
+  };
+
+  }
 
   const getAllDepartments = async (page, perPage) => {
     try {
@@ -705,6 +743,7 @@ export default function useAdmins() {
     getAllBoardResolutionDocuments,
     approveOrRejectBrd,
     getAllQuestionnaire,
-    approveOrRejectQuestionnaire 
+    approveOrRejectQuestionnaire ,
+    getAllRevenueShare
   };
 }

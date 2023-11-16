@@ -1409,7 +1409,8 @@ export const docPrefix = "http://10.1.44.25/dms/PARTNER_ONBOARDING/";
 export const request_types = {
   BOARD_RESOLUTION: "Board Resolution",
   GRACE_PERIOD: "Grace period",
-  SUPPLIER_QUESTION: "Supplier Question"
+  SUPPLIER_QUESTION: "Supplier Question",
+  REVENUE_SHARE: "Revenue Share"
 }
 
 export const role_types = {

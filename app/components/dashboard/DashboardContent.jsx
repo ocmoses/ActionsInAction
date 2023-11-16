@@ -34,9 +34,10 @@ import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
-import GracePeriodExtensionForm, {
-  GracePeriodSuccess,
+import GracePeriodAlert, {
   GracePeriodRejectedAlert,
+  GracePeriodExtensionForm,
+  GracePeriodSuccess
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
 import { useStoreState } from "easy-peasy";
@@ -231,10 +232,7 @@ export default function GetStarted({ type }) {
       ).catch((error) => {
         console.log(error);
         setIsSaving(false);
-        return setError({
-          dashboard:
-            "Unable to reach the server. Please check your connection and retry",
-        });
+        return setError({dashboard: "Unable to reach the server. Please check your connection and retry"});
       });
       setIsSaving(false);
       if (result) {
@@ -247,17 +245,12 @@ export default function GetStarted({ type }) {
           return setError({ dashboard: data.message });
         }
       } else {
-        return setError({
-          dashboard: "Cannot reach the server. Please check your connection",
-        });
+        return setError({dashboard: "Cannot reach the server. Please check your connection"});
       }
     } catch (err) {
       console.log({ err });
       setIsSaving(false);
-      return setError({
-        dashboard:
-          "Something went wrong. Please check your connection and try again",
-      });
+      return setError({dashboard:"Something went wrong. Please check your connection and try again"});
     }
   };
 
@@ -280,16 +273,19 @@ export default function GetStarted({ type }) {
 
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
-  const [gracePeriodAlert, setGracePeriodAlert] = useState(false);
-  const [licenseValidityDays, setLicenseValidityDays] = useState(61);
+  
+  const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState(61);
+  const [licenseValidityDays, setLicenseValidityDays] = useState(false);
+  const [gracePeriodStatus, setGracePeriodStatus] = useState("");
+  
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
 
 
-
-  const checkForLicenseExpiry = async () => {
+////////////licenseValidityRemainder function////////////////////
+  const licenseValidityRemainder = async () => {
     try {
-      const checkLicenseValidityResponse = await axios.get(
+      const licenseValidityRemainderResponse = await axios.get(
         `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partner?.uuid}`,
         {
           headers: {
@@ -299,41 +295,73 @@ export default function GetStarted({ type }) {
         }
       );
 
-      if ("license_validity_days" in checkLicenseValidityResponse.data.data) {
-        const licenseValidityDaysLeft=checkLicenseValidityResponse.data.data.license_validity_days;
+      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
+        const licenseValidityDaysLeft=licenseValidityRemainderResponse.data.data.license_validity_days;
+        setLicenseValidityDaysLeft(licenseValidityDaysLeft);
+
         if (licenseValidityDaysLeft>0 && licenseValidityDaysLeft<60){
-          setLicenseValidityDays(checkLicenseValidityResponse.data.data.license_validity_days);
-          setGracePeriodAlert(true);
+          setLicenseValidityDays(true);
+        }else{
+          setLicenseValidityDays(false);
         }
-       } 
+      }else{
+        setLicenseValidityDays(false);
+      } 
     } catch (error) {
-      return setError({
-        dashboard:
-          "Something went wrong. Please check your connection and try again",
-      });
+      setLicenseValidityDays(false);
+      return setError({dashboard:"Something went wrong. Please check your connection and try again"});
     }
   };
+////////////end licenseValidityRemainder function////////////////////
+
+////////////partnerLicenseGracePeriodStatus function////////////////////
+const partnerLicenseGracePeriodStatus = async () => {
+  try {
+    const partnerLicenseGracePeriodStatusResponse = await axios.get(
+      `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
+      {
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          Authorization: `Bearer ${states.users.token}`,
+        },
+      }
+    );
+
+    const response=partnerLicenseGracePeriodStatusResponse.data.data;
+    if ("status" in response) {
+    console.log("partnerLicenseGracePeriodStatusResponse", response.status)
+      setGracePeriodStatus(response.status);
+    }else{
+      //console.log("partnerLicenseGracePeriodStatusResponse", 'none')
+      setGracePeriodStatus("none");
+    }
+  } catch (error) {
+    return setError({dashboard:"Something went wrong. Please check your connection and try again"});
+  }
+};
+////////////end partnerLicenseGracePeriodStatus function////////////////////
+
+
 
   useEffect(() => {
-    checkForLicenseExpiry();
+    licenseValidityRemainder();
+    partnerLicenseGracePeriodStatus();
   }, [partner]);
-
-
-
-
 
   const openGracePeriodForm = () => {
     setPopUpGracePeriodForm(true);
-    
   };
-  const submitGracePeriodForm = () => {
-    setGracePeriodSubmit(true);
-  };
-
   const closeGracePeriodForm = () => {
     setPopUpGracePeriodForm(false);
     setGracePeriodSubmit(false);
   };
+  const gracePeriodSuccessOk = () => {
+    setLicenseValidityDays(false);
+    setPopUpGracePeriodForm(false);
+    
+  };
+
+
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   return (
@@ -568,25 +596,26 @@ export default function GetStarted({ type }) {
               {/*//==============================================================================================================================*/}
 
               {/* //================this is lisense grace period==============================================================================================================*/}
-
-              {gracePeriodAlert && (
+              {/* gracePeriodStatus must not = (corrected, not_approved)*/}
+              {licenseValidityDays && (gracePeriodStatus=='none' || gracePeriodStatus=='approved' || gracePeriodStatus=='rejected') &&( 
+                
                 <>
                   {popUpGracePeriodForm && (
                     <PopUp closePopUp={closePopUp}>
                       {!gracePeriodSubmit ? (
                         <GracePeriodExtensionForm
                           closePopUp={closeGracePeriodForm}
-                          submitGracePeriodForm={submitGracePeriodForm}
+                          setGracePeriodSubmit={setGracePeriodSubmit}
                         /> // If gracePeriodSubmit is false
                       ) : (
-                        <GracePeriodSuccess closePopUp={closeGracePeriodForm} /> // If gracePeriodSubmit is true
+                        <GracePeriodSuccess gracePeriodSuccessOk={gracePeriodSuccessOk} /> // If gracePeriodSubmit is true
                       )}
                     </PopUp>
                   )}
-
-                  <GracePeriodRejectedAlert
+                  <GracePeriodAlert
+                    status={gracePeriodStatus}
                     openGracePeriodForm={openGracePeriodForm}
-                    licenseValidityDays={licenseValidityDays} 
+                    licenseValidityDaysLeft={licenseValidityDaysLeft} 
                   />
                 </>
               )}

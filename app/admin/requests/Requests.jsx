@@ -134,7 +134,7 @@ export default function Requests() {
     setRequests(requests);
     setFilteredRequests(requests);
 
-    console.log("Requests", requests);
+    //console.log("Requests", requests);
 
     setBrds(get_brd_response.brds);
     clearErrors();

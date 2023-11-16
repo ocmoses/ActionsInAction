@@ -28,9 +28,8 @@ function Login({ params }) {
   const { tmpuser, setTmpUser } = useUsers();
   //console.log("the tempUser is ", tmpuser)
   const { processing, setProcessing, setForm } = useProcessing();
-  const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
-    {}
-  );
+  const [loginProcessing, setLoginProcessing] = useState(false);
+  const [{ errors, setError, removeError, clearErrors, success }] = useErrors({} );
   const { clearStore } = useLogout();
 
   const [data, setData] = useState({
@@ -78,7 +77,7 @@ function Login({ params }) {
       return setError({ password: `Please enter your password` });
     }
     clearStore();
-    setProcessing(true);
+    setLoginProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({
@@ -93,11 +92,11 @@ function Login({ params }) {
 
     const { data: loginData, error: loginError } = result;
     if (!loginData) {
-      setProcessing(false);
+      setLoginProcessing(false);
       return setError({ login: loginError /*"Authentication failed"*/ });
     }
     if (!loginData.success) {
-      setProcessing(false);
+      setLoginProcessing(false);
       if (loginData.data?.email_verified === "no") {
         setNotVerified(loginData.data);
       }
@@ -220,7 +219,7 @@ function Login({ params }) {
               >
                 Reset your password?
               </Link>
-              {processing ? (
+              {loginProcessing ? (
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
               ) : (
                 <>

@@ -1,18 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import {
-  getPartnerInitials,
-  filterPartner,
-  Util,
-  titleCase,
-  getInitials,
-} from "@/app/modules/utilities";
-import {
-  status_type,
-  statusOptions,
-  request_types,
-  docPrefix,
-} from "@/app/modules/constants";
+import {getPartnerInitials,filterPartner,Util,titleCase,getInitials} from "@/app/modules/utilities";
+import {status_type,statusOptions, request_types,docPrefix} from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -35,6 +24,7 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 export default function Requests() {
+
   const {
     getAllBoardResolutionDocuments,
     approving,
@@ -42,8 +32,10 @@ export default function Requests() {
     approveOrRejectBrd,
     getAllQuestionnaire,
     approveOrRejectQuestionnaire,
-    getAllRevenueShare
+    getAllRevenueShare,
+    getAllGreacePeriod
   } = useAdmins();
+
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -101,6 +93,7 @@ export default function Requests() {
   let approve_request_response = null;
   let reject_request_response = null;
   let get_questionnaire_response = null;
+
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -241,6 +234,68 @@ export default function Requests() {
     clearErrors();
   };
 
+  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
+  const [gracePeriods, setGracePeriods] = useState([]);
+  let get_grace_period_response= null;
+
+  const get_grace_period = async () => {
+    if (fetchingGracePeriods) return;
+    setFetchingGracePeriods(true);
+
+    get_grace_period_response = await getAllGreacePeriod();
+    console.log("All get_grace_period_response", get_grace_period_response);
+
+    if (get_grace_period_response.error) {
+      setError({ error: get_grace_period_response.error });
+      return;
+    }
+
+    for (const graceperiod of get_grace_period_response.graceperiods) {
+      if (!requests.find((request) => request.uuid == graceperiod.uuid)) {
+        requests.push({
+          company: graceperiod.company_name ?? "Company",
+          email: graceperiod.email ?? "email@email.com",
+          request_type: request_types.GRACE_PERIOD,
+          request_id: graceperiod.request_id,
+          created_at: graceperiod.created_at,
+          status: graceperiod.status,
+          file_name:
+          graceperiod.answered_questionaire?.replace(docPrefix, "") ?? "",
+          file_path: graceperiod.answered_questionaire ?? "",
+          partner_uuid: graceperiod.partner_uuid,
+          uuid: graceperiod.uuid,
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests after graceperiods", requests);
+
+    setGracePeriods(get_grace_period_response.graceperiods);
+
+    clearErrors();
+
+    setFetchingGracePeriods(false);
+  };
+
+
+
+
+
+
+
+
+
   const approveRequest = async () => {
     //TODO
     clearErrors();
@@ -362,6 +417,7 @@ export default function Requests() {
     get_brds();
     get_questionnaires();
     get_revenue_share();
+    get_grace_period();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);

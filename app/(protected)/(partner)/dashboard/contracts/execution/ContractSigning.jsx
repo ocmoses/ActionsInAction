@@ -76,6 +76,9 @@ export default function ContractSigning(){
     
     let dynamic_content_response = null;
     let sign_bilateral_contract_response = null;
+
+    const [fixed, setFixed] = useState(false);  
+    const [focused, setFocused] = useState("annexureA"); 
     
 
     const onDown = useCallback((event) => {
@@ -278,11 +281,63 @@ export default function ContractSigning(){
             
           }
         //
+         
+        let threshold = 80;
+
+        const focus = function(){
+
+            let scrollY = window.scrollY;
+
+            if(scrollY >= threshold){
+                setFixed(true);
+            }else{
+                setFixed(false);
+            }
+            
+        };
+
+        window.addEventListener("scroll", focus);
+        window.onload = focus;
     }, [signingModal, clearCanvas]);
     
 
     return <>
-                <div className="flex flex-col justify-center items-center pt-8">
+                <div className="flex flex-col justify-center items-center pt-8 relative">
+
+                    {/* Floating side nav */}
+                    <div className={`${fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"} z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-a")}>
+                            <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>1</span>
+                            <span className={`text-white/40`}>Annexure A</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-b")}>
+                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>2</span>
+                            <span className={`text-white/40`}>Annexure B</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-c")}>
+                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>3</span>
+                            <span className={`text-white/40`}>Annexure C</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-d")}>
+                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>4</span>
+                            <span className={`text-white/40`}>Annexure D</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
+                            <span className={`text-white/40`}>Annexure E</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                             <span className={`flex w-6 h-6 text-white bg-mtn rounded-full justify-center items-center`}>6</span>
+                            <span className={`text-white`}>Main Contract</span>
+                        </div>
+
+                    </div>
 
                     <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
                         <a href={downloadContract()}
@@ -293,406 +348,464 @@ export default function ContractSigning(){
                                 </svg>&nbsp;Download
                         </a>
                     </div>
+
+                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">
+                        <p className="text-white">
+                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC<br />
+                        (RC No. 395010)
+                        <br /><br/>
+                        AND
+                        <br /><br/>
+                        :PARTY
+                        (RC No. :RC_NUMBER)
+                        </p>
+                    </div>
+
+                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl md:w-[900px]">
+                        
+                        <h2 className="font-mtn text-white w-full">Table of contents</h2>
+                        
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">1</span>
+                            <span className="text-white/60 flex-1">
+                            Definitions
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">2</span>
+                            <span className="text-white/60 flex-1">
+                            Interpretations
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">3</span>
+                            <span className="text-white/60 flex-1">
+                            Commencement and Duration
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">4</span>
+                            <span className="text-white/60 flex-1">
+                            Obligations of the Service Provider
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">5</span>
+                            <span className="text-white/60 flex-1">
+                            Obligations of MTN
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">6</span>
+                            <span className="text-white/60 flex-1">
+                            Revenue Share
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">7</span>
+                            <span className="text-white/60 flex-1">
+                            Payment and Tax Deductions
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">8</span>
+                            <span className="text-white/60 flex-1">
+                            Taxes and Tax Exemption Certificates
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">9</span>
+                            <span className="text-white/60 flex-1">
+                            Information and Data Protection 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">10</span>
+                            <span className="text-white/60 flex-1">
+                            Conflict of Interest 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">11</span>
+                            <span className="text-white/60 flex-1">
+                            Representations, Warranties and Covenants 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">12</span>
+                            <span className="text-white/60 flex-1">
+                            Confidentiality 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">13</span>
+                            <span className="text-white/60 flex-1">
+                            Intellectual Property Rights 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">14</span>
+                            <span className="text-white/60 flex-1">
+                            Right of Audit 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">15</span>
+                            <span className="text-white/60 flex-1">
+                            Sub-Service Providers 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">16</span>
+                            <span className="text-white/60 flex-1">
+                            Assignment of Agreement 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">17</span>
+                            <span className="text-white/60 flex-1">
+                            Amendment/Variation/ Waiver 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">18</span>
+                            <span className="text-white/60 flex-1">
+                            Severability 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">19</span>
+                            <span className="text-white/60 flex-1">
+                            Release and Indemnity 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">20</span>
+                            <span className="text-white/60 flex-1">
+                            Limitation of Liability 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">21</span>
+                            <span className="text-white/60 flex-1">
+                            Conditions Precedent to Obligations of MTN 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">22</span>
+                            <span className="text-white/60 flex-1">
+                            Set Off  
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">23</span>
+                            <span className="text-white/60 flex-1">
+                            Termination 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">24</span>
+                            <span className="text-white/60 flex-1">
+                            Inducements, Fraud and Anti-Corruption 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">25</span>
+                            <span className="text-white/60 flex-1">
+                            Force Majeure 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">26</span>
+                            <span className="text-white/60 flex-1">
+                            Governing Law and Dispute Resolution 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">27</span>
+                            <span className="text-white/60 flex-1">
+                            Entire Agreement 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">28</span>
+                            <span className="text-white/60 flex-1">
+                            Partnership 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">29</span>
+                            <span className="text-white/60 flex-1">
+                            Notices 
+                            </span>
+                                    
+                        </div>
+
+                    </div>
+
+                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 md:max-w-4xl md:w-[900px]">
+
+                        <p className="text-md">
+                        <span className="text-white">THIS AGREEMENT</span> is made on this XXXXXXXXXXXXXXX.<br /><br />
+
+                        <span className="text-white">BETWEEN</span><br /><br />
+
+                        <span className="text-white">MTN NIGERIA COMMUNICATIONS PLC</span>, a public limited liability company incorporated under the laws of the Federal Republic of Nigeria, having its principal office at MTN Plaza, Falomo Roundabout, Ikoyi, Lagos (hereinafter referred to as “MTN” or “Disclosing Party”, which expression shall where the context so admits include its successors-in-title and assigns), of the one part;<br /><br />
+
+                        <span className="text-white">AND</span><br /><br />
+
+                        XXXXXXXXXXXXXXXXXXX, a private limited liability company incorporated under the laws of the Federal<br />
+                        Republic of Nigeria, having its principal place of business at XXXXXXXXXXXXXXXXXX (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
+
+                        <span className="text-white">AND</span><br /><br />
+
+                        :PARTY, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
+
+                        Both <span className="text-white">MTN</span> and the <span className="text-white">Receiving Party</span> are hereinafter jointly referred to as the “Parties” and individually as the “Party”.
+
+                        </p>
+
+                    </div>                    
                     
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
 
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
+                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+                        
+                        <p>
+                        <span className="text-white">Whereas:</span>
+                        </p>
+
+                        
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                            I.	</span>
+                            <span className="text-white/60 flex-1">
+                           MTN is an Information Communications Technology (ICT) Company licensed by the Nigerian Communications Commission (NCC) under the unified licence scheme to provide amongst other services, digital mobile cellular telephony and data services in Nigeria.
+                            </span>
                                     
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                            II.	</span>
+                            <span className="text-white/60 flex-1">
+                           The Service Provider is a digital content company engaged in the business of providing diverse telecoms value added services with emphasis on lifestyle and entertainment.
+                            </span>
                                     
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div>
-                                    <div>
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                        <br />
 
-                        <h3>
-                            AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES
-                        </h3>
+                        <div className="mt-4 w-full flex space-x-2">
 
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-
-                        <h3>
-                            BETWEEN
-                        </h3>
-
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-
-                        <h3>
-                            MTN NIGERIA COMMUNICATIONS PLC <br />
-                            (RC No. 395010)
-                        </h3>
-
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-
-
-                        <h3>
-                            AND
-                        </h3>
-
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-
-                        <h3>
-                            {dynamicData?.company_name}
-                            <br />
-                            (RC No. {dynamicData?.rc_no})
-                        </h3>
-
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-                            <br /><br />
-
-
-                        <div class="footer" >
-                            <table >
-                                <tr>
-                                    <td >
-                                        CONFIDENTIAL AND PROPRIETARY <br />
-                                        MTN NIGERIA <br />
-                                        MTNN0-CS-CL-CON- <br />
-                                        NIO21- <br />
-                                        Page 1 of 17
-                                    </td>
-                                    <td >
-                                        MTN
-                                    </td>
-                                    <td >
-                                        <br /><br />
-                                        Service Provider
-                                    </td>
-                                    <td >
-                                        INITIALS
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td  >
-                                        Sensitivity:MTN Group - internal
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
+                            <span className="text-white w-[30px]">
+                            III. </span>
+                            <span className="text-white/60 flex-1">
+                           The Service Provider has offered to make available to MTN subscribers, value added services for information and lifestyle (“the Services”).
+                            </span>
                                     
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                            IV.	</span>
+                            <span className="text-white/60 flex-1">
+                           The Parties have agreed that the Service Provider shall provide the Services, leveraging on MTN’s network to drive uptake of the service by MTN subscribers.
+                            </span>
                                     
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        <p>
-                            <strong>TABLE OF CONTENT</strong>
-                        </p>
+                        <div className="mt-4 w-full flex space-x-2">
 
-                        <p>
-                            1. Definitions <br />
-
-                            2. Interpretations <br />
-
-                            3. Commencement and Duration <br />
-
-                            4. Obligations of the Service Provider <br />
-
-                            5. Obligations of MTN <br />
-
-                            6. Revenue Share <br />
-
-                            7. Payment and Tax Deductions <br />
-
-                            8. Taxes and Tax Exemption Certificates <br />
-
-                            9. Information and Data Protection <br />
-
-                            10. Conflict of Interest <br />
-
-                            11. Representations, Warranties and Covenants <br />
-
-                            12. Confidentiality <br />
-
-                            13. Intellectual Property Rights <br />
-
-                            14. Right of Audit <br />
-
-                            15. Sub-Service Providers <br />
-
-                            16. Assignment of Agreement <br />
-
-                            17. Amendment/Variation/ Waiver <br />
-
-                            18. Severability <br />
-
-                            19. Release and Indemnity <br />
-
-                            20. Limitation of Liability <br />
-
-                            21. Conditions Precedent to Obligations of MTN <br />
-
-                            22. Set Off  <br />
-
-                            23. Termination <br />
-
-                            24. Inducements, Fraud and Anti-Corruption <br />
-
-                            25. Force Majeure <br />
-
-                            26. Governing Law and Dispute Resolution <br />
-
-                            27. Entire Agreement <br />
-
-                            28. Partnership <br />
-
-                            29. Notices <br />
-                        </p>
-
-                        <br /><br />
-
-                        <div class="footer" >
-                            <table >
-                                <tr>
-                                    <td >
-                                        CONFIDENTIAL AND PROPRIETARY <br />
-                                        MTN NIGERIA <br />
-                                        MTNN0-CS-CL-CON- <br />
-                                        NIO21- <br />
-                                        Page 2 of 17
-                                    </td>
-                                    <td >
-                                        MTN
-                                    </td>
-                                    <td >
-                                        <br /><br />
-                                        Service Provider
-                                    </td>
-                                    <td >
-                                        INITIALS
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td  >
-                                        Sensitivity:MTN Group - internal
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-
-                    </div>
-
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
+                            <span className="text-white w-[30px]">
+                            V.	</span>
+                            <span className="text-white/60 flex-1">
+                           The Parties have agreed to execute this Agreement in accordance with the terms and conditions agreed hereunder.
+                            </span>
                                     
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
+                        </div>
+
+                        <p>
+                        <span className="text-white">THE PARTIES AGREE AS FOLLOWS:</span>
+                        </p>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                        1.	</span><span className="text-white">DEFINITIONS</span>
                                     
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        <p>
-                        <strong>THIS AGREEMENT</strong> is made on this {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                        </p>
+                        
+                        <div className="text-white">
 
-                        <p>
-                        <strong>BETWEEN </strong>
-                        </p>
-
-                        <p>
-                        <strong>MTN NIGERIA COMMUNICATIONS PLC,</strong> a public limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. 395010, and having its registered office at MTN Plaza Building, Falomo Roundabout, Ikoyi, Lagos (hereinafter referred to as “MTN”, which expression shall where the context so admits include its successors-in-title and assigns), of the one part;
-                        </p>
-
-                        <p>
-                        <strong>AND</strong>
-                        </p>
-
-                        <p>
-                        <strong>{dynamicData?.company_name?.toUpperCase()},</strong> a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. :RC_NO, and having its registered office at :ADDRESS, (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.
-                        </p>
-
-                        <p>
-                        Both MTN and the Service Provider are hereinafter jointly referred to as the “Parties” and individually as “Party”.
-                        </p>
-
-                        <p>
-                        <strong>WHEREAS:</strong>
-                        </p>
-
-                        <div id="subcontent">
-                            <p>
-                            I.	MTN is an Information Communications Technology (ICT) Company licensed by the Nigerian Communications Commission (NCC) under the unified licence scheme to provide amongst other services, digital mobile cellular telephony and data services in Nigeria.
-                            </p>
-
-                            <p>
-                            II.	The Service Provider is a digital content company engaged in the business of providing diverse telecoms value added services with emphasis on lifestyle and entertainment.
-                            </p>
-
-                            <p>
-                            III. The Service Provider has offered to make available to MTN subscribers, value added services for information and lifestyle (“the Services”).
-                            </p>
-
-                            <p>
-                            IV.	The Parties have agreed that the Service Provider shall provide the Services, leveraging on MTN’s network to drive uptake of the service by MTN subscribers.
-                            </p>
-
-                            <p>
-                            V.	The Parties have agreed to execute this Agreement in accordance with the terms and conditions agreed hereunder.
-                            </p>
+                           In this Agreement, the following terms shall have the meanings as set out hereunder:
+                        
+                                    
                         </div>
 
-                        <p>
-                        <strong>THE PARTIES AGREE AS FOLLOWS:</strong>
-                        </p>
+                        <div className="mt-4 w-full flex space-x-2">
 
-                        <p>
-                        1.	<strong>DEFINITIONS</strong>
-                        </p>
-
-                        <div id="subcontent">
-                            <p>
-                            In this Agreement, the following terms shall have the meanings as set out hereunder:
-                            </p>
-
-                            <p>
-                            1.1<strong>“Acceptable Percentage”</strong> means five percent (5%);
-                            </p>
-
-                            <p>
-                            1.2.	<strong>"Agreement"</strong> means the Agreement for the provision of Value Added Services, between MTN and the Service Provider including the appendices and Annexures hereto and any other document (or parts thereof) specified by MTN or supplied in this Agreement;
-                            </p>
-
-                            <p>
-                            1.3.	<strong>“AOL”</strong> means Annual Operating Levy representing two-point five percent (2.5%) or any other percentage of Revenue due to either of the Parties as prescribed by the Nigerian Communications Commission;
-                            </p>
-
-                            <p>
-                            1.4. <strong>“Anti-Corruption Laws”</strong> means the applicable Nigerian laws and regulations including but not limited to the Corrupt Practices and Other Related Offences Act, 2004; Economic and Financial Crimes Commission (Establishment) Act, 2004; Money Laundering Prohibition Act, 2022. Criminal Code; and any other Applicable Law.
-                            </p>
-
-                            <p>
-                            1.5.	<strong>“Business Days”</strong> means any day of the week other than Saturdays, Sundays or public holidays declared by the Federal Government of Nigeria from time to time;
-                            </p>
+                            <span className="text-white w-[30px]">
+                        1.1</span>
+                            <span className="text-white/60 flex-1">
+                           <span className="text-white">“Acceptable Percentage”</span> means five percent (5%);
+                            
+                        </span>
+                                    
                         </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                        1.2.</span>
+                            <span className="text-white/60 flex-1">
+                           <span className="text-white">"Agreement"</span> means the Agreement for the provision of Value Added Services, between MTN and the Service Provider including the appendices and Annexures hereto and any other document (or parts thereof) specified by MTN or supplied in this Agreement;
+                            
+                        </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                        1.3.</span>
+                            <span className="text-white/60 flex-1">
+                           <span className="text-white">“AOL”</span> means Annual Operating Levy representing two-point five percent (2.5%) or any other percentage of Revenue due to either of the Parties as prescribed by the Nigerian Communications Commission;
+                            
+                        </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                        1.4.</span>
+                            <span className="text-white/60 flex-1">
+                           <span className="text-white">“Anti-Corruption Laws”</span> means the applicable Nigerian laws and regulations including but not limited to the Corrupt Practices and Other Related Offences Act, 2004; Economic and Financial Crimes Commission (Establishment) Act, 2004; Money Laundering Prohibition Act, 2022. Criminal Code; and any other Applicable Law.
+                            
+                        </span>
+                                    
+                        </div>
+
+                        <div className="mt-4 w-full flex space-x-2">
+
+                            <span className="text-white w-[30px]">
+                        1.5.</span>
+                            <span className="text-white/60 flex-1">
+                           <span className="text-white">“Business Days”</span> means any day of the week other than Saturdays, Sundays or public holidays declared by the Federal Government of Nigeria from time to time;
+                            
+                        </span>
+                                    
+                        </div>                        
 
                         <br />
-                        <div class="footer" >
-                            <table >
-                                <tr>
-                                    <td >
-                                        CONFIDENTIAL AND PROPRIETARY <br />
-                                        MTN NIGERIA <br />
-                                        MTNN0-CS-CL-CON- <br />
-                                        NIO21- <br />
-                                        Page 3 of 17
-                                    </td>
-                                    <td >
-                                        MTN
-                                    </td>
-                                    <td >
-                                        <br /><br />
-                                        Service Provider
-                                    </td>
-                                    <td >
-                                        INITIALS
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td  >
-                                        Sensitivity:MTN Group - internal
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-
+                        
                     </div>
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkICAgKCgkLDhcPDg0NDhwUFREXIh4jIyEeICAlKjUtJScyKCAgLj8vMjc5PDw8JC1CRkE6RjU7PDn/wAALCABPAIwBAREA/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAcFBgMECAIB/8QATRAAAQIFAQMHBQkOBAcAAAAAAQIDAAQFBhEHEiExEyJBUWFxgQgUkaGxFSMyQlJicqKyFhckMzU2Q1Njc3SCwtI0N1aUdZKzwcPR4v/aAAgBAQAAPwB4wQQQR5WtDaStaglI4lRwBEJPXjbUgSJmvU1tQ4p85SVegHMQ7+q1kMZ2q62o/s2XFexMah1jskHdU3j3Srn/AKjI1q/ZDhwautH0pV3+2JGV1Is2aOG7hkk/vFFv7QET0jVqbURmRqEpND9i8lfsMbsEEEEEEEYpmYZlWFvzDzbLLYytxxQSlI6yTuELS5ta7epZWzS23as+ndtNnYaB+md58AR2wvZrVC/bofVL0VhbKTu5Ony5WvHao5I7xiPCNNNRLjUHaotxO0c7VQnNo/8AKCoj0RNyWgM8rBna/LtdYZl1L9ZKYmGNAqUB7/W55w/MbQj25jZToLbgG+p1Yn6bf9keHNBKAR73Vamk/OLZ/pER81oAwQfNbidQegOyoV6woRAz2hdySp5SRqEhM7O8c5TS/WMeuNLY1Vs3nD3WDCOo+dNAd3OAHoict/XidYUGq9Sm30jcp2VOwsd6TuJ8RDYte97fulAFMqCFP4yZdzmOp/lPHvGRFjgggim6gahUuzJbYc/Cqk4nLUohWDj5Sj8VPrPR04S7TF8atz5cWoiQQvirLcqz2Ab9o+k9cM61tF7cpKUO1Pbq00N55XmtA9iBx/mJhjSkpLSTCWJWXaYZT8FtpAQkeAjNBBBBBBBEBcNm29caVe6dKl3nD+mSnYcH84wYUV16JVCnKM9a86uZDZ20y7qgh5OPkrGAT6D3x8snV6p0Sc9yLwbfdabVyaphaCH2T88cVD63fD3k5uXnpVqalXkPMOpC0OIVlKgekGM0VjUO7GbPtt6oKSlyZWeSlmifhuEHGewYye7HTCW00sib1ArEzcFwPPOSIdy4pRwqac+SD0JG7OOwDs6Kk5SXkZVqVlWW2GGk7KG20hKUjqAEZoqGol8N2PJycy5ILnBMuKbwl0I2cDOd4MZ7AvWRvWlOTcs2qXeZXsPS6lBRR8k56QR09h6o19Q7+kbIlpZTzCpuamVEIYQsJOyOKid+BwHb4GIiX1VYesaZukUh0IYmxK+b8uMnOzztrHzuGIrv3/5T/Tr/APuk/wBsH3/5XH5uv/7pP9sWK89VWLVcpqHKQ7M+fSaZoEPhOxtZ5vA54cYt1o3JJXXQ2KrIkhDnNW2Tzmljik9o9YIPTFRujVVm3ruNvKpDr6wppPLB8JHPAPDHRmGPBFM1E0+p15SKl7KJeqtp94mgPqr60+sdHSCqNKLsn7Muddq1vbbk3XyyUOH/AAz2cAg/JUePRvB689FRzz5RlRceuanU7J5KWleVA+ctRB9SRDwtWks0O3KfTGEhKJdhKTjpVjKj4kk+MS0EJvykvyLR/wCJX9iFZYdyTtj3DKVFbTvmkwgcs1+uZJxlPWQQSO0Edcal3VuoXhW5+tvNrLScYSBlLDWcIT6/EkmHDofSKfXNOZySqcqiZllVFSi2vOCQhvHCILXS1aHb1NpTlJprMot55aVlvPOASMcTFp00sS16tYtJnp6jS78082ouOKKsqO2odB6hFK8ohluXuKkMMpCGm6eEISOAAWoARD6d3PO6eXSqUqiHG5GZ2EzTR37IIBQ6O4EHtBPZG1qg4h7V4OtLStta5RSVJOQoFKMEHqjpcR9gjn7yjKS1K1yl1VpIS5ONKbcI6VNkYPfhQHgIc1mVJyq2nSJ94kuvyja3CelWyMn05hNeUdSXGq3TKulJ5F9gy6iOAWgkjPeFeow4rHrjNxWrTqk0sFTjQS6B8VxIwoekegiJ6CE55SP5Fo38Sv7EYqTp/L3vpXbey+mUnpZLmw+UbWUFxeUkZGR0jq8TGveNky1k6Rz0qh0TE2/NMrmJgJ2dvCuaAOgAesk9MT3k7fmPNf8AEHPsNxGeUl+SaL/EOfZEXTSD/Leifulf9RUKryj/AM6aZ/A/+RUWrUexPuksum1ansg1WRkm+akb32ggEp7SN5HiOmEXSH3X65TS64pwoeZQkqOcJCgAO4COzxH2COd/KCrKKpdEjRpQl1Ug2QsJ3++uEc3vwE+mHlatLNHtql01fw5WWbbX9IJGfXmMN5W3KXXb8zSpvm8oNppwDJacHwVD/v1gkQgrSuOsaT3NM0qrSzipJahy7KTxHAOtE7ju9I3HBG7omh1qnV6nNz9Mmm5mWc4KQeB6iOIPYYkIrl52ZS7ylpZiprmUol1laOQWEnJGN+QYkbdosrbtFlqTJKdVLSwKUF1W0reSd5wOkxhuq3ZK6aOul1BTyZda0rJZUEqyk5G8gxis+1afaFMcp1NU+phbxeJeWFK2iAOIA3c0RhvOy6XeTEszU1zKUSyytHILCTkjBzkGJG3aNK29RpWkySnVS8skpQXVZVvJO84HXEFeWndEvGeZnKm5OJdZa5JPIOBIxknpB37zFpk5ZEpKMyzeS2yhLado5OAMD2RR57SO2Jutrq+zOMPreD5bZdCWwrOdw2TgE7+PTF+ghbam6oyVssPU6luNzVaIKcDnIlu1XWrqT6e2m6MWLNVSqJu+uJWpoLL0sHd6n3Sc8qc9AO8dZ39G99wRX7xs+kXfT/Nakx74jPIzCNzjR7D1dYO4wiqpad66Yz7lRpD7z0kOMzLJ2kKSOh1vfjxyOoxbrW12k3koZuKRVLOcDMSo22z2lB3jwzDQolzUOvICqXVJWaz8RDg2x3pO8eIiXggggggjw662y2px1xLbaRkqUcAeJik3FqvadEC0CfE/MJ/RSY5Tf2q+CPTCprup923rNGlW/KOyjTu7kpTK3lj5y+gd2O0xaLA0WblXG6jdRRMPDnJkUnaQD+0V8buG7rJhzISlCQhICUgYAAwAI+wQQRSrm0vta4lLddkfM5pXF+UIbJPWRjZPiMwsq1oTWJRZdotUl5tKTlKXQWXB3EZB9IiK2dWLV5o92uTR1fhTYH1gBGVjWm8qevk5xiSeUOIflihX1SPZEqxr9Ukj3+hSiz8x9SfaDG0nygXMc62k57J3/wCIxueUBMH8XbjSfpTZP9MR81r1X1giWpdNa7V7ayPrCND74OpVwcyn+dbKuiRkv6sEj0x6a041EuhwOVZx5CCc7dRmycfygqI9Ai6W9oRS5YpcrdRenVDeWWByTfcTvUfDENCjUSl0KV82pcgxKM9IaRgq7SeJPaYkIIIIIIIIIxPyzEynZfZbdT1LSFD1xFTFpW3M/jqBS3D1qlG8+yNU2DaJOfucpnhLpj21Y1qNHKbcpWe2VQfaIkZWh0iUIMtS5Fgj9XLoT7BG+ABwj7BBBBBH/9k=" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             <p>
-                            1.6.	<strong>“Confidential Information”</strong> means all information designated as such by either Party in writing and all other information which relates to the business, affairs, properties, assets, trading practices, Goods, Services, developments, trade secrets, know-how, personnel, customers, MTN Subscribers and Service Providers of either Party which may reasonably be regarded as the confidential information of the disclosing Party;
+                            1.6.	<span className="text-white">“Confidential Information”</span> means all information designated as such by either Party in writing and all other information which relates to the business, affairs, properties, assets, trading practices, Goods, Services, developments, trade secrets, know-how, personnel, customers, MTN Subscribers and Service Providers of either Party which may reasonably be regarded as the confidential information of the disclosing Party;
                             </p>
 
                             <p>
-                            1.7.	<strong>“Content Owner”</strong> means the owner of the intellectual Property in the value-added services offered under this Agreement;
+                            1.7.	<span className="text-white">“Content Owner”</span> means the owner of the intellectual Property in the value-added services offered under this Agreement;
                             </p>
 
                             <p>
-                            1.8.	<strong>“Customer Data”</strong> means all information held by MTN and the Service Provider whether transmitted by the MTN Subscribers or otherwise stored by either MTN or the Service Provider and includes Personal Data;
+                            1.8.	<span className="text-white">“Customer Data”</span> means all information held by MTN and the Service Provider whether transmitted by the MTN Subscribers or otherwise stored by either MTN or the Service Provider and includes Personal Data;
                             </p>
 
                             <p>
-                            1.9.	<strong>“Effective Date”</strong> means {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")};
+                            1.9.	<span className="text-white">“Effective Date”</span> means {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")};
                             </p>
 
                             <p>
@@ -708,115 +821,68 @@ export default function ContractSigning(){
                             </p>
 
                             <p>
-                            1.13.	<strong>“Month”</strong> means calendar month;
+                            1.13.	<span className="text-white">“Month”</span> means calendar month;
                             </p>
 
                             <p>
-                            1.14.	<strong>“MTN Network”</strong> means the telecommunications network of MTN;
+                            1.14.	<span className="text-white">“MTN Network”</span> means the telecommunications network of MTN;
                             </p>
 
                             <p>
-                            1.15.	<strong>“MTN Property”</strong> means any property, other than real property, issued or made available to the Service Provider by MTN in connection with this Agreement;
+                            1.15.	<span className="text-white">“MTN Property”</span> means any property, other than real property, issued or made available to the Service Provider by MTN in connection with this Agreement;
                             </p>
 
                             <p>
-                            1.16.	<strong>“MTN Subscriber(s)”</strong> means target customers for the use of the Service;
+                            1.16.	<span className="text-white">“MTN Subscriber(s)”</span> means target customers for the use of the Service;
                             </p>
 
                             <p>
-                            1.17.	<strong>“Net Revenue”</strong> means the amount generated from the Services less deduction of all Taxes, levies and regulatory fees;
+                            1.17.	<span className="text-white">“Net Revenue”</span> means the amount generated from the Services less deduction of all Taxes, levies and regulatory fees;
                             </p>
 
                             <p>
-                            1.18.	<strong>“NITDA”</strong> means National Information Technology Development Agency;
+                            1.18.	<span className="text-white">“NITDA”</span> means National Information Technology Development Agency;
                             </p>
 
                             <p>
-                            1.19.	<strong>”NCC”</strong> means Nigerian Communications Commission;
+                            1.19.	<span className="text-white">”NCC”</span> means Nigerian Communications Commission;
                             </p>
 
                             <p>
-                            1.20.	<strong>“Party”</strong> means a Party to this Agreement and “Parties” shall be construed accordingly;
+                            1.20.	<span className="text-white">“Party”</span> means a Party to this Agreement and “Parties” shall be construed accordingly;
                             </p>
 
                             <p>
-                            1.21.	<strong>“Personal Data”</strong> means any personally identifiable information and data pertaining to MTNs Subscriber or customer who can be identified from those data or from other information in possession or likely to be in possession of MTN;
+                            1.21.	<span className="text-white">“Personal Data”</span> means any personally identifiable information and data pertaining to MTNs Subscriber or customer who can be identified from those data or from other information in possession or likely to be in possession of MTN;
                             </p>
 
                             <p>
-                            1.22.	<strong>“Revenue”</strong> means the gross amount generated from the Services to be provided under this Agreement;
+                            1.22.	<span className="text-white">“Revenue”</span> means the gross amount generated from the Services to be provided under this Agreement;
                             </p>
 
                             <p>
-                            1.23.	<strong>“Revenue Share”</strong> means the percentage of Net Revenue received by MTN to be paid to the Service Provider in accordance with the model set out in Annexure A (Revenue Share Model);
+                            1.23.	<span className="text-white">“Revenue Share”</span> means the percentage of Net Revenue received by MTN to be paid to the Service Provider in accordance with the model set out in Annexure A (Revenue Share Model);
                             </p>
 
                             <p>
-                            1.24.	<strong>“Services”</strong> means the value-added services to be provided by the Service Provider which shall include information, lifestyle and any other value-added services to be agreed in writing by the Parties, as provided in clause 4;
+                            1.24.	<span className="text-white">“Services”</span> means the value-added services to be provided by the Service Provider which shall include information, lifestyle and any other value-added services to be agreed in writing by the Parties, as provided in clause 4;
                             </p>
                             <br />
 
-                            <div class="footer" >
-                                <table >
-                                    <tr>
-                                        <td >
-                                            CONFIDENTIAL AND PROPRIETARY <br />
-                                            MTN NIGERIA <br />
-                                            MTNN0-CS-CL-CON- <br />
-                                            NIO21- <br />
-                                            Page 4 of 17
-                                        </td>
-                                        <td >
-                                            MTN
-                                        </td>
-                                        <td >
-                                            <br /><br />
-                                            Service Provider
-                                        </td>
-                                        <td >
-                                            INITIALS
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td  >
-                                            Sensitivity:MTN Group - internal
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                            
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             <p>
-                            1.25.	<strong>“Platform”</strong> means that part of MTN’s network that enables the Service to be accessed by MTN Subscribers being MTN’s subscription management infrastructure;
+                            1.25.	<span className="text-white">“Platform”</span> means that part of MTN’s network that enables the Service to be accessed by MTN Subscribers being MTN’s subscription management infrastructure;
                             </p>
 
                             <p>
-                            1.26.	<strong>“Short Code”</strong> means the short code numbers approved by NCC to be utilized for the delivery of SMS. The Short code shall have a two-way status that will enable the SMS platform receive messages from MTN Subscribers as well as transmit SMS to MTN Subscribers for the purposes of accessing the Services;
+                            1.26.	<span className="text-white">“Short Code”</span> means the short code numbers approved by NCC to be utilized for the delivery of SMS. The Short code shall have a two-way status that will enable the SMS platform receive messages from MTN Subscribers as well as transmit SMS to MTN Subscribers for the purposes of accessing the Services;
                             </p>
 
                             <p>
@@ -826,36 +892,36 @@ export default function ContractSigning(){
                             </p>
 
                             <p>
-                            1.28.	<strong>“SMS”</strong> means the short message/text service(s) carried on the MTN Network and enabling MTN Subscribers to access the Services;
+                            1.28.	<span className="text-white">“SMS”</span> means the short message/text service(s) carried on the MTN Network and enabling MTN Subscribers to access the Services;
                             </p>
 
                             <p>
-                            1.29.	<strong>“SMS Logs”</strong> means a list of SMS transactions captured by MTN systems as a result of MTN Subscribers entries to the Short code;
+                            1.29.	<span className="text-white">“SMS Logs”</span> means a list of SMS transactions captured by MTN systems as a result of MTN Subscribers entries to the Short code;
                             </p>
 
                             <p>
-                            1.30.	<strong>“Staff”</strong> means all persons employed by the Service Provider to perform the Services together with the Service Provider's servants, agents and sub-Service Providers engaged in the performance of this Agreement;
+                            1.30.	<span className="text-white">“Staff”</span> means all persons employed by the Service Provider to perform the Services together with the Service Provider's servants, agents and sub-Service Providers engaged in the performance of this Agreement;
                             </p>
 
                             <p>
-                            1.31.	<strong>“System”</strong> means the System operated by the Service Provider and MTN (as applicable) for the purposes of the Services to be provided hereunder;
+                            1.31.	<span className="text-white">“System”</span> means the System operated by the Service Provider and MTN (as applicable) for the purposes of the Services to be provided hereunder;
                             </p>
 
                             <p>
-                            1.32.	<strong>“Taxes”</strong> means all taxes including but not limited to income tax, withholding tax, value added tax, stamp duties, tariffs, fiscal charges and other dues or any similar tax-related charges or levies of whatsoever nature imposed, levied or assessed by any governmental authority within Nigeria in accordance with present or future laws and/or regulations in Nigeria.
+                            1.32.	<span className="text-white">“Taxes”</span> means all taxes including but not limited to income tax, withholding tax, value added tax, stamp duties, tariffs, fiscal charges and other dues or any similar tax-related charges or levies of whatsoever nature imposed, levied or assessed by any governmental authority within Nigeria in accordance with present or future laws and/or regulations in Nigeria.
                             </p>
 
                             <p>
-                            1.33.	<strong>“USSD”</strong> means Unstructured Supplementary Service Data; and
+                            1.33.	<span className="text-white">“USSD”</span> means Unstructured Supplementary Service Data; and
                             </p>
 
                             <p>
-                            1.34.	<strong>“VAS Licence”</strong> means the Value-Added Services Licence issued by the NCC to the Service Provider authorising the Service Provider to provide the Services to the MTN subscribers under this Agreement.
+                            1.34.	<span className="text-white">“VAS Licence”</span> means the Value-Added Services Licence issued by the NCC to the Service Provider authorising the Service Provider to provide the Services to the MTN subscribers under this Agreement.
                             </p>
                         </div>
 
                         <p>
-                        2.	<strong>INTERPRETATIONS</strong>
+                        2.	<span className="text-white">INTERPRETATIONS</span>
                         </p>
 
                         <div id="subcontent">
@@ -877,7 +943,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        3.	<strong>COMMENCEMENT AND DURATION</strong>
+                        3.	<span className="text-white">COMMENCEMENT AND DURATION</span>
                         </p>
 
                         <div id="subcontent">
@@ -890,61 +956,14 @@ export default function ContractSigning(){
                             </p>
                         </div>
 
-                        <div class="footer" >
-                                <table >
-                                    <tr>
-                                        <td >
-                                            CONFIDENTIAL AND PROPRIETARY <br />
-                                            MTN NIGERIA <br />
-                                            MTNN0-CS-CL-CON- <br />
-                                            NIO21- <br />
-                                            Page 5 of 17
-                                        </td>
-                                        <td >
-                                            MTN
-                                        </td>
-                                        <td >
-                                            <br /><br />
-                                            Service Provider
-                                        </td>
-                                        <td >
-                                            INITIALS
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td  >
-                                            Sensitivity:MTN Group - internal
-                                        </td>
-                                    </tr>
-                                </table>
-                        </div>
-                    </div>
+                        
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <p>
-                        4.	<strong>OBLIGATIONS OF THE SERVICE PROVIDER</strong>
+                        4.	<span className="text-white">OBLIGATIONS OF THE SERVICE PROVIDER</span>
                         </p>
 
                         <p>
@@ -993,7 +1012,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        5.	<strong>OBLIGATIONS OF MTN </strong>
+                        5.	<span className="text-white">OBLIGATIONS OF MTN </span>
                         </p>
 
                         <div id="subcontent">
@@ -1008,7 +1027,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        6.	<strong>REVENUE SHARE </strong>
+                        6.	<span className="text-white">REVENUE SHARE </span>
                         </p>
 
                         <div id="subcontent">
@@ -1046,30 +1065,10 @@ export default function ContractSigning(){
                                 </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             <p>
@@ -1082,7 +1081,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        7.	<strong>PAYMENT AND TAX DEDUCTIONS</strong>
+                        7.	<span className="text-white">PAYMENT AND TAX DEDUCTIONS</span>
                         </p>
 
                         <p>
@@ -1117,7 +1116,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        8.	<strong>TAXES AND TAX EXEMPTION CERTIFICATES </strong>
+                        8.	<span className="text-white">TAXES AND TAX EXEMPTION CERTIFICATES </span>
                         </p>
 
                         <div id="subcontent">
@@ -1159,33 +1158,13 @@ export default function ContractSigning(){
                                 </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <p>
-                        9.	<strong>INFORMATION AND DATA PROTECTION</strong>
+                        9.	<span className="text-white">INFORMATION AND DATA PROTECTION</span>
                         </p>
 
                         <div id="subcontent">
@@ -1253,30 +1232,10 @@ export default function ContractSigning(){
                                 </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             9.9.	The Service Provider shall take all precautions necessary to preserve the integrity of MTN data and to prevent any unauthorised access, corruption or loss of MTN data in its possession or under its control or that of the Service Provider’s Personnel. <br /><br />
@@ -1313,7 +1272,7 @@ export default function ContractSigning(){
 
                             9.15.	A breach of the terms of this clause shall constitute a material breach under this Agreement entitling the aggrieved party to terminate this Agreement. <br /><br />
 
-                            9.16.	<strong><em>Retention of data records:</em></strong> MTN will, retain and use Service Provider’s Personal Information, for as long as it is necessary to maintain the relationship with respect to this transaction and comply with legal and business obligations, resolution of disputes and enforcement of this Agreement. <br /><br />
+                            9.16.	<span className="text-white"><em>Retention of data records:</em></span> MTN will, retain and use Service Provider’s Personal Information, for as long as it is necessary to maintain the relationship with respect to this transaction and comply with legal and business obligations, resolution of disputes and enforcement of this Agreement. <br /><br />
 
                             9.17.	MTN, in the implementation of its obligations under this Agreement shall collect personal information of the Service Provider and shall transfer such information to a third-party processor. In performing the activities contemplated under this Agreement, the Service Provider consents to MTN transferring its personal information to such third party with whom MTN has a valid contract, which provide adequate provisions to ensure the protection of the Service Providers personal information. MTN shall comply with the requirements of a data controller and shall ensure that the third-party processor complies with applicable data protection laws, regulations and all related legislations. <br /><br />
                         </div>
@@ -1346,30 +1305,10 @@ export default function ContractSigning(){
                                 </tr>
                             </table>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             9.18.	The Service Provider acknowledges that its personal information may be transferred to a jurisdiction outside of Nigeria and the Service Provider shall consent to such transfer, provided that MTN shall take every effort to ensure that the cross border transfer complies with Nigerian Data Protection Law.  <br /><br />
@@ -1377,7 +1316,7 @@ export default function ContractSigning(){
                             9.19.	For more information on our privacy policy and how we manage your data, please refer to https://www.mtnonline.com/about-us/who-we-are/about-us/privacy-and-data-protection-policy/
                                 <br />
 
-                            9.20.	<strong>Incidence Response:</strong> <br /><br />
+                            9.20.	<span className="text-white">Incidence Response:</span> <br /><br />
 
                             <div id="subcontent">
                                 9.20.1.	The Service Provider shall at no additional cost to MTN maintain a data breach incident point of contact for liaison with MTN’s Data Protection team. <br /><br />
@@ -1411,7 +1350,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        11.	<strong>REPRESENTATIONS, WARRANTIES AND COVENANTS</strong>
+                        11.	<span className="text-white">REPRESENTATIONS, WARRANTIES AND COVENANTS</span>
                         </p>
 
                         <div class="footer" >
@@ -1442,30 +1381,10 @@ export default function ContractSigning(){
                                 </tr>
                             </table>
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div id="subcontent">
                             11.1.	The Service Provider warrants and represents that it: <br /> <br />
@@ -1491,7 +1410,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        12.	<strong>CONFIDENTIALITY</strong>
+                        12.	<span className="text-white">CONFIDENTIALITY</span>
                         </p>
 
                         <div id="subcontent">
@@ -1531,33 +1450,13 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <p>
-                        13.	<strong>INTELLECTUAL PROPERTY RIGHTS</strong>
+                        13.	<span className="text-white">INTELLECTUAL PROPERTY RIGHTS</span>
                         </p>
 
                         <div class="subcontent">
@@ -1575,7 +1474,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        14.	<strong>RIGHT OF AUDIT </strong>
+                        14.	<span className="text-white">RIGHT OF AUDIT </span>
                         </p>
 
                         <div id="subcontent">
@@ -1619,30 +1518,10 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
 
@@ -1722,30 +1601,10 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             19.3.	The Service Provider indemnifies MTN to the fullest extent for any breach of its obligations, representations and warranties contained in this Agreement; including but not limited to claims by any regulatory authority arising from a breach of the obligations of the Service Provider in obtaining the requisite licenses and/or third party claims for infringement of Intellectual Property Rights  in respect to the operation of the Services or use of the Confidential Information by the Service Provider contrary to the terms of this Agreement. <br /><br />
@@ -1772,7 +1631,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        21.	<strong>CONDITIONS PRECEDENT TO OBLIGATIONS OF MTN</strong>
+                        21.	<span className="text-white">CONDITIONS PRECEDENT TO OBLIGATIONS OF MTN</span>
                         </p>
 
                         <div id="subcontent">
@@ -1824,30 +1683,10 @@ export default function ContractSigning(){
                                 </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <div class="subcontent">
                             <div id="subcontent">
@@ -1861,7 +1700,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        22.	<strong>SET OFF</strong>
+                        22.	<span className="text-white">SET OFF</span>
                         </p>
 
                         <p>
@@ -1869,7 +1708,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        23.	<strong>TERMINATION</strong>
+                        23.	<span className="text-white">TERMINATION</span>
                         </p>
 
                         <div id="subcontent">
@@ -1932,33 +1771,13 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <p>
-                        24.	<strong>INDUCEMENTS, FRAUD AND ANTI-CORRUPTION</strong>
+                        24.	<span className="text-white">INDUCEMENTS, FRAUD AND ANTI-CORRUPTION</span>
                         </p>
 
                         <div id="subcontent">
@@ -1972,7 +1791,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        25.	<strong>FORCE MAJEURE</strong>
+                        25.	<span className="text-white">FORCE MAJEURE</span>
                         </p>
 
                         <div id="subcontent">
@@ -1994,7 +1813,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        26.	<strong> GOVERNING LAW AND DISPUTE RESOLUTION</strong>
+                        26.	<span className="text-white"> GOVERNING LAW AND DISPUTE RESOLUTION</span>
                         </p>
 
                         <p>
@@ -2002,7 +1821,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        27.	<strong>ENTIRE AGREEMENT</strong>
+                        27.	<span className="text-white">ENTIRE AGREEMENT</span>
                         </p>
 
                         <p>
@@ -2010,7 +1829,7 @@ export default function ContractSigning(){
                         </p>
 
                         <p>
-                        28.	<strong>PARTNERSHIP</strong>
+                        28.	<span className="text-white">PARTNERSHIP</span>
                         </p>
 
                         <div class="footer" >
@@ -2042,37 +1861,17 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
-                        <div id="header-table">
-                            <div class="table-header">
-                                <div className="relative w-full mb-4">
-                                    
-                                    <img src="data:image/jpeg;base64,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" alt="" className="w-24 absolute left-0 top-0"  />
-                                    
-                                    <div className="flex justify-center flex-col w-full ">
-                                        <p className="text-white text-center">Created: </p>
-                                        <p className="text-white text-center">
-                                            {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div>
-                                    <div  >
-                                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC AND {dynamicData?.company_name?.toUpperCase()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col justify-center items-center pt-8 text-white max-w-4xl">
+                        
 
                         <p>
                         Nothing in this Agreement shall be construed as creating a partnership, an employment relationship or a relationship of principal and agent between MTN and the Service Provider. For the provision of the Services under this Agreement, the Service Provider shall be strictly an independent Service Provider.
                         </p>
 
                         <p>
-                        29.	<strong>NOTICES</strong>
+                        29.	<span className="text-white">NOTICES</span>
                         </p>
 
                         <p>
@@ -2105,7 +1904,7 @@ export default function ContractSigning(){
                         </div>
 
                         <p>
-                        <strong>IN WITNESS WHEREOF</strong>, the Parties have duly executed two original copies of this Agreement as of the day and year first written above.
+                        <span className="text-white">IN WITNESS WHEREOF</span>, the Parties have duly executed two original copies of this Agreement as of the day and year first written above.
                         </p>
 
                         <table border="0">
@@ -2115,7 +1914,7 @@ export default function ContractSigning(){
                                     <div class="signature">
                                         <p>
                                         For and on behalf of: <br />
-                                        <strong>MTN NIGERIA COMMUNICATIONS PLC </strong>
+                                        <span className="text-white">MTN NIGERIA COMMUNICATIONS PLC </span>
                                         </p>
                                         <p>
                                             Name: MTN Signee
@@ -2139,7 +1938,7 @@ export default function ContractSigning(){
                                     <div class="signature">
                                         <p>
                                         For and on behalf of: <br />
-                                        <strong>{dynamicData?.company_name?.toUpperCase()} </strong>
+                                        <span className="text-white">{dynamicData?.company_name?.toUpperCase()} </span>
                                         </p>
                                         <p>
                                             Name: :DIRECTOR_DELEGATE_NAME
@@ -2165,7 +1964,7 @@ export default function ContractSigning(){
                                 <td>
                                     <div class="signature">
                                         <p>
-                                            <strong>Witness:</strong>
+                                            <span className="text-white">Witness:</span>
                                         </p>
                                         <p>
                                             Name: MTN Signee
@@ -2184,7 +1983,7 @@ export default function ContractSigning(){
                                 <td>
                                 <div class="signature">
                                         <p>
-                                            <strong>Witness:</strong>
+                                            <span className="text-white">Witness:</span>
                                         </p>
                                         <p>
                                             Name: :WITNESS_NAME
@@ -2231,7 +2030,7 @@ export default function ContractSigning(){
                             </table>
                         </div>
 
-                    </div>
+                    </div> */}
 
                     <div className="max-w-4xl px-0 my-4">
                         <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
@@ -2244,7 +2043,7 @@ export default function ContractSigning(){
                                     <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
                                 </div>
                                 <div>
-                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <span className="text-white">Electronic Record and Signature Disclosure.</span></p>
                                 </div>
                             </div>)
                         }
@@ -2257,7 +2056,7 @@ export default function ContractSigning(){
                                     <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
                                 </div>
                                 <div>
-                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <strong>Electronic Record and Signature Disclosure.</strong></p>
+                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <span className="text-white">Electronic Record and Signature Disclosure.</span></p>
                                 </div>
                             </div>)
                         }

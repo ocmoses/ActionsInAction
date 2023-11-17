@@ -108,7 +108,6 @@ export default function Privacy() {
 
   //// fo sticky sidebar
   useEffect(() => {
-   setProcessing(false);
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const threshold = 500;

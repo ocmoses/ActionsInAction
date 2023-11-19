@@ -12,7 +12,7 @@ export default function Confirm({
   onNo,
   type,
   feedback,
-  othersAction
+  othersAction=null
 }) {
   const [reason, setReason] = useState(null);
   const [showReason, setShowReason] = useState(false);
@@ -31,11 +31,11 @@ export default function Confirm({
   };
   const handleSetReason = (_reason) => {
     if(_reason.rejection_reason == "Others"){
-      othersAction(true);
-      setHide(true);
-      return;
+      othersAction && othersAction(true);     
+    }else{
+      othersAction && othersAction(false);  
     }
-    othersAction(false);  
+    
     setHide(false);  
     setReason(_reason);
     setShowReason(false);

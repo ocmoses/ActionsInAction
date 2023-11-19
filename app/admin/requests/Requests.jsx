@@ -243,7 +243,7 @@ export default function Requests() {
     setFetchingGracePeriods(true);
 
     get_grace_period_response = await getAllGreacePeriod();
-    console.log("All get_grace_period_response", get_grace_period_response);
+   // console.log("All get_grace_period_response", get_grace_period_response);
 
     if (get_grace_period_response.error) {
       setError({ error: get_grace_period_response.error });
@@ -278,20 +278,10 @@ export default function Requests() {
 
     setRequests(requests);
     setFilteredRequests(requests);
-
-    console.log("Requests after graceperiods", requests);
-
     setGracePeriods(get_grace_period_response.graceperiods);
-
     clearErrors();
-
     setFetchingGracePeriods(false);
   };
-
-
-
-
-
 
 
 
@@ -611,7 +601,7 @@ export default function Requests() {
           )}
 
           <div className="">
-            <p className="text-white">{selectedRequest?.request_type}</p>
+            <p className="text-white">{selectedRequest?.request_type} AAA</p>
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => setIsPreviewingDoc(!is_previewing_doc)}
@@ -746,11 +736,13 @@ export default function Requests() {
           </div>
         )}
       </ComplianceDrawer>
+      
       {
         selectedRequest?.request_type == request_types.REVENUE_SHARE && 
 
         <SideDrawer title={selectedRequest?.request_type} openDrawer={openSideDrawer} 
                   closeAction={() => setOpenSideDrawer(false)}>
+
           <div className="flex flex-col space-y-8 border-b border-white/20 pb-8">
 
             <div className="flex space-x-4">
@@ -863,6 +855,10 @@ export default function Requests() {
         </SideDrawer>
       }
       
+
+
+
+
 
       <Success
         message={successMessage}

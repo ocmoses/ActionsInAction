@@ -28,7 +28,7 @@ export default function AddShortcodeModal(){
     let today = new Date();
     const tomorrow = new Date().setDate(today.getDate() + 1);
     const two_years_ago = new Date().setDate(today.getDate() - 739);
-    const max_expiry = new Date().setDate(data.issue_date + 739);;
+    const max_expiry = new Date().setDate(data.issue_date + 739);
 
     const [addingShortcode, setAddingShortcode] = useState(false);
     

@@ -23,6 +23,12 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+import {
+  GracePeriodAdminFlyOut
+} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export default function Requests() {
 
   const {
@@ -234,16 +240,25 @@ export default function Requests() {
     clearErrors();
   };
 
+
+
+
+
+
+
+
+
   const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
   const [gracePeriods, setGracePeriods] = useState([]);
   let get_grace_period_response= null;
+  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
 
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
     setFetchingGracePeriods(true);
 
     get_grace_period_response = await getAllGreacePeriod();
-    console.log("All get_grace_period_response", get_grace_period_response);
+   // console.log("All get_grace_period_response", get_grace_period_response);
 
     if (get_grace_period_response.error) {
       setError({ error: get_grace_period_response.error });
@@ -258,15 +273,18 @@ export default function Requests() {
           request_type: request_types.GRACE_PERIOD,
           request_id: graceperiod.request_id,
           created_at: graceperiod.created_at,
+          approved_on:graceperiod.approved_on,
+          rejected_on:graceperiod.rejected_on,
           status: graceperiod.status,
           file_name:
-          graceperiod.answered_questionaire?.replace(docPrefix, "") ?? "",
-          file_path: graceperiod.answered_questionaire ?? "",
+          graceperiod.license_grace_period_file?.split('/').pop() ?? "",
+          file_path: graceperiod.license_grace_period_file ?? "",
           partner_uuid: graceperiod.partner_uuid,
           uuid: graceperiod.uuid,
         });
       }
     }
+    const fileName = filePath.split('/').pop();
 
     requests.sort((a, b) =>
       a.request_date > b.request_date
@@ -278,21 +296,14 @@ export default function Requests() {
 
     setRequests(requests);
     setFilteredRequests(requests);
-
-    console.log("Requests after graceperiods", requests);
-
     setGracePeriods(get_grace_period_response.graceperiods);
-
     clearErrors();
-
     setFetchingGracePeriods(false);
   };
 
-
-
-
-
-
+  const closeGracePeriodFlyOut = () => {
+    setGracePeriodFlyout(false);
+  };
 
 
 
@@ -544,12 +555,19 @@ export default function Requests() {
                         <span
                           onClick={() => {
                             setSelectedRequest(request);
-                            if(request.request_type == request_types.REVENUE_SHARE){
+                            if (
+                              request.request_type ==
+                              request_types.REVENUE_SHARE
+                            ) {
                               setOpenSideDrawer(true);
-                            }else{
+                            } else if (
+                              request.request_type == request_types.GRACE_PERIOD
+                            ) {
+                              setGracePeriodFlyout(true);
+                            } else {
                               setOpenDrawer(true);
                             }
-                            
+
                             console.log("selectedRequest", request);
                           }}
                           className="text-yellow-600 cursor-pointer"
@@ -569,7 +587,7 @@ export default function Requests() {
           </div>
         </div>
       </div>
-      
+
       {is_previewing_doc && selectedRequest && (
         <FilePreviewModal
           filePath={selectedRequest?.file_path}
@@ -611,7 +629,7 @@ export default function Requests() {
           )}
 
           <div className="">
-            <p className="text-white">{selectedRequest?.request_type}</p>
+            <p className="text-white">{selectedRequest?.request_type} AAA</p>
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => setIsPreviewingDoc(!is_previewing_doc)}
@@ -746,75 +764,110 @@ export default function Requests() {
           </div>
         )}
       </ComplianceDrawer>
-      {
-        selectedRequest?.request_type == request_types.REVENUE_SHARE && 
 
-        <SideDrawer title={selectedRequest?.request_type} openDrawer={openSideDrawer} 
-                  closeAction={() => setOpenSideDrawer(false)}>
+      {selectedRequest?.request_type == request_types.REVENUE_SHARE && (
+        <SideDrawer
+          title={selectedRequest?.request_type}
+          openDrawer={openSideDrawer}
+          closeAction={() => setOpenSideDrawer(false)}
+        >
           <div className="flex flex-col space-y-8 border-b border-white/20 pb-8">
-
             <div className="flex space-x-4">
               <p className="text-white">Category category</p>
-              <span className="border-1 border-white/20 px-2 py-1 text-mtn text-sm bg-white/5 rounded-full">Basic</span>
+              <span className="border-1 border-white/20 px-2 py-1 text-mtn text-sm bg-white/5 rounded-full">
+                Basic
+              </span>
             </div>
 
             <div className="flex space-x-2 justify-between">
-
               <div>
                 <p className="text-white">Exclusive content</p>
                 <span className="text-white/40">Offers exclusive content</span>
-              </div> 
-
-              <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 1:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[1] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 1:0})}  className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[1] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
               </div>
 
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setChecks({ ...checks, 1: 1 })}
+                  className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[1] == 1 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  YES
+                </button>
+                <button
+                  onClick={() => setChecks({ ...checks, 1: 0 })}
+                  className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[1] == 0 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  NO
+                </button>
+              </div>
             </div>
 
             <div className="flex space-x-2 justify-between">
-
               <div>
                 <p className="text-white">Premium content</p>
                 <span className="text-white/40">Offers premium content</span>
-              </div> 
-
-              <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 2:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[2] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 2:0})} className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[2] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
               </div>
 
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setChecks({ ...checks, 2: 1 })}
+                  className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[2] == 1 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  YES
+                </button>
+                <button
+                  onClick={() => setChecks({ ...checks, 2: 0 })}
+                  className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[2] == 0 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  NO
+                </button>
+              </div>
             </div>
 
             <div className="flex space-x-2 justify-between">
-
               <div>
                 <p className="text-white">Licensed content</p>
                 <span className="text-white/40">Offers licensed content</span>
               </div>
 
               <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 3:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[3] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 3:0})} className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[3] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
+                <button
+                  onClick={() => setChecks({ ...checks, 3: 1 })}
+                  className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[3] == 1 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  YES
+                </button>
+                <button
+                  onClick={() => setChecks({ ...checks, 3: 0 })}
+                  className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${
+                    checks[3] == 0 ? "border-yellow-300" : "border-white/40"
+                  } rounded`}
+                >
+                  NO
+                </button>
               </div>
-
-
             </div>
-            
           </div>
 
           <div className="flex flex-col space-y-1">
-
             <div className="flex space-x-4 my-6">
               <p className="text-white">Revenue allocation</p>
             </div>
 
             <div className="flex space-x-2 justify-between">
-
               <div>
                 <p className="text-white">Content provider’s share</p>
                 <span className="text-white/40">0% to 40%</span>
-              </div> 
+              </div>
 
               <div className="flex space-x-4 w-24 relative">
                 <TextInput
@@ -826,18 +879,17 @@ export default function Requests() {
                   errors={errors}
                   disabled={false}
                 />
-                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
+                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">
+                  %
+                </p>
               </div>
-
-              
             </div>
 
             <div className="flex space-x-2 justify-between">
-
               <div>
                 <p className="text-white">MTN share</p>
                 <span className="text-white/40">60%</span>
-              </div> 
+              </div>
 
               <div className="flex space-x-4 w-24 relative">
                 <TextInput
@@ -849,20 +901,31 @@ export default function Requests() {
                   errors={errors}
                   disabled={false}
                 />
-                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
+                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">
+                  %
+                </p>
               </div>
-              
             </div>
-            
           </div>
 
           <div className="flex justify-end">
-            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {}}>Finish</button>
+            <button
+              className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+              onClick={() => {}}
+            >
+              Finish
+            </button>
           </div>
-
         </SideDrawer>
-      }
-      
+      )}
+
+      {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
+        gracePeriodFlyout && (
+          <GracePeriodAdminFlyOut
+            closeGracePeriodFlyOut={closeGracePeriodFlyOut}
+            selectedRequest={selectedRequest}
+          />
+        )}
 
       <Success
         message={successMessage}

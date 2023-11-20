@@ -273,6 +273,8 @@ export default function Requests() {
           request_type: request_types.GRACE_PERIOD,
           request_id: graceperiod.request_id,
           created_at: graceperiod.created_at,
+          approved_on:graceperiod.approved_on,
+          rejected_on:graceperiod.rejected_on,
           status: graceperiod.status,
           file_name:
           graceperiod.license_grace_period_file?.split('/').pop() ?? "",

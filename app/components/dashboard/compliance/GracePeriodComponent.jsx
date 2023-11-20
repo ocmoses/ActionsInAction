@@ -384,10 +384,19 @@ export const GracePeriodSuccess = ({ gracePeriodSuccessOk }) => {
 };
 
 
-
-
-
-
+function actionDate(targetDate) {
+  const originalDate = new Date(targetDate);
+  const formattedDate = originalDate.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  })
+  return formattedDate;
+ 
+}
 
 export const GracePeriodAdminFlyOut = ({ closeGracePeriodFlyOut, selectedRequest}) => {
   const tabRef = useRef(null);
@@ -400,6 +409,8 @@ export const GracePeriodAdminFlyOut = ({ closeGracePeriodFlyOut, selectedRequest
   useEffect(() => {
     console.log("the selectedRequest", selectedRequest);
   }, [selectedRequest]);
+
+
 
 
 
@@ -701,7 +712,7 @@ export const GracePeriodAdminFlyOut = ({ closeGracePeriodFlyOut, selectedRequest
                       </svg>
                       Approved
                     </span>{" "}
-                    By Afolabi . Feb 6, 2023 at 9:24 AM
+                    on {actionDate(selectedRequest.approved_on)}
                   </p>
                 </div>
               )}
@@ -727,7 +738,7 @@ export const GracePeriodAdminFlyOut = ({ closeGracePeriodFlyOut, selectedRequest
                       </svg>
                       1 issue
                     </span>{" "}
-                    Awaiting resolution . Feb 6, 2023 at 9:24 AM
+                    Awaiting resolution . {actionDate(selectedRequest.rejected_on)}
                   </p>
                 </div>
               )}

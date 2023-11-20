@@ -275,13 +275,14 @@ export default function Requests() {
           created_at: graceperiod.created_at,
           status: graceperiod.status,
           file_name:
-          graceperiod.answered_questionaire?.replace(docPrefix, "") ?? "",
-          file_path: graceperiod.answered_questionaire ?? "",
+          graceperiod.license_grace_period_file?.split('/').pop() ?? "",
+          file_path: graceperiod.license_grace_period_file ?? "",
           partner_uuid: graceperiod.partner_uuid,
           uuid: graceperiod.uuid,
         });
       }
     }
+    const fileName = filePath.split('/').pop();
 
     requests.sort((a, b) =>
       a.request_date > b.request_date
@@ -920,6 +921,7 @@ export default function Requests() {
         gracePeriodFlyout && (
           <GracePeriodAdminFlyOut
             closeGracePeriodFlyOut={closeGracePeriodFlyOut}
+            selectedRequest={selectedRequest}
           />
         )}
 

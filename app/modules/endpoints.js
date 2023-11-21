@@ -130,5 +130,14 @@ const RemoteEndpoints = {
 //Grace Period
   PARTNER_LICENSE_VALIDITY_REMAINDER: `${apiURL}/v2/contract/license/get-license-validity-remainder/`,
   SUBMIT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/contract/license/submit-license-grace-period-request`,
+
+  //Revenue share
+  GET_ALL_REVENUE_SHARE: `${apiURL}/v2/admin/get-all-revenue-share-request`,
+  APPROVE_REVENUE_SHARE: `${apiURL}/v2/admin/approve-revenue-share-request`,
+
+  GET_ALL_SHORTCODES: `${apiURL}/v2/contract/get-partner-shortcodes/:partner-uuid`,
+  REQUEST_CHANGE: `${apiURL}/v2/contract/change-order/submit-change-order-request`,
+  GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`
+
 }
 export default RemoteEndpoints

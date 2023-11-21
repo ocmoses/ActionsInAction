@@ -20,6 +20,7 @@ import RequestChangesDialogue from "@/app/components/modals/RequestChangesDialog
 import RequestChangesModal from "@/app/components/modals/RequestChangesModal";
 import useContracts from "@/hooks/useContracts";
 import moment from "moment";
+import usePartners from "@/hooks/usePartners";
 
 
 
@@ -35,8 +36,8 @@ export default function ContractSettings() {
         isSuperadmin,
         requestChangesDialogue,
         setRequestChangesDialogue,
-        setRequestChangesModal
-
+        setRequestChangesModal,
+        
     } = useContext(ContractSettingsContext);
 
     const {
@@ -44,8 +45,12 @@ export default function ContractSettings() {
         setProfileSuccess,
     } = useContext(ProfileContext);
 
+    const {
+      getAllServices
+    } = usePartners();
 
-  console.log("Partner", partner);
+
+  // console.log("Partner", partner);
     
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -60,6 +65,7 @@ export default function ContractSettings() {
   const [popup, setPopup] = useState(null);
 
   const requestChange = (contract) => {
+    console.log("Selected contract", contract);
     setCurrentContract(contract);
     setPopup(null);
     setRequestChangesDialogue(true);
@@ -177,7 +183,7 @@ export default function ContractSettings() {
                                     {popup == contract.contract_id &&
                                         <div className="pop flex flex-col p-2 rounded-lg bg-gray-700 absolute right-0 z-10">
                                             <p className="pop text-white p-2 hover:bg-white/40 cursor-pointer rounded-lg">Download</p>
-                                            <p className="pop text-white p-2 hover:bg-white/40 cursor-pointer rounded-lg" onClick={() => requestChange()}>Request Changes</p>
+                                            <p className="pop text-white p-2 hover:bg-white/40 cursor-pointer rounded-lg" onClick={() => requestChange(contract)}>Request Changes</p>
                                         </div>
                                     }
                                 </div>                                
@@ -200,7 +206,7 @@ export default function ContractSettings() {
       </div>
 
       <RequestChangesDialogue />
-      <RequestChangesModal />
+      <RequestChangesModal contract_id={currentContract?.contract_id}/>
       <ProfileSuccessModal />
 
       <Success message={successMessage} visible={successToast} action={successAction} />

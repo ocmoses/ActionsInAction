@@ -17,7 +17,7 @@ const useContractSettings = () => {
   const actions = useStoreActions((action) => action);
   const states = useStoreState((state) => state);
 
-  console.log("states from useContracts", states);
+  // console.log("states from useContracts", states);
 
   const tabs = {
     CHANGE_SHORT_CODE: "Change short code",

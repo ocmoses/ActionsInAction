@@ -280,7 +280,8 @@ export default function GetStarted({ type }) {
   
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
-
+  const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
+  const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
 ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
@@ -299,7 +300,7 @@ export default function GetStarted({ type }) {
         const licenseValidityDaysLeft=licenseValidityRemainderResponse.data.data.license_validity_days;
         setLicenseValidityDaysLeft(licenseValidityDaysLeft);
 
-        if (licenseValidityDaysLeft>0 && licenseValidityDaysLeft<60){
+        if (licenseValidityDaysLeft>0 && licenseValidityDaysLeft<=60){
           setLicenseValidityDays(true);
         }else{
           setLicenseValidityDays(false);
@@ -358,7 +359,19 @@ const partnerLicenseGracePeriodStatus = async () => {
   const gracePeriodSuccessOk = () => {
     setLicenseValidityDays(false);
     setPopUpGracePeriodForm(false);
-    
+  };
+
+  const openLicenseRenewalForm = () => {
+    setPopUpLicenseRenewalForm(true);
+  };
+  const closeLicenseRenewalForm = () => {
+    setPopUpLicenseRenewalForm(false);
+    setLicenseRenewalSubmit(false);
+  };
+
+  const licenseRenewalSuccessOk = () => {
+    setLicenseValidityDays(false);
+    setPopUpLicenseRenewalForm(false);
   };
 
 

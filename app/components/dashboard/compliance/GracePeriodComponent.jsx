@@ -519,8 +519,13 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   const [formData, setFormData] = useState({
     partner_uuid: partner?.uuid,
     file: null,
-    indemnity_clause: false,
+    vas_license_id: "",
+    license_issue_date: "",
+    license_expiring_date: "",
+    indemnity_clause: "YES",
   });
+
+
   const [fileSize, setfFileSize] = useState(null);
   useEffect(() => {
     setDoc(null);
@@ -554,7 +559,6 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   const handleChange = (event) => {
     const { name, type, value, checked } = event.target;
     const newValue = type === "checkbox" ? checked : value;
-
     setFormData({
       ...formData,
       [name]: newValue,
@@ -562,22 +566,28 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       clearError();
       if (fileSize <= 0) {
-        setErrorMessage("Upload  Proof of Renewal!");
+        setErrorMessage("Upload  VAS License!");
       } else {
-        if (!formData.indemnity_clause) {
-          setErrorMessage("Check to validate licence renewal progress");
+        if (formData.vas_license_id=="") {
+          setErrorMessage("Provide VAS License ID!");
+        }else if (formData.license_issue_date==""){
+          setErrorMessage("Provide License Issuing Date!");
+        }else if (formData.license_expiring_date==""){
+          setErrorMessage("Provide License Expiring Date!");
         } else {
           setSendAction(true);
           const formDataToSend = new FormData();
           formDataToSend.append("partner_uuid", formData.partner_uuid);
+          formDataToSend.append("vas_license_id", formData.vas_license_id);
+          formDataToSend.append("license_issue_date", formData.license_issue_date);
+          formDataToSend.append("license_expiring_date", formData.license_expiring_date);
           formDataToSend.append("file", formData.file);
-          formDataToSend.append("indemnity_clause", "YES");
+          formDataToSend.append("indemnity_clause", formData.indemnity_clause);
           const response = await axios.post(
-            RemoteEndpoints.SUBMIT_LICENSE_GRACE_PERIOD_REQUEST,
+            RemoteEndpoints.SUBMIT_LICENSE_RENEWAL_REQUEST,
             formDataToSend,
             {
               headers: {
@@ -694,32 +704,32 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
             </p>
           )}
           <TextInput
-            id="name"
+            id="vas_license_id"
             label="VAS License ID"
             type="text"
-            name="name"
-            value={formData.name}
+            name="vas_license_id"
+            value={formData.vas_license_id}
             onChange={handleChange}
           />
 
           <div className="flex gap-3">
             <div className="w-[50%]">
               <TextInput
-                id="name"
+                id="license_issue_date"
                 label="Issuing Date"
                 type="date"
-                name="name"
-                value={formData.name}
+                name="license_issue_date"
+                value={formData.license_issue_date}
                 onChange={handleChange}
               />
             </div>
             <div className="w-[50%]">
               <TextInput
-                id="email"
+                id="license_expiring_date"
                 label="Expiry Date"
                 type="date"
-                name="email"
-                value={formData.email}
+                name="license_expiring_date"
+                value={formData.license_expiring_date}
                 onChange={handleChange}
               />
             </div>
@@ -813,7 +823,7 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
             ) : (
               <button
                 className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-                onClick={() => submitLicenseRenewal()}
+                onClick={handleSubmit}
               >
                 Upload
               </button>
@@ -857,13 +867,6 @@ export const LicenseRenewalSuccess = ({ SuccessOk, startLicenseRenewal }) => {
     </div>
   );
 };
-
-
-
-
-
-
-
 
 
 function actionDate(targetDate) {

@@ -6,21 +6,25 @@ import MenuBar from "@/app/components/dashboard/MenuBar";
 import MobileMenuBar from "@/app/components/dashboard/MobileMenuBar";
 import MainMenuSideDrawer from "@/app/components/dashboard/MainMenuSideDrawer";
 import usePartners from "@/hooks/usePartners";
-import { GracePeriodTopAlert } from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import { LicenseValidityTopAlert, LicenseRenewalForm, LicenseRenewalSuccess} from "@/app/components/dashboard/compliance/GracePeriodComponent";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { useStoreState } from "easy-peasy";
+import PopUp from "@/app/components/PopUps";
 
 function Layout({ children }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
-  
+
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState(null);
   const [showLicenseValidityAlert, setShowLicenseValidityAlert] = useState(true);
+  const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
+  const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
+  
   ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
     try {
@@ -51,9 +55,6 @@ function Layout({ children }) {
     licenseValidityRemainder();
   }, [partner]);
 
-  const closeLicenseValidityAlert = () => {
-    setShowLicenseValidityAlert(false);
-  };
 
   return (
     <>
@@ -82,13 +83,31 @@ function Layout({ children }) {
               </div>
             </div>
             <div className="h-full flex-1 relative pb-[50px] bg-[#030303] grow scrollbar scrollbar-thumb-[#030303] scrollbar-track-[#212121] scrollbar-w-[6px]">
-              
               {licenseValidityDaysLeft != null && showLicenseValidityAlert && (
-                <GracePeriodTopAlert
-                  licenseValidityDaysLeft={licenseValidityDaysLeft}
-                  partner={partner}
-                  closeLicenseValidityAlert={closeLicenseValidityAlert}
-                />
+                <>
+                  {popUpLicenseRenewalForm && (
+                    <PopUp closePopUp={() => setPopUpLicenseRenewalForm(false)}>
+                      {!licenseRenewalSubmit ? (
+                        <LicenseRenewalForm
+                          closePopUp={() => setPopUpLicenseRenewalForm(false)}
+                          submitLicenseRenewal={() => setLicenseRenewalSubmit(true)}
+                        /> 
+                      ) : (
+                        <LicenseRenewalSuccess
+                          SuccessOk={() => setPopUpLicenseRenewalForm(false)}
+                          startLicenseRenewal={() => setLicenseRenewalSubmit(false)}
+                        />
+                      )}
+                    </PopUp>
+                  )}
+
+                  <LicenseValidityTopAlert
+                    licenseValidityDaysLeft={licenseValidityDaysLeft}
+                    partner={partner}
+                    closeLicenseValidityAlert={() => setShowLicenseValidityAlert(false)}
+                    popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
+                  />
+                </>
               )}
 
               {children}

@@ -17,7 +17,8 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import useApp from "@/hooks/useApp";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 import Success from "@/app/components/toasts/Success";
-
+import Link from "next/link";
+import { PageRoutes } from "@/app/modules/menu";
 export default function GracePeriodAlert({
   status,
   openGracePeriodForm,
@@ -126,109 +127,6 @@ export default function GracePeriodAlert({
   );
 }
 
-export const GracePeriodTopAlert = ({ licenseValidityDaysLeft, partner, closeLicenseValidityAlert }) => {
-  const states = useStoreState((state) => state);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [validity, setValidity] = useState(false);
-
-  useEffect(() => {
-    checkPartnerLicenseExpiration();
-  }, [licenseValidityDaysLeft]);
-
-  ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
-  const checkPartnerLicenseExpiration = async () => {
-    try {
-      const checkPartnerLicenseExpirationResponse = await axios.get(
-        `${RemoteEndpoints.CHECK_PARTNER_LICENSE_EXPIRATION}${partner?.uuid}`,
-        {
-          headers: {
-            apikey: apikey,
-            Authorization: `Bearer ${states.users.token}`,
-          },
-        }
-      );
-      const response = checkPartnerLicenseExpirationResponse.data.data;
-      const license_validity = response.license_validity;
-      if (license_validity == "not_expired") {
-        setValidity(false);
-      } else {
-        setValidity(true);
-      }
-    } catch (error) {
-      setErrorMessage("Something went wrong while trying to license validity");
-    }
-  };
-
-  return (
-    <>
-      {licenseValidityDaysLeft <= 60 && (
-        <>
-          {errorMessage && (
-            <p className="text-red-500 text-sm font-italic">{errorMessage}</p>
-          )}
-          <div
-            className={`${
-              validity ? "bg-[#CA3521] text-white" : "bg-[#09326C]"
-            } min-h-[20px] w-[100%]`}
-          >
-            <div className="py-2 px-10 flex flex-row justify-between ">
-              <div className="flex gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <path
-                    d="M11.0938 13.75C11.0938 13.8743 11.0444 13.9935 10.9565 14.0815C10.8686 14.1694 10.7493 14.2188 10.625 14.2188C10.3349 14.2188 10.0567 14.1035 9.85161 13.8984C9.64649 13.6933 9.53125 13.4151 9.53125 13.125V10C9.53125 9.95856 9.51479 9.91882 9.48549 9.88951C9.45619 9.86021 9.41644 9.84375 9.375 9.84375C9.25068 9.84375 9.13146 9.79436 9.04355 9.70646C8.95564 9.61855 8.90625 9.49932 8.90625 9.375C8.90625 9.25068 8.95564 9.13145 9.04355 9.04354C9.13146 8.95564 9.25068 8.90625 9.375 8.90625C9.66508 8.90625 9.94328 9.02148 10.1484 9.2266C10.3535 9.43172 10.4688 9.70992 10.4688 10V13.125C10.4688 13.1664 10.4852 13.2062 10.5145 13.2355C10.5438 13.2648 10.5836 13.2812 10.625 13.2812C10.7493 13.2812 10.8686 13.3306 10.9565 13.4185C11.0444 13.5065 11.0938 13.6257 11.0938 13.75ZM9.6875 7.34375C9.84202 7.34375 9.99307 7.29793 10.1215 7.21209C10.25 7.12624 10.3502 7.00423 10.4093 6.86147C10.4684 6.71872 10.4839 6.56163 10.4537 6.41009C10.4236 6.25854 10.3492 6.11933 10.2399 6.01007C10.1307 5.90081 9.99147 5.82641 9.83992 5.79626C9.68837 5.76612 9.53129 5.78159 9.38853 5.84072C9.24578 5.89985 9.12376 5.99998 9.03792 6.12846C8.95207 6.25694 8.90625 6.40798 8.90625 6.5625C8.90625 6.7697 8.98856 6.96841 9.13508 7.11493C9.28159 7.26144 9.4803 7.34375 9.6875 7.34375ZM17.9688 10C17.9688 11.5761 17.5014 13.1167 16.6258 14.4272C15.7502 15.7377 14.5056 16.759 13.0495 17.3622C11.5934 17.9653 9.99116 18.1231 8.44538 17.8156C6.89959 17.5082 5.4797 16.7492 4.36525 15.6348C3.2508 14.5203 2.49185 13.1004 2.18437 11.5546C1.87689 10.0088 2.0347 8.40659 2.63784 6.95049C3.24097 5.49439 4.26235 4.24984 5.5728 3.37423C6.88326 2.49861 8.42393 2.03125 10 2.03125C12.1127 2.03373 14.1381 2.87409 15.632 4.36798C17.1259 5.86188 17.9663 7.88732 17.9688 10ZM17.0313 10C17.0313 8.60935 16.6189 7.24993 15.8463 6.09365C15.0737 4.93736 13.9755 4.03615 12.6907 3.50397C11.406 2.97179 9.9922 2.83255 8.62827 3.10385C7.26435 3.37516 6.0115 4.04482 5.02816 5.02816C4.04482 6.01149 3.37516 7.26434 3.10386 8.62827C2.83255 9.9922 2.9718 11.406 3.50398 12.6907C4.03615 13.9755 4.93737 15.0737 6.09365 15.8463C7.24993 16.6189 8.60935 17.0312 10 17.0312C11.8642 17.0292 13.6514 16.2877 14.9696 14.9696C16.2877 13.6514 17.0292 11.8642 17.0313 10Z"
-                    fill="#579DFF"
-                  />
-                </svg>
-                <p className="text-white flex gap-2">
-                  {!validity ? (
-                    <span>
-                      Your contract expires in {licenseValidityDaysLeft} days.
-                    </span>
-                  ) : (
-                    <span>Your contract has expired</span>
-                  )}
-                  {" "}
-                  <span className="text-white/70 cursor-pointer hover:underline hover:text-white/90">
-                    Renew your contract{" "}
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                  >
-                    <path
-                      d="M3.125 10H16.875M16.875 10L11.25 4.375M16.875 10L11.25 15.625"
-                      stroke="white"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </p>
-              </div>
-              <button
-                className="h-[20px] w-[20px] text-white flex justify-center items-center text-[14px] rounded-[3px] hover:bg-white/20 transition ease-in-out delay-150"
-                onClick={(e) => {
-                  closeLicenseValidityAlert();
-                }}
-              >
-                X
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-    </>
-  );
-};
 
 export const GracePeriodExtensionForm = ({
   closePopUp,
@@ -490,6 +388,485 @@ export const GracePeriodSuccess = ({ gracePeriodSuccessOk }) => {
     </div>
   );
 };
+
+
+
+
+export const LicenseValidityTopAlert = ({ licenseValidityDaysLeft, partner, closeLicenseValidityAlert, popUpLicenseRenewalForm}) => {
+  const states = useStoreState((state) => state);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [validity, setValidity] = useState(false);
+
+  useEffect(() => {
+    checkPartnerLicenseExpiration();
+  }, [licenseValidityDaysLeft]);
+
+  ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
+  const checkPartnerLicenseExpiration = async () => {
+    try {
+      const checkPartnerLicenseExpirationResponse = await axios.get(
+        `${RemoteEndpoints.CHECK_PARTNER_LICENSE_EXPIRATION}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: apikey,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      const response = checkPartnerLicenseExpirationResponse.data.data;
+      const license_validity = response.license_validity;
+      if (license_validity == "not_expired") {
+        setValidity(false);
+      } else {
+        setValidity(true);
+      }
+    } catch (error) {
+      setErrorMessage("Something went wrong while trying to license validity");
+    }
+  };
+  return (
+    <>
+      {licenseValidityDaysLeft <= 60 && (
+        <>
+          {errorMessage && (
+            <p className="text-red-500 text-sm font-italic">{errorMessage}</p>
+          )}
+          <div
+            className={`${
+              validity ? "bg-[#CA3521] text-white" : "bg-[#09326C]"
+            } min-h-[20px] w-[100%]`}
+          >
+            <div className="py-2 px-10 flex flex-row justify-between ">
+              <div className="flex gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M11.0938 13.75C11.0938 13.8743 11.0444 13.9935 10.9565 14.0815C10.8686 14.1694 10.7493 14.2188 10.625 14.2188C10.3349 14.2188 10.0567 14.1035 9.85161 13.8984C9.64649 13.6933 9.53125 13.4151 9.53125 13.125V10C9.53125 9.95856 9.51479 9.91882 9.48549 9.88951C9.45619 9.86021 9.41644 9.84375 9.375 9.84375C9.25068 9.84375 9.13146 9.79436 9.04355 9.70646C8.95564 9.61855 8.90625 9.49932 8.90625 9.375C8.90625 9.25068 8.95564 9.13145 9.04355 9.04354C9.13146 8.95564 9.25068 8.90625 9.375 8.90625C9.66508 8.90625 9.94328 9.02148 10.1484 9.2266C10.3535 9.43172 10.4688 9.70992 10.4688 10V13.125C10.4688 13.1664 10.4852 13.2062 10.5145 13.2355C10.5438 13.2648 10.5836 13.2812 10.625 13.2812C10.7493 13.2812 10.8686 13.3306 10.9565 13.4185C11.0444 13.5065 11.0938 13.6257 11.0938 13.75ZM9.6875 7.34375C9.84202 7.34375 9.99307 7.29793 10.1215 7.21209C10.25 7.12624 10.3502 7.00423 10.4093 6.86147C10.4684 6.71872 10.4839 6.56163 10.4537 6.41009C10.4236 6.25854 10.3492 6.11933 10.2399 6.01007C10.1307 5.90081 9.99147 5.82641 9.83992 5.79626C9.68837 5.76612 9.53129 5.78159 9.38853 5.84072C9.24578 5.89985 9.12376 5.99998 9.03792 6.12846C8.95207 6.25694 8.90625 6.40798 8.90625 6.5625C8.90625 6.7697 8.98856 6.96841 9.13508 7.11493C9.28159 7.26144 9.4803 7.34375 9.6875 7.34375ZM17.9688 10C17.9688 11.5761 17.5014 13.1167 16.6258 14.4272C15.7502 15.7377 14.5056 16.759 13.0495 17.3622C11.5934 17.9653 9.99116 18.1231 8.44538 17.8156C6.89959 17.5082 5.4797 16.7492 4.36525 15.6348C3.2508 14.5203 2.49185 13.1004 2.18437 11.5546C1.87689 10.0088 2.0347 8.40659 2.63784 6.95049C3.24097 5.49439 4.26235 4.24984 5.5728 3.37423C6.88326 2.49861 8.42393 2.03125 10 2.03125C12.1127 2.03373 14.1381 2.87409 15.632 4.36798C17.1259 5.86188 17.9663 7.88732 17.9688 10ZM17.0313 10C17.0313 8.60935 16.6189 7.24993 15.8463 6.09365C15.0737 4.93736 13.9755 4.03615 12.6907 3.50397C11.406 2.97179 9.9922 2.83255 8.62827 3.10385C7.26435 3.37516 6.0115 4.04482 5.02816 5.02816C4.04482 6.01149 3.37516 7.26434 3.10386 8.62827C2.83255 9.9922 2.9718 11.406 3.50398 12.6907C4.03615 13.9755 4.93737 15.0737 6.09365 15.8463C7.24993 16.6189 8.60935 17.0312 10 17.0312C11.8642 17.0292 13.6514 16.2877 14.9696 14.9696C16.2877 13.6514 17.0292 11.8642 17.0313 10Z"
+                    fill="#579DFF"
+                  />
+                </svg>
+                <p className="text-white flex gap-2">
+                  {!validity ? (
+                    <span>
+                      Your License expires in {licenseValidityDaysLeft} days.
+                    </span>
+                  ) : (
+                    <span>Your contract has expired</span>
+                  )}
+                  {" "}
+                  <span className="text-white/70 cursor-pointer hover:underline hover:text-white/90"
+                  onClick={() => popUpLicenseRenewalForm()}
+                  >
+                    Renew your contract{" "}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.125 10H16.875M16.875 10L11.25 4.375M16.875 10L11.25 15.625"
+                      stroke="white"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </p>
+              </div>
+              <button
+                className="h-[20px] w-[20px] text-white flex justify-center items-center text-[14px] rounded-[3px] hover:bg-white/20 transition ease-in-out delay-150"
+                onClick={() => closeLicenseValidityAlert()}
+              >
+                X
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+
+export const LicenseRenewalForm = ({
+  closePopUp,
+  submitLicenseRenewal,
+}) => {
+  const { partner } = usePartners();
+  const states = useStoreState((state) => state);
+  const [formNotifications, setFormNotifications] = useState(false);
+
+  
+
+  const [doc, setDoc] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [sendAction, setSendAction] = useState(false);
+  const [formData, setFormData] = useState({
+    partner_uuid: partner?.uuid,
+    file: null,
+    indemnity_clause: false,
+  });
+  const [fileSize, setfFileSize] = useState(null);
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+  const handleFileChange = (e) => {
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setErrorMessage("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setErrorMessage("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
+  const handleChange = (event) => {
+    const { name, type, value, checked } = event.target;
+    const newValue = type === "checkbox" ? checked : value;
+
+    setFormData({
+      ...formData,
+      [name]: newValue,
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      clearError();
+      if (fileSize <= 0) {
+        setErrorMessage("Upload  Proof of Renewal!");
+      } else {
+        if (!formData.indemnity_clause) {
+          setErrorMessage("Check to validate licence renewal progress");
+        } else {
+          setSendAction(true);
+          const formDataToSend = new FormData();
+          formDataToSend.append("partner_uuid", formData.partner_uuid);
+          formDataToSend.append("file", formData.file);
+          formDataToSend.append("indemnity_clause", "YES");
+          const response = await axios.post(
+            RemoteEndpoints.SUBMIT_LICENSE_GRACE_PERIOD_REQUEST,
+            formDataToSend,
+            {
+              headers: {
+                apikey: apikey,
+                Authorization: `Bearer ${states.users.token}`,
+              },
+            }
+          );
+
+          if (response?.data.success) {
+            submitLicenseRenewal();
+          } else {
+            setErrorMessage(response.data.message);
+            setSendAction(false);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      setSendAction(false);
+      setErrorMessage(err.response.data.data.message);
+    }
+  };
+
+  const clearError = () => {
+    setErrorMessage(null);
+  };
+
+  return (
+    <section id="brd_updates">
+      <h2 className="text-white font-mtn-bold text-2xl mb-4">
+        Add new VAS license
+      </h2>
+
+      {!formNotifications ? (
+        <>
+          <p className="text-white/70 mb-5">
+            When you update your address, we require you to sign and updated
+            License.
+          </p>
+
+          <div className="mt-3 mb-3 flex flex-col gap-8 border-l-[2px] border-[#353535]">
+
+            <div className="flex flex-row gap-5 ml-[-8px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
+              </svg>
+              <p className="text-gray-500">
+                <span className="text-white">Update your address</span>
+                <br />
+                Update your address to a new address
+              </p>
+            </div>
+
+            <div className="flex flex-row gap-5 ml-[-8px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
+              </svg>
+              <p className="text-gray-500">
+                <span className="text-white">We’ll review your updates</span>
+                <br />
+                Update your address to a new address
+              </p>
+            </div>
+
+            <div className="flex flex-row gap-5 ml-[-8px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
+              </svg>
+              <p className="text-gray-500">
+                <span className="text-white">We’ll send a request to sign a new contract</span>
+                <br />
+                Update your address to a new address
+              </p>
+            </div>
+          
+          </div>
+
+          <div className="flex gap-2 justify-end mt-4">
+        <button
+          className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+          onClick={() => closePopUp()}
+        >
+          Cancel
+        </button>
+        
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => setFormNotifications(true)}
+          >
+            Continue
+          </button>
+        
+      </div>
+          
+        </>
+      ) : (
+        <>
+          <p className="text-white/70 mb-5">
+            Let us know what problem you are facing. If you have general
+            questions , check out our &nbsp;
+            <Link
+              href={PageRoutes.faq}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-mtn-300 underline"
+            >
+              FAQs
+            </Link>
+            &nbsp; where you might find the answer you're after even quicker.
+          </p>
+
+
+          {errorMessage && (
+        <p className="text-red-500 text-sm font-italic">
+          {errorMessage}
+          <br />
+        </p>
+      )}
+      <FileInputWrapper>
+        <div className="p-[8px] w-full rounded-[10px]">
+          <label>
+            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="hidden"
+                name="files"
+                id="files"
+                accept=".pdf,.PDF"
+              />
+
+              {!doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadIcon />
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          Proof of renewal in-progress
+                        </span>
+                        <br />
+                        Drag and drop here or
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+              {doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadActiveIcon />
+                    </div>
+
+                    <div className="flex text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          {doc?.file_name}
+                        </span>
+                        <br />
+                        {doc ? getFileSizeText(doc.file_size) : "0"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+      </FileInputWrapper>
+
+      <div className="flex items-center space-x-3 mt-5 mtb-5">
+        <input
+          type="checkbox"
+          className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
+          name="indemnity_clause"
+          id="indemnity_clause"
+          value="YES"
+          onChange={handleChange}
+        />
+        <div className="flex justify-center text-white/70">
+          <p>
+            By clicking this checkbox, I agree that the document I’ve uploaded
+            is true and reflects my licence renewal progress.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex gap-2 justify-end mt-4">
+        <button
+          className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+          onClick={() => closePopUp()}
+        >
+          Cancel
+        </button>
+        {sendAction ? (
+          <TailSpinPreloader width={40} height={40} fill="#efb703" />
+        ) : (
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={()=> submitLicenseRenewal()}
+          >
+            Upload
+          </button>
+        )}
+      </div>
+        </>
+      )}
+
+    </section>
+  );
+};
+
+
+export const LicenseRenewalSuccess = ({ SuccessOk, startLicenseRenewal }) => {
+  return (
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <Image
+        priority
+        src="/assets/icons/check.svg"
+        width={76.71}
+        height={38.32}
+        alt="MTN Nigeria Logo"
+        className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+      />
+      <h2 className="text-white font-mtn-bold text-2xl my-4">
+      Thanks for your submission
+      </h2>
+      <p className=" text-mtn-500 my-5">
+     What's Next?
+      </p>
+      <p className=" text-gray-400 max-w-[60%] m-[auto]">
+      We’ll review your updates and 
+share an updated contract for you to sign.
+      </p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={() => {SuccessOk(); startLicenseRenewal();}}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
+
+
+
+
+
+
 
 function actionDate(targetDate) {
   const originalDate = new Date(targetDate);

@@ -406,7 +406,6 @@ export const GracePeriodAdminFlyOut = ({
   successAction
 }) => {
   const states = useStoreState((state) => state);
-  const tabRef = useRef(null);
   const [tab, setTab] = useState({
     overview: true,
     activity: false,
@@ -420,7 +419,7 @@ export const GracePeriodAdminFlyOut = ({
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
 
-  const [formData, setFormData] = useState({
+  let [formData, setFormData] = useState({
     grace_period_request_uuid: selectedRequest.uuid,
     partner_uuid: selectedRequest.partner_uuid,
     status: "",
@@ -441,26 +440,20 @@ export const GracePeriodAdminFlyOut = ({
     if (rejection_reason === "") {
       setErrorMessage("Select the reason for rejection.");
     } else {
-        setFormData({
-          ...formData,
-          status: "rejected",
-        });
+      formData.status = "rejected";
         gracePeriodAction();
     }
   };
 
-  const approveGracePeriod = () => {
+  
+  const _approveGracePeriod = () => {
     clearError();
-    setFormData({
-        ...formData,
-        status: "approved",
-        rejection_reason: "Approved",
-    });
+    formData.status = "approved";
+    formData.rejection_reason = "Approved";
     gracePeriodAction();
   };
 
   const gracePeriodAction = async (e) => {
-    //alert(formData.status)
     try {
       setSendAction(true);
       const response = await axios.post(
@@ -473,11 +466,9 @@ export const GracePeriodAdminFlyOut = ({
           },
         }
       );
-      
       setSuccessMessage(response.data.data.message);
       setSuccessToast(true);
     } catch (err) {
-      console.log(err);
       setSendAction(false);
       setErrorMessage(err.response.data.data.message);
     }
@@ -666,7 +657,7 @@ export const GracePeriodAdminFlyOut = ({
                             <button
                               className="flex text-[12px] leading-[20px] gap-2 text-white hover:text-gray-400"
                               title="Approve"
-                              onClick={approveGracePeriod}
+                              onClick={_approveGracePeriod}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

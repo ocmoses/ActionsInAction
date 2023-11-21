@@ -106,10 +106,19 @@ export default function Requests() {
     mtn_share: "",
   });
 
+
+  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
+  const [gracePeriods, setGracePeriods] = useState([]);
+  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
+
   let get_brd_response = null;
+  let get_questionnaire_response = null;
+  let get_revenue_share_response = null;
+  let get_grace_period_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
-  let get_questionnaire_response = null;
+  
+  
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -210,7 +219,7 @@ export default function Requests() {
   };
 
   const get_revenue_share = async (page, perPage) => {
-    let get_revenue_share_response = await getAllRevenueShare();
+     get_revenue_share_response = await getAllRevenueShare();
 
     console.log("All rev share", get_revenue_share_response);
 
@@ -249,10 +258,7 @@ export default function Requests() {
     clearErrors();
   };
 
-  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
-  const [gracePeriods, setGracePeriods] = useState([]);
-  let get_grace_period_response = null;
-  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
+
 
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
@@ -285,7 +291,6 @@ export default function Requests() {
         });
       }
     }
-    const fileName = filePath.split("/").pop();
 
     requests.sort((a, b) =>
       a.request_date > b.request_date
@@ -420,7 +425,7 @@ export default function Requests() {
       [field]: e.target.value,
     }));
   };
-
+ 
   useEffect(() => {
     setProcessing(false);
     clearErrors();
@@ -432,6 +437,9 @@ export default function Requests() {
 
   useEffect(() => {}, [filteredRequests]);
 
+
+
+ 
   return (
     <>
       <div id="approvals" className="flex flex-cols pb-12 min-h-screen">

@@ -37,6 +37,8 @@ import BrdUpdates, {
 import GracePeriodAlert, {
   GracePeriodExtensionForm,
   GracePeriodSuccess,
+  LicenseRenewalForm,
+  LicenseRenewalSuccess,
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
 import { useStoreState } from "easy-peasy";
@@ -279,6 +281,9 @@ export default function GetStarted({ type }) {
   
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
+
+  const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
+  const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
 ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
@@ -605,11 +610,30 @@ const partnerLicenseGracePeriodStatus = async () => {
                       )}
                     </PopUp>
                   )}
+
+                  {popUpLicenseRenewalForm && (
+                    <PopUp closePopUp={() => setPopUpLicenseRenewalForm(false)}>
+                      {!licenseRenewalSubmit ? (
+                        <LicenseRenewalForm
+                          closePopUp={() => setPopUpLicenseRenewalForm(false)}
+                          submitLicenseRenewal={() => setLicenseRenewalSubmit(true)}
+                        /> 
+                      ) : (
+                        <LicenseRenewalSuccess
+                          SuccessOk={() => setPopUpLicenseRenewalForm(false)}
+                          startLicenseRenewal={() => setLicenseRenewalSubmit(false)}
+                        />
+                      )}
+                    </PopUp>
+                  )}
+
                   <GracePeriodAlert
                     status={gracePeriodStatus}
                     openGracePeriodForm={openGracePeriodForm}
-                    licenseValidityDaysLeft={licenseValidityDaysLeft} 
+                    licenseValidityDaysLeft={licenseValidityDaysLeft}
+                    popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
                   />
+                  
                 </>
               )}
 

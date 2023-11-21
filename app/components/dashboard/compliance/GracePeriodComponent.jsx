@@ -27,6 +27,7 @@ export default function GracePeriodAlert({
   status,
   openGracePeriodForm,
   licenseValidityDaysLeft,
+  popUpLicenseRenewalForm,
 }) {
   return (
     <>
@@ -78,7 +79,9 @@ export default function GracePeriodAlert({
                   >
                     Extend Expiration
                   </button>
-                  <button className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                  <button className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                  onClick={() => popUpLicenseRenewalForm()}
+                  >
                     Upload new license
                   </button>
                 </div>
@@ -120,6 +123,11 @@ export default function GracePeriodAlert({
                 <div className="flex gap-2 flex-wrap">
                   <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
                     Got It!
+                  </button>
+                  <button className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                  onClick={() => popUpLicenseRenewalForm()}
+                  >
+                    Renew Your License
                   </button>
                 </div>
               </div>
@@ -607,8 +615,7 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
       {!formNotifications ? (
         <>
           <p className="text-white/70 mb-5">
-            When you update your address, we require you to sign and updated
-            Contract.
+          We’ll review your submission for approval
           </p>
 
           <div className="mt-3 mb-3 flex flex-col gap-8 border-l-[2px] border-[#353535]">
@@ -623,9 +630,9 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
                 <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
               </svg>
               <p className="text-gray-500">
-                <span className="text-white">Update your address</span>
+                <span className="text-white">Update your VAS license</span>
                 <br />
-                Update your address to a new address
+                Provide details of your license
               </p>
             </div>
 
@@ -642,28 +649,10 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
               <p className="text-gray-500">
                 <span className="text-white">We’ll review your updates</span>
                 <br />
-                Update your address to a new address
+                Your submission will go through an approval process, ensure they are correct.
               </p>
             </div>
 
-            <div className="flex flex-row gap-5 ml-[-8px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-              >
-                <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
-              </svg>
-              <p className="text-gray-500">
-                <span className="text-white">
-                  We’ll send a request to sign a new contract
-                </span>
-                <br />
-                Update your address to a new address
-              </p>
-            </div>
           </div>
 
           <div className="flex gap-2 justify-end mt-4">
@@ -855,8 +844,7 @@ export const LicenseRenewalSuccess = ({ SuccessOk, startLicenseRenewal }) => {
      What's Next?
       </p>
       <p className=" text-gray-400 max-w-[60%] m-[auto]">
-      We’ll review your updates and 
-share an updated contract for you to sign.
+      We’ll review your updates and revert on the same.
       </p>
       <div className="flex gap-2 justify-center mt-10">
         <button

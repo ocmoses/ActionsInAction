@@ -1,7 +1,18 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import {getPartnerInitials,filterPartner,Util,titleCase,getInitials} from "@/app/modules/utilities";
-import {status_type,statusOptions, request_types,docPrefix} from "@/app/modules/constants";
+import {
+  getPartnerInitials,
+  filterPartner,
+  Util,
+  titleCase,
+  getInitials,
+} from "@/app/modules/utilities";
+import {
+  status_type,
+  statusOptions,
+  request_types,
+  docPrefix,
+} from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -24,13 +35,10 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-import {
-  GracePeriodAdminFlyOut
-} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import { GracePeriodAdminFlyOut } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
-
   const {
     getAllBoardResolutionDocuments,
     approving,
@@ -39,7 +47,7 @@ export default function Requests() {
     getAllQuestionnaire,
     approveOrRejectQuestionnaire,
     getAllRevenueShare,
-    getAllGreacePeriod
+    getAllGreacePeriod,
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -91,15 +99,17 @@ export default function Requests() {
 
   const [openSideDrawer, setOpenSideDrawer] = useState(false);
 
-  const [checks, setChecks] = useState({1:0, 2:0, 3:0});
+  const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
 
-  const [data, setData] = useState({content_provider_share: "", mtn_share: ""});
+  const [data, setData] = useState({
+    content_provider_share: "",
+    mtn_share: "",
+  });
 
   let get_brd_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
   let get_questionnaire_response = null;
-
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -200,7 +210,6 @@ export default function Requests() {
   };
 
   const get_revenue_share = async (page, perPage) => {
-    
     let get_revenue_share_response = await getAllRevenueShare();
 
     console.log("All rev share", get_revenue_share_response);
@@ -240,17 +249,9 @@ export default function Requests() {
     clearErrors();
   };
 
-
-
-
-
-
-
-
-
   const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
   const [gracePeriods, setGracePeriods] = useState([]);
-  let get_grace_period_response= null;
+  let get_grace_period_response = null;
   const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
 
   const get_grace_period = async () => {
@@ -258,7 +259,7 @@ export default function Requests() {
     setFetchingGracePeriods(true);
 
     get_grace_period_response = await getAllGreacePeriod();
-   // console.log("All get_grace_period_response", get_grace_period_response);
+    // console.log("All get_grace_period_response", get_grace_period_response);
 
     if (get_grace_period_response.error) {
       setError({ error: get_grace_period_response.error });
@@ -273,18 +274,18 @@ export default function Requests() {
           request_type: request_types.GRACE_PERIOD,
           request_id: graceperiod.request_id,
           created_at: graceperiod.created_at,
-          approved_on:graceperiod.approved_on,
-          rejected_on:graceperiod.rejected_on,
+          approved_on: graceperiod.approved_on,
+          rejected_on: graceperiod.rejected_on,
           status: graceperiod.status,
           file_name:
-          graceperiod.license_grace_period_file?.split('/').pop() ?? "",
+            graceperiod.license_grace_period_file?.split("/").pop() ?? "",
           file_path: graceperiod.license_grace_period_file ?? "",
           partner_uuid: graceperiod.partner_uuid,
           uuid: graceperiod.uuid,
         });
       }
     }
-    const fileName = filePath.split('/').pop();
+    const fileName = filePath.split("/").pop();
 
     requests.sort((a, b) =>
       a.request_date > b.request_date
@@ -304,8 +305,6 @@ export default function Requests() {
   const closeGracePeriodFlyOut = () => {
     setGracePeriodFlyout(false);
   };
-
-
 
   const approveRequest = async () => {
     //TODO
@@ -924,6 +923,7 @@ export default function Requests() {
           <GracePeriodAdminFlyOut
             closeGracePeriodFlyOut={closeGracePeriodFlyOut}
             selectedRequest={selectedRequest}
+            successAction={successAction}
           />
         )}
 

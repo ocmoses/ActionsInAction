@@ -53,7 +53,7 @@ export default function ComplianceDrawer({
                         height={18}
                       />
                     ) : (
-                      <>A</>
+                      <></>
                     )}
                   </div>
                   <div className="flex flex-col">

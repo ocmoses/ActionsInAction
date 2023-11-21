@@ -19,6 +19,10 @@ import FilePreviewModal from "@/app/components/FilePreviewModal";
 import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
+import TextInput from "@/app/components/form/TextInput";
+
+
+
 export default function GracePeriodAlert({
   status,
   openGracePeriodForm,
@@ -496,15 +500,10 @@ export const LicenseValidityTopAlert = ({ licenseValidityDaysLeft, partner, clos
 };
 
 
-export const LicenseRenewalForm = ({
-  closePopUp,
-  submitLicenseRenewal,
-}) => {
+export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
   const [formNotifications, setFormNotifications] = useState(false);
-
-  
 
   const [doc, setDoc] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -609,11 +608,10 @@ export const LicenseRenewalForm = ({
         <>
           <p className="text-white/70 mb-5">
             When you update your address, we require you to sign and updated
-            License.
+            Contract.
           </p>
 
           <div className="mt-3 mb-3 flex flex-col gap-8 border-l-[2px] border-[#353535]">
-
             <div className="flex flex-row gap-5 ml-[-8px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -659,34 +657,33 @@ export const LicenseRenewalForm = ({
                 <circle cx="7" cy="7" r="6.5" fill="#E4B809" stroke="white" />
               </svg>
               <p className="text-gray-500">
-                <span className="text-white">We’ll send a request to sign a new contract</span>
+                <span className="text-white">
+                  We’ll send a request to sign a new contract
+                </span>
                 <br />
                 Update your address to a new address
               </p>
             </div>
-          
           </div>
 
           <div className="flex gap-2 justify-end mt-4">
-        <button
-          className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-          onClick={() => closePopUp()}
-        >
-          Cancel
-        </button>
-        
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={() => setFormNotifications(true)}
-          >
-            Continue
-          </button>
-        
-      </div>
-          
+            <button
+              className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+              onClick={() => closePopUp()}
+            >
+              Cancel
+            </button>
+
+            <button
+              className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+              onClick={() => setFormNotifications(true)}
+            >
+              Continue
+            </button>
+          </div>
         </>
       ) : (
-        <>
+        <section className="animate-[slide-left_1s_ease-in-out]">
           <p className="text-white/70 mb-5">
             Let us know what problem you are facing. If you have general
             questions , check out our &nbsp;
@@ -701,127 +698,140 @@ export const LicenseRenewalForm = ({
             &nbsp; where you might find the answer you're after even quicker.
           </p>
 
-
           {errorMessage && (
-        <p className="text-red-500 text-sm font-italic">
-          {errorMessage}
-          <br />
-        </p>
-      )}
-      <FileInputWrapper>
-        <div className="p-[8px] w-full rounded-[10px]">
-          <label>
-            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                name="files"
-                id="files"
-                accept=".pdf,.PDF"
+            <p className="text-red-500 text-sm font-italic">
+              {errorMessage}
+              <br />
+            </p>
+          )}
+          <TextInput
+            id="name"
+            label="VAS License ID"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+
+          <div className="flex gap-3">
+            <div className="w-[50%]">
+              <TextInput
+                id="name"
+                label="Issuing Date"
+                type="date"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
               />
-
-              {!doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadIcon />
-                    </div>
-
-                    <div className="text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          Proof of renewal in-progress
-                        </span>
-                        <br />
-                        Drag and drop here or
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-              {doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadActiveIcon />
-                    </div>
-
-                    <div className="flex text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          {doc?.file_name}
-                        </span>
-                        <br />
-                        {doc ? getFileSizeText(doc.file_size) : "0"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
-          </label>
-        </div>
-      </FileInputWrapper>
+            <div className="w-[50%]">
+              <TextInput
+                id="email"
+                label="Expiry Date"
+                type="date"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-      <div className="flex items-center space-x-3 mt-5 mtb-5">
-        <input
-          type="checkbox"
-          className="h-6 w-6 rounded-lg bg-black/40 cursor-pointer mr-3 outline-none appearance-none"
-          name="indemnity_clause"
-          id="indemnity_clause"
-          value="YES"
-          onChange={handleChange}
-        />
-        <div className="flex justify-center text-white/70">
-          <p>
-            By clicking this checkbox, I agree that the document I’ve uploaded
-            is true and reflects my licence renewal progress.
-          </p>
-        </div>
-      </div>
+          <FileInputWrapper>
+            <div className="p-[8px] w-full rounded-[10px]">
+              <label>
+                <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    name="files"
+                    id="files"
+                    accept=".pdf,.PDF"
+                  />
 
-      <div className="flex gap-2 justify-end mt-4">
-        <button
-          className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-          onClick={() => closePopUp()}
-        >
-          Cancel
-        </button>
-        {sendAction ? (
-          <TailSpinPreloader width={40} height={40} fill="#efb703" />
-        ) : (
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={()=> submitLicenseRenewal()}
-          >
-            Upload
-          </button>
-        )}
-      </div>
-        </>
+                  {!doc?.file_name && (
+                    <div
+                      className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                    >
+                      <div className="flex flex-row gap-3">
+                        <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                          <FileUploadIcon />
+                        </div>
+
+                        <div className="text-[#999999]">
+                          <p>
+                            Upload <br />
+                            <span className="text-white font-mtn-bold">
+                              NCC VAS License
+                            </span>
+                            <br />
+                            Drag and drop here or
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4 justify-between items-end">
+                        <InfoIcon width={16} height={16} iconClass="" />
+                        <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                          Choose file
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {doc?.file_name && (
+                    <div
+                      className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                    >
+                      <div className="flex flex-row gap-3">
+                        <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                          <FileUploadActiveIcon />
+                        </div>
+
+                        <div className="flex text-[#999999]">
+                          <p>
+                            Upload <br />
+                            <span className="text-white font-mtn-bold">
+                              {doc?.file_name}
+                            </span>
+                            <br />
+                            {doc ? getFileSizeText(doc.file_size) : "0"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4 justify-between items-end">
+                        <InfoIcon width={16} height={16} iconClass="" />
+                        <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                          Choose file
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </label>
+            </div>
+          </FileInputWrapper>
+
+          <div className="flex gap-2 justify-end mt-4">
+            <button
+              className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+              onClick={() => closePopUp()}
+            >
+              Cancel
+            </button>
+            {sendAction ? (
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            ) : (
+              <button
+                className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+                onClick={() => submitLicenseRenewal()}
+              >
+                Upload
+              </button>
+            )}
+          </div>
+        </section>
       )}
-
     </section>
   );
 };

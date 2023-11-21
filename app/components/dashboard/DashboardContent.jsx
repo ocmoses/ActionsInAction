@@ -35,9 +35,9 @@ import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
 import GracePeriodAlert, {
-  GracePeriodRejectedAlert,
   GracePeriodExtensionForm,
-  GracePeriodSuccess
+  GracePeriodSuccess,
+  GracePeriodTopAlert
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
 import { useStoreState } from "easy-peasy";
@@ -342,8 +342,6 @@ const partnerLicenseGracePeriodStatus = async () => {
 };
 ////////////end partnerLicenseGracePeriodStatus function////////////////////
 
-
-
   useEffect(() => {
     licenseValidityRemainder();
     partnerLicenseGracePeriodStatus();
@@ -360,20 +358,6 @@ const partnerLicenseGracePeriodStatus = async () => {
     setLicenseValidityDays(false);
     setPopUpGracePeriodForm(false);
   };
-
-  const openLicenseRenewalForm = () => {
-    setPopUpLicenseRenewalForm(true);
-  };
-  const closeLicenseRenewalForm = () => {
-    setPopUpLicenseRenewalForm(false);
-    setLicenseRenewalSubmit(false);
-  };
-
-  const licenseRenewalSuccessOk = () => {
-    setLicenseValidityDays(false);
-    setPopUpLicenseRenewalForm(false);
-  };
-
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
@@ -611,7 +595,6 @@ const partnerLicenseGracePeriodStatus = async () => {
               {/* //================this is lisense grace period==============================================================================================================*/}
               {/* gracePeriodStatus must not = (corrected, not_approved)*/}
               {licenseValidityDays && (gracePeriodStatus=='none' || gracePeriodStatus=='approved' || gracePeriodStatus=='rejected') &&( 
-                
                 <>
                   {popUpGracePeriodForm && (
                     <PopUp closePopUp={closePopUp}>

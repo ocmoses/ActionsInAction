@@ -37,7 +37,6 @@ import BrdUpdates, {
 import GracePeriodAlert, {
   GracePeriodExtensionForm,
   GracePeriodSuccess,
-  GracePeriodTopAlert
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 
 import { useStoreState } from "easy-peasy";
@@ -280,8 +279,6 @@ export default function GetStarted({ type }) {
   
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
-  const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
-  const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
 ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {

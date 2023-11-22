@@ -109,6 +109,8 @@ export default function Requests() {
         break;
       case request_types.CHANGE_ORDER: setOpenChangeOrderDrawer(true); 
         break;
+        case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
+        break;
       default: setOpenDrawer(true);
     }
   }
@@ -627,20 +629,6 @@ export default function Requests() {
                           onClick={() => {
                             setSelectedRequest(request);
                             open(request);                           
-                            
-                            if (
-                              request.request_type ==
-                              request_types.REVENUE_SHARE
-                            ) {
-                              setOpenSideDrawer(true);
-                            } else if (
-                              request.request_type == request_types.GRACE_PERIOD
-                            ) {
-                              setGracePeriodFlyout(true);
-                            } else {
-                              setOpenDrawer(true);
-                            }
-
                             console.log("selectedRequest", request);
                           }}
                           className="text-yellow-600 cursor-pointer"
@@ -852,6 +840,17 @@ export default function Requests() {
         closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
       
+
+      {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
+      // check this out on dev
+        gracePeriodFlyout && (
+          <GracePeriodAdminFlyOut
+            closeGracePeriodFlyOut={closeGracePeriodFlyOut}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
+
 
       <Success
         message={successMessage}

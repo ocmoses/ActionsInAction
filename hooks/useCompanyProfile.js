@@ -15,7 +15,7 @@ const useCompanyProfile = () => {
   const actions = useStoreActions((action) => action);
   const states = useStoreState((state) => state);
 
-  console.log("states from useCompanyProfile", states);
+  // console.log("states from useCompanyProfile", states);
   
   const {
     partner

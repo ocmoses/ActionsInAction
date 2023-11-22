@@ -312,7 +312,7 @@ export default function Requests() {
 
     console.log("Requests", requests);
     clearErrors();
-    
+
   }
 
 
@@ -502,8 +502,6 @@ export default function Requests() {
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
-
-
 
  
   return (

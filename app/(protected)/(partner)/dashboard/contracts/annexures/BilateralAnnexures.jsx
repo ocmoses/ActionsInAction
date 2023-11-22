@@ -54,6 +54,9 @@ export default function BilateralAnnexures(){
             let annexureCOffset = document.querySelector("#annexure-c").offsetTop;
             let annexureDOffset = document.querySelector("#annexure-d").offsetTop;
             let annexureEOffset = document.querySelector("#annexure-e").offsetTop;
+            let annexureFOffset = document.querySelector("#annexure-f").offsetTop;
+            let annexureGOffset = document.querySelector("#annexure-g").offsetTop;
+            let annexureHOffset = document.querySelector("#annexure-h").offsetTop;
 
             let pageOffset = window.pageYOffset;
 
@@ -69,8 +72,14 @@ export default function BilateralAnnexures(){
                 setFocused("annexureC");
             }else if(pageOffset >= annexureDOffset && pageOffset < annexureEOffset){
                 setFocused("annexureD");
-            }else if(pageOffset >= annexureEOffset){
+            }else if(pageOffset >= annexureEOffset && pageOffset < annexureFOffset){
                 setFocused("annexureE");
+            }else if(pageOffset >= annexureFOffset && pageOffset < annexureGOffset){
+                setFocused("annexureF");
+            }else if(pageOffset >= annexureGOffset && pageOffset < annexureHOffset){
+                setFocused("annexureG");
+            }else if(pageOffset >= annexureHOffset){
+                setFocused("annexureH");
             }
             
         };
@@ -111,6 +120,31 @@ export default function BilateralAnnexures(){
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureE" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>5</span>
                             <span className={`${focused == "annexureE" ? "text-white" : "text-white/40"} text-white`}>Annexure E</span>
                         </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-f")}>
+                             <span className={`flex w-6 h-6 text-white ${focused == "annexureF" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>6</span>
+                            <span className={`${focused == "annexureF" ? "text-white" : "text-white/40"} text-white`}>Annexure F</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-g")}>
+                             <span className={`flex w-6 h-6 text-white ${focused == "annexureG" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>7</span>
+                            <span className={`${focused == "annexureG" ? "text-white" : "text-white/40"} text-white`}>Annexure G</span>
+                        </div>
+
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-h")}>
+                             <span className={`flex w-6 h-6 text-white ${focused == "annexureH" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>8</span>
+                            <span className={`${focused == "annexureH" ? "text-white" : "text-white/40"} text-white`}>Annexure H</span>
+                        </div>
+
+                        {
+                            document?.referer?.includes("/contracts/execution") && 
+                            <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/execution")}>
+                                <span className={`flex w-6 h-6 text-white bg-white/20 rounded-full justify-center items-center`}>9</span>
+                                <span className="text-white/60 text-white">Main Contract</span>
+                            </div>
+                        }
+
+                        
 
                     </div>
                     
@@ -957,6 +991,39 @@ export default function BilateralAnnexures(){
                         
                     </div>
 
+                    {/* Annexure F */}
+                    <div  id="annexure-f" className="border-2 mb-8 border-white/20 bg-white/10 p-8 rounded-lg flex flex-col justify-center items-center pt-8 text-white md:min-w-6xl w-[800px]">
+                        
+                        <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE F</h2>
+
+                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+
+                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
+                        
+                    </div>
+
+                    {/* Annexure G */}
+                    <div  id="annexure-g" className="border-2 mb-8 border-white/20 bg-white/10 p-8 rounded-lg flex flex-col justify-center items-center pt-8 text-white md:min-w-6xl w-[800px]">
+                        
+                        <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE G</h2>
+
+                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+
+                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
+                        
+                    </div>
+
+                    {/* Annexure H */}
+                    <div  id="annexure-h" className="border-2 mb-8 border-white/20 bg-white/10 p-8 rounded-lg flex flex-col justify-center items-center pt-8 text-white md:min-w-6xl w-[800px]">
+                        
+                        <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE H</h2>
+
+                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+
+                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
+
+                        
+                    </div>
 
                     <Success message="Annexures signed successfully" visible={successDisplay} action={() => setTimeout(() => {}, 3000)} />      
 

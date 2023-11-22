@@ -76,7 +76,7 @@ export default function SelectServiceModal({visible, closeAction, callback}){
     }, []);
 
     return (selectServiceModal && 
-            <GenericModal id="select_service_modal" width={500} closeAction={() => setSelectServiceModal(false)}>
+            <GenericModal id="select_service_modal" width={450} closeAction={() => setSelectServiceModal(false)}>
                 <>
                     <div className="flex pt-8">
                         <div className="text-white text-2xl mb-4 flex-1">Select a service to renew</div>

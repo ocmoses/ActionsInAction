@@ -43,7 +43,7 @@ export default function TablePager({list, action, perPage=5, pages=null}){
     getPageLinks();
     
 
-    console.log("pageLinks", pageLinks);
+    // console.log("pageLinks", pageLinks);
 
 
     useEffect(() => {      
@@ -98,13 +98,14 @@ export default function TablePager({list, action, perPage=5, pages=null}){
           if (result?.success) {    
             const data = result?.data[pages.key].data;
             action(data);
-          }
+          }else
          setError({error:
               result?.data?.message ??
               "Something went wrong. Please check your connection and try again",
           });
         } catch (error) {
           console.log({ error });
+          if(error.message != "Cannot read properties of null (reading 'uuid')")
           setError({error:
               error?.message ??
               "Something went wrong. Please check your connection and try again",

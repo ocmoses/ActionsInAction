@@ -927,7 +927,6 @@ export default function Requests() {
       )}
 
       {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
-      // check this out on dev
         gracePeriodFlyout && (
           <GracePeriodAdminFlyOut
             closeGracePeriodFlyOut={closeGracePeriodFlyOut}

@@ -15,7 +15,6 @@ export default function LoginOtp(props) {
   const [showResendLink, setShowResendLink] = useState(false);
   const [sendAction, setSendAction] = useState(false);
 
-
   /////// for any errorhandler, there must be clear error function
   const [errorMessage, setErrorMessage] = useState(null);
   const clearError = () => {
@@ -23,8 +22,7 @@ export default function LoginOtp(props) {
   };
   ////////////////////////////////////////////////////////////////
 
-
-///////////////////////////////////// countdown on OTP recipient
+  ///////////////////////////////////// countdown on OTP recipient
   useEffect(() => {
     const countdown = setInterval(() => {
       if (timer > 0) {
@@ -37,31 +35,27 @@ export default function LoginOtp(props) {
     return () => clearInterval(countdown);
   }, [timer]);
 
-///////////////////////////////////// end countdown on resend OTP recipient
-  const resendOTP  = async () => {
+  ///////////////////////////////////// end countdown on resend OTP recipient
+  const resendOTP = async () => {
     setShowResendLink(false);
     setTimer(30);
     try {
-        const response = await axios.post(
-          RemoteEndpoints.RESEND_AUTH0_OTP,
-          formData,
-          {
-            headers: {
-              apikey: apikey,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        ////// send auth0 OTP
+      const response = await axios.post(
+        RemoteEndpoints.RESEND_AUTH0_OTP,
+        formData,
+        {
+          headers: {
+            apikey: apikey,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      ////// send auth0 OTP
     } catch (err) {
       console.log(setErrorMessage, err);
     }
   };
-///////////////////////////////////// end countdown on OTP recipient
-
-
-
-
+  ///////////////////////////////////// end countdown on OTP recipient
 
   const [formData, setFormData] = useState({
     email: loginData.data.user.email,
@@ -77,7 +71,9 @@ export default function LoginOtp(props) {
   };
 
   const token = loginData.data.access_token;
-  
+  useEffect(() => {
+    sessionStorage.setItem("auth0Data", JSON.stringify(null));
+  }, []);
   const acceptOtp = async (e) => {
     e.preventDefault();
     const otp = formData.otp;
@@ -97,15 +93,16 @@ export default function LoginOtp(props) {
             },
           }
         );
-       //console.log("The response on Auth0 Authentication is ",response);
+        //console.log("The response on Auth0 Authentication is ",response);
 
         if ("access_token" in response.data.authZero) {
-         sessionStorage.setItem('auth0Data', JSON.stringify(response.data.authZero));
-         //setErrorMessage("Correct OTP");
-         props.logInWithAuthZero();
-
+          sessionStorage.setItem(
+            "auth0Data",
+            JSON.stringify(response.data.authZero)
+          );
+          //setErrorMessage("Correct OTP");
+          props.logInWithAuthZero();
         } else {
-          
           setErrorMessage(response.data.authZero.error_description);
           setSendAction(false);
         }
@@ -125,8 +122,8 @@ export default function LoginOtp(props) {
           </h1>
           <p className="font-hairline font-mtn flex-wrap text-[16px] text-white/70 mb-10">
             We sent a six-digit code to{" "}
-            <span className="text-mtn">{loginData.data.user.email}</span>.
-            This helps us keep your account secure by verifying it’s really you
+            <span className="text-mtn">{loginData.data.user.email}</span>. This
+            helps us keep your account secure by verifying it’s really you
           </p>
           <TextInput
             id="otp"

@@ -35,6 +35,10 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+import { GracePeriodAdminFlyOut } from "@/app/components/dashboard/compliance/GracePeriodComponent";
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export default function Requests() {
   const {
     getAllBoardResolutionDocuments,
@@ -44,8 +48,10 @@ export default function Requests() {
     getAllQuestionnaire,
     approveOrRejectQuestionnaire,
     getAllRevenueShare,
-    getAllChangeOrder
+    getAllChangeOrder,
+    getAllGreacePeriod,
   } = useAdmins();
+
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -107,11 +113,26 @@ export default function Requests() {
     }
   }
 
+  const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
+
+  const [data, setData] = useState({
+    content_provider_share: "",
+    mtn_share: "",
+  });
+
+
+  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
+  const [gracePeriods, setGracePeriods] = useState([]);
+  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
 
   let get_brd_response = null;
+  let get_questionnaire_response = null;
+  let get_revenue_share_response = null;
+  let get_grace_period_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
-  let get_questionnaire_response = null;
+  
+  
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -153,7 +174,7 @@ export default function Requests() {
     setRequests(requests);
     setFilteredRequests(requests);
 
-    console.log("Requests", requests);
+    //console.log("Requests", requests);
 
     setBrds(get_brd_response.brds);
     clearErrors();
@@ -212,8 +233,7 @@ export default function Requests() {
   };
 
   const get_revenue_share = async (page, perPage) => {
-    
-    let get_revenue_share_response = await getAllRevenueShare();
+     get_revenue_share_response = await getAllRevenueShare();
 
     console.log("All rev share", get_revenue_share_response);
 
@@ -275,6 +295,55 @@ export default function Requests() {
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
           ...change_order
+        })
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+    
+  }
+
+
+  const get_grace_period = async () => {
+    if (fetchingGracePeriods) return;
+    setFetchingGracePeriods(true);
+
+    get_grace_period_response = await getAllGreacePeriod();
+    // console.log("All get_grace_period_response", get_grace_period_response);
+
+    if (get_grace_period_response.error) {
+      setError({ error: get_grace_period_response.error });
+      return;
+    }
+
+    for (const graceperiod of get_grace_period_response.graceperiods) {
+      if (!requests.find((request) => request.uuid == graceperiod.uuid)) {
+        requests.push({
+          company: graceperiod.company_name ?? "Company",
+          email: graceperiod.email ?? "email@email.com",
+          request_type: request_types.GRACE_PERIOD,
+          request_id: graceperiod.request_id,
+          created_at: graceperiod.created_at,
+          approved_on: graceperiod.approved_on,
+          rejected_on: graceperiod.rejected_on,
+          status: graceperiod.status,
+          file_name:
+            graceperiod.license_grace_period_file?.split("/").pop() ?? "",
+          file_path: graceperiod.license_grace_period_file ?? "",
+          partner_uuid: graceperiod.partner_uuid,
+          uuid: graceperiod.uuid,
         });
       }
     }
@@ -296,6 +365,15 @@ export default function Requests() {
 
     console.log("Requests", requests);
     clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setGracePeriods(get_grace_period_response.graceperiods);
+    clearErrors();
+    setFetchingGracePeriods(false);
+  };
+
+  const closeGracePeriodFlyOut = () => {
+    setGracePeriodFlyout(false);
   };
 
   const approveRequest = async () => {
@@ -405,6 +483,14 @@ export default function Requests() {
     console.log("TYped reason", typedReason);
   };
 
+  const handleFormChange = (e) => {
+    const field = e.target.id;
+    setData((prevState) => ({
+      ...prevState,
+      [field]: e.target.value,
+    }));
+  };
+ 
   useEffect(() => {
     setProcessing(false);
     clearErrors();
@@ -412,11 +498,14 @@ export default function Requests() {
     get_questionnaires();
     get_revenue_share();
     get_change_order();
+    get_grace_period();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
 
 
+
+ 
   return (
     <>
       <div id="approvals" className="flex flex-cols pb-12 min-h-screen">
@@ -541,6 +630,19 @@ export default function Requests() {
                             setSelectedRequest(request);
                             open(request);                           
                             
+                            if (
+                              request.request_type ==
+                              request_types.REVENUE_SHARE
+                            ) {
+                              setOpenSideDrawer(true);
+                            } else if (
+                              request.request_type == request_types.GRACE_PERIOD
+                            ) {
+                              setGracePeriodFlyout(true);
+                            } else {
+                              setOpenDrawer(true);
+                            }
+
                             console.log("selectedRequest", request);
                           }}
                           className="text-yellow-600 cursor-pointer"
@@ -560,7 +662,7 @@ export default function Requests() {
           </div>
         </div>
       </div>
-      
+
       {is_previewing_doc && selectedRequest && (
         <FilePreviewModal
           filePath={selectedRequest?.file_path}
@@ -602,7 +704,7 @@ export default function Requests() {
           )}
 
           <div className="">
-            <p className="text-white">{selectedRequest?.request_type}</p>
+            <p className="text-white">{selectedRequest?.request_type} AAA</p>
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => setIsPreviewingDoc(!is_previewing_doc)}
@@ -737,6 +839,7 @@ export default function Requests() {
           </div>
         )}
       </ComplianceDrawer>
+
       {
         selectedRequest?.request_type == request_types.REVENUE_SHARE && 
 

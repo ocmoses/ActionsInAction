@@ -1,15 +1,5 @@
 import { useEffect, useContext, useState } from "react";
-import useErrors from "@/hooks/useErrors";
-import useUsers from "@/hooks/useUsers";
 import { ContractSettingsContext } from "@/app/(protected)/(partner)/dashboard/settings/company/contracts/ContractSettingsProvider";
-import SelectInput from "@/app/components/form/SelectInput";
-import SelectInputOption from "@/app/components/form/SelectInputOption";
-import TextInput from "@/app/components/form/TextInput";
-import DatePicker from "@/app/components/form/DatePicker";
-import FormErrors from "@/app/components/FormErrors";
-import usePartners from "@/hooks/usePartners";
-import { TailSpinPreloader } from "@/app/components/Icons"
-import RemoteEndpoints from "@/app/modules/endpoints";
 import AddShortcode from "./tabs/AddShortcode";
 import ChangeShortcode from "./tabs/ChangeShortcode";
 import AddVASLicense from "./tabs/AddVASLicense";
@@ -21,25 +11,11 @@ import Review from "./tabs/Review";
 export default function RequestChangesModal({contract_id}){
 
     const {
-        partner,
-        requestChangesDialogue,
-        setRequestChangesDialogue,
         requestChangesModal,
-        setRequestChangesModal,
         tabs,
         currentTab, 
-        setCurrentTab,
-        data,
-        setData
+        setCurrentTab
     } = useContext(ContractSettingsContext);
-
-    
-    const {
-        getAllServices,
-        getAllShortcodes
-    } = usePartners();
-
-    const {user} = useUsers();
     
     
     return (requestChangesModal && 

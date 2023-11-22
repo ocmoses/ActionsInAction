@@ -271,9 +271,10 @@ export default function Requests() {
           request_type: request_types.CHANGE_ORDER,
           request_id: change_order.request_id,
           created_at: change_order.created_at,
-          status: change_order.status,
+          status: change_order.status ?? "pending",
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
+          ...change_order
         });
       }
     }
@@ -285,6 +286,10 @@ export default function Requests() {
         ? 1
         : 0
     );
+
+    if(selectedRequest && selectedRequest.request_type == request_types.CHANGE_ORDER){
+      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    }
 
     setRequests(requests);
     setFilteredRequests(requests);
@@ -410,6 +415,7 @@ export default function Requests() {
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
+
 
   return (
     <>
@@ -742,7 +748,7 @@ export default function Requests() {
         selectedRequest?.request_type == request_types.CHANGE_ORDER && 
 
         <ChangeOrderDrawer request={selectedRequest} openDrawer={openChangeOrderDrawer} 
-        closeAction={() => setOpenChangeOrderDrawer(false)}/>
+        closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
       
 

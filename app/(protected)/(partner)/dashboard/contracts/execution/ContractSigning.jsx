@@ -21,7 +21,7 @@ export default function ContractSigning(){
         partner,
         signBilateralContract,
         getContractDynamicData,
-        downloadContract
+        getContractBeingSigned
       } = usePartners();
     const {
         user,
@@ -355,13 +355,12 @@ export default function ContractSigning(){
                     </div>
 
                     <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
-                        <a href={downloadContract()}
-                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex"
-                            >
+                        <div onClick={() => router.push(getContractBeingSigned())}
+                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>&nbsp;Download
-                        </a>
+                        </div>
                     </div>
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">
@@ -1925,7 +1924,7 @@ export default function ContractSigning(){
                             <tr>
 
                                 <td>
-                                    <div class="signature">
+                                    <div className="signature">
                                         <p>
                                         For and on behalf of: <br />
                                         <p><span className="text-white">MTN NIGERIA COMMUNICATIONS PLC </span></p>
@@ -1949,7 +1948,7 @@ export default function ContractSigning(){
                                 </td>
 
                                 <td>
-                                    <div class="signature">
+                                    <div className="signature">
                                         <p>
                                         For and on behalf of: <br />
                                         <p><span className="text-white">{dynamicData?.company_name?.toUpperCase()} </span></p>
@@ -1976,7 +1975,7 @@ export default function ContractSigning(){
 
                             <tr>
                                 <td>
-                                    <div class="signature">
+                                    <div className="signature">
                                         <p>
                                             <p><span className="text-white">Witness:</span></p>
                                         </p>
@@ -1995,7 +1994,7 @@ export default function ContractSigning(){
                                 </td>
 
                                 <td>
-                                <div class="signature">
+                                <div className="signature">
                                         <p>
                                             <p><span className="text-white">Witness:</span></p>
                                         </p>
@@ -2015,7 +2014,7 @@ export default function ContractSigning(){
                             </tr>
                         </table>
 
-                        <div class="footer" >
+                        <div className="footer" >
                             <table >
                                 <tr>
                                     <td >

@@ -360,118 +360,171 @@ export default function useAdmins() {
     //     }
     //   ]
     // };
+    try {
+        
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_ALL_REVENUE_SHARE}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
 
-  
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
 
-  try {
-      
-    setProcessing(true);
-    const response = await fetch(
-      `${RemoteEndpoints.GET_ALL_REVENUE_SHARE}`,
-      {
-        cache: "no-store",
-        next: { revalidate: 120 },
-        headers: {
-          token: states.token,
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${states.token}`,
-        },
+      if (response.status === 401 ) {
+        LogoutAdmin();
+        return;
       }
-    );
 
-    // console.log("response", response);
-    // console.log("response.status", response.status);
-    // console.log("response.status === 401", response.status === 401);
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
 
-    if (response.status === 401 ) {
-      LogoutAdmin();
-      return;
-    }
 
-    if (!response)
+      console.log("All revenue share response", result);
+
+      if (result?.success) {
+
+        const revenue_share = result?.data;
+
+        return {
+          revenue_share
+        };
+      }
       return {
-        error: "This request has no response available",
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
       };
-    const result = await response.json();
-    setProcessing(false);
-
-
-    console.log("All revenue share response", result);
-
-    if (result?.success) {
-
-      const revenue_share = result?.data;
-
+    } catch (error) {
+      console.log({ error });
       return {
-        revenue_share
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
       };
     }
-    return {
-      error:
-        result?.data?.message ??
-        "Something went wrong. Please check your connection and try again",
-    };
-  } catch (error) {
-    console.log({ error });
-    return {
-      error:
-        error.message ??
-        "Something went wrong. Please check your connection and try again",
-    };
-  }
 
   }
 
   const getAllChangeOrder = async () => {
-    return {
-      change_orders: [
+    // return {
+    //   change_orders: [
+    //     {
+    //         "id": 11,
+    //         "uuid": "79d22cfc-5244-460b-b1fa-fb9222cc29263",
+    //         "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d654a817",
+    //         "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-3523101da5f2",
+    //         "status": "pending",
+    //         "status_date": "2023-10-10",
+    //         "status_by": "sunaf4real@mtn.com",
+    //         "user_company_type": null,
+    //         "company_name": "MTN Nigeria",
+    //         "created_at": "2023-10-10T12:49:19.000000Z",
+    //         "updated_at": "2023-10-10T14:06:23.000000Z",
+    //         "request_id": "RSH-79d52",
+    //         "email": "afolabi.o@eleadersnetwork.com"
+    //     },
+    //     {
+    //       "id": 11,
+    //       "uuid": "79d22cfc-5244-460b143fa-2w3ecc29263",
+    //       "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2r5t817",
+    //       "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
+    //       "status": "pending",
+    //       "status_date": "2023-10-10",
+    //       "status_by": "sunaf4real@mtn.com",
+    //       "user_company_type": null,
+    //       "company_name": "MTN Nigeria",
+    //       "created_at": "2023-10-10T12:49:19.000000Z",
+    //       "updated_at": "2023-10-10T14:06:23.000000Z",
+    //       "request_id": "RSH-79d92",
+    //       "email": "afolabi.o@eleadersnetwork.com"
+    //     },
+    //     {
+    //       "id": 11,
+    //       "uuid": "79d22cfc-5244-460b-b1fa234900c123w63",
+    //       "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2254rf17",
+    //       "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
+    //       "status": "pending",
+    //       "status_date": "2023-10-10",
+    //       "status_by": "sunaf4real@mtn.com",
+    //       "user_company_type": null,
+    //       "company_name": "MTN Nigeria",
+    //       "created_at": "2023-10-10T12:49:19.000000Z",
+    //       "updated_at": "2023-10-10T14:06:23.000000Z",
+    //       "request_id": "RSH-79022",
+    //       "email": "afolabi.o@eleadersnetwork.com"
+    //     }
+    //   ]
+    // };
+
+    try {
+        
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_ALL_CHANGE_ORDER_REQUESTS}`,
         {
-            "id": 11,
-            "uuid": "79d22cfc-5244-460b-b1fa-fb9222cc29263",
-            "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d654a817",
-            "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-3523101da5f2",
-            "status": "pending",
-            "status_date": "2023-10-10",
-            "status_by": "sunaf4real@mtn.com",
-            "user_company_type": null,
-            "company_name": "MTN Nigeria",
-            "created_at": "2023-10-10T12:49:19.000000Z",
-            "updated_at": "2023-10-10T14:06:23.000000Z",
-            "request_id": "RSH-79d52",
-            "email": "afolabi.o@eleadersnetwork.com"
-        },
-        {
-          "id": 11,
-          "uuid": "79d22cfc-5244-460b143fa-2w3ecc29263",
-          "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2r5t817",
-          "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
-          "status": "pending",
-          "status_date": "2023-10-10",
-          "status_by": "sunaf4real@mtn.com",
-          "user_company_type": null,
-          "company_name": "MTN Nigeria",
-          "created_at": "2023-10-10T12:49:19.000000Z",
-          "updated_at": "2023-10-10T14:06:23.000000Z",
-          "request_id": "RSH-79d92",
-          "email": "afolabi.o@eleadersnetwork.com"
-        },
-        {
-          "id": 11,
-          "uuid": "79d22cfc-5244-460b-b1fa234900c123w63",
-          "user_uuid": "9e20a6f3-5f25-4165-80cd-7074d2254rf17",
-          "partner_uuid": "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2",
-          "status": "pending",
-          "status_date": "2023-10-10",
-          "status_by": "sunaf4real@mtn.com",
-          "user_company_type": null,
-          "company_name": "MTN Nigeria",
-          "created_at": "2023-10-10T12:49:19.000000Z",
-          "updated_at": "2023-10-10T14:06:23.000000Z",
-          "request_id": "RSH-79022",
-          "email": "afolabi.o@eleadersnetwork.com"
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
         }
-      ]
-  };
+      );
+
+      // console.log("response", response);
+      // console.log("response.status", response.status);
+      // console.log("response.status === 401", response.status === 401);
+
+      if (response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+
+      if (result?.success) {
+
+        const change_orders = result?.data;
+
+        console.log("All change orders", change_orders);
+
+        return {
+          change_orders
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
   }
 
   const getAllDepartments = async (page, perPage) => {
@@ -869,6 +922,111 @@ export default function useAdmins() {
     }
   };
 
+  const approveChangeOrder = async (data) => {
+
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.APPROVE_OR_REJECT_CHANGE_ORDER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("APPROVAL RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Approval/rejection message', message);
+
+        return {
+          message: "Approved successfully"
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const rejectChangeOrder = async (data) => {
+
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.APPROVE_OR_REJECT_CHANGE_ORDER}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("REJECTION RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Approval/rejection message', message);
+
+        return {
+          message: "Rejected successfully"
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+
   /// //////////////////////////////////////////afolabi's functions starts here
   const fetchData = async (url, apikey) => {
     try {
@@ -910,6 +1068,9 @@ export default function useAdmins() {
     approveOrRejectQuestionnaire ,
     getAllRevenueShare,
     getAllChangeOrder,
-    approveRevenueShare
+    approveRevenueShare,
+    approveChangeOrder,
+    rejectChangeOrder
+
   };
 }

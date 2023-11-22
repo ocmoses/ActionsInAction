@@ -6,7 +6,6 @@ import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import useAdmins from "@/hooks/useAdmins";
 import Success from "@/app/components/toasts/Success";
-import { validateConfig } from "next/dist/server/config-shared";
 import { TailSpinPreloader } from "@/app/components/Icons";
 
 
@@ -15,7 +14,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
   const {approveRevenueShare} = useAdmins();
 
-  console.log("REVENUE SHARE REQUEST", request);
+  // console.log("REVENUE SHARE REQUEST", request);
   
   const [approving, setApproving] = useState(false);  
 
@@ -83,7 +82,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     return true;
   }
 
-  console.log("DATA", data);
+  // console.log("DATA", data);
 
   const approve = async () => {
 

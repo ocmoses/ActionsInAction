@@ -102,10 +102,11 @@ const RemoteEndpoints = {
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
-  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
-  DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:type`,
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`, 
+  DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/:type`,
   GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
-
+  GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/partner-contract-currently-being-signed/:partner_uuid`,
+  
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
 
@@ -137,7 +138,9 @@ const RemoteEndpoints = {
 
   GET_ALL_SHORTCODES: `${apiURL}/v2/contract/get-partner-shortcodes/:partner-uuid`,
   REQUEST_CHANGE: `${apiURL}/v2/contract/change-order/submit-change-order-request`,
-  GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`
+  GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`,
+  GET_ALL_CHANGE_ORDER_REQUESTS: `${apiURL}/v2/admin/get-all-change-order-request`,
+  APPROVE_OR_REJECT_CHANGE_ORDER: `${apiURL}/v2/admin/approve-change-order-request`
 
 }
 export default RemoteEndpoints

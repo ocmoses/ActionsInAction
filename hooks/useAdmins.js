@@ -1103,6 +1103,63 @@ export default function useAdmins() {
     }
   };
 
+
+
+  const getAllLicenceRenewal = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_ALL_LICENSE_RENEWAL_REQUEST}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+
+      if (response.status === 401 ) {
+        LogoutAdmin();
+        return;
+      }
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+      const result = await response.json();
+      setProcessing(false);
+
+
+      console.log("All Licence Renewal response", result);
+
+      if (result?.success) {
+
+        const licenserenewals = result?.data;
+
+        return {
+          licenserenewals
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   /// //////////////////////////////////////////afolabi's functions Ends here
 
 
@@ -1129,6 +1186,7 @@ export default function useAdmins() {
     approveRevenueShare,
     approveChangeOrder,
     rejectChangeOrder,
-    getAllGreacePeriod
+    getAllGreacePeriod,
+    getAllLicenceRenewal,
   };
 }

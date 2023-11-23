@@ -36,7 +36,7 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-import { GracePeriodAdminFlyOut } from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import { GracePeriodAdminFlyOut, LicenseRenewalAdminFlyout } from "@/app/components/dashboard/compliance/GracePeriodComponent";
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
@@ -50,6 +50,7 @@ export default function Requests() {
     getAllRevenueShare,
     getAllChangeOrder,
     getAllGreacePeriod,
+    getAllLicenceRenewal,
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -103,6 +104,14 @@ export default function Requests() {
 
   const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
 
+  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
+  const [gracePeriods, setGracePeriods] = useState([]);
+  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
+
+  const [fetchingLicenseRenewals, setFetchingLicenseRenewals] = useState(false);
+  const [licenseRenewals, setlicenseRenewals] = useState([]);
+  const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
+
   const open = (request) => {
     switch(request.request_type){
       case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
@@ -110,6 +119,8 @@ export default function Requests() {
       case request_types.CHANGE_ORDER: setOpenChangeOrderDrawer(true); 
         break;
         case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
+        break;
+        case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
         break;
       default: setOpenDrawer(true);
     }
@@ -123,9 +134,7 @@ export default function Requests() {
   });
 
 
-  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
-  const [gracePeriods, setGracePeriods] = useState([]);
-  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
+
 
   let get_brd_response = null;
   let get_questionnaire_response = null;
@@ -133,6 +142,7 @@ export default function Requests() {
   let get_grace_period_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
+  let get_license_renewal_response = null;
   
   
 
@@ -317,7 +327,6 @@ export default function Requests() {
 
   }
 
-
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
     setFetchingGracePeriods(true);
@@ -358,7 +367,7 @@ export default function Requests() {
         : 0
     );
 
-    if(selectedRequest && selectedRequest.request_type == request_types.CHANGE_ORDER){
+    if(selectedRequest && selectedRequest.request_type == request_types.GRACE_PERIOD){
       setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
     }
 
@@ -374,9 +383,65 @@ export default function Requests() {
     setFetchingGracePeriods(false);
   };
 
-  const closeGracePeriodFlyOut = () => {
-    setGracePeriodFlyout(false);
+
+  const get_license_renewal = async () => {
+    if (fetchingLicenseRenewals) return;
+    setFetchingLicenseRenewals(true);
+
+    get_license_renewal_response = await getAllLicenceRenewal();
+    // console.log("All get_license_renewal_response", get_license_renewal_response);
+
+    if (get_license_renewal_response.error) {
+      setError({ error: get_license_renewal_response.error });
+      return;
+    }
+
+    for (const licenserenewal of get_license_renewal_response.licenserenewals) {
+      if (!requests.find((request) => request.uuid == licenserenewal.uuid)) {
+        requests.push({
+          company: licenserenewal.company_name ?? "Company",
+          email: licenserenewal.email ?? "email@email.com",
+          request_type: request_types.LICENSE_RENEWAL,
+          request_id: licenserenewal.request_id,
+          created_at: licenserenewal.created_at,
+          approved_on: licenserenewal.approved_on,
+          rejected_on: licenserenewal.rejected_on,
+          status: licenserenewal.status,
+          file_name:
+          licenserenewal.license_grace_period_file?.split("/").pop() ?? "",
+          file_path: licenserenewal.license_grace_period_file ?? "",
+          partner_uuid: licenserenewal.partner_uuid,
+          uuid: licenserenewal.uuid,
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if(selectedRequest && selectedRequest.request_type == request_types.LICENSE_RENEWAL){
+      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setlicenseRenewals(get_license_renewal_response.licenserenewals);
+    clearErrors();
+    setFetchingLicenseRenewals(false);
   };
+
+
+  
 
   const approveRequest = async () => {
     //TODO
@@ -501,6 +566,7 @@ export default function Requests() {
     get_revenue_share();
     get_change_order();
     get_grace_period();
+    get_license_renewal();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
@@ -845,11 +911,22 @@ export default function Requests() {
       // check this out on dev
         gracePeriodFlyout && (
           <GracePeriodAdminFlyOut
-            closeGracePeriodFlyOut={closeGracePeriodFlyOut}
+            closeGracePeriodFlyOut={() =>setGracePeriodFlyout(false)}
             selectedRequest={selectedRequest}
             successAction={successAction}
           />
         )}
+
+      {selectedRequest?.request_type == request_types.LICENSE_RENEWAL &&
+      // check this out on dev
+        licenseRenewalFlyout && (
+          <LicenseRenewalAdminFlyout
+            closeLicenseRenewalFlyout={() =>setLicenseRenewalFlyout(false)}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
+
 
 
       <Success

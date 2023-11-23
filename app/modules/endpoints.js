@@ -102,10 +102,10 @@ const RemoteEndpoints = {
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
-  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`, 
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid/:contract_id`, 
   DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/:type`,
   GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
-  GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/partner-contract-currently-being-signed/:partner_uuid`,
+  GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/contract/partner-contract-currently-being-signed/:partner_uuid`,
   
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
@@ -147,6 +147,8 @@ const RemoteEndpoints = {
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,
   CHECK_PARTNER_LICENSE_EXPIRATION: `${apiURL}/v2/contract/license/check-partner-license-expiration/`,
   SUBMIT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/contract/license/submit-license-renewal-request`,
+
+  ACCEPT_BILATERAL_ANNEXURES: `${apiURL}/v2/contract/accept-or-sign-contract-annexure`,
   GET_PARTNER_LICENSE_RENEWAL_STATUS: `${apiURL}/v2/contract/license/get-partner-license-renewal-status/`,
   GET_ALL_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/get-all-license-renewal-request`,
   APPROVE_REJECT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/approve-reject-license-renewal-request`,

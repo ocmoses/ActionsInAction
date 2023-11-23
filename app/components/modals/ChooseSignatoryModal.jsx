@@ -43,9 +43,9 @@ export default function ChooseSignatoryModal(){
 
 
     return (chooseSignatoryModal && 
-            <GenericModal id="contract_signatories_modal" width={500} height={550} closeAction={() => {}}>
+            <GenericModal id="contract_signatories_modal" width={400} height={550} closeAction={() => {}}>
                 <>
-                    <div className="flex pt-8 pb-4">
+                    <div className="flex pt-8 pb-4 w-[450px]">
                         <div className="text-white text-2xl mb-4 flex-1">Choose a {newSignatoryRole}</div>
                         <div className="cursor-pointer" onClick={() => {setChooseSignatoryModal(false); setContractSignatriesModal(true)}}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2">
@@ -54,7 +54,7 @@ export default function ChooseSignatoryModal(){
                         </div> 
                     </div>
 
-                    <div className="mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={user.uuid}
+                    <div className="w-[450px] mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={user.uuid}
                         onClick={() => {
                             setSignatories({...signatories, [`${newSignatoryRole}`]: {firstname: user.first_name, lastname: user.last_name, email: user.email}}); 
                             setChooseSignatoryModal(false); setContractSignatriesModal(true);

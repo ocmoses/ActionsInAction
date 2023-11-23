@@ -1082,7 +1082,9 @@ const usePartners = () => {
       
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT
+            .replace(':partner_uuid', states.partners.partner.uuid)
+            .replace(':contract_id', "TESTD-2023-10AA09")}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1169,10 +1171,9 @@ const usePartners = () => {
       console.log("Result from getting contract being signed", result);
 
       setProcessing(false);
+
       if (result?.success) {
         const contract = result?.data['contract'];
-
-        
 
         return RemoteEndpoints.DOWNLOAD_CONTRACT
             .replace(':partner_uuid', states.partners.partner.uuid)
@@ -1197,12 +1198,73 @@ const usePartners = () => {
     
   };
 
+  const submitAnnexureResponses = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.ACCEPT_BILATERAL_ANNEXURES}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+     
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("Submit annexures response", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   
   const downloadSignedContract = () => {
     return RemoteEndpoints.DOWNLOAD_CONTRACT
     .replace(':partner_uuid', states.partners.partner.uuid)
     .replace(':type', 'signed');
   };
+
+  console.log("States.partners", states.partners);
 
 
   return {
@@ -1237,7 +1299,8 @@ const usePartners = () => {
     getContractBeingSigned,
     downloadSignedContract,
     getAllShortcodes,
-    getChangeOrderStatus
+    getChangeOrderStatus,
+    submitAnnexureResponses
   }
 }
 export default usePartners

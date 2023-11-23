@@ -578,6 +578,7 @@ export default function Reports() {
                     />
                   </div>
 
+
                   <button
                     className="h-[35px] w-[130px] py-[8px] px-[15px] items-center  text-white text-[12px] rounded-full hover:bg-gray-500 cursor-pointer border-1 border-white/10"
                     onClick={() => setDownloadModal(!downloadModal)}

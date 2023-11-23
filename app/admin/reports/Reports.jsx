@@ -88,6 +88,7 @@ export default function Reports() {
             },
           }
         );
+        console.log("partnerListResponse.data.data", partnerListResponse.data.data)
         setSearchedData(partnerListResponse.data.data);
         setLoadingPartnerList(false);
       } catch (error) {
@@ -208,11 +209,10 @@ export default function Reports() {
               </button>
             </div>
             {reportStat.onboarding && (
-              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px] flex-wrap justify-between">
+              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px]">
                 <PartnerStatisticsReport
                   title="TOTAL PARTNER"
-                  width="32.3%"
-                  count={reportStatistics.onboarding_stats.partners.all}
+                  count={reportStatistics.onboarding_stats.partners.total}
                   percentage={
                     reportStatistics.compliance_stats.compliance_past_month
                       .approved === 0
@@ -238,7 +238,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="NEW PARTNER"
-                  width="32.3%"
                   count={reportStatistics.onboarding_stats.partners.new}
                   percentage={
                     reportStatistics.onboarding_stats.partners_past_month
@@ -264,7 +263,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="EXISTING PARTNER"
-                  width="32.3%"
                   count={reportStatistics.onboarding_stats.partners.existing}
                   percentage={
                     reportStatistics.onboarding_stats.partners_past_month
@@ -292,10 +290,9 @@ export default function Reports() {
             )}
 
             {reportStat.compliance && (
-              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px] flex-wrap justify-between">
+              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px]">
                 <PartnerStatisticsReport
                   title="TOTAL PENDING"
-                  width="32.3%"
                   count={reportStatistics.compliance_stats.compliance.pending}
                   percentage={
                     reportStatistics.compliance_stats.compliance_past_month
@@ -322,7 +319,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="TOTAL IN REVIEW"
-                  width="32.3%"
                   count={reportStatistics.compliance_stats.compliance.in_review}
                   percentage={
                     reportStatistics.compliance_stats.compliance_past_month
@@ -349,7 +345,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="TOTAL APPROVED"
-                  width="32.3%"
                   count={reportStatistics.compliance_stats.compliance.approved}
                   percentage={
                     reportStatistics.compliance_stats.compliance_past_month
@@ -377,10 +372,9 @@ export default function Reports() {
             )}
 
             {reportStat.contracting && (
-              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px] flex-wrap justify-between">
+              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px]">
                 <PartnerStatisticsReport
                   title="ACTIVE CONTRACTS"
-                  width="32.3%"
                   count={reportStatistics.contracting_stats.contracts.active}
                   percentage={
                     reportStatistics.contracting_stats.contracts_past_month
@@ -407,7 +401,6 @@ export default function Reports() {
                 />
                 <PartnerStatisticsReport
                   title="INACTIVE CONTRACTS"
-                  width="32.3%"
                   count={reportStatistics.contracting_stats.contracts.inactive}
                   percentage={
                     reportStatistics.contracting_stats.contracts_past_month
@@ -435,7 +428,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="CONTRACT EXPIRING SOON"
-                  width="32.3%"
                   count={
                     reportStatistics.contracting_stats.contracts.expiring_soon
                   }
@@ -466,10 +458,9 @@ export default function Reports() {
             )}
 
             {reportStat.licensing && (
-              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px] flex-wrap justify-between">
+              <div className="animate-[fade-in_1s_ease-in-out] flex flex-row gap-[10px]">
                 <PartnerStatisticsReport
                   title="ACTIVE LICENSE"
-                  width="32.3%"
                   count={reportStatistics.licensing_stats.Licenses.active}
                   percentage={
                     reportStatistics.licensing_stats.Licenses_past_month
@@ -494,7 +485,6 @@ export default function Reports() {
                 />
                 <PartnerStatisticsReport
                   title="INACTIVE LICENSE"
-                  width="32.3%"
                   count={reportStatistics.licensing_stats.Licenses.inactive}
                   percentage={
                     reportStatistics.licensing_stats.Licenses_past_month
@@ -522,7 +512,6 @@ export default function Reports() {
 
                 <PartnerStatisticsReport
                   title="LICENSE EXPIRING SOON"
-                  width="32.3%"
                   count={
                     reportStatistics.licensing_stats.Licenses.expiring_soon
                   }
@@ -663,9 +652,12 @@ export default function Reports() {
                             >
                               <span>{getPartnerInitials(name)} </span>
                             </div>
-                          ))}
-                    {/*        
-                        {partner.category.map((name, index) => (
+                          ))} 
+                     
+                      
+                        
+ {/*
+                          {partner.category.map((name, index) => (
                           <div
                             key={index}
                             title={name}
@@ -673,9 +665,7 @@ export default function Reports() {
                           >
                             <span>{getPartnerInitials(name)} </span>
                           </div>
-                        ))}
-
-                        
+                        ))}  
                          
                      <div
                           title={partner.category}
@@ -684,7 +674,7 @@ export default function Reports() {
                           <span>{getPartnerInitials(partner.category)}</span>
                         </div>
 
-                        
+                       
                         <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
                           <span>R</span>
                         </div>

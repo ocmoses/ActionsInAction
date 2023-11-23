@@ -25,14 +25,19 @@ import useApp from "@/hooks/useApp";
 import { ellipsify, capitalizeFirst } from "@/app/modules/utilities";
 import TextInput from "@/app/components/form/TextInput";
 import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
-import SideDrawer from "@/app/components/dashboard/SideDrawer";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
+import RevenueShareDrawer from "@/app/components/drawers/RevenueShareDrawer";
+import ChangeOrderDrawer from "@/app/components/drawers/ChangeOrderDrawer";
 
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+import { GracePeriodAdminFlyOut, LicenseRenewalAdminFlyout } from "@/app/components/dashboard/compliance/GracePeriodComponent";
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
   const {
@@ -42,8 +47,12 @@ export default function Requests() {
     approveOrRejectBrd,
     getAllQuestionnaire,
     approveOrRejectQuestionnaire,
-    getAllRevenueShare
+    getAllRevenueShare,
+    getAllChangeOrder,
+    getAllGreacePeriod,
+    getAllLicenceRenewal,
   } = useAdmins();
+
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -91,16 +100,51 @@ export default function Requests() {
 
   const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
 
-  const [openSideDrawer, setOpenSideDrawer] = useState(false);
+  const [openRevenueShareDrawer, setOpenRevenueShareDrawer] = useState(false);
 
-  const [checks, setChecks] = useState({1:0, 2:0, 3:0});
+  const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
 
-  const [data, setData] = useState({content_provider_share: "", mtn_share: ""});
+  const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
+  const [gracePeriods, setGracePeriods] = useState([]);
+  const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
+
+  const [fetchingLicenseRenewals, setFetchingLicenseRenewals] = useState(false);
+  const [licenseRenewals, setlicenseRenewals] = useState([]);
+  const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
+
+  const open = (request) => {
+    switch(request.request_type){
+      case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
+        break;
+      case request_types.CHANGE_ORDER: setOpenChangeOrderDrawer(true); 
+        break;
+        case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
+        break;
+        case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
+        break;
+      default: setOpenDrawer(true);
+    }
+  }
+
+  const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
+
+  const [data, setData] = useState({
+    content_provider_share: "",
+    mtn_share: "",
+  });
+
+
+
 
   let get_brd_response = null;
+  let get_questionnaire_response = null;
+  let get_revenue_share_response = null;
+  let get_grace_period_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
-  let get_questionnaire_response = null;
+  let get_license_renewal_response = null;
+  
+  
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -142,7 +186,7 @@ export default function Requests() {
     setRequests(requests);
     setFilteredRequests(requests);
 
-    console.log("Requests", requests);
+    //console.log("Requests", requests);
 
     setBrds(get_brd_response.brds);
     clearErrors();
@@ -201,8 +245,7 @@ export default function Requests() {
   };
 
   const get_revenue_share = async (page, perPage) => {
-    
-    let get_revenue_share_response = await getAllRevenueShare();
+     get_revenue_share_response = await getAllRevenueShare();
 
     console.log("All rev share", get_revenue_share_response);
 
@@ -219,7 +262,7 @@ export default function Requests() {
           request_type: request_types.REVENUE_SHARE,
           request_id: revenue_share.request_id,
           created_at: revenue_share.created_at,
-          status: revenue_share.status,
+          status: revenue_share.status ?? "pending",
           partner_uuid: revenue_share.partner_uuid,
           uuid: revenue_share.uuid,
         });
@@ -240,6 +283,165 @@ export default function Requests() {
     console.log("Requests", requests);
     clearErrors();
   };
+
+  const get_change_order = async (page, perPage) => {
+    
+    let get_change_order_response = await getAllChangeOrder();
+
+    console.log("All change order", get_change_order_response);
+
+    if (get_change_order_response.error) {
+      setError({ error: get_change_order_response.error });
+      return;
+    }
+
+    for (const change_order of get_change_order_response.change_orders) {
+      if (!requests.find((request) => request.uuid == change_order.uuid)) {
+        requests.push({
+          company: change_order.company_name,
+          email: change_order.delegate_email,
+          request_type: request_types.CHANGE_ORDER,
+          request_id: change_order.request_id,
+          created_at: change_order.created_at,
+          status: change_order.status ?? "pending",
+          partner_uuid: change_order.partner_uuid,
+          uuid: change_order.uuid,
+          ...change_order
+        })
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+
+  }
+
+  const get_grace_period = async () => {
+    if (fetchingGracePeriods) return;
+    setFetchingGracePeriods(true);
+
+    get_grace_period_response = await getAllGreacePeriod();
+    // console.log("All get_grace_period_response", get_grace_period_response);
+
+    if (get_grace_period_response.error) {
+      setError({ error: get_grace_period_response.error });
+      return;
+    }
+
+    for (const graceperiod of get_grace_period_response.graceperiods) {
+      if (!requests.find((request) => request.uuid == graceperiod.uuid)) {
+        requests.push({
+          company: graceperiod.company_name ?? "Company",
+          email: graceperiod.email ?? "email@email.com",
+          request_type: request_types.GRACE_PERIOD,
+          request_id: graceperiod.request_id,
+          created_at: graceperiod.created_at,
+          approved_on: graceperiod.approved_on,
+          rejected_on: graceperiod.rejected_on,
+          status: graceperiod.status,
+          file_name:
+            graceperiod.license_grace_period_file?.split("/").pop() ?? "",
+          file_path: graceperiod.license_grace_period_file ?? "",
+          partner_uuid: graceperiod.partner_uuid,
+          uuid: graceperiod.uuid,
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if(selectedRequest && selectedRequest.request_type == request_types.GRACE_PERIOD){
+      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setGracePeriods(get_grace_period_response.graceperiods);
+    clearErrors();
+    setFetchingGracePeriods(false);
+  };
+
+
+  const get_license_renewal = async () => {
+    if (fetchingLicenseRenewals) return;
+    setFetchingLicenseRenewals(true);
+
+    get_license_renewal_response = await getAllLicenceRenewal();
+    // console.log("All get_license_renewal_response", get_license_renewal_response);
+
+    if (get_license_renewal_response.error) {
+      setError({ error: get_license_renewal_response.error });
+      return;
+    }
+
+    for (const licenserenewal of get_license_renewal_response.licenserenewals) {
+      if (!requests.find((request) => request.uuid == licenserenewal.uuid)) {
+        requests.push({
+          company: licenserenewal.company_name ?? "Company",
+          email: licenserenewal.email ?? "email@email.com",
+          request_type: request_types.LICENSE_RENEWAL,
+          request_id: licenserenewal.request_id,
+          created_at: licenserenewal.created_at,
+          approved_on: licenserenewal.approved_on,
+          rejected_on: licenserenewal.rejected_on,
+          status: licenserenewal.status,
+          file_name:
+          licenserenewal.license_grace_period_file?.split("/").pop() ?? "",
+          file_path: licenserenewal.license_grace_period_file ?? "",
+          partner_uuid: licenserenewal.partner_uuid,
+          uuid: licenserenewal.uuid,
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if(selectedRequest && selectedRequest.request_type == request_types.LICENSE_RENEWAL){
+      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setlicenseRenewals(get_license_renewal_response.licenserenewals);
+    clearErrors();
+    setFetchingLicenseRenewals(false);
+  };
+
+
+  
 
   const approveRequest = async () => {
     //TODO
@@ -355,17 +557,21 @@ export default function Requests() {
       [field]: e.target.value,
     }));
   };
-
+ 
   useEffect(() => {
     setProcessing(false);
     clearErrors();
     get_brds();
     get_questionnaires();
     get_revenue_share();
+    get_change_order();
+    get_grace_period();
+    get_license_renewal();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
 
+ 
   return (
     <>
       <div id="approvals" className="flex flex-cols pb-12 min-h-screen">
@@ -488,12 +694,7 @@ export default function Requests() {
                         <span
                           onClick={() => {
                             setSelectedRequest(request);
-                            if(request.request_type == request_types.REVENUE_SHARE){
-                              setOpenSideDrawer(true);
-                            }else{
-                              setOpenDrawer(true);
-                            }
-                            
+                            open(request);                           
                             console.log("selectedRequest", request);
                           }}
                           className="text-yellow-600 cursor-pointer"
@@ -513,7 +714,7 @@ export default function Requests() {
           </div>
         </div>
       </div>
-      
+
       {is_previewing_doc && selectedRequest && (
         <FilePreviewModal
           filePath={selectedRequest?.file_path}
@@ -555,7 +756,7 @@ export default function Requests() {
           )}
 
           <div className="">
-            <p className="text-white">{selectedRequest?.request_type}</p>
+            <p className="text-white">{selectedRequest?.request_type} AAA</p>
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => setIsPreviewingDoc(!is_previewing_doc)}
@@ -690,123 +891,43 @@ export default function Requests() {
           </div>
         )}
       </ComplianceDrawer>
+
       {
         selectedRequest?.request_type == request_types.REVENUE_SHARE && 
 
-        <SideDrawer title={selectedRequest?.request_type} openDrawer={openSideDrawer} 
-                  closeAction={() => setOpenSideDrawer(false)}>
-          <div className="flex flex-col space-y-8 border-b border-white/20 pb-8">
+        <RevenueShareDrawer request={selectedRequest} openDrawer={openRevenueShareDrawer} 
+        closeAction={() => setOpenRevenueShareDrawer(false)}/>
+      }
 
-            <div className="flex space-x-4">
-              <p className="text-white">Category category</p>
-              <span className="border-1 border-white/20 px-2 py-1 text-mtn text-sm bg-white/5 rounded-full">Basic</span>
-            </div>
+      {
+        selectedRequest?.request_type == request_types.CHANGE_ORDER && 
 
-            <div className="flex space-x-2 justify-between">
-
-              <div>
-                <p className="text-white">Exclusive content</p>
-                <span className="text-white/40">Offers exclusive content</span>
-              </div> 
-
-              <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 1:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[1] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 1:0})}  className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[1] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
-              </div>
-
-            </div>
-
-            <div className="flex space-x-2 justify-between">
-
-              <div>
-                <p className="text-white">Premium content</p>
-                <span className="text-white/40">Offers premium content</span>
-              </div> 
-
-              <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 2:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[2] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 2:0})} className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[2] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
-              </div>
-
-            </div>
-
-            <div className="flex space-x-2 justify-between">
-
-              <div>
-                <p className="text-white">Licensed content</p>
-                <span className="text-white/40">Offers licensed content</span>
-              </div>
-
-              <div className="flex space-x-4">
-                <button onClick={() => setChecks({...checks, 3:1})} className={`text-white border-1 text-sm py-2 w-16 hover:bg-white/5 cursor-pointer ${checks[3] == 1 ? 'border-yellow-300' : 'border-white/40'} rounded`}>YES</button>
-                <button onClick={() => setChecks({...checks, 3:0})} className={`text-white border-1 text-sm p2-2 w-16 hover:bg-white/5 cursor-pointer ${checks[3] == 0 ? 'border-yellow-300' : 'border-white/40'} rounded`}>NO</button>
-              </div>
-
-
-            </div>
-            
-          </div>
-
-          <div className="flex flex-col space-y-1">
-
-            <div className="flex space-x-4 my-6">
-              <p className="text-white">Revenue allocation</p>
-            </div>
-
-            <div className="flex space-x-2 justify-between">
-
-              <div>
-                <p className="text-white">Content provider’s share</p>
-                <span className="text-white/40">0% to 40%</span>
-              </div> 
-
-              <div className="flex space-x-4 w-24 relative">
-                <TextInput
-                  id="content_provider_share"
-                  label=""
-                  value={data.content_provider_share}
-                  onChange={handleFormChange}
-                  onBlur={() => {}}
-                  errors={errors}
-                  disabled={false}
-                />
-                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
-              </div>
-
-              
-            </div>
-
-            <div className="flex space-x-2 justify-between">
-
-              <div>
-                <p className="text-white">MTN share</p>
-                <span className="text-white/40">60%</span>
-              </div> 
-
-              <div className="flex space-x-4 w-24 relative">
-                <TextInput
-                  id="mtn_share"
-                  label=""
-                  value={data.mtn_share}
-                  onChange={handleFormChange}
-                  onBlur={() => {}}
-                  errors={errors}
-                  disabled={false}
-                />
-                <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
-              </div>
-              
-            </div>
-            
-          </div>
-
-          <div className="flex justify-end">
-            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {}}>Finish</button>
-          </div>
-
-        </SideDrawer>
+        <ChangeOrderDrawer request={selectedRequest} openDrawer={openChangeOrderDrawer} 
+        closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
       
+
+      {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
+      // check this out on dev
+        gracePeriodFlyout && (
+          <GracePeriodAdminFlyOut
+            closeGracePeriodFlyOut={() =>setGracePeriodFlyout(false)}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
+
+      {selectedRequest?.request_type == request_types.LICENSE_RENEWAL &&
+      // check this out on dev
+        licenseRenewalFlyout && (
+          <LicenseRenewalAdminFlyout
+            closeLicenseRenewalFlyout={() =>setLicenseRenewalFlyout(false)}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
+
+
 
       <Success
         message={successMessage}

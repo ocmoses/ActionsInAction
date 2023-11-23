@@ -35,7 +35,7 @@ export default function ContractCategoryModal(){
    
     return (showContractCategoryModal && 
 
-        <GenericModal id="contract_signatories_modal" width={500} height={550} closeAction={() => setAddSignatoryModal(false)}>
+        <GenericModal id="contract_signatories_modal" width={450} closeAction={() => setShowContractCategoryModal(false)}>
             <>
                 <div className="flex flex-col pt-8 pb-4 relative">
                     <div className="text-white text-2xl mb-2 flex-1">Who’s your technical provider</div>

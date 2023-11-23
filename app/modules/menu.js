@@ -69,6 +69,10 @@ export const PartnerCompanySettingsMenu = [
     route: "/dashboard/settings/company/compliance"
   },
   {
+    label: "Contracts",
+    route: "/dashboard/settings/company/contracts"
+  },
+  {
     label: "Services",
     route: "/dashboard/settings/company/services"
   },

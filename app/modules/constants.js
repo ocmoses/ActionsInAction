@@ -1411,7 +1411,8 @@ export const request_types = {
   GRACE_PERIOD: "Grace period",
   SUPPLIER_QUESTION: "Supplier Question",
   REVENUE_SHARE: "Revenue Share",
-  CHANGE_ORDER: "Change Order"
+  CHANGE_ORDER: "Change Order",
+  LICENSE_RENEWAL: "License Renewal",
 }
 
 export const role_types = {

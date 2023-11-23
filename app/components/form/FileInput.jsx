@@ -16,6 +16,7 @@ function FileInput({
   errors,
   disabled,
   hidedelete,
+  style
 }) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
@@ -101,7 +102,7 @@ function FileInput({
   };
 
   return (
-    <div className={margin ? margin + " " : "mb-0 relative"}>
+    <div className={`${margin ? margin + " " : "mb-0 relative"} ${style ? style : ""}`}>
       <div
         className={
           (bg ? bg + " " : "bg-[#212121] ") +

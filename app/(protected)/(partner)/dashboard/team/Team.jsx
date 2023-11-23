@@ -21,6 +21,7 @@ import useApp from "@/hooks/useApp";
 import TextInput from "@/app/components/form/TextInput";
 import { ellipsify } from "@/app/modules/utilities";
 import freeemails from "@/app/modules/freeemails.json";
+
 export default function Team() {
   const { getAllAdminPartners, createPartner, deletePartner, partner } = usePartners();
   const { getAllPartnerRoles, getAllPartnerPrivileges } = useRoles();

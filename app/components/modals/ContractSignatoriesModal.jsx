@@ -97,7 +97,7 @@ export default function ContractSignatoriesModal(){
     }, [partnerRoles]);
 
     return (contractSignatriesModal && 
-            <GenericModal id="contract_signatories_modal" width={550} height={600} closeAction={() => setContractSignatriesModal(false)}>
+            <GenericModal id="contract_signatories_modal" width={550} height={800} closeAction={() => setContractSignatriesModal(false)}>
                 <>
                     <div className="flex pt-8 pb-4">
                         <div className="text-white text-2xl mb-4 flex-1">Add contract signatries</div>

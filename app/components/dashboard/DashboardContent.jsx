@@ -43,6 +43,7 @@ import GracePeriodAlert, {
 
 import { useStoreState } from "easy-peasy";
 import axios from "axios";
+import IPCard from "@/app/components/dashboard/IPCard";
 
 
 export default function GetStarted({ type }) {
@@ -547,6 +548,11 @@ const partnerLicenseRenewalStatus = async () => {
                   )}
                 </>
               )}
+
+              {
+                true &&
+                <IPCard />
+              }
 
               {/* //================this is the popup==============================================================================================================*/}
 

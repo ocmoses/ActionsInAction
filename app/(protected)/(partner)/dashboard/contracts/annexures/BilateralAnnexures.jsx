@@ -15,27 +15,47 @@ import useProcessing from "@/hooks/useProcessing";
 
 
 
-export default function BilateralAnnexures(){
+
+export default function BilateralAnnexures({contract_id}){
 
     const {
-      } = usePartners();
+        partner,
+        submitAnnexureResponses
+    } = usePartners();
+
     const {
         user,
         refreshSession
      } = useUsers();
+
     const { processing, setProcessing } = useProcessing(); 
     const [{ errors, setError, clearErrors }] = useErrors(null);
     const router = useRouter();
     const [successDisplay, setSuccessDisplay] = useState(false);  
     const [signatoryRole, setSignatoryRole] = useState("");  
     const [fixed, setFixed] = useState(false);  
-    const [focused, setFocused] = useState("annexureA");  
+    const [focused, setFocused] = useState("annexureA"); 
+    const [submitting, setSubmitting] = useState(false);
+    const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: "TESTD-2023-10AA09", 
 
+                                        annexure_c: "", 
 
-    console.log("signatoryRole", signatoryRole);
+                                        annexure_e_four: "", annexure_e_five_a: "",
+                                        annexure_e_five_b: "", annexure_e_five_c: "", 
+                                        annexure_e_five_d: "", annexure_e_five_e: "", 
+                                        annexure_e_five_f: "", annexure_e_five_g: "",
+                                        annexure_e_five_h: "", annexure_e_five_i: "",
+                                        annexure_e_six_a: "", annexure_e_six_b: "",
+                                        annexure_e_six_c: "", annexure_e_six_d: ""                                    
+                                    });
+
+    const handleOnChange = (e, field) => {
+        clearErrors();
+        setData({...data, [field]: e.target.value});
+    };
+
 
     useEffect(() => {
-
         
         let threshold = 80;
 
@@ -88,6 +108,41 @@ export default function BilateralAnnexures(){
         window.onload = focus;
       
     }, []);
+
+    
+
+    const submitResponses = async () => {
+        if(!validateResponses()){
+            return;
+        }
+
+        clearErrors();
+
+        setSubmitting(true);
+
+        const response = await submitAnnexureResponses(data);
+
+        if(response.error){
+            setError({error: response.error});
+        }else{
+            router.push("/dashboard/contracts/execution");
+        }
+
+        setSubmitting(false);
+    }
+
+    const validateResponses = () => {
+
+
+        for(let i in data){
+            if(data[i].trim() == ""){
+                setError({error: i.split("_").join(" ") + " has no response"});
+                return false;
+            }
+        }
+
+        return true;
+    }
     
 
     return <>
@@ -295,7 +350,7 @@ export default function BilateralAnnexures(){
                     </div>
 
                     {/* Annexure C */}
-                    <div id="annexure-c" className="border-2 mb-8 border-white/20 bg-white/10 p-8 rounded-lg flex flex-col justify-center pt-8 text-white md:min-w-6xl w-[800px]">
+                    <div id="annexure-c" className="relative border-2 mb-8 border-white/20 bg-white/10 p-8 pb-16 rounded-lg flex flex-col justify-center pt-8 text-white md:min-w-6xl w-[800px]">
                         
                         <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE C</h2>
 
@@ -405,6 +460,16 @@ export default function BilateralAnnexures(){
                                 
                         </div>
 
+                        <div className="absolute bottom-0 left-0 mt-8 w-full flex space-x-2 bg-black/40 py-4 px-8">
+
+                            <span className="text-white w-[50px]">
+                                <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
+                                        type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                            </span>
+                            <span className="text-white/60 flex-1">
+                                By clicking this checkbox, I agree to MTN’s <span className="text-white">Electronic Record and Signature Disclosure</span>
+                            </span>                                        
+                        </div>
 
                         
                     </div>
@@ -693,8 +758,8 @@ export default function BilateralAnnexures(){
                                     The Service Provider is required to integrate their relevant software, applications, equipment and products into the MTN security infrastructure as per applicable best industry practice at no additional cost. This includes identity management, authentication, authorization, compliance assessment and log monitoring integration points.
                                     </span>
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                                                                 
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                                                                 
                                     </div>
                                 </div>
                             </div>
@@ -733,8 +798,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                          
                                     </div>
                                 </div>
 
@@ -747,8 +812,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                               
                                     </div>
                                 </div>
 
@@ -761,8 +826,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                         
                                     </div>
                                 </div>
 
@@ -775,8 +840,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                            
                                     </div>
                                 </div>
 
@@ -789,8 +854,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                             
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                                
                                     </div>
                                 </div>
 
@@ -803,8 +868,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                            
                                     </div>
                                 </div>
 
@@ -817,8 +882,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                             
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
                                     </div>
                                 </div>
 
@@ -831,8 +896,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                            
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
                                     </div>
                                 </div>
 
@@ -844,8 +909,8 @@ export default function BilateralAnnexures(){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                              
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                               
                                     </div>
                                 </div>
 
@@ -901,8 +966,8 @@ export default function BilateralAnnexures(){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label> 
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>   
                                     </div>
                                 </div>
 
@@ -927,8 +992,8 @@ export default function BilateralAnnexures(){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                         
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>                        
                                     </div>
                                 </div>
 
@@ -953,8 +1018,8 @@ export default function BilateralAnnexures(){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label> 
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>   
                                     </div>
                                 </div>
 
@@ -979,8 +1044,8 @@ export default function BilateralAnnexures(){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
-                                        <label><input onChange={() => {}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" /> No</label> 
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40" /> Yes</label>
+                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40" /> No</label>   
                                     </div>
                                 </div>
 
@@ -1022,6 +1087,25 @@ export default function BilateralAnnexures(){
 
                         <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
 
+                        
+                    </div>
+
+                    {errors && errors["error"] && (
+                        <div className="mb-6">
+                        <FormErrors error={errors["error"]} />
+                        </div>
+                    )}
+
+                    <div className="flex justify-center p-4">
+                        {
+                            submitting && 
+                                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+
+                        }{
+                            !submitting && 
+                                <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitResponses()}>Review & Submit</button>
+
+                        }
                         
                     </div>
 

@@ -5,6 +5,7 @@ import Chart from "chart.js";
 
 export default function PartnerStatisticsReport({
   title,
+  width,
   count,
   percentage,
   rate,
@@ -12,7 +13,7 @@ export default function PartnerStatisticsReport({
   return (
     <div
       id="statistics"
-      className=" w-[24%]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg animate-[slide-down-fade_1s_ease-in-out]"
+      className={` w-[${width}]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg `}
     >
       <div className="px-5 py-5 flex  flex-col">
         <div className="mb-[15px] text-gray-400">{title}</div>
@@ -37,21 +38,6 @@ export default function PartnerStatisticsReport({
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,72 +138,6 @@ export const PartnerReportBarChart = () => {
   );
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export const PartnerFilterList = () => {
-  return (
-    <></>
-  );
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const PartnerFilterTitle = ({ title, action }) => {
 
   return (
@@ -257,10 +177,6 @@ export const PartnerFilterTitle = ({ title, action }) => {
   </div>
   );
 };
-
-
-
-
 
 export const PartnerFilterCheck = ({ title, summary, value, checked, onChange }) => {
 

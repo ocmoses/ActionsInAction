@@ -144,8 +144,8 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
                 <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-scroll">
 
                     <div className="flex space-x-4">
-                    <p className="text-white">{request?.request_type}</p>
-                    <span className="border-1 border-white/20 px-2 py-1 text-mtn text-sm bg-white/5 rounded-full">Basic</span>
+                        <p className="text-white">{request?.request_type}</p>
+                        <span className="border-1 border-white/20 px-2 py-1 text-mtn text-sm bg-white/5 rounded-full">Basic</span>
                     </div>
 
                     <div className="flex space-x-2 items-start w-full">

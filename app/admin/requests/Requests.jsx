@@ -28,6 +28,8 @@ import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 import RevenueShareDrawer from "@/app/components/drawers/RevenueShareDrawer";
 import ChangeOrderDrawer from "@/app/components/drawers/ChangeOrderDrawer";
+import IPDrawer from "@/app/components/drawers/IPDrawer";
+
 
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
@@ -51,6 +53,7 @@ export default function Requests() {
     getAllChangeOrder,
     getAllGreacePeriod,
     getAllLicenceRenewal,
+    getAllIP
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -101,8 +104,8 @@ export default function Requests() {
   const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
 
   const [openRevenueShareDrawer, setOpenRevenueShareDrawer] = useState(false);
-
   const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
+  const [openIPDrawer, setOpenIPDrawer] = useState(false);
 
   const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
   const [gracePeriods, setGracePeriods] = useState([]);
@@ -121,6 +124,8 @@ export default function Requests() {
         case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
         break;
         case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
+        break;
+        case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
         break;
       default: setOpenDrawer(true);
     }
@@ -285,6 +290,8 @@ export default function Requests() {
   };
 
   const get_change_order = async (page, perPage) => {
+
+    setRequests(requests.filter(r => r.request_type != request_types.CHANGE_ORDER));
     
     let get_change_order_response = await getAllChangeOrder();
 
@@ -307,6 +314,51 @@ export default function Requests() {
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
           ...change_order
+        })
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+
+  }
+
+  const get_ips = async (page, perPage) => {
+
+    setRequests(requests.filter(r => r.request_type != request_types.VAS_CLEARANCE));
+    
+    let get_ips_response = await getAllIP();
+
+    console.log("All IPs", get_ips_response);
+
+    if (get_ips_response.error) {
+      setError({ error: get_ips_response.error });
+      return;
+    }
+
+    for (const ip of get_ips_response.ips) {
+      if (!requests.find((request) => request.uuid == ip.uuid)) {
+        requests.push({
+          company: ip.company_name,
+          email: ip.delegate_email,
+          request_type: request_types.VAS_CLEARANCE,
+          request_id: ip.request_id,
+          created_at: ip.created_at,
+          status: ip.status ?? "pending",
+          partner_uuid: ip.partner_uuid,
+          uuid: ip.uuid,
+          ...ip
         })
       }
     }
@@ -383,7 +435,6 @@ export default function Requests() {
     setFetchingGracePeriods(false);
   };
 
-
   const get_license_renewal = async () => {
     if (fetchingLicenseRenewals) return;
     setFetchingLicenseRenewals(true);
@@ -439,9 +490,6 @@ export default function Requests() {
     clearErrors();
     setFetchingLicenseRenewals(false);
   };
-
-
-  
 
   const approveRequest = async () => {
     //TODO
@@ -567,6 +615,7 @@ export default function Requests() {
     get_change_order();
     get_grace_period();
     get_license_renewal();
+    get_ips();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
@@ -904,6 +953,13 @@ export default function Requests() {
 
         <ChangeOrderDrawer request={selectedRequest} openDrawer={openChangeOrderDrawer} 
         closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
+      }
+
+      {
+        selectedRequest?.request_type == request_types.VAS_CLEARANCE && 
+
+        <IPDrawer request={selectedRequest} openDrawer={openIPDrawer} 
+        closeAction={() => setOpenIPDrawer(false)} refresh={() => get_ips()}/>
       }
       
 

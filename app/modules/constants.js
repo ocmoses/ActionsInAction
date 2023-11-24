@@ -1413,6 +1413,7 @@ export const request_types = {
   REVENUE_SHARE: "Revenue Share",
   CHANGE_ORDER: "Change Order",
   LICENSE_RENEWAL: "License Renewal",
+  VAS_CLEARANCE: "VAS Clearance"
 }
 
 export const role_types = {

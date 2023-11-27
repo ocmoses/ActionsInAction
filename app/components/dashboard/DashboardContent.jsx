@@ -618,7 +618,7 @@ const partnerLicenseRenewalStatus = async () => {
                         <GracePeriodSuccess
                           gracePeriodSuccessOk={() => {
                             setPopUpGracePeriodForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowGracePreriodAlert(false);
                           }}
                         /> // If gracePeriodSubmit is true
                       )}

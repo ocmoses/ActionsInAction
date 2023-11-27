@@ -1396,6 +1396,8 @@ const usePartners = () => {
   // console.log("States.partners", states.partners);
 
 
+
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -1430,7 +1432,6 @@ const usePartners = () => {
     getAllShortcodes,
     getChangeOrderStatus,
     submitAnnexureResponses,
-
     getIPStatus,
     getIPProgressStatus
   }

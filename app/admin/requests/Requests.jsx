@@ -42,7 +42,7 @@ import {
   GracePeriodAdminFlyOut,
   LicenseRenewalAdminFlyout,
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
-import ShortCodeAlert from "@/app/components/RequestComponent";
+import ShortCodeAlert, {ShortCodeFlyOut} from "@/app/components/RequestComponent";
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
@@ -526,6 +526,7 @@ export default function Requests() {
           //approved_on: shortcode.approved_on,
          // rejected_on: shortcode.rejected_on,
           status: shortcode.status,
+          short_codes:shortcode.shortcodes,
           // file_name:
           //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
           // file_path: graceperiod.license_grace_period_file ?? "",
@@ -1069,6 +1070,17 @@ export default function Requests() {
             successAction={successAction}
           />
         )}
+        
+        {selectedRequest?.request_type == request_types.SHORTCODES &&
+        // check this out on dev
+        shortcodesFlyout && (
+          <ShortCodeFlyOut
+            closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
+
 
       <Success
         message={successMessage}

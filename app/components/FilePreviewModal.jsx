@@ -47,7 +47,7 @@ function FilePreviewModal({ file, filePath, closeModal }) {
             <embed
               className="preview"
               style={{ width: "100%", height: "100%" }}
-              src={file ? URL.createObjectURL(file) : filePath}
+              src={filePath}
               type="application/pdf"
             />
           )}

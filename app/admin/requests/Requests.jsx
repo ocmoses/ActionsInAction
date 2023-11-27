@@ -120,25 +120,20 @@ export default function Requests() {
   const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
 
   const open = (request) => {
-    switch (request.request_type) {
-      case request_types.REVENUE_SHARE:
-        setOpenRevenueShareDrawer(true);
+    switch(request.request_type){
+      case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
         break;
-        case request_types.CHANGE_ORDER:
-        setOpenChangeOrderDrawer(true);
+      case request_types.CHANGE_ORDER: setOpenChangeOrderDrawer(true); 
         break;
-        case request_types.GRACE_PERIOD:
-        setGracePeriodFlyout(true);
+        case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
         break;
-        case request_types.LICENSE_RENEWAL:
-        setLicenseRenewalFlyout(true);
+        case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
         break;
-        case request_types.VAS_CLEARANCE: 
-        setOpenIPDrawer(true);
+        case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
         break;
       default: setOpenDrawer(true);
     }
-  };
+  }
 
   const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
 
@@ -335,6 +330,52 @@ export default function Requests() {
     clearErrors();
 
   }
+
+  const get_ips = async (page, perPage) => {
+
+    setRequests(requests.filter(r => r.request_type != request_types.VAS_CLEARANCE));
+    
+    let get_ips_response = await getAllIP();
+
+    console.log("All IPs", get_ips_response);
+
+    if (get_ips_response.error) {
+      setError({ error: get_ips_response.error });
+      return;
+    }
+
+    for (const ip of get_ips_response.ips) {
+      if (!requests.find((request) => request.uuid == ip.uuid)) {
+        requests.push({
+          company: ip.company_name,
+          email: ip.delegate_email,
+          request_type: request_types.VAS_CLEARANCE,
+          request_id: ip.request_id,
+          created_at: ip.created_at,
+          status: ip.status ?? "pending",
+          partner_uuid: ip.partner_uuid,
+          uuid: ip.uuid,
+          ...ip
+        })
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("Requests", requests);
+    clearErrors();
+
+  }
+
 
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
@@ -933,6 +974,12 @@ export default function Requests() {
         closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
       
+       {
+        selectedRequest?.request_type == request_types.VAS_CLEARANCE && 
+
+        <IPDrawer request={selectedRequest} openDrawer={openIPDrawer} 
+        closeAction={() => setOpenIPDrawer(false)} refresh={() => get_ips()}/>
+      }
 
       {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
         // check this out on dev

@@ -1198,6 +1198,135 @@ const usePartners = () => {
     
   };
 
+  const getIPStatus = async () => {
+    
+    try{
+      const response = await fetch(
+        `${RemoteEndpoints.GET_IP_STATUS.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response){
+        return {
+          error: "This request has no response available",
+        };
+      }        
+
+      const result = await response.json();
+
+      console.log("Result from getting IP status", result);
+
+      setProcessing(false);
+
+      if (result?.success) {
+        const message = result?.data['message'];
+
+        if(!message){
+
+          //check other things
+
+        }        
+
+        return {
+          message
+        };
+        
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  
+  }
+
+  const getIPProgressStatus = async () => {
+    
+    try{
+      const response = await fetch(
+        `${RemoteEndpoints.GET_IP_COMPLETION_PERCENTAGE.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response){
+        return {
+          error: "This request has no response available",
+        };
+      }        
+
+      const result = await response.json();
+
+      console.log("Result from getting IP progress status", result);
+
+      setProcessing(false);
+
+      if (result?.success) {
+        const progress = result?.data['progress'];
+
+        if(!progress){
+
+          //check other things
+
+        }        
+
+        return {
+          progress
+        };
+        
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  
+  }
+
+
   const submitAnnexureResponses = async (data) => {
     try {
       setProcessing(true);
@@ -1264,7 +1393,7 @@ const usePartners = () => {
     .replace(':type', 'signed');
   };
 
-  console.log("States.partners", states.partners);
+  // console.log("States.partners", states.partners);
 
 
   return {
@@ -1300,7 +1429,10 @@ const usePartners = () => {
     downloadSignedContract,
     getAllShortcodes,
     getChangeOrderStatus,
-    submitAnnexureResponses
+    submitAnnexureResponses,
+
+    getIPStatus,
+    getIPProgressStatus
   }
 }
 export default usePartners

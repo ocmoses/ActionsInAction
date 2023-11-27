@@ -24,6 +24,7 @@ import DatePicker from "@/app/components/form/DatePicker";
 export default function AggregatorIPPage() {
 
     const {
+        partner,
         getAllServices,
         getAllShortcodes
     } = usePartners();

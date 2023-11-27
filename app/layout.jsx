@@ -125,7 +125,7 @@ const getServerSession = async () => {
           const User = userData(data);
           if (partnerID && User.partners?.length > 0) {
             User.partnerID = partnerID;
-            User.partner = User.partners.find((p) => p.uuid === partnerID);
+            User.partner = User.partners.find((p) => p?.uuid === partnerID);
           }
           return { success, error: null, data: User, type: "user" };
         } else {

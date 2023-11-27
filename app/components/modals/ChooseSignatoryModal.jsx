@@ -43,7 +43,7 @@ export default function ChooseSignatoryModal(){
 
 
     return (chooseSignatoryModal && 
-            <GenericModal id="contract_signatories_modal" width={400} height={550} closeAction={() => {}}>
+            <GenericModal id="contract_signatories_modal" width={520} height={550} closeAction={() => {}}>
                 <>
                     <div className="flex pt-8 pb-4 w-[450px]">
                         <div className="text-white text-2xl mb-4 flex-1">Choose a {newSignatoryRole}</div>

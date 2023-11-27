@@ -16,6 +16,7 @@ import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import useApp from "@/hooks/useApp";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
+import FileViewer from "@/app/components/modals/FileViewer";
 import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
@@ -1064,7 +1065,7 @@ export const GracePeriodAdminFlyOut = ({
     activity: false,
   });
 
-  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
+  const [fileViewer, setFileViewer] = useState(null);
   const [declineGracePeriodDoc, setDeclineGracePeriodDoc] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
@@ -1258,8 +1259,7 @@ export const GracePeriodAdminFlyOut = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setIsPreviewingDoc(!is_previewing_doc);
-                      closeGracePeriodFlyOut();
+                      setFileViewer(selectedRequest?.file_path)
                     }}
                     title="Open"
                   >
@@ -1519,12 +1519,11 @@ export const GracePeriodAdminFlyOut = ({
         </div>
       </main>
 
-      {is_previewing_doc && selectedRequest && (
-        <FilePreviewModal
-          filePath={selectedRequest?.file_path}
-          closeModal={handleCloseModal}
-        />
-      )}
+
+
+            { fileViewer && 
+                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+            }
 
       <Success
         message={successMessage}
@@ -1546,7 +1545,7 @@ export const LicenseRenewalAdminFlyout = ({
     activity: false,
   });
 
-  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
+  const [fileViewer, setFileViewer] = useState(null);
   const [decline, setDecline] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
@@ -1740,8 +1739,7 @@ export const LicenseRenewalAdminFlyout = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setIsPreviewingDoc(!is_previewing_doc);
-                      closeLicenseRenewalFlyout();
+                      setFileViewer(selectedRequest?.file_path)
                     }}
                     title="Open"
                   >
@@ -2001,12 +1999,9 @@ export const LicenseRenewalAdminFlyout = ({
         </div>
       </main>
 
-      {is_previewing_doc && selectedRequest && (
-        <FilePreviewModal
-          filePath={selectedRequest?.file_path}
-          closeModal={handleCloseModal}
-        />
-      )}
+      { fileViewer && 
+                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+            }
 
       <Success
         message={successMessage}

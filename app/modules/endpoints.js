@@ -148,6 +148,8 @@ const RemoteEndpoints = {
   GET_IP_STATUS: `${apiURL}/v2/ip/get-submitted-ip-details-of-partner/:partner_uuid`,
   GET_IP_COMPLETION_PERCENTAGE: `${apiURL}/v2/ip/get-partner-ip-progress-percentage/:partner_uuid`,
   SUBMIT_SERVICE_DETAILS: `${apiURL}/v2/ip/submit-service-details`,
+  IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
+  SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,

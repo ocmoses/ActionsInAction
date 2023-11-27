@@ -1386,7 +1386,64 @@ const usePartners = () => {
     }
   };
 
-  
+  const ipFileUpload = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.IP_FILE_UPLOAD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+     
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("IP Upload response", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const downloadSignedContract = () => {
     return RemoteEndpoints.DOWNLOAD_CONTRACT
     .replace(':partner_uuid', states.partners.partner.uuid)
@@ -1433,7 +1490,8 @@ const usePartners = () => {
     getChangeOrderStatus,
     submitAnnexureResponses,
     getIPStatus,
-    getIPProgressStatus
+    getIPProgressStatus,
+    ipFileUpload
   }
 }
 export default usePartners

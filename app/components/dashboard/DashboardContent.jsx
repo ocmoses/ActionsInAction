@@ -26,7 +26,7 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses, questionnaire_pending } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending, ip_pending } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 
@@ -60,6 +60,7 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
+    getIPStatus
   } = usePartners();
 //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
@@ -99,6 +100,7 @@ export default function GetStarted({ type }) {
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+  const [IPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
@@ -127,8 +129,7 @@ export default function GetStarted({ type }) {
     setProcessing(false);
   }, []);
 
-  useEffect(() => {
-    let check = () => 
+  let check = () => {
     getQuestionnaireStatus().then(response => {
       console.log("Questionnaire status response", response);
       console.log("response.status", response.status);
@@ -145,6 +146,18 @@ export default function GetStarted({ type }) {
       }
     }).catch(error => {console.log(error.response); setError({error: error.message})});
 
+    getIPStatus().then(response => {
+      console.log("IPStatus response", response);
+      console.log("response.status", response.status);
+      console.log("response.error", response.error);
+      if(response.message == ip_pending || response.error == ip_pending){
+        setIPAlert(true); 
+      }
+    }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})})
+
+  }
+
+  useEffect(() => {
     check();
   }, []);
 
@@ -451,30 +464,31 @@ const partnerLicenseRenewalStatus = async () => {
                               }
                             />
                           ) : FinalApproval.partner ? (
-                            <CallToAction
-                              message="Your contract is ready. Click here to sign"
-                              description="Describe the event and give further instructions if needed, include a call to action"
-                              onclick={() => showAgreement(true)}
-                              label="Take action"
-                              color="text-green-700"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
+                            // <CallToAction
+                            //   message="Your contract is ready. Click here to sign"
+                            //   description="Describe the event and give further instructions if needed, include a call to action"
+                            //   onclick={() => showAgreement(true)}
+                            //   label="Take action"
+                            //   color="text-green-700"
+                            //   desccolor="text-[#999999]"
+                            //   icon={
+                            //     <svg
+                            //       xmlns="http://www.w3.org/2000/svg"
+                            //       fill="none"
+                            //       viewBox="0 0 24 24"
+                            //       strokeWidth={1.5}
+                            //       stroke="currentColor"
+                            //       className=" w-[28px] h-[28px]"
+                            //     >
+                            //       <path
+                            //         strokeLinecap="round"
+                            //         strokeLinejoin="round"
+                            //         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            //       />
+                            //     </svg>
+                            //   }
+                            // />
+                            <></>
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
@@ -550,7 +564,10 @@ const partnerLicenseRenewalStatus = async () => {
               )}
 
               {
-                true &&
+                partner?.contract_status === "processing" && IPAlert &&
+
+                // And you have not submitted the IP details
+
                 <IPCard />
               }
 

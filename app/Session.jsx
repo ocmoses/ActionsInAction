@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import useApp from "@/hooks/useApp";
 import useLogout from "@/hooks/useLogout";
 import {useIdleTimer} from "react-idle-timer";
+import { useRouter } from "next/navigation";
  
 
 export default function Session({
@@ -13,6 +14,7 @@ export default function Session({
 }) {
   const app = useApp();
   const { Logout, clearStore } = useLogout();
+  const router = useRouter();
 
   let timeout = null;
 
@@ -40,11 +42,11 @@ export default function Session({
   const goToDashboard = () => {
     if(window != undefined && window != null){
       if(window.location.pathname.includes('admin/login')){
-        window.location = '/admin/dashboard';
+       router.push('/admin/dashboard');
         return;
       }
       if(window.location.pathname.includes('login')){
-        window.location = '/dashboard';
+        router.push('/dashboard');
         return;
       }
     }

@@ -137,11 +137,17 @@ const RemoteEndpoints = {
   GET_ALL_REVENUE_SHARE: `${apiURL}/v2/admin/get-all-revenue-share-request`,
   APPROVE_REVENUE_SHARE: `${apiURL}/v2/admin/approve-revenue-share-request`,
 
+  //change order
   GET_ALL_SHORTCODES: `${apiURL}/v2/contract/get-partner-shortcodes/:partner-uuid`,
   REQUEST_CHANGE: `${apiURL}/v2/contract/change-order/submit-change-order-request`,
   GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`,
   GET_ALL_CHANGE_ORDER_REQUESTS: `${apiURL}/v2/admin/get-all-change-order-request`,
   APPROVE_OR_REJECT_CHANGE_ORDER: `${apiURL}/v2/admin/approve-change-order-request`,
+
+  //IP
+  GET_IP_STATUS: `${apiURL}/v2/ip/get-submitted-ip-details-of-partner/:partner_uuid`,
+  GET_IP_COMPLETION_PERCENTAGE: `${apiURL}/v2/ip/get-partner-ip-progress-percentage/:partner_uuid`,
+  SUBMIT_SERVICE_DETAILS: `${apiURL}/v2/ip/submit-service-details`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,

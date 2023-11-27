@@ -1395,6 +1395,8 @@ export const roles = [
 
 export const questionnaire_pending = "This partner has not submitted any questionaire";
 
+export const ip_pending = "Partner has not started IP submission";
+
 export const user_statuses = {
   ACTIVE: "active",
   APPROVED: "approved"

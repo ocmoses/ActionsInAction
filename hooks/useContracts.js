@@ -81,6 +81,8 @@ const useContracts = () => {
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
 
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
+
   let currentContract = null; //Is there a current contract
   const contractStatus = partner?.contract_status; //What is the user's contract status
   const userStatus = partner?.status; //What is the user's status
@@ -205,7 +207,7 @@ const useContracts = () => {
       if (result?.success) {
         const contracts = result.data?.contracts;
         
-        // console.log('Admin roles retrieved', admin_roles);
+        // console.log('All contracts retrieved by Admin', contracts);
         
         return {
           contracts
@@ -366,12 +368,12 @@ const useContracts = () => {
       getAllPartnerRoles()
         .then(resp => resp.partner_roles ? setPartnerRoles(resp.partner_roles) : setError({ error: resp.error }) )
         .catch(error =>  setError({ error: "Error fetching roles" }));
+
+        getAllAdminPartners()
+          .then(resp => resp.admin_partners ? setAdminPartners(resp.admin_partners) : setError({ error: resp.error }) )
+          .catch(error =>  setError({ error: "Error fetching admin partners" }));          
     }
 
-    getAllAdminPartners()
-      .then(resp => resp.admin_partners ? setAdminPartners(resp.admin_partners) : setError({ error: resp.error }) )
-      .catch(error =>  setError({ error: "Error fetching admin partners" }));
-          
   }, []);
  
   return { 
@@ -434,7 +436,10 @@ const useContracts = () => {
     checkQuestionnaireStatus,
 
     showContractCategoryModal, 
-    setShowContractCategoryModal
+    setShowContractCategoryModal,
+
+    toFillQuestionnaire, 
+    setToFillQuestionnaire
   };
 };
 

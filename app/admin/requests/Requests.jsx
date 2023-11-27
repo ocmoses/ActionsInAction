@@ -124,16 +124,17 @@ export default function Requests() {
       case request_types.REVENUE_SHARE:
         setOpenRevenueShareDrawer(true);
         break;
-      case request_types.CHANGE_ORDER:
+        case request_types.CHANGE_ORDER:
         setOpenChangeOrderDrawer(true);
         break;
-      case request_types.GRACE_PERIOD:
+        case request_types.GRACE_PERIOD:
         setGracePeriodFlyout(true);
         break;
-      case request_types.LICENSE_RENEWAL:
+        case request_types.LICENSE_RENEWAL:
         setLicenseRenewalFlyout(true);
         break;
-        case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
+        case request_types.VAS_CLEARANCE: 
+        setOpenIPDrawer(true);
         break;
       default: setOpenDrawer(true);
     }

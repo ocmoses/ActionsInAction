@@ -14,8 +14,6 @@ import { useStoreState } from "easy-peasy";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import useApp from "@/hooks/useApp";
-import FilePreviewModal from "@/app/components/FilePreviewModal";
 import FileViewer from "@/app/components/modals/FileViewer";
 import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
@@ -51,8 +49,8 @@ export default function GracePeriodAlert({
         const licenseValidityDaysLeft =
           licenseValidityRemainderResponse.data.data.license_validity_days;
         setLicenseValidityDaysLeft(licenseValidityDaysLeft);
-        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
       setError({
         dashboard:
@@ -64,6 +62,7 @@ export default function GracePeriodAlert({
   ////////////end licenseValidityRemainder function////////////////////
 
   useEffect(() => {
+    alert(licenseRenewalStatus);
     licenseValidityRemainder();
   }, []);
 
@@ -646,7 +645,7 @@ export const LicenseValidityTopAlert = ({
                     className="text-white/70 cursor-pointer hover:underline hover:text-white/90"
                     onClick={() => popUpLicenseRenewalForm()}
                   >
-                    Renew your contract{" "}
+                    Renew your license{" "}
                   </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

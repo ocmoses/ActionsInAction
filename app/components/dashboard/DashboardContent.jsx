@@ -288,7 +288,7 @@ export default function GetStarted({ type }) {
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
   
-  const [errorMessage, setErrorMessage] = useState(null);
+
   const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
   const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
   const [gracePeriodStatus, setGracePeriodStatus] = useState("");
@@ -302,7 +302,6 @@ export default function GetStarted({ type }) {
   
 ////////////partnerLicenseGracePeriodStatus function////////////////////
 const partnerLicenseGracePeriodStatus = async () => {
-  setErrorMessage(null);
   setShowGracePreriodAlert(false);
   try {
     const partnerLicenseGracePeriodStatusResponse = await axios.get(
@@ -323,7 +322,7 @@ const partnerLicenseGracePeriodStatus = async () => {
     }
     setShowGracePreriodAlert(true);
   } catch (error) {
-    setErrorMessage("An error occur while trying to fetch license grace period status");
+    console.log("An error occur while trying to fetch license grace period status");
     setShowGracePreriodAlert(false);
   }
 };
@@ -331,7 +330,6 @@ const partnerLicenseGracePeriodStatus = async () => {
 
 ////////////partnerLicenseRenewalStatus function////////////////////
 const partnerLicenseRenewalStatus = async () => {
-  setErrorMessage(null);
   setShowLicenseRenewalAlert(false);
   try {
     const partnerLicenseRenewalStatusResponse = await axios.get(
@@ -353,7 +351,7 @@ const partnerLicenseRenewalStatus = async () => {
     }
     setShowLicenseRenewalAlert(true);
   } catch (error) {
-    setErrorMessage("An error occur while trying to fetch license renewal status");
+    console.log("An error occur while trying to fetch license renewal status");
     setShowGracePreriodAlert(false);
   }
 };

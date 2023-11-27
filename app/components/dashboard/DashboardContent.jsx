@@ -150,7 +150,7 @@ export default function GetStarted({ type }) {
       console.log("IPStatus response", response);
       console.log("response.status", response.status);
       console.log("response.error", response.error);
-      if(response.message == ip_pending || response.error == ip_pending){
+      if(response.message == ip_pending || response.error == ip_pending || response.message == undefined){
         setIPAlert(true); 
       }
     }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})})

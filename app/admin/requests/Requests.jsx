@@ -28,6 +28,8 @@ import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 import RevenueShareDrawer from "@/app/components/drawers/RevenueShareDrawer";
 import ChangeOrderDrawer from "@/app/components/drawers/ChangeOrderDrawer";
+import IPDrawer from "@/app/components/drawers/IPDrawer";
+
 
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
@@ -55,6 +57,7 @@ export default function Requests() {
     getAllChangeOrder,
     getAllGreacePeriod,
     getAllLicenceRenewal,
+    getAllIP
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -105,8 +108,8 @@ export default function Requests() {
   const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
 
   const [openRevenueShareDrawer, setOpenRevenueShareDrawer] = useState(false);
-
   const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
+  const [openIPDrawer, setOpenIPDrawer] = useState(false);
 
   const [fetchingGracePeriods, setFetchingGracePeriods] = useState(false);
   const [gracePeriods, setGracePeriods] = useState([]);
@@ -130,8 +133,9 @@ export default function Requests() {
       case request_types.LICENSE_RENEWAL:
         setLicenseRenewalFlyout(true);
         break;
-      default:
-        setOpenDrawer(true);
+        case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
+        break;
+      default: setOpenDrawer(true);
     }
   };
 
@@ -289,6 +293,7 @@ export default function Requests() {
   };
 
   const get_change_order = async (page, perPage) => {
+    
     let get_change_order_response = await getAllChangeOrder();
 
     console.log("All change order", get_change_order_response);
@@ -327,7 +332,8 @@ export default function Requests() {
 
     console.log("Requests", requests);
     clearErrors();
-  };
+
+  }
 
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
@@ -571,6 +577,7 @@ export default function Requests() {
     get_change_order();
     get_grace_period();
     get_license_renewal();
+    get_ips();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
@@ -911,22 +918,20 @@ export default function Requests() {
         )}
       </ComplianceDrawer>
 
-      {selectedRequest?.request_type == request_types.REVENUE_SHARE && (
-        <RevenueShareDrawer
-          request={selectedRequest}
-          openDrawer={openRevenueShareDrawer}
-          closeAction={() => setOpenRevenueShareDrawer(false)}
-        />
-      )}
+      {
+        selectedRequest?.request_type == request_types.REVENUE_SHARE && 
 
-      {selectedRequest?.request_type == request_types.CHANGE_ORDER && (
-        <ChangeOrderDrawer
-          request={selectedRequest}
-          openDrawer={openChangeOrderDrawer}
-          closeAction={() => setOpenChangeOrderDrawer(false)}
-          refresh={() => get_change_order()}
-        />
-      )}
+        <RevenueShareDrawer request={selectedRequest} openDrawer={openRevenueShareDrawer} 
+        closeAction={() => setOpenRevenueShareDrawer(false)}/>
+      }
+
+      {
+        selectedRequest?.request_type == request_types.CHANGE_ORDER && 
+
+        <ChangeOrderDrawer request={selectedRequest} openDrawer={openChangeOrderDrawer} 
+        closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
+      }
+      
 
       {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
         // check this out on dev

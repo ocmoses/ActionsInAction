@@ -311,7 +311,7 @@ export default function GracePeriodAlert({
 
 export const GracePeriodExtensionForm = ({
   closePopUp,
-  submitGracePeriodSubmit,
+  submitGracePeriod,
 }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
@@ -391,7 +391,7 @@ export const GracePeriodExtensionForm = ({
           );
 
           if (response?.data.success) {
-            submitGracePeriodSubmit();
+            submitGracePeriod();
           } else {
             setErrorMessage(response.data.message);
             setSendAction(false);

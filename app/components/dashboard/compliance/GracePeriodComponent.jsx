@@ -53,7 +53,7 @@ export default function GracePeriodAlert({
         setLoading(false);
       }
     } catch (error) {
-      return setError({
+      setError({
         dashboard:
           "Something went wrong. Please check your connection and try again",
       });
@@ -63,6 +63,8 @@ export default function GracePeriodAlert({
   ////////////end licenseValidityRemainder function////////////////////
 
   useEffect(() => {
+    alert(gracePeriodStatus);
+    alert(licenseRenewalStatus);
     licenseValidityRemainder();
   }, []);
 

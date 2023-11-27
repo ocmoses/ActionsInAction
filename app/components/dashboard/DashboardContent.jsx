@@ -607,7 +607,7 @@ const partnerLicenseRenewalStatus = async () => {
               {/*//==============================================================================================================================*/}
 
               {/* //================this is lisense grace period and License renewal==============================================================================================================*/}
-              {showGracePreriodAlert && showLicenseRenewalAlert ? (
+              {showGracePreriodAlert && showLicenseRenewalAlert && (
                 <>
                   {popUpGracePeriodForm && (
                     <PopUp closePopUp={() => setPopUpGracePeriodForm(false)}>
@@ -656,10 +656,6 @@ const partnerLicenseRenewalStatus = async () => {
                     }
                   />
                 </>
-              ) : (
-                  <p className="text-red-500 text-sm font-italic">
-                    {errorMessage}
-                  </p>
               )}
 
               {/*//==============================================================================================================================*/}

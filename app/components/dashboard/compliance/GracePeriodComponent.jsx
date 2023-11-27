@@ -62,7 +62,6 @@ export default function GracePeriodAlert({
   ////////////end licenseValidityRemainder function////////////////////
 
   useEffect(() => {
-    alert(licenseRenewalStatus);
     licenseValidityRemainder();
   }, []);
 

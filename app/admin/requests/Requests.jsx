@@ -38,7 +38,11 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-import { GracePeriodAdminFlyOut, LicenseRenewalAdminFlyout } from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import {
+  GracePeriodAdminFlyOut,
+  LicenseRenewalAdminFlyout,
+} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import ShortCodeAlert, {ShortCodeFlyOut} from "@/app/components/RequestComponent";
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
@@ -53,7 +57,8 @@ export default function Requests() {
     getAllChangeOrder,
     getAllGreacePeriod,
     getAllLicenceRenewal,
-    getAllIP
+    getAllIP,
+    getAllPartnersShortCodes
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -115,6 +120,10 @@ export default function Requests() {
   const [licenseRenewals, setlicenseRenewals] = useState([]);
   const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
 
+  const [fetchingShortcodes, setFetchingShortcodes] = useState(false);
+  const [shortcodes, setShortcodes] = useState([]);
+  const [shortcodesFlyout, setShortcodesFlyout] = useState(false);
+
   const open = (request) => {
     switch(request.request_type){
       case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
@@ -127,6 +136,8 @@ export default function Requests() {
         break;
         case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
         break;
+        case request_types.SHORTCODES: setShortcodesFlyout(true);
+        break;
       default: setOpenDrawer(true);
     }
   }
@@ -138,9 +149,6 @@ export default function Requests() {
     mtn_share: "",
   });
 
-
-
-
   let get_brd_response = null;
   let get_questionnaire_response = null;
   let get_revenue_share_response = null;
@@ -148,8 +156,7 @@ export default function Requests() {
   let approve_request_response = null;
   let reject_request_response = null;
   let get_license_renewal_response = null;
-  
-  
+  let get_all_partner_shortcodes_response = null;
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -250,7 +257,7 @@ export default function Requests() {
   };
 
   const get_revenue_share = async (page, perPage) => {
-     get_revenue_share_response = await getAllRevenueShare();
+    get_revenue_share_response = await getAllRevenueShare();
 
     console.log("All rev share", get_revenue_share_response);
 
@@ -290,8 +297,6 @@ export default function Requests() {
   };
 
   const get_change_order = async (page, perPage) => {
-
-    setRequests(requests.filter(r => r.request_type != request_types.CHANGE_ORDER));
     
     let get_change_order_response = await getAllChangeOrder();
 
@@ -313,8 +318,8 @@ export default function Requests() {
           status: change_order.status ?? "pending",
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
-          ...change_order
-        })
+          ...change_order,
+        });
       }
     }
 
@@ -379,6 +384,7 @@ export default function Requests() {
 
   }
 
+
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
     setFetchingGracePeriods(true);
@@ -419,8 +425,11 @@ export default function Requests() {
         : 0
     );
 
-    if(selectedRequest && selectedRequest.request_type == request_types.GRACE_PERIOD){
-      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    if (
+      selectedRequest &&
+      selectedRequest.request_type == request_types.GRACE_PERIOD
+    ) {
+      setSelectedRequest(requests.find((r) => r.id == selectedRequest.id));
     }
 
     setRequests(requests);
@@ -459,7 +468,7 @@ export default function Requests() {
           rejected_on: licenserenewal.rejected_on,
           status: licenserenewal.status,
           file_name:
-          licenserenewal.license_grace_period_file?.split("/").pop() ?? "",
+            licenserenewal.license_grace_period_file?.split("/").pop() ?? "",
           file_path: licenserenewal.license_grace_period_file ?? "",
           partner_uuid: licenserenewal.partner_uuid,
           uuid: licenserenewal.uuid,
@@ -475,8 +484,11 @@ export default function Requests() {
         : 0
     );
 
-    if(selectedRequest && selectedRequest.request_type == request_types.LICENSE_RENEWAL){
-      setSelectedRequest(requests.find(r => r.id == selectedRequest.id));
+    if (
+      selectedRequest &&
+      selectedRequest.request_type == request_types.LICENSE_RENEWAL
+    ) {
+      setSelectedRequest(requests.find((r) => r.id == selectedRequest.id));
     }
 
     setRequests(requests);
@@ -489,6 +501,67 @@ export default function Requests() {
     setlicenseRenewals(get_license_renewal_response.licenserenewals);
     clearErrors();
     setFetchingLicenseRenewals(false);
+  };
+
+  const get_shortcodes = async () => {
+    if (fetchingShortcodes) return;
+    setFetchingShortcodes(true);
+
+    get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
+    // console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
+
+    if (get_all_partner_shortcodes_response.error) {
+      setError({ error: get_all_partner_shortcodes_response.error });
+      return;
+    }
+
+    for (const shortcode of get_all_partner_shortcodes_response.shortcodes) {
+      if (!requests.find((request) => request.uuid == shortcode.user_uuid)) {
+        requests.push({
+          company: shortcode.company_name ?? "Company",
+          email: shortcode.email ?? "email@email.com",
+          request_type: request_types.SHORTCODES,
+          request_id: shortcode.request_id,
+          created_at: shortcode.created_at,
+          //approved_on: shortcode.approved_on,
+         // rejected_on: shortcode.rejected_on,
+          status: shortcode.status,
+          short_codes:shortcode.shortcodes,
+          // file_name:
+          //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
+          // file_path: graceperiod.license_grace_period_file ?? "",
+          partner_uuid: shortcode.partner_uuid,
+          uuid: shortcode.user_uuid,
+         
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if (
+      selectedRequest &&
+      selectedRequest.request_type == request_types.SHORTCODES
+    ) {
+      setSelectedRequest(requests.find((r) => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("SHORTCODES Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setShortcodes(get_all_partner_shortcodes_response.shortcodes);
+    clearErrors();
+    setFetchingShortcodes(false);
   };
 
   const approveRequest = async () => {
@@ -605,7 +678,7 @@ export default function Requests() {
       [field]: e.target.value,
     }));
   };
- 
+
   useEffect(() => {
     setProcessing(false);
     clearErrors();
@@ -616,11 +689,13 @@ export default function Requests() {
     get_grace_period();
     get_license_renewal();
     get_ips();
+    get_shortcodes();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
 
- 
+  const [displayShortCodeAlert, setDisplayShortCodeAlert] = useState(false);
+
   return (
     <>
       <div id="approvals" className="flex flex-cols pb-12 min-h-screen">
@@ -639,128 +714,142 @@ export default function Requests() {
               <FormErrors error={errors["error"]} />
             </div>
           )}
+              {/*
+             <ShortCodeAlert
+                displayShortCodeAlert={() => setDisplayShortCodeAlert(true)}
+              />
+             */}
+          
+            <>
+             
+              <Filter
+                list={requests}
+                filterAction={setFilteredRequests}
+                keysArray={["company", "email", "request_type", "request_id"]}
+                statusArray={["approved", "rejected", "not_approved"]}
+              />
 
-          <Filter
-            list={requests}
-            filterAction={setFilteredRequests}
-            keysArray={["company", "email", "request_type", "request_id"]}
-            statusArray={["approved", "rejected", "not_approved"]}
-          />
+              <div className="w-full border-1 border-white/20 rounded-lg">
+                <table className="table w-full transparent ">
+                  <tbody>
+                    {/* head */}
+                    <tr className="border-b border-b-white/40 text-11 bg-white/20">
+                      <th>
+                        <span className="text-[13px]">Company</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]">Request type</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]">Request ID</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]">Request Date</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]">Status</span>
+                      </th>
+                      <th>
+                        <span className="text-[13px]"></span>
+                      </th>
+                    </tr>
 
-          <div className="w-full border-1 border-white/20 rounded-lg">
-            <table className="table w-full transparent ">
-              <tbody>
-                {/* head */}
-                <tr className="border-b border-b-white/40 text-11 bg-white/20">
-                  <th>
-                    <span className="text-[13px]">Company</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Request type</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Request ID</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Request Date</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Status</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]"></span>
-                  </th>
-                </tr>
-
-                {pagedRequests &&
-                  pagedRequests.length > 0 &&
-                  pagedRequests.map((request) => (
-                    <tr
-                      className="border-b border-b-white/10 cursor-pointer bg-transparent"
-                      key={request.uuid}
-                    >
-                      {/* Company */}
-                      <td>
-                        <div className="flex items-center space-x-3">
-                          <div className="flex items-center font-bold space-x-4">
-                            <CompanyInitial
-                              initials={getInitials(
-                                request.company
-                              ).toUpperCase()}
-                              email={request.email}
-                            />
-                            <div className="flex flex-col">
-                              <p>{request.company}</p>
-                              {request.email && (
-                                <span className="text-sm text-gray-500">
-                                  {request.email}
-                                </span>
+                    {pagedRequests &&
+                      pagedRequests.length > 0 &&
+                      pagedRequests.map((request) => (
+                        <tr
+                          className="border-b border-b-white/10 cursor-pointer bg-transparent"
+                          key={request.uuid}
+                        >
+                          {/* Company */}
+                          <td>
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center font-bold space-x-4">
+                                <CompanyInitial
+                                  initials={getInitials(
+                                    request.company
+                                  ).toUpperCase()}
+                                  email={request.email}
+                                />
+                                <div className="flex flex-col">
+                                  <p>{request.company}</p>
+                                  {request.email && (
+                                    <span className="text-sm text-gray-500">
+                                      {request.email}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {/* Request type */}
+                          <td>
+                            <div className="flex gap-0 flex-col">
+                              <span className="text-white text-sm">
+                                {request.request_type}
+                              </span>
+                            </div>
+                          </td>
+                          {/* Request ID */}
+                          <td>
+                            <div className="flex gap-0 flex-col">
+                              <span className="text-white">
+                                {request.request_id}
+                              </span>
+                            </div>
+                          </td>
+                          {/* Request Date */}
+                          <td>
+                            <div>
+                              {moment(request.created_at ?? moment()).format(
+                                "MMM YYYY"
                               )}
                             </div>
-                          </div>
-                        </div>
-                      </td>
-                      {/* Request type */}
-                      <td>
-                        <div className="flex gap-0 flex-col">
-                          <span className="text-white text-sm">
-                            {request.request_type}
-                          </span>
-                        </div>
-                      </td>
-                      {/* Request ID */}
-                      <td>
-                        <div className="flex gap-0 flex-col">
-                          <span className="text-white">
-                            {request.request_id}
-                          </span>
-                        </div>
-                      </td>
-                      {/* Request Date */}
-                      <td>
-                        <div>
-                          {moment(request.created_at ?? moment()).format(
-                            "MMM YYYY"
-                          )}
-                        </div>
-                      </td>
-                      {/* Status */}
-                      <td>
-                        <div
-                          className={` py-1 px-2 rounded text-white inline-flex text-sm ${
-                            request.status.toLowerCase() == "rejected"
-                              ? "bg-red-700/50"
-                              : request.status.toLowerCase() == "approved"
-                              ? "bg-green-900/50"
-                              : "bg-white/20"
-                          }`}
-                        >
-                          {capitalizeFirst(request.status.replace("_", " "))}
-                        </div>
-                      </td>
-                      {/* Action */}
-                      <td>
-                        <span
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            open(request);                           
-                            console.log("selectedRequest", request);
-                          }}
-                          className="text-yellow-600 cursor-pointer"
-                        >
-                          Review
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            {filteredRequests.length == 0 && pagedRequests.length == 0 ? (
-              <EmptyTable list={"Requests"} />
-            ) : (
-              <TablePager list={filteredRequests} action={setPagedRequests} />
-            )}
-          </div>
+                          </td>
+                          {/* Status */}
+                          <td>
+                            <div
+                              className={` py-1 px-2 rounded text-white inline-flex text-sm ${
+                                request.status.toLowerCase() == "rejected"
+                                  ? "bg-red-700/50"
+                                  : request.status.toLowerCase() == "approved"
+                                  ? "bg-green-900/50"
+                                  : "bg-white/20"
+                              }`}
+                            >
+                              {capitalizeFirst(
+                                request.status.replace("_", " ")
+                              )}
+                            </div>
+                          </td>
+                          {/* Action */}
+                          <td>
+                            <span
+                              onClick={() => {
+                                setSelectedRequest(request);
+                                open(request);
+                                console.log("selectedRequest", request);
+                              }}
+                              className="text-yellow-600 cursor-pointer"
+                            >
+                              Review
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                {filteredRequests.length == 0 && pagedRequests.length == 0 ? (
+                  <EmptyTable list={"Requests"} />
+                ) : (
+                  <TablePager
+                    list={filteredRequests}
+                    action={setPagedRequests}
+                  />
+                )}
+              </div>
+            </>
+        
         </div>
       </div>
 
@@ -955,34 +1044,42 @@ export default function Requests() {
         closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
 
-      {
+       {
         selectedRequest?.request_type == request_types.VAS_CLEARANCE && 
 
         <IPDrawer request={selectedRequest} openDrawer={openIPDrawer} 
         closeAction={() => setOpenIPDrawer(false)} refresh={() => get_ips()}/>
       }
-      
 
       {selectedRequest?.request_type == request_types.GRACE_PERIOD &&
-      // check this out on dev
+        // check this out on dev
         gracePeriodFlyout && (
           <GracePeriodAdminFlyOut
-            closeGracePeriodFlyOut={() =>setGracePeriodFlyout(false)}
+            closeGracePeriodFlyOut={() => setGracePeriodFlyout(false)}
             selectedRequest={selectedRequest}
             successAction={successAction}
           />
         )}
 
       {selectedRequest?.request_type == request_types.LICENSE_RENEWAL &&
-      // check this out on dev
+        // check this out on dev
         licenseRenewalFlyout && (
           <LicenseRenewalAdminFlyout
-            closeLicenseRenewalFlyout={() =>setLicenseRenewalFlyout(false)}
+            closeLicenseRenewalFlyout={() => setLicenseRenewalFlyout(false)}
             selectedRequest={selectedRequest}
             successAction={successAction}
           />
         )}
-
+        
+        {selectedRequest?.request_type == request_types.SHORTCODES &&
+        // check this out on dev
+        shortcodesFlyout && (
+          <ShortCodeFlyOut
+            closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
+            selectedRequest={selectedRequest}
+            successAction={successAction}
+          />
+        )}
 
 
       <Success

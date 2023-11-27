@@ -21,8 +21,6 @@ import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
 
-
-
 export default function GracePeriodAlert({
   gracePeriodStatus,
   licenseRenewalStatus,
@@ -31,11 +29,12 @@ export default function GracePeriodAlert({
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
-
   const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState(61);
+  const [loading, setLoading] = useState(false);
   ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
     try {
+      setLoading(true);
       const licenseValidityRemainderResponse = await axios.get(
         `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partner?.uuid}`,
         {
@@ -45,15 +44,20 @@ export default function GracePeriodAlert({
           },
         }
       );
-      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
-        const licenseValidityDaysLeft = licenseValidityRemainderResponse.data.data.license_validity_days;
+      if (
+        "license_validity_days" in licenseValidityRemainderResponse.data.data
+      ) {
+        const licenseValidityDaysLeft =
+          licenseValidityRemainderResponse.data.data.license_validity_days;
         setLicenseValidityDaysLeft(licenseValidityDaysLeft);
+        setLoading(false);
       }
     } catch (error) {
-      return setError({
+      setError({
         dashboard:
           "Something went wrong. Please check your connection and try again",
       });
+      setLoading(false);
     }
   };
   ////////////end licenseValidityRemainder function////////////////////
@@ -64,130 +68,81 @@ export default function GracePeriodAlert({
 
   return (
     <>
-      {licenseRenewalStatus == "none" && (licenseValidityDaysLeft > 0 || licenseValidityDaysLeft <= 60)? (
-        <>
-          {gracePeriodStatus != "approved" ? (
-            <>
-              {gracePeriodStatus == "not_approved" ||
-              gracePeriodStatus == "corrected" ? (
-                <></>
-              ) : (
-                <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
-                  <div className="p-[24px] ">
-                    <div className="flex flex-row gap-3">
-                      <div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 30 30"
-                          fill="none"
-                        >
-                          <path
-                            d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
-                            fill="#E44A34"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex flex-col gap-3">
-                        <div className="text-gray-500 ">
-                          {gracePeriodStatus == "rejected" ? (
-                            <p>
-                              <span className="text-white">
-                                Your licence renewal proof was rejected
-                              </span>
-                              <br />
-                              Reason: The document you submitted doesn’t show
-                              enough proof of progress.
-                            </p>
-                          ) : (
-                            <p>
-                              <span className="text-white">
-                                Your license expires in{" "}
-                                {licenseValidityDaysLeft} days
-                              </span>
-                              <br />
-                              Upload your renewed license to avoid service
-                              distruption. If your renewal is still in progress,
-                              apply for an extension.
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex gap-2 flex-wrap">
-                          <button
-                            onClick={() => openGracePeriodForm()}
-                            className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                          >
-                            Extend Expiration
-                          </button>
-                          <button
-                            className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                            onClick={() => popUpLicenseRenewalForm()}
-                          >
-                            Upload new license
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
-              <div className="p-[24px] ">
-                <div className="flex flex-row gap-3">
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="30"
-                      height="30"
-                      viewBox="0 0 30 30"
-                      fill="none"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
-                        fill="#24A06B"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="text-gray-500 ">
-                      <p>
-                        <span className="text-white">
-                          Your expiry period has been extended
-                        </span>
-                        <br />
-                        We’ve reviewed your renewal proof and have extended your
-                        expiry period by 30days
-                      </p>
-                    </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
-                        Got It!
-                      </button>
-                      <button
-                        className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                        onClick={() => popUpLicenseRenewalForm()}
-                      >
-                        Renew Your License
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+      {loading ? (
+        <></>
       ) : (
         <>
-          {licenseRenewalStatus != "approved" ? (
+          {licenseRenewalStatus == "none" &&
+          licenseValidityDaysLeft > 0 &&
+          licenseValidityDaysLeft <= 60 ? (
             <>
-              {licenseRenewalStatus == "not_approved" ||
-              licenseRenewalStatus == "corrected" ? (
-                <></>
+              {gracePeriodStatus != "approved" ? (
+                <>
+                  {gracePeriodStatus == "not_approved" ||
+                  gracePeriodStatus == "corrected" ? (
+                    <></>
+                  ) : (
+                    <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+                      <div className="p-[24px] ">
+                        <div className="flex flex-row gap-3">
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="30"
+                              height="30"
+                              viewBox="0 0 30 30"
+                              fill="none"
+                            >
+                              <path
+                                d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
+                                fill="#E44A34"
+                              />
+                            </svg>
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            <div className="text-gray-500 ">
+                              {gracePeriodStatus == "rejected" ? (
+                                <p>
+                                  <span className="text-white">
+                                    Your licence renewal proof was rejected
+                                  </span>
+                                  <br />
+                                  Reason: The document you submitted doesn’t
+                                  show enough proof of progress.
+                                </p>
+                              ) : (
+                                <p>
+                                  <span className="text-white">
+                                    Your license expires in{" "}
+                                    {licenseValidityDaysLeft} days
+                                  </span>
+                                  <br />
+                                  Upload your renewed license to avoid service
+                                  distruption. If your renewal is still in
+                                  progress, apply for an extension.
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              <button
+                                onClick={() => openGracePeriodForm()}
+                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                              >
+                                Extend Expiration
+                              </button>
+                              <button
+                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                onClick={() => popUpLicenseRenewalForm()}
+                              >
+                                Upload new license
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
                   <div className="p-[24px] ">
@@ -201,47 +156,33 @@ export default function GracePeriodAlert({
                           fill="none"
                         >
                           <path
-                            d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
-                            fill="#E44A34"
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
+                            fill="#24A06B"
                           />
                         </svg>
                       </div>
                       <div className="flex flex-col gap-3">
                         <div className="text-gray-500 ">
-                          {licenseRenewalStatus == "rejected" ? (
-                            <p>
-                              <span className="text-white">
-                                Your licence renewal proof was rejected
-                              </span>
-                              <br />
-                              Reason: The document you submitted doesn’t show
-                              enough proof of your licence.
-                            </p>
-                          ) : (
-                            <p>
-                              <span className="text-white">
-                                Your license has expired.
-                              </span>
-                              <br />
-                              Upload your renewed license to avoid service
-                              distruption.
-                            </p>
-                          )}
+                          <p>
+                            <span className="text-white">
+                              Your expiry period has been extended
+                            </span>
+                            <br />
+                            We’ve reviewed your renewal proof and have extended
+                            your expiry period by 30days
+                          </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          {licenseValidityDaysLeft > 0 && (
-                            <button
-                              onClick={() => openGracePeriodForm()}
-                              className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                            >
-                              Extend Expiration
-                            </button>
-                          )}
+                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                            Got It!
+                          </button>
                           <button
                             className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
                             onClick={() => popUpLicenseRenewalForm()}
                           >
-                            Upload new license
+                            Renew Your License
                           </button>
                         </div>
                       </div>
@@ -251,45 +192,116 @@ export default function GracePeriodAlert({
               )}
             </>
           ) : (
-            <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
-              <div className="p-[24px] ">
-                <div className="flex flex-row gap-3">
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="30"
-                      height="30"
-                      viewBox="0 0 30 30"
-                      fill="none"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
-                        fill="#24A06B"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="text-gray-500 ">
-                      <p>
-                        <span className="text-white">
-                          Your license renewal successful
-                        </span>
-                        <br />
-                        We’ve reviewed your license and approved your renewal
-                        request.
-                      </p>
+            <>
+              {licenseRenewalStatus != "approved" ? (
+                <>
+                  {licenseRenewalStatus == "not_approved" ||
+                  licenseRenewalStatus == "corrected" ? (
+                    <></>
+                  ) : (
+                    <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+                      <div className="p-[24px] ">
+                        <div className="flex flex-row gap-3">
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="30"
+                              height="30"
+                              viewBox="0 0 30 30"
+                              fill="none"
+                            >
+                              <path
+                                d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
+                                fill="#E44A34"
+                              />
+                            </svg>
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            <div className="text-gray-500 ">
+                              {licenseRenewalStatus == "rejected" ? (
+                                <p>
+                                  <span className="text-white">
+                                    Your licence renewal proof was rejected
+                                  </span>
+                                  <br />
+                                  Reason: The document you submitted doesn’t
+                                  show enough proof of your licence.
+                                </p>
+                              ) : (
+                                <p>
+                                  <span className="text-white">
+                                    Your license has expired.
+                                  </span>
+                                  <br />
+                                  Upload your renewed license to avoid service
+                                  distruption.
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              {licenseValidityDaysLeft > 0 && (
+                                <button
+                                  onClick={() => openGracePeriodForm()}
+                                  className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                >
+                                  Extend Expiration
+                                </button>
+                              )}
+                              <button
+                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                onClick={() => popUpLicenseRenewalForm()}
+                              >
+                                Upload new license
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-2 flex-wrap">
-                      <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
-                        Got It!
-                      </button>
+                  )}
+                </>
+              ) : (
+                <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+                  <div className="p-[24px] ">
+                    <div className="flex flex-row gap-3">
+                      <div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 30 30"
+                          fill="none"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
+                            fill="#24A06B"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <div className="text-gray-500 ">
+                          <p>
+                            <span className="text-white">
+                              Your license renewal successful
+                            </span>
+                            <br />
+                            We’ve reviewed your license and approved your
+                            renewal request.
+                          </p>
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                            Got It!
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
         </>
       )}
@@ -297,10 +309,9 @@ export default function GracePeriodAlert({
   );
 }
 
-
 export const GracePeriodExtensionForm = ({
   closePopUp,
-  submitGracePeriodSubmit,
+  submitGracePeriod,
 }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
@@ -380,7 +391,7 @@ export const GracePeriodExtensionForm = ({
           );
 
           if (response?.data.success) {
-            submitGracePeriodSubmit();
+            submitGracePeriod();
           } else {
             setErrorMessage(response.data.message);
             setSendAction(false);
@@ -559,7 +570,12 @@ export const GracePeriodSuccess = ({ gracePeriodSuccessOk }) => {
   );
 };
 
-export const LicenseValidityTopAlert = ({ licenseValidityDaysLeft, partner, closeLicenseValidityAlert, popUpLicenseRenewalForm}) => {
+export const LicenseValidityTopAlert = ({
+  licenseValidityDaysLeft,
+  partner,
+  closeLicenseValidityAlert,
+  popUpLicenseRenewalForm,
+}) => {
   const states = useStoreState((state) => state);
   const [errorMessage, setErrorMessage] = useState(null);
   const [validity, setValidity] = useState(false);
@@ -624,10 +640,10 @@ export const LicenseValidityTopAlert = ({ licenseValidityDaysLeft, partner, clos
                     </span>
                   ) : (
                     <span>Your contract has expired</span>
-                  )}
-                  {" "}
-                  <span className="text-white/70 cursor-pointer hover:underline hover:text-white/90"
-                  onClick={() => popUpLicenseRenewalForm()}
+                  )}{" "}
+                  <span
+                    className="text-white/70 cursor-pointer hover:underline hover:text-white/90"
+                    onClick={() => popUpLicenseRenewalForm()}
                   >
                     Renew your contract{" "}
                   </span>
@@ -662,7 +678,6 @@ export const LicenseValidityTopAlert = ({ licenseValidityDaysLeft, partner, clos
   );
 };
 
-
 export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
@@ -679,7 +694,6 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
     license_expiring_date: "",
     indemnity_clause: "YES",
   });
-
 
   const [fileSize, setfFileSize] = useState(null);
   useEffect(() => {
@@ -726,19 +740,25 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
       if (fileSize <= 0) {
         setErrorMessage("Upload  VAS License!");
       } else {
-        if (formData.vas_license_id=="") {
+        if (formData.vas_license_id == "") {
           setErrorMessage("Provide VAS License ID!");
-        }else if (formData.license_issue_date==""){
+        } else if (formData.license_issue_date == "") {
           setErrorMessage("Provide License Issuing Date!");
-        }else if (formData.license_expiring_date==""){
+        } else if (formData.license_expiring_date == "") {
           setErrorMessage("Provide License Expiring Date!");
         } else {
           setSendAction(true);
           const formDataToSend = new FormData();
           formDataToSend.append("partner_uuid", formData.partner_uuid);
           formDataToSend.append("vas_license_id", formData.vas_license_id);
-          formDataToSend.append("license_issue_date", formData.license_issue_date);
-          formDataToSend.append("license_expiring_date", formData.license_expiring_date);
+          formDataToSend.append(
+            "license_issue_date",
+            formData.license_issue_date
+          );
+          formDataToSend.append(
+            "license_expiring_date",
+            formData.license_expiring_date
+          );
           formDataToSend.append("file", formData.file);
           formDataToSend.append("indemnity_clause", formData.indemnity_clause);
           const response = await axios.post(
@@ -780,7 +800,7 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
       {!formNotifications ? (
         <>
           <p className="text-white/70 mb-5">
-          We’ll review your submission for approval
+            We’ll review your submission for approval
           </p>
 
           <div className="mt-3 mb-3 flex flex-col gap-8 border-l-[2px] border-[#353535]">
@@ -814,10 +834,10 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
               <p className="text-gray-500">
                 <span className="text-white">We’ll review your updates</span>
                 <br />
-                Your submission will go through an approval process, ensure they are correct.
+                Your submission will go through an approval process, ensure they
+                are correct.
               </p>
             </div>
-
           </div>
 
           <div className="flex gap-2 justify-end mt-4">
@@ -990,8 +1010,7 @@ export const LicenseRenewalForm = ({ closePopUp, submitLicenseRenewal }) => {
   );
 };
 
-
-export const LicenseRenewalSuccess = ({ SuccessOk}) => {
+export const LicenseRenewalSuccess = ({ SuccessOk }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <Image
@@ -1003,13 +1022,11 @@ export const LicenseRenewalSuccess = ({ SuccessOk}) => {
         className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
       />
       <h2 className="text-white font-mtn-bold text-2xl my-4">
-      Thanks for your submission
+        Thanks for your submission
       </h2>
-      <p className=" text-mtn-500 my-5">
-     What's Next?
-      </p>
+      <p className=" text-mtn-500 my-5">What's Next?</p>
       <p className=" text-gray-400 max-w-[60%] m-[auto]">
-      We’ll review your updates and revert on the same.
+        We’ll review your updates and revert on the same.
       </p>
       <div className="flex gap-2 justify-center mt-10">
         <button
@@ -1022,7 +1039,6 @@ export const LicenseRenewalSuccess = ({ SuccessOk}) => {
     </div>
   );
 };
-
 
 function actionDate(targetDate) {
   const originalDate = new Date(targetDate);
@@ -1040,7 +1056,7 @@ function actionDate(targetDate) {
 export const GracePeriodAdminFlyOut = ({
   closeGracePeriodFlyOut,
   selectedRequest,
-  successAction
+  successAction,
 }) => {
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
@@ -1078,11 +1094,10 @@ export const GracePeriodAdminFlyOut = ({
       setErrorMessage("Select the reason for rejection.");
     } else {
       formData.status = "rejected";
-        gracePeriodAction();
+      gracePeriodAction();
     }
   };
 
-  
   const _approveGracePeriod = () => {
     clearError();
     formData.status = "approved";
@@ -1515,16 +1530,15 @@ export const GracePeriodAdminFlyOut = ({
         message={successMessage}
         visible={successToast}
         action={successAction}
-      />    
+      />
     </>
   );
 };
 
-
 export const LicenseRenewalAdminFlyout = ({
   closeLicenseRenewalFlyout,
   selectedRequest,
-  successAction
+  successAction,
 }) => {
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
@@ -1562,11 +1576,10 @@ export const LicenseRenewalAdminFlyout = ({
       setErrorMessage("Select the reason for rejection.");
     } else {
       formData.status = "rejected";
-        _action();
+      _action();
     }
   };
 
-  
   const _approve = () => {
     clearError();
     formData.status = "approved";
@@ -1999,7 +2012,7 @@ export const LicenseRenewalAdminFlyout = ({
         message={successMessage}
         visible={successToast}
         action={successAction}
-      />    
+      />
     </>
   );
 };

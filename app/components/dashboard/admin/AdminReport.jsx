@@ -13,7 +13,7 @@ export default function PartnerStatisticsReport({
   return (
     <div
       id="statistics"
-      className={` w-[${width}]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg `}
+      className={` w-[33.3%]  bg-white/10 min-h-[150px] min-w-[200px] rounded-lg `}
     >
       <div className="px-5 py-5 flex  flex-col">
         <div className="mb-[15px] text-gray-400">{title}</div>

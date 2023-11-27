@@ -57,7 +57,8 @@ export default function Requests() {
     getAllChangeOrder,
     getAllGreacePeriod,
     getAllLicenceRenewal,
-    getAllIP
+    getAllIP,
+    getAllPartnersShortCodes
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -119,6 +120,10 @@ export default function Requests() {
   const [licenseRenewals, setlicenseRenewals] = useState([]);
   const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
 
+  const [fetchingShortcodes, setFetchingShortcodes] = useState(false);
+  const [shortcodes, setShortcodes] = useState([]);
+  const [shortcodesFlyout, setShortcodesFlyout] = useState(false);
+
   const open = (request) => {
     switch(request.request_type){
       case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
@@ -130,6 +135,8 @@ export default function Requests() {
         case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
         break;
         case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
+        break;
+        case request_types.SHORTCODES: setShortcodesFlyout(true);
         break;
       default: setOpenDrawer(true);
     }
@@ -149,6 +156,7 @@ export default function Requests() {
   let approve_request_response = null;
   let reject_request_response = null;
   let get_license_renewal_response = null;
+  let get_all_partner_shortcodes_response = null;
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -495,6 +503,66 @@ export default function Requests() {
     setFetchingLicenseRenewals(false);
   };
 
+  const get_shortcodes = async () => {
+    if (fetchingShortcodes) return;
+    setFetchingShortcodes(true);
+
+    get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
+    // console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
+
+    if (get_all_partner_shortcodes_response.error) {
+      setError({ error: get_all_partner_shortcodes_response.error });
+      return;
+    }
+
+    for (const shortcode of get_all_partner_shortcodes_response.shortcodes) {
+      if (!requests.find((request) => request.uuid == shortcode.user_uuid)) {
+        requests.push({
+          company: shortcode.company_name ?? "Company",
+          email: shortcode.email ?? "email@email.com",
+          request_type: request_types.SHORTCODES,
+          request_id: shortcode.request_id,
+          created_at: shortcode.created_at,
+          //approved_on: shortcode.approved_on,
+         // rejected_on: shortcode.rejected_on,
+          status: shortcode.status,
+          // file_name:
+          //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
+          // file_path: graceperiod.license_grace_period_file ?? "",
+          partner_uuid: shortcode.partner_uuid,
+          uuid: shortcode.user_uuid,
+         
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if (
+      selectedRequest &&
+      selectedRequest.request_type == request_types.SHORTCODES
+    ) {
+      setSelectedRequest(requests.find((r) => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("SHORTCODES Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    setShortcodes(get_all_partner_shortcodes_response.shortcodes);
+    clearErrors();
+    setFetchingShortcodes(false);
+  };
+
   const approveRequest = async () => {
     //TODO
     clearErrors();
@@ -620,6 +688,7 @@ export default function Requests() {
     get_grace_period();
     get_license_renewal();
     get_ips();
+    get_shortcodes();
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
@@ -973,7 +1042,7 @@ export default function Requests() {
         <ChangeOrderDrawer request={selectedRequest} openDrawer={openChangeOrderDrawer} 
         closeAction={() => setOpenChangeOrderDrawer(false)} refresh={() => get_change_order()}/>
       }
-      
+
        {
         selectedRequest?.request_type == request_types.VAS_CLEARANCE && 
 

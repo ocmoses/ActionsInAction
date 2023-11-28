@@ -25,6 +25,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import ServiceDetail from "./ServiceDetail";
 import ContentOwner from "./non_aggregator/ContentOwner";
 import IsAgent from "./non_aggregator/IsAgent";
+import IsRecordLabel from "./non_aggregator/IsRecordLabel";
 import useLogout from "@/hooks/useLogout";
 
 

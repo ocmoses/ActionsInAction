@@ -26,7 +26,7 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses, questionnaire_pending } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending, ip_pending } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 
@@ -60,6 +60,7 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
+    getIPStatus
   } = usePartners();
 //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
@@ -99,6 +100,7 @@ export default function GetStarted({ type }) {
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+  const [IPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
@@ -127,8 +129,7 @@ export default function GetStarted({ type }) {
     setProcessing(false);
   }, []);
 
-  useEffect(() => {
-    let check = () => 
+  let check = () => {
     getQuestionnaireStatus().then(response => {
       console.log("Questionnaire status response", response);
       console.log("response.status", response.status);
@@ -145,6 +146,18 @@ export default function GetStarted({ type }) {
       }
     }).catch(error => {console.log(error.response); setError({error: error.message})});
 
+    getIPStatus().then(response => {
+      console.log("IPStatus response", response);
+      console.log("response.status", response.status);
+      console.log("response.error", response.error);
+      if(response.message == ip_pending || response.error == ip_pending || response.message == undefined){
+        setIPAlert(true); 
+      }
+    }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})})
+
+  }
+
+  useEffect(() => {
     check();
   }, []);
 
@@ -275,17 +288,21 @@ export default function GetStarted({ type }) {
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
   
-  
-  const [showGracePreriodAndLicenseRenewalAlert, setShowGracePreriodAndLicenseRenewalAlert] = useState(false);
+
+  const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
+  const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
+  const [gracePeriodStatus, setGracePeriodStatus] = useState("");
+  const [licenseRenewalStatus, setLicenseRenewalStatus] = useState("");
+
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
   const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
   const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
-const [gracePeriodStatus, setGracePeriodStatus] = useState("");
+  
 ////////////partnerLicenseGracePeriodStatus function////////////////////
 const partnerLicenseGracePeriodStatus = async () => {
-  setShowGracePreriodAndLicenseRenewalAlert(false);
+  setShowGracePreriodAlert(false);
   try {
     const partnerLicenseGracePeriodStatusResponse = await axios.get(
       `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
@@ -301,20 +318,19 @@ const partnerLicenseGracePeriodStatus = async () => {
     console.log("partnerLicenseGracePeriodStatusResponse", response.status)
       setGracePeriodStatus(response.status);
     }else{
-      //console.log("partnerLicenseGracePeriodStatusResponse", 'none')
       setGracePeriodStatus("none");
     }
-    setShowGracePreriodAndLicenseRenewalAlert(true);
+    setShowGracePreriodAlert(true);
   } catch (error) {
-    return setError({dashboard:"Something went wrong. Please check your connection and try again"});
+    console.log("An error occur while trying to fetch license grace period status");
+    setShowGracePreriodAlert(false);
   }
 };
 ////////////end partnerLicenseGracePeriodStatus function////////////////////
 
-const [licenseRenewalStatus, setLicenseRenewalStatus] = useState("");
 ////////////partnerLicenseRenewalStatus function////////////////////
 const partnerLicenseRenewalStatus = async () => {
-  setShowGracePreriodAndLicenseRenewalAlert(false);
+  setShowLicenseRenewalAlert(false);
   try {
     const partnerLicenseRenewalStatusResponse = await axios.get(
       `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
@@ -333,12 +349,14 @@ const partnerLicenseRenewalStatus = async () => {
     }else{
       setLicenseRenewalStatus("none");
     }
-    setShowGracePreriodAndLicenseRenewalAlert(true);
+    setShowLicenseRenewalAlert(true);
   } catch (error) {
-    return setError({dashboard:"Something went wrong. Please check your connection and try again"});
+    console.log("An error occur while trying to fetch license renewal status");
+    setShowGracePreriodAlert(false);
   }
 };
-////////////end partnerLicenseRenewalStatus function////////////////////
+////////////end partnerLicenseRenewalStatus function///////////////////
+
   useEffect(() => {
     partnerLicenseGracePeriodStatus();
     partnerLicenseRenewalStatus();
@@ -451,30 +469,31 @@ const partnerLicenseRenewalStatus = async () => {
                               }
                             />
                           ) : FinalApproval.partner ? (
-                            <CallToAction
-                              message="Your contract is ready. Click here to sign"
-                              description="Describe the event and give further instructions if needed, include a call to action"
-                              onclick={() => showAgreement(true)}
-                              label="Take action"
-                              color="text-green-700"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
+                            // <CallToAction
+                            //   message="Your contract is ready. Click here to sign"
+                            //   description="Describe the event and give further instructions if needed, include a call to action"
+                            //   onclick={() => showAgreement(true)}
+                            //   label="Take action"
+                            //   color="text-green-700"
+                            //   desccolor="text-[#999999]"
+                            //   icon={
+                            //     <svg
+                            //       xmlns="http://www.w3.org/2000/svg"
+                            //       fill="none"
+                            //       viewBox="0 0 24 24"
+                            //       strokeWidth={1.5}
+                            //       stroke="currentColor"
+                            //       className=" w-[28px] h-[28px]"
+                            //     >
+                            //       <path
+                            //         strokeLinecap="round"
+                            //         strokeLinejoin="round"
+                            //         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            //       />
+                            //     </svg>
+                            //   }
+                            // />
+                            <></>
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
@@ -550,7 +569,10 @@ const partnerLicenseRenewalStatus = async () => {
               )}
 
               {
-                true &&
+                partner?.contract_status === "processing" && IPAlert &&
+
+                // And you have not submitted the IP details
+
                 <IPCard />
               }
 
@@ -583,7 +605,7 @@ const partnerLicenseRenewalStatus = async () => {
               {/*//==============================================================================================================================*/}
 
               {/* //================this is lisense grace period and License renewal==============================================================================================================*/}
-              {showGracePreriodAndLicenseRenewalAlert && (
+              {showGracePreriodAlert && showLicenseRenewalAlert && (
                 <>
                   {popUpGracePeriodForm && (
                     <PopUp closePopUp={() => setPopUpGracePeriodForm(false)}>
@@ -596,7 +618,7 @@ const partnerLicenseRenewalStatus = async () => {
                         <GracePeriodSuccess
                           gracePeriodSuccessOk={() => {
                             setPopUpGracePeriodForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowGracePreriodAlert(false);
                           }}
                         /> // If gracePeriodSubmit is true
                       )}

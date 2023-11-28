@@ -2053,7 +2053,7 @@ export default function ContractSigning(){
                             !haveSigned &&
                             (<div className="flex ">
                                 <div className="w-10 flex mr-4">
-                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
                                 </div>
                                 <div>
                                     <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <p><span className="text-white">Electronic Record and Signature Disclosure.</span></p></p>
@@ -2066,7 +2066,7 @@ export default function ContractSigning(){
                             !haveSigned &&
                             (<div className="flex ">
                                 <div className="w-10 flex mr-4">
-                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40" />
+                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
                                 </div>
                                 <div>
                                     <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <p><span className="text-white">Electronic Record and Signature Disclosure.</span></p></p>

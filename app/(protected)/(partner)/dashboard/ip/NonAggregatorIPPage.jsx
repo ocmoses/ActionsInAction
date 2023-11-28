@@ -14,21 +14,31 @@ import FormErrors from "@/app/components/FormErrors";
 import useErrors from "@/hooks/useErrors";
 import useProcessing from "@/hooks/useProcessing";
 import useContracts from "@/hooks/useContracts";
+import useUsers from "@/hooks/useUsers";
 import moment from "moment";
 import usePartners from "@/hooks/usePartners";
 import TextInput from "@/app/components/form/TextInput";
+import TextAreaInput from "@/app/components/form/TextAreaInput";
 import FileInput from "@/app/components/form/FileInput";
 import DatePicker from "@/app/components/form/DatePicker";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import ServiceDetail from "./ServiceDetail";
+import ContentOwner from "./non_aggregator/ContentOwner";
+import IsAgent from "./non_aggregator/IsAgent";
+import IsRecordLabel from "./non_aggregator/IsRecordLabel";
+import useLogout from "@/hooks/useLogout";
 
 
 export default function NonAggregatorIPPage() {
 
     const {
-        getAllServices,
-        getAllShortcodes
+        partner,
+        ipFileUpload
     } = usePartners();
 
-  // console.log("Partner", partner);
+  const {user} = useUsers();
+
+  const {Logout} = useLogout();
     
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -41,17 +51,18 @@ export default function NonAggregatorIPPage() {
   const [step, setStep] = useState(1);
 
   const [ownerType, setOwnerType] = useState(null);
-
-  const [ownerIsAlive, setOwnerIsAlive] = useState(false);
   
   const [data, setData] = useState({service_type: "", service_name: "", shortcode: "", bearer: "", 
                                         start_date: "", end_date: "", authorisation_video: "", 
                                         agreement_letter: "", content_creator_id: "", agent_id: "", 
                                         probate_of_will: ""});
 
+ 
+
+  
   const [shortcodes, setShortcodes] = useState([]);
 
-  const [services, setServices] = useState([]);
+  const [serviceTypes, setServicesTypes] = useState([]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -60,15 +71,6 @@ export default function NonAggregatorIPPage() {
   const two_years_ago = new Date().setDate(today.getDate() - 739);
   const max_expiry = new Date().setDate((data.AVL_issuing_date == "" ? today : data.AVL_issuing_date) + 739);
 
-
-  const submitService = () => {
-    setSubmitting(true);
-
-    setTimeout(() => {
-        setSubmitting(false);
-        setStep(2);
-    }, 3000);
-  }
 
   const submitAllProof = () => {
     setSubmitting(true);
@@ -80,6 +82,20 @@ export default function NonAggregatorIPPage() {
     }, 3000);
   }
 
+  const uploadFile = (file_title, file) => {
+    let formData = new FormData();
+    formData.append("file_title", file_title);
+    formData.append("licenser_type", ownerType);
+    formData.append("partner_uuid", partner?.uuid);
+    formData.append("partner_category_uuid", partner?.categories[0]?.category_uuid);
+    formData.append("agg_plus_vas_requirement", "no");
+    formData.append("file", file);
+
+    ipFileUpload(formData)
+        .then(resp => console.log(resp.message))
+        .catch(error => console.log(error.response));    
+  }
+
     
   const bearers = [
         {value: "sms", title: "SMS"},
@@ -88,8 +104,8 @@ export default function NonAggregatorIPPage() {
   ];
 
   const owner = {
-    CONTENT_CREATOR: "Content_Creator",
-    AGENT: "Agent",
+    CONTENT_CREATOR: "content_owner",
+    AGENT: "agent_and_content",
     RECORD_LABEL: "record_label"
   };
 
@@ -109,13 +125,6 @@ export default function NonAggregatorIPPage() {
  
   // console.log("isSuperadmin", isSuperadmin);
 
-    useEffect(() => {
-
-        getAllServices().then(resp => resp.error ? setError({error: resp.error}) : setServices(resp.service_types));
-
-        getAllShortcodes().then(resp => resp.error ? setError({error: resp.error}) : setShortcodes(resp.shortcodes));
-
-    }, []);
     
   return (
 
@@ -164,7 +173,7 @@ export default function NonAggregatorIPPage() {
 
             {
                 step == 1 && 
-                <ServiceDetail />
+                <ServiceDetail next={() => setStep(2)}/>
             }
             {
                 step == 2 && 
@@ -188,111 +197,7 @@ export default function NonAggregatorIPPage() {
     </>
   );
 
-  function ServiceDetail(){       
-
-    return (
-        <div className="flex flex-col space-y-8 w-[500px]">
-            <div className="text-center flex flex-col space-y-2">
-                <h2 className="text-4xl font-mtn text-white">Your service details</h2>
-                <h4 className="text-white/60 font-mtn text-2xl">What services will you be offering</h4>
-            </div>
-
-            <TextInput
-                id="service_type"
-                label="Service type"
-                // value={data.role_name}
-                onChange={(e) => handleChange(e)}
-                onBlur={(e) => handleChange(e)}
-              />
-
-            <TextInput
-                id="service_name"
-                label="Service Name"
-                // value={data.role_name}
-                onChange={(e) => handleChange(e)}
-                onBlur={(e) => handleChange(e)}
-              />
-
-              <div className="flex flex-col space-y-2">
-
-                <p className="text-white">Short code</p>
-
-                <span className="text-white/60 text-sm">This is the short code associated with this service.</span>
-
-              </div>
-
-              <div className="flex space-x-4 flex-NOwrap w-full">
-                {
-                    shortcodes.map(s => <ShortCode key={s} value={s} />)
-                }
-              </div>
-
-              <div className="flex flex-col space-y-2">
-
-                <p className="text-white">Purpose /service usage</p>
-
-                <span className="text-white/60 text-sm">Provide a brief overview of what your service offers.</span>
-
-              </div>
-
-              <textarea
-                    onKeyUp={(e) => handleChange(e)}
-                    onBlur={(e) => handleChange(e)}
-                    className="rounded p-4 mb-4 border-1 border-white/20 bg-white/10 text-white"
-                    rows="6"
-              ></textarea>
-
-
-
-              <div className="flex flex-col space-y-2">
-
-                <p className="text-white">Bearer</p>
-
-                <span className="text-white/60 text-sm">This is the bearer associated with this service.</span>
-
-              </div>
-
-              <div className="flex space-x-4 flex-NOwrap w-full">
-                {
-                    bearers.map(b => <Bearer key={b.value} value={b.title} />)
-                }
-              </div>
-
-              <div className="flex justify-end item-end py-8">
-                {
-                    !submitting && 
-                    <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitService()}>Next</button>
-                }
-                {
-                    submitting && 
-                    <div className="flex px-4">
-                        <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                    </div>
-                }
-                
-            </div>
-
-
-        </div>
-    )
-
-    function ShortCode({value}){
-        return (
-            <div onClick={() => setData({...data, shortcode: value})} className={`p-4 text-white/80 w-1/3 border-2 ${data.shortcode == value ? "border-mtn" : "border-white/20"} rounded-md flex items-center justify-center cursor-pointer`}>
-                {value}
-            </div>
-        );
-    }
-
-    function Bearer({value}){
-        return (
-            <div onClick={() => setData({...data, bearer: value})} className={`p-4 text-white/80 w-1/3 border-2 ${data.bearer == value ? "border-mtn" : "border-white/20"} rounded-md flex items-center justify-center cursor-pointer`}>
-                {value}
-            </div>
-        );
-    }
-
-  }
+  
 
   function Licensing(){
 
@@ -358,803 +263,6 @@ export default function NonAggregatorIPPage() {
                         
                     </div>
 
-                </div>
-
-
-            </div>
-        </>
-    )
-
-  }
-  
-
-  function ContentOwner(){
-
-    return (
-        <>
-            <div className="flex flex-col space-y-12 w-[850px] mb-24">
-
-                <div className="text-center flex flex-col space-y-2">
-                    <h2 className="text-4xl font-mtn text-white">Provide proof of ownership</h2>
-                    <h4 className="text-white/60 font-mtn text-2xl">As furnished by a content creator</h4>
-                </div>
-
-                <div className="w-full flex flex-col space-y-6 flex-nowrap">
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            1
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Authorisation letter from content owner to MTN</h4>
-                            <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See letter checklist</span>
-                            </div>
-                        </div>
-
-                        <FileInput
-                            id="authorisation_letter"
-                            doc_id="authorisation_letter_doc"
-                            label="Authorization Letter"
-                            value={data.authorisation_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            2
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Licensing Period</h4>
-                            <p className="text-white/60 text-sm">Indicate the validity period granted by the content owner - as stated in the letter of authorisation.</p>                            
-                        </div>
-
-                        <div className="flex space-x-2 no-wrap items-center h-full">
-
-                            <DatePicker
-                                id="start_date"
-                                label="Start date"
-                                value={data.start_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={two_years_ago}
-                                max={today}
-                                disabled={false}
-                            />
-
-                            <DatePicker
-                                id="end_date"
-                                label="End date"
-                                value={data.end_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={tomorrow}
-                                max={max_expiry}
-                                disabled={false}
-                            />
-
-                        </div>
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            3
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Video showing signing</h4>
-                            <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
-                            <div className="flex space-x-2 items-base">
-                                <span className="text-xs text-mtn">See video sample</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="authorisation_video"
-                            doc_id="authorisation_video_doc"
-                            label="Authorization Video"
-                            value={data.authorisation_video}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            4
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Aggrement between [content owner] and [Dreamvile Digital Limited] VAS partner</h4>
-                            <p className="text-white/60 text-sm"></p> 
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See agreement checklist</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agreement_letter"
-                            doc_id="agreement_letter_doc"
-                            label="Agreement Letter"
-                            value={data.agreement_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            5
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Content creator’s ID</h4>
-                            <p className="text-white/60 text-sm">Submit a valid means of identification for the content creator. E.g International passport, driver’s license, voter’s card</p> 
-                            <div className="flex space-x-2 items-base">
-                                
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="content_creator_id"
-                            doc_id="content_creator_id_doc"
-                            label="ID (Content creator)"
-                            value={data.content_creator_id}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            6
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Other content proof of ownership (optional)</h4>
-                            <p className="text-white/60 text-sm">Provide any other proof you may have for your content ownership.</p> 
-                            <div className="flex space-x-2 items-base">
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="other_content_proof"
-                            doc_id="other_content_proof_doc"
-                            label="Other proof of ownership"
-                            value={data.other_content_proof}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-
-                </div>
-
-                <div className="flex justify-end item-end py-8">
-                    {
-                        !submitting && 
-                        <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitAllProof()}>Next</button>
-                    }
-                    {
-                        submitting && 
-                        <div className="flex px-4">
-                            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                        </div>
-                    }
-                </div>
-
-
-
-            </div>
-        </>
-    )
-
-  }
-
-  function IsAgent(){
-
-    return (
-        <>
-            <div className="flex flex-col space-y-12 w-[850px] mb-24">
-
-                <div className="text-center flex flex-col space-y-2">
-                    <h2 className="text-4xl font-mtn text-white">Provide proof of ownership</h2>
-                    <h4 className="text-white/60 font-mtn text-2xl">As furnished by a content creator</h4>
-                </div>
-
-                <div className="w-full flex flex-col space-y-6 flex-nowrap">
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            1
-                        </span> 
-                        <div className="w-[250px] min-2-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Physical status of the content creator</h4>
-                            <p className="text-white/60 text-sm">Choose an option that applies</p>
-                            
-                        </div>
-
-                        <div className="flex space-x-2 flex-nowrap items-center h-full">
-
-                            <div onClick={() => setOwnerIsAlive(true)}  
-                                    className={`cursor-pointer p-6 relative hover:bg-white/5 h-[120px] rounded-xl ${ownerIsAlive ? "border-2 border-mtn" : "border-white/20"} w-1/2 justify-center flex flex-col space-y-4`}>
-                                        {
-                                            ownerIsAlive && 
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 absolute top-4 right-4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                            </svg>
-                                        }                                        
-
-                                        <h4 className="text-white font-mtn text-sm">Alive</h4>
-                                        <p className="text-white/60 font-mtn text-sm">Content creator is alive and active</p>
-                            </div>
-
-                            <div onClick={() => setOwnerIsAlive(false)} 
-                                    className={`cursor-pointer p-6 relative hover:bg-white/5 h-[120px] rounded-xl ${!ownerIsAlive ? "border-2 border-mtn" : "border-white/20"} w-1/2 justify-center  flex flex-col space-y-4`}>
-                                        {
-                                            !ownerIsAlive && 
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 absolute top-4 right-4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                            </svg>
-                                        }  
-                                        <h4 className="text-white font-mtn text-sm">Deceased</h4>
-                                        <p className="text-white/60 font-mtn text-sm">Content creator is alive and active</p>
-                            </div>
-
-                        </div>
-                        
-                    </div>
-                    {
-                        !ownerIsAlive && 
-                        <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                            <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 bg-white/20 ">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                            </span> 
-                            <div className="w-[250px] flex flex-col space-y-2">
-                                <h4 className="font-mtn text-white text-md">Probate of will</h4>
-                                <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                                <div className="flex space-x-2 items-base">                                
-                                </div>
-                            </div>
-
-                            <FileInput
-                                id="probate_of_will"
-                                doc_id="probate_of_will_doc"
-                                label="Probate of Will"
-                                value={data.probate_of_will}
-                                onChange={handleFormChange}
-                                errors={errors}
-                                disabled={false}
-                                style="flex-1"
-                            />
-                            
-                        </div>
-                    }
-                    
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            2
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Authorisation letter from content owner to MTN</h4>
-                            <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See letter checklist</span>
-                            </div>
-                        </div>
-
-                        <FileInput
-                            id="authorisation_letter"
-                            doc_id="authorisation_letter_doc"
-                            label="Authorization Letter"
-                            value={data.authorisation_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            3
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Licensing Period</h4>
-                            <p className="text-white/60 text-sm">Indicate the validity period granted by the content owner - as stated in the letter of authorisation.</p>                            
-                        </div>
-
-                        <div className="flex space-x-2 no-wrap items-center h-full">
-
-                            <DatePicker
-                                id="start_date"
-                                label="Start date"
-                                value={data.start_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={two_years_ago}
-                                max={today}
-                                disabled={false}
-                            />
-
-                            <DatePicker
-                                id="end_date"
-                                label="End date"
-                                value={data.end_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={tomorrow}
-                                max={max_expiry}
-                                disabled={false}
-                            />
-
-                        </div>
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            4
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Video showing signing</h4>
-                            <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
-                            <div className="flex space-x-2 items-base">
-                                <span className="text-xs text-mtn">See video sample</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="authorisation_video"
-                            doc_id="authorisation_video_doc"
-                            label="Authorization Video"
-                            value={data.authorisation_video}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            5
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agreement between content creator and [agent]</h4>
-                            <p className="text-white/60 text-sm">This is the short code associated with your service.</p> 
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">Get thhe checklist</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agreement_letter"
-                            doc_id="agreement_letter_doc"
-                            label="Agreement Letter"
-                            value={data.agreement_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            6
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Aggrement between [content owner] and [Dreamvile Digital Limited] VAS partner</h4>
-                            <p className="text-white/60 text-sm"></p> 
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See agreement checklist</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agreement_letter"
-                            doc_id="agreement_letter_doc"
-                            label="Agreement Letter"
-                            value={data.agreement_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            7
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Content creator’s ID</h4>
-                            <p className="text-white/60 text-sm">Submit a valid means of identification for the content creator. E.g International passport, driver’s license, voter’s card</p> 
-                            <div className="flex space-x-2 items-base">
-                                
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="content_creator_id"
-                            doc_id="content_creator_id_doc"
-                            label="Content creator ID"
-                            value={data.content_creator_id}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            8
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agent’s ID</h4>
-                            <p className="text-white/60 text-sm">Submit a valid means of identification for the Agent. E.g International passport, driver’s license, voter’s card</p> 
-                            <div className="flex space-x-2 items-base">
-                                
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agent_id"
-                            doc_id="agent_id_doc"
-                            label="Agent ID"
-                            value={data.agent_id}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            9
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Other content proof of ownership (optional)</h4>
-                            <p className="text-white/60 text-sm">Provide any other proof you may have for your content ownership.</p> 
-                            <div className="flex space-x-2 items-base">
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="other_content_proof"
-                            doc_id="other_content_proof_doc"
-                            label="Other proof of ownership"
-                            value={data.other_content_proof}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-
-                </div>
-
-                <div className="flex justify-end item-end py-8">
-                    {
-                        !submitting && 
-                        <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitAllProof()}>Next</button>
-                    }
-                    {
-                        submitting && 
-                        <div className="flex px-4">
-                            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                        </div>
-                    }
-                </div>
-
-                
-
-
-            </div>
-        </>
-    )
-
-  }
-
-  function IsRecordLabel(){
-
-    return (
-        <>
-            <div className="flex flex-col space-y-12 w-[850px] mb-24">
-
-                <div className="text-center flex flex-col space-y-2">
-                    <h2 className="text-4xl font-mtn text-white">Provide proof of ownership</h2>
-                    <h4 className="text-white/60 font-mtn text-2xl">As furnished by a content creator</h4>
-                </div>
-
-                <div className="w-full flex flex-col space-y-6 flex-nowrap">
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            1
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Authorisation letter from content owner to MTN</h4>
-                            <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See letter checklist</span>
-                            </div>
-                        </div>
-
-                        <FileInput
-                            id="authorisation_letter"
-                            doc_id="authorisation_letter_doc"
-                            label="Authorization Letter"
-                            value={data.authorisation_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            2
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Licensing Period</h4>
-                            <p className="text-white/60 text-sm">Indicate the validity period granted by the content owner - as stated in the letter of authorisation.</p>                            
-                        </div>
-
-                        <div className="flex space-x-2 no-wrap items-center h-full">
-
-                            <DatePicker
-                                id="start_date"
-                                label="Start date"
-                                value={data.start_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={two_years_ago}
-                                max={today}
-                                disabled={false}
-                            />
-
-                            <DatePicker
-                                id="end_date"
-                                label="End date"
-                                value={data.end_date}
-                                onChange={(e) => handleChange(e)}
-                                onBlur={(e) => handleChange(e)}
-                                errors={errors}
-                                min={tomorrow}
-                                max={max_expiry}
-                                disabled={false}
-                            />
-
-                        </div>
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            3
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Video showing signing</h4>
-                            <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
-                            <div className="flex space-x-2 items-base">
-                                <span className="text-xs text-mtn">See video sample</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="authorisation_video"
-                            doc_id="authorisation_video_doc"
-                            label="Authorization Video"
-                            value={data.authorisation_video}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            4
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agreement between content creator and [agent]</h4>
-                            <p className="text-white/60 text-sm">This is the short code associated with your service.</p> 
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">Get thhe checklist</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agreement_letter"
-                            doc_id="agreement_letter_doc"
-                            label="Agreement Letter"
-                            value={data.agreement_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            5
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Aggrement between [content owner] and [Dreamvile Digital Limited] VAS partner</h4>
-                            <p className="text-white/60 text-sm"></p> 
-                            <div className="flex space-x-2 items-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                <span className="text-xs text-mtn">See agreement checklist</span>
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agreement_letter"
-                            doc_id="agreement_letter_doc"
-                            label="Agreement Letter"
-                            value={data.agreement_letter}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            6
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Content creator’s ID</h4>
-                            <p className="text-white/60 text-sm">Submit a valid means of identification for the content creator. E.g International passport, driver’s license, voter’s card</p> 
-                            <div className="flex space-x-2 items-base">
-                                
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="content_creator_id"
-                            doc_id="content_creator_id_doc"
-                            label="Content creator ID"
-                            value={data.content_creator_id}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            7
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agent’s ID</h4>
-                            <p className="text-white/60 text-sm">Submit a valid means of identification for the Agent. E.g International passport, driver’s license, voter’s card</p> 
-                            <div className="flex space-x-2 items-base">
-                                
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="agent_id"
-                            doc_id="agent_id_doc"
-                            label="Agent ID"
-                            value={data.agent_id}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-                    <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
-                        <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-                            8
-                        </span> 
-                        <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Other content proof of ownership (optional)</h4>
-                            <p className="text-white/60 text-sm">Provide any other proof you may have for your content ownership.</p> 
-                            <div className="flex space-x-2 items-base">
-                            </div>                           
-                        </div>
-
-                        <FileInput
-                            id="other_content_proof"
-                            doc_id="other_content_proof_doc"
-                            label="Other proof of ownership"
-                            value={data.other_content_proof}
-                            onChange={handleFormChange}
-                            errors={errors}
-                            disabled={false}
-                            style="flex-1"
-                        />
-                        
-                    </div>
-
-
-                </div>
-
-                <div className="flex justify-end item-end py-8">
-                    {
-                        !submitting && 
-                        <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitAllProof()}>Next</button>
-                    }
-                    {
-                        submitting && 
-                        <div className="flex px-4">
-                            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                        </div>
-                    }
                 </div>
 
 

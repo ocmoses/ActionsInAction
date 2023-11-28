@@ -1395,6 +1395,8 @@ export const roles = [
 
 export const questionnaire_pending = "This partner has not submitted any questionaire";
 
+export const ip_pending = "Partner has not started IP submission";
+
 export const user_statuses = {
   ACTIVE: "active",
   APPROVED: "approved"
@@ -1413,6 +1415,8 @@ export const request_types = {
   REVENUE_SHARE: "Revenue Share",
   CHANGE_ORDER: "Change Order",
   LICENSE_RENEWAL: "License Renewal",
+  VAS_CLEARANCE: "VAS Clearance",
+  SHORTCODES: "Short Codes"
 }
 
 export const role_types = {

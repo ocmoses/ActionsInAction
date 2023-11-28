@@ -28,7 +28,7 @@ export default function GracePeriodAlert({
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
-  const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState(61);
+  const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState();
   const [loading, setLoading] = useState(false);
   ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
@@ -230,7 +230,7 @@ export default function GracePeriodAlert({
                               ) : (
                                 <p>
                                   <span className="text-white">
-                                    Your license has expired.
+                                    Your license has expired. {licenseValidityDaysLeft}
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service

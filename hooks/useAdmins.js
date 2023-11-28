@@ -1277,27 +1277,7 @@ export default function useAdmins() {
   }
 
   /// //////////////////////////////////////////afolabi's functions starts here
-  const fetchData = async (url, apikey) => {
-    try {
-      const response = await axios.get(
-        url,
-        {
-          headers: {
-            apikey: apikey,
-          },
-        }
-      );
-      //console.log("this is my response", response);
-     return {success: true, data: response.data.data}
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return {success: false, message: error.message}
-    }
-  };
-
-
-
-  const getAllGreacePeriod = async () => {
+  const getAllGracePeriod = async () => {
     try {
       
       setProcessing(true);
@@ -1351,9 +1331,6 @@ export default function useAdmins() {
       };
     }
   };
-
-
-
   const getAllLicenceRenewal = async () => {
     try {
       
@@ -1463,7 +1440,6 @@ export default function useAdmins() {
       };
     }
   };
-
   /// //////////////////////////////////////////afolabi's functions Ends here
 
 
@@ -1492,7 +1468,7 @@ export default function useAdmins() {
     approveIP,
     rejectChangeOrder,
     rejectIP,
-    getAllGreacePeriod,
+    getAllGracePeriod,
     getAllLicenceRenewal,
     getAllIP,
     getAllPartnersShortCodes,

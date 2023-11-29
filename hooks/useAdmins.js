@@ -1456,7 +1456,6 @@ export default function useAdmins() {
     createAdmin,
     getAllDepartments,
     deleteAdmin,
-    fetchData,
     getAllBoardResolutionDocuments,
     approveOrRejectBrd,
     getAllQuestionnaire,

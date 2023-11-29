@@ -10,12 +10,14 @@ import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
-import { capitalizeFirst } from "../../../../../modules/utilities";
+import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
 
 
 
-export default function ContractSigning(){
+export default function ContractSigning({params}){
+
+    const contract_id = params.params[0];
 
     const {
         partner,

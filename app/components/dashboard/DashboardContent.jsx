@@ -638,7 +638,7 @@ const partnerLicenseRenewalStatus = async () => {
                         <LicenseRenewalSuccess
                           SuccessOk={() => {
                             setPopUpLicenseRenewalForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowLicenseRenewalAlert(false);
                           }}
                         />
                       )}

@@ -1301,7 +1301,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllGracePeriod has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1320,14 +1320,14 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllGracePeriod 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
           error.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllGracePeriod 1",
       };
     }
   };
@@ -1355,7 +1355,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllLicenceRenewal has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1374,14 +1374,14 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllLicenceRenewal 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
-          error.message ??
-          "Something went wrong. Please check your connection and try again",
+        error.message ??
+          "Something went wrong. Trying to fetch getAllLicenceRenewal 2",
       };
     }
   };
@@ -1410,7 +1410,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllPartnersShortCodes has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1429,14 +1429,14 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllPartnersShortCodes 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
           error.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllPartnersShortCodes 2",
       };
     }
   };

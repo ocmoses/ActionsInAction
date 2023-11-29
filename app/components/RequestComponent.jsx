@@ -73,14 +73,6 @@ export const ShortCodeFlyOut = ({
     shortcode: null,
     status: "",
   });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
   
   const _approve = (code) => {
     clearError();
@@ -188,7 +180,7 @@ export const ShortCodeFlyOut = ({
             </button>
           </div>
 
-          <div className="p-5 flex flex-col gap-10">
+          <div className="p-5 pb-[200px] flex flex-col gap-10 h-[100%] w-[100%] overflow-auto">
                           {errorMessage && (
                             <p className="text-red-500 text-sm font-italic">
                               {errorMessage}

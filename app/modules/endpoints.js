@@ -162,5 +162,7 @@ const RemoteEndpoints = {
   APPROVE_REJECT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/approve-reject-license-renewal-request`,
   GET_ALL_PARTNER_SHORTCODES: `${apiURL}/v2/admin/get-all-partner-shortcode/`,
   APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
+  GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
+  GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
 }
 export default RemoteEndpoints

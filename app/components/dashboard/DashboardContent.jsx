@@ -389,7 +389,6 @@ export default function GetStarted({ type }) {
   useEffect(() => {
     partnerLicenseGracePeriodStatus();
     partnerLicenseRenewalStatus();
-    getPartnerContract();
   }, [partner]);
 
   //////////end code////////////////////////////////////////////////////////////////////////////

@@ -13,9 +13,6 @@ import Success from "@/app/components/toasts/Success";
 import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
 
-
-
-
 export default function BilateralAnnexures({params}){
     
     const contract_id = params.params[0];
@@ -118,6 +115,10 @@ export default function BilateralAnnexures({params}){
     
 
     const submitResponses = async () => {
+
+        if(user.role != 'superAdmin'){
+            router.push(`/dashboard/contracts/execution/${contract_id}`);
+        }
         if(!validateResponses()){
             return;
         }

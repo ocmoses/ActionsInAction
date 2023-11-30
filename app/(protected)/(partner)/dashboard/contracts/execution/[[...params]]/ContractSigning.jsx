@@ -176,19 +176,19 @@ export default function ContractSigning({params}){
 
     }
 
-    // const get_dynamic_content = async () => {
-    //     if (gettingDynamicContent) return;
-    //     setGettingDynamicContent(true);
-    //     dynamic_content_response = await getContractDynamicData();
-    //     setGettingDynamicContent(false);
-    //     console.log('dynamic_content_response', dynamic_content_response);
-    //     if (dynamic_content_response.error) {
-    //         setError({ error: dynamic_content_response.error })
-    //     } else {
-    //         // console.log('dynamic_content_response', dynamic_content_response);
-    //         setDynamicData(dynamic_content_response.data);                
-    //     }
-    // }
+    const get_dynamic_content = async (contract_id) => {
+        if (gettingDynamicContent) return;
+        setGettingDynamicContent(true);
+        dynamic_content_response = await getContractDynamicData(contract_id);
+        setGettingDynamicContent(false);
+        console.log('dynamic_content_response', dynamic_content_response);
+        if (dynamic_content_response.error) {
+            setError({ error: dynamic_content_response.error })
+        } else {
+            // console.log('dynamic_content_response', dynamic_content_response);
+            setDynamicData(dynamic_content_response.data);                
+        }
+    }
 
     const sign_bilateral_contract = async (data) => {
         if (signing) return;
@@ -246,7 +246,7 @@ export default function ContractSigning({params}){
 
     useEffect(() => {
       setProcessing(false);
-        // get_dynamic_content();
+        get_dynamic_content(contract_id ?? null);
 
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
@@ -2115,9 +2115,9 @@ export default function ContractSigning({params}){
                                         directorOrDelegateSigned &&
                                         <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
                                             {
-                                                dynamicData?.signature_of_signee[0]?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />)
+                                                dynamicData?.signature_of_signee?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.dynamic_details.signature_of_signee?.director_or_delegate_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details.signature_of_signee?.director_or_delegate_signature} className="h-20" />)
 
                                             }
                                         </div>
@@ -2151,9 +2151,9 @@ export default function ContractSigning({params}){
                                         witnessSigned &&
                                         <div className="flex flex-col text-gray-600 items-center justify-center w-full h-32">
                                             {
-                                                dynamicData?.signature_of_signee[0]?.witness_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />)
+                                                dynamicData?.dynamic_details.signature_of_signee?.witness_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.dynamic_details.signature_of_signee?.witness_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details.signature_of_signee?.witness_signature} className="h-20" />)
 
                                             }
                                             

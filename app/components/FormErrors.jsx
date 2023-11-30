@@ -1,5 +1,5 @@
 export default function FormErrors({ error, success, align }) {
-  return (
+  return ( error != "No valid login detected for SuperAdmin" && 
     <>
       {(error || success) && (
         <div

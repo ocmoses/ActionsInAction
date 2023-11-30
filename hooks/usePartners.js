@@ -570,10 +570,10 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
+      // if (response.status === 400 || response.status === 401 ) {
+      //   LogoutAdmin();
+      //   return;
+      // }
       if (!response)
         return {
           error: "This request has no response available",
@@ -1077,14 +1077,14 @@ const usePartners = () => {
     }
   };
 
-  const getContractDynamicData = async () => {
+  const getContractDynamicData = async (contract_id) => {
     try {
       
       setProcessing(true);
       const response = await fetch(
         `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT
             .replace(':partner_uuid', states.partners.partner.uuid)
-            .replace(':contract_id', "TESTD-2023-10AA09")}`,
+            .replace(':contract_id', contract_id)}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1352,10 +1352,10 @@ const usePartners = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 401 ) {
-        Logout();
-        return;
-      }
+      // if (response.status === 401 ) {
+      //   Logout();
+      //   return;
+      // }
 
       const result = await response.json();
 

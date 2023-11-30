@@ -90,7 +90,7 @@ export default function ContractCategoryModal(){
                             </span>
                         </div>
                     </div>
-                    <div title="Not yet available" 
+                    <div title="This feature is currently unavailable. Please email us at  #vasdigitalproposals@mtn.com or call 08032000674 for further clarification." 
                             className={`w-1/2 rounded-xl bg-black p-4 hover:border-2 group hover:border-yellow-600 cursor-not-allowed`}>
                         <div className="flex justify-between">
 

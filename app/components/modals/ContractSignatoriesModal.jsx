@@ -156,6 +156,7 @@ export default function ContractSignatoriesModal(){
                                 !signatories.director ? 
                                 (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
                                     onClick={() => {
+                                        clearErrors();
                                         showAddSignatoryModal(role_types.DIRECTOR);
                                     }
                                     }>
@@ -187,7 +188,11 @@ export default function ContractSignatoriesModal(){
                             <p className="text-white text-md mb-2">A company delegate</p>
                             {!signatories.delegate ?
                                 (<span className="text-gray-300 text-xs cursor-pointer" 
-                                        onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.DELEGATE);}}>
+                                        onClick={() => {
+                                                    setContractSignatriesModal(false); 
+                                                    clearErrors(); 
+                                                    showAddSignatoryModal(role_types.DELEGATE);
+                                                }}>
                                     A person nominated by the company to sign. Requires a board resolution document
                                 </span>):
                                 (<span className="flex text-gray-300 text-xs">
@@ -243,7 +248,12 @@ export default function ContractSignatoriesModal(){
                             <div className="w-16 flex justify-center items-center">
                                 {
                                     !signatories.witness ? 
-                                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.WITNESS)}}>
+                                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
+                                        onClick={() => {
+                                                    setContractSignatriesModal(false); 
+                                                    clearErrors(); 
+                                                    showAddSignatoryModal(role_types.WITNESS)}
+                                                }>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>

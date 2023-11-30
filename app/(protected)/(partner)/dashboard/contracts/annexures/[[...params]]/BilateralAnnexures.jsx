@@ -23,8 +23,6 @@ export default function BilateralAnnexures({params}){
     const {
         partner,
         submitAnnexureResponses,
-        annexuresLink, 
-        setAnnexuresLink
     } = usePartners();
 
     const {
@@ -59,7 +57,7 @@ export default function BilateralAnnexures({params}){
     };
 
     useEffect(() => {
-        setAnnexuresLink(`/dashboard/contracts/annexures/${contract_id}`);
+        
     }, []);
 
 
@@ -201,7 +199,7 @@ export default function BilateralAnnexures({params}){
 
                         {
                             document?.referer?.includes("/contracts/execution") && 
-                            <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/execution")}>
+                            <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/execution/" + contract_id)}>
                                 <span className={`flex w-6 h-6 text-white bg-white/20 rounded-full justify-center items-center`}>9</span>
                                 <span className="text-white/60 text-white">Main Contract</span>
                             </div>

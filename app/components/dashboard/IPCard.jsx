@@ -1,6 +1,8 @@
 import { useRouter } from "next/navigation";
 import usePartner from "@/hooks/usePartners";
 import { useEffect, useState } from "react";
+import useErrors from "@/hooks/useErrors";
+
 
 export default function IPCard(){
 
@@ -9,6 +11,9 @@ export default function IPCard(){
     const {getIPProgressStatus} = usePartner();
 
     const [percentage, setPercentage] = useState(0);
+
+    const [{ errors, setError, clearErrors }] = useErrors(null);
+
 
     useEffect(() => {
         getIPProgressStatus().then(response => {

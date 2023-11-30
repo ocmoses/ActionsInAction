@@ -38,7 +38,7 @@ export default function ContractSigning({params}){
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
-    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
+    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", contract_id: contract_id,
                                         company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
 
     const [successDisplay, setSuccessDisplay] = useState(false);    
@@ -309,47 +309,47 @@ export default function ContractSigning({params}){
                     {/* Floating side nav */}
                     <div className={`${fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"} z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-a")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-a`)}>
                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>1</span>
                             <span className={`text-white/40`}>Annexure A</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-b")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-b`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>2</span>
                             <span className={`text-white/40`}>Annexure B</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-c")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-c`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>3</span>
                             <span className={`text-white/40`}>Annexure C</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-d")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-d`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>4</span>
                             <span className={`text-white/40`}>Annexure D</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure E</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-f")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-f`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure F</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-g")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-g`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure G</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-h")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-h`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure H</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
                              <span className={`flex w-6 h-6 text-white bg-mtn rounded-full justify-center items-center`}>6</span>
                             <span className={`text-white`}>Main Contract</span>
                         </div>
@@ -1166,50 +1166,50 @@ export default function ContractSigning({params}){
                         </div>
 
                             <div className="flex flex-col space-y-4 py-8">
-                                <a href="/dashboard/contracts/annexures#annexure-a" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-a`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center">
                                     <span className="text-white/60">Annexure A	-	</span>Revenue Share Model
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
 
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-b" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-b`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure B	-	</span>Active Short Code
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-c" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-c`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure C	-	</span>Confidentiality and Non-Disclosure Agreement
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-d" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-d`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure D	-	</span>Protective Clauses
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-e" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-e`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure E	-	</span>Information Data and Cyber Security Annex
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-f" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-f`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure F	-	</span>Schedule of Infractions and Sanctions
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-g" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-g`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure G	-	</span>MTN Business Continuity Management Policy
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-h" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-h`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure H	-	</span>Data Protection Schedule
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -2057,8 +2057,8 @@ export default function ContractSigning({params}){
                                 <div className="w-10 flex mr-4">
                                     <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
                                 </div>
-                                <div>
-                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <p><span className="text-white">Electronic Record and Signature Disclosure.</span></p></p>
+                                <div className="flex">
+                                    <span className="text-gray-300">By selecting this checkbox, I agree to MTN's</span> <span className="text-white">Electronic Record and Signature Disclosure.</span>
                                 </div>
                             </div>)
                         }

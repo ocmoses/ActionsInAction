@@ -18,7 +18,9 @@ export default function ContractStatus() {
       downloadSignedContract,
       setSelectServiceModal,
       setShowContractCategoryModal,
-      getContractBeingSigned
+      getContractBeingSigned,
+      annexuresLink, 
+      setAnnexuresLink
     } = useContext(ContractContext);
 
     const [contractId, setContractId] = useState(null);
@@ -29,8 +31,10 @@ export default function ContractStatus() {
     useEffect(() => {
 
         getContractBeingSigned()
-            .then(resp => setContractId(resp.contract.contract_id))
-            .catch(error => console.log(error.response));
+            .then(resp => {
+                        setContractId(resp.contract.contract_id); 
+                        setAnnexuresLink(`/dashboard/contracts/annexures/${resp.contract.contract_id}`)
+            }).catch(error => console.log(error.response));
 
     }, []);
 

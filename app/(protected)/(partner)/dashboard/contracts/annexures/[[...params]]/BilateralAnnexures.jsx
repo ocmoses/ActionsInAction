@@ -10,17 +10,19 @@ import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
-import { capitalizeFirst } from "../../../../../modules/utilities";
+import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
 
 
 
 
-export default function BilateralAnnexures({contract_id}){
+export default function BilateralAnnexures({params}){
+    
+    const contract_id = params.params[0];
 
     const {
         partner,
-        submitAnnexureResponses
+        submitAnnexureResponses,
     } = usePartners();
 
     const {
@@ -36,7 +38,7 @@ export default function BilateralAnnexures({contract_id}){
     const [fixed, setFixed] = useState(false);  
     const [focused, setFocused] = useState("annexureA"); 
     const [submitting, setSubmitting] = useState(false);
-    const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: "TESTD-2023-10AA09", 
+    const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: contract_id, 
 
                                         annexure_c: "", 
 
@@ -53,6 +55,10 @@ export default function BilateralAnnexures({contract_id}){
         clearErrors();
         setData({...data, [field]: e.target.value});
     };
+
+    useEffect(() => {
+        
+    }, []);
 
 
     useEffect(() => {
@@ -125,7 +131,7 @@ export default function BilateralAnnexures({contract_id}){
         if(response.error){
             setError({error: response.error});
         }else{
-            router.push("/dashboard/contracts/execution");
+            router.push(`/dashboard/contracts/execution/${contract_id}`);
         }
 
         setSubmitting(false);
@@ -193,7 +199,7 @@ export default function BilateralAnnexures({contract_id}){
 
                         {
                             document?.referer?.includes("/contracts/execution") && 
-                            <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/execution")}>
+                            <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/execution/" + contract_id)}>
                                 <span className={`flex w-6 h-6 text-white bg-white/20 rounded-full justify-center items-center`}>9</span>
                                 <span className="text-white/60 text-white">Main Contract</span>
                             </div>

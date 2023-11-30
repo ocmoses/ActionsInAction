@@ -9,6 +9,7 @@ import { role_types } from "@/app/modules/constants";
 import TextInput from "../form/TextInput.jsx";
 import freeemails from "@/app/modules/freeemails.json";
 import { Util } from "@/app/modules/utilities";
+
 export default function AddSignatoryModal() {
   const {
     data,
@@ -106,7 +107,12 @@ export default function AddSignatoryModal() {
         // console.log("Object.keys(data)", Object.keys(data));
 
         Object.keys(data).forEach((element) => {
-          formData.append(element, data[element]);
+          if(element == 'file' && newSignatoryRole != 'delegate'){
+            //hummm....
+          }else{
+            formData.append(element, data[element]);
+          }
+          
         });
 
         if (creatingPartner) return;

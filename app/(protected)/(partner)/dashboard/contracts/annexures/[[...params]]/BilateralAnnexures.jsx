@@ -20,6 +20,7 @@ export default function BilateralAnnexures({params}){
     const {
         partner,
         submitAnnexureResponses,
+        getContractDynamicData        
     } = usePartners();
 
     const {
@@ -53,8 +54,13 @@ export default function BilateralAnnexures({params}){
         setData({...data, [field]: e.target.value});
     };
 
+    const [dynamicData, setDynamicData] = useState(null);
+    const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
+
     useEffect(() => {
-        
+        get_dynamic_content(contract_id).then(resp => {
+            console.log("Dynamic shortcodes", dynamicData?.dynamic_details?.shortcodes[0]?.shortcodes);
+        });
     }, []);
 
 
@@ -150,6 +156,20 @@ export default function BilateralAnnexures({params}){
 
         return true;
     }
+
+    const get_dynamic_content = async (contract_id) => {
+        if (gettingDynamicContent) return;
+        setGettingDynamicContent(true);
+        let dynamic_content_response = await getContractDynamicData(contract_id);
+        setGettingDynamicContent(false);
+        console.log('dynamic_content_response', dynamic_content_response);
+        if (dynamic_content_response.error) {
+            setError({ error: dynamic_content_response.error })
+        } else {
+            // console.log('dynamic_content_response', dynamic_content_response);
+            setDynamicData(dynamic_content_response.data);                
+        }
+    }
     
 
     return <>
@@ -158,42 +178,42 @@ export default function BilateralAnnexures({params}){
                     {/* Floating side nav */}
                     <div className={`${fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"} z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-a")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-a`)}>
                             <span className={`flex w-6 h-6 text-white ${focused == "annexureA" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>1</span>
                             <span className={`${focused == "annexureA" ? "text-white" : "text-white/40"} text-white`}>Annexure A</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-b")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-b`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureB" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>2</span>
                             <span className={`${focused == "annexureB" ? "text-white" : "text-white/40"} text-white`}>Annexure B</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-c")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-c`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureC" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>3</span>
                             <span className={`${focused == "annexureC" ? "text-white" : "text-white/40"} text-white`}>Annexure C</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-d")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-d`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureD" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>4</span>
                             <span className={`${focused == "annexureD" ? "text-white" : "text-white/40"} text-white`}>Annexure D</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureE" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>5</span>
                             <span className={`${focused == "annexureE" ? "text-white" : "text-white/40"} text-white`}>Annexure E</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-f")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-f`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureF" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>6</span>
                             <span className={`${focused == "annexureF" ? "text-white" : "text-white/40"} text-white`}>Annexure F</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-g")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-g`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureG" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>7</span>
                             <span className={`${focused == "annexureG" ? "text-white" : "text-white/40"} text-white`}>Annexure G</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-h")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-h`)}>
                              <span className={`flex w-6 h-6 text-white ${focused == "annexureH" ? "bg-mtn" : "bg-white/20"} rounded-full justify-center items-center`}>8</span>
                             <span className={`${focused == "annexureH" ? "text-white" : "text-white/40"} text-white`}>Annexure H</span>
                         </div>
@@ -332,25 +352,19 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/3 border-r border-white/40 p-2">Purpose/Services (Usage)</span>
                                     <span className="text-white w-1/3 p-2">Bearer (SMS/IVR/USSD)</span>
                                 </div>
-                                <div className="flex border border-white/20">
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">1</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 p-2">-</span>
-                                </div>
-                                <div className="flex border border-white/20">
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">2</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 p-2">-</span>
-                                </div>
-                                <div className="flex border border-white/20">
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">3</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
-                                    <span className="text-white/60 w-1/3 p-2">-</span>
-                                </div>
-                                
+                                {
+                                    dynamicData?.dynamic_details?.shortcodes[0]?.shortcodes?.map((shortcode, index) => 
+
+                                        (
+                                            <div className="flex border border-white/20">
+                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{index + 1}</span>
+                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{shortcode}</span>
+                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
+                                                <span className="text-white/60 w-1/3 p-2">SMS</span>
+                                            </div>
+                                        )
+                                    ) 
+                                }                                                                
                             </div>
                         </div>
                         
@@ -365,7 +379,7 @@ export default function BilateralAnnexures({params}){
 
                         <div className="text-white/60">
 
-                            <span className="text-white">THIS AGREEMENT</span> is made on this XXXXXXXXXXXXXXX.<br/><br/>
+                            <span className="text-white">THIS AGREEMENT</span> is made on this {dynamicData?.dynamic_details?.date_of_contract}.<br/><br/>
 
                             BETWEEN<br/><br/>
 
@@ -373,8 +387,8 @@ export default function BilateralAnnexures({params}){
 
                             <span className="text-white">AND</span><br /><br />
 
-                            <span className="text-white">XXXXXXXXXXXXXXXXXXX</span>, a private limited liability company incorporated under the laws of the Federal<br /><br />
-                            Republic of Nigeria, having its principal place of business at XXXXXXXXXXXXXXXXXX (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
+                            <span className="text-white">{dynamicData?.dynamic_details?.company_name}</span>, a private limited liability company incorporated under the laws of the Federal<br /><br />
+                            Republic of Nigeria, having its principal place of business at {dynamicData?.dynamic_details?.company_address} (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
 
                             Both <span className="text-white">MTN</span> and the <span className="text-white">Receiving Party</span> are hereinafter jointly referred to as the “Parties” and individually as the “Party”.<br /><br />
 

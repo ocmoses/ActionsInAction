@@ -1114,9 +1114,10 @@ const usePartners = () => {
       }
 
       const result = await response.json();
+      // console.log("RESUILT OF DYNAMIC THINGS ENDPOINT", result);
       setProcessing(false);
       if (result?.success) {
-        const data = result?.data['dynamic-details'];
+        const data = result?.data;
 
         return {
           data

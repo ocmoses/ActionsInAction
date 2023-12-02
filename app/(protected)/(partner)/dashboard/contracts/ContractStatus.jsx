@@ -38,11 +38,14 @@ export default function ContractStatus() {
 
     }, []);
 
-    console.log("partner", partner);
+    console.log("contractStatus", contractStatus);
+
+    return (<StartSigning />);
+
 
     if(contractStatus == contract_statuses.EXPIRED){
         return (<Renew />);
-    }else if(contractStatus == contract_statuses.PROCESSING){
+    }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories){
             return (<SelectServices />);

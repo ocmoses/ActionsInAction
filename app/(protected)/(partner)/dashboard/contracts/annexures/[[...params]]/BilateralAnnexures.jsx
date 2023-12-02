@@ -1082,10 +1082,106 @@ export default function BilateralAnnexures({params}){
                         
                         <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE F</h2>
 
-                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+                        <h4 className="text-lg text-center text-white/80 w-full mb-2">Schedule of Infractions and Sanctions</h4>
 
-                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
-                        
+                        <div className="border-1 border-white/20 rounded-md w-full">
+                            <div className="w-full">
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">Infractions to be avoided by the Service Provider</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">Sanctions (All sanctions are applicable)</span>                                
+                                </div>
+                                <div className="flex border border-white/20">
+                                    <div className="text-white/60 w-1/2 border-r border-white/40 p-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Failure to implement deactivation i.e. prevent subsequent charging, directives.</li>
+                                            <li className="text-white/60">Use of unapproved notification messages on live services</li>
+                                            <li className="text-white/60">Launching of a content service without official approval from VAS Products.</li>
+                                            <li className="text-white/60">Delivery of inappropriate content (including but not limited to messages of a sexual, religion-intolerant, culture or race-intolerant or politically insidious nature).</li>
+                                            <li className="text-white/60">Service Provider’s services fail the post-launch test (opt-in, opt-out, help function, unapproved notification) for two consecutive months.</li>
+                                            <li className="text-white/60">The Service Provider cannot be contacted by MTN through the address or telephone number provided for the maintenance or repair of the Network which was affected by the said Service Provider.</li>
+                                            <li className="text-white/60">Delivery of repeated or inaccurate content to MTN Subscribers subscribed to a service.</li>
+                                            <li className="text-white/60">Failure to deliver VAS subscribed to and paid for by MTN Subscribers on the service.</li>
+                                            <li className="text-white/60">Any other service compliance issues except unauthorized billing of  MTN Subscribers and failure to comply with a blacklist directive.</li>
+                                            <li className="text-white/60">Inadequate resolution of requested changes within the defined period of the written warning.</li>
+                                            <li className="text-white/60">Alteration of service menu, keyword (opt-in/out), notifications, service flow without requisite approval from the VAS team</li>
+                                            <li className="text-white/60">Service provider fails to adhere to agreed SLAs to resolve issues</li>                                        
+                                        </ul>
+                                    </div>
+                                    <div className="text-white w-1/2 border-r border-white/40 p-2 flex space-x-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Service Provider will be issued with an official warning letter.</li>
+                                            <li className="text-white/60">Offending shortcode(s) will be immediately suspended from the Network for a period not less than two weeks, and not more than 4 weeks.</li>                                            
+                                            <li className="text-white/60">Service Provider will not be permitted to provide any new services for 3 months.</li>                                            
+                                            <li className="text-white/60">Infraction(s) and sanctions will be communicated to all internal and external partners.</li>                                            
+                                            <li className="text-white/60">Service Provider will be reported to the NCC for further action.</li>                                          
+                                        </ul>                                                            
+                                    </div>
+                                </div>
+                                <div className="flex border border-white/20">
+                                    <div className="text-white/60 w-1/2 border-r border-white/40 p-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">The Service Provider appears in the weekly top 10 complaint calls to the Call Center more than two times a month.</li>
+                                            <li className="text-white/60">Validated cases of false activation on live services across all content bearers.</li>
+                                            <li className="text-white/60">Failure to adhere to the 180-day rule for the permanent deactivation of third-party services on recycled MTN Subscribers MSISDNs.</li>
+                                            <li className="text-white/60">The Service Provider does anything which affects the quality of, or overloads or disrupts the Network.</li>
+                                            <li className="text-white/60">Service provider fails to send appropriate notifications on advise of charge (pre and post) or renewal (pre expiry, success, failed, suspend etc.)</li>
+                                        </ul>
+                                    </div>
+                                    <div className="text-white w-1/2 border-r border-white/40 p-2 flex space-x-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Offending service and shortcode(s) will be permanently decommissioned from the Network.</li>
+                                            <li className="text-white/60">Cost of MTN Subscribers refund of all improperly charged sums will be borne by the Service Provider.</li>
+                                            <li className="text-white/60">Service Provider will not be permitted to provide any new services for 6 months.</li>
+                                            <li className="text-white/60">All revenues generated on the billing shortcode(s) associated with the infraction will be forfeited as a fine.</li>
+                                            <li className="text-white/60">Infraction(s) and sanctions will be communicated to all internal and external partners.</li>
+                                            <li className="text-white/60">Service Provider will be reported to the NCC for further action.</li>
+                                        </ul>                                                            
+                                    </div>
+                                </div>
+                                <div className="flex border border-white/20">
+                                    <div className="text-white/60 w-1/2 border-r border-white/40 p-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">The Service Provider uses the VAS illegally or for an illegal purpose or MTN Nigeria suspects that the VAS is/are being used illegally or for an illegal purpose.</li>
+                                            <li className="text-white/60">The Service Provider commits a breach and/or act of non-compliance which is not capable of being remedied; or a breach and/or non-compliance which is of such a nature that MTN Nigeria is of the view that its relationship with the Service Provider has irretrievably broken down.</li>
+                                            <li className="text-white/60">The Service Provider provides as part of its VAS, content or services that are declared under any law in force in Nigeria to be illegal or offensive to the public.</li>
+                                            <li className="text-white/60">The Service Provider fails to provide a bona fide service in accordance with the stipulations of the Code of Conduct, or does anything which may prejudice the commercial interests of MTN Nigeria.</li>
+                                            <li className="text-white/60">The Service Provider breaches a provision of this Agreement or fails to comply with any provision of the Act, Licence, Code of Conduct, or any other law.</li>                                            
+                                        </ul>
+                                    </div>
+                                    <div className="text-white w-1/2 border-r border-white/40 p-2 flex space-x-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Service Provider will be suspended from the Network for 6 months.</li>
+                                            <li className="text-white/60">Cost of MTN Subscribers refund of any improperly charged sums will be borne by the Service Provider.</li>
+                                            <li className="text-white/60">All revenues generated by the Service Provider in the month the infraction was committed will be forfeited as a fine.</li>
+                                            <li className="text-white/60">Infraction(s) and sanctions will be communicated to all internal and external partners.</li>
+                                            <li className="text-white/60">Service Provider will be reported to the NCC for further action.</li>
+                                            <li className="text-white/60">The VAS team will reserve the right to terminate the agreement of the indicted Service Provider.</li>                                            
+                                        </ul>                                                            
+                                    </div>
+                                </div>
+                                <div className="flex border border-white/20">
+                                    <div className="text-white/60 w-1/2 border-r border-white/40 p-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Delivery of message(s) to MTN Subscribers on the ‘Do Not Disturb’ database.</li>
+                                            <li className="text-white/60">Broadcast of messages (IVR, USSD, SMS, OTA) between 8pm - 8am in contravention of NCC regulations and directives.</li>
+                                            <li className="text-white/60">Campaign messages not in the appropriate format with advise of charge, validity period, clear product information</li>
+                                            <li className="text-white/60">Failure to apply triple opt in for web activations</li>
+                                            <li className="text-white/60">Failure to apply DOI on applicable broadcast channels in accordance to MTN guidelines</li>
+                                            <li className="text-white/60">Failure to get the requisite approval before campaigning via OTA</li>                                                 
+                                        </ul>
+                                    </div>
+                                    <div className="text-white w-1/2 border-r border-white/40 p-2 flex space-x-2">
+                                        <ul className="flex flex-col space-y-4 list-disc ml-4">
+                                            <li className="text-white/60">Regulatory sanctions will be wholly borne by the offending Service Provider.</li>    
+                                            <li className="text-white/60">N5million per unique MSISDN infraction.</li>
+                                            <li className="text-white/60">N500,000 for each day the contravention exists.</li>
+                                            <li className="text-white/60">Offending shortcode will be decommissioned from the Network.</li>
+                                            <li className="text-white/60">Service Provider will be reported to the NCC for further action.</li>
+                                        </ul>                                                            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Annexure G */}

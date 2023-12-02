@@ -36,7 +36,7 @@ export default function AgreementModal({params}){
         setAcceptingAgreement(true);
         
         setTimeout(() => {
-            setAgreementModal(false); 
+            // setAgreementModal(false); 
             window.location = annexuresLink;
         }, 2000);
 

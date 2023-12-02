@@ -132,10 +132,25 @@ export default function ContractSignatoriesModal(){
                                 <p className="text-white text-md mb-2">A company director</p>
                                 {
                                     !signatories.director ?
-                                    (<div className="flex flex-col group"  onClick={() => {setNewSignatoryRole(role_types.DIRECTOR); setContractSignatriesModal(false); setChooseSignatoryModal(true);}}>
+                                    (<div className="flex flex-col group"  
+                                        onClick={() => {
+                                            if(!signatories.delegate){
+                                                
+                                                setNewSignatoryRole(role_types.DIRECTOR); 
+                                                setContractSignatriesModal(false); 
+                                                setChooseSignatoryModal(true);
+
+                                            }
+                                        }}>
                                 
                                         <span className="text-gray-300 text-xs cursor-pointer group-hover:hidden" 
-                                            onClick={() => {setNewSignatoryRole(role_types.DIRECTOR); setContractSignatriesModal(false); setChooseSignatoryModal(true);}}>
+                                            onClick={() => {
+                                                if(!signatories.delegate){
+                                                    setNewSignatoryRole(role_types.DIRECTOR); 
+                                                    setContractSignatriesModal(false); 
+                                                    setChooseSignatoryModal(true);
+                                                }
+                                            }}>
                                         A company director as stated in the company incorporation documents
                                         </span>
                                         <span className="text-yellow-500 text-xs hidden group-hover:block w-[200px] border-1 border-yellow-500 py-1 px-4 rounded-full cursor-pointer">
@@ -153,18 +168,23 @@ export default function ContractSignatoriesModal(){
                             
                             <div className="w-16 flex justify-center items-center">
                             {
-                                !signatories.director ? 
-                                (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
-                                    onClick={() => {
-                                        clearErrors();
-                                        showAddSignatoryModal(role_types.DIRECTOR);
-                                    }
-                                    }>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </div>):
-                                <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                                !signatories.delegate && (
+
+                                    !signatories.director ? 
+                                    (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
+                                        onClick={() => {
+                                            clearErrors();
+                                            showAddSignatoryModal(role_types.DIRECTOR);
+                                        }
+                                        }>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                    </div>):
+                                    <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                                    
+                                )              
+                                
                             }                            
                             </div>
 
@@ -188,11 +208,7 @@ export default function ContractSignatoriesModal(){
                             <p className="text-white text-md mb-2">A company delegate</p>
                             {!signatories.delegate ?
                                 (<span className="text-gray-300 text-xs cursor-pointer" 
-                                        onClick={() => {
-                                                    setContractSignatriesModal(false); 
-                                                    clearErrors(); 
-                                                    showAddSignatoryModal(role_types.DELEGATE);
-                                                }}>
+                                        >
                                     A person nominated by the company to sign. Requires a board resolution document
                                 </span>):
                                 (<span className="flex text-gray-300 text-xs">
@@ -202,15 +218,39 @@ export default function ContractSignatoriesModal(){
                                 </span>) 
                             }
                         </div>
-                        <div className="w-16 flex justify-center items-center">
+                        <div className="w-16 flex justify-center items-center"
+                            onClick={() => {
+
+                                console.log("Signatories . director", signatories.director);
+
+                                if(signatories.director == null){
+                                    setContractSignatriesModal(false); 
+                                    clearErrors(); 
+                                    showAddSignatoryModal(role_types.DELEGATE);
+                                }
+                                
+                            }}>
                             {
-                                !signatories.delegate ? 
-                                (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" onClick={() => {setContractSignatriesModal(false); showAddSignatoryModal(role_types.DELEGATE)}}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </div>):
-                                <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                                !signatories.director && 
+                                
+                                    (
+                                        !signatories.delegate ? 
+                                        (<div className="w-12 h-12 flex justify-center items-center bg-yellow-600 rounded-full cursor-pointer" 
+                                            onClick={() => {
+                                                if(!signatories.director){
+                                                    setContractSignatriesModal(false); 
+                                                    clearErrors(); 
+                                                    showAddSignatoryModal(role_types.DELEGATE);
+                                                }
+                                            }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                            </div>):
+                                            <span className="underline text-white text-xs cursor-pointer" onClick={() => {}}>Edit</span>
+                                        
+                                    )
+                                    
                             }     
                         </div>
 

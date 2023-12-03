@@ -1189,9 +1189,180 @@ export default function BilateralAnnexures({params}){
                         
                         <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE G</h2>
 
-                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+                        <h4 className="text-lg text-center text-white/80 w-full mb-2">MTN Business Continuity Management Policy</h4>
 
-                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
+                        <p className="text-white/60 w-full mb-4 text-sm">Throughout the term of the Service Provider’s subsisting Agreement with MTN, the Service Provider shall in accordance with Good Industry Practice (including ISO 22301, ISO 22313, ISO 27031, and ISO 24762) and at no additional cost, comply with all policies forming part of MTN’s policies relating to business continuity and disaster recovery as set out in the subsequent clauses:</p>
+                        
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">1</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider shall maintain, in accordance with Good Industry Practice and at no additional cost, documented business continuity and disaster recovery plans and shall ensure that it is able to execute and comply with such plans (including the periodic testing of such plans) at all times in accordance with its documented terms.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">2</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider shall consult with MTN in developing the business continuity and disaster recovery plans within 6-8months to ensure the recovery and continuance of the services in accordance with this Policy. The execution of the Service Provider’s business continuity and disaster recovery plans will be at no additional cost to MTN.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">3</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider’s business continuity and disaster recovery plans shall provide a recovery solution which is sufficient to maintain the Services in accordance with the Service Provider’s subsisting Agreement with MTN, and effectively protect the Services from the consequences of an operational disruption.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">4</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider’s business continuity and disaster recovery plans must fully integrate with MTN’s own business continuity and disaster recovery arrangements where applicable.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider shall ensure that its Service Provider/Sub-contractors needed to deliver the Services in accordance with this Policy have appropriate business continuity and disaster recovery plans in place.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6</span>
+                            <span className="text-white/60 flex-1">
+                            The Service Provider shall undertake a test of their business continuity and disaster recovery plans no less than once per annum and submit a written test report (summarising the results of the tests) to MTN for approval. The Service Provider shall inform MTN when such tests are scheduled (providing at least one month’s notice).
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">7</span>
+                            <span className="text-white/60  flex-1">
+                            Subject to the clause above (i.e. clause 7), MTN may require the Service Provider to conduct additional tests of the business continuity and disaster recovery plans where MTN considers it necessary, including where there has been any change to the Services or any underlying business processes, or on the occurrence of any event which may increase the likelihood of the need to implement the business continuity or disaster recovery plans.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8</span>
+                            <span className="text-white/60 flex-1">
+                            If MTN requires additional tests of the business continuity or disaster recovery plans, MTN shall give the Service Provider reasonable written notice and the Service Provider shall conduct the test in accordance with MTN requirements and the relevant provisions of the business continuity and disaster recovery plans. The Service Provider’s costs of the additional test shall be borne by MTN unless the business continuity or disaster recovery plan fails the additional test, in which case the Service Provider’s cost of that failed test shall be borne by the Service Provider.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">9</span>
+                            <span className="text-white/60  flex-1">
+                            MTN reserves the right to attend any business continuity or disaster recovery test undertaken by the Service Provider and to invite the Service Provider to any relevant tests held by MTN.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">10</span>
+                            <span className="text-white/60  flex-1">
+                            Where a planned downtime to manage an operational disruption is required, temporary workaround must be implemented and the Service Provider will inform MTN in advance and agree the date and time of the downtime. 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">11</span>
+                            <span className="text-white/60  flex-1">
+                            After any disruption to the Services in accordance with this Policy, and once normal Service has been resumed, the Service Provider shall promptly complete a root cause analysis report and provide it to MTN. The report shall include as a minimum the cause of the disruption, details of how the disruption was resolved and follow-up actions the Service Provider will implement to further mitigate impact of the disruption
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">12</span>
+                            <span className="text-white/60  flex-1">
+                            At any time during the term of the Service Provider’s subsisting Agreement with MTN, MTN may request from the Service Provider, and Service Provider shall provide to MTN, copies of the business continuity plan maintained in accordance with this Policy and such other information reasonably required by MTN to enable it to assess the Service Provider’s compliance with this Policy.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13</span>
+                            <span className="text-white/60 flex-1">
+                            MTN reserves the right to audit the Service Provider’s business continuity arrangements, but will accept audits that cover the Services, carried out by an independent certified ISO 22301 Lead Auditor, provided that the scope of the audit covers the Services in accordance with this Policy.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14</span>
+                            <span className="text-white/60  flex-1">
+                            At any time during the term of the Service Provider’s subsisting Agreement with MTN, the Service Provider shall comply with MTN’s reasonable requests for modifications to the Service Provider’s business continuity and disaster recovery plans and implement any actions or measures MTN considers necessary.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">15</span>
+                            <span className="text-white/60  flex-1">
+                            The Service Provider shall promptly (and in any case within three (3) months from date of notification) implement any actions or remedial measures which the Service Provider or MTN considers to be necessary as a result of audits, tests, business interruptions, emerging risks or change to the Services in accordance with this Policy.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">16</span>
+                            <span className="text-white/60  flex-1">
+                            The Service Provider shall, on an annual basis and at its cost, carry out an assessment of the Service Provider’s compliance with the provisions of this Policy within an agreed period of time. Following completion of such assessment, Service Provider shall produce a report detailing the results of this assessment, and provide such report to MTN with proposals for any remedial action to deal with any deficiencies in the Service Provider’s compliance with the said provisions (at Service Provider’s cost) as identified in the report, and timescales for completion of such remedial action.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">17</span>
+                            <span className="text-white/60  flex-1">
+                            Non-compliance to the requirements of the Policy entitles MTN to claim damages, to terminate or suspend the Service Provider’s subsisting Agreement with MTN in whole or partially, and/or request service credits in accordance with the subsisting Agreement between the parties.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">18</span>
+                            <span className="text-white/60  flex-1">
+                            The Service Provider shall indemnify MTN for all losses incurred or suffered by MTN as a result of a breach of this Policy in accordance with indemnity provisions of subsisting Agreement.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">19</span>
+                            <span className="text-white/60  flex-1">
+                            For the avoidance of doubt, the Service Provider’s obligations under this Policy are in addition to its obligations under the Service Provider’s subsisting Agreement with MTN.
+                            </span>
+                                
+                        </div>
                         
                     </div>
 
@@ -1200,9 +1371,962 @@ export default function BilateralAnnexures({params}){
                         
                         <h2 className="text-xl text-center text-white w-full my-2">ANNEXURE H</h2>
 
-                        <h4 className="text-lg text-center text-white/60 w-full mb-2">TODO</h4>
+                        <h4 className="text-lg text-center text-white/60 w-full mb-2">Data Processing Schedule</h4>
 
-                        <p className="text-lg text-center text-white/60 w-full mb-4">For the duration of this Agreement, the following Short codes shall be active and running on the MTN Network.</p>
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">1</span>
+                            <span className="text-white  flex-1">
+                            INTRODUCTION
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">1.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Parties agree that in relation to the Personal Data Processed under the Agreement, MTN is the Controller, and the Supplier is the Processor. In giving effect to the obligations of the Agreement, the Processor shall Process Personal Data for or on behalf of the Controller.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">1.2</span>
+                            <span className="text-white/60  flex-1">
+                            To the extent the Processor may be required to Process Personal Data for or on behalf of the Controller under the Agreement, the Processor will do so in accordance with the terms and conditions set out in this Schedule and in accordance with Applicable Data Protection Law(s), as applicable. 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">2</span>
+                            <span className="text-white  flex-1">
+                            DESCRIPTION OF THE TRANSFER
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">2.1</span>
+                            <span className="text-white/60  flex-1">
+                            The details of the transfer(s), and in particular the categories of Personal Data transferred and the purpose(s) for which the Personal Data is transferred is described in Annexure A to this Schedule
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">2.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall Process the Personal Data only for the specific purpose(s) of the Processing, as set out in Annexure A to this Schedule, unless it receives further instructions from the Controller in writing
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">3</span>
+                            <span className="text-white  flex-1">
+                            CONTROLLER INSTRUCTIONS
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">3.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall Process Personal Data only on the written instructions of the Controller. The Controller may provide the Processor with such instructions at any time throughout the duration of the Processing of Personal Data
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">3.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall immediately inform the Controller if it is unable to follow those instructions.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">3.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall immediately inform the Controller, if in the Processor’s reasonable opinion, the instructions given by the Controller infringe on any Applicable Data Protection Law(s).
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">4</span>
+                            <span className="text-white  flex-1">
+                            ACCURACY OF PERSONAL DATA
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">4.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall inform the Controller without delay if the Processor becomes aware that the Personal Data received or being Processed is inaccurate, misleading or has become outdated. In this case, the Processor shall co-operate with the Controller to destroy, delete or rectify the Personal Data, as instructed by the Controller
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">4.2</span>
+                            <span className="text-white/60  flex-1">
+                            Whilst the Controller has used its best endeavours to ensure the accuracy of the Personal Data being transferred to the Processor in terms of this Schedule, the Controller does not warrant the accuracy of such Personal Data and the Processor shall not have any right of recourse against the Controller as result of any inaccuracy of the Personal Data. 
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5</span>
+                            <span className="text-white  flex-1">
+                            SECURITY OF PROCESSING
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor and, during transmission, also the Controller, shall implement appropriate Technical and Organisational Security Measures to ensure the security of Personal Data, including protecting the Personal Data against a Personal Data Breach. In assessing the appropriate level of security, the Processor must consider the leading security technology and measures, the costs of implementation, the nature, scope, context and purposes of Processing and the risks involved in Processing for Data Subjects;
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5.2</span>
+                            <span className="text-white/60  flex-1">
+                            Without detracting from the Processor’s obligations in terms of clause 5.1, the Processor shall at minimum implement the Technical and Organisational Security Measures and/or specific restrictions set out in Annexure B to this Schedule as it pertains to Personal Data.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall carry out regular assessments to ensure that Technical and Organisational Security Measures implemented continue to provide an appropriate level of security and hereby undertakes to implement any additional Technical and Organisational Security Measures reasonably necessary in response to any risks and/or deficiencies identified in respect of its existing measures.
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">5.4</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall ensure that:
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">5.4.1</span>
+                                <span className="text-white/60  flex-1">
+                                its employees are only granted access to Personal Data to the extent strictly necessary for the implementation, management and monitoring of the Agreement;
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">5.4.2</span>
+                                <span className="text-white/60  flex-1">
+                                all such employees are informed of the confidential nature of the Personal Data and are aware of the Processor’s obligations under this Schedule; and 
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">5.4.3</span>
+                                <span className="text-white/60  flex-1">
+                                all such employees are bound by confidentiality obligations and use restrictions in respect of the Personal Data
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6</span>
+                            <span className="text-white  flex-1">
+                            SECURITY OF PROCESSING
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall promptly and adequately deal with enquiries from the Controller that relate to the Processing under this Schedule
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor must be able to demonstrate compliance with the terms of this Schedule and shall make available to the Controller all information necessary to evidence such compliance
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall, at the request of the Controller, allow for and contribute to audits of the Processing activities governed by this Schedule, at reasonable intervals or if there are indications of non-compliance. In deciding on performing a review or an audit, the Controller may consider relevant certifications held by the Processor and/or reports received from the Processor
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">6.4</span>
+                            <span className="text-white/60  flex-1">
+                            The Controller may elect whether the audit shall be carried out by itself or by an independent auditor selected by the Controller provided that such independent auditor is bound by a duty of confidentiality to the Controller and Processor
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">7</span>
+                            <span className="text-white  flex-1">
+                            INTERNATIONAL TRANSFER
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">7.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall only transfer Personal Data outside Nigeria (“International Transfer”) on the prior written instructions of the Controller. 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">7.2</span>
+                            <span className="text-white/60  flex-1">
+                            In addition, the Personal Data may only be Internationally Transferred if the Processor has entered into a written agreement with the recipient of the Personal Data, which imposes, in substance, the same obligations on the third party as are imposed on the Processor under this Schedule
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8</span>
+                            <span className="text-white  flex-1">
+                            USE OF SUB PROCESSOR
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall not sub-contract any of its Processing activities performed for or on behalf of the Controller under the Agreement to a Sub-Processor without the prior specific written authorisation of the Controller. The Processor shall submit the request for specific authorisation at least [15] working days prior to the engagement of the Sub-Processor, together with the information necessary to enable the Controller to decide on the authorisation
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8.2</span>
+                            <span className="text-white/60  flex-1">
+                            Subject to clause 8.1, where the Processor subcontracts any Processing activities under the Agreement to a Sub-Processor, it must enter into a written agreement with the Sub-Processor which imposes, in substance, the same obligations on the Sub-Processor as are imposed on the Processor under this Schedule (the “Sub-Processing Agreement”)
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall ensure that the Sub-Processor complies with the obligations prescribed in the Sub-Processing Agreement and shall notify the Controller of any failure by the Sub-Processor to fulfil its contractual obligations insofar as it impacts the Processing of Personal Data
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8.4</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall remain fully responsible and liable to the Controller for the performance of the Sub-Processor's obligations under the Sub-Processing Agreement and any non-compliance by the Sub-Processor shall be deemed to be non-compliance by the Processor
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">8.5</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor assigns any claim it may have against the Sub-Processor in terms of the Sub-Processing Agreement to the Controller where the Controller suffers damages directly or indirectly from non-compliance with the Sub-Processing Agreement. 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">9</span>
+                            <span className="text-white  flex-1">
+                            MANAGEMENT OF PERSONAL DATA BREACH
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">9.1</span>
+                            <span className="text-white/60  flex-1">
+                            In the event of a Personal Data Breach, or where there are reasonable grounds to believe that there has been a Personal Data Breach, concerning Personal Data Processed by the Processor in terms of this Schedule, the Processor shall take appropriate measures to address such Personal Data Breach, including measures to mitigate its adverse effects.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">9.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall immediately notify the Controller of such Personal Data Breach, or where there are reasonable grounds to believe that there has been a Personal Data Breach, after becoming aware of the breach or suspected Personal Data Breach and provide all relevant information known at the time. The information shared with the Controller should be supplemented with further information as it becomes available to the Processor without undue delay.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">9.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall cooperate with and assist the Controller and shall take all reasonable steps as are directed by the Controller to assist in the investigation, mitigation, notifications and communications, reporting and remediation of the Personal Data Breach
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">10</span>
+                            <span className="text-white  flex-1">
+                            DATA SUBJECT RIGHTS             
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">10.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall promptly notify the Controller of any request it has received from a Data Subject. The Processor shall not respond to that request itself unless it has been authorised to do so by the Controller
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">10.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall assist the Controller in fulfilling its obligations to respond to Data Subjects’ requests for the exercise of their rights in the manner instructed by Controller
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">10.3</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall inform Data Subjects in a transparent and easily accessible format, through individual notice or on its website, of a contact point authorised to handle complaints. It shall deal promptly with any complaints it receives from a Data Subject. The Processor shall maintain a detailed record of these complaints which shall be provided to the Controller on its request or at agreed intervals.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">11</span>
+                            <span className="text-white  flex-1">
+                            DISCLOSURES TO GOVERNMENTAL AGENCIES           
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">11.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall promptly notify the Controller and, where possible, the Data Subject, if it:
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">11.1.1</span>
+                                <span className="text-white/60  flex-1">
+                                receives a legally binding request for disclosure of the Personal Data by a Public Authority. Such notification shall include information about the Personal Data requested, the requesting Public Authority, the legal basis for the request and the response provided by the Processor to the Public Authority; or
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">11.1.2</span>
+                                <span className="text-white/60  flex-1">
+                                becomes aware of any direct access by a Public Authority to Personal Data Processed by the Processor which is subject to this Schedule. Such notification shall include all information available to the Processor on the matter.
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">11.2</span>
+                            <span className="text-white/60  flex-1">
+                            If the Processor is prohibited in terms of Local Law(s) from notifying the Controller and/or the Data Subject of the information set out in Clause 11.1 above, the Processor agrees to use its best efforts to obtain a waiver of the prohibition, with a view to communicating as much information as possible, and as soon as possible to the Controller and/or Data Subject. The Processor agrees to document its best efforts in order to be able to demonstrate them on request of the Controller.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">11.3</span>
+                            <span className="text-white/60  flex-1">
+                            In circumstances that the Processor is prohibited from notifying the Controller and/or the Data Subject of the information, the Processor agrees to review the legality of the request for disclosure and to challenge the request if it reasonably concludes that there are reasonable grounds to consider that the request is unlawful under Local Law(s), and applicable obligations under international law and principles of international comity. The Processor shall consider all legal rights as it if were the Controller including seeking interim relief and possibilities of appeal. It shall not disclose the Personal Data requested until required to do so under the applicable procedural rules and then only the minimum amount of information permissible should be shared with the Public Authority requesting it.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">12</span>
+                            <span className="text-white  flex-1">
+                            INABILITY TO COMPLY WITH THIS DATA PROCESSING SCHEDULE          
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">12.1</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor warrants that it has no reason to believe that Local Laws and practices applicable to the Processor prevent the Processor from fulfilling its obligations under this Schedule.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">12.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall promptly notify the Controller if it is unable to comply with any provisions of this Schedule, for any reason including but not limited to changes in Local laws or practices applicable to the Processor
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">12.3</span>
+                            <span className="text-white/60  flex-1">
+                            Following a notification pursuant to Clause 12.2, or if the Controller otherwise has reason to believe that the Processor can no longer fulfil its obligations under this Schedule, the Controller shall promptly identify appropriate measures (e.g. technical or organisational measures to ensure security and confidentiality) to be adopted by the Controller and/or Processor to address the situation. The Controller shall suspend the Processing / transfer of Personal Data if it considers that no appropriate safeguards for such Processing / transfer can be ensured, or if instructed by the competent Supervisory Authority to do so. In this case, the Controller shall be entitled to terminate the Agreement.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13</span>
+                            <span className="text-white  flex-1">
+                            RETURN OR DELETION OF PERSONAL DATA          
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13.1</span>
+                            <span className="text-white/60  flex-1">
+                            On termination of the Agreement, the Processor shall, at the election of the Controller, immediately return or securely destroy / delete all the Personal Data that was transferred to and/or Processed by the Processor prior to termination of the Agreement, and the same shall apply to all copies thereof, by such manner and in such form as notified by the Controller, and within such time period as instructed by the Controller
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13.2</span>
+                            <span className="text-white/60  flex-1">
+                            On termination of the Agreement, the Processor will notify all Sub-Processors of the Controller’s instruction to either return all Personal Data or to destroy all Personal Data within the same period applicable to the Processor
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13.3</span>
+                            <span className="text-white/60  flex-1">
+                            In each case the Processor must provide a written certification to the Controller that it has returned or destroyed / deleted the Personal Data, as applicable. Similarly, written certification from each Sub-Processor should be made available to the Controller on its request.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13.4</span>
+                            <span className="text-white/60  flex-1">
+                            Until the Personal Data is deleted or returned, as contemplated above, the Processor shall continue to ensure compliance with this Schedule and, if applicable, compliance with the Sub-Processor Agreement(s) until Personal Data is deleted or returned thereunder
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">13.5</span>
+                            <span className="text-white/60  flex-1">
+                            In case that the Processor is legally prohibited, in terms of Local Law(s), from returning, destroying or deleting the Personal Data, as contemplated above, the Processor warrants that it will continue to ensure compliance with this Schedule and will only Process the Personal Data to the extent and for as long as required to meet such legal obligations. The same will apply mutatis mutandis to any Sub-Processor.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14</span>
+                            <span className="text-white  flex-1">
+                            BREACH AND LIABILITY          
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.1</span>
+                            <span className="text-white/60  flex-1">
+                            In the event that the Processor is in breach of any of its obligations under this Schedule or unable to comply with the obligations contained herein, the Controller may suspend the transfer of Personal Data, and instruct the Data Processor to cease all or specific Processing of Personal Data until the latter complies with the provisions of this Schedule. 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.2</span>
+                            <span className="text-white/60  flex-1">
+                            The Controller shall be entitled to terminate the Agreement if:
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">14.2.1</span>
+                                <span className="text-white/60  flex-1">
+                                the transfer and/or Processing of Personal Data by the Processor has been suspended by the Controller pursuant to Clause 12.3 or 14.1 and if compliance with this Schedule is not restored within a reasonable time and in any event within one month following the suspension;
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">14.2.2</span>
+                                <span className="text-white/60  flex-1">
+                                the Processor is in substantial or persistent breach of this Schedule and/or its obligations under Applicable Data Protection Law(s);
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">14.2.3</span>
+                                <span className="text-white/60  flex-1">
+                                the Processor fails to comply with the binding decision of a competent court or the Supervisory Authority regarding its obligations pursuant to this Schedule and/or Applicable Data Protection Law(s); or
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]"></span>
+                            <div className="mt-8 w-full flex space-x-2">
+
+                                <span className="text-white w-[50px]">14.2.4</span>
+                                <span className="text-white/60  flex-1">
+                                any Sub-Processor is non-compliant with the Processing requirements set out in the Sub-Processor Agreement and/or Applicable Data Protection Law(s) and fails to restore compliance within a reasonable time and in any event within two months of receiving notice to do so unless that relationship has been terminated by the Processor within that period.
+                                </span>
+                                        
+                            </div>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.3</span>
+                            <span className="text-white/60  flex-1">
+                            Each Party shall be liable to the other Party for any damages it causes that other Party by any breach of any obligations in terms of this Schedule
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.4</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor may not rely on a breach by a Sub-Processor of its obligations in order to avoid its liabilities in terms of this Schedule.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.5</span>
+                            <span className="text-white/60  flex-1">
+                            The Processor shall indemnify the Controller from and against all losses which the Controller may incur or suffer arising directly or indirectly as a result of, or related to a breach by the Processor, its employees or anyone acting for or on behalf of the Processor, including any Sub-Processor engaged by the Processor, of Applicable Data Protection Law(s) or the Processor’s obligations under this Schedule.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[50px]">14.6</span>
+                            <span className="text-white/60  flex-1">
+                            Where the Agreement contract involves more than two Parties, the Controller may exercise this right to termination only with respect to the relevant Party, unless the Parties have agreed otherwise. 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white  flex-1">
+                            GLOSSARY OF TERMS APPLICABLE TO DATA PROCESSING SCHEDULE         
+                            </span>
+                                    
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Applicable Data Protection Law(s)”</span>
+                            <span className="text-white/60  flex-1">
+                            means, in relation to the Agreement and this Schedule, data privacy and data protection legislation and regulations applicable to the Processing of Personal Data carried out, and any other laws that may be agreed between the Parties in writing.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“the Agreement”</span>
+                            <span className="text-white/60  flex-1">
+                            means this Agreement concluded between the Controller and the Processor, in terms of the which the Processor is required to Process Personal Data and/or Sensitive Personal Data for and on behalf of the Controller, as part of the services rendered to the Controller.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Controller”</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection Law(s). In the absence of Applicable Data Protection Law(s) it shall mean a natural or legal person or entity, public authority, agency or any other body which alone or in conjunction with others, determines the purposes and means of the Processing of Personal Data. In terms of this schedule, the Controller is the party stated in Annexure A hereto.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Child”</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection Law(s) or other Local Law(s). In the absence of Applicable Data Protection Law(s) or in the absence of a clear definition within Local Law(s), it means a natural person under the age of 18 years who is not legally competent, without the assistance of a parent/legal guardian, to take any action or decision in respect of any matter concerning him or herself. “Children” shall have corresponding meaning as the above;
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Data Subject”</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection (Privacy) Law(s). In the absence of Applicable Data Protection Law(s) it means an identified or identifiable natural person. An identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier such as a name, an identification number, location data, an online identifier or to one or more factors specific to the physical, physiological, genetic, mental, economic, cultural or social identity of that natural person.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Employee”</span>
+                            <span className="text-white/60  flex-1">
+                            Persons employed by the relevant Party whether permanent, time-limited, full-time, or part-time including directors, trainees, secondees and external contractors.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Local Country”</span>
+                            <span className="text-white/60  flex-1">
+                            means Nigeria 
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Local Law(s)”</span>
+                            <span className="text-white/60  flex-1">
+                            means legal, statutory, regulatory, license conditions rules, guidelines, Ministerial/National Security orders or directives, and Directives relating to Public safety (where applicable), including Applicable Data Protection  Law(s).
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Parties”</span>
+                            <span className="text-white/60  flex-1">
+                            shall mean the Controller and the Processor.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Personal Data”</span>
+                            <div className="text-white/60  flex-1">
+                                shall have the meaning ascribed to “personal data” or “personal information”, as the case may be, under Applicable Data Protection Law(s). In the absence of Applicable Data Protection Law(s) it shall mean any information relating to a Data Subject. Examples of “personal data” includes, but is not limited to, the following:
+                                
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    any identifying number, symbol,
+                                    </span>
+                                        
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    contact information (e.g. e-mail address, postal address, telephone number);
+                                    </span>
+                                        
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    location information or physical address,
+                                    </span>
+                                        
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    online identifier or other assignment to the person;
+                                    </span>
+                                        
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    the biometric information of the person;
+                                    </span>
+                                    
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    the personal opinions, views or preferences of the person;
+                                    </span>
+                                    
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    correspondence sent by the person that is implicitly or explicitly of a private or confidential nature or further correspondence that would reveal the contents of the original correspondence;
+                                    </span>
+                                    
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    the views or opinions of another individual about the person; and
+                                    </span>
+                                    
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    the name of the person if it appears with other personal information relating to the person or if the disclosure of the name itself would reveal information about the person;
+                                    </span>
+                                    
+                                </div>
+
+                                <div className="mt-8 w-full flex space-x-2">
+
+                                    <span className="text-white w-[50px]">-</span>
+                                    <span className="text-white/60  flex-1">
+                                    Sensitive Personal Data.
+                                    </span>
+                                    
+                                </div>                            
+                            
+                            </div>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Personal Data Breach”</span>
+                            <span className="text-white/60  flex-1">
+                            means a breach of security leading to the accidental or unlawful destruction, loss or damage, alteration, unauthorised disclosure of, or access to, Personal Data transmitted, stored or otherwise Processed.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Processing”</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection Law(s). In the absence of Applicable Data Protection Law(s) it shall mean any operation or set of operations which is performed on Personal Data or on sets of Personal Data, whether or not by automated means, including collection, receipt, recording, organisation, structuring, collation, storage, adaptation or alteration, updating, retrieval, consultation, use, disclosure by means of transmission, dissemination or otherwise making available, alignment or combination,  merging, restriction, erasure, destruction, or degradation (“Process” and “Processed” shall have corresponding meanings).
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">“Processor”</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection Law(s). In the absence of Applicable Data Protection Law(s) it means the natural or legal person or entity, public authority, agency or other body which Processes Personal Data for or on behalf of, and under the authority of the Controller, under the terms of a contract or mandate.  In terms of this schedule, the Processor is the party stated in Annexure A hereto
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Pseudonymisation"</span>
+                            <span className="text-white/60  flex-1">
+                            the Processing of Personal Data in such a way that the Personal Data can no longer be attributed to a specific Data Subject without the use of additional information, as long as such additional information is kept separately and subject to technical and organizational measures to ensure non-attribution to an identified or identifiable individual.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Public Authority"</span>
+                            <span className="text-white/60  flex-1">
+                            means any governmental authority, regulatory authority, governmental agency, law enforcement authority, judicial authority, the Supervisory Authority or similar body.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Schedule"</span>
+                            <span className="text-white/60  flex-1">
+                            means this Data Processing Schedule and the Annexures hereto read together with the Agreement;
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Sensitive Personal Data"</span>
+                            <span className="text-white/60  flex-1">
+                            shall have the meaning ascribed thereto under Applicable Data Protection Law(s). In the absence of Applicable Data Protection Law(s) it shall mean a sub-set of Personal Data which is considered more sensitive than other categories of Personal Data. Sensitive Personal Data includes but is not limited to Personal Data revealing a Data Subject’s racial or ethnic origin, political opinions, religious or philosophical beliefs, trade-union membership, criminal behaviour relating to the alleged commission of a crime or proceedings relating to the alleged commission of a crime, genetic data, biometric data, data concerning health and/or data concerning a data subject’s sex life or sexual orientation.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Sub-Processor"</span>
+                            <span className="text-white/60  flex-1">
+                            means any third party engaged by the Processor to perform any Processing activities in respect of the Personal Data Processed for or on behalf of the Controller or otherwise acquired from the Controller. This term also includes any other person who is engaged by a Sub-Processor to Process Personal Data.
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Supervisory Authority"</span>
+                            <span className="text-white/60  flex-1">
+                            means the relevant data protection authority or regulator which is competent to monitor compliance with the Applicable Data Protection Law(s) (if any).
+                            </span>
+                                
+                        </div>
+
+                        <div className="mt-8 w-full flex space-x-2">
+
+                            <span className="text-white w-[150px]">"Technical and Organisational Security Measures"</span>
+                            <span className="text-white/60  flex-1">
+                            means those measures aimed at protecting Personal Data against accidental or unlawful destruction, loss or damage, unauthorised alteration, unauthorised disclosure of or access to Personal Data and against all other unlawful forms of Processing.
+                            </span>
+                                
+                        </div>
+                        
 
                         
                     </div>

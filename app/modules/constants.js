@@ -1431,7 +1431,8 @@ export const contract_statuses = {
   PROCESSING: "processing",
   NOT_STARTED: "not_started",
   EXPIRED: "expired",
-  ACTIVE: "active"
+  ACTIVE: "active",
+  UPDATE: "update"
 }
 
 

@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import usePartner from "@/hooks/usePartners";
 import { useEffect, useState } from "react";
 import useErrors from "@/hooks/useErrors";
+import useUsers from "@/hooks/useUsers";
 
 
 export default function IPCard(){
@@ -14,6 +15,8 @@ export default function IPCard(){
 
     const [{ errors, setError, clearErrors }] = useErrors(null);
 
+    const {user} = useUsers();
+
 
     useEffect(() => {
         getIPProgressStatus().then(response => {
@@ -21,7 +24,7 @@ export default function IPCard(){
             console.log("response.status", response.status);
             console.log("response.error", response.error);
             if(response.progress){
-              setPercentage(parseInt(progress)); 
+              setPercentage(parseInt(response.progress)); 
             }
 
         }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})});
@@ -30,7 +33,7 @@ export default function IPCard(){
 
     return (
         <>{
-            percentage < 100 && 
+            percentage < 100 && user.role == "superAdmin" &&
             <div className="w-6xl rounded-xl border-1 border-white/20 mt-8 bg-white/10">
                 <div className="flex justify-between p-6 border-b border-white/20">
                     <span className="text-white/80 text-md">Things to do</span>

@@ -185,7 +185,7 @@ export default function ContractSigning({params}){
         if (dynamic_content_response.error) {
             setError({ error: dynamic_content_response.error })
         } else {
-            // console.log('dynamic_content_response', dynamic_content_response);
+            console.log('dynamic_content_response in contract signing', dynamic_content_response);
             setDynamicData(dynamic_content_response.data);                
         }
     }
@@ -372,8 +372,8 @@ export default function ContractSigning({params}){
                         <br /><br/>
                         AND
                         <br /><br/>
-                        :PARTY
-                        (RC No. :RC_NUMBER)
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}&nbsp;
+                        (RC No. {dynamicData?.dynamic_details?.rc_no?.toUpperCase()})
                         </p>
                     </div>
 
@@ -647,7 +647,7 @@ export default function ContractSigning({params}){
                     <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 md:max-w-4xl md:w-[900px]">
 
                         
-                        <p><span className="text-white">THIS AGREEMENT</span> is made on this XXXXXXXXXXXXXXX.<br /><br /></p>
+                        <p><span className="text-white">THIS AGREEMENT</span> is made on this {dynamicData?.dynamic_details?.date_of_contract}.<br /><br /></p>
 
                         <p><span className="text-white">BETWEEN</span><br /><br /></p>
 
@@ -655,12 +655,12 @@ export default function ContractSigning({params}){
 
                         <p><span className="text-white">AND</span><br /><br /></p>
 
-                        XXXXXXXXXXXXXXXXXXX, a private limited liability company incorporated under the laws of the Federal<br />
-                        Republic of Nigeria, having its principal place of business at XXXXXXXXXXXXXXXXXX (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal<br />
+                        Republic of Nigeria, having its principal place of business at {dynamicData?.dynamic_details?.company_address} (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
 
                         <p><span className="text-white">AND</span><br /><br /></p>
 
-                        :PARTY, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
 
                         Both <p><span className="text-white">MTN</span> and the <span className="text-white">Receiving Party</span> are hereinafter jointly referred to as the “Parties” and individually as the “Party”.</p>
 
@@ -978,15 +978,19 @@ export default function ContractSigning({params}){
                             <div className="mt-4 w-full flex space-x-2">
 
                             <span className="text-white w-[50px]">
-                        1.26. </span>
+                            1.26. </span>
                            <p><span className="text-white">“Short Code”</span> means the short code numbers approved by NCC to be utilized for the delivery of SMS. The Short code shall have a two-way status that will enable the SMS platform receive messages from MTN Subscribers as well as transmit SMS to MTN Subscribers for the purposes of accessing the Services;</p>
                                     
                         </div>
 
                             <p>
-                            1.27.	“Solutions” includes
-                            // Loop through services
-                            :SERVICES_HERE
+                            <span className="text-white w-[50px]">
+                            1.27.</span>	“Solutions” includes &nbsp;&nbsp;
+                            {
+                                dynamicData?.dynamic_details?.service_types.map(s => <>
+                                <span className="text-white">{s}</span>
+                                </>)
+                            }
                             </p>
 
                             <div className="mt-4 w-full flex space-x-2">

@@ -40,8 +40,6 @@ export default function ContractStatus() {
 
     console.log("contractStatus", contractStatus);
 
-    return (<StartSigning />);
-
 
     if(contractStatus == contract_statuses.EXPIRED){
         return (<Renew />);
@@ -147,7 +145,14 @@ export default function ContractStatus() {
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
-                    onclick={() => setAgreementModal(true)}
+                    onclick={() => {
+                        if(user.role != "superAdmin"){
+                            window.location = "/dashboard/contracts/execution/" + contractId;
+                        }else{
+                            setAgreementModal(true);
+                        }
+                        
+                    }}
                     button={'Sign your contract'}
                     color="text-gray-200"
                     desccolor="text-[#999999]"

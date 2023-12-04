@@ -1432,7 +1432,8 @@ export const contract_statuses = {
   NOT_STARTED: "not_started",
   EXPIRED: "expired",
   ACTIVE: "active",
-  UPDATE: "update"
+  UPDATE: "update",
+  EXPIRING: "expiring"
 }
 
 

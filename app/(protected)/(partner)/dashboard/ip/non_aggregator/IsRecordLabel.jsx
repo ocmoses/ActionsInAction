@@ -65,7 +65,7 @@ export default function IsRecordLabel(){
                                         partner_uuid: partner?.uuid,
                                         physical_status_of_content_provider: ownerIsAlive ? 'isAlive' : 'isDead',
                                         license_start_date: "",
-                                        license_stop_date: ""
+                                        license_end_date: ""
                                     })
     
     const [submitting, setSubmitting] = useState(false);
@@ -197,7 +197,7 @@ export default function IsRecordLabel(){
         }else if(data.license_start_date == ""){
             setError({error: "Please enter start of license date"}); 
             return false;  
-        }else if(data.license_stop_date == ""){
+        }else if(data.license_end_date == ""){
             setError({error: "Please enter end of license date"}); 
             return false; 
         }        
@@ -273,9 +273,9 @@ export default function IsRecordLabel(){
                             />
 
                             <DatePicker
-                                id="license_stop_date"
+                                id="license_end_date"
                                 label="End date"
-                                value={data.license_stop_date}
+                                value={data.license_end_date}
                                 onChange={(e) => handleFormChange(e)}
                                 onBlur={(e) => handleFormChange(e)}
                                 errors={errors}

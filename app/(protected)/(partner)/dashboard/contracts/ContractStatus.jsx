@@ -1,12 +1,13 @@
 
 import {ContractContext} from "./ContractProvider";
-import {useState, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import {contract_statuses, user_statuses} from "@/app/modules/constants";
+import moment from "moment";
 
-export default function Contracts() {
+export default function ContractStatus({dynamicData}) {
 
     const {
       contractStatus,
@@ -17,21 +18,46 @@ export default function Contracts() {
       hasSigned,
       downloadSignedContract,
       setSelectServiceModal,
-      setShowContractCategoryModal
+      setShowContractCategoryModal,
+      getContractBeingSigned,
+      annexuresLink, 
+      setAnnexuresLink
     } = useContext(ContractContext);
+
+    const [contractId, setContractId] = useState(null);
 
     const {user} = useUsers();
     const {partner} = usePartners();
 
-    console.log("partner", partner);
+    useEffect(() => {
+
+        getContractBeingSigned()
+            .then(resp => {
+                        setContractId(resp.contract.contract_id); 
+                        setAnnexuresLink(`/dashboard/contracts/annexures/${resp.contract.contract_id}`)
+            }).catch(error => console.log(error.response));
+
+    }, []);
+
+    console.log("contractIdxx", contractId);
+
 
     if(contractStatus == contract_statuses.EXPIRED){
-        return (<Renew />);
-    }else if(contractStatus == contract_statuses.NOT_STARTED){
-        if(user.role == 'superAdmin' && 
+        if(!contractId && user.role == 'superAdmin' && 
+            userStatus == user_statuses.APPROVED){
+            return  (<Renew />);
+        }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
+            !hasSigned){
+                return (<StartSigning />);
+        }else if(userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
+            allHaveSigned){
+                return (<SignedSuccess />);
+        }
+    }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
+        if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories){
             return (<SelectServices />);
-        }else if(userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
+        }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){
                 return (<StartSigning />);
 
@@ -91,7 +117,7 @@ export default function Contracts() {
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
-                    onclick={() => setSelectServiceModal(true)}
+                    onclick={() => setShowContractCategoryModal(true)}
                     button={'Sign your contract'}
                     color="text-gray-200"
                     desccolor="text-[#999999]"
@@ -129,7 +155,14 @@ export default function Contracts() {
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
-                    onclick={() => setShowContractCategoryModal(true)}
+                    onclick={() => {
+                        if(user.role != "superAdmin"){
+                            window.location = "/dashboard/contracts/execution/" + contractId;
+                        }else{
+                            setAgreementModal(true);
+                        }
+                        
+                    }}
                     button={'Sign your contract'}
                     color="text-gray-200"
                     desccolor="text-[#999999]"
@@ -172,9 +205,9 @@ export default function Contracts() {
             <div className="py-1 px-3 rounded-full bg-[#00FF0020] text-white flex justify-center items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" className="w-6 h-6">
                 <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-            </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full"> {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")}</span>
+            </svg> &nbsp; Signed <span className="py-1 px-2 bg-black/40 text-white rounded-full"> {moment(dynamicData?.dynamic_details?.date_of_contract).format("DD/MM/YYYY")}</span>
             </div>
-            <a href={downloadSignedContract()} target="_blank">
+            <a href={`${process.env.NEXT_PUBLIC_APIURI}/v2/contract/download-contract-pdf/${partner.uuid}/${contractId}/signed`} target="_blank">
             <div className="w-8 h-8 rounded-full hover:bg-black/40 cursor-pointer flex justify-center items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6">
                 <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />

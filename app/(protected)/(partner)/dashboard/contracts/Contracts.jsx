@@ -172,7 +172,7 @@ export default function Contracts() {
         
     }    
     // get_all_admin_partners();
-    // get_dynamic_content();
+    get_dynamic_content();
     
    
     partnerGetAllContracts().then(resp => {
@@ -233,7 +233,7 @@ export default function Contracts() {
             </>)
           }{
             !questionnaireAlert && 
-            <ContractStatus />
+            <ContractStatus dynamicData={dynamicData} />
           }
 
           {errors && errors["error"] && (
@@ -320,7 +320,7 @@ export default function Contracts() {
               </tbody>
             </table>
             {
-              (filteredContracts?.length == 0 && pagedContracts?.length == 0) ?  
+              (filteredContracts?.length == 0 && pagedContracts?.length == 0) ? 
               (<EmptyTable list={'Contracts'} />) : 
               (<TablePager list={filteredContracts} action={setPagedContracts}/>)
             }

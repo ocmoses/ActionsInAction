@@ -10,12 +10,14 @@ import useUsers from "@/hooks/useUsers";
 import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
-import { capitalizeFirst } from "../../../../../modules/utilities";
+import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
 
 
 
-export default function ContractSigning(){
+export default function ContractSigning({params}){
+
+    const contract_id = params.params[0];
 
     const {
         partner,
@@ -36,7 +38,7 @@ export default function ContractSigning(){
     const [successModal, setSuccessModal] = useState(false);
     const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
     const [disableActiveButton, setDisableActiveButton] = useState(true);
-    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
+    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", contract_id: contract_id,
                                         company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
 
     const [successDisplay, setSuccessDisplay] = useState(false);    
@@ -174,19 +176,19 @@ export default function ContractSigning(){
 
     }
 
-    // const get_dynamic_content = async () => {
-    //     if (gettingDynamicContent) return;
-    //     setGettingDynamicContent(true);
-    //     dynamic_content_response = await getContractDynamicData();
-    //     setGettingDynamicContent(false);
-    //     console.log('dynamic_content_response', dynamic_content_response);
-    //     if (dynamic_content_response.error) {
-    //         setError({ error: dynamic_content_response.error })
-    //     } else {
-    //         // console.log('dynamic_content_response', dynamic_content_response);
-    //         setDynamicData(dynamic_content_response.data);                
-    //     }
-    // }
+    const get_dynamic_content = async (contract_id) => {
+        if (gettingDynamicContent) return;
+        setGettingDynamicContent(true);
+        dynamic_content_response = await getContractDynamicData(contract_id);
+        setGettingDynamicContent(false);
+        console.log('dynamic_content_response', dynamic_content_response);
+        if (dynamic_content_response.error) {
+            setError({ error: dynamic_content_response.error })
+        } else {
+            console.log('dynamic_content_response in contract signing', dynamic_content_response);
+            setDynamicData(dynamic_content_response.data);                
+        }
+    }
 
     const sign_bilateral_contract = async (data) => {
         if (signing) return;
@@ -244,7 +246,7 @@ export default function ContractSigning(){
 
     useEffect(() => {
       setProcessing(false);
-        // get_dynamic_content();
+        get_dynamic_content(contract_id ?? null);
 
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
         setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
@@ -307,47 +309,47 @@ export default function ContractSigning(){
                     {/* Floating side nav */}
                     <div className={`${fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"} z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-a")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-a`)}>
                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>1</span>
                             <span className={`text-white/40`}>Annexure A</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-b")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-b`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>2</span>
                             <span className={`text-white/40`}>Annexure B</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-c")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-c`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>3</span>
                             <span className={`text-white/40`}>Annexure C</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-d")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-d`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>4</span>
                             <span className={`text-white/40`}>Annexure D</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure E</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-f")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-f`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure F</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-g")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-g`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure G</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-h")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-h`)}>
                              <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
                             <span className={`text-white/40`}>Annexure H</span>
                         </div>
 
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push("/dashboard/contracts/annexures#annexure-e")}>
+                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
                              <span className={`flex w-6 h-6 text-white bg-mtn rounded-full justify-center items-center`}>6</span>
                             <span className={`text-white`}>Main Contract</span>
                         </div>
@@ -355,12 +357,12 @@ export default function ContractSigning(){
                     </div>
 
                     <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
-                        <div onClick={() => router.push(getContractBeingSigned())}
+                        <a href={`${process.env.NEXT_PUBLIC_APIURI}/v2/contract/download-contract-pdf/${partner.uuid}/${contract_id}/not_signed`} target="_blank"
                             className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>&nbsp;Download
-                        </div>
+                        </a>
                     </div>
 
                     <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">
@@ -370,8 +372,8 @@ export default function ContractSigning(){
                         <br /><br/>
                         AND
                         <br /><br/>
-                        :PARTY
-                        (RC No. :RC_NUMBER)
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}&nbsp;
+                        (RC No. {dynamicData?.dynamic_details?.rc_no?.toUpperCase()})
                         </p>
                     </div>
 
@@ -645,7 +647,7 @@ export default function ContractSigning(){
                     <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 md:max-w-4xl md:w-[900px]">
 
                         
-                        <p><span className="text-white">THIS AGREEMENT</span> is made on this XXXXXXXXXXXXXXX.<br /><br /></p>
+                        <p><span className="text-white">THIS AGREEMENT</span> is made on this {dynamicData?.dynamic_details?.date_of_contract}.<br /><br /></p>
 
                         <p><span className="text-white">BETWEEN</span><br /><br /></p>
 
@@ -653,12 +655,12 @@ export default function ContractSigning(){
 
                         <p><span className="text-white">AND</span><br /><br /></p>
 
-                        XXXXXXXXXXXXXXXXXXX, a private limited liability company incorporated under the laws of the Federal<br />
-                        Republic of Nigeria, having its principal place of business at XXXXXXXXXXXXXXXXXX (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal<br />
+                        Republic of Nigeria, having its principal place of business at {dynamicData?.dynamic_details?.company_address} (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
 
                         <p><span className="text-white">AND</span><br /><br /></p>
 
-                        :PARTY, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
+                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
 
                         Both <p><span className="text-white">MTN</span> and the <span className="text-white">Receiving Party</span> are hereinafter jointly referred to as the “Parties” and individually as the “Party”.</p>
 
@@ -976,15 +978,19 @@ export default function ContractSigning(){
                             <div className="mt-4 w-full flex space-x-2">
 
                             <span className="text-white w-[50px]">
-                        1.26. </span>
+                            1.26. </span>
                            <p><span className="text-white">“Short Code”</span> means the short code numbers approved by NCC to be utilized for the delivery of SMS. The Short code shall have a two-way status that will enable the SMS platform receive messages from MTN Subscribers as well as transmit SMS to MTN Subscribers for the purposes of accessing the Services;</p>
                                     
                         </div>
 
                             <p>
-                            1.27.	“Solutions” includes
-                            // Loop through services
-                            :SERVICES_HERE
+                            <span className="text-white w-[50px]">
+                            1.27.</span>	“Solutions” includes &nbsp;&nbsp;
+                            {
+                                dynamicData?.dynamic_details?.service_types.map(s => <>
+                                <span className="text-white">{s}</span>
+                                </>)
+                            }
                             </p>
 
                             <div className="mt-4 w-full flex space-x-2">
@@ -1164,50 +1170,50 @@ export default function ContractSigning(){
                         </div>
 
                             <div className="flex flex-col space-y-4 py-8">
-                                <a href="/dashboard/contracts/annexures#annexure-a" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-a`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center">
                                     <span className="text-white/60">Annexure A	-	</span>Revenue Share Model
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
 
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-b" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-b`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure B	-	</span>Active Short Code
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-c" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-c`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure C	-	</span>Confidentiality and Non-Disclosure Agreement
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-d" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-d`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure D	-	</span>Protective Clauses
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-e" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-e`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure E	-	</span>Information Data and Cyber Security Annex
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-f" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-f`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure F	-	</span>Schedule of Infractions and Sanctions
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-g" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-g`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure G	-	</span>MTN Business Continuity Management Policy
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </a>
-                                <a href="/dashboard/contracts/annexures#annexure-h" className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
+                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-h`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
                                     <span className="text-white/60">Annexure H	-	</span>Data Protection Schedule
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -1919,7 +1925,7 @@ export default function ContractSigning(){
                         <p>
                         <p><span className="text-white">IN WITNESS WHEREOF</span>, the Parties have duly executed two original copies of this Agreement as of the day and year first written above.</p>
                         </p>
-
+{/* 
                         <table border="0">
                             <tr>
 
@@ -2041,7 +2047,7 @@ export default function ContractSigning(){
                                     </td>
                                 </tr>
                             </table>
-                        </div>
+                        </div> */}
 
                     </div>
 
@@ -2055,8 +2061,8 @@ export default function ContractSigning(){
                                 <div className="w-10 flex mr-4">
                                     <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
                                 </div>
-                                <div>
-                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <p><span className="text-white">Electronic Record and Signature Disclosure.</span></p></p>
+                                <div className="flex">
+                                    <span className="text-gray-300">By selecting this checkbox, I agree to MTN's</span> <span className="text-white">Electronic Record and Signature Disclosure.</span>
                                 </div>
                             </div>)
                         }
@@ -2113,9 +2119,9 @@ export default function ContractSigning(){
                                         directorOrDelegateSigned &&
                                         <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
                                             {
-                                                dynamicData?.signature_of_signee[0]?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.director_or_delegate_signature} className="h-20" />)
+                                                dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature} className="h-20" />)
 
                                             }
                                         </div>
@@ -2149,9 +2155,9 @@ export default function ContractSigning(){
                                         witnessSigned &&
                                         <div className="flex flex-col text-gray-600 items-center justify-center w-full h-32">
                                             {
-                                                dynamicData?.signature_of_signee[0]?.witness_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.signature_of_signee[0]?.witness_signature} className="h-20" />)
+                                                dynamicData?.dynamic_details?.signature_of_signee?.witness_signature?.includes("data:image/png;base64,") ?  
+                                                (<img src={dynamicData?.dynamic_details?.signature_of_signee?.witness_signature} className="h-20" />) :
+                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details?.signature_of_signee?.witness_signature} className="h-20" />)
 
                                             }
                                             

@@ -597,11 +597,13 @@ export default function GetStarted({ type }) {
                 </>
               )}
 
-              {partner?.contract_status === "processing" && IPAlert && (
+              {
+                IPAlert &&
+
                 // And you have not submitted the IP details
 
                 <IPCard />
-              )}
+              }
 
               {/* //================this is the popup==============================================================================================================*/}
 

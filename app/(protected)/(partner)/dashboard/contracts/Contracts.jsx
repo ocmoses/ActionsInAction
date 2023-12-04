@@ -320,7 +320,7 @@ export default function Contracts() {
               </tbody>
             </table>
             {
-              (filteredContracts?.length == 0 && pagedContracts?.length == 0) ?  
+              (filteredContracts?.length == 0 && pagedContracts?.length == 0) ? 
               (<EmptyTable list={'Contracts'} />) : 
               (<TablePager list={filteredContracts} action={setPagedContracts}/>)
             }

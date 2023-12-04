@@ -1,12 +1,12 @@
 
 import {ContractContext} from "./ContractProvider";
-import {useState, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import CallToAction from "@/app/components/dashboard/partners/CallToAction";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import {contract_statuses, user_statuses} from "@/app/modules/constants";
 
-export default function Contracts() {
+export default function ContractStatus() {
 
     const {
       contractStatus,
@@ -17,21 +17,37 @@ export default function Contracts() {
       hasSigned,
       downloadSignedContract,
       setSelectServiceModal,
-      setShowContractCategoryModal
+      setShowContractCategoryModal,
+      getContractBeingSigned,
+      annexuresLink, 
+      setAnnexuresLink
     } = useContext(ContractContext);
+
+    const [contractId, setContractId] = useState(null);
 
     const {user} = useUsers();
     const {partner} = usePartners();
 
-    console.log("partner", partner);
+    useEffect(() => {
+
+        getContractBeingSigned()
+            .then(resp => {
+                        setContractId(resp.contract.contract_id); 
+                        setAnnexuresLink(`/dashboard/contracts/annexures/${resp.contract.contract_id}`)
+            }).catch(error => console.log(error.response));
+
+    }, []);
+
+    console.log("contractStatus", contractStatus);
+
 
     if(contractStatus == contract_statuses.EXPIRED){
         return (<Renew />);
-    }else if(contractStatus == contract_statuses.NOT_STARTED){
-        if(user.role == 'superAdmin' && 
+    }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
+        if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories){
             return (<SelectServices />);
-        }else if(userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
+        }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){
                 return (<StartSigning />);
 
@@ -129,7 +145,14 @@ export default function Contracts() {
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
-                    onclick={() => setShowContractCategoryModal(true)}
+                    onclick={() => {
+                        if(user.role != "superAdmin"){
+                            window.location = "/dashboard/contracts/execution/" + contractId;
+                        }else{
+                            setAgreementModal(true);
+                        }
+                        
+                    }}
                     button={'Sign your contract'}
                     color="text-gray-200"
                     desccolor="text-[#999999]"

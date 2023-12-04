@@ -1277,27 +1277,7 @@ export default function useAdmins() {
   }
 
   /// //////////////////////////////////////////afolabi's functions starts here
-  const fetchData = async (url, apikey) => {
-    try {
-      const response = await axios.get(
-        url,
-        {
-          headers: {
-            apikey: apikey,
-          },
-        }
-      );
-      //console.log("this is my response", response);
-     return {success: true, data: response.data.data}
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return {success: false, message: error.message}
-    }
-  };
-
-
-
-  const getAllGreacePeriod = async () => {
+  const getAllGracePeriod = async () => {
     try {
       
       setProcessing(true);
@@ -1321,7 +1301,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllGracePeriod has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1340,20 +1320,17 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllGracePeriod 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
           error.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllGracePeriod 1",
       };
     }
   };
-
-
-
   const getAllLicenceRenewal = async () => {
     try {
       
@@ -1378,7 +1355,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllLicenceRenewal has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1397,14 +1374,14 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllLicenceRenewal 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
-          error.message ??
-          "Something went wrong. Please check your connection and try again",
+        error.message ??
+          "Something went wrong. Trying to fetch getAllLicenceRenewal 2",
       };
     }
   };
@@ -1433,7 +1410,7 @@ export default function useAdmins() {
 
       if (!response)
         return {
-          error: "This request has no response available",
+          error: "getAllPartnersShortCodes has no response available",
         };
       const result = await response.json();
       setProcessing(false);
@@ -1452,18 +1429,17 @@ export default function useAdmins() {
       return {
         error:
           result?.data?.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllPartnersShortCodes 1",
       };
     } catch (error) {
       console.log({ error });
       return {
         error:
           error.message ??
-          "Something went wrong. Please check your connection and try again",
+          "Something went wrong. Trying to fetch getAllPartnersShortCodes 2",
       };
     }
   };
-
   /// //////////////////////////////////////////afolabi's functions Ends here
 
 
@@ -1480,7 +1456,6 @@ export default function useAdmins() {
     createAdmin,
     getAllDepartments,
     deleteAdmin,
-    fetchData,
     getAllBoardResolutionDocuments,
     approveOrRejectBrd,
     getAllQuestionnaire,
@@ -1492,7 +1467,7 @@ export default function useAdmins() {
     approveIP,
     rejectChangeOrder,
     rejectIP,
-    getAllGreacePeriod,
+    getAllGracePeriod,
     getAllLicenceRenewal,
     getAllIP,
     getAllPartnersShortCodes,

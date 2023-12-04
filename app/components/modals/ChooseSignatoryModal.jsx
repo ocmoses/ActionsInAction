@@ -81,8 +81,8 @@ export default function ChooseSignatoryModal(){
                         
                         (<div className="mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={partner.uuid}
                                 onClick={() => {
-                                setSignatories({...signatories, director: {firstname: partner.firstname, lastname: partner.lastname, email: partner.email}}); 
-                                setChooseSignatoryModal(false); setContractSignatriesModal(true);
+                                    setSignatories({...signatories, director: {firstname: partner.firstname, lastname: partner.lastname, email: partner.email}}); 
+                                    setChooseSignatoryModal(false); setContractSignatriesModal(true);
                                 }
                             }>
 

@@ -14,8 +14,7 @@ import { useStoreState } from "easy-peasy";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import useApp from "@/hooks/useApp";
-import FilePreviewModal from "@/app/components/FilePreviewModal";
+import FileViewer from "@/app/components/modals/FileViewer";
 import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
@@ -29,7 +28,7 @@ export default function GracePeriodAlert({
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
-  const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState(61);
+  const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState();
   const [loading, setLoading] = useState(false);
   ////////////licenseValidityRemainder function////////////////////
   const licenseValidityRemainder = async () => {
@@ -50,8 +49,8 @@ export default function GracePeriodAlert({
         const licenseValidityDaysLeft =
           licenseValidityRemainderResponse.data.data.license_validity_days;
         setLicenseValidityDaysLeft(licenseValidityDaysLeft);
-        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
       setError({
         dashboard:
@@ -65,6 +64,7 @@ export default function GracePeriodAlert({
   useEffect(() => {
     licenseValidityRemainder();
   }, []);
+  
 
   return (
     <>
@@ -230,7 +230,7 @@ export default function GracePeriodAlert({
                               ) : (
                                 <p>
                                   <span className="text-white">
-                                    Your license has expired.
+                                    Your license has expired. {licenseValidityDaysLeft}
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
@@ -645,7 +645,7 @@ export const LicenseValidityTopAlert = ({
                     className="text-white/70 cursor-pointer hover:underline hover:text-white/90"
                     onClick={() => popUpLicenseRenewalForm()}
                   >
-                    Renew your contract{" "}
+                    Renew your license{" "}
                   </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1064,7 +1064,7 @@ export const GracePeriodAdminFlyOut = ({
     activity: false,
   });
 
-  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
+  const [fileViewer, setFileViewer] = useState(null);
   const [declineGracePeriodDoc, setDeclineGracePeriodDoc] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
@@ -1258,8 +1258,7 @@ export const GracePeriodAdminFlyOut = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setIsPreviewingDoc(!is_previewing_doc);
-                      closeGracePeriodFlyOut();
+                      setFileViewer(selectedRequest?.file_path)
                     }}
                     title="Open"
                   >
@@ -1519,12 +1518,11 @@ export const GracePeriodAdminFlyOut = ({
         </div>
       </main>
 
-      {is_previewing_doc && selectedRequest && (
-        <FilePreviewModal
-          filePath={selectedRequest?.file_path}
-          closeModal={handleCloseModal}
-        />
-      )}
+
+
+            { fileViewer && 
+                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+            }
 
       <Success
         message={successMessage}
@@ -1546,7 +1544,7 @@ export const LicenseRenewalAdminFlyout = ({
     activity: false,
   });
 
-  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
+  const [fileViewer, setFileViewer] = useState(null);
   const [decline, setDecline] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [sendAction, setSendAction] = useState(false);
@@ -1740,8 +1738,7 @@ export const LicenseRenewalAdminFlyout = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setIsPreviewingDoc(!is_previewing_doc);
-                      closeLicenseRenewalFlyout();
+                      setFileViewer(selectedRequest?.file_path)
                     }}
                     title="Open"
                   >
@@ -2001,12 +1998,9 @@ export const LicenseRenewalAdminFlyout = ({
         </div>
       </main>
 
-      {is_previewing_doc && selectedRequest && (
-        <FilePreviewModal
-          filePath={selectedRequest?.file_path}
-          closeModal={handleCloseModal}
-        />
-      )}
+      { fileViewer && 
+                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+            }
 
       <Success
         message={successMessage}

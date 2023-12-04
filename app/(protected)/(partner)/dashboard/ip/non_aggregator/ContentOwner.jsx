@@ -369,8 +369,8 @@ export default function ContentOwner(){
                         </div>
 
                         <FileInput
-                            id="other_content_proof"
-                            doc_id="other_content_proof_doc"
+                            id="other_content_proof_of_ownership"
+                            doc_id="other_content_proof_of_ownership_doc"
                             label="Other proof of ownership"
                             value={files.other_content_proof_of_ownership}
                             onChange={(e) => uploadFile("other_content_proof_of_ownership", e.target.value)}

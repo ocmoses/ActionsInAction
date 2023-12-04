@@ -22,6 +22,7 @@ import {
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 import useLogout from "@/hooks/useLogout";
+import axios from "axios";
 
 const usePartners = () => {
   const router = useRouter();
@@ -570,10 +571,10 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
+      // if (response.status === 400 || response.status === 401 ) {
+      //   LogoutAdmin();
+      //   return;
+      // }
       if (!response)
         return {
           error: "This request has no response available",
@@ -1077,14 +1078,14 @@ const usePartners = () => {
     }
   };
 
-  const getContractDynamicData = async () => {
+  const getContractDynamicData = async (contract_id) => {
     try {
       
       setProcessing(true);
       const response = await fetch(
         `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT
             .replace(':partner_uuid', states.partners.partner.uuid)
-            .replace(':contract_id', "TESTD-2023-10AA09")}`,
+            .replace(':contract_id', contract_id)}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1113,9 +1114,10 @@ const usePartners = () => {
       }
 
       const result = await response.json();
+      // console.log("RESUILT OF DYNAMIC THINGS ENDPOINT", result);
       setProcessing(false);
       if (result?.success) {
-        const data = result?.data['dynamic-details'];
+        const data = result?.data;
 
         return {
           data
@@ -1352,10 +1354,10 @@ const usePartners = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 401 ) {
-        Logout();
-        return;
-      }
+      // if (response.status === 401 ) {
+      //   Logout();
+      //   return;
+      // }
 
       const result = await response.json();
 
@@ -1455,6 +1457,62 @@ const usePartners = () => {
 
 
 
+  const getPartnerContractCurrentlyRunning = async () => {
+    try {
+      setProcessing(true);
+      const getPartnerContractResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_CURRENTLY_RUNNING}${states.partners.partner.uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+  const getPartnerContractValidityReminder = async (contract_id) => {
+    alert(contract_id);
+
+    try {
+      setProcessing(true);
+      const getPartnerContractValidityRemainderResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_VALIDITY_REMAINDER}${partner?.uuid}/${contract_id}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractValidityRemainderResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -1491,7 +1549,8 @@ const usePartners = () => {
     submitAnnexureResponses,
     getIPStatus,
     getIPProgressStatus,
-    ipFileUpload
+    ipFileUpload,
+    getPartnerContractCurrentlyRunning
   }
 }
 export default usePartners

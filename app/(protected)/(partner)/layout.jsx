@@ -14,7 +14,7 @@ import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
 function Layout({ children }) {
-  const { partner } = usePartners();
+  const { partner, getPartnerContractCurrentlyRunning, } = usePartners();
   const states = useStoreState((state) => state);
 
   const [open, setOpen] = useState(false);
@@ -51,6 +51,9 @@ function Layout({ children }) {
     }
   };
   ////////////end licenseValidityRemainder function////////////////////
+  
+ 
+
   useEffect(() => {
     licenseValidityRemainder();
   }, [partner]);

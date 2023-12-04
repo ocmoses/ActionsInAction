@@ -15,7 +15,7 @@ export default function IPCard(){
 
     const [{ errors, setError, clearErrors }] = useErrors(null);
 
-    const {user} = useUsers();
+    const {user} = useUsers();  
 
 
     useEffect(() => {

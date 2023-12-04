@@ -172,7 +172,7 @@ export default function Contracts() {
         
     }    
     // get_all_admin_partners();
-    // get_dynamic_content();
+    get_dynamic_content();
     
    
     partnerGetAllContracts().then(resp => {
@@ -233,7 +233,7 @@ export default function Contracts() {
             </>)
           }{
             !questionnaireAlert && 
-            <ContractStatus />
+            <ContractStatus dynamicData={dynamicData} />
           }
 
           {errors && errors["error"] && (

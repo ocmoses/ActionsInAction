@@ -641,7 +641,7 @@ export const LicenseValidityTopAlert = ({
                       Your License expires in {licenseValidityDaysLeft} days.
                     </span>
                   ) : (
-                    <span>Your contract has expired</span>
+                    <span>Your License has expired</span>
                   )}{" "}
                   <span
                     className="text-white/70 cursor-pointer hover:underline hover:text-white/90"

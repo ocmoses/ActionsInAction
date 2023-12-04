@@ -1925,7 +1925,7 @@ export default function ContractSigning({params}){
                         <p>
                         <p><span className="text-white">IN WITNESS WHEREOF</span>, the Parties have duly executed two original copies of this Agreement as of the day and year first written above.</p>
                         </p>
-
+{/* 
                         <table border="0">
                             <tr>
 
@@ -2047,7 +2047,7 @@ export default function ContractSigning({params}){
                                     </td>
                                 </tr>
                             </table>
-                        </div>
+                        </div> */}
 
                     </div>
 

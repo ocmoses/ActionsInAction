@@ -60,11 +60,12 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
-    getIPStatus
+    getIPStatus,
+    getPartnerContractCurrentlyRunning,
   } = usePartners();
-//////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
-////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
     setProcessing(false);
@@ -130,32 +131,48 @@ export default function GetStarted({ type }) {
   }, []);
 
   let check = () => {
-    getQuestionnaireStatus().then(response => {
-      console.log("Questionnaire status response", response);
-      console.log("response.status", response.status);
-      console.log("response.error", response.error);
-      if(response.status == 'rejected'){
-        setQuestionnaireAlert(true);        
-        setRejectionReason(response.rejectionReason);
-      }else if(response.error && response.error == questionnaire_pending){
-        setToFillQuestionnaire(true);
-      }else if(response.message && response.message == questionnaire_pending){
-        setToFillQuestionnaire(true);
-      }else {
-        setToFillQuestionnaire(false);        
-      }
-    }).catch(error => {console.log(error.response); setError({error: error.message})});
+    getQuestionnaireStatus()
+      .then((response) => {
+        console.log("Questionnaire status response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (response.status == "rejected") {
+          setQuestionnaireAlert(true);
+          setRejectionReason(response.rejectionReason);
+        } else if (response.error && response.error == questionnaire_pending) {
+          setToFillQuestionnaire(true);
+        } else if (
+          response.message &&
+          response.message == questionnaire_pending
+        ) {
+          setToFillQuestionnaire(true);
+        } else {
+          setToFillQuestionnaire(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        setError({ error: error.message });
+      });
 
-    getIPStatus().then(response => {
-      console.log("IPStatus response", response);
-      console.log("response.status", response.status);
-      console.log("response.error", response.error);
-      if(response.message == ip_pending || response.error == ip_pending || response.message == undefined){
-        setIPAlert(true); 
-      }
-    }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})})
-
-  }
+    getIPStatus()
+      .then((response) => {
+        console.log("IPStatus response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (
+          response.message == ip_pending ||
+          response.error == ip_pending ||
+          response.message == undefined
+        ) {
+          setIPAlert(true);
+        }
+      })
+      .catch((error) => {
+        console.log("IP error: ", error.response);
+        setError({ error: error.message });
+      });
+  };
 
   useEffect(() => {
     check();
@@ -246,7 +263,10 @@ export default function GetStarted({ type }) {
       ).catch((error) => {
         console.log(error);
         setIsSaving(false);
-        return setError({dashboard: "Unable to reach the server. Please check your connection and retry"});
+        return setError({
+          dashboard:
+            "Unable to reach the server. Please check your connection and retry",
+        });
       });
       setIsSaving(false);
       if (result) {
@@ -259,12 +279,17 @@ export default function GetStarted({ type }) {
           return setError({ dashboard: data.message });
         }
       } else {
-        return setError({dashboard: "Cannot reach the server. Please check your connection"});
+        return setError({
+          dashboard: "Cannot reach the server. Please check your connection",
+        });
       }
     } catch (err) {
       console.log({ err });
       setIsSaving(false);
-      return setError({dashboard:"Something went wrong. Please check your connection and try again"});
+      return setError({
+        dashboard:
+          "Something went wrong. Please check your connection and try again",
+      });
     }
   };
 
@@ -287,8 +312,6 @@ export default function GetStarted({ type }) {
 
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
-  
-
   const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
   const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
   const [gracePeriodStatus, setGracePeriodStatus] = useState("");
@@ -299,63 +322,69 @@ export default function GetStarted({ type }) {
   const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
   const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
-  
-////////////partnerLicenseGracePeriodStatus function////////////////////
-const partnerLicenseGracePeriodStatus = async () => {
-  setShowGracePreriodAlert(false);
-  try {
-    const partnerLicenseGracePeriodStatusResponse = await axios.get(
-      `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
-      {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_APIKEY,
-          Authorization: `Bearer ${states.users.token}`,
-        },
-      }
-    );
-    const response=partnerLicenseGracePeriodStatusResponse.data.data;
-    if ("status" in response) {
-    console.log("partnerLicenseGracePeriodStatusResponse", response.status)
-      setGracePeriodStatus(response.status);
-    }else{
-      setGracePeriodStatus("none");
-    }
-    setShowGracePreriodAlert(true);
-  } catch (error) {
-    console.log("An error occur while trying to fetch license grace period status");
+  ////////////partnerLicenseGracePeriodStatus function////////////////////
+  const partnerLicenseGracePeriodStatus = async () => {
     setShowGracePreriodAlert(false);
-  }
-};
-////////////end partnerLicenseGracePeriodStatus function////////////////////
-
-////////////partnerLicenseRenewalStatus function////////////////////
-const partnerLicenseRenewalStatus = async () => {
-  setShowLicenseRenewalAlert(false);
-  try {
-    const partnerLicenseRenewalStatusResponse = await axios.get(
-      `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
-      {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_APIKEY,
-          Authorization: `Bearer ${states.users.token}`,
-        },
+    try {
+      const partnerLicenseGracePeriodStatusResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      const response = partnerLicenseGracePeriodStatusResponse.data.data;
+      if ("status" in response) {
+        console.log("partnerLicenseGracePeriodStatusResponse", response.status);
+        setGracePeriodStatus(response.status);
+      } else {
+        setGracePeriodStatus("none");
       }
-    );
-
-    const response=partnerLicenseRenewalStatusResponse.data.data;
-    if ("status" in response) {
-    console.log("partnerLicenseRenewalStatusResponse", response.status)
-    setLicenseRenewalStatus(response.status);
-    }else{
-      setLicenseRenewalStatus("none");
+      setShowGracePreriodAlert(true);
+    } catch (error) {
+      console.log(
+        "An error occur while trying to fetch license grace period status"
+      );
+      setShowGracePreriodAlert(false);
     }
-    setShowLicenseRenewalAlert(true);
-  } catch (error) {
-    console.log("An error occur while trying to fetch license renewal status");
-    setShowGracePreriodAlert(false);
-  }
-};
-////////////end partnerLicenseRenewalStatus function///////////////////
+  };
+  ////////////end partnerLicenseGracePeriodStatus function////////////////////
+
+  ////////////partnerLicenseRenewalStatus function////////////////////
+  const partnerLicenseRenewalStatus = async () => {
+    setShowLicenseRenewalAlert(false);
+    try {
+      const partnerLicenseRenewalStatusResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      const response = partnerLicenseRenewalStatusResponse.data.data;
+      if ("status" in response) {
+        console.log("partnerLicenseRenewalStatusResponse", response.status);
+        setLicenseRenewalStatus(response.status);
+      } else {
+        setLicenseRenewalStatus("none");
+      }
+      setShowLicenseRenewalAlert(true);
+    } catch (error) {
+      console.log(
+        "An error occur while trying to fetch license renewal status"
+      );
+      setShowGracePreriodAlert(false);
+    }
+  };
+  ////////////end partnerLicenseRenewalStatus function///////////////////
+
+
+
 
   useEffect(() => {
     partnerLicenseGracePeriodStatus();
@@ -569,7 +598,7 @@ const partnerLicenseRenewalStatus = async () => {
               )}
 
               {
-                partner?.contract_status === "processing" && IPAlert &&
+                IPAlert &&
 
                 // And you have not submitted the IP details
 
@@ -638,7 +667,7 @@ const partnerLicenseRenewalStatus = async () => {
                         <LicenseRenewalSuccess
                           SuccessOk={() => {
                             setPopUpLicenseRenewalForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowLicenseRenewalAlert(false);
                           }}
                         />
                       )}

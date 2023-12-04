@@ -1,5 +1,9 @@
 export default function FormErrors({ error, success, align }) {
-  return ( error != "No valid login detected for SuperAdmin" && 
+  const hide = [
+              "No valid login detected for SuperAdmin",
+              "response.json is not a function"
+            ];
+  return ( !hide.includes(error)  && 
     <>
       {(error || success) && (
         <div

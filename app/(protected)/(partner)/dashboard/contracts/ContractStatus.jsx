@@ -42,7 +42,7 @@ export default function ContractStatus({dynamicData}) {
     console.log("contractIdxx", contractId);
 
 
-    if(contractStatus == contract_statuses.EXPIRED){
+    if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
             return  (<Renew />);

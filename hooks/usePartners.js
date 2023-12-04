@@ -22,6 +22,7 @@ import {
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 import useLogout from "@/hooks/useLogout";
+import axios from "axios";
 
 const usePartners = () => {
   const router = useRouter();
@@ -1456,6 +1457,62 @@ const usePartners = () => {
 
 
 
+  const getPartnerContractCurrentlyRunning = async () => {
+    try {
+      setProcessing(true);
+      const getPartnerContractResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_CURRENTLY_RUNNING}${states.partners.partner.uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+  const getPartnerContractValidityReminder = async (contract_id) => {
+    alert(contract_id);
+
+    try {
+      setProcessing(true);
+      const getPartnerContractValidityRemainderResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_VALIDITY_REMAINDER}${partner?.uuid}/${contract_id}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractValidityRemainderResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -1492,7 +1549,8 @@ const usePartners = () => {
     submitAnnexureResponses,
     getIPStatus,
     getIPProgressStatus,
-    ipFileUpload
+    ipFileUpload,
+    getPartnerContractCurrentlyRunning
   }
 }
 export default usePartners

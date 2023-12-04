@@ -55,7 +55,7 @@ export default function Requests() {
     approveOrRejectQuestionnaire,
     getAllRevenueShare,
     getAllChangeOrder,
-    getAllGreacePeriod,
+    getAllGracePeriod,
     getAllLicenceRenewal,
     getAllIP,
     getAllPartnersShortCodes
@@ -152,11 +152,13 @@ export default function Requests() {
   let get_brd_response = null;
   let get_questionnaire_response = null;
   let get_revenue_share_response = null;
+  let get_ips_response= null;
   let get_grace_period_response = null;
-  let approve_request_response = null;
-  let reject_request_response = null;
   let get_license_renewal_response = null;
   let get_all_partner_shortcodes_response = null;
+  let approve_request_response = null;
+  let reject_request_response = null;
+ 
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -343,7 +345,7 @@ export default function Requests() {
 
     setRequests(requests.filter(r => r.request_type != request_types.VAS_CLEARANCE));
     
-    let get_ips_response = await getAllIP();
+     get_ips_response = await getAllIP();
 
     console.log("All IPs", get_ips_response);
 
@@ -389,7 +391,7 @@ export default function Requests() {
     if (fetchingGracePeriods) return;
     setFetchingGracePeriods(true);
 
-    get_grace_period_response = await getAllGreacePeriod();
+    get_grace_period_response = await getAllGracePeriod();
     // console.log("All get_grace_period_response", get_grace_period_response);
 
     if (get_grace_period_response.error) {

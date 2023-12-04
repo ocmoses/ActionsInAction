@@ -354,11 +354,11 @@ export default function Requests() {
       return;
     }
 
-    for (const ip of get_ips_response.ips) {
+    for (const ip of get_ips_response.ip_requests) {
       if (!requests.find((request) => request.uuid == ip.uuid)) {
         requests.push({
           company: ip.company_name,
-          email: ip.delegate_email,
+          email: ip.email,
           request_type: request_types.VAS_CLEARANCE,
           request_id: ip.request_id,
           created_at: ip.created_at,

@@ -143,6 +143,7 @@ const RemoteEndpoints = {
   GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`,
   GET_ALL_CHANGE_ORDER_REQUESTS: `${apiURL}/v2/admin/get-all-change-order-request`,
   APPROVE_OR_REJECT_CHANGE_ORDER: `${apiURL}/v2/admin/approve-change-order-request`,
+  GET_ALL_IP_REQUESTS: `${apiURL}/v2/admin/get-all-ip-request`,
 
   //IP
   GET_IP_STATUS: `${apiURL}/v2/ip/get-submitted-ip-details-of-partner/:partner_uuid`,
@@ -150,6 +151,7 @@ const RemoteEndpoints = {
   SUBMIT_SERVICE_DETAILS: `${apiURL}/v2/ip/submit-service-details`,
   IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
   SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
+  APPROVE_REJECT_IP_DETAILS: `${apiURL}/v2/admin/approve-ip-request`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,

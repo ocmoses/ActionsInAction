@@ -60,7 +60,7 @@ export default function ContentOwner(){
 
     const [data, setData] = useState({
                                         partner_uuid: partner?.uuid,
-                                        physical_status_of_content_provider: null,
+                                        physical_status_of_content_provider: "isAlive",
                                         license_start_date: "",
                                         license_stop_date: ""
                                     })

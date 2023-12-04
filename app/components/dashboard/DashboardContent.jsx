@@ -569,7 +569,7 @@ const partnerLicenseRenewalStatus = async () => {
               )}
 
               {
-                partner?.contract_status === "processing" && IPAlert &&
+                IPAlert &&
 
                 // And you have not submitted the IP details
 

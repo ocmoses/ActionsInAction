@@ -17,8 +17,8 @@ import TextInput from "@/app/components/form/TextInput";
 export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
     const {
-        approveIP,
-        rejectIP        
+        approveIPDetail,
+        rejectIPDetail        
     } = useAdmins();
 
     const IPTabs = [
@@ -46,7 +46,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
     const [fileViewer, setFileViewer] = useState(null);
     
-    const [data, setData] = useState({partner_uuid: request?.partner_uuid, contract_id: request?.contract_id, 
+    const [data, setData] = useState({partner_uuid: request?.partner_uuid, ip_request_type: "", 
                                         status: "", reasons_for_rejection: ""});
     const [newRequest, setNewRequest] = useState({request_name: "", pdfAllowed: false, videoAllowed: false, imageAllowed: false});
       
@@ -78,6 +78,10 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         console.log("Typed reason", typedReason);
     };
 
+    const updateApprovalStatus = (approvalType) => {
+
+    }
+
     const approve = () => {
 
         clearErrors();        
@@ -91,7 +95,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
         setTimeout(() => {
 
-            approveIP(data)
+            approveIPDetail(data)
                 .then(resp => {setApproving(false); resp.error ? setError({error: resp.error}) : showSuccess(resp.message)})
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
 
@@ -123,7 +127,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
         setTimeout(() => {
 
-            rejectIP(data)
+            rejectIPDetail(data)
                 .then(resp => {setApproving(false); resp.error ? setError({error: resp.error}) : showSuccess(resp.message)})
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
             
@@ -143,21 +147,31 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     }
 
     const tabs = [1, 2, 3];
+
+    'service-details', 'aggregator-and-vas', 'probate-of-will', 'licensing-period', 
+    'authorization-letter', 'authorization-video', 'agreement-letter', 'means-of-identification', 
+    'other-content-proof-of-ownership'
     
     const setApprovalType = () => {
         console.log("Expanded is: ", expanded);
         switch(expanded){
-            case tabs[1]: data.change_order_request_type = "CSH";
+            case 'aggregator-and-vas': data.ip_request_type = "aggregator-and-vas";
                 break;
-            case tabs.ADD_SHORT_CODE: data.change_order_request_type = "ASH";
+            case 'probate_of_will': data.ip_request_type = "probate-of-will";
                 break;
-            case tabs.ADD_VAS_LICENSE: data.change_order_request_type = "AVL";
+            case 'license_period': data.ip_request_type = "licensing-period";
                 break;
-            case tabs.CHANGE_ADDRESS: data.change_order_request_type = "CAD";
+            case 'authorization_letter': data.ip_request_type = "authorization-letter";
                 break;
-            case tabs.ADD_SERVICE: data.change_order_request_type = "ANS";
+            case 'video_file': data.ip_request_type = "authorization-video";
                 break;
-            default: data.change_order_request_type = "";
+            case 'agreement_letter': data.ip_request_type = "agreement-letter";
+                break;
+            case 'means_of_id': data.ip_request_type = "means-of-identification";
+                break;
+            case 'additional_proof': data.ip_request_type = "other-content-proof-of-ownership";
+                break;
+            default: data.ip_request_type = 'service-details';
         }
     }
 
@@ -313,7 +327,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                     </div>
                 }
 
-                <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-scroll">
+                <div className="flex flex-col space-y-8 border-b max-h-[500px] border-white/20 pb-8 pr-4 overflow-y-scroll">
 
                     <div onClick={() => setAddingRequest(true)} className="flex space-x-2 ml-auto rounded-full bg-white/20 py-2 px-4 cursor-pointer hover:bg-white/40">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -336,71 +350,17 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
-                                <span className="text-white/80 ml-2">Content Creator</span>
+                                <span className="text-white/80 ml-2">Content Owner</span>
 
-                                <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "content_creator" ? setExpanded(null) : setExpanded("content_creator")}}>
-                                    {
-                                        expanded == "content_creator" ? 
-                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                        </svg>)
-                                    :  
-                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                                        </svg> )
-                                    }
+                                <span className="text-white absolute right-4 px-4 py-1 ">Content Creator</span>
                                     
-                                </span>
                             </div>
-                            {
-                                expanded == "content_creator" && (
-                                    <div className="flex flex-col space-y-4 p-4">
-
-                                        <p className="flex justify-between">
-                                            <span className="text-white/60">Field</span>
-                                            <span className="text-white">{request.content_creator.field ?? ""}</span>
-                                        </p>
-                                        {/* <p className="flex justify-between">
-                                            <span className="text-white/60 ">Issue date</span>
-                                            <span className="text-white">{request.add_vas_license.AVL_issuing_date ?? ""}</span>
-                                        </p>
-                                        <p className="flex justify-between">
-                                            <span className="text-white/60 ">Expiry date</span>
-                                            <span className="text-white">{request.add_vas_license.AVL_expiring_date ?? ""}</span>
-                                        </p>
-                                        <p className="flex justify-between">
-                                            <span className="text-white/60 ">NCC License document</span>
-                                            <span className="text-white">{request.add_vas_license.AVL_vas_license_file ? 
-                                                <svg onClick={() => setFileViewer(request.add_vas_license.AVL_vas_license_file)}
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-4 h-4 cursor-pointer">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                                </svg>
-                                                : ""}
-                                            </span>
-                                        </p> */}
-
-                                        {errors && errors["error"] && (
-                                            <div className="mb-6">
-                                                <FormErrors error={errors["error"]} />
-                                            </div>
-                                        )}
-
-                                        <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
-                                            {
-                                                request.content_creator.status == "approved" ? <Approved /> : request.content_creator.status == "rejected" ? <Declined /> : <ApprovalActions />
-                                            }                                             
-                                        </div>
-
-                                    </div>
-                                )
-                            }
-                            
-                            
+                                                    
                         </div>
 
                     </div>
 
+                    {/* Authorization letter */}
                     <div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -410,7 +370,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == "authorization_letter" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
@@ -438,8 +398,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">Authorization letter</span>
-                                            <span className="text-mtn" >{request.authorization_letter.file ? 
-                                                <span onClick={() => setFileViewer((request.authorization_letter.file))} 
+                                            <span className="text-mtn" >{request['authorization-letter'].authorization_letter ? 
+                                                <span onClick={() => setFileViewer((request['authorization-letter'].authorization_letter))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -457,7 +417,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request.authorization_letter.status == "approved" ? <Approved /> : request.authorization_letter.status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['authorization-letter'].authorization_letter_status == "approved" ? <Approved /> : request['authorization-letter'].authorization_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -470,6 +430,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                     </div>
 
+                    {/* License period */}
                     <div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -479,7 +440,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == "license_period" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
@@ -488,7 +449,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
                                         onClick={() => {clearErrors(); expanded == "license_period" ? setExpanded(null) : setExpanded("license_period")}}>
                                     {
-                                        expanded == "authorization_letter" ? 
+                                        expanded == "license_period" ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -507,12 +468,12 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">Start date</span>
-                                            <span className="text-white text-sm" >{request.license_period.start_date ? request.license_period.start_date: ""}</span>
+                                            <span className="text-white text-sm" >{request['licensing-period'].license_start_date ? request['licensing-period'].license_start_date: "-"}</span>
                                         </p>
 
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">End date</span>
-                                            <span className="text-white text-sm" >{request.license_period.end_date ? request.license_period.end_date: ""}</span>
+                                            <span className="text-white text-sm" >{request['licensing-period'].license_end_date ? request['licensing-period'].license_end_date: "-"}</span>
                                         </p>
 
                                         {errors && errors["error"] && (
@@ -523,7 +484,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request.license_period.status == "approved" ? <Approved /> : request.license_period.status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['licensing-period'].license_period_status == "approved" ? <Approved /> : request['licensing-period'].license_period_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -536,6 +497,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                     </div>
 
+                    {/* Video file */}
                     <div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -545,7 +507,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == "video_file" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
@@ -572,14 +534,14 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">Video</span>
-                                            <span className="text-mtn" >{request.video_file.file ? 
-                                                <span onClick={() => setFileViewer((request.video_file.file))} 
+                                            <span className="text-mtn" >{request['video-file'].authorization_video ? 
+                                                <span onClick={() => setFileViewer((request['video-file'].authorization_video))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                     </svg> Preview
                                                 </span>
-                                                : ""}
+                                                : "-"}
                                             </span>
                                         </p>
 
@@ -591,7 +553,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request.video_file.status == "approved" ? <Approved /> : request.video_file.status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['video-file'].authorization_video_status == "approved" ? <Approved /> : request['video-file'].authorization_video_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -604,6 +566,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                     </div>
 
+                    {/* Means of ID */}
                     <div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -613,7 +576,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == "means_of_id" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
@@ -639,15 +602,15 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <div className="flex flex-col space-y-4 p-4">
                                         
                                         <p className="flex justify-between">
-                                            <span className="text-white/60 ">ID</span>
-                                            <span className="text-mtn" >{request.means_of_id.file ? 
-                                                <span onClick={() => setFileViewer((request.means_of_id.file))} 
+                                            <span className="text-white/60 ">{request['means-of-identification'].content_creator_id_front ? "Content Creator ID" : request['means-of-identification'].agent_id_front ? "Agent ID" : "ID"}</span>
+                                            <span className="text-mtn" >{request['means-of-identification'].content_creator_id_front ? 
+                                                <span onClick={() => setFileViewer((request['means-of-identification'].content_creator_id_front))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                     </svg> Preview
                                                 </span>
-                                                : ""}
+                                                : request['means-of-identification'].agent_id_front ? request['means-of-identification'].agent_id_front : "-"}
                                             </span>
                                         </p>
 
@@ -659,7 +622,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request.means_of_id.status == "approved" ? <Approved /> : request.means_of_id.status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['means-of-identification'].means_of_id_status == "approved" ? <Approved /> : request['means-of-identification'].means_of_id_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -671,7 +634,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </div>
 
                     </div>
-
+                    
+                    {/* Additional Proof */}
                     <div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -681,7 +645,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == "additional_proof" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
@@ -690,7 +654,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
                                         onClick={() => {clearErrors(); expanded == "additional_proof" ? setExpanded(null) : setExpanded("additional_proof")}}>
                                     {
-                                        expanded == "video_file" ? 
+                                        expanded == "additional_proof" ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -708,14 +672,14 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">File</span>
-                                            <span className="text-mtn" >{request.additional_proof.file ? 
-                                                <span onClick={() => setFileViewer((request.additional_proof.file))} 
+                                            <span className="text-mtn" >{request['other-content-proof-of-ownership'].other_content_proof_of_ownership ? 
+                                                <span onClick={() => setFileViewer((request['other-content-proof-of-ownership'].other_content_proof_of_ownership                                                ))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                     </svg> Preview
                                                 </span>
-                                                : ""}
+                                                : "-"}
                                             </span>
                                         </p>
 
@@ -727,7 +691,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request.additional_proof.status == "approved" ? <Approved /> : request.additional_proof.status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "approved" ? <Approved /> : request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 

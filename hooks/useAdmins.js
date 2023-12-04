@@ -529,98 +529,98 @@ export default function useAdmins() {
 
   const getAllIP = async () => {
 
-    return {
-      ips: [
+    // return {
+    //   ips: [
 
-        {
-          "request_type": "VAS Clearance",
-          "request_id": "IP-bc7ba",
-          "created_at": "2023-11-21T02:57:33.000000Z",
-          "status": "pending",
-          "partner_uuid": "696b70df-f88e-4f19-9611-9c7438cdb445",
-          "uuid": "bc7ba4f2-451f-4951-a29c-44cc0967b5f9",
-          "id": 1,
-          "user_uuid": "c021a592-45cb-4252-8571-b65562c1f841",
-          "content_creator": {
-              "field": "I can see this clearly",
-              "status": null,
-          },
-          "authorization_letter": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
-              "status": null,
-          },
-          "probate_of_will": {
-            "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
-            "status": null,
-          },
-          "license_period": {
-            "start_date": "2023-11-23",
-            "end_date": "2024-11-23",
-            "status": null,
-          },
-          "video_file": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-21.pdf",      
-              "status": null,     
-          },
-          "means_of_id": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
-              "status": null,
-          },
-          "additional_proof": {
-            "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
-            "status": null,
-        },
-          "general_status": null,
-          "updated_at": "2023-11-21T20:40:20.000000Z"
-        },
+    //     {
+    //       "request_type": "VAS Clearance",
+    //       "request_id": "IP-bc7ba",
+    //       "created_at": "2023-11-21T02:57:33.000000Z",
+    //       "status": "pending",
+    //       "partner_uuid": "696b70df-f88e-4f19-9611-9c7438cdb445",
+    //       "uuid": "bc7ba4f2-451f-4951-a29c-44cc0967b5f9",
+    //       "id": 1,
+    //       "user_uuid": "c021a592-45cb-4252-8571-b65562c1f841",
+    //       "content_creator": {
+    //           "field": "I can see this clearly",
+    //           "status": null,
+    //       },
+    //       "authorization_letter": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
+    //           "status": null,
+    //       },
+    //       "probate_of_will": {
+    //         "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
+    //         "status": null,
+    //       },
+    //       "license_period": {
+    //         "start_date": "2023-11-23",
+    //         "end_date": "2024-11-23",
+    //         "status": null,
+    //       },
+    //       "video_file": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-21.pdf",      
+    //           "status": null,     
+    //       },
+    //       "means_of_id": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
+    //           "status": null,
+    //       },
+    //       "additional_proof": {
+    //         "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
+    //         "status": null,
+    //     },
+    //       "general_status": null,
+    //       "updated_at": "2023-11-21T20:40:20.000000Z"
+    //     },
 
-        {
-          "request_type": "VAS Clearance",
-          "request_id": "IP-bc1ba",
-          "created_at": "2023-11-21T02:57:33.000000Z",
-          "status": "pending",
-          "partner_uuid": "696b70df-f88e-4f19-9611-9c7438cdb445",
-          "uuid": "bc7ba4f2-451f-4951-a29c-45cc0092b5f9",
-          "id": 1,
-          "user_uuid": "c021a592-45cb-4252-8571-b65562c1f841",
-          "content_creator": {
-              "field": "I can see this clearly",
-              "status": null,
-          },
-          "probate_of_will": {
-            "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
-            "status": null,
-          },
-          "license_period": {
-            "start_date": "2023-11-23",
-            "end_date": "2024-11-23",
-            "status": null,
-          },
-          "authorization_letter": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
-              "status": null,
+    //     {
+    //       "request_type": "VAS Clearance",
+    //       "request_id": "IP-bc1ba",
+    //       "created_at": "2023-11-21T02:57:33.000000Z",
+    //       "status": "pending",
+    //       "partner_uuid": "696b70df-f88e-4f19-9611-9c7438cdb445",
+    //       "uuid": "bc7ba4f2-451f-4951-a29c-45cc0092b5f9",
+    //       "id": 1,
+    //       "user_uuid": "c021a592-45cb-4252-8571-b65562c1f841",
+    //       "content_creator": {
+    //           "field": "I can see this clearly",
+    //           "status": null,
+    //       },
+    //       "probate_of_will": {
+    //         "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
+    //         "status": null,
+    //       },
+    //       "license_period": {
+    //         "start_date": "2023-11-23",
+    //         "end_date": "2024-11-23",
+    //         "status": null,
+    //       },
+    //       "authorization_letter": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-05-56.pdf",
+    //           "status": null,
               
-          },
-          "video_file": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-21.pdf",  
-              "status": null,         
-          },
-          "means_of_id": {
-              "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
-              "status": null,
-          },
-          "general_status": null,
-          "updated_at": "2023-11-21T20:40:20.000000Z"
-        }
+    //       },
+    //       "video_file": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-21.pdf",  
+    //           "status": null,         
+    //       },
+    //       "means_of_id": {
+    //           "file": "http://10.1.44.25/dms/PARTNER_ONBOARDING/VBEC-2023-5067519_file_2023-11-21-06-43.pdf",
+    //           "status": null,
+    //       },
+    //       "general_status": null,
+    //       "updated_at": "2023-11-21T20:40:20.000000Z"
+    //     }
 
-      ]
-    }
+    //   ]
+    // }
     
     try {
         
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.GET_ALL_CHANGE_ORDER_REQUESTS}`,
+        `${RemoteEndpoints.GET_ALL_IP_REQUESTS}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -650,12 +650,12 @@ export default function useAdmins() {
 
       if (result?.success) {
 
-        const change_orders = result?.data;
+        const ip_requests = result?.data;
 
-        console.log("All change orders", change_orders);
+        console.log("All IP Requests", ip_requests);
 
         return {
-          change_orders
+          ip_requests
         };
       }
       return {
@@ -1172,12 +1172,12 @@ export default function useAdmins() {
     }
   }
 
-  const approveIP = async (data) => {
+  const approveIPDetail = async (data) => {
 
     try {
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.APPROVE_OR_REJECT_IP}`,
+        `${RemoteEndpoints.APPROVE_REJECT_IP_DETAILS}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1224,12 +1224,12 @@ export default function useAdmins() {
     }
   }
 
-  const rejectIP = async (data) => {
+  const rejectIPDetail = async (data) => {
 
     try {
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.APPROVE_OR_REJECT_IP}`,
+        `${RemoteEndpoints.APPROVE_REJECT_IP_DETAILS}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1249,7 +1249,7 @@ export default function useAdmins() {
       };
       const result = await response.json();
 
-      console.log("REJECTION RESPONSE", result);
+      console.log("APPROVAL RESPONSE", result);
 
       setProcessing(false);
       if (result?.success) {
@@ -1258,7 +1258,7 @@ export default function useAdmins() {
         console.log('Approval/rejection message', message);
 
         return {
-          message: "Rejected successfully"
+          message: "Approved successfully"
         };
       }
       return {
@@ -1489,12 +1489,12 @@ export default function useAdmins() {
     getAllChangeOrder,
     approveRevenueShare,
     approveChangeOrder,
-    approveIP,
     rejectChangeOrder,
-    rejectIP,
     getAllGreacePeriod,
     getAllLicenceRenewal,
     getAllIP,
     getAllPartnersShortCodes,
+    approveIPDetail,
+    rejectIPDetail
   };
 }

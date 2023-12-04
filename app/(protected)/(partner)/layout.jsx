@@ -14,7 +14,7 @@ import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
 function Layout({ children }) {
-  const { partner, getPartnerContractCurrentlyRunning, } = usePartners();
+  const { partner } = usePartners();
   const states = useStoreState((state) => state);
 
   const [open, setOpen] = useState(false);
@@ -37,11 +37,8 @@ function Layout({ children }) {
           },
         }
       );
-      if (
-        "license_validity_days" in licenseValidityRemainderResponse.data.data
-      ) {
-        const daysLeft =
-          licenseValidityRemainderResponse.data.data.license_validity_days;
+      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
+        const daysLeft =licenseValidityRemainderResponse.data.data.license_validity_days;
         if (daysLeft <= 60) {
           setLicenseValidityDaysLeft(daysLeft);
         }
@@ -51,9 +48,6 @@ function Layout({ children }) {
     }
   };
   ////////////end licenseValidityRemainder function////////////////////
-  
- 
-
   useEffect(() => {
     licenseValidityRemainder();
   }, [partner]);

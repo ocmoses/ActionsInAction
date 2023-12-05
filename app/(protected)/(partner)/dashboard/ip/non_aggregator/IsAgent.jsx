@@ -52,7 +52,7 @@ export default function IsAgent(){
     
     const [files, setFiles] = useState({
                                         authorization_letter: "",
-                                        authorisation_video: "",                                         
+                                        authorization_video: "",                                         
                                         agreement_letter_btw_content_and_vas_partner: "",
                                         agreement_letter_btw_content_and_agent: "",
                                         content_creator_id_front: "",
@@ -179,7 +179,7 @@ export default function IsAgent(){
             setError({error: "Please upload probate of will"}); 
             return false; 
         }
-        else if(files.authorisation_video == ""){
+        else if(files.authorization_video == ""){
             setError({error: "Please upload authorization video"});  
             return false; 
         }else if(files.agreement_letter_btw_content_and_vas_partner == ""){
@@ -372,7 +372,7 @@ export default function IsAgent(){
 
                         <FileInput
                             id="authorization_video"
-                            doc_id="authorisation_video_doc"
+                            doc_id="authorization_video_doc"
                             label="Authorization Video"
                             value={files.authorization_video}
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}

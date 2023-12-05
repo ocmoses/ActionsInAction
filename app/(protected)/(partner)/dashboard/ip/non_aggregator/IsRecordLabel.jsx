@@ -121,17 +121,20 @@ export default function IsRecordLabel(){
             setSubmitting(false);
             
             if (result?.success) {
-                
-                const message = result.data?.message;
-                
-                console.log('Submit all proofs message', message);
 
                 setSuccessMessage("Submitted successfully");
                 setSuccessToast(true);
+                
+                // const message = result.data?.message;
+                
+                // console.log('Submit all proofs message', message);
+
+                // setSuccessMessage("Submitted successfully");
+                // setSuccessToast(true);
        
-                return {
-                    message
-                };
+                // return {
+                //     message
+                // };
             }
             return {
             error:
@@ -498,6 +501,8 @@ export default function IsRecordLabel(){
 
 
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
         </>
     )
 

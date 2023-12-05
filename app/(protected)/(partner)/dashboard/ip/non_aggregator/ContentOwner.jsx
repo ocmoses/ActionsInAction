@@ -52,7 +52,7 @@ export default function ContentOwner(){
     
     const [files, setFiles] = useState({
                                         authorization_letter: "",
-                                        authorisation_video: "",                                         
+                                        authorization_video: "",                                         
                                         agreement_letter_btw_content_and_vas_partner: "",
                                         content_creator_id_front: "",
                                         other_content_proof_of_ownership: ""
@@ -60,9 +60,9 @@ export default function ContentOwner(){
 
     const [data, setData] = useState({
                                         partner_uuid: partner?.uuid,
-                                        physical_status_of_content_provider: null,
+                                        physical_status_of_content_provider: "null",
                                         license_start_date: "",
-                                        license_stop_date: ""
+                                        license_end_date: ""
                                     })
     
     const [submitting, setSubmitting] = useState(false);
@@ -174,7 +174,7 @@ export default function ContentOwner(){
         if(files.authorization_letter == ""){
             setError({error: "Please upload authorization letter"}); 
             return false;  
-        }else if(files.authorisation_video == ""){
+        }else if(files.authorization_video == ""){
             setError({error: "Please upload authorization video"});  
             return false; 
         }else if(files.agreement_letter_btw_content_and_vas_partner == ""){
@@ -186,7 +186,7 @@ export default function ContentOwner(){
         }else if(data.license_start_date == ""){
             setError({error: "Please enter start of license date"}); 
             return false;  
-        }else if(data.license_stop_date == ""){
+        }else if(data.license_end_date == ""){
             setError({error: "Please enter end of license date"}); 
             return false; 
         }
@@ -216,7 +216,7 @@ export default function ContentOwner(){
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Authorisation letter from content owner to MTN</h4>
-                            <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
+                            <p className="text-white/60 text-sm">Must be based on our authorization checklist.</p>
                             <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -244,7 +244,7 @@ export default function ContentOwner(){
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Licensing Period</h4>
-                            <p className="text-white/60 text-sm">Indicate the validity period granted by the content owner - as stated in the letter of authorisation.</p>                            
+                            <p className="text-white/60 text-sm">Indicate the validity period granted by the content owner - as stated in the letter of authorization.</p>                            
                         </div>
 
                         <div className="flex space-x-2 no-wrap items-center h-full">
@@ -262,9 +262,9 @@ export default function ContentOwner(){
                             />
 
                             <DatePicker
-                                id="license_stop_date"
+                                id="license_end_date"
                                 label="End date"
-                                value={data.license_stop_date}
+                                value={data.license_end_date}
                                 onChange={(e) => handleFormChange(e)}
                                 onBlur={(e) => handleFormChange(e)}
                                 errors={errors}
@@ -283,7 +283,7 @@ export default function ContentOwner(){
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Video showing signing</h4>
-                            <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
+                            <p className="text-white/60 text-sm">Must capture the content owner and the authorization letter being signed.</p> 
                             <div className="flex space-x-2 items-base">
                                 <span className="text-xs text-mtn">See video sample</span>
                             </div>                           
@@ -291,7 +291,7 @@ export default function ContentOwner(){
 
                         <FileInput
                             id="authorization_video"
-                            doc_id="authorisation_video_doc"
+                            doc_id="authorization_video_doc"
                             label="Authorization Video"
                             value={files.authorization_video}
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}

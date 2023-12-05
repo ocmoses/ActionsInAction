@@ -25,6 +25,7 @@ export default function GracePeriodAlert({
   licenseRenewalStatus,
   openGracePeriodForm,
   popUpLicenseRenewalForm,
+  closeAlert,
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
@@ -124,12 +125,14 @@ export default function GracePeriodAlert({
                               )}
                             </div>
                             <div className="flex gap-2 flex-wrap">
-                              <button
-                                onClick={() => openGracePeriodForm()}
-                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                              >
-                                Extend Expiration
-                              </button>
+                            {licenseValidityDaysLeft > 0 && (
+                                <button
+                                  onClick={() => openGracePeriodForm()}
+                                  className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                >
+                                  Extend Expiration
+                                </button>
+                              )}
                               <button
                                 className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
                                 onClick={() => popUpLicenseRenewalForm()}
@@ -175,7 +178,9 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button 
+                          onClick={() => closeAlert()}
+                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
                             Got It!
                           </button>
                           <button
@@ -230,7 +235,7 @@ export default function GracePeriodAlert({
                               ) : (
                                 <p>
                                   <span className="text-white">
-                                    Your license has expired. {licenseValidityDaysLeft}
+                                    Your license has expired.
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
@@ -292,7 +297,9 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button 
+                          onClick={() => closeAlert()}
+                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
                             Got It!
                           </button>
                         </div>

@@ -255,7 +255,7 @@ export default function IsAgent(){
                                             </svg>
                                         }  
                                         <h4 className="text-white font-mtn text-sm">Deceased</h4>
-                                        <p className="text-white/60 font-mtn text-sm">Content creator is alive and active</p>
+                                        <p className="text-white/60 font-mtn text-sm">Content creator is dead</p>
                             </div>
 
                         </div>

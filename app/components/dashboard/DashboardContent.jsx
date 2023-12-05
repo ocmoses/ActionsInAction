@@ -682,14 +682,13 @@ export default function GetStarted({ type }) {
                       )}
                     </PopUp>
                   )}
-
+                  
                   <GracePeriodAlert
                     gracePeriodStatus={gracePeriodStatus}
                     licenseRenewalStatus={licenseRenewalStatus}
                     openGracePeriodForm={() => setPopUpGracePeriodForm(true)}
-                    popUpLicenseRenewalForm={() =>
-                      setPopUpLicenseRenewalForm(true)
-                    }
+                    popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
+                    closeAlert={() => setShowLicenseRenewalAlert(false)}
                   />
                 </>
               )}

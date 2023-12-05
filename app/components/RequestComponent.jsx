@@ -46,6 +46,18 @@ export default function ShortCodeAlert({displayShortCodeAlert}) {
 
 
 
+function actionDate(targetDate) {
+  const originalDate = new Date(targetDate);
+  const formattedDate = originalDate.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+  return formattedDate;
+}
 
 
 export const ShortCodeFlyOut = ({

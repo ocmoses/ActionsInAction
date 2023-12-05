@@ -580,9 +580,6 @@ export const LicenseValidityTopAlert = ({
   const [errorMessage, setErrorMessage] = useState(null);
   const [validity, setValidity] = useState(false);
 
-  useEffect(() => {
-    checkPartnerLicenseExpiration();
-  }, [licenseValidityDaysLeft]);
 
   ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
   const checkPartnerLicenseExpiration = async () => {
@@ -607,6 +604,11 @@ export const LicenseValidityTopAlert = ({
       setErrorMessage("Something went wrong while trying to license validity");
     }
   };
+
+    useEffect(() => {
+    checkPartnerLicenseExpiration();
+  }, [licenseValidityDaysLeft]);
+
   return (
     <>
       {licenseValidityDaysLeft <= 60 && (
@@ -639,7 +641,7 @@ export const LicenseValidityTopAlert = ({
                       Your License expires in {licenseValidityDaysLeft} days.
                     </span>
                   ) : (
-                    <span>Your contract has expired</span>
+                    <span>Your License has expired</span>
                   )}{" "}
                   <span
                     className="text-white/70 cursor-pointer hover:underline hover:text-white/90"

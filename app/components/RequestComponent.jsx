@@ -120,6 +120,30 @@ export const ShortCodeFlyOut = ({
     setErrorMessage(null);
   };
 
+
+
+  const [approvalStatusList, setApprovalStatusList] = useState([]);
+
+  const approvalStatuses = () => {
+    const shortcodes = selectedRequest.short_codes;
+    const notApprovedShortcodes = selectedRequest.shortcodes_not_approved;
+  
+    const statusList = shortcodes.map(code => {
+      const status = notApprovedShortcodes.includes(code) ? 'Not_Approved' : 'Approved';
+      return { code, status };
+    });
+  
+    return statusList;
+  };
+  
+  useEffect(() => {
+    console.log("approvalStatuses is", approvalStatuses());
+    setApprovalStatusList(approvalStatuses());
+  }, [selectedRequest]);
+
+
+  
+
   return (
     <>
       <main
@@ -199,7 +223,7 @@ export const ShortCodeFlyOut = ({
                             </p>
                           )}
 
-          {selectedRequest.short_codes.map((code, index) => (
+          {approvalStatusList.map((code, index) => (
 
             <div className="flex flex-row gap-3" key={index}>
               <div className="h-[50px] w-[50px] bg-white/10 rounded-[5px] flex justify-center items-center">
@@ -231,12 +255,12 @@ export const ShortCodeFlyOut = ({
                     </svg>
                     </div>
                     <p className="text-white text-[10px]">
-                      {code}
+                      {code.code}
                     </p>
                   </div>
                   
                 </div>
-                {selectedRequest.status != "approved" && (
+                {code.status != "Approved" ? (
                         <div className="flex flex-row gap-3 w-[100%]">
                           {sendAction ? (
                             <TailSpinPreloader
@@ -248,7 +272,7 @@ export const ShortCodeFlyOut = ({
                             <button
                               className="flex text-[12px] leading-[20px] gap-2 text-white hover:text-gray-400"
                               title="Approve"
-                              onClick={() => _approve(code)}
+                              onClick={() => _approve(code.code)}
                               
                             >
                               <svg
@@ -267,17 +291,7 @@ export const ShortCodeFlyOut = ({
                             </button>
                           )}
                         </div>
-                  )}
-                
-
-   
-              </div>
-            </div>
-          ))} 
-
-
-
-                {selectedRequest.status === "approved" && (
+                  ):(
                   <div className="flex flex-row gap-3 w-[100%]">
                     <p className="text-[10px] text-gray-400 w-[100%]">
                       <span className="text-[#2C9958]">
@@ -301,7 +315,16 @@ export const ShortCodeFlyOut = ({
                       on {actionDate(selectedRequest.approved_on)}
                     </p>
                   </div>
-                )}
+                  )}
+                
+
+   
+              </div>
+            </div>
+          ))} 
+
+
+
 
               
           </div>

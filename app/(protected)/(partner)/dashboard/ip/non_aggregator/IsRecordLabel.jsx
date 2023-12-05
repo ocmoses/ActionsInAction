@@ -52,7 +52,7 @@ export default function IsRecordLabel(){
     
     const [files, setFiles] = useState({
                                         authorization_letter: "",
-                                        authorisation_video: "",                                         
+                                        authorization_video: "",                                         
                                         agreement_letter_btw_content_and_vas_partner: "",
                                         agreement_letter_btw_record_label_and_vas_partner: "",
                                         agreement_letter_btw_content_and_music_composer: "",
@@ -65,7 +65,7 @@ export default function IsRecordLabel(){
                                         partner_uuid: partner?.uuid,
                                         physical_status_of_content_provider: ownerIsAlive ? 'isAlive' : 'isDead',
                                         license_start_date: "",
-                                        license_stop_date: ""
+                                        license_end_date: ""
                                     })
     
     const [submitting, setSubmitting] = useState(false);
@@ -176,7 +176,7 @@ export default function IsRecordLabel(){
             setError({error: "Please upload authorization letter"}); 
             return false;  
         }
-        else if(files.authorisation_video == ""){
+        else if(files.authorization_video == ""){
             setError({error: "Please upload authorization video"});  
             return false; 
         }else if(files.agreement_letter_btw_content_and_vas_partner == ""){
@@ -197,7 +197,7 @@ export default function IsRecordLabel(){
         }else if(data.license_start_date == ""){
             setError({error: "Please enter start of license date"}); 
             return false;  
-        }else if(data.license_stop_date == ""){
+        }else if(data.license_end_date == ""){
             setError({error: "Please enter end of license date"}); 
             return false; 
         }        
@@ -273,9 +273,9 @@ export default function IsRecordLabel(){
                             />
 
                             <DatePicker
-                                id="license_stop_date"
+                                id="license_end_date"
                                 label="End date"
-                                value={data.license_stop_date}
+                                value={data.license_end_date}
                                 onChange={(e) => handleFormChange(e)}
                                 onBlur={(e) => handleFormChange(e)}
                                 errors={errors}
@@ -302,7 +302,7 @@ export default function IsRecordLabel(){
 
                         <FileInput
                             id="authorization_video"
-                            doc_id="authorisation_video_doc"
+                            doc_id="authorization_video_doc"
                             label="Authorization Video"
                             value={files.authorization_video}
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}

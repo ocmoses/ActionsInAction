@@ -62,7 +62,7 @@ export default function IsAgent(){
                                         partner_uuid: partner?.uuid,
                                         physical_status_of_content_provider: null,
                                         license_start_date: "",
-                                        license_stop_date: ""
+                                        license_end_date: ""
                                     })
     
     const [submitting, setSubmitting] = useState(false);

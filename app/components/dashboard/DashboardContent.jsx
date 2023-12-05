@@ -682,7 +682,6 @@ export default function GetStarted({ type }) {
                       )}
                     </PopUp>
                   )}
-
                   <GracePeriodAlert
                     gracePeriodStatus={gracePeriodStatus}
                     licenseRenewalStatus={licenseRenewalStatus}

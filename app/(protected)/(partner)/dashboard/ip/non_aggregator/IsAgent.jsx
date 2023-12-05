@@ -120,13 +120,16 @@ export default function IsAgent(){
             setSubmitting(false);
             
             if (result?.success) {
-                
-                const message = result.data?.message;
-                
-                console.log('Submit all proofs message', message);
 
                 setSuccessMessage("Submitted successfully");
                 setSuccessToast(true);
+                
+                // const message = result.data?.message;
+                
+                // console.log('Submit all proofs message', message);
+
+                // setSuccessMessage("Submitted successfully");
+                // setSuccessToast(true);
        
                 return {
                     message

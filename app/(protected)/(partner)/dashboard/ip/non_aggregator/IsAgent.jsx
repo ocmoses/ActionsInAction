@@ -541,12 +541,12 @@ export default function IsAgent(){
                         <TailSpinPreloader width={40} height={40} fill="#efb703" />
                     </div>
                 }
-                </div>
-
-                
-
+                </div>                
 
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
+            
         </>
     )
 

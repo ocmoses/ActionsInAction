@@ -29,6 +29,9 @@ import CallToAction from "./partners/CallToAction";
 import { user_statuses, questionnaire_pending, ip_pending } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
+import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
+import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -102,6 +105,7 @@ export default function GetStarted({ type }) {
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
   const [IPAlert, setIPAlert] = useState(false);
+  const [changeOrderAlert, setChangeOrderAlert] = useState(true);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
@@ -603,6 +607,11 @@ export default function GetStarted({ type }) {
                 // And you have not submitted the IP details
 
                 <IPCard />
+              }
+
+              {
+                changeOrderAlert && 
+                <ChangeOrderRejection />
               }
 
               {/* //================this is the popup==============================================================================================================*/}

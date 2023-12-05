@@ -52,7 +52,7 @@ export default function IsAgent(){
     
     const [files, setFiles] = useState({
                                         authorization_letter: "",
-                                        authorisation_video: "",                                         
+                                        authorization_video: "",                                         
                                         agreement_letter_btw_content_and_vas_partner: "",
                                         agreement_letter_btw_content_and_agent: "",
                                         content_creator_id_front: "",
@@ -120,17 +120,20 @@ export default function IsAgent(){
             setSubmitting(false);
             
             if (result?.success) {
-                
-                const message = result.data?.message;
-                
-                console.log('Submit all proofs message', message);
 
                 setSuccessMessage("Submitted successfully");
                 setSuccessToast(true);
+                
+                // const message = result.data?.message;
+                
+                // console.log('Submit all proofs message', message);
+
+                // setSuccessMessage("Submitted successfully");
+                // setSuccessToast(true);
        
-                return {
-                    message
-                };
+                // return {
+                //     message
+                // };
             }
             return {
             error:
@@ -179,7 +182,7 @@ export default function IsAgent(){
             setError({error: "Please upload probate of will"}); 
             return false; 
         }
-        else if(files.authorisation_video == ""){
+        else if(files.authorization_video == ""){
             setError({error: "Please upload authorization video"});  
             return false; 
         }else if(files.agreement_letter_btw_content_and_vas_partner == ""){
@@ -255,7 +258,7 @@ export default function IsAgent(){
                                             </svg>
                                         }  
                                         <h4 className="text-white font-mtn text-sm">Deceased</h4>
-                                        <p className="text-white/60 font-mtn text-sm">Content creator is alive and active</p>
+                                        <p className="text-white/60 font-mtn text-sm">Content creator is dead</p>
                             </div>
 
                         </div>
@@ -372,7 +375,7 @@ export default function IsAgent(){
 
                         <FileInput
                             id="authorization_video"
-                            doc_id="authorisation_video_doc"
+                            doc_id="authorization_video_doc"
                             label="Authorization Video"
                             value={files.authorization_video}
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}

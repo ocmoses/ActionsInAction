@@ -22,9 +22,6 @@ export default function RequestChangesModal({contract_id}){
         getChangeOrderStatus
     } = usePartners();
 
-    useEffect(() => {
-        getChangeOrderStatus().then(resp => resp.error ? console.log({error: resp.error}) : console.log("CHANGE ORDER STATUS", resp.statuses) );
-    }, []);
     
     
     return (requestChangesModal && 

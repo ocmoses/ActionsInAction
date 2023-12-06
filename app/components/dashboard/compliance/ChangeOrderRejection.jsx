@@ -1,6 +1,41 @@
-
+import usePartners from "@/hooks/usePartners";
+import {useEffect} from "react";
 
 export default function ChangeOrderRejection({issue}){
+
+    const {
+        getChangeOrderStatus
+    } = usePartners();
+
+    const fields = [
+                        ["add_new_service", "status_ANS"],
+                        ["add_shortcode", "status_ASH"]
+                        ["add_vas_license", "status_AVL"],
+                        ["change_address", "status_CAD"],
+                        ["change_shortcode", "status_CSH"]
+                    ];
+
+    const process = (statuses) => {
+
+        let rejected = [];
+
+        for(const aStatus of statuses){
+            for(const field in fields){
+                if(aStatus == field[0] && statuses[aStatus][field[1]] == "rejected"){
+                    rejected.push(field[0]);
+                    break;
+                }
+            }
+        }
+
+        return rejected.join(",");
+
+    }
+
+    useEffect(() => {
+        getChangeOrderStatus()
+            .then(resp => resp.error ? console.log({error: resp.error}) : process(resp.statuses) );
+    }, []);
 
     return (
         <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">

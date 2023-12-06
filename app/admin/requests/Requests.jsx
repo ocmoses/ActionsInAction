@@ -1080,7 +1080,6 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
-            successAction={successAction}
           />
         )}
 

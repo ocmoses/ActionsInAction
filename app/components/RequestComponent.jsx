@@ -6,8 +6,8 @@ import { useStoreState } from "easy-peasy";
 import { apikey } from "@/app/modules/constants";
 import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import useApp from "@/hooks/useApp";
 import Success from "@/app/components/toasts/Success";
+import useAdmins from "@/hooks/useAdmins";
 
 
 export default function ShortCodeAlert({displayShortCodeAlert}) {
@@ -45,7 +45,7 @@ export default function ShortCodeAlert({displayShortCodeAlert}) {
 }
 
 
-
+/////////////////////////////////////////////////////////////////////////////////////
 function actionDate(targetDate) {
   const originalDate = new Date(targetDate);
   const formattedDate = originalDate.toLocaleString("en-US", {
@@ -58,36 +58,81 @@ function actionDate(targetDate) {
   });
   return formattedDate;
 }
-
+/////////////////////////////////////////////////////////////////////////////////////
 
 export const ShortCodeFlyOut = ({
   closeShortCodeFlyOut,
-  selectedRequest,
-  successAction
+  selectedRequest
 }) => {
 
+  const { getSinglePartnerShortcodes } = useAdmins();
   const states = useStoreState((state) => state);
-
   const [tab, setTab] = useState({
     overview: true,
     activity: false,
   });
 
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [sendAction, setSendAction] = useState(false);
+  const [singlePartnerShortcode, setSinglePartnerShortcode] = useState();
+  const [approvalStatusList, setApprovalStatusList] = useState([]);
+  
+  const get_single_partner_shortcode = async () => {
+    try {
+      let partner_shortcode_response = await getSinglePartnerShortcodes(selectedRequest.partner_uuid);
+  
+      if (partner_shortcode_response && partner_shortcode_response.partnershortcodes) {
+        const foundEntry = partner_shortcode_response.partnershortcodes.find(
+          entry => entry.request_id === selectedRequest.request_id
+        );
+  
+        if (foundEntry) {
+          setSinglePartnerShortcode(foundEntry);
+        } else {
+          console.log("No entry found with this request_id");
+        }
+      } else {
+        console.log("No data available in the response");
+      }
+    } catch (error) {
+      console.error("Error fetching single partner shortcode:", error);
+    } 
+  };
 
-  const [successMessage, setSuccessMessage] = useState("");
-  const [successToast, setSuccessToast] = useState(false);
+  useEffect(() => {
+    get_single_partner_shortcode();
+  }, [selectedRequest]); // Only run the effect when selectedRequest changes
+  
+  const approvalStatuses = (singlePartnerShortcode) => {
+    const shortcodes = singlePartnerShortcode.shortcodes;
+    const notApprovedShortcodes = singlePartnerShortcode.shortcodes_not_approved;
+    const statusList = shortcodes.map(code => {
+      const status = notApprovedShortcodes.includes(code) ? 'Not_Approved' : 'Approved';
+      return { code, status };
+    });
+    return statusList;
+  };
+  
+  useEffect(() => {
+    if (singlePartnerShortcode) {
+      setApprovalStatusList(approvalStatuses(singlePartnerShortcode));
+    }
+  }, [singlePartnerShortcode]);
 
   let [formData, setFormData] = useState({
     partner_uuid: selectedRequest.partner_uuid,
     shortcode: null,
     status: "",
   });
+  let [success, setSuccess] = useState({
+    successMessage: "",
+    successToast: false,
+  });
+
+  const [sendAction, setSendAction] = useState(false);
+  const [eachCode, setEachCode] = useState(null);
   
   const _approve = (code) => {
-    clearError();
+    setEachCode(code);
     formData.shortcode = code;
     formData.status = "approved";
     _action();
@@ -106,18 +151,21 @@ export const ShortCodeFlyOut = ({
           },
         }
       );
-      console.log("response", response)
-      setSuccessMessage(response.data.data.message);
-      setSuccessToast(true);
-    } catch (err) {
-      console.log("err", err)
-      setSendAction(false);
-      setErrorMessage(err.response.data.data.message);
-    }
-  };
+      success.successMessage=response.data.data.message
+      success.successToast=true;
+      get_single_partner_shortcode();
+      setTimeout(() => {
+        success.successToast=false;
+      }, 3000);
 
-  const clearError = () => {
-    setErrorMessage(null);
+    } catch (err) {
+      setSendAction(false);
+      success.successMessage=err.response.data.data.message
+      success.successToast=true;
+      setTimeout(() => {
+        success.successToast=false;
+      }, 3000);
+    }
   };
 
   return (
@@ -193,13 +241,9 @@ export const ShortCodeFlyOut = ({
           </div>
 
           <div className="p-5 pb-[200px] flex flex-col gap-10 h-[100%] w-[100%] overflow-auto">
-                          {errorMessage && (
-                            <p className="text-red-500 text-sm font-italic">
-                              {errorMessage}
-                            </p>
-                          )}
 
-          {selectedRequest.short_codes.map((code, index) => (
+
+          {approvalStatusList.map((code, index) => (
 
             <div className="flex flex-row gap-3" key={index}>
               <div className="h-[50px] w-[50px] bg-white/10 rounded-[5px] flex justify-center items-center">
@@ -231,14 +275,14 @@ export const ShortCodeFlyOut = ({
                     </svg>
                     </div>
                     <p className="text-white text-[10px]">
-                      {code}
+                      {code.code}
                     </p>
                   </div>
                   
                 </div>
-                {selectedRequest.status != "approved" && (
+                {code.status != "Approved" ? (
                         <div className="flex flex-row gap-3 w-[100%]">
-                          {sendAction ? (
+                          {sendAction && eachCode === code.code ? (
                             <TailSpinPreloader
                               width={40}
                               height={40}
@@ -248,7 +292,7 @@ export const ShortCodeFlyOut = ({
                             <button
                               className="flex text-[12px] leading-[20px] gap-2 text-white hover:text-gray-400"
                               title="Approve"
-                              onClick={() => _approve(code)}
+                              onClick={() => _approve(code.code)}
                               
                             >
                               <svg
@@ -267,17 +311,7 @@ export const ShortCodeFlyOut = ({
                             </button>
                           )}
                         </div>
-                  )}
-                
-
-   
-              </div>
-            </div>
-          ))} 
-
-
-
-                {selectedRequest.status === "approved" && (
+                  ):(
                   <div className="flex flex-row gap-3 w-[100%]">
                     <p className="text-[10px] text-gray-400 w-[100%]">
                       <span className="text-[#2C9958]">
@@ -301,7 +335,16 @@ export const ShortCodeFlyOut = ({
                       on {actionDate(selectedRequest.approved_on)}
                     </p>
                   </div>
-                )}
+                  )}
+                
+
+   
+              </div>
+            </div>
+          ))} 
+
+
+
 
               
           </div>
@@ -310,9 +353,8 @@ export const ShortCodeFlyOut = ({
 
 
       <Success
-        message={successMessage}
-        visible={successToast}
-        action={successAction}
+        message={success.successMessage}
+        visible={success.successToast}
       />    
     </>
   );

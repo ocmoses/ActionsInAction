@@ -55,7 +55,7 @@ export default function ContractStatus({dynamicData}) {
         }
     }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
         if(!contractId && user.role == 'superAdmin' && 
-            userStatus == user_statuses.APPROVED && !selectedAllRequiredSignatories){
+            userStatus == user_statuses.APPROVED){
             return (<SelectServices />);
         }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){

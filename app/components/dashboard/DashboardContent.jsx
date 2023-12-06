@@ -609,10 +609,10 @@ export default function GetStarted({ type }) {
                 <IPCard />
               }
 
-              {/* {
+              {
                 changeOrderAlert && 
                 <ChangeOrderRejection />
-              } */}
+              }
 
               {/* //================this is the popup==============================================================================================================*/}
 

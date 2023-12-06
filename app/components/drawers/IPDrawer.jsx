@@ -689,7 +689,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['means-of-identification'].agent_id_front == "approved" ? <Approved /> : request['means-of-identification'].agent_id_front == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['means-of-identification'].means_of_id_status == "approved" ? <Approved /> : request['means-of-identification'].means_of_id_status == "rejected" ? <Declined /> : <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -743,15 +743,15 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
-                                                <span className="text-white/60 ">Agent ID</span>
-                                                <span className="text-mtn" >{request['means-of-identification'].agent_id_front ? 
-                                                    <span onClick={() => setFileViewer((request['means-of-identification'].agent_id_front))} 
+                                                <span className="text-white/60 ">Probabte of Will</span>
+                                                <span className="text-mtn" >{request['probate-of-will'].probate_of_will ? 
+                                                    <span onClick={() => setFileViewer((request['probate-of-will'].probate_of_will))} 
                                                             className="text-xs flex space-x-1 items-end cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                         </svg> Preview
                                                     </span>
-                                                    : request['means-of-identification'].agent_id_front ? request['means-of-identification'].agent_id_front : "-"}
+                                                    : request['probate-of-will'].probate_of_will ? request['probate-of-will'].probate_of_will : "-"}
                                                 </span>
                                             </p>
 
@@ -763,7 +763,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['means-of-identification'].agent_id_front == "approved" ? <Approved /> : request['means-of-identification'].agent_id_front == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['probate-of-will'].probate_of_will_status == "approved" ? <Approved /> : request['probate-of-will'].probate_of_will_status == "rejected" ? <Declined /> : <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -835,7 +835,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -907,7 +907,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_btw_content_and_agent == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_btw_content_and_agent == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -980,7 +980,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_btw_content_and_record_label == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_btw_content_and_record_label == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -1053,7 +1053,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_btw_content_and_music_composer == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_btw_content_and_music_composer == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -1268,7 +1268,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </>
                                 )}
                                 {approving && (
-                                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                                    <TailSpinPreloader width={40} height={40} fill="#efb703" />
                                 )}
                             </div>
                         </div>

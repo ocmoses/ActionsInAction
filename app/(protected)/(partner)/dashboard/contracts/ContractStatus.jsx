@@ -118,7 +118,7 @@ export default function ContractStatus({dynamicData}) {
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
                     onclick={() => setShowContractCategoryModal(true)}
-                    button={'Sign your contract'}
+                    button={contractStatus == contract_statuses.PROCESSING ? 'Sign your contract' : 'Sign an Addendum'}
                     color="text-gray-200"
                     desccolor="text-[#999999]"
                     bg='bg-white/10'

@@ -246,15 +246,16 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
                                 </div>
                                 <div className="flex border border-white/20">
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">dOlly Media Services</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">30%</span>
-                                    <span className="text-white/60 w-1/3 p-2">70%</span>
+                                    
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types[0]}</span>
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
+                                    <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
                                 </div>
-                                <div className="flex border border-white/20">
+                                {/* <div className="flex border border-white/20">
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">Gold Standard VAS services</span>
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">40%</span>
                                     <span className="text-white/60 w-1/3 p-2">60%</span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 

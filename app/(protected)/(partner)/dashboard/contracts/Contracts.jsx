@@ -38,7 +38,6 @@ import ContractStatus from "./ContractStatus";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
-
 export default function Contracts() {
 
   const {
@@ -61,6 +60,7 @@ export default function Contracts() {
     signingWitness,
     checkQuestionnaireStatus
   } = useContext(ContractContext);
+
 
   const {getAllPartnerRoles} = useRoles();
 
@@ -107,6 +107,8 @@ export default function Contracts() {
 
   // console.log("usePartners() from compliance", usePartners());
   // console.log("useUsers() from compliance", useUsers());
+
+  console.log("USER ROLE FROM CONTRACTS", user.role);
   
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
   const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
@@ -188,8 +190,10 @@ export default function Contracts() {
        
   }, []);
 
-  useEffect(() => {      
-    checkQuestionnaireStatus();
+  useEffect(() => {    
+    if(user.role == "superAdmin"){
+      checkQuestionnaireStatus();
+    }  
   }, []);
 
   return (
@@ -207,7 +211,7 @@ export default function Contracts() {
           </div>
 
           {/* Only when we have not selected all signees */}
-          {questionnaireAlert && 
+          {user.role == "superAdmin" && questionnaireAlert && 
             (<>
               <div className="w-full md:max-w-6xl p-4 px-6 rounded-lg border-1 border-white/10 bg-white/5 flex space-x-4 mt-4">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" className="w-6 h-6">
@@ -231,8 +235,13 @@ export default function Contracts() {
                                     rejectionReason={rejectionReason} />)
               }
             </>)
-          }{
-            !questionnaireAlert && 
+          }
+          {
+            user.role == "superAdmin" && !questionnaireAlert && 
+            <ContractStatus dynamicData={dynamicData} />
+          }
+          {
+            user.role != "superAdmin" && 
             <ContractStatus dynamicData={dynamicData} />
           }
 

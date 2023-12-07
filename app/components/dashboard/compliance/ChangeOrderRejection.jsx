@@ -1,7 +1,11 @@
 import usePartners from "@/hooks/usePartners";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { useRouter } from "next/navigation";
 
-export default function ChangeOrderRejection({issue}){
+export default function ChangeOrderRejection({contract_id}){
+
+    const router = useRouter();
 
     const {
         getChangeOrderStatus
@@ -9,35 +13,54 @@ export default function ChangeOrderRejection({issue}){
 
     const fields = [
                         ["add_new_service", "status_ANS"],
-                        ["add_shortcode", "status_ASH"]
+                        ["add_shortcode", "status_ASH"],
                         ["add_vas_license", "status_AVL"],
                         ["change_address", "status_CAD"],
                         ["change_shortcode", "status_CSH"]
-                    ];
+                   ];
+
+                   
+    const [rejected, setRejected] = useState([]);
+
+    const [showAlert, setShowAlert] = useState(false);
 
     const process = (statuses) => {
 
-        let rejected = [];
-
-        for(const aStatus of statuses){
-            for(const field in fields){
-                if(aStatus == field[0] && statuses[aStatus][field[1]] == "rejected"){
-                    rejected.push(field[0]);
+        for(const aStatus in statuses){
+            for(let i = 0; i < fields.length; i++){
+                if(aStatus == fields[i][0] && statuses[aStatus][fields[i][1]] == "rejected"){
+                    setRejected([...rejected, fields[i][0]]);
                     break;
                 }
+                
             }
         }
 
-        return rejected.join(",");
+        return setRejected(rejected.join(","));
 
     }
 
+
     useEffect(() => {
         getChangeOrderStatus()
-            .then(resp => resp.error ? console.log({error: resp.error}) : process(resp.statuses) );
+            .then(resp => {
+
+                if(resp.error){
+                    console.log({error: resp.error})
+                }else{
+
+                    if(process(resp.statuses) == ""){
+                        setShowAlert(false);
+                    }else{
+                        setShowAlert(true);
+                    }
+
+                }
+
+            });
     }, []);
 
-    return (
+    return setShowAlert && (
         <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
             <div className="p-[24px] ">
                 <div className="flex flex-row gap-3">
@@ -70,7 +93,7 @@ export default function ChangeOrderRejection({issue}){
                         </div>
                         <div className="flex gap-2 flex-wrap">
                             <button
-                                onClick={() => {}}
+                                onClick={() => router.push(`/dashboard/settings/company/contracts/${contract_id}/${rejected}`)}
                                 className="h-[40px] w-[150px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30 hover:bg-white/10"
                             >
                                 Resolve now

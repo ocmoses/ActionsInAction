@@ -158,7 +158,7 @@ export default function IsRecordLabel(){
         
         let formData = new FormData();
         formData.append("file_title", file_title);
-        formData.append("licenser_type", "agent_and_content");
+        formData.append("licenser_type", "record_label");
         formData.append("partner_uuid", partner?.uuid);
         formData.append("partner_category_uuid", partner?.categories[0]?.category_uuid);
         formData.append("agg_plus_vas_requirement", "no");

@@ -6,6 +6,7 @@ import AddVASLicense from "./tabs/AddVASLicense";
 import ChangeAddress from "./tabs/ChangeAddress";
 import AddService from "./tabs/AddService";
 import Review from "./tabs/Review";
+import usePartners from "@/hooks/usePartners";
 
 
 export default function RequestChangesModal({contract_id}){
@@ -16,6 +17,11 @@ export default function RequestChangesModal({contract_id}){
         currentTab, 
         setCurrentTab
     } = useContext(ContractSettingsContext);
+
+    const {
+        getChangeOrderStatus
+    } = usePartners();
+
     
     
     return (requestChangesModal && 

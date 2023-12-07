@@ -21,7 +21,8 @@ export default function ContractStatus({dynamicData}) {
       setShowContractCategoryModal,
       getContractBeingSigned,
       annexuresLink, 
-      setAnnexuresLink
+      setAnnexuresLink,
+      isASignatory
     } = useContext(ContractContext);
 
     const [contractId, setContractId] = useState(null);
@@ -30,6 +31,8 @@ export default function ContractStatus({dynamicData}) {
     const {partner} = usePartners();
 
     useEffect(() => {
+
+        console.log("CONTRACT BEING SIGNED NOW");
 
         getContractBeingSigned()
             .then(resp => {
@@ -45,7 +48,11 @@ export default function ContractStatus({dynamicData}) {
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-            return  (<Renew />);
+                if(selectedAllRequiredSignatories && !isASignatory){
+                   return (<div></div>);
+                } else{
+                    return  (<Renew />);
+                }           
         }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){
                 return (<StartSigning />);
@@ -56,7 +63,11 @@ export default function ContractStatus({dynamicData}) {
     }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-            return (<SelectServices />);
+            if(selectedAllRequiredSignatories && !isASignatory){
+                return (<div></div>);
+            } else{
+                return  (<SelectServices />);
+            }   
         }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){
                 return (<StartSigning />);
@@ -156,10 +167,10 @@ export default function ContractStatus({dynamicData}) {
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
                     onclick={() => {
-                        if(user.role != "superAdmin"){
-                            window.location = "/dashboard/contracts/execution/" + contractId;
-                        }else{
+                        if(user.role == "superAdmin" || user.role == "delegate"){
                             setAgreementModal(true);
+                        }else{
+                            window.location = "/dashboard/contracts/execution/" + contractId;
                         }
                         
                     }}

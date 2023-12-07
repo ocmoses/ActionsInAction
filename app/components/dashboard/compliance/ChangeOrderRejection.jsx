@@ -2,8 +2,9 @@ import usePartners from "@/hooks/usePartners";
 import {useEffect, useState} from "react";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
+import useUsers from "@/hooks/useUsers";
 
-export default function ChangeOrderRejection({contract_id}){
+export default function ChangeOrderRejection(){
 
     const router = useRouter();
 
@@ -19,6 +20,9 @@ export default function ChangeOrderRejection({contract_id}){
                         ["change_shortcode", "status_CSH"]
                    ];
 
+    const {user} = useUsers();
+
+    const [contractId, setContractId] = useState(null);
                    
     const [rejected, setRejected] = useState([]);
 
@@ -29,14 +33,22 @@ export default function ChangeOrderRejection({contract_id}){
         for(const aStatus in statuses){
             for(let i = 0; i < fields.length; i++){
                 if(aStatus == fields[i][0] && statuses[aStatus][fields[i][1]] == "rejected"){
-                    setRejected([...rejected, fields[i][0]]);
+                    if(!rejected.includes(fields[i][0])){
+                        rejected.push(fields[i][0]);
+                    }
                     break;
                 }
                 
             }
         }
+        
+        setRejected(rejected.join(","));
 
-        return setRejected(rejected.join(","));
+        if(rejected.join(",") == ""){
+            setShowAlert(false);
+        }else{
+            setShowAlert(true);
+        }
 
     }
 
@@ -46,21 +58,19 @@ export default function ChangeOrderRejection({contract_id}){
             .then(resp => {
 
                 if(resp.error){
-                    console.log({error: resp.error})
+                    console.log("ERROR", {error: resp.error});
                 }else{
 
-                    if(process(resp.statuses) == ""){
-                        setShowAlert(false);
-                    }else{
-                        setShowAlert(true);
-                    }
+                    setContractId(resp.statuses.contract_id);
+
+                    process(resp.statuses);
 
                 }
 
             });
     }, []);
 
-    return setShowAlert && (
+    return showAlert && user.role == "superAdmin" && (
         <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
             <div className="p-[24px] ">
                 <div className="flex flex-row gap-3">
@@ -93,7 +103,7 @@ export default function ChangeOrderRejection({contract_id}){
                         </div>
                         <div className="flex gap-2 flex-wrap">
                             <button
-                                onClick={() => router.push(`/dashboard/settings/company/contracts/${contract_id}/${rejected}`)}
+                                onClick={() => router.push(`/dashboard/settings/company/contracts/${contractId}/${rejected}`)}
                                 className="h-[40px] w-[150px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30 hover:bg-white/10"
                             >
                                 Resolve now

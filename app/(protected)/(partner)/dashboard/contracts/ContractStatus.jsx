@@ -167,11 +167,11 @@ export default function ContractStatus({dynamicData}) {
                     message="Your contract is ready. Click here to sign"
                     description="Outline contract conditions and give contract warrantees."
                     onclick={() => {
-                        if(user.role == "superAdmin" || user.role == "delegate"){
+                        // if(user.role == "superAdmin" || user.role == "delegate"){
                             setAgreementModal(true);
-                        }else{
-                            window.location = "/dashboard/contracts/execution/" + contractId;
-                        }
+                        // }else{
+                        //     window.location = "/dashboard/contracts/execution/" + contractId;
+                        // }
                         
                     }}
                     button={'Sign your contract'}

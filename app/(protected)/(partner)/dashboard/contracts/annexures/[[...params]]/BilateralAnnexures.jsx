@@ -122,8 +122,9 @@ export default function BilateralAnnexures({params}){
 
     const submitResponses = async () => {
 
-        if(user.role != 'superAdmin'){
+        if(user.role == 'witness'){
             router.push(`/dashboard/contracts/execution/${contract_id}`);
+            return;
         }
         if(!validateResponses()){
             return;
@@ -483,14 +484,18 @@ export default function BilateralAnnexures({params}){
                         </div>
 
                         <div className="absolute bottom-0 left-0 mt-8 w-full flex space-x-2 bg-black/40 py-4 px-8">
-
-                            <span className="text-white w-[50px]">
-                                <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
-                                        type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
-                            </span>
-                            <span className="text-white/60 flex-1">
-                                By clicking this checkbox, I agree to MTN’s <span className="text-white">Electronic Record and Signature Disclosure</span>
-                            </span>                                        
+                            {user.role != "witness" &&
+                                <>
+                                    <span className="text-white w-[50px]">
+                                        <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
+                                                type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
+                                    </span>
+                                    <span className="text-white/60 flex-1">
+                                        By clicking this checkbox, I agree to MTN’s  <span className="text-white">Electronic Record and Signature Disclosure</span>
+                                    </span>   
+                                </>
+                            }
+                                                                 
                         </div>
 
                         
@@ -780,8 +785,15 @@ export default function BilateralAnnexures({params}){
                                     The Service Provider is required to integrate their relevant software, applications, equipment and products into the MTN security infrastructure as per applicable best industry practice at no additional cost. This includes identity management, authentication, authorization, compliance assessment and log monitoring integration points.
                                     </span>
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                                                 
+                                        {
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_four || user.role == "witness" ? 
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_four : 
+                                            (<>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>
+                                            </>)
+                                        }
+                                                                                                         
                                     </div>
                                 </div>
                             </div>
@@ -820,8 +832,16 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                          
+                                        {
+                                            
+                                                dynamicData?.dynamic_details?.annexures?.annexure_e_five_a || user.role == "witness" ? 
+                                                dynamicData?.dynamic_details?.annexures?.annexure_e_five_a : 
+                                                (<>
+                                                    <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                    <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                                </>)
+                                        }
+                                                               
                                     </div>
                                 </div>
 
@@ -834,8 +854,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_b || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_b : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>        
+                                        </>)
+                                    }                       
                                     </div>
                                 </div>
 
@@ -848,8 +874,15 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                         
+                                        {
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_five_c || user.role == "witness" ? 
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_five_c : 
+                                            (<>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>          
+                                            </>)
+                                        }
+                                          
                                     </div>
                                 </div>
 
@@ -862,8 +895,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_d || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_d : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -876,8 +915,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_e || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_e : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -890,8 +935,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_f || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_f : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -904,8 +955,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_g || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_g : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -918,8 +975,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_h || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_h : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -931,8 +994,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_i || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_i : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -988,8 +1057,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_a || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_a : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1014,8 +1089,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                        
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_b || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_b : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                        
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1040,8 +1121,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_c || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_c : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1066,8 +1153,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_d || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_d : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 

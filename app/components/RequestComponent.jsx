@@ -59,7 +59,6 @@ function actionDate(targetDate) {
   return formattedDate;
 }
 /////////////////////////////////////////////////////////////////////////////////////
-
 export const ShortCodeFlyOut = ({
   closeShortCodeFlyOut,
   selectedRequest

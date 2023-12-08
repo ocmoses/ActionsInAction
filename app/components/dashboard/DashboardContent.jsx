@@ -318,19 +318,18 @@ export default function GetStarted({ type }) {
 
   const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
   const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
-  const [gracePeriodStatus, setGracePeriodStatus] = useState("");
-  const [licenseRenewalStatus, setLicenseRenewalStatus] = useState("");
-
+  const [gracePeriod, setGracePeriod] = useState(null);
+  const [licenseRenewal, setLicenseRenewal] = useState(null);
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
   const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
   const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
   ////////////partnerLicenseGracePeriodStatus function////////////////////
-  const partnerLicenseGracePeriodStatus = async () => {
+  const partnerLicenseGracePeriod = async () => {
     setShowGracePreriodAlert(false);
     try {
-      const partnerLicenseGracePeriodStatusResponse = await axios.get(
+      const partnerGracePeriodResponse = await axios.get(
         `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
         {
           headers: {
@@ -339,28 +338,20 @@ export default function GetStarted({ type }) {
           },
         }
       );
-      const response = partnerLicenseGracePeriodStatusResponse.data.data;
-      if ("status" in response) {
-        console.log("partnerLicenseGracePeriodStatusResponse", response.status);
-        setGracePeriodStatus(response.status);
-      } else {
-        setGracePeriodStatus("none");
-      }
+      console.log("partnerGracePeriodResponse", partnerGracePeriodResponse.data.data);
+      setGracePeriod(partnerGracePeriodResponse.data.data);
       setShowGracePreriodAlert(true);
     } catch (error) {
-      console.log(
-        "An error occur while trying to fetch license grace period status"
-      );
+      console.log("An error occur while trying to fetch license grace period status");
       setShowGracePreriodAlert(false);
     }
   };
   ////////////end partnerLicenseGracePeriodStatus function////////////////////
-
   ////////////partnerLicenseRenewalStatus function////////////////////
-  const partnerLicenseRenewalStatus = async () => {
+  const partnerLicenseRenewal = async () => {
     setShowLicenseRenewalAlert(false);
     try {
-      const partnerLicenseRenewalStatusResponse = await axios.get(
+      const partnerLicenseRenewalResponse = await axios.get(
         `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
         {
           headers: {
@@ -369,30 +360,21 @@ export default function GetStarted({ type }) {
           },
         }
       );
-
-      const response = partnerLicenseRenewalStatusResponse.data.data;
-      if ("status" in response) {
-        console.log("partnerLicenseRenewalStatusResponse", response.status);
-        setLicenseRenewalStatus(response.status);
-      } else {
-        setLicenseRenewalStatus("none");
-      }
+      console.log("partnerLicenseRenewalResponse", partnerLicenseRenewalResponse.data.data);
+      setLicenseRenewal(partnerLicenseRenewalResponse.data.data);
       setShowLicenseRenewalAlert(true);
     } catch (error) {
       console.log(
         "An error occur while trying to fetch license renewal status"
       );
-      setShowGracePreriodAlert(false);
+      setShowLicenseRenewalAlert(false);
     }
   };
   ////////////end partnerLicenseRenewalStatus function///////////////////
 
-
-
-
   useEffect(() => {
-    partnerLicenseGracePeriodStatus();
-    partnerLicenseRenewalStatus();
+    partnerLicenseGracePeriod();
+    partnerLicenseRenewal();
   }, [partner]);
 
   //////////end code////////////////////////////////////////////////////////////////////////////
@@ -683,8 +665,8 @@ export default function GetStarted({ type }) {
                     </PopUp>
                   )}
                   <GracePeriodAlert
-                    gracePeriodStatus={gracePeriodStatus}
-                    licenseRenewalStatus={licenseRenewalStatus}
+                    gracePeriod={gracePeriod}
+                    licenseRenewal={licenseRenewal}
                     openGracePeriodForm={() => setPopUpGracePeriodForm(true)}
                     popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
                     closeAlert={() => setShowLicenseRenewalAlert(false)}

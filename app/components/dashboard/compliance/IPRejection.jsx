@@ -1,4 +1,35 @@
+import usePartners from "@/hooks/usePartners";
+import {useEffect, useState} from "react";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { useRouter } from "next/navigation";
+import useUsers from "@/hooks/useUsers";
+
 export default function IPRejection({issue}){
+
+    const router = useRouter();
+
+    const {
+        getIPStatus
+    } = usePartners();
+
+    const [showAlert, setShowAlert] = useState(false);
+
+    useEffect(() => {
+        getIPStatus()
+            .then(resp => {
+
+                if(resp.error){
+                    console.log("ERROR", {error: resp.error});
+                }else{
+
+                    // setContractId(resp.statuses.contract_id);
+
+                    // process(resp.statuses);
+
+                }
+
+            });
+    }, []);
 
     return (
         <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">

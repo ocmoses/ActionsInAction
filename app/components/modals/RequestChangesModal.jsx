@@ -6,7 +6,6 @@ import AddVASLicense from "./tabs/AddVASLicense";
 import ChangeAddress from "./tabs/ChangeAddress";
 import AddService from "./tabs/AddService";
 import Review from "./tabs/Review";
-import usePartners from "@/hooks/usePartners";
 
 
 export default function RequestChangesModal({contract_id, rejected}){
@@ -18,44 +17,61 @@ export default function RequestChangesModal({contract_id, rejected}){
         setCurrentTab
     } = useContext(ContractSettingsContext);
 
-    const [availableTabs, setAvailableTabs] = useState([]);
+    let availableTabs = [];
+
+    const [showTabs, setShowTabs] = useState([]);
+
+    console.log("REJECTED", rejected);
+    
+    const rejectedArray = rejected?.split("%2C");
+
+    console.log("REJECTED ARRAY", rejectedArray);
+
+    console.log("REJECTED ARRAY LENGTH", rejectedArray?.length);
+    
+    if(rejectedArray?.length > 0){     
+        
+        availableTabs = [];
+
+        for(let i = 0; i < rejectedArray; i++){
+            console.log("REJECTED ARRAY ik", rejectedArray[i]);
+            switch(rejectedArray[i]){
+                case "add_new_service": if(!availableTabs.includes(tabs.ADD_SERVICE)){availableTabs.push(tabs.ADD_SERVICE)};
+                    break;
+                case "add_shortcode": if(!availableTabs.includes(tabs.ADD_SHORT_CODE)){availableTabs.push(tabs.ADD_SHORT_CODE)};
+                    break;
+                case "add_vas_license": if(!availableTabs.includes(tabs.ADD_VAS_LICENSE)){availableTabs.push(tabs.ADD_VAS_LICENSE)};
+                    break;
+                case "change_address": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_ADDRESS)};
+                    break;
+                case "change_shortcode": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_SHORT_CODE)};
+                    break;  
+                default: break;                  
+            }
+        }
+    }else{
+        availableTabs = [tabs.ADD_SERVICE, tabs.ADD_SHORT_CODE, tabs.ADD_VAS_LICENSE, tabs.CHANGE_ADDRESS, tabs.CHANGE_SHORT_CODE];
+    }
 
     useEffect(() => {
 
-        if(rejected){
-            const rejectedArray = rejected.split(",");
+        setShowTabs(availableTabs);
 
-            for(let i = 0; i < rejectedArray; i++){
-                switch(rejectedArray[i]){
-                    case "add_new_service": setAvailableTabs([...availableTabs, tabs.ADD_SERVICE]);
-                        break;
-                    case "add_shortcode": setAvailableTabs([...availableTabs, tabs.ADD_SHORT_CODE]);
-                        break;
-                    case "add_vas_license": setAvailableTabs([...availableTabs, tabs.ADD_VAS_LICENSE]);
-                        break;
-                    case "change_address": setAvailableTabs([...availableTabs, tabs.CHANGE_ADDRESS]);
-                        break;
-                    case "change_shortcode": setAvailableTabs([...availableTabs, tabs.CHANGE_SHORT_CODE]);
-                        break;                    
-                }
-            }
-        }else{
-            setAvailableTabs(tabs);
-        }
+        console.log("AVAILABLE TABS", availableTabs);
 
-    }, []);
+    }, [rejected]);
 
     const nextTab = (tab) => {
         switch(tab){
-            case tabs.CHANGE_SHORT_CODE: if(availableTabs.includes(tabs.ADD_SHORT_CODE)){setCurrentTab(tabs.ADD_SHORT_CODE)};
+            case tabs.CHANGE_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_SHORT_CODE)){setCurrentTab(tabs.ADD_SHORT_CODE)};
                 break;
-            case tabs.ADD_SHORT_CODE: if(availableTabs.includes(tabs.ADD_VAS_LICENSE)){setCurrentTab(tabs.ADD_VAS_LICENSE)};
+            case tabs.ADD_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_VAS_LICENSE)){setCurrentTab(tabs.ADD_VAS_LICENSE)};
                 break;
-            case tabs.ADD_VAS_LICENSE: if(availableTabs.includes(tabs.CHANGE_ADDRESS)){setCurrentTab(tabs.CHANGE_ADDRESS)};
+            case tabs.ADD_VAS_LICENSE: if(availableTabs && availableTabs.includes(tabs.CHANGE_ADDRESS)){setCurrentTab(tabs.CHANGE_ADDRESS)};
                 break;
-            case tabs.CHANGE_ADDRESS: if(availableTabs.includes(tabs.ADD_SERVICE)){setCurrentTab(tabs.ADD_SERVICE)};
+            case tabs.CHANGE_ADDRESS: if(availableTabs && availableTabs.includes(tabs.ADD_SERVICE)){setCurrentTab(tabs.ADD_SERVICE)};
                 break;
-            case tabs.ADD_SERVICE: if(availableTabs.includes(tabs.REVIEW_AND_SUBMIT)){setCurrentTab(tabs.REVIEW_AND_SUBMIT)};
+            case tabs.ADD_SERVICE: if(availableTabs && availableTabs.includes(tabs.REVIEW_AND_SUBMIT)){setCurrentTab(tabs.REVIEW_AND_SUBMIT)};
                 break;
             default: data.change_order_request_type = "";
         }
@@ -73,7 +89,7 @@ export default function RequestChangesModal({contract_id, rejected}){
                     <div className="w-[250px] bg-black/80 border-2 border-gray-500 rounded-l-xl p-4">
                         <ul className="mt-10 flex flex-col space-y-4">
                             {
-                                availableTabs.includes(tabs.CHANGE_SHORT_CODE) &&
+                                showTabs && showTabs.includes(tabs.CHANGE_SHORT_CODE) &&
 
                                 <li onClick={() => setCurrentTab(tabs.CHANGE_SHORT_CODE)} 
                                     className={`flex p-2 rounded-lg items-center w-full hover:bg-white/10 ${currentTab == tabs.CHANGE_SHORT_CODE && "bg-white/10"} cursor-pointer`}>
@@ -92,7 +108,7 @@ export default function RequestChangesModal({contract_id, rejected}){
                             
 
                             {
-                                availableTabs.includes(tabs.ADD_SHORT_CODE) &&
+                                showTabs && showTabs.includes(tabs.ADD_SHORT_CODE) &&
 
                                 <li onClick={() => setCurrentTab(tabs.ADD_SHORT_CODE)} 
                                     className={`flex p-2 rounded-lg items-center w-full hover:bg-white/10 ${currentTab == tabs.ADD_SHORT_CODE && "bg-white/10"} cursor-pointer`}>
@@ -112,7 +128,7 @@ export default function RequestChangesModal({contract_id, rejected}){
 
                             
                             {
-                                 availableTabs.includes(tabs.ADD_VAS_LICENSE) && 
+                                 showTabs && showTabs.includes(tabs.ADD_VAS_LICENSE) && 
 
                                  <li onClick={() => setCurrentTab(tabs.ADD_VAS_LICENSE)}
                                     className={`flex p-2 rounded-lg items-center w-full hover:bg-white/10 ${currentTab == tabs.ADD_VAS_LICENSE && "bg-white/10"} cursor-pointer`}>
@@ -133,7 +149,7 @@ export default function RequestChangesModal({contract_id, rejected}){
                             
 
                             {
-                                availableTabs.includes(tabs.CHANGE_ADDRESS) && 
+                                showTabs && showTabs.includes(tabs.CHANGE_ADDRESS) && 
 
                                 <li onClick={() => setCurrentTab(tabs.CHANGE_ADDRESS)}
                                     className={`flex p-2 rounded-lg items-center w-full hover:bg-white/10 ${currentTab == tabs.CHANGE_ADDRESS && "bg-white/10"} cursor-pointer`}>
@@ -152,7 +168,7 @@ export default function RequestChangesModal({contract_id, rejected}){
 
                             
                             {
-                                availableTabs.includes(tabs.ADD_SERVICE) && 
+                                showTabs && showTabs.includes(tabs.ADD_SERVICE) && 
 
                                 <li onClick={() => setCurrentTab(tabs.ADD_SERVICE)}
                                     className={`flex p-2 rounded-lg items-center w-full hover:bg-white/10 ${currentTab == tabs.ADD_SERVICE && "bg-white/10"} cursor-pointer`}>

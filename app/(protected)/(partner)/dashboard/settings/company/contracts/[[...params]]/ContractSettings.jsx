@@ -13,8 +13,8 @@ import Success from "@/app/components/toasts/Success";
 import FormErrors from "@/app/components/FormErrors";
 import useErrors from "@/hooks/useErrors";
 import useProcessing from "@/hooks/useProcessing";
-import {ContractSettingsContext} from "./ContractSettingsProvider";
-import {ProfileContext} from "../profile/ProfileProvider";
+import {ContractSettingsContext} from "../ContractSettingsProvider";
+import {ProfileContext} from "../../profile/ProfileProvider";
 import ProfileSuccessModal from "@/app/components/modals/ProfileSuccessModal";
 import RequestChangesDialogue from "@/app/components/modals/RequestChangesDialogue";
 import RequestChangesModal from "@/app/components/modals/RequestChangesModal";
@@ -24,7 +24,9 @@ import usePartners from "@/hooks/usePartners";
 
 
 
-export default function ContractSettings() {
+export default function ContractSettings({params}) {
+
+  console.log("PARAMNS", params);
 
     const {
         
@@ -36,7 +38,7 @@ export default function ContractSettings() {
         isSuperadmin,
         requestChangesDialogue,
         setRequestChangesDialogue,
-        setRequestChangesModal,
+        setRequestChangesModal
         
     } = useContext(ContractSettingsContext);
 
@@ -51,6 +53,9 @@ export default function ContractSettings() {
 
 
   // console.log("Partner", partner);
+  
+  const [contractId, setContractId] = useState(null);
+  const [rejected, setRejected] = useState(null);
     
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -91,6 +96,13 @@ export default function ContractSettings() {
             if(!e.target.classList.contains("pop"))  
                 setPopup(null);            
           }, true);
+
+          if(params.params && params.params.length == 2){
+            setContractId(params.params[0]);
+            setRejected(params.params[1]);
+
+            setRequestChangesModal(true);
+          }
         
     }, []);
   
@@ -206,7 +218,7 @@ export default function ContractSettings() {
       </div>
 
       <RequestChangesDialogue />
-      <RequestChangesModal contract_id={currentContract?.contract_id}/>
+      <RequestChangesModal contract_id={contractId ? contractId : currentContract?.contract_id} rejected={rejected}/>
       <ProfileSuccessModal />
 
       <Success message={successMessage} visible={successToast} action={successAction} />

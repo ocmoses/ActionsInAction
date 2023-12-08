@@ -629,8 +629,8 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
+      if (response.status === 401 ) {
+        Logout();
         return;
       }
       if (!response)
@@ -688,8 +688,8 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
+      if (response.status === 401 ) {
+        Logout();
         return;
       }
       if (!response)

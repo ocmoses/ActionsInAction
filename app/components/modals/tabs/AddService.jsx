@@ -48,6 +48,7 @@ function AddService({contract_id, action}){
                                         ANS_service_name: "", ANS_shortcode: "", ANS_bearer: "",
                                         change_order_request_type: "ANS"});
 
+
     const requestUpdate = async () => {
         
         if(!validateData()){

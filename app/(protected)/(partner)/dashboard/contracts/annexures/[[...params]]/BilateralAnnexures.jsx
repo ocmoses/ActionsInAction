@@ -118,6 +118,22 @@ export default function BilateralAnnexures({params}){
       
     }, []);
 
+    useEffect(() => {
+        const href = location.href;
+        if(href.includes("#")){
+            let urlArray = href.split("#");
+
+            if(urlArray.length == 2){
+                const id = urlArray[1];
+
+                const elem = document.querySelector("#" + id);
+
+                elem.scrollIntoView();
+            }
+        }
+
+    }, []);
+
     
 
     const submitResponses = async () => {

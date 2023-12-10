@@ -21,62 +21,86 @@ export default function RequestChangesModal({contract_id, rejected}){
 
     const [showTabs, setShowTabs] = useState([]);
 
-    console.log("REJECTED", rejected);
+    // console.log("REJECTED", rejected);
     
-    const rejectedArray = rejected?.split("%2C");
-
-    console.log("REJECTED ARRAY", rejectedArray);
-
-    console.log("REJECTED ARRAY LENGTH", rejectedArray?.length);
-    
-    if(rejectedArray?.length > 0){     
-        
-        availableTabs = [];
-
-        for(let i = 0; i < rejectedArray; i++){
-            console.log("REJECTED ARRAY ik", rejectedArray[i]);
-            switch(rejectedArray[i]){
-                case "add_new_service": if(!availableTabs.includes(tabs.ADD_SERVICE)){availableTabs.push(tabs.ADD_SERVICE)};
-                    break;
-                case "add_shortcode": if(!availableTabs.includes(tabs.ADD_SHORT_CODE)){availableTabs.push(tabs.ADD_SHORT_CODE)};
-                    break;
-                case "add_vas_license": if(!availableTabs.includes(tabs.ADD_VAS_LICENSE)){availableTabs.push(tabs.ADD_VAS_LICENSE)};
-                    break;
-                case "change_address": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_ADDRESS)};
-                    break;
-                case "change_shortcode": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_SHORT_CODE)};
-                    break;  
-                default: break;                  
-            }
+    const nextTab = (tab) => {
+        let tabIndex = 0;
+        while(showTabs[tabIndex] != tab && tabIndex < showTabs.length){
+            tabIndex++;
         }
-    }else{
-        availableTabs = [tabs.ADD_SERVICE, tabs.ADD_SHORT_CODE, tabs.ADD_VAS_LICENSE, tabs.CHANGE_ADDRESS, tabs.CHANGE_SHORT_CODE];
+
+        tabIndex++;
+
+        console.log("AVAILABLETABS", availableTabs);
+
+        console.log("SHOW TABS", showTabs);
+
+        console.log("THE TABINDEX", tabIndex);
+
+        console.log("THE TAB", showTabs[tabIndex]);
+
+        if(tabIndex < showTabs.length){
+            setCurrentTab(showTabs[tabIndex])
+        }
+        // switch(tab){
+        //     case tabs.CHANGE_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_SHORT_CODE)){setCurrentTab(tabs.ADD_SHORT_CODE)};
+        //         break;
+        //     case tabs.ADD_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_VAS_LICENSE)){setCurrentTab(tabs.ADD_VAS_LICENSE)};
+        //         break;
+        //     case tabs.ADD_VAS_LICENSE: if(availableTabs && availableTabs.includes(tabs.CHANGE_ADDRESS)){setCurrentTab(tabs.CHANGE_ADDRESS)};
+        //         break;
+        //     case tabs.CHANGE_ADDRESS: if(availableTabs && availableTabs.includes(tabs.ADD_SERVICE)){setCurrentTab(tabs.ADD_SERVICE)};
+        //         break;
+        //     case tabs.ADD_SERVICE: if(availableTabs && availableTabs.includes(tabs.REVIEW_AND_SUBMIT)){setCurrentTab(tabs.REVIEW_AND_SUBMIT)};
+        //         break;
+        //     default: data.change_order_request_type = "";
+        // }
     }
+ 
+    const resolveTabs = () => {
+
+        const rejectedArray = rejected?.split("%2C");
+    
+        if(rejectedArray?.length > 0){     
+            
+            availableTabs = [];
+
+            for(let i = 0; i < rejectedArray.length; i++){
+                switch(rejectedArray[i]){
+                    case "add_new_service": if(!availableTabs.includes(tabs.ADD_SERVICE)){availableTabs.push(tabs.ADD_SERVICE)};
+                        break;
+                    case "add_shortcode": if(!availableTabs.includes(tabs.ADD_SHORT_CODE)){availableTabs.push(tabs.ADD_SHORT_CODE)};
+                        break;
+                    case "add_vas_license": if(!availableTabs.includes(tabs.ADD_VAS_LICENSE)){availableTabs.push(tabs.ADD_VAS_LICENSE)};
+                        break;
+                    case "change_address": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_ADDRESS)};
+                        break;
+                    case "change_shortcode": if(!availableTabs.includes(tabs.CHANGE_ADDRESS)){availableTabs.push(tabs.CHANGE_SHORT_CODE)};
+                        break;  
+                    default: break;                  
+                }
+            }
+        }else{
+            availableTabs = [tabs.ADD_SERVICE, tabs.ADD_SHORT_CODE, tabs.ADD_VAS_LICENSE, tabs.CHANGE_ADDRESS, tabs.CHANGE_SHORT_CODE];
+        }
+
+        
+        availableTabs.push(tabs.REVIEW_AND_SUBMIT);
+        
+    }
+    
 
     useEffect(() => {
-
+        
+        resolveTabs();
+        
         setShowTabs(availableTabs);
+
+        setCurrentTab(availableTabs[0]);
 
         console.log("AVAILABLE TABS", availableTabs);
 
     }, [rejected]);
-
-    const nextTab = (tab) => {
-        switch(tab){
-            case tabs.CHANGE_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_SHORT_CODE)){setCurrentTab(tabs.ADD_SHORT_CODE)};
-                break;
-            case tabs.ADD_SHORT_CODE: if(availableTabs && availableTabs.includes(tabs.ADD_VAS_LICENSE)){setCurrentTab(tabs.ADD_VAS_LICENSE)};
-                break;
-            case tabs.ADD_VAS_LICENSE: if(availableTabs && availableTabs.includes(tabs.CHANGE_ADDRESS)){setCurrentTab(tabs.CHANGE_ADDRESS)};
-                break;
-            case tabs.CHANGE_ADDRESS: if(availableTabs && availableTabs.includes(tabs.ADD_SERVICE)){setCurrentTab(tabs.ADD_SERVICE)};
-                break;
-            case tabs.ADD_SERVICE: if(availableTabs && availableTabs.includes(tabs.REVIEW_AND_SUBMIT)){setCurrentTab(tabs.REVIEW_AND_SUBMIT)};
-                break;
-            default: data.change_order_request_type = "";
-        }
-    }
- 
     
     
     return (requestChangesModal && 
@@ -227,7 +251,7 @@ export default function RequestChangesModal({contract_id, rejected}){
                         }
                         {
                             currentTab == tabs.REVIEW_AND_SUBMIT && 
-                            <Review />
+                            <Review contract_id={contract_id} />
                         }
                     </div>
                 </div>

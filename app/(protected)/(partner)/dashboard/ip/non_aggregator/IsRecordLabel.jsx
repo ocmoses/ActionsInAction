@@ -153,8 +153,6 @@ export default function IsRecordLabel(){
     }
 
     const uploadFile = (file_title, file) => {
-
-        setFiles({...files, [file_title]: file_title});
         
         let formData = new FormData();
         formData.append("file_title", file_title);
@@ -169,8 +167,17 @@ export default function IsRecordLabel(){
         clearErrors();
 
         ipFileUpload(formData)
-            .then(resp => {console.log(resp.message), setSubmitting(false)})
-            .catch(error => {console.log(error.response), setSubmitting(false)});    
+            .then(resp => {
+                console.log(resp.message);
+                console.log(resp.message);
+                setSubmitting(false);
+                if(resp.error){
+                    setError({[file_title]: resp.error});
+                }else{
+                    setFiles({...files, [file_title]: file_title});
+                }
+            })
+            .catch(error => {console.log(error.response), setSubmitting(false)});      
     }
 
     const validateEntries = () => {

@@ -10,9 +10,10 @@ import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons"
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { ContractSettingsContext } from "@/app/(protected)/(partner)/dashboard/settings/company/contracts/ContractSettingsProvider";
+import {useRouter} from "next/navigation";
 
 
-function Review(){
+function Review({contract_id}){
 
     const {
         partner, 
@@ -29,6 +30,8 @@ function Review(){
     } = useContext(ContractSettingsContext);
 
     const {user} = useUsers();
+
+    const router = useRouter();
        
     const [{ errors, setError, clearErrors }] = useErrors(null);
     
@@ -50,13 +53,12 @@ function Review(){
 
             setProcessing(true);
             setRequestChangesModal(false);
+            router.push("/dashboard/settings/company/contracts/" + contract_id)
 
         }, 2000);
 
        
     }
-
-
 
     return (
         <div className="flex flex-col space-y-4">

@@ -48,6 +48,7 @@ import { useStoreState } from "easy-peasy";
 import axios from "axios";
 import IPCard from "@/app/components/dashboard/IPCard";
 
+import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
 
 export default function GetStarted({ type }) {
   const {
@@ -68,9 +69,11 @@ export default function GetStarted({ type }) {
   } = usePartners();
   //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
+  
   ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
+    console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
@@ -371,16 +374,44 @@ export default function GetStarted({ type }) {
     }
   };
   ////////////end partnerLicenseRenewalStatus function///////////////////
+  
+  const [displayServiceConfiguration, setDisplayServiceConfiguration] = useState(false);
+  ////////////getPartnerContract function////////////////////
+  const getPartnerContract = async () => {
+   setDisplayServiceConfiguration(false);
+   getPartnerContractCurrentlyRunning().then((response) => {
+     if ("contract_id" in response.result) {
+       setDisplayServiceConfiguration(true);
+     }else{
+       setDisplayServiceConfiguration(false);
+     }
+   })
+   .catch((error) => {
+     console.log("getPartnerContractCurrentlyRunning error: ", error);
+     setDisplayServiceConfiguration(false);
+   });
+ };
+ ////////////end getPartnerContract function///////////////////
+
 
   useEffect(() => {
     partnerLicenseGracePeriod();
     partnerLicenseRenewal();
+    getPartnerContract();
   }, [partner]);
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+
   return (
     <>
+
+
+
       {isOnboarding && (
         <>
           <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
@@ -540,6 +571,8 @@ export default function GetStarted({ type }) {
                   )}
                 </div>
               )}
+
+              <ServiceConfigurationReadyAlert/>
 
               {questionnaireAlert && (
                 <>

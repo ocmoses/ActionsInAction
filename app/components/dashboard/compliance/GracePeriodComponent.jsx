@@ -203,6 +203,7 @@ export default function GracePeriodAlert({
                 </div>
               )}
             </>
+            
           ) : (
             <>
               {licenseRenewalStatus != "approved" ? (

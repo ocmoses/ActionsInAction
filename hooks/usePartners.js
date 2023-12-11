@@ -1484,12 +1484,10 @@ const usePartners = () => {
 
 
   const getPartnerContractValidityReminder = async (contract_id) => {
-    alert(contract_id);
-
     try {
       setProcessing(true);
       const getPartnerContractValidityRemainderResponse = await axios.get(
-        `${RemoteEndpoints.GET_PARTNER_CONTRACT_VALIDITY_REMAINDER}${partner?.uuid}/${contract_id}`,
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_VALIDITY_REMAINDER}${states.partners.partner.uuid}/${contract_id}`,
         {
           headers: {
             cache: "no-store",
@@ -1512,6 +1510,7 @@ const usePartners = () => {
 
 
 
+  
 
   return {
     ...states.partners,

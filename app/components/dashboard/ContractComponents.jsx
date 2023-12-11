@@ -95,6 +95,7 @@ export default function ServiceConfigurationButton({ open }) {
 
 
 
+
 export const ServiceConfigurationReadyAlert = () => {
   const { getPartnerContractCurrentlyRunning } = usePartners();
   const [openConfigurationReadyAlert, setOpenConfigurationReadyAlert] = useState(false);

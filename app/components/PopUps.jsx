@@ -169,7 +169,7 @@ export const OtherServicesPopUps = ({ closeServicePopUp, title, children }) => {
           <button
             className="h-[30px] w-[30px] rounded-full bg-white/10  hover:bg-white/20"
             title="Close"
-            onClick={closeServicePopUp}
+            onClick={() => closeServicePopUp()}
           >
             X
           </button>
@@ -181,18 +181,3 @@ export const OtherServicesPopUps = ({ closeServicePopUp, title, children }) => {
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

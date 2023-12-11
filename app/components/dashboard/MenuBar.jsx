@@ -9,30 +9,10 @@ import Link from "next/link";
 import { getPartnerInitials } from "@/app/modules/utilities";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
-import { OtherServicesPopUps } from "@/app/components/PopUps";
-import Iframe from "@/app/components/otherservices/Iframes";
-import RemoteEndpoints from "@/app/modules/endpoints";
-
+import ServiceConfigurationButton from "@/app/components/dashboard/ContractComponents";
 
 export default function MenuBar({ open, openAction=null, closeAction=null }) {
- ////////////////////////////////////////////////////////////////////////
- const [servicePopUp, setServicePopUp] = useState(false);
- const [iframe, setIframe] = useState(false);
 
- const openServicePopUp = useCallback((serviceName) => () => {
-  setServicePopUp(true);
- setIframe(serviceName);
-}, []);
-
- const closeServicePopUp = () => {
-   setServicePopUp(false);
- };
-
- 
- ////////////////////////////////////////////////////////////////////////
-
-
- 
 
   const { partners, getPartnerContractCurrentlyRunning, } = usePartners();
 
@@ -58,54 +38,16 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
     }    
   };
 
-  const [displayServiceConfiguration, setDisplayServiceConfiguration] = useState(false);
-   ////////////getPartnerContract function////////////////////
-   const getPartnerContract = async () => {
-    setDisplayServiceConfiguration(false);
-    getPartnerContractCurrentlyRunning().then((response) => {
-      if ("contract_id" in response.result) {
-        setDisplayServiceConfiguration(true);
-      }else{
-        setDisplayServiceConfiguration(false);
-      }
-    })
-    .catch((error) => {
-      console.log("getPartnerContractCurrentlyRunning error: ", error);
-      setDisplayServiceConfiguration(false);
-    });
-  };
-  ////////////end getPartnerContract function///////////////////
-
-
-
   useEffect(() => {
     if (path === "/dashboard/getstarted") app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
     getFullname();
-    getPartnerContract();
   }, [path]);
 
  
 
   return (
     <>
-      {/* //================this is the popup==============================================================================================================*/}
-
-      {servicePopUp && (
-        <>
-          {iframe == "DSM" && (
-            <>
-              <OtherServicesPopUps
-                closeServicePopUp={closeServicePopUp}
-                title="DSM Service Configuration"
-              >
-                <Iframe url={RemoteEndpoints.DSM_ENDPOINT} />
-              </OtherServicesPopUps>
-            </>
-          )}
-        </>
-      )}
-
       {!settingsMenu ? (
         <ul className="p-0 flex-grow h-full py-[36px] px-3">
           {app.showGetstartedLink && (
@@ -330,40 +272,9 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
               </div>
             </div>
           )}
-
-          {displayServiceConfiguration && (
-            <li>
-              <Link
-                onClick={openServicePopUp("DSM")}
-                href="#"
-                className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
-                  !open && "tooltip tooltip-right tooltip-mtn"
-                }`}
-                data-tip="Service Configuration"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-[20px] h-[20px]"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
-                  />
-                </svg>
-
-                {open && (
-                  <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
-                    Service Configuration
-                  </span>
-                )}
-              </Link>
-            </li>
-          )}
+          
+          <ServiceConfigurationButton open={open}/>
+          
 
           {user?.role == "superAdmin" && (
             <li>

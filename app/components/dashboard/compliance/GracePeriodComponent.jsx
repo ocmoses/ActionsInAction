@@ -651,9 +651,17 @@ export const LicenseValidityTopAlert = ({
                 </svg>
                 <p className="text-white flex gap-2">
                   {!validity ? (
-                    <span>
+                    <>
+                    {licenseValidityDaysLeft>0 ?(
+                      <span>
                       Your License expires in {licenseValidityDaysLeft} days.
                     </span>
+                    ):(
+                      <span>
+                      Your License expires today.
+                    </span>
+                    )}
+                    </>
                   ) : (
                     <span>Your License has expired</span>
                   )}{" "}

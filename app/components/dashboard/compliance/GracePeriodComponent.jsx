@@ -47,19 +47,12 @@ export default function GracePeriodAlert({
           },
         }
       );
-      if (
-        "license_validity_days" in licenseValidityRemainderResponse.data.data
-      ) {
-        const licenseValidityDaysLeft =
-          licenseValidityRemainderResponse.data.data.license_validity_days;
-        setLicenseValidityDaysLeft(licenseValidityDaysLeft);
+      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
+        const validityDaysLeft =licenseValidityRemainderResponse.data.data.license_validity_days;
+        setLicenseValidityDaysLeft(validityDaysLeft);
       }
       setLoading(false);
     } catch (error) {
-      setError({
-        dashboard:
-          "Something went wrong. Please check your connection and try again",
-      });
       setLoading(false);
     }
   };

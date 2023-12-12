@@ -21,6 +21,8 @@ export default function RequestChangesModal({contract_id, rejected}){
 
     const [showTabs, setShowTabs] = useState([]);
 
+    
+
     // console.log("REJECTED", rejected);
     
     const nextTab = (tab) => {
@@ -81,7 +83,7 @@ export default function RequestChangesModal({contract_id, rejected}){
                 }
             }
         }else{
-            availableTabs = [tabs.ADD_SERVICE, tabs.ADD_SHORT_CODE, tabs.ADD_VAS_LICENSE, tabs.CHANGE_ADDRESS, tabs.CHANGE_SHORT_CODE];
+            availableTabs = [tabs.CHANGE_SHORT_CODE, tabs.ADD_SHORT_CODE, tabs.ADD_VAS_LICENSE, tabs.CHANGE_ADDRESS, tabs.ADD_SERVICE];
         }
 
         
@@ -257,6 +259,8 @@ export default function RequestChangesModal({contract_id, rejected}){
                 </div>
                 
            </div>
+
+           
         </div>
         
     );

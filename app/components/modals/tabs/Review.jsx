@@ -11,6 +11,8 @@ import { TailSpinPreloader } from "@/app/components/Icons"
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { ContractSettingsContext } from "@/app/(protected)/(partner)/dashboard/settings/company/contracts/ContractSettingsProvider";
 import {useRouter} from "next/navigation";
+import Success from "@/app/components/toasts/Success";
+
 
 
 function Review({contract_id}){
@@ -41,6 +43,12 @@ function Review({contract_id}){
 
     const [data, setData] = useState(null);
 
+    const [successMessage, setSuccessMessage] = useState("Change order submitted successfully");
+    const [successToast, setSuccessToast] = useState(false);
+    const successAction = () => setTimeout(() => {
+                                                  setSuccessToast(false);
+                                                }, 3000);
+
     useEffect(() => {
         getChangeOrderStatus().then(resp => resp.error ? setError({error: resp.error}) : setStatuses(resp.statuses) )
     }, []);
@@ -52,6 +60,7 @@ function Review({contract_id}){
         setTimeout(() => {
 
             setProcessing(true);
+            setSuccessToast(true);
             setRequestChangesModal(false);
             router.push("/dashboard/settings/company/contracts/" + contract_id)
 
@@ -265,6 +274,8 @@ function Review({contract_id}){
                 }
                 
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
 
         </div>
     );

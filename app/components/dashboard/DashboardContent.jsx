@@ -105,7 +105,6 @@ export default function GetStarted({ type }) {
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
   const [IPAlert, setIPAlert] = useState(false);
-  const [changeOrderAlert, setChangeOrderAlert] = useState(true);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
@@ -608,11 +607,11 @@ export default function GetStarted({ type }) {
 
                 <IPCard />
               }
-
-              {
-                changeOrderAlert && 
-                <ChangeOrderRejection />
-              }
+ 
+              <ChangeOrderRejection />
+              
+              <IPRejection />
+              
 
               {/* //================this is the popup==============================================================================================================*/}
 

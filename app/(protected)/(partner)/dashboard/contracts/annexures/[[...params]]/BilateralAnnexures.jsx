@@ -172,7 +172,6 @@ export default function BilateralAnnexures({params}){
 
     const validateResponses = () => {
 
-
         for(let i in data){
             if(data[i].trim() == ""){
                 setError({error: i.split("_").join(" ") + " has no response"});

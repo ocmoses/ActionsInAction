@@ -21,6 +21,8 @@ import RequestChangesModal from "@/app/components/modals/RequestChangesModal";
 import useContracts from "@/hooks/useContracts";
 import moment from "moment";
 import usePartners from "@/hooks/usePartners";
+import {contract_statuses} from "@/app/modules/constants";
+import { data } from "autoprefixer";
 
 
 
@@ -28,8 +30,7 @@ export default function ContractSettings({params}) {
 
   console.log("PARAMNS", params);
 
-    const {
-        
+    const {        
         partnerGetAllContracts
       } = useContracts();
 
@@ -48,7 +49,8 @@ export default function ContractSettings({params}) {
     } = useContext(ProfileContext);
 
     const {
-      getAllServices
+      getAllServices,
+      getChangeOrderStatus
     } = usePartners();
 
 
@@ -68,6 +70,7 @@ export default function ContractSettings({params}) {
   const [contracts, setContracts] = useState([]);
   const [currentContract, setCurrentContract] = useState(null);
   const [popup, setPopup] = useState(null);
+  const [canRequestChange, setCanRequestChange] = useState(false);
 
   const requestChange = (contract) => {
     console.log("Selected contract", contract);
@@ -76,8 +79,6 @@ export default function ContractSettings({params}) {
     setRequestChangesDialogue(true);
     // setProfileSuccess(true);
   }
-
-  
 
 //   console.log("isSuperadmin", isSuperadmin);
 
@@ -105,6 +106,21 @@ export default function ContractSettings({params}) {
           }
         
     }, []);
+
+    useEffect(() => {
+      getChangeOrderStatus()
+          .then(resp => {
+
+              if(resp.error){
+                  console.log("ERROR", {error: resp.error});
+
+                  if(resp.error == "No change ordert request found"){
+                    setCanRequestChange(true);
+                  }
+              }
+
+          });
+  }, []);
   
   return (
     <>
@@ -187,12 +203,16 @@ export default function ContractSettings({params}) {
                             
                             <td>
                                 <div className="relative">
-                                    <div onClick={() => popup != contract.contract_id ? setPopup(contract.contract_id) : setPopup(null)} className="inline-flex justify-center items-center cursor-pointer rounded-full hover:bg-white/10 w-10 h-10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                                        </svg>
-                                    </div>
-                                    {popup == contract.contract_id &&
+                                    {
+                                      contract.contract_status != contract_statuses.EXPIRED && canRequestChange &&
+                                        <div onClick={() => popup != contract.contract_id ? setPopup(contract.contract_id) : setPopup(null)} className="inline-flex justify-center items-center cursor-pointer rounded-full hover:bg-white/10 w-10 h-10">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                                            </svg>
+                                        </div>
+                                    }
+                                    
+                                    {popup == contract.contract_id && 
                                         <div className="pop flex flex-col p-2 rounded-lg bg-gray-700 absolute right-0 z-10">
                                             <p className="pop text-white p-2 hover:bg-white/40 cursor-pointer rounded-lg">Download</p>
                                             <p className="pop text-white p-2 hover:bg-white/40 cursor-pointer rounded-lg" onClick={() => requestChange(contract)}>Request Changes</p>

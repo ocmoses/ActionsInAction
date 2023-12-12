@@ -22,12 +22,29 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     } = useAdmins();
 
     const ipTypes = {
-        CONTENT_CREATOR : "content_creator",
+        CONTENT_OWNER : "content_owner",
         AGENT_AND_CONTENT: "agent_and_content",
         RECORD_LABEL: "record_label"
     };
 
     let ipArray = [];
+
+    const expansion = {
+        AGGREGATOR_AND_VAS: 'aggregator-and-vas',
+        PROBATE_OF_WILL: 'probate_of_will',
+        LICENSE_PERIOD: 'license_period',
+        AUTHORIZATION_LETTER: 'authorization_letter',
+        VIDEO_FILE: 'video_file',
+        AGREEMENT_WITH_VAS_PARTNER: 'agreement_letter_btw_content_and_vas_partner',
+        AGREEMENT_WITH_AGENT: 'agreement_letter_btw_content_and_agent',
+        AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 'agreement_letter_btw_agent_and_vas_partner',
+        AGREEMENT_WITH_RECORD_LABEL: 'agreement_letter_btw_content_and_record_label',
+        AGREEMENT_WITH_MUSIC_COMPOSER: 'agreement_letter_btw_content_and_music_composer',
+        AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 'agreement_letter_btw_record_label_and_vas_partner',
+        MEANS_OF_ID: 'means_of_id',
+        AGENT_ID: 'agent_id',
+        ADDITIONAL_PROOF: 'additional_proof'       
+    }
 
     const [expanded, setExpanded] = useState(null);
 
@@ -58,6 +75,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     const [progressing, setProgressing] = useState(false);
 
     const [collapseAdded, setCollapseAdded] = useState(false);
+
+    const [approvals, setApprovals] = useState({...expansion});
 
     const reasons = [
         "",
@@ -90,7 +109,57 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         setTimeout(() => {
 
             approveIPDetail(data)
-                .then(resp => {setApproving(false); resp.error ? setError({error: resp.error}) : showSuccess(resp.message)})
+                .then(resp => {
+                    setApproving(false); 
+                    resp.error ? setError({error: resp.error}) : showSuccess(resp.message);
+                    switch(expanded){
+                        case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER]: "approved"});
+                            break;
+
+                        case expansion.PROBATE_OF_WILL: 
+                            setApprovals({...approvals, [expansion.PROBATE_OF_WILL]: "approved"});
+                            break;
+                        case expansion.LICENSE_PERIOD: 
+                            setApprovals({...approvals, [expansion.LICENSE_PERIOD]: "approved"});
+                            break;
+                        case expansion.AUTHORIZATION_LETTER: 
+                            setApprovals({...approvals, [expansion.AUTHORIZATION_LETTER]: "approved"});
+                            break;
+                        case expansion.VIDEO_FILE: 
+                            setApprovals({...approvals, [expansion.VIDEO_FILE]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_WITH_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.VIDEO_AGREEMENT_WITH_VAS_PARTNER]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_WITH_AGENT: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_AGENT]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_WITH_RECORD_LABEL: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_RECORD_LABEL]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_WITH_MUSIC_COMPOSER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_MUSIC_COMPOSER]: "approved"});
+                            break;
+                        case expansion.AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER]: "approved"});
+                            break;
+                        case expansion.MEANS_OF_ID: 
+                            setApprovals({...approvals, [expansion.MEANS_OF_ID]: "approved"});
+                            break;
+                        case expansion.AGENT_ID: 
+                            setApprovals({...approvals, [expansion.AGENT_ID]: "approved"});
+                            break;
+                        case expansion.ADDITIONAL_PROOF: 
+                            setApprovals({...approvals, [expansion.ADDITIONAL_PROOF]: "approved"});
+                            break;  
+                        default: break;
+                        
+                    }
+                })
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
 
         }, 500);
@@ -122,7 +191,56 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         setTimeout(() => {
 
             rejectIPDetail(data)
-                .then(resp => {setApproving(false); resp.error ? setError({error: resp.error}) : showSuccess(resp.message)})
+                .then(resp => {
+                    setApproving(false); 
+                    resp.error ? setError({error: resp.error}) : showSuccess("Rejected successfully");
+                    switch(expanded){
+                        case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER]: "rejected"});
+                            break;
+                        case expansion.PROBATE_OF_WILL: 
+                            setApprovals({...approvals, [expansion.PROBATE_OF_WILL]: "rejected"});
+                            break;
+                        case expansion.LICENSE_PERIOD: 
+                            setApprovals({...approvals, [expansion.LICENSE_PERIOD]: "rejected"});
+                            break;
+                        case expansion.AUTHORIZATION_LETTER: 
+                            setApprovals({...approvals, [expansion.AUTHORIZATION_LETTER]: "rejected"});
+                            break;
+                        case expansion.VIDEO_FILE: 
+                            setApprovals({...approvals, [expansion.VIDEO_FILE]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_WITH_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.VIDEO_AGREEMENT_WITH_VAS_PARTNER]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_WITH_AGENT: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_AGENT]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_WITH_RECORD_LABEL: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_RECORD_LABEL]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_WITH_MUSIC_COMPOSER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_MUSIC_COMPOSER]: "rejected"});
+                            break;
+                        case expansion.AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 
+                            setApprovals({...approvals, [expansion.AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER]: "rejected"});
+                            break;
+                        case expansion.MEANS_OF_ID: 
+                            setApprovals({...approvals, [expansion.MEANS_OF_ID]: "rejected"});
+                            break;
+                        case expansion.AGENT_ID: 
+                            setApprovals({...approvals, [expansion.AGENT_ID]: "rejected"});
+                            break;
+                        case expansion.ADDITIONAL_PROOF: 
+                            setApprovals({...approvals, [expansion.ADDITIONAL_PROOF]: "rejected"});
+                            break;  
+                        default: break;
+                        
+                    }
+                })
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
             
         }, 500);
@@ -142,28 +260,46 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
     const tabs = [1, 2, 3];
 
-    'service-details', 'aggregator-and-vas', 'probate-of-will', 'licensing-period', 
-    'authorization-letter', 'authorization-video', 'agreement-letter', 'means-of-identification', 
-    'other-content-proof-of-ownership'
+    // 'service-details', 'aggregator-and-vas', 'probate-of-will', 'licensing-period', 
+    // 'authorization-letter', 'authorization-video', 'agreement-letter', 'means-of-identification', 
+    // 'other-content-proof-of-ownership'
     
     const setApprovalType = () => {
         console.log("Expanded is: ", expanded);
         switch(expanded){
-            case 'aggregator-and-vas': data.ip_request_type = "aggregator-and-vas";
+            case expansion.AGGREGATOR_AND_VAS: data.ip_request_type = "aggregator-and-vas";
                 break;
-            case 'probate_of_will': data.ip_request_type = "probate-of-will";
+            case expansion.PROBATE_OF_WILL: data.ip_request_type = "probate-of-will";
                 break;
-            case 'license_period': data.ip_request_type = "licensing-period";
+            case expansion.LICENSE_PERIOD: data.ip_request_type = "licensing-period";
                 break;
-            case 'authorization_letter': data.ip_request_type = "authorization-letter";
+            case expansion.AUTHORIZATION_LETTER: data.ip_request_type = "authorization-letter";
                 break;
-            case 'video_file': data.ip_request_type = "authorization-video";
+            case expansion.VIDEO_FILE: data.ip_request_type = "authorization-video";
                 break;
-            case 'agreement_letter': data.ip_request_type = "agreement-letter";
+            case expansion.AGREEMENT_WITH_VAS_PARTNER: 
+                data.ip_request_type = "agreement-letter-btw-content-and-vas-partner";
                 break;
-            case 'means_of_id': data.ip_request_type = "means-of-identification";
+            case expansion.AGREEMENT_WITH_AGENT: 
+                data.ip_request_type = "agreement-letter-btw-content-and-agent";
                 break;
-            case 'additional_proof': data.ip_request_type = "other-content-proof-of-ownership";
+            case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER: 
+                data.ip_request_type = "agreement-letter-btw-agent-and-vas-partner";
+                break;
+            case expansion.AGREEMENT_WITH_RECORD_LABEL: 
+                data.ip_request_type = "agreement-letter-btw-content-and-record-label";
+                break;
+            case expansion.AGREEMENT_WITH_MUSIC_COMPOSER: 
+                data.ip_request_type = "agreement-letter-btw-content-and-music-composer";
+                break;
+            case expansion.AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 
+                data.ip_request_type = "agreement-letter-btw-record-label-and-vas-partner";
+                break;
+            case expansion.MEANS_OF_ID: data.ip_request_type = "means-of-identification";
+                break;
+            case expansion.AGENT_ID: data.ip_request_type = "agent-id";
+                break;
+            case expansion.ADDITIONAL_PROOF: data.ip_request_type = "other-content-proof-of-ownership";
                 break;
             default: data.ip_request_type = 'service-details';
         }
@@ -340,13 +476,13 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "content_creator" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Content Owner</span>
 
-                                <span className="text-white absolute right-4 px-4 py-1 ">{request.licenser_type == ipTypes.CONTENT_CREATOR ? "Content Creator" : 
+                                <span className="text-white absolute right-4 px-4 py-1 ">{request.licenser_type == ipTypes.CONTENT_OWNER ? "Content Creator" : 
                                                                                             request.licenser_type == ipTypes.AGENT_AND_CONTENT ? "Agent" : "Record Label"}</span>
                                     
                             </div>
@@ -365,16 +501,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "authorization_letter" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.AUTHORIZATION_LETTER && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Authorization Letter</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "authorization_letter" ? setExpanded(null) : setExpanded("authorization_letter")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.AUTHORIZATION_LETTER ? setExpanded(null) : setExpanded(expansion.AUTHORIZATION_LETTER)}}>
                                     {
-                                        expanded == "authorization_letter" ? 
+                                        expanded == expansion.AUTHORIZATION_LETTER ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -387,7 +523,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "authorization_letter" && (
+                                expanded == expansion.AUTHORIZATION_LETTER && (
                                     <div className="flex flex-col space-y-4 p-4">
 
                                         
@@ -412,7 +548,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['authorization-letter'].authorization_letter_status == "approved" ? <Approved /> : request['authorization-letter'].authorization_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['authorization-letter'].authorization_letter_status == "approved" || 
+                                                    approvals[expansion.AUTHORIZATION_LETTER] == "approved" ? <Approved /> : 
+                                                request['authorization-letter'].authorization_letter_status == "rejected" || 
+                                                    approvals[expansion.AUTHORIZATION_LETTER] == "rejected" ? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -435,16 +575,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "license_period" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.LICENSE_PERIOD && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">License period</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "license_period" ? setExpanded(null) : setExpanded("license_period")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.LICENSE_PERIOD ? setExpanded(null) : setExpanded(expansion.LICENSE_PERIOD)}}>
                                     {
-                                        expanded == "license_period" ? 
+                                        expanded == expansion.LICENSE_PERIOD ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -457,7 +597,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "license_period" && (
+                                expanded == expansion.LICENSE_PERIOD && (
                                     <div className="flex flex-col space-y-4 p-4">
 
                                         
@@ -479,7 +619,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['licensing-period'].license_period_status == "approved" ? <Approved /> : request['licensing-period'].license_period_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['licensing-period'].license_period_status == "approved" || 
+                                                    approvals[expansion.LICENSE_PERIOD] == "approved" ? <Approved /> : 
+                                                request['licensing-period'].license_period_status == "rejected" || 
+                                                    approvals[expansion.LICENSE_PERIOD] == "rejected" ? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -502,16 +646,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "video_file" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.VIDEO_FILE && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Authorization Video</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "video_file" ? setExpanded(null) : setExpanded("video_file")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.VIDEO_FILE ? setExpanded(null) : setExpanded(expansion.VIDEO_FILE)}}>
                                     {
-                                        expanded == "video_file" ? 
+                                        expanded == expansion.VIDEO_FILE ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -524,7 +668,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "video_file" && (
+                                expanded == expansion.VIDEO_FILE && (
                                     <div className="flex flex-col space-y-4 p-4">
                                         
                                         <p className="flex justify-between">
@@ -548,7 +692,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['video-file'].authorization_video_status == "approved" ? <Approved /> : request['video-file'].authorization_video_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['video-file'].authorization_video_status == "approved" || 
+                                                    approvals[expansion.VIDEO_FILE] == "approved" ? <Approved /> : 
+                                                request['video-file'].authorization_video_status == "rejected" | 
+                                                    approvals[expansion.VIDEO_FILE] == "rejected" ? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -571,16 +719,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "means_of_id" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.MEANS_OF_ID && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Content Creator's ID</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "means_of_id" ? setExpanded(null) : setExpanded("means_of_id")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.MEANS_OF_ID ? setExpanded(null) : setExpanded(expansion.MEANS_OF_ID)}}>
                                     {
-                                        expanded == "video_file" ? 
+                                        expanded == expansion.MEANS_OF_ID ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -593,7 +741,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "means_of_id" && (
+                                expanded == expansion.MEANS_OF_ID && (
                                     <div className="flex flex-col space-y-4 p-4">
                                         
                                         <p className="flex justify-between">
@@ -617,7 +765,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['means-of-identification'].means_of_id_status == "approved" ? <Approved /> : request['means-of-identification'].means_of_id_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['means-of-identification'].means_of_id_status == "approved" || 
+                                                    approvals[expansion.MEANS_OF_ID] == "approved" ? <Approved /> : 
+                                                request['means-of-identification'].means_of_id_status == "rejected" || 
+                                                    approvals[expansion.MEANS_OF_ID] == "rejected" ? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -643,16 +795,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             </span>
 
                             <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                                <div className={`p-2  ${expanded == "agent_id" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <div className={`p-2  ${expanded == expansion.AGENT_ID && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
                                     <span className="text-white/80 ml-2">Agent ID</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == "agent_id" ? setExpanded(null) : setExpanded("agent_id")}}>
+                                            onClick={() => {clearErrors(); expanded == expansion.AGENT_ID ? setExpanded(null) : setExpanded(expansion.AGENT_ID)}}>
                                         {
-                                            expanded == "agent_id" ? 
+                                            expanded == expansion.AGENT_ID ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                             </svg>)
@@ -665,7 +817,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     </span>
                                 </div>
                                 {
-                                    expanded == "agent_id" && (
+                                    expanded == expansion.AGENT_ID && (
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
@@ -689,7 +841,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['means-of-identification'].means_of_id_status == "approved" ? <Approved /> : request['means-of-identification'].means_of_id_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['means-of-identification'].means_of_id_status == "approved" || 
+                                                        approvals[expansion.AGENT_ID] == "approved" ? <Approved /> : 
+                                                    request['means-of-identification'].means_of_id_status == "rejected" || 
+                                                        approvals[expansion.AGENT_ID] == "rejected"? <Declined /> : 
+                                                    <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -717,16 +873,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             </span>
 
                             <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                                <div className={`p-2  ${expanded == "probate_of_will" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <div className={`p-2  ${expanded == PROBATE_OF_WILL && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
                                     <span className="text-white/80 ml-2">Probate of will</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == "probate_of_will" ? setExpanded(null) : setExpanded("probate_of_will")}}>
+                                            onClick={() => {clearErrors(); expanded == expansion.PROBATE_OF_WILL ? setExpanded(null) : setExpanded(expansion.PROBATE_OF_WILL)}}>
                                         {
-                                            expanded == "probate_of_will" ? 
+                                            expanded == expansion.PROBATE_OF_WILL ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                             </svg>)
@@ -739,7 +895,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     </span>
                                 </div>
                                 {
-                                    expanded == "probate_of_will" && (
+                                    expanded == expansion.PROBATE_OF_WILL && (
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
@@ -763,7 +919,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['probate-of-will'].probate_of_will_status == "approved" ? <Approved /> : request['probate-of-will'].probate_of_will_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['probate-of-will'].probate_of_will_status == "approved" || 
+                                                        approvals[expansion.PROBATE_OF_WILL] == "approved"? <Approved /> : 
+                                                    request['probate-of-will'].probate_of_will_status == "rejected" || 
+                                                        approvals[expansion.PROBATE_OF_WILL] == "rejected"? <Declined /> : 
+                                                    <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -789,16 +949,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "agreement_with_vas_partner" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.AGREEMENT_WITH_VAS_PARTNER && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Agreement with VAS Partner</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "agreement_with_vas_partner" ? setExpanded(null) : setExpanded("agreement_with_vas_partner")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_VAS_PARTNER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_VAS_PARTNER)}}>
                                     {
-                                        expanded == "video_file" ? 
+                                        expanded == expansion.AGREEMENT_WITH_VAS_PARTNER ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -811,19 +971,19 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "agreement_with_vas_partner" && (
+                                expanded == expansion.AGREEMENT_WITH_VAS_PARTNER && (
                                     <div className="flex flex-col space-y-4 p-4">
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">Agreement with VAS Partner</span>
-                                            <span className="text-mtn" >{request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner ? 
-                                                <span onClick={() => setFileViewer((request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner))} 
+                                            <span className="text-mtn" >{request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_btw_content_and_vas_partner ? 
+                                                <span onClick={() => setFileViewer((request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_btw_content_and_vas_partner))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                     </svg> Preview
                                                 </span>
-                                                : request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner ? request['agreement-letter'].agreement_letter_btw_agent_and_vas_partner : "-"}
+                                                : request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_btw_content_and_vas_partner ? request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_btw_content_and_vas_partner : "-"}
                                             </span>
                                         </p>
 
@@ -835,7 +995,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_content_and_vas_partner_status == "approved" || 
+                                                    approvals[expansion.AGREEMENT_WITH_VAS_PARTNER] == "approved" ? <Approved /> : 
+                                                request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_content_and_vas_partner_status == "rejected" || 
+                                                    approvals[expansion.AGREEMENT_WITH_VAS_PARTNER] == "rejected"? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 
@@ -861,16 +1025,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             </span>
 
                             <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                                <div className={`p-2  ${expanded == "agreement_with_vas_partner" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <div className={`p-2  ${expanded == expansion.AGREEMENT_WITH_AGENT && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
                                     <span className="text-white/80 ml-2">Agreement with Agent</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == "agreement_with_agent" ? setExpanded(null) : setExpanded("agreement_with_agent")}}>
+                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_AGENT ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_AGENT)}}>
                                         {
-                                            expanded == "video_file" ? 
+                                            expanded == expansion.AGREEMENT_WITH_AGENT ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                             </svg>)
@@ -883,19 +1047,19 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     </span>
                                 </div>
                                 {
-                                    expanded == "agreement_with_agent" && (
+                                    expanded == expansion.AGREEMENT_WITH_AGENT && (
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
                                                 <span className="text-white/60 ">Agreement with Agent</span>
-                                                <span className="text-mtn" >{request['agreement-letter'].agreement_letter_btw_content_and_agent ? 
-                                                    <span onClick={() => setFileViewer((request['agreement-letter'].agreement_letter_btw_content_and_agent))} 
+                                                <span className="text-mtn" >{request['agreement-letter-btw-content-and-agent'].agreement_letter_btw_content_and_agent ? 
+                                                    <span onClick={() => setFileViewer((request['agreement-letter-btw-content-and-agent'].agreement_letter_btw_content_and_agent))} 
                                                             className="text-xs flex space-x-1 items-end cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                         </svg> Preview
                                                     </span>
-                                                    : request['agreement-letter'].agreement_letter_btw_content_and_agent ? request['agreement-letter'].agreement_letter_btw_content_and_agent : "-"}
+                                                    : request['agreement-letter-btw-content-and-agent'].agreement_letter_btw_content_and_agent ? request['agreement_letter_btw_content_and_agent'].agreement_letter_btw_content_and_agent : "-"}
                                                 </span>
                                             </p>
 
@@ -907,7 +1071,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter-btw-content-and-agent'].agreement_letter_content_and_agent_status == "approved" || 
+                                                        approvals[expansion.AGREEMENT_WITH_AGENT] == "approved"? <Approved /> : 
+                                                    request['agreement-letter-btw-content-and-agent'].agreement_letter_content_and_agent_status == "rejected" || 
+                                                        approvals[expansion.AGREEMENT_WITH_AGENT] == "approved" ? <Declined /> : 
+                                                    <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -934,16 +1102,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             </span>
 
                             <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                                <div className={`p-2  ${expanded == "agreement_with_record_label" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <div className={`p-2  ${expanded == expansion.AGREEMENT_WITH_RECORD_LABEL && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
                                     <span className="text-white/80 ml-2">Agreement with Agent</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == "agreement_with_record_label" ? setExpanded(null) : setExpanded("agreement_with_record_label")}}>
+                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_RECORD_LABEL)}}>
                                         {
-                                            expanded == "video_file" ? 
+                                            expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                             </svg>)
@@ -956,7 +1124,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     </span>
                                 </div>
                                 {
-                                    expanded == "agreement_with_record_label" && (
+                                    expanded == expansion.AGREEMENT_WITH_RECORD_LABEL && (
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
@@ -968,7 +1136,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                         </svg> Preview
                                                     </span>
-                                                    : request['agreement-letter'].agreement_letter_btw_content_and_record_label ? request['agreement-letter'].agreement_letter_btw_content_and_record_label : "-"}
+                                                    : request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label ? request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label : "-"}
                                                 </span>
                                             </p>
 
@@ -980,7 +1148,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label == "approved" || 
+                                                        approvals[expansion.AGREEMENT_WITH_RECORD_LABEL] == "approved" ? <Approved /> : 
+                                                    request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label == "rejected" || 
+                                                        approvals[expansion.AGREEMENT_WITH_RECORD_LABEL] == "rejected" ? <Declined /> : 
+                                                    <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -1007,16 +1179,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             </span>
 
                             <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                                <div className={`p-2  ${expanded == "agreement_with_composer" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <div className={`p-2  ${expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
                                     <span className="text-white/80 ml-2">Agreement with Composer</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == "agreement_with_composer" ? setExpanded(null) : setExpanded("agreement_with_composer")}}>
+                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_MUSIC_COMPOSER)}}>
                                         {
-                                            expanded == "video_file" ? 
+                                            expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                             </svg>)
@@ -1029,19 +1201,19 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     </span>
                                 </div>
                                 {
-                                    expanded == "agreement_with_composer" && (
+                                    expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER && (
                                         <div className="flex flex-col space-y-4 p-4">
                                             
                                             <p className="flex justify-between">
                                                 <span className="text-white/60 ">Agreement with Composer</span>
-                                                <span className="text-mtn" >{request['agreement-letter'].agreement_letter_btw_content_and_music_composer ? 
-                                                    <span onClick={() => setFileViewer((request['agreement-letter'].agreement_letter_btw_content_and_music_composer))} 
+                                                <span className="text-mtn" >{request['agreement-letter-btw-content-and-music-composer'].agreement_letter_btw_content_and_music_composer ? 
+                                                    <span onClick={() => setFileViewer((request['agreement-letter-btw-content-and-music-composer'].agreement_letter_btw_content_and_music_composer))} 
                                                             className="text-xs flex space-x-1 items-end cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                         </svg> Preview
                                                     </span>
-                                                    : request['agreement-letter'].agreement_letter_btw_content_and_music_composer ? request['agreement-letter'].agreement_letter_btw_content_and_music_composer : "-"}
+                                                    : request['agreement-letter-btw-content-and-music-composer'].agreement_letter_btw_content_and_music_composer ? request['agreement-letter-btw-content-and-music-composer'].agreement_letter_btw_content_and_music_composer : "-"}
                                                 </span>
                                             </p>
 
@@ -1053,7 +1225,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['agreement-letter'].agreement_letter_status == "approved" ? <Approved /> : request['agreement-letter'].agreement_letter_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                    request['agreement-letter-btw-content-and-music-composer'].agreement_letter_content_and_music_composer_status == "approved" || 
+                                                        approvals[expansion.AGREEMENT_WITH_MUSIC_COMPOSER] == "approved" ? <Approved /> : 
+                                                    request['agreement-letter-btw-content-and-music-composer'].agreement_letter_content_and_music_composer_status == "rejected" || 
+                                                        approvals[expansion.AGREEMENT_WITH_MUSIC_COMPOSER] == "rejected" ? <Declined /> : 
+                                                    <ApprovalActions />
                                                 }                                             
                                             </div>
 
@@ -1078,16 +1254,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </span>
 
                         <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                            <div className={`p-2  ${expanded == "additional_proof" && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                            <div className={`p-2  ${expanded == expansion.ADDITIONAL_PROOF && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
                                 <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                     <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                 </svg>
                                 <span className="text-white/80 ml-2">Additional Proof</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == "additional_proof" ? setExpanded(null) : setExpanded("additional_proof")}}>
+                                        onClick={() => {clearErrors(); expanded == expansion.ADDITIONAL_PROOF ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_PROOF)}}>
                                     {
-                                        expanded == "additional_proof" ? 
+                                        expanded == expansion.ADDITIONAL_PROOF ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>)
@@ -1100,7 +1276,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 </span>
                             </div>
                             {
-                                expanded == "additional_proof" && (
+                                expanded == expansion.ADDITIONAL_PROOF && (
                                     <div className="flex flex-col space-y-4 p-4">
                                         
                                         <p className="flex justify-between">
@@ -1124,7 +1300,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "approved" ? <Approved /> : request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "rejected" ? <Declined /> : <ApprovalActions />
+                                                request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "approved" || 
+                                                    approvals[expansion.ADDITIONAL_PROOF] == "approved" ? <Approved /> : 
+                                                request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "rejected" || 
+                                                    approvals[expansion.ADDITIONAL_PROOF] == "rejected" ? <Declined /> : 
+                                                <ApprovalActions />
                                             }                                             
                                         </div>
 

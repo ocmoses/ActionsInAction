@@ -355,7 +355,7 @@ export default function Requests() {
     }
 
     for (const ip of get_ips_response.ip_requests) {
-      if (!requests.find((request) => request.uuid == ip.uuid)) {
+      if (!requests.find((request) => request.request_id == ip.request_id)) {
         requests.push({
           company: ip.company_name,
           email: ip.email,
@@ -364,7 +364,7 @@ export default function Requests() {
           created_at: ip.created_at,
           status: ip.status ?? "pending",
           partner_uuid: ip.partner_uuid,
-          uuid: ip.uuid,
+          uuid: ip.uuid ?? "",
           ...ip
         })
       }

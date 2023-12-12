@@ -1230,21 +1230,21 @@ const usePartners = () => {
 
       const result = await response.json();
 
-      console.log("Result from getting IP status", result);
+      console.log("SUBMITTED IP DETAILS", result);
 
       setProcessing(false);
 
       if (result?.success) {
-        const message = result?.data['message'];
+        const data = result?.data;
 
-        if(!message){
+        if(!data){
 
           //check other things
 
         }        
 
         return {
-          message
+          data
         };
         
       }

@@ -37,7 +37,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
                                         status: "", change_order_request_type: "", reasons_for_rejection: ""});
 
     const [approvals, setApprovals] = useState({change_shortcode: "", add_shortcode: "", add_vas_license: "", 
-                                                change_address: "", add_new_service: ""})
+                                                change_address: "", add_new_service: ""});
   
 
     const [{ errors, setError, clearErrors }] = useErrors(null);

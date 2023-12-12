@@ -66,21 +66,20 @@ export default function IPCorrectionModal({rejected, closeAction}){
     }
 
     const filesMap = {
-        "service-details": "Service details",
-        "aggregator-and-vas-requirements": "Aggregator requirement",
-        "authorization-letter": "Authentication Letter",
-        "video-file": "Authentication Letter",
-        "probate-of-will": "Probate of Will",
-        "licensing-period": "Licensing Period",
-        "video-file": "Authorization Video",
-        "agreement-letter-btw-content-and-vas-partner": "Agreement with VAS Partner",
-        "agreement-letter-btw-content-and-agent": "Agreement with Agent",
-        "agreement-letter-btw-content-and-record-label": "Agreement with Record Label",
-        "agreement-letter-btw-content-and-music-composer": "Agreement with Music Composer",
-        "agreement-letter-btw-record-label-and-vas-partner": "Agreement between Record Label and VAS Partner",
+        "service_details": "Service details",
+        "aggregator_and_vas_requirements": "Aggregator requirement",
+        "authorization_letter": "Authentication Letter",
+        "probate_of_will": "Probate of Will",
+        "licensing_period": "Licensing Period",
+        "video_file": "Authorization Video",
+        "agreement_letter_btw_content_and_vas_partner": "Agreement with VAS Partner",
+        "agreement_letter_btw_content_and_agent": "Agreement with Agent",
+        "agreement_letter_btw_content_and_record_label": "Agreement with Record Label",
+        "agreement_letter_btw_content_and_music_composer": "Agreement with Music Composer",
+        "agreement_letter_btw_record_label_and_vas_partner": "Agreement between Record Label and VAS Partner",
         "content_creator_id_front": "Content Creator ID",
         "agent_id_front": "Agent ID",
-        "other-content-proof-of-ownership": "Additional Proof"
+        "other_content_proof_of_ownership": "Additional Proof"
     }
 
     const [files, setFiles] = useState({ });
@@ -147,7 +146,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
                                                 {filesMap[rejection]}
                                             </p>
                                             {
-                                                rejection == "video-file" ? 
+                                                rejection == "video_file" ? 
                                                 (<FileInput
                                                     id="authorization_video"
                                                     doc_id="authorization_video_doc"
@@ -165,7 +164,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
                                                     doc_id={`${rejection}_doc`}
                                                     label={filesMap[rejection]}
                                                     value={files[rejection]}
-                                                    onChange={(e) => uploadFile([rejection], e.target.value)}
+                                                    onChange={(e) => uploadFile(rejection, e.target.value)}
                                                     errors={errors}
                                                     disabled={false}
                                                     style="flex-1"

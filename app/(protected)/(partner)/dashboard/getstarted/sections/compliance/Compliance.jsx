@@ -16,12 +16,13 @@ import { NextEndPoints } from "@/app/modules/endpoints";
 import { useState, useEffect } from "react";
 import { Util } from "@/utils/utility";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { forms, company_type } from "@/app/modules/constants";
+import { forms, company_type, questionnaire_pending } from "@/app/modules/constants";
 import {
   scrollToTop,
   ValidateField,
   fieldRequired,
 } from "@/app/modules/utilities";
+
 
 function Compliance() {
   const { processing, setProcessing, setForm, moveToNextForm, moveToPrevForm } =
@@ -45,6 +46,7 @@ function Compliance() {
   const [retryCAC, setRetryCAC] = useState(false);
   const [checkingCAC, setCheckingCAC] = useState(false);
   const [lastCACChecked, setLastCACChecked] = useState(null);
+
 
   const [data, setData] = useState({
     partner_uuid: "",
@@ -360,6 +362,8 @@ function Compliance() {
     setProcessing(false);
     if (retryTIN) verifyTIN(data.tin_no);
   }, [retryTIN]);
+
+  
 
   const Retry = (type) => {
     if (type === "tin") {

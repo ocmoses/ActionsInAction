@@ -39,7 +39,7 @@ export const getAllPartners = async (page, perPage, contractStatus) => {
     }
     const result = await response.json();
     if (result?.success) {
-      const partners = result.data?.partners.data;
+      const partners = result.data?.partners;
       const navigation = {
         current_page: result?.data?.partners?.current_page,
         first_page_url: result?.data?.partners?.first_page_url,

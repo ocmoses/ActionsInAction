@@ -4,6 +4,7 @@ interface Props {
   fill?: string;
   iconClass?: string;
   size?: any;
+  initials?: string;
 }
 import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
@@ -656,6 +657,40 @@ export function DecreaseArrow({ iconClass }: Props) {
         data-name="8-Arrow Down"
         d="M30,15V28.59L1.71.29.29,1.71,28.59,30H16v2H31a1,1,0,0,0,1-1V15Z"
       />
+    </svg>
+  );
+}
+
+export function CompanyInitial({ initials}: Props) {
+  return (
+    <div
+      className="w-12 h-12 bg-white/80 rounded-full flex flex-col justify-center items-center text-md text-gray-700 font-bold"
+    >
+      <span>{initials}</span>      
+    </div>
+  );
+}
+
+export function CompanyLogo({ initials}: Props) {
+  return (
+    <div
+      className="w-24 h-24 bg-white/10 border-1 border-white/40 rounded-full flex flex-col justify-center items-center text-2xl text-white/80 font-bold"
+    >
+      <span>{initials}</span>      
+    </div>
+  );
+}
+
+export function DialIcon(){
+  return (
+    <svg fill="#fff" viewBox="-10 0 46 46"  className="w-8 h-8"
+        stroke="black" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+        <g id="SVGRepo_iconCarrier"> 
+            <path id="_27.Phone" data-name="27.Phone" d="M33,47H15a4,4,0,0,1-4-4V5a4,4,0,0,1,4-4H33a4,4,0,0,1,4,4V43A4,4,0,0,1,33,47ZM35,5a2,2,0,0,0-2-2H15a2,2,0,0,0-2,2V9H35Zm0,6H13V37H35Zm0,28H13v4a2,2,0,0,0,2,2H33a2,2,0,0,0,2-2ZM24,44a2,2,0,1,1,2-2A2,2,0,0,1,24,44ZM17,14h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H17a1,1,0,0,1-1-1V15A1,1,0,0,1,17,14Zm0,7h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H17a1,1,0,0,1-1-1V22A1,1,0,0,1,17,21Zm0,7h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H17a1,1,0,0,1-1-1V29A1,1,0,0,1,17,28Zm6-14h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H23a1,1,0,0,1-1-1V15A1,1,0,0,1,23,14Zm0,7h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H23a1,1,0,0,1-1-1V22A1,1,0,0,1,23,21Zm0,7h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H23a1,1,0,0,1-1-1V29A1,1,0,0,1,23,28Zm6-14h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H29a1,1,0,0,1-1-1V15A1,1,0,0,1,29,14Zm0,7h2a1,1,0,0,1,1,1v2a1,1,0,0,1-1,1H29a1,1,0,0,1-1-1V22A1,1,0,0,1,29,21ZM21,5h6a1,1,0,0,1,0,2H21a1,1,0,0,1,0-2Z" transform="translate(-11 -1)" fill-rule="evenodd">
+            </path> 
+        </g>
     </svg>
   );
 }

@@ -45,13 +45,15 @@ export default function ComplianceDrawer({
               <div className="flex flex-none justity-between items-center w-full pl-4 pr-2 pt-6 mb-4">
                 <div className="flex-1 flex justity-start gap-3 items-center ">
                   <div className="flex justify-center items-center w-[40px] h-[40px] text-[#FFCB03] rounded-full bg-white/20">
-                    {category?.icon && (
+                    {category?.icon ? (
                       <Image
                         src={category.icon}
                         alt=""
                         width={18}
                         height={18}
                       />
+                    ) : (
+                      <></>
                     )}
                   </div>
                   <div className="flex flex-col">
@@ -83,6 +85,7 @@ export default function ComplianceDrawer({
                   </svg>
                 </div>
               </div>
+              
               {children}
             </div>
           </section>

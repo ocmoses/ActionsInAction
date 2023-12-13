@@ -16,10 +16,13 @@ function FileInput({
   errors,
   disabled,
   hidedelete,
+  style
 }) {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [doc, setDoc] = useState(null);
+
+  const [allowedTypes, setAllowedTypes] = useState(null);
 
   const [{ setError, removeError }] = useErrors(null);
 
@@ -63,6 +66,20 @@ function FileInput({
       });
     }
   }, [value, file]);
+
+  useEffect(() => {
+
+    let allowed = [];
+    
+    const validImageTypes = allowedtypes ?? ["application/pdf"];  
+    for(const file of validImageTypes){
+      allowed.push(file.split("/")[1]);
+    }
+    setAllowedTypes(allowed.join(", "));
+
+  },[]);
+
+  
   const handleFile = (e) => {
     const validImageTypes = allowedtypes ?? ["application/pdf"];
     const maxFileSize = maxSize ?? 5 * 1024 * 1024;
@@ -71,7 +88,7 @@ function FileInput({
     const fileType = file["type"];
     const filesize = file["size"];
     const fsize = filesize / 1024 / 1024;
-    const max = maxFileSize / 1024 / 1024;
+    const max = maxFileSize / 1024 / 1024;    
 
     if (validImageTypes.includes(fileType)) {
       if (filesize > maxFileSize) {
@@ -85,7 +102,7 @@ function FileInput({
         setFile(file);
       }
     } else {
-      setError({ [id]: "Only PDF files are allowed" });
+      setError({ [id]: `Only ${allowedTypes} files are allowed` });
       file = null;
     }
   };
@@ -101,7 +118,7 @@ function FileInput({
   };
 
   return (
-    <div className={margin ? margin + " " : "mb-0 relative"}>
+    <div className={`${margin ? margin + " " : "mb-0 relative"} ${style ? style : ""}`}>
       <div
         className={
           (bg ? bg + " " : "bg-[#212121] ") +
@@ -134,7 +151,7 @@ function FileInput({
                         <p className="text-[#999999]">
                           Drag and drop or choose file
                         </p>
-                        <p className="text-[#999999]">PDF file (5mb max)</p>
+                        <p className="text-[#999999]">{allowedTypes?.toUpperCase()} file ({maxSize ? maxSize/(1024 * 1024) + 'mb' :'5mb'} max)</p>
                       </>
                     )}
                     {errors[id] && (

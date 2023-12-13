@@ -11,23 +11,25 @@ import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import RemoteEndPoints, { NextEndPoints } from "../../../../../app/modules/endpoints";
+import RemoteEndPoints, {
+  NextEndPoints,
+} from "../../../../../app/modules/endpoints";
 import { PageRoutes } from "@/app/modules/menu";
 import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
+
+import LoginOtp from "./otp/LoginOtp";
 
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
 
-  
-
   const { resendEmail } = usePartners();
   const { tmpuser, setTmpUser } = useUsers();
+  //console.log("the tempUser is ", tmpuser)
   const { processing, setProcessing, setForm } = useProcessing();
-  const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
-    {}
-  );
+  const [loginProcessing, setLoginProcessing] = useState(false);
+  const [{ errors, setError, removeError, clearErrors, success }] = useErrors({} );
   const { clearStore } = useLogout();
 
   const [data, setData] = useState({
@@ -38,19 +40,24 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "moses.ocho@mtn.com",
-    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+        : "sunaf4real@gmail.com",
+    password: process.env.NODE_ENV === "production" ? "" : ".$SUNday2009",
   });
+  
   const [notVerified, setNotVerified] = useState(null);
 
+  ///////afoo///////////////////////////////////////////////////////////
+  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(false);
+  const [sessionItems, setSessionItems] = useState();
+  /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     
     setForm(null);
     clearErrors();
     setNotVerified(null);
-    setProcessing(false);
   }, []);
+
   const handleFormChange = (e) => {
     removeError(e.target.id);
     setData((prevState) => ({
@@ -58,6 +65,7 @@ function Login({ params }) {
       [e.target.id]: e.target.value,
     }));
   };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     clearErrors();
@@ -69,7 +77,7 @@ function Login({ params }) {
       return setError({ password: `Please enter your password` });
     }
     clearStore();
-    setProcessing(true);
+    setLoginProcessing(true);
     const response = await fetch(NextEndPoints.LOGIN, {
       method: "POST",
       body: JSON.stringify({
@@ -80,46 +88,15 @@ function Login({ params }) {
     });
     const result = await response.json();
 
-    console.log("result", result);
-
-    // result.data.data.partners[0].categories[0].compliance_approvals.push({
-    //   "id": 104,
-    //   "uuid": "9bcfff39-060e-4cfb-9007-e77b1c2e9259",
-    //   "partner_uuid": "d68d5393-e84a-4f57-8586-a55f97cde68d",
-    //   "category_uuid": "4f4f8e28-91ed-11ed-bd03-acde48001122",
-    //   "category_stage": "shortcode",
-    //   "admin_user": {
-    //       "id": 28,
-    //       "uuid": "8ca51afd-3cf3-4ab0-8c26-a122b3ef0a72",
-    //       "username": "mosesoc",
-    //       "fullname": "Moses",
-    //       "email": "moses.ocho@mtn.com",
-    //       "department": "Charging VAS and Financial Services NG",
-    //       "department_code": "LEGA",
-    //       "role": "be85a2d2-ed8c-11ed-8379-acde48001122",
-    //       "created_at": "2023-06-13T12:19:20.000000Z",
-    //       "updated_at": "2023-06-13T12:19:20.000000Z"
-    //   },
-    //   "field": "shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb",
-    //   "status": "approved",
-    //   "feedback": "Shortcodes approved",
-    //   "admin_department": "SPRM",
-    //   "created_by": "8ca51afd-3cf3-4ab0-8c26-a122b3ef0a72",
-    //   "updated_by": null,
-    //   "created_at": "2023-09-26T09:07:27.000000Z",
-    //   "updated_at": "2023-09-26T09:07:27.000000Z"
-    // });
-
-    // result.data.data.partners[0].categories[0]
-    //       .category_field_approval_status.shortcodes[0]["shortcodes"] = "approved";
+    //console.log("result", result);
 
     const { data: loginData, error: loginError } = result;
     if (!loginData) {
-      setProcessing(false);
+      setLoginProcessing(false);
       return setError({ login: loginError /*"Authentication failed"*/ });
     }
     if (!loginData.success) {
-      setProcessing(false);
+      setLoginProcessing(false);
       if (loginData.data?.email_verified === "no") {
         setNotVerified(loginData.data);
       }
@@ -128,15 +105,18 @@ function Login({ params }) {
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User:  loginData?.data,
-      token:  loginData?.data?.login_token?.access_token,
+      User: loginData?.data,
+      token: loginData?.data?.login_token?.access_token,
       type: "user",
-      role: loginData?.data['login-user-role']
+      role: loginData?.data["login-user-role"],
     };
-    
-    
-    app.setStoreStates(serverSession, loginData?.categories, "login");
 
+    app.setStoreStates(serverSession, loginData?.categories, "login");
+    setGetPartnerLoginOtp(true);
+    setSessionItems(result);
+  };
+
+  const logInWithAuthZero = () => {
     const redirect =
       params &&
       params?.length &&
@@ -144,106 +124,119 @@ function Login({ params }) {
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
         : PageRoutes.dashboard;
+    //: getOtp();
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    return router.replace(redirect);
+    router.push(redirect);
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   };
 
   return (
     <>
-      <form method="POST" onSubmit={handleLogin}>
-        <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
-          <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
-            <span
-              style={{
-                fontStyle: "normal",
-                fontWeight: 700,
-                fontSize: "36px",
-                lineHeight: "40px",
-              }}
-            >
-              Y’ello
-              {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
-            </span>
-            <Image
-              src="/assets/icons/yello-hand.svg"
-              alt="Yello"
-              priority
-              width={36}
-              height={36}
-              className="h-auto animate-bounce"
-            />
-          </h1>
-          <p
-            className="font-hairline flex-wrap mb-16"
-            style={{
-              fontStyle: "normal",
-              fontWeight: 400,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#999999",
-            }}
-          >
-            {tmpuser?.email
-              ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
-              : "Welcome back! please enter your details"}
-          </p>
-          <div className="mb-6">
-            {!success && errors && <FormErrors error={errors["login"]} />}{" "}
-            {!success && notVerified && (
+      {!getPartnerLoginOtp && (
+        <form method="POST" onSubmit={handleLogin}>
+          <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
+            <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
               <span
-                className="text-[#999999] cursor-pointer hover:text-white/70"
-                onClick={() => resendEmail(notVerified?.email, "new")}
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  fontSize: "36px",
+                  lineHeight: "40px",
+                }}
               >
-                Click here to resend verification link
+                Y’ello
+                {tmpuser?.email && <span>, {tmpuser?.first_name}</span>}
               </span>
-            )}
-            <>
-              {errors && <FormErrors error={errors["verify"]} />}
-              {success && <FormErrors success={success} />}
-            </>
-          </div>
-          <div className="w-full">
-            <div className="flex flex-col">
-              <TextInput
-                id="email"
-                label="Email address"
-                value={data.email}
-                onChange={handleFormChange}
-                errors={errors}
+              <Image
+                src="/assets/icons/yello-hand.svg"
+                alt="Yello"
+                priority
+                width={36}
+                height={36}
+                className="h-auto animate-bounce"
               />
-              <TextInput
-                id="password"
-                label="Password"
-                type="Password"
-                value={data.password}
-                onChange={handleFormChange}
-                errors={errors}
-              />
-            </div>
-            <Link
-              href={`${PageRoutes.passwordreset}/reset`}
-              className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+            </h1>
+            <p
+              className="font-hairline flex-wrap mb-16"
               style={{
                 fontStyle: "normal",
                 fontWeight: 400,
-                fontSize: "14px",
-                lineHeight: "20px",
-                textDecorationLine: "underline",
+                fontSize: "16px",
+                lineHeight: "24px",
+                color: "#999999",
               }}
             >
-              Reset your password?
-            </Link>
-            {processing ? (
-              <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
-              <Button label="Continue" />
-            )}
+              {tmpuser?.email
+                ? `Welcome to the MTN Partner Portal, ${tmpuser.first_name}! Please login to proceed`
+                : "Welcome back! please enter your details"}
+            </p>
+            <div className="mb-6">
+              {!success && errors && <FormErrors error={errors["login"]} />}{" "}
+              {!success && notVerified && (
+                <span
+                  className="text-[#999999] cursor-pointer hover:text-white/70"
+                  onClick={() => resendEmail(notVerified?.email, "new")}
+                >
+                  Click here to resend verification link
+                </span>
+              )}
+              <>
+                {errors && <FormErrors error={errors["verify"]} />}
+                {success && <FormErrors success={success} />}
+              </>
+            </div>
+            <div className="w-full">
+              <div className="flex flex-col">
+                <TextInput
+                  id="email"
+                  label="Email address"
+                  value={data.email}
+                  onChange={handleFormChange}
+                  errors={errors}
+                />
+                <TextInput
+                  id="password"
+                  label="Password"
+                  type="Password"
+                  value={data.password}
+                  onChange={handleFormChange}
+                  errors={errors}
+                />
+              </div>
+              <Link
+                href={`${PageRoutes.passwordreset}/reset`}
+                className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Reset your password?
+              </Link>
+              {loginProcessing ? (
+                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+              ) : (
+                <>
+                  <Button label="Continue" />
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </form>
-      
-      
+        </form>
+      )}
+
+      {getPartnerLoginOtp && (
+        <LoginOtp
+          sessionItems={sessionItems}
+          logInWithAuthZero={logInWithAuthZero}
+        />
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { apiURL } from "@/app/modules/constants";
 
-const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
+const NOTIFICATION_BASE = "https://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -8,6 +8,7 @@ export const EndPointHeaders = {
   redirect: "follow",
   referrerPolicy: "no-referrer",
 };
+
 export const NextEndPoints = {
   LOGIN: "/api/next/users/login",
   LOGOUT: "/api/next/users/logout",
@@ -27,6 +28,8 @@ export const NextEndPoints = {
 
 const RemoteEndpoints = {
   LOGIN: `${apiURL}/v2/auth/login`,
+  ACCEPT_AUTH0_OTP: `${apiURL}/v2/auth/accept-otp`,
+  RESEND_AUTH0_OTP: `${apiURL}/v2/auth/resend-otp`,
   LOGOUT: `${apiURL}/v2/auth/logout`,
   LOGIN_ADMIN: `${apiURL}/v2/admin/login`,
   LOGOUT_ADMIN: `${apiURL}/v2/admin/logout`,
@@ -99,19 +102,69 @@ const RemoteEndpoints = {
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
-  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid`,
-  DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:type`,
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid/:contract_id`, 
+  DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/:type`,
   GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
-
+  GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/contract/partner-contract-currently-being-signed/:partner_uuid`,
+  
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
 
 
 //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
+  PARTNER_LIST: `${apiURL}/v2/reporting/partner-reports`,
   PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
   PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
   PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
   UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
 
+  //questionnaire
+  GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
+  SEND_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/submit-answered-questionnaire`,
+  GET_QUESTIONNAIRE_STATUS: `${apiURL}/v2/questionnaire/get-partner-questionnaire-status/:partner-uuid`,
+  GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
+  APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`,
+
+//service integration
+  DSM_ENDPOINT: `/dashboard/dsm`,
+
+//Grace Period
+  PARTNER_LICENSE_VALIDITY_REMAINDER: `${apiURL}/v2/contract/license/get-license-validity-remainder/`,
+  PARTNER_LICENSE_GRACE_PERIOD_STATUS: `${apiURL}/v2/contract/license/get-partner-license-grace-period-status/`,
+  SUBMIT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/contract/license/submit-license-grace-period-request`,
+
+  //Revenue share
+  GET_ALL_REVENUE_SHARE: `${apiURL}/v2/admin/get-all-revenue-share-request`,
+  APPROVE_REVENUE_SHARE: `${apiURL}/v2/admin/approve-revenue-share-request`,
+
+  //change order
+  GET_ALL_SHORTCODES: `${apiURL}/v2/contract/get-partner-shortcodes/:partner-uuid`,
+  REQUEST_CHANGE: `${apiURL}/v2/contract/change-order/submit-change-order-request`,
+  GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`,
+  GET_ALL_CHANGE_ORDER_REQUESTS: `${apiURL}/v2/admin/get-all-change-order-request`,
+  APPROVE_OR_REJECT_CHANGE_ORDER: `${apiURL}/v2/admin/approve-change-order-request`,
+  GET_ALL_IP_REQUESTS: `${apiURL}/v2/admin/get-all-ip-request`,
+
+  //IP
+  GET_IP_STATUS: `${apiURL}/v2/ip/get-submitted-ip-details-of-partner/:partner_uuid`,
+  GET_IP_COMPLETION_PERCENTAGE: `${apiURL}/v2/ip/get-partner-ip-progress-percentage/:partner_uuid`,
+  SUBMIT_SERVICE_DETAILS: `${apiURL}/v2/ip/submit-service-details`,
+  IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
+  SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
+  APPROVE_REJECT_IP_DETAILS: `${apiURL}/v2/admin/approve-ip-request`,
+
+  GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
+  APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,
+  CHECK_PARTNER_LICENSE_EXPIRATION: `${apiURL}/v2/contract/license/check-partner-license-expiration/`,
+  SUBMIT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/contract/license/submit-license-renewal-request`,
+
+  ACCEPT_BILATERAL_ANNEXURES: `${apiURL}/v2/contract/accept-or-sign-contract-annexure`,
+  GET_PARTNER_LICENSE_RENEWAL_STATUS: `${apiURL}/v2/contract/license/get-partner-license-renewal-status/`,
+  GET_ALL_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/get-all-license-renewal-request`,
+  APPROVE_REJECT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/approve-reject-license-renewal-request`,
+  GET_ALL_PARTNER_SHORTCODES: `${apiURL}/v2/admin/get-all-partner-shortcode/`,
+  APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
+  GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
+  GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
 }
 export default RemoteEndpoints

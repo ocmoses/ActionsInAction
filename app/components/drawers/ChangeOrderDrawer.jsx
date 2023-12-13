@@ -235,7 +235,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex justify-center items-center space-x-4">
                                             {
-                                                (request.change_shortcode.status_CSH == "approved" || approvals.change_shortcode == "approved") ? <Approved /> : (request.change_shortcode.status_CSH || approvals.change_shortcode == "rejected") ? <Declined /> : <ApprovalActions />
+                                                (request.change_shortcode.status_CSH == "approved" || approvals.change_shortcode == "approved") ? <Approved /> : (request.change_shortcode.status_CSH || approvals.change_shortcode == "rejected") ? <Declined /> : ApprovalActions()
                                             }                                       
                                         </div>
 
@@ -313,7 +313,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex justify-center items-center space-x-4">
                                             {
-                                                (request.add_shortcode.status_ASH == "approved"  || approvals.add_shortcode == "approved") ? <Approved /> : (request.add_shortcode.status_ASH == "rejected" || approvals.add_shortcode == "rejected") ? <Declined /> : <ApprovalActions />
+                                                (request.add_shortcode.status_ASH == "approved"  || approvals.add_shortcode == "approved") ? <Approved /> : (request.add_shortcode.status_ASH == "rejected" || approvals.add_shortcode == "rejected") ? <Declined /> : ApprovalActions()
                                             } 
                                             
                                         </div>
@@ -392,7 +392,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex justify-center items-center space-x-4">
                                             {
-                                                (request.add_vas_license.status_AVL == "approved" || approvals.add_vas_license == "approved") ? <Approved /> : (request.add_vas_license.status_AVL == "rejected" || approvals.add_vas_license == "rejected" )? <Declined /> : <ApprovalActions />
+                                                (request.add_vas_license.status_AVL == "approved" || approvals.add_vas_license == "approved") ? <Approved /> : (request.add_vas_license.status_AVL == "rejected" || approvals.add_vas_license == "rejected" )? <Declined /> : ApprovalActions()
                                             } 
                                             
                                         </div>
@@ -479,7 +479,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex justify-center items-center space-x-4">
                                             {
-                                                (request.change_address.status_CAD == "approved"  || approvals.change_address == "approved") ? <Approved /> : (request.change_address.status_CAD == "rejected"  || approvals.change_address == "rejected") ? <Declined /> : <ApprovalActions />
+                                                (request.change_address.status_CAD == "approved"  || approvals.change_address == "approved") ? <Approved /> : (request.change_address.status_CAD == "rejected"  || approvals.change_address == "rejected") ? <Declined /> : ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -547,7 +547,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex justify-center items-center space-x-4">
                                             {
-                                                (request.add_new_service.status_ANS == "approved"  || approvals.add_new_service == "approved") ? <Approved /> : (request.add_new_service.status_ANS == "rejected" || approvals.add_new_service == "rejected") ? <Declined /> : <ApprovalActions />
+                                                (request.add_new_service.status_ANS == "approved"  || approvals.add_new_service == "approved") ? <Approved /> : (request.add_new_service.status_ANS == "rejected" || approvals.add_new_service == "rejected") ? <Declined /> : ApprovalActions()
                                             } 
                                             
                                         </div>

@@ -189,7 +189,7 @@ export const ShortCodeFlyOut = ({
               </div>
 
               <button
-                className="h-[40px] w-[40px] flex justify-center items-center text-[18px] rounded-[100%] hover:bg-white/20 transition ease-in-out delay-150"
+                className="h-[40px] w-[40px] flex justify-center bg-transparent items-center text-[18px] rounded-[100%] text-gray-100 hover:bg-white/20 transition ease-in-out delay-150"
                 onClick={() => closeShortCodeFlyOut()}
               >
                 X

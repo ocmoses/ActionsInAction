@@ -164,9 +164,9 @@ export default function GetStarted({ type }) {
         console.log("response.status", response.status);
         console.log("response.error", response.error);
         if (
-          response.message == ip_pending ||
-          response.error == ip_pending ||
-          response.message == undefined
+          response?.message == ip_pending ||
+          response?.error == ip_pending ||
+          response?.message == undefined
         ) {
           setIPAlert(true);
         }

@@ -56,11 +56,12 @@ function Review({contract_id}){
     const requestUpdate = async () => {
         
         setProcessing(true);
+        
+        setSuccessToast(true);
 
         setTimeout(() => {
 
             setProcessing(true);
-            setSuccessToast(true);
             setRequestChangesModal(false);
             router.push("/dashboard/settings/company/contracts/" + contract_id)
 

@@ -60,6 +60,8 @@ export default function IPCorrectionModal({rejected, closeAction}){
 
             closeAction();
 
+            location.reload();
+
         }, 2000)
 
         

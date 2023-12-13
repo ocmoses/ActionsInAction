@@ -159,6 +159,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         default: break;
                         
                     }
+
+                    setDeclining(false);
                 })
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
 
@@ -240,6 +242,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         default: break;
                         
                     }
+
+                    setDeclining(false)
                 })
                 .catch(error => {console.log(error); setError({error: "An error occurred"})});
             
@@ -552,7 +556,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.AUTHORIZATION_LETTER] == "approved" ? <Approved /> : 
                                                 request['authorization-letter'].authorization_letter_status == "rejected" || 
                                                     approvals[expansion.AUTHORIZATION_LETTER] == "rejected" ? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -623,7 +627,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.LICENSE_PERIOD] == "approved" ? <Approved /> : 
                                                 request['licensing-period'].license_period_status == "rejected" || 
                                                     approvals[expansion.LICENSE_PERIOD] == "rejected" ? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -696,7 +700,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.VIDEO_FILE] == "approved" ? <Approved /> : 
                                                 request['video-file'].authorization_video_status == "rejected" | 
                                                     approvals[expansion.VIDEO_FILE] == "rejected" ? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -769,7 +773,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.MEANS_OF_ID] == "approved" ? <Approved /> : 
                                                 request['means-of-identification'].means_of_id_status == "rejected" || 
                                                     approvals[expansion.MEANS_OF_ID] == "rejected" ? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -845,7 +849,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                         approvals[expansion.AGENT_ID] == "approved" ? <Approved /> : 
                                                     request['means-of-identification'].means_of_id_status == "rejected" || 
                                                         approvals[expansion.AGENT_ID] == "rejected"? <Declined /> : 
-                                                    <ApprovalActions />
+                                                    ApprovalActions()
                                                 }                                             
                                             </div>
 
@@ -923,7 +927,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                         approvals[expansion.PROBATE_OF_WILL] == "approved"? <Approved /> : 
                                                     request['probate-of-will'].probate_of_will_status == "rejected" || 
                                                         approvals[expansion.PROBATE_OF_WILL] == "rejected"? <Declined /> : 
-                                                    <ApprovalActions />
+                                                    ApprovalActions()
                                                 }                                             
                                             </div>
 
@@ -999,7 +1003,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.AGREEMENT_WITH_VAS_PARTNER] == "approved" ? <Approved /> : 
                                                 request['agreement-letter-btw-content-and-vas-partner']?.agreement_letter_content_and_vas_partner_status == "rejected" || 
                                                     approvals[expansion.AGREEMENT_WITH_VAS_PARTNER] == "rejected"? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 
@@ -1075,7 +1079,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                         approvals[expansion.AGREEMENT_WITH_AGENT] == "approved"? <Approved /> : 
                                                     request['agreement-letter-btw-content-and-agent'].agreement_letter_content_and_agent_status == "rejected" || 
                                                         approvals[expansion.AGREEMENT_WITH_AGENT] == "approved" ? <Declined /> : 
-                                                    <ApprovalActions />
+                                                    ApprovalActions()
                                                 }                                             
                                             </div>
 
@@ -1106,7 +1110,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
                                         <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
                                     </svg>
-                                    <span className="text-white/80 ml-2">Agreement with Agent</span>
+                                    <span className="text-white/80 ml-2">Agreement with Record Label</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
                                             onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_RECORD_LABEL)}}>
@@ -1129,8 +1133,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                             
                                             <p className="flex justify-between">
                                                 <span className="text-white/60 ">Agreement with Record Label</span>
-                                                <span className="text-mtn" >{request['agreement-letter'].agreement_letter_btw_content_and_record_label ? 
-                                                    <span onClick={() => setFileViewer((request['agreement-letter'].agreement_letter_btw_content_and_record_label))} 
+                                                <span className="text-mtn" >{request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label ? 
+                                                    <span onClick={() => setFileViewer((request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label))} 
                                                             className="text-xs flex space-x-1 items-end cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -1152,7 +1156,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                         approvals[expansion.AGREEMENT_WITH_RECORD_LABEL] == "approved" ? <Approved /> : 
                                                     request['agreement-letter-btw-content-and-record-label'].agreement_letter_btw_content_and_record_label == "rejected" || 
                                                         approvals[expansion.AGREEMENT_WITH_RECORD_LABEL] == "rejected" ? <Declined /> : 
-                                                    <ApprovalActions />
+                                                    ApprovalActions()
                                                 }                                             
                                             </div>
 
@@ -1229,7 +1233,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                         approvals[expansion.AGREEMENT_WITH_MUSIC_COMPOSER] == "approved" ? <Approved /> : 
                                                     request['agreement-letter-btw-content-and-music-composer'].agreement_letter_content_and_music_composer_status == "rejected" || 
                                                         approvals[expansion.AGREEMENT_WITH_MUSIC_COMPOSER] == "rejected" ? <Declined /> : 
-                                                    <ApprovalActions />
+                                                    ApprovalActions()
                                                 }                                             
                                             </div>
 
@@ -1304,7 +1308,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                                     approvals[expansion.ADDITIONAL_PROOF] == "approved" ? <Approved /> : 
                                                 request['other-content-proof-of-ownership'].other_content_proof_of_ownership_status == "rejected" || 
                                                     approvals[expansion.ADDITIONAL_PROOF] == "rejected" ? <Declined /> : 
-                                                <ApprovalActions />
+                                                ApprovalActions()
                                             }                                             
                                         </div>
 

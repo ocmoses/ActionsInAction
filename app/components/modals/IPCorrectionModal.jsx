@@ -52,11 +52,11 @@ export default function IPCorrectionModal({rejected, closeAction}){
 
         setSubmitting(true);
 
+        setSuccessToast(true);
+
         setTimeout(() => {
 
             setSubmitting(false);
-
-            setSuccessToast(true);
 
             closeAction();
 

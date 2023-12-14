@@ -74,7 +74,10 @@ export const ShortCodeFlyOut = ({
 
   const [singlePartnerShortcode, setSinglePartnerShortcode] = useState();
   const [approvalStatusList, setApprovalStatusList] = useState([]);
-  
+  let [success, setSuccess] = useState({
+    successMessage: "",
+    successToast: false,
+  });
   const get_single_partner_shortcode = async () => {
     try {
       let partner_shortcode_response = await getSinglePartnerShortcodes(selectedRequest.partner_uuid);
@@ -92,8 +95,10 @@ export const ShortCodeFlyOut = ({
       } else {
         console.log("No data available in the response");
       }
+      success.successToast=false;
     } catch (error) {
       console.error("Error fetching single partner shortcode:", error);
+      success.successToast=false;
     } 
   };
 
@@ -122,10 +127,7 @@ export const ShortCodeFlyOut = ({
     shortcode: null,
     status: "",
   });
-  let [success, setSuccess] = useState({
-    successMessage: "",
-    successToast: false,
-  });
+
 
   const [sendAction, setSendAction] = useState(false);
   const [eachCode, setEachCode] = useState(null);
@@ -153,9 +155,6 @@ export const ShortCodeFlyOut = ({
       success.successMessage=response.data.data.message
       success.successToast=true;
       get_single_partner_shortcode();
-      setTimeout(() => {
-        success.successToast=false;
-      }, 3000);
 
     } catch (err) {
       setSendAction(false);

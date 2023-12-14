@@ -624,7 +624,6 @@ export const LicenseValidityTopAlert = ({
 
     useEffect(() => {
     checkPartnerLicenseExpiration();
-    alert(licenseValidityDaysLeft);
   }, [licenseValidityDaysLeft]);
 
   return (

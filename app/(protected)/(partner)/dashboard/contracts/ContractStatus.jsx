@@ -89,7 +89,7 @@ export default function ContractStatus({dynamicData}) {
             <div className="my-8 max-w-6xl">  
                 <CallToAction
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-                    message="Your contract has expired. Click here to renew"
+                    message={`${contractStatus == contract_statuses.EXPIRED ? "Your contract has expired." : "Your contract is expiring soon."} Click here to renew`}
                     description="Outline contract conditions and give contract warrantees."
                     onclick={() => setShowContractCategoryModal(true)}
                     button={'Renew your contract'}

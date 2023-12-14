@@ -40,7 +40,6 @@ export default function BilateralAnnexures({params}){
     const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: contract_id, 
 
                                         annexure_c: "", 
-
                                         annexure_e_four: "", annexure_e_five_a: "",
                                         annexure_e_five_b: "", annexure_e_five_c: "", 
                                         annexure_e_five_d: "", annexure_e_five_e: "", 
@@ -164,6 +163,7 @@ export default function BilateralAnnexures({params}){
         if(response.error){
             setError({error: response.error});
         }else{
+            setSuccessDisplay(true);
             router.push(`/dashboard/contracts/execution/${contract_id}`);
         }
 
@@ -173,7 +173,7 @@ export default function BilateralAnnexures({params}){
     const validateResponses = () => {
 
         for(let i in data){
-            if(data[i].trim() == ""){
+            if(!data[i] || data[i].trim() == ""){
                 setError({error: i.split("_").join(" ") + " has no response"});
                 return false;
             }
@@ -192,7 +192,48 @@ export default function BilateralAnnexures({params}){
             setError({ error: dynamic_content_response.error })
         } else {
             // console.log('dynamic_content_response', dynamic_content_response);
-            setDynamicData(dynamic_content_response.data);                
+            setDynamicData(dynamic_content_response.data);
+            
+            setData({...data, 
+                        annexure_c: dynamicData?.dynamic_details?.annexures?.annexure_c ?? "", 
+                        annexure_e_four: dynamicData?.dynamic_details?.annexures?.annexure_e_four ?? "", 
+                        annexure_e_five_a: dynamicData?.dynamic_details?.annexures?.annexure_e_five_a ?? "",
+                        annexure_e_five_b: dynamicData?.dynamic_details?.annexures?.annexure_e_five_b ?? "", 
+                        annexure_e_five_c: dynamicData?.dynamic_details?.annexures?.annexure_e_five_c ?? "", 
+                        annexure_e_five_d: dynamicData?.dynamic_details?.annexures?.annexure_e_five_d ?? "", 
+                        annexure_e_five_e: dynamicData?.dynamic_details?.annexures?.annexure_e_five_e ?? "", 
+                        annexure_e_five_f: dynamicData?.dynamic_details?.annexures?.annexure_e_five_f ?? "", 
+                        annexure_e_five_g: dynamicData?.dynamic_details?.annexures?.annexure_e_five_g ?? "",
+                        annexure_e_five_h: dynamicData?.dynamic_details?.annexures?.annexure_e_five_h ?? "", 
+                        annexure_e_five_i: dynamicData?.dynamic_details?.annexures?.annexure_e_five_i ?? "",
+                        annexure_e_six_a: dynamicData?.dynamic_details?.annexures?.annexure_e_six_a ?? "", 
+                        annexure_e_six_b: dynamicData?.dynamic_details?.annexures?.annexure_e_six_b ?? "",
+                        annexure_e_six_c: dynamicData?.dynamic_details?.annexures?.annexure_e_six_c ?? "", 
+                        annexure_e_six_d: dynamicData?.dynamic_details?.annexures?.annexure_e_six_d ?? "",
+                        annexure_h: dynamicData?.dynamic_details?.annexures?.annexure_h ?? "", 
+                        annexure_h_ii: dynamicData?.dynamic_details?.annexures?.annexure_h_ii ?? "" , 
+                        annexure_h_iii: dynamicData?.dynamic_details?.annexures?.annexure_h_iii ?? "" ,
+                        annexure_h_iv: dynamicData?.dynamic_details?.annexures?.annexure_h_iv ?? "",  
+                        annexure_h_v: dynamicData?.dynamic_details?.annexures?.annexure_h_v ?? "", 
+                        annexure_h_vi: dynamicData?.dynamic_details?.annexures?.annexure_h_vi ?? "" ,
+                        annexure_h_vii: dynamicData?.dynamic_details?.annexures?.annexure_h_vii ?? "",                     
+                        annexure_h_viii: dynamicData?.dynamic_details?.annexures?.annexure_h_viii ?? "", 
+                        annexure_h_ix: dynamicData?.dynamic_details?.annexures?.annexure_h_ix ?? "",
+                        annexure_h_x: dynamicData?.dynamic_details?.annexures?.annexure_h_x ?? "", 
+                        annexure_h_xi: dynamicData?.dynamic_details?.annexures?.annexure_h_xi ?? "", 
+                        annexure_h_xii: dynamicData?.dynamic_details?.annexures?.annexure_h_xii ?? "",
+                        annexure_h_xiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xiii ?? "", 
+                        annexure_h_xiv: dynamicData?.dynamic_details?.annexures?.annexure_h_xiv ?? "", 
+                        annexure_h_xv: dynamicData?.dynamic_details?.annexures?.annexure_h_xv ?? "",
+                        annexure_h_xvi: dynamicData?.dynamic_details?.annexures?.annexure_h_xvi ?? "", 
+                        annexure_h_xvii: dynamicData?.dynamic_details?.annexures?.annexure_h_xvii ?? "", 
+                        annexure_h_xviii: dynamicData?.dynamic_details?.annexures?.annexure_h_xviii ?? "",
+                        annexure_h_xix: dynamicData?.dynamic_details?.annexures?.annexure_h_xix ?? "", 
+                        annexure_h_xx: dynamicData?.dynamic_details?.annexures?.annexure_h_xx ?? "", 
+                        annexure_h_xxi: dynamicData?.dynamic_details?.annexures?.annexure_h_xxi ?? "",
+                        annexure_h_xxii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxii ?? "", 
+                        annexure_h_xxiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxiii ?? ""
+                });
         }
     }
     
@@ -2562,13 +2603,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">1.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures of Pseudonymisation and/or encryption of personal data at rest (during storage) and in transit. Provided that, in case of Pseudonymisation, the additional information for attributing the Personal Data to a specific Data Subject shall, where possible, remain under the exclusive control of the Controller.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2576,13 +2617,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">2.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring ongoing confidentiality, integrity, availability and resilience of processing systems and services</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2590,13 +2631,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">3.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring the ability to restore the availability and access to personal data in a timely manner in the event of a physical or technical incident</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2604,13 +2645,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">4.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Processes for regularly testing, assessing and evaluating the effectiveness of technical and organisational measures in order to ensure the security of the processing</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2618,13 +2659,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">5.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for logical access control to ensure that only authorised individuals have access to business applications, systems, networks and computing devices that contain personal data</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
                                 
@@ -2632,13 +2673,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">6.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring physical access controls are in place and physical security of locations at which personal data are processed </span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2646,13 +2687,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">7.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to regularly backup and perform tests to restore personal data</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2660,13 +2701,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">8.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to perform risk assessments and security assessments to identify vulnerabilities and remediate those vulnerabilities</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2674,13 +2715,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">9.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to perform and review logging on systems that process personal information to ensure event logs are monitored, reviewed and exceptions/anomalies are reported and addressed</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2688,13 +2729,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">10.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to analyse, detect and prevent threats on systems that process Personal Data with the use of intrusion prevention/detection technologies</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2702,13 +2743,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">11.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for detecting, identifying, communicating/notifying, documenting, analysing and responding to incidents</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2716,13 +2757,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">12.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to keep track of incidents via an incident register where all incidents are reported</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2730,13 +2771,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">13.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to ensure effective malware protection software is installed, configured, and maintained</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2744,13 +2785,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">14.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to apply information leakage protection mechanisms to systems and networks that process, store or transmit personal data</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2758,13 +2799,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">15.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring that effective IT security governance and management processes are maintained</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2772,13 +2813,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">16.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Maintaining certification/assurance of processes and products to confirm that minimum controls are effectively designed and implemented</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2786,13 +2827,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">17.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">If transfers to Sub-Processors are performed, specific Technical and Organisational Measures to be taken by the Sub-Processors are defined and reviewed</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2800,13 +2841,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">18.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Description of the specific Technical and Organisational Measures to be taken by the Processor to be able to provide assistance to the Controller in the event of an incident involving personal data.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2814,13 +2855,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">19.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring system configuration, including default configuration.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2828,13 +2869,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">20.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for certification / assurance of processes and products.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2842,13 +2883,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">21.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring data minimization, data quality, limited data retention.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2857,13 +2898,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">22.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring accountability for data privacy and information security.</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2871,13 +2912,13 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">23.</span>
                                     <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for allowing effective data destruction and data erasure</span>    
                                     <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="1" action={handleOnChange} />                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="a" action={handleOnChange} />                                        
                                     </span>
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="2" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="b" action={handleOnChange} />
                                     </span>                                
                                     <span className="text-white w-2/12 border-r border-white/40 p-2 ">
-                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="3" action={handleOnChange} />
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="c" action={handleOnChange} />
                                     </span>                               
                                 </div>
 
@@ -2907,7 +2948,7 @@ export default function BilateralAnnexures({params}){
                         
                     </div>
 
-                    <Success message="Annexures signed successfully" visible={successDisplay} action={() => setTimeout(() => {}, 3000)} />      
+                    <Success message="Annexures signed successfully" visible={successDisplay} action={() => setTimeout(() => {router.push("/dashboard/contracts/execution/" + contract_id)}, 2000)} />      
 
                 </div>
 

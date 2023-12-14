@@ -318,7 +318,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         <>
             <SideDrawer request={request} openDrawer={openDrawer} closeAction={() => closeAction()}>
 
-                {
+                {/* {
                     addingRequest && 
                     <div className="w-full h-full bg-black absolute z-10 top-0 left-0">
                         <div className="bg-white/5 h-full flex flex-col space-y-8">
@@ -459,7 +459,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </div>
                         
                     </div>
-                }
+                } */}
 
                 <div className="flex flex-col space-y-8 border-b max-h-[500px] border-white/20 pb-8 pr-4 overflow-y-scroll">
 

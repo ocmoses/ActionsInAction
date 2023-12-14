@@ -264,7 +264,7 @@ export default function VASIPDetails({next}){
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}
                             allowedtypes={["video/3gpp", "video/mpeg","video/mp4", "video/quicktime"]}
                             errors={errors}
-                            maxSize={100 * 1024 * 1024}
+                            maxSize={40 * 1024 * 1024}
                             disabled={false}
                             style="flex-1"
                         />

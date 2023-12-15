@@ -85,7 +85,7 @@ export default function GracePeriodAlert({
       ) : (
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft > 0 &&
+          licenseValidityDaysLeft >= 0 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (
@@ -183,7 +183,7 @@ export default function GracePeriodAlert({
                               Your expiry period has been extended
                             </span>
                             <br />
-                            We’ve reviewed your renewal proof and have extended
+                            We've reviewed your renewal proof and have extended
                             your expiry period by 30days
                           </p>
                         </div>
@@ -211,8 +211,7 @@ export default function GracePeriodAlert({
               {licenseRenewalStatus != "approved" ? (
                 <>
                   {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ||
-                  licenseRenewalStatus == "none" ? (
+                  licenseRenewalStatus == "corrected" ? (
                     <></>
                   ) : (
                     <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">

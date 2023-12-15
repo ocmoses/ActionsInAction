@@ -85,7 +85,7 @@ export default function GracePeriodAlert({
       ) : (
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft > 0 &&
+          licenseValidityDaysLeft >= 0 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (

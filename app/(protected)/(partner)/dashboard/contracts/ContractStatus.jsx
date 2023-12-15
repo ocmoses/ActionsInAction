@@ -44,6 +44,8 @@ export default function ContractStatus({dynamicData}) {
 
     console.log("contractIdxx", contractId);
 
+    console.log("SelectedAllRequiredSignatories", selectedAllRequiredSignatories);
+
 
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
         if(!contractId && user.role == 'superAdmin' && 

@@ -184,7 +184,7 @@ export default function GracePeriodAlert({
                             </span>
                             <br />
                             We've reviewed your renewal proof and have extended
-                            your expiry period by 30days
+                            your expiry period by 30 working days
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">

@@ -317,7 +317,7 @@ export default function Requests() {
           request_type: request_types.CHANGE_ORDER,
           request_id: change_order.request_id,
           created_at: change_order.created_at,
-          status: change_order.status ?? "pending",
+          status: change_order.general_status ?? "pending",
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
           ...change_order,
@@ -362,7 +362,7 @@ export default function Requests() {
           request_type: request_types.VAS_CLEARANCE,
           request_id: ip.request_id,
           created_at: ip.created_at,
-          status: ip.status ?? "pending",
+          status: ip.general_status ?? "pending",
           partner_uuid: ip.partner_uuid,
           uuid: ip.uuid ?? "",
           ...ip

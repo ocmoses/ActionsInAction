@@ -154,7 +154,7 @@ export default function IPRejection(){
 
         if(data["other-content-proof-of-ownership"].other_content_proof_of_ownership_status == "rejected"){
             //add 
-            if(!rejectionArray.push(["other_content_proof_of_ownership", "Additional Proof"])){
+            if(!rejectionArray.includes("other_content_proof_of_ownership")){
                 rejectionArray.push("other_content_proof_of_ownership");
                 result = false;
             }

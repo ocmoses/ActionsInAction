@@ -12,6 +12,8 @@ import FormErrors from "@/app/components/FormErrors";
 
 export default function IPCorrectionModal({rejected, closeAction}){
 
+    console.log("REJECTED ARRAY", rejected);
+
     const {
         partner,
         ipFileUpload
@@ -121,6 +123,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
     useEffect(() => {
 
         for(const i of rejected){
+            console.log("I that we are looking for", i);
             if(i != "licensing_period" && i != "service_details"){
                 setFiles({...files, [i] : ""});
             }

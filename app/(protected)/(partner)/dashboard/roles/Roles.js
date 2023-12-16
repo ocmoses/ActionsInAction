@@ -92,6 +92,7 @@ export default function Roles() {
 
 
   useEffect(() => {
+   setProcessing(false);
     
     get_all_partner_roles();
     get_all_partner_privileges();
@@ -100,6 +101,7 @@ export default function Roles() {
   }, [page, perPage]);
 
   useEffect(() => {
+   setProcessing(false);
     setProcessing(true);
     if (all_Partner_Roles) {
       

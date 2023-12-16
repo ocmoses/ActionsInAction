@@ -20,6 +20,7 @@ export default function useAdmins() {
   const rejectionReasons = app.rejectionReasons;
 
   useEffect(() => {
+   setProcessing(false);
     const Categories = {};
     if (states.categories?.length > 0) {
       states.categories.map((category) => {
@@ -29,6 +30,7 @@ export default function useAdmins() {
     setAllCategories(Categories);
   }, [states.categories]);
   useEffect(() => {
+   setProcessing(false);
     if (!rejectionReasons) app.getRejectionReasons();
   }, [rejectionReasons]);
 

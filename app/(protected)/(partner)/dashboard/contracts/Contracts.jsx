@@ -407,6 +407,7 @@ export default function Contracts() {
 
     
   useEffect(() => {
+   setProcessing(false);
     clearErrors();
     setProcessing(false);
     
@@ -444,8 +445,8 @@ export default function Contracts() {
 
   
   useEffect(() => {
-    clearErrors();
     setProcessing(false);
+    clearErrors();
     displayFilters();
     doSearch();
   }, [searchTags, selectedDateRange]);

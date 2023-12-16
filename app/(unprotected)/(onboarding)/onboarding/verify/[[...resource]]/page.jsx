@@ -18,11 +18,12 @@ export default function Validate({ params }) {
   const [type, setType] = useState("");
   const { resource } = params;
   useEffect(() => {
+   setProcessing(false);
     setForm(null);
-    setProcessing(false);
     clearErrors();
   }, []);
   useEffect(() => {
+   setProcessing(false);
     setType(resource && resource[1] ? resource[1] : "new");
     clearErrors();
   }, [resource]);

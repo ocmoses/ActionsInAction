@@ -118,7 +118,6 @@ export default function FileInputAsync({
               className="h-full w-full opacity-0 z-10 absolute"
               name="files"
               disabled={disabled}
-              disabled={disabled}
             />
             {!doc?.file_name && (
               <>
@@ -167,13 +166,7 @@ export default function FileInputAsync({
                         <p className="text-[#999999] mt-0">
                           {doc ? getFileSizeText(doc.file_size) : "0"}
                         </p>
-                      </>
-                      <>
-                        <p className="text-[#999999] mb-0">{doc?.file_name}</p>
-                        <p className="text-[#999999] mt-0">
-                          {doc ? getFileSizeText(doc.file_size) : "0"}
-                        </p>
-                      </>
+                      </>                      
                     )}
                     {errors[id] && (
                       <div className="flex flex-col items-start">

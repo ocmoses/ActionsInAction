@@ -11,6 +11,7 @@ import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
 import Success from "@/app/components/toasts/Success";
 import { capitalizeFirst } from "../../../../../modules/utilities";
+import useProcessing from "@/hooks/useProcessing";
 
 
 
@@ -26,6 +27,7 @@ export default function ContractSigning(){
         user,
         refreshSession
      } = useUsers();
+    const { processing, setProcessing } = useProcessing(); 
     const [{ errors, setError, clearErrors }] = useErrors(null);
     const router = useRouter();
     const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
@@ -37,7 +39,8 @@ export default function ContractSigning(){
     let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", 
                                         company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
 
-    const [successDisplay, setSuccessDisplay] = useState(false);                                   
+    const [successDisplay, setSuccessDisplay] = useState(false);    
+
   
     const [clearCanvas, setClearCanvas] = useState(false);
 
@@ -237,6 +240,7 @@ export default function ContractSigning(){
     console.log("signatoryRole", signatoryRole);
 
     useEffect(() => {
+      setProcessing(false);
         get_dynamic_content();
 
         setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);

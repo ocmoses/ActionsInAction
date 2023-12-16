@@ -126,17 +126,20 @@ export default function Compliance({ params }) {
     setRouteloading(false);
   }, []);
   useEffect(() => {
+   setProcessing(false);
     clearErrors();    
     if (params?.params?.length > 0) getPartnerInfo(params.params[0]);
   }, [params]);
 
   useEffect(() => {
+   setProcessing(false);
     let html = document.getElementsByTagName("html");
     if (openDrawer) html[0].style["overflow-y"] = "hidden";
     else html[0].style["overflow-y"] = "auto";
   }, [openDrawer]);
 
   useEffect(() => {
+   setProcessing(false);
     if (partner && category) {
       filterFields(partner);
       filterComplianceRequirements(partner);
@@ -152,6 +155,7 @@ export default function Compliance({ params }) {
   }, [partner, category]);
 
   useEffect(() => {
+   setProcessing(false);
     if (partner) {
       const finalApproval = getFinalApproval(partner);
       // console.log({ finalApproval })
@@ -160,6 +164,7 @@ export default function Compliance({ params }) {
 
   const [DDCategories, setDDCategories] = useState([]);
   useEffect(() => {
+   setProcessing(false);
     let _cuuids = [];
     filterPartner(partner, categories);
     if (allCategories) {

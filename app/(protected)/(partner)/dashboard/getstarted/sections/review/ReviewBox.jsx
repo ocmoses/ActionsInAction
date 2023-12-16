@@ -14,7 +14,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import { useState, useEffect } from "react";
 
 export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
-  const { setForm, moveToNextForm } = useProcessing();
+  const { setForm, moveToNextForm, setProcessing } = useProcessing();
   const { partner, category, setCategory, updatePartner, registerPartner } =
     usePartners();
   const [{ errors, setError, clearErrors }] = useErrors();
@@ -41,6 +41,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   const [indemnityCategory, setIndemnityCategory] = useState(null);
   const [accountinfoCategory, setAccountinfoCategory] = useState(null);
   useEffect(() => {
+   setProcessing(false);
     const Stages = [
       "compliance",
       "companydetail",
@@ -66,6 +67,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   }, [category]);
 
   useEffect(() => {
+   setProcessing(false);
     setComplianceCategory(isMaster.compliance ? partner?.master : category);
     setCompanydetailCategory(
       isMaster.companydetail ? partner?.master : category

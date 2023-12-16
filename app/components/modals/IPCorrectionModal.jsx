@@ -35,6 +35,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
 
         for(const i in files){
             if(files[i] == ""){
+                console.log("The i we are looking for", i);
                 setError({error: "Please upload a/an " + filesMap[i]});
                 return false;
             }
@@ -68,11 +69,11 @@ export default function IPCorrectionModal({rejected, closeAction}){
     }
 
     const filesMap = {
-        "service_details": "Service details",
+        // "service_details": "Service details",
         "aggregator_and_vas_requirements": "Aggregator requirement",
         "authorization_letter": "Authentication Letter",
         "probate_of_will": "Probate of Will",
-        "licensing_period": "Licensing Period",
+        // "licensing_period": "Licensing Period",
         "video_file": "Authorization Video",
         "agreement_letter_btw_content_and_vas_partner": "Agreement with VAS Partner",
         "agreement_letter_btw_content_and_agent": "Agreement with Agent",
@@ -120,7 +121,10 @@ export default function IPCorrectionModal({rejected, closeAction}){
     useEffect(() => {
 
         for(const i of rejected){
-            setFiles({...files, [i] : ""});
+            if(i != "licensing_period" && i != "service_details"){
+                setFiles({...files, [i] : ""});
+            }
+            
         }
 
     }, []);
@@ -161,6 +165,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
                                                     disabled={false}
                                                     style="flex-1"
                                                 />) : 
+                                                rejection != "service_details" && rejection != "licensing_period" ?
                                                 <FileInput
                                                     id={rejection}
                                                     doc_id={`${rejection}_doc`}
@@ -170,7 +175,7 @@ export default function IPCorrectionModal({rejected, closeAction}){
                                                     errors={errors}
                                                     disabled={false}
                                                     style="flex-1"
-                                                />
+                                                /> : <></>
                                             }
 
                                         </div>

@@ -44,11 +44,7 @@ export default function ContractStatus({dynamicData}) {
 
     console.log("contractIdxx", contractId);
 
-    console.log("selectedAllRequiredSignatories", selectedAllRequiredSignatories);
-
-    console.log("contractStatus == contract_statuses.EXPIRED", contractStatus == contract_statuses.EXPIRED);
-
-    console.log("contractStatus == contract_statuses.EXPIRING", contractStatus == contract_statuses.EXPIRING);
+    console.log("SelectedAllRequiredSignatories", selectedAllRequiredSignatories);
 
 
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){

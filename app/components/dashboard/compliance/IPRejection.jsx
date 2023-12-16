@@ -27,14 +27,14 @@ export default function IPRejection(){
 
         let result = true;
 
-        if(data["service-details"].status == "rejected"){
-            //add
-            if(!rejectionArray.includes("service_details")){
-                rejectionArray.push("service_details");
-                result = false;
-            }
+        // if(data["service-details"].status == "rejected"){
+        //     //add
+        //     if(!rejectionArray.includes("service_details")){
+        //         rejectionArray.push("service_details");
+        //         result = false;
+        //     }
             
-        }
+        // }
 
         if(data["aggregator-and-vas-requirements"].status == "rejected"){
             //add
@@ -63,14 +63,14 @@ export default function IPRejection(){
             
         }
 
-        if(data["licensing-period"].license_period_status == "rejected"){
-            //add 
-            if(!rejectionArray.includes("licensing_period")){
-                rejectionArray.push("licensing_period");
-                result = false;
-            }
+        // if(data["licensing-period"].license_period_status == "rejected"){
+        //     //add 
+        //     if(!rejectionArray.includes("licensing_period")){
+        //         rejectionArray.push("licensing_period");
+        //         result = false;
+        //     }
             
-        }
+        // }
 
         if(data["video-file"].authorization_video_status == "rejected"){
             //add 
@@ -171,6 +171,8 @@ export default function IPRejection(){
                 if(resp.error){
                     console.log("ERROR", {error: resp.error});
                 }else{
+
+                    console.log("Rejection ARRAY", rejectionArray)
 
                     if(!allApproved(resp.data)){
                         setRejected(rejectionArray);

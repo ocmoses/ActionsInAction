@@ -1440,6 +1440,58 @@ export default function useAdmins() {
       };
     }
   };
+
+  const getSinglePartnerShortcodes = async (partner_uuid) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_SINGLE_PARTNER_SHORTCODE}${partner_uuid}`,
+        {
+          cache: "no-store",
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        return {
+          error: `Failed to fetch data. Status: ${response.status}`,
+        };
+      }
+  
+      if (response.status === 401) {
+        LogoutAdmin();
+        return;
+      }
+  
+      const result = await response.json();
+      setProcessing(false);
+  
+      if (result?.success) {
+        const partnershortcodes = result?.data;
+        return {
+          partnershortcodes,
+        };
+      }
+
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Trying to fetch getSinglePartnerShortcodes 1",
+      };
+    } catch (error) {
+      console.error({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Trying to fetch getSinglePartnerShortcodes 2",
+      };
+    }
+  };
+  
   /// //////////////////////////////////////////afolabi's functions Ends here
 
 
@@ -1470,6 +1522,7 @@ export default function useAdmins() {
     getAllIP,
     getAllPartnersShortCodes,
     approveIPDetail,
-    rejectIPDetail
+    rejectIPDetail,
+    getSinglePartnerShortcodes
   };
 }

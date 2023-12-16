@@ -21,13 +21,17 @@ import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
 
 export default function GracePeriodAlert({
-  gracePeriodStatus,
-  licenseRenewalStatus,
+  gracePeriod,
+  licenseRenewal,
   openGracePeriodForm,
   popUpLicenseRenewalForm,
+  closeAlert,
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
+
+  const [gracePeriodStatus, setGracePeriodStatus] = useState(null); 
+  const [licenseRenewalStatus, setLicenseRenewalStatus] = useState(null);
   const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState();
   const [loading, setLoading] = useState(false);
   ////////////licenseValidityRemainder function////////////////////
@@ -43,27 +47,35 @@ export default function GracePeriodAlert({
           },
         }
       );
-      if (
-        "license_validity_days" in licenseValidityRemainderResponse.data.data
-      ) {
-        const licenseValidityDaysLeft =
-          licenseValidityRemainderResponse.data.data.license_validity_days;
-        setLicenseValidityDaysLeft(licenseValidityDaysLeft);
+      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
+        const validityDaysLeft =licenseValidityRemainderResponse.data.data.license_validity_days;
+        setLicenseValidityDaysLeft(validityDaysLeft);
       }
+
+      console.log("validityDaysLeft", validityDaysLeft)
       setLoading(false);
     } catch (error) {
-      setError({
-        dashboard:
-          "Something went wrong. Please check your connection and try again",
-      });
+      console.log("validityDaysLeft error")
       setLoading(false);
     }
   };
   ////////////end licenseValidityRemainder function////////////////////
 
   useEffect(() => {
+    if ("status" in gracePeriod) {
+      setGracePeriodStatus(gracePeriod.status);
+    } else {
+      setGracePeriodStatus("none");
+    }
+
+    if ("status" in licenseRenewal) {
+      setLicenseRenewalStatus(licenseRenewal.status);
+    } else {
+      setLicenseRenewalStatus("none");
+    }
+
     licenseValidityRemainder();
-  }, []);
+  }, [gracePeriod, licenseRenewal]);
   
 
   return (
@@ -71,9 +83,10 @@ export default function GracePeriodAlert({
       {loading ? (
         <></>
       ) : (
+        
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft > 0 &&
+          licenseValidityDaysLeft >= 0 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (
@@ -107,8 +120,7 @@ export default function GracePeriodAlert({
                                     Your licence renewal proof was rejected
                                   </span>
                                   <br />
-                                  Reason: The document you submitted doesn’t
-                                  show enough proof of progress.
+                                  Reason: {gracePeriod.reasons_for_rejection}.
                                 </p>
                               ) : (
                                 <p>
@@ -124,12 +136,14 @@ export default function GracePeriodAlert({
                               )}
                             </div>
                             <div className="flex gap-2 flex-wrap">
-                              <button
-                                onClick={() => openGracePeriodForm()}
-                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                              >
-                                Extend Expiration
-                              </button>
+                            {licenseValidityDaysLeft > 0 && (
+                                <button
+                                  onClick={() => openGracePeriodForm()}
+                                  className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                >
+                                  Extend Expiration
+                                </button>
+                              )}
                               <button
                                 className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
                                 onClick={() => popUpLicenseRenewalForm()}
@@ -170,12 +184,14 @@ export default function GracePeriodAlert({
                               Your expiry period has been extended
                             </span>
                             <br />
-                            We’ve reviewed your renewal proof and have extended
-                            your expiry period by 30days
+                            We've reviewed your renewal proof and have extended
+                            your expiry period by 30 working days
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button 
+                          onClick={() => closeAlert()}
+                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
                             Got It!
                           </button>
                           <button
@@ -191,6 +207,7 @@ export default function GracePeriodAlert({
                 </div>
               )}
             </>
+            
           ) : (
             <>
               {licenseRenewalStatus != "approved" ? (
@@ -224,13 +241,12 @@ export default function GracePeriodAlert({
                                     Your licence renewal proof was rejected
                                   </span>
                                   <br />
-                                  Reason: The document you submitted doesn’t
-                                  show enough proof of your licence.
+                                  Reason: {licenseRenewal.reasons_for_rejection}
                                 </p>
                               ) : (
                                 <p>
                                   <span className="text-white">
-                                    Your license has expired. {licenseValidityDaysLeft}
+                                    Your license has expired.
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
@@ -292,7 +308,9 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button 
+                          onClick={() => closeAlert()}
+                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
                             Got It!
                           </button>
                         </div>
@@ -636,10 +654,19 @@ export const LicenseValidityTopAlert = ({
                   />
                 </svg>
                 <p className="text-white flex gap-2">
+                  
                   {!validity ? (
-                    <span>
+                    <>
+                    {licenseValidityDaysLeft>1 ?(
+                      <span>
                       Your License expires in {licenseValidityDaysLeft} days.
                     </span>
+                    ):(
+                      <span>
+                      Your License expires today.
+                    </span>
+                    )}
+                    </>
                   ) : (
                     <span>Your License has expired</span>
                   )}{" "}
@@ -1364,10 +1391,10 @@ export const GracePeriodAdminFlyOut = ({
                               <form>
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>It’s doesn’t exist</p>
+                                    <p>Incomplete Information</p>
                                     <input
                                       type="radio"
-                                      value="It’s doesn’t exist"
+                                      value="Incomplete Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1377,10 +1404,10 @@ export const GracePeriodAdminFlyOut = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>I can’t see this clearly</p>
+                                    <p>Incorrect Information</p>
                                     <input
                                       type="radio"
-                                      value="I can’t see this clearly"
+                                      value="Incorrect Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1390,16 +1417,42 @@ export const GracePeriodAdminFlyOut = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>Something else entirely</p>
+                                    <p>Inconsistent Information</p>
                                     <input
                                       type="radio"
-                                      value="Something else entirely"
+                                      value="Inconsistent Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
                                     />
                                   </label>
                                 </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Invalid or Expired Document</p>
+                                    <input
+                                      type="radio"
+                                      value="Invalid or Expired Document"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Poor Quality (Contents Not Clear)</p>
+                                    <input
+                                      type="radio"
+                                      value="Poor Quality (Contents Not Clear)"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>                                
                               </form>
                             </div>
 
@@ -1844,10 +1897,10 @@ export const LicenseRenewalAdminFlyout = ({
                               <form>
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>It’s doesn’t exist</p>
+                                    <p>Incomplete Information</p>
                                     <input
                                       type="radio"
-                                      value="It’s doesn’t exist"
+                                      value="Incomplete Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1857,10 +1910,10 @@ export const LicenseRenewalAdminFlyout = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>I can’t see this clearly</p>
+                                    <p>Incorrect Information</p>
                                     <input
                                       type="radio"
-                                      value="I can’t see this clearly"
+                                      value="Incorrect Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1870,16 +1923,42 @@ export const LicenseRenewalAdminFlyout = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>Something else entirely</p>
+                                    <p>Inconsistent Information</p>
                                     <input
                                       type="radio"
-                                      value="Something else entirely"
+                                      value="Inconsistent Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
                                     />
                                   </label>
                                 </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Invalid or Expired Document</p>
+                                    <input
+                                      type="radio"
+                                      value="Invalid or Expired Document"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Poor Quality (Contents Not Clear)</p>
+                                    <input
+                                      type="radio"
+                                      value="Poor Quality (Contents Not Clear)"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div> 
                               </form>
                             </div>
 

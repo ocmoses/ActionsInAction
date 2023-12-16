@@ -529,10 +529,11 @@ export default function Requests() {
           request_type: request_types.SHORTCODES,
           request_id: shortcode.request_id,
           created_at: shortcode.created_at,
-          //approved_on: shortcode.approved_on,
+          approved_on: shortcode.approved_on,
          // rejected_on: shortcode.rejected_on,
           status: shortcode.status,
           short_codes:shortcode.shortcodes,
+          shortcodes_not_approved:shortcode.shortcodes_not_approved,
           // file_name:
           //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
           // file_path: graceperiod.license_grace_period_file ?? "",
@@ -1091,7 +1092,6 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
-            successAction={successAction}
           />
         )}
 

@@ -47,6 +47,7 @@ import GracePeriodAlert, {
 import { useStoreState } from "easy-peasy";
 import axios from "axios";
 import IPCard from "@/app/components/dashboard/IPCard";
+import {suspended_categories} from "@/app/modules/constants";
 
 import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
 
@@ -616,7 +617,11 @@ export default function GetStarted({ type }) {
               )}
 
               {
-                IPAlert &&
+                IPAlert && 
+                //Need to negate the condition that shows the category files
+                !(!contractStarted &&
+                  partner?.contract_status === "not_started" &&
+                  partnerActiveCategories?.length > 0 ) &&
 
                 // And you have not submitted the IP details
 
@@ -928,7 +933,8 @@ export default function GetStarted({ type }) {
                           setIsOpen={setIsOpen}
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
-                          disabled={partner?.edittable}
+                          disabled={partner?.edittable ||
+                                    suspended_categories.includes(category.category_name)}
                           pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}

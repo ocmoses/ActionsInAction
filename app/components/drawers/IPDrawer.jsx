@@ -42,7 +42,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         AGREEMENT_WITH_MUSIC_COMPOSER: 'agreement_letter_btw_content_and_music_composer',
         AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 'agreement_letter_btw_record_label_and_vas_partner',
         MEANS_OF_ID: 'means_of_id',
-        AGENT_ID: 'agent_id',
+        AGENT_ID: 'means-of-agent-identification',
         ADDITIONAL_PROOF: 'additional_proof'       
     }
 
@@ -463,13 +463,13 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                 <div className="flex flex-col space-y-8 border-b max-h-[500px] border-white/20 pb-8 pr-4 overflow-y-scroll">
 
-                    <div onClick={() => setAddingRequest(true)} className="flex space-x-2 ml-auto rounded-full bg-white/20 py-2 px-4 cursor-pointer hover:bg-white/40">
+                    {/* <div onClick={() => setAddingRequest(true)} className="flex space-x-2 ml-auto rounded-full bg-white/20 py-2 px-4 cursor-pointer hover:bg-white/40">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.335 2.5H4.1625C3.72158 2.5 3.29871 2.67516 2.98693 2.98693C2.67516 3.29871 2.5 3.72158 2.5 4.1625V15.8375C2.5 16.7558 3.24417 17.5 4.1625 17.5H15.8375C16.2784 17.5 16.7013 17.3248 17.0131 17.0131C17.3248 16.7013 17.5 16.2784 17.5 15.8375V6.665V9.16667H15.8333V15.8333H4.16667V4.16667H10.8333V2.5H13.335Z" fill="white"/>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M15.8333 4.16667V3.325C15.8311 3.10543 15.7424 2.89561 15.5863 2.74112C15.4303 2.58664 15.2196 2.49999 15 2.5C14.5367 2.5 14.1667 2.87 14.1667 3.325V4.16667H13.3333C13.1123 4.16667 12.9004 4.25446 12.7441 4.41074C12.5878 4.56702 12.5 4.77899 12.5 5C12.5 5.22101 12.5878 5.43298 12.7441 5.58926C12.9004 5.74554 13.1123 5.83333 13.3333 5.83333H14.1667V6.675C14.1689 6.89457 14.2576 7.10439 14.4137 7.25888C14.5697 7.41336 14.7804 7.50001 15 7.5C15.4633 7.5 15.8333 7.13 15.8333 6.675V5.83333H16.6667C16.8877 5.83333 17.0996 5.74554 17.2559 5.58926C17.4122 5.43298 17.5 5.22101 17.5 5C17.5 4.77899 17.4122 4.56702 17.2559 4.41074C17.0996 4.25446 16.8877 4.16667 16.6667 4.16667H15.8333Z" fill="white"/>
                         </svg>
                         <span className="text-white text-sm">Add New Request</span>
-                    </div>
+                    </div> */}
                     
                     <div className="flex space-x-2 items-start w-full">
 
@@ -826,14 +826,14 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                             
                                             <p className="flex justify-between">
                                                 <span className="text-white/60 ">Agent ID</span>
-                                                <span className="text-mtn" >{request['means-of-identification'].agent_id_front ? 
-                                                    <span onClick={() => setFileViewer((request['means-of-identification'].agent_id_front))} 
+                                                <span className="text-mtn" >{request['means-of-agent-identification'].agent_id_front ? 
+                                                    <span onClick={() => setFileViewer((request['means-of-agent-identification'].agent_id_front))} 
                                                             className="text-xs flex space-x-1 items-end cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                         </svg> Preview
                                                     </span>
-                                                    : request['means-of-identification'].agent_id_front ? request['means-of-identification'].agent_id_front : "-"}
+                                                    : request['means-of-agent-identification'].agent_id_front ? request['means-of-agent-identification'].agent_id_front : "-"}
                                                 </span>
                                             </p>
 
@@ -845,9 +845,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                             <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                                 {
-                                                    request['means-of-identification'].means_of_id_status == "approved" || 
+                                                    request['means-of-agent-identification'].means_of_id_status == "approved" || 
                                                         approvals[expansion.AGENT_ID] == "approved" ? <Approved /> : 
-                                                    request['means-of-identification'].means_of_id_status == "rejected" || 
+                                                    request['means-of-agent-identification'].means_of_id_status == "rejected" || 
                                                         approvals[expansion.AGENT_ID] == "rejected"? <Declined /> : 
                                                     ApprovalActions()
                                                 }                                             

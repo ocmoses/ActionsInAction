@@ -44,11 +44,15 @@ export default function ContractStatus({dynamicData}) {
 
     console.log("contractIdxx", contractId);
 
+    console.log("SelectedAllRequiredSignatories", selectedAllRequiredSignatories);
+
 
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-                if(selectedAllRequiredSignatories && !isASignatory){
+
+                console.log("Got here333!");
+                if(selectedAllRequiredSignatories == true && !isASignatory){                    
                    return (<div></div>);
                 } else{
                     return  (<Renew />);
@@ -63,7 +67,7 @@ export default function ContractStatus({dynamicData}) {
     }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-            if(selectedAllRequiredSignatories && !isASignatory){
+            if(selectedAllRequiredSignatories == true && !isASignatory){
                 return (<div></div>);
             } else{
                 return  (<SelectServices />);

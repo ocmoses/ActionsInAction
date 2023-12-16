@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${decrypted}`,
-        Authorization: `bearer ${decrypted}`,
+        token: decrypted
       },
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer",
@@ -31,8 +31,6 @@ export default async function handler(req, res) {
     if (hasCookie("partnerid", { req, res }))
       deleteCookie("partnerid", { req, res });
 
-      //claer localStorage
-      localStorage.clear();
     res.status(200).json({ success: true, error: null, data: null });
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });

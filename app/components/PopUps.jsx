@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import {NavLinksMobile} from "./NavLinks";
+import { NavLinksMobile } from "./NavLinks";
 
 export default function PopUp({ closePopUp, children }) {
   return (
@@ -20,10 +20,6 @@ export default function PopUp({ closePopUp, children }) {
     </div>
   );
 }
-
-
-
-
 
 export const ContactUsSuccess = ({ closePopUp }) => {
   return (
@@ -56,13 +52,6 @@ export const ContactUsSuccess = ({ closePopUp }) => {
   );
 };
 
-
-
-
-
-
-
-
 export const PartnerContactUsSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -92,13 +81,6 @@ export const PartnerContactUsSuccess = ({ closePopUp }) => {
     </div>
   );
 };
-
-
-
-
-
-
-
 
 export const MobileMenu = ({ closeMobileMenu }) => {
   return (
@@ -138,17 +120,6 @@ export const MobileMenu = ({ closeMobileMenu }) => {
   );
 };
 
-
-
-
-
-
-
-
-
-
-
-
 export const BrdUpdatesSuccess = ({ closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
@@ -164,7 +135,9 @@ export const BrdUpdatesSuccess = ({ closePopUp }) => {
         Thanks, we’ll be in touch shortly
       </h2>
       <p className=" text-gray-400">
-      We encourage you to sign up and explore the app while we get back to you. Setting up your partner portal account is free, no payment required.
+        We encourage you to sign up and explore the app while we get back to
+        you. Setting up your partner portal account is free, no payment
+        required.
       </p>
       <div className="flex gap-2 justify-center mt-10">
         <button
@@ -173,6 +146,37 @@ export const BrdUpdatesSuccess = ({ closePopUp }) => {
         >
           Got-It!
         </button>
+      </div>
+    </div>
+  );
+};
+
+export const OtherServicesPopUps = ({ closeServicePopUp, title, children }) => {
+  return (
+    <div
+      id="modal_flyout"
+      className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
+      onClick={(e) => {
+        e.target.id == "modal_flyout" && closeServicePopUp();
+      }}
+    >
+      <div
+        id="actualModal"
+        className="w-[80%] h-[90%] border-1 border-gray-800 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col justify-between"
+      >
+        <div className="h-[50px] bg-black px-[10px] py-[10px] flex flex-row justify-between leading-[30px] text-white rounded-t-xl">
+          <div>{title}</div>
+          <button
+            className="h-[30px] w-[30px] rounded-full bg-white/10  hover:bg-white/20"
+            title="Close"
+            onClick={() => closeServicePopUp()}
+          >
+            X
+          </button>
+        </div>
+        <div className="h-[calc(100%_-_50px)] w-[100%] bg-white flex rounded-b-xl">
+          <div className="p-[5px] w-[100%] h-[100%] flex">{children}</div>
+        </div>
       </div>
     </div>
   );

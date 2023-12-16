@@ -1393,9 +1393,55 @@ export const roles = [
   },
 ];
 
+export const questionnaire_pending = "This partner has not submitted any questionaire";
+
+export const ip_pending = "Partner has not started IP submission";
+
 export const user_statuses = {
   ACTIVE: "active",
   APPROVED: "approved"
 }
+
+export const questionnaire_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+
+export const conduct_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+
+export const docPrefix = "http://10.1.44.25/dms/PARTNER_ONBOARDING/";
+
+export const request_types = {
+  BOARD_RESOLUTION: "Board Resolution",
+  GRACE_PERIOD: "Grace period",
+  SUPPLIER_QUESTION: "Supplier Question",
+  REVENUE_SHARE: "Revenue Share",
+  CHANGE_ORDER: "Change Order",
+  LICENSE_RENEWAL: "License Renewal",
+  VAS_CLEARANCE: "IP Compliance",
+  SHORTCODES: "Short Codes"
+}
+
+export const role_types = {
+  SUPER_ADMIN: "superAdmin",
+  ADMIN: "admin",
+  DIRECTOR: "director",
+  WITNESS: "witness",
+  DELEGATE: "delegate"
+}
+
+export const contract_statuses = {
+  PROCESSING: "processing",
+  NOT_STARTED: "not_started",
+  EXPIRED: "expired",
+  ACTIVE: "active",
+  UPDATE: "update",
+  EXPIRING: "expiring"
+}
+
+export const suspended_categories = [
+  "Marketplace",
+  "VAS Aggregator",
+ "Value Added Services",
+  // "Rich Media Services"
+]
+
 
 

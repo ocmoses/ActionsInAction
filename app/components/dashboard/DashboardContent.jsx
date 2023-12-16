@@ -26,18 +26,37 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending, ip_pending } from "@/app/modules/constants";
+import useQuestionnaire from "@/hooks/useQuestionnaire";
+import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
+import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
+import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
+import GracePeriodAlert, {
+  GracePeriodExtensionForm,
+  GracePeriodSuccess,
+  LicenseRenewalForm,
+  LicenseRenewalSuccess,
+} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+
+import { useStoreState } from "easy-peasy";
+import axios from "axios";
+import IPCard from "@/app/components/dashboard/IPCard";
+import {suspended_categories} from "@/app/modules/constants";
+
+import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
 
 export default function GetStarted({ type }) {
   const {
     session: { user },
   } = useUsers();
-  console.log(user)
+
+  console.log(user);
   const {
     partner,
     category,
@@ -46,12 +65,17 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
+    getIPStatus,
+    getPartnerContractCurrentlyRunning,
   } = usePartners();
-
-
+  //////////////////////////////////////////////////////////////////
+  const states = useStoreState((state) => state);
+  
+  ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-   setProcessing(false);
+    console.log("this is the info on state", states)
+    setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
@@ -77,12 +101,21 @@ export default function GetStarted({ type }) {
     setShowModal(status);
   };
 
-  const userStatus = partner.status;
+  const userStatus = partner?.status;
+
+  const { getQuestionnaireStatus } = useQuestionnaire();
+
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
+
+  const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+  const [IPAlert, setIPAlert] = useState(false);
+  const [showQuestionare, setShowQuestionare] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState(null);
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setCategoriesData(categories);
-  }, [categories]);
+  }, [partner, categories, toFillQuestionnaire]);
 
   const [validation, setValidation] = useState({
     required: [],
@@ -91,28 +124,75 @@ export default function GetStarted({ type }) {
   });
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setActiveCategory(tmpCat);
     const validation = setValidationRules(tmpCat);
     setValidation(validation);
   }, [tmpCat]);
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setForm(null);
     setShowProgress(false);
     setProcessing(false);
   }, []);
 
+  let check = () => {
+    getQuestionnaireStatus()
+      .then((response) => {
+        console.log("Questionnaire status response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (response.status == "rejected") {
+          setQuestionnaireAlert(true);
+          setRejectionReason(response.rejectionReason);
+        } else if (response.error && response.error == questionnaire_pending) {
+          setToFillQuestionnaire(true);
+        } else if (
+          response.message &&
+          response.message == questionnaire_pending
+        ) {
+          setToFillQuestionnaire(true);
+        } else {
+          setToFillQuestionnaire(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        setError({ error: error.message });
+      });
+
+    getIPStatus()
+      .then((response) => {
+        console.log("IPStatus response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (
+          response?.message == ip_pending ||
+          response?.error == ip_pending ||
+          response?.message == undefined
+        ) {
+          setIPAlert(true);
+        }
+      })
+      .catch((error) => {
+        console.log("IP error: ", error.response);
+        setError({ error: error.message });
+      });
+  };
+
+  useEffect(() => {
+    check();
+  }, []);
+
   //////////afoo code////////////////////////////////////////////////////////////////////////////
   const [rejectedTeam, setRejectedTeam] = useState([]);
   const [brdComplains, setBrdComplains] = useState(false);
-  
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-   setProcessing(false);
-    setBrdComplains(true)
+    setProcessing(false);
+    setBrdComplains(true);
     const partnerCat = [];
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
@@ -137,7 +217,7 @@ export default function GetStarted({ type }) {
     const newCatArray = categoriesData?.filter(
       (category) =>
         !partnerActiveCat.includes(category.uuid) &&
-        partner.allowedCategories.includes(category.category_code)
+        partner?.allowedCategories.includes(category.category_code)
     );
     setPartnerActiveCategories(newCatArray);
     setPartnerCategories(partnerCat);
@@ -230,15 +310,108 @@ export default function GetStarted({ type }) {
   };
   const closePopUp = () => {
     setPopUp(false);
-    setBrdComplains(false)
+    setBrdComplains(false);
   };
   const submitBrd = () => {
     setSubmitBrdFrom(true);
-   
   };
   //////////end code////////////////////////////////////////////////////////////////////////////
+
+  //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
+
+  const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
+  const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
+  const [gracePeriod, setGracePeriod] = useState(null);
+  const [licenseRenewal, setLicenseRenewal] = useState(null);
+  const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
+  const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
+  const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
+  const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
+
+  ////////////partnerLicenseGracePeriodStatus function////////////////////
+  const partnerLicenseGracePeriod = async () => {
+    setShowGracePreriodAlert(false);
+    try {
+      const partnerGracePeriodResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      console.log("partnerGracePeriodResponse", partnerGracePeriodResponse.data.data);
+      setGracePeriod(partnerGracePeriodResponse.data.data);
+      setShowGracePreriodAlert(true);
+    } catch (error) {
+      console.log("An error occur while trying to fetch license grace period status");
+      setShowGracePreriodAlert(false);
+    }
+  };
+  ////////////end partnerLicenseGracePeriodStatus function////////////////////
+  ////////////partnerLicenseRenewalStatus function////////////////////
+  const partnerLicenseRenewal = async () => {
+    setShowLicenseRenewalAlert(false);
+    try {
+      const partnerLicenseRenewalResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      console.log("partnerLicenseRenewalResponse", partnerLicenseRenewalResponse.data.data);
+      setLicenseRenewal(partnerLicenseRenewalResponse.data.data);
+      setShowLicenseRenewalAlert(true);
+    } catch (error) {
+      console.log(
+        "An error occur while trying to fetch license renewal status"
+      );
+      setShowLicenseRenewalAlert(false);
+    }
+  };
+  ////////////end partnerLicenseRenewalStatus function///////////////////
+  
+  const [displayServiceConfiguration, setDisplayServiceConfiguration] = useState(false);
+  ////////////getPartnerContract function////////////////////
+  const getPartnerContract = async () => {
+   setDisplayServiceConfiguration(false);
+   getPartnerContractCurrentlyRunning().then((response) => {
+     if ("contract_id" in response.result) {
+       setDisplayServiceConfiguration(true);
+     }else{
+       setDisplayServiceConfiguration(false);
+     }
+   })
+   .catch((error) => {
+     console.log("getPartnerContractCurrentlyRunning error: ", error);
+     setDisplayServiceConfiguration(false);
+   });
+ };
+ ////////////end getPartnerContract function///////////////////
+
+
+  useEffect(() => {
+    partnerLicenseGracePeriod();
+    partnerLicenseRenewal();
+    getPartnerContract();
+  }, [partner]);
+
+  //////////end code////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
   return (
     <>
+
+
+
       {isOnboarding && (
         <>
           <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
@@ -257,7 +430,8 @@ export default function GetStarted({ type }) {
             <div className="w-full pt-[72px]">
               {user?.first_name && (
                 <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name}
+                  Hello, {user.first_name} 
+                  {/* <span className="text-white text-sm">This is a visible comment</span> */}
                 </h2>
               )}
 
@@ -269,6 +443,7 @@ export default function GetStarted({ type }) {
                         Welcome to the MTN Partner Portal, {user.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.
+
                       </p>
                       <p className="text-[#999999] text-center md:text-start">
                         Choose a partner category that best suits your service
@@ -289,7 +464,7 @@ export default function GetStarted({ type }) {
                               message="Your contract is ready. Click here to continue"
                               description="Outline contract conditions and give contract warrantees."
                               onclick={() => {
-                                location = "/dashboard/compliance";
+                                location = "/dashboard/contracts";
                               }}
                               button="Continue"
                               color="text-gray-200"
@@ -342,30 +517,31 @@ export default function GetStarted({ type }) {
                               }
                             />
                           ) : FinalApproval.partner ? (
-                            <CallToAction
-                              message="Your contract is ready. Click here to sign"
-                              description="Describe the event and give further instructions if needed, include a call to action"
-                              onclick={() => showAgreement(true)}
-                              label="Take action"
-                              color="text-green-700"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
+                            // <CallToAction
+                            //   message="Your contract is ready. Click here to sign"
+                            //   description="Describe the event and give further instructions if needed, include a call to action"
+                            //   onclick={() => showAgreement(true)}
+                            //   label="Take action"
+                            //   color="text-green-700"
+                            //   desccolor="text-[#999999]"
+                            //   icon={
+                            //     <svg
+                            //       xmlns="http://www.w3.org/2000/svg"
+                            //       fill="none"
+                            //       viewBox="0 0 24 24"
+                            //       strokeWidth={1.5}
+                            //       stroke="currentColor"
+                            //       className=" w-[28px] h-[28px]"
+                            //     >
+                            //       <path
+                            //         strokeLinecap="round"
+                            //         strokeLinejoin="round"
+                            //         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            //       />
+                            //     </svg>
+                            //   }
+                            // />
+                            <></>
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
@@ -398,9 +574,70 @@ export default function GetStarted({ type }) {
                 </div>
               )}
 
+              <ServiceConfigurationReadyAlert/>
+
+              {questionnaireAlert && (
+                <>
+                  <div className="w-full p-4 px-6 rounded-lg border-1 border-white/10 bg-white/5 flex space-x-4 mt-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="red"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <p className="text-white text-lg">
+                        Supplier Questionnaire
+                      </p>
+                      <p className="text-white/40 mb-4">
+                        There is one or more issues flagged in your supplier
+                        questionnaire
+                      </p>
+
+                      <span
+                        onClick={() => setShowQuestionare(true)}
+                        className="p-2 px-4 mb-2 border-1 border-white/40 text-white/80 rounded-full hover:bg-white/10 inline-block cursor-pointer text-sm"
+                      >
+                        Review
+                      </span>
+                    </div>
+                  </div>
+                  {showQuestionare && (
+                    <QuestionnaireModal
+                      hide={() => setShowQuestionare(false)}
+                      action={() => setQuestionnaireAlert(false)}
+                      rejectionReason={rejectionReason}
+                    />
+                  )}
+                </>
+              )}
+
+              {
+                IPAlert && 
+                //Need to negate the condition that shows the category files
+                !(!contractStarted &&
+                  partner?.contract_status === "not_started" &&
+                  partnerActiveCategories?.length > 0 ) &&
+
+                // And you have not submitted the IP details
+
+                <IPCard />
+              }
+ 
+              <ChangeOrderRejection />
+              
+              <IPRejection />
+              
+
               {/* //================this is the popup==============================================================================================================*/}
 
-              {rejectedTeam?.rejected?.length > 0 && brdComplains &&(
+              {rejectedTeam?.rejected?.length > 0 && brdComplains && (
                 <>
                   {popUp && (
                     <PopUp closePopUp={closePopUp}>
@@ -419,7 +656,60 @@ export default function GetStarted({ type }) {
 
                   <BrdRejectedAlert
                     openBrdPopUp={openBrdPopUp}
-                    rejected={rejectedTeam?.rejected}//this is all regjected deligates
+                    rejected={rejectedTeam?.rejected} //this is all regjected deligates
+                  />
+                </>
+              )}
+
+              {/*//==============================================================================================================================*/}
+
+              {/* //================this is lisense grace period and License renewal==============================================================================================================*/}
+              {showGracePreriodAlert && showLicenseRenewalAlert && (
+                <>
+                  {popUpGracePeriodForm && (
+                    <PopUp closePopUp={() => setPopUpGracePeriodForm(false)}>
+                      {!gracePeriodSubmit ? (
+                        <GracePeriodExtensionForm
+                          closePopUp={() => setPopUpGracePeriodForm(false)}
+                          submitGracePeriod={() => setGracePeriodSubmit(true)}
+                        /> // If gracePeriodSubmit is false
+                      ) : (
+                        <GracePeriodSuccess
+                          gracePeriodSuccessOk={() => {
+                            setPopUpGracePeriodForm(false);
+                            setShowGracePreriodAlert(false);
+                          }}
+                        /> // If gracePeriodSubmit is true
+                      )}
+                    </PopUp>
+                  )}
+
+                  {popUpLicenseRenewalForm && (
+                    <PopUp closePopUp={() => setPopUpLicenseRenewalForm(false)}>
+                      {!licenseRenewalSubmit ? (
+                        <LicenseRenewalForm
+                          closePopUp={() => setPopUpLicenseRenewalForm(false)}
+                          submitLicenseRenewal={() =>
+                            setLicenseRenewalSubmit(true)
+                          }
+                        />
+                      ) : (
+                        <LicenseRenewalSuccess
+                          SuccessOk={() => {
+                            setPopUpLicenseRenewalForm(false);
+                            setShowLicenseRenewalAlert(false);
+                          }}
+                        />
+                      )}
+                    </PopUp>
+                  )}
+                  
+                  <GracePeriodAlert
+                    gracePeriod={gracePeriod}
+                    licenseRenewal={licenseRenewal}
+                    openGracePeriodForm={() => setPopUpGracePeriodForm(true)}
+                    popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
+                    closeAlert={() => setShowLicenseRenewalAlert(false)}
                   />
                 </>
               )}
@@ -630,6 +920,7 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
+
               {!contractStarted &&
                 partner?.contract_status === "not_started" &&
                 !showProgress && (
@@ -644,7 +935,9 @@ export default function GetStarted({ type }) {
                           setIsOpen={setIsOpen}
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
-                          disabled={partner?.edittable}
+                          disabled={partner?.edittable ||
+                                    suspended_categories.includes(category.category_name)}
+                          pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}
                   </div>

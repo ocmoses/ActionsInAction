@@ -55,14 +55,23 @@ function UserInfo({ designations }) {
     setRouteloading(false);
     scrollToTop("onboardinglayout");
   }, []);
+
+
+
   useEffect(() => {
    setProcessing(false);
     if (designations.error) setError({ userinfo: designations.error });
     else clearErrors();
   }, [designations]);
 
+
+
+
+
+
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [lastEmailChecked, setLastEmailChecked] = useState(null);
+
   const checkIsFreeEmail = async (email) => {
     removeError("email");
     if (!Util.validateEmail(data["email"]))
@@ -71,10 +80,7 @@ function UserInfo({ designations }) {
       const Email = email.split("@");
 
       if (freeemails.includes(Email[1])) {
-        setError({
-          email:
-            "Free email service account is not allowed. Please use a corporate email",
-        });
+        setError({email: "Free email service account is not allowed. Please use a corporate email"});
       }
     } else {
       if (process.env.NODE_ENV === "development") return;
@@ -91,26 +97,23 @@ function UserInfo({ designations }) {
           const { data } = response;
           setLastEmailChecked(email);
           if (!data)
-            setError({
-              email: "Something went wrong while verifying your email",
-            });
+            setError({email: "Something went wrong while verifying your email"});
           const { is_free, error } = data;
           if (error) setError({ email: error });
           if (is_free)
-            setError({
-              email:
-                "Free email service account is not allowed. Please use a corporate email",
-            });
+            setError({email:"Free email service account is not allowed. Please use a corporate email"});
         } else {
-          setError({
-            email: "Something went wrong while verifying your email",
-          });
+          setError({email: "Something went wrong while verifying your email"});
         }
       } catch (error) {
         setError({ email: "An error occured while verifying your email" });
       }
     }
   };
+
+
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -231,6 +234,7 @@ function UserInfo({ designations }) {
             </p>
           )}
         </div>
+
         <div className="flex justify-start items-center mb-0 w-full bg-[#212121] border-1 border-[#333333] rounded-xl">
           <div className=" ">
             <CountrySelector

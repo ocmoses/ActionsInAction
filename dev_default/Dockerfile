@@ -1,8 +1,13 @@
 # FROM ubuntu:20.04
 FROM ojtkgsbharb01.mtn.com.ng/amazon-tribe/amazon-tribe-frontend-dev:base
+RUN apt update && apt install curl -y
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor -o /usr/share/keyrings/nodesource-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/nodesource-archive-keyring.gpg] https://deb.nodesource.com/node_18.x $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt update 
 # RUN apt update && apt install curl -y
 # RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-# RUN apt install -y nodejs
+RUN apt install -y nodejs
+RUN npm --version && node --version
 
 # WORKDIR /app
 COPY package.json package-lock.json ./

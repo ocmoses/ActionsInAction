@@ -2,7 +2,8 @@ export default function FormErrors({ error, success, align }) {
   const hide = [
               "No valid login detected for SuperAdmin",
               "response.json is not a function",
-              "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+              "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "response.json is not a function"
             ];
   return ( !hide.includes(error)  && 
     <>

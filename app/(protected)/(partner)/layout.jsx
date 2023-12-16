@@ -37,6 +37,7 @@ function Layout({ children }) {
           },
         }
       );
+      console.log("licenseValidityRemainderResponse", licenseValidityRemainderResponse);
       if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
         const daysLeft =licenseValidityRemainderResponse.data.data.license_validity_days;
         if (daysLeft <= 60) {

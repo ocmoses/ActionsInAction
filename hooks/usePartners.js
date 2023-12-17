@@ -419,6 +419,9 @@ const usePartners = () => {
           email,
           email_type,
         }),
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY
+        }
       }
     )
     setProcessing(false)

@@ -211,7 +211,8 @@ export default function GracePeriodAlert({
               {licenseRenewalStatus != "approved" ? (
                 <>
                   {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ? (
+                  licenseRenewalStatus == "corrected"  ||
+                  licenseRenewalStatus == "none" ? (
                     <></>
                   ) : (
                     <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">

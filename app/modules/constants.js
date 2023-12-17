@@ -1436,5 +1436,12 @@ export const contract_statuses = {
   EXPIRING: "expiring"
 }
 
+export const suspended_categories = [
+  "Marketplace",
+  "VAS Aggregator",
+ "Value Added Services",
+  // "Rich Media Services"
+]
+
 
 

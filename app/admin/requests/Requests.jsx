@@ -37,6 +37,8 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 
+import FileViewer from "@/app/components/modals/FileViewer";
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 import {
   GracePeriodAdminFlyOut,
@@ -123,6 +125,8 @@ export default function Requests() {
   const [fetchingShortcodes, setFetchingShortcodes] = useState(false);
   const [shortcodes, setShortcodes] = useState([]);
   const [shortcodesFlyout, setShortcodesFlyout] = useState(false);
+
+  const [fileViewer, setFileViewer] = useState(null);
 
   const open = (request) => {
     switch(request.request_type){
@@ -317,7 +321,7 @@ export default function Requests() {
           request_type: request_types.CHANGE_ORDER,
           request_id: change_order.request_id,
           created_at: change_order.created_at,
-          status: change_order.status ?? "pending",
+          status: change_order.general_status ?? "pending",
           partner_uuid: change_order.partner_uuid,
           uuid: change_order.uuid,
           ...change_order,
@@ -362,7 +366,7 @@ export default function Requests() {
           request_type: request_types.VAS_CLEARANCE,
           request_id: ip.request_id,
           created_at: ip.created_at,
-          status: ip.status ?? "pending",
+          status: ip.general_status ?? "pending",
           partner_uuid: ip.partner_uuid,
           uuid: ip.uuid ?? "",
           ...ip
@@ -863,6 +867,10 @@ export default function Requests() {
         />
       )}
 
+      { fileViewer && 
+          <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+      }
+
       <ComplianceDrawer
         activeStage={activeStage}
         category={null}
@@ -897,10 +905,14 @@ export default function Requests() {
           )}
 
           <div className="">
-            <p className="text-white">{selectedRequest?.request_type} AAA</p>
+            <p className="text-white">{selectedRequest?.request_type}</p>
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
-              onClick={() => setIsPreviewingDoc(!is_previewing_doc)}
+              onClick={() => {
+                selectedRequest?.request_type == request_types.SUPPLIER_QUESTION ? 
+                setFileViewer(selectedRequest.file_path) : 
+                setIsPreviewingDoc(!is_previewing_doc)
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -916,7 +928,7 @@ export default function Requests() {
                   d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
                 />
               </svg>
-              &nbsp; {selectedRequest?.file_name}
+              &nbsp; {ellipsify(selectedRequest?.file_name, 35)}
             </div>
           </div>
 

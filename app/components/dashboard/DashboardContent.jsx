@@ -47,6 +47,7 @@ import GracePeriodAlert, {
 import { useStoreState } from "easy-peasy";
 import axios from "axios";
 import IPCard from "@/app/components/dashboard/IPCard";
+import {suspended_categories} from "@/app/modules/constants";
 
 import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
 
@@ -429,7 +430,8 @@ export default function GetStarted({ type }) {
             <div className="w-full pt-[72px]">
               {user?.first_name && (
                 <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name}
+                  Hello, {user.first_name} 
+                  {/* <span className="text-white text-sm">This is a visible comment</span> */}
                 </h2>
               )}
 
@@ -441,6 +443,7 @@ export default function GetStarted({ type }) {
                         Welcome to the MTN Partner Portal, {user.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.
+
                       </p>
                       <p className="text-[#999999] text-center md:text-start">
                         Choose a partner category that best suits your service
@@ -616,7 +619,11 @@ export default function GetStarted({ type }) {
               )}
 
               {
-                IPAlert &&
+                IPAlert && 
+                //Need to negate the condition that shows the category files
+                !(!contractStarted &&
+                  partner?.contract_status === "not_started" &&
+                  partnerActiveCategories?.length > 0 ) &&
 
                 // And you have not submitted the IP details
 
@@ -927,7 +934,8 @@ export default function GetStarted({ type }) {
                           setIsOpen={setIsOpen}
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
-                          disabled={partner?.edittable}
+                          disabled={partner?.edittable ||
+                                    suspended_categories.includes(category.category_name)}
                           pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}

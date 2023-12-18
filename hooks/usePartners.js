@@ -408,13 +408,14 @@ const usePartners = () => {
 
   const resendEmail = async (email, email_type) => {
     
-    setProcessing(true)
+    setProcessing(true);
 
-    const { data: resendEmailData, error: resendEmailError } = await fetchData(
-      RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
+    const response = await fetch(
+      `${RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK}`,
       {
-        method: "POST",
         cache: "no-store",
+        next: { revalidate: 120 },
+        method: "POST",
         body: JSON.stringify({
           email,
           email_type,
@@ -424,13 +425,35 @@ const usePartners = () => {
           apikey: process.env.NEXT_PUBLIC_APIKEY
         }
       }
-    )
+    );
+
+    const result = await response.json();
+
+    console.log("response.json();", result);
+
+    const { data, error } = result;
+
+    // const { data: resendEmailData, error: resendEmailError } = await fetchData(
+    //   RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
+    //   {
+    //     method: "POST",
+    //     cache: "no-store",
+    //     body: JSON.stringify({
+    //       email,
+    //       email_type,
+    //     }),
+    //     headers: {
+    //       "Content-Type" : "application/json",
+    //       apikey: process.env.NEXT_PUBLIC_APIKEY
+    //     }
+    //   }
+    // )
     setProcessing(false)
-    if (resendEmailError) {
-      return setError({ verify: resendEmailError })
+    if (error) {
+      return setError({ verify: error })
     }
 
-    setSuccess(resendEmailData.message)
+    setSuccess(data?.message)
   }
   
   const updateStageStatus = (category, stage) => {

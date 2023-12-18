@@ -30,7 +30,7 @@ export default function GracePeriodAlert({
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 
-  const [gracePeriodStatus, setGracePeriodStatus] = useState(null); 
+  const [gracePeriodStatus, setGracePeriodStatus] = useState(null);
   const [licenseRenewalStatus, setLicenseRenewalStatus] = useState(null);
   const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState();
   const [loading, setLoading] = useState(false);
@@ -47,15 +47,18 @@ export default function GracePeriodAlert({
           },
         }
       );
-      if ("license_validity_days" in licenseValidityRemainderResponse.data.data) {
-        const validityDaysLeft =licenseValidityRemainderResponse.data.data.license_validity_days;
+      if (
+        "license_validity_days" in licenseValidityRemainderResponse.data.data
+      ) {
+        const validityDaysLeft =
+          licenseValidityRemainderResponse.data.data.license_validity_days;
         setLicenseValidityDaysLeft(validityDaysLeft);
       }
 
-      console.log("validityDaysLeft", validityDaysLeft)
+      console.log("validityDaysLeft", validityDaysLeft);
       setLoading(false);
     } catch (error) {
-      console.log("validityDaysLeft error")
+      console.log("validityDaysLeft error");
       setLoading(false);
     }
   };
@@ -76,14 +79,12 @@ export default function GracePeriodAlert({
 
     licenseValidityRemainder();
   }, [gracePeriod, licenseRenewal]);
-  
 
   return (
     <>
       {loading ? (
         <></>
       ) : (
-        
         <>
           {licenseRenewalStatus == "none" &&
           licenseValidityDaysLeft >= 0 &&
@@ -136,7 +137,7 @@ export default function GracePeriodAlert({
                               )}
                             </div>
                             <div className="flex gap-2 flex-wrap">
-                            {licenseValidityDaysLeft > 0 && (
+                              {licenseValidityDaysLeft > 0 && (
                                 <button
                                   onClick={() => openGracePeriodForm()}
                                   className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
@@ -189,9 +190,10 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button 
-                          onClick={() => closeAlert()}
-                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button
+                            onClick={() => closeAlert()}
+                            className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                          >
                             Got It!
                           </button>
                           <button
@@ -207,15 +209,16 @@ export default function GracePeriodAlert({
                 </div>
               )}
             </>
-            
           ) : (
             <>
               {licenseRenewalStatus != "approved" ? (
                 <>
                   {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ? (
+                  licenseRenewalStatus == "corrected" ||
+                  licenseRenewalStatus == "none" ? (
                     <></>
                   ) : (
+                    
                     <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
                       <div className="p-[24px] ">
                         <div className="flex flex-row gap-3">
@@ -308,9 +311,10 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button 
-                          onClick={() => closeAlert()}
-                          className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button
+                            onClick={() => closeAlert()}
+                            className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                          >
                             Got It!
                           </button>
                         </div>
@@ -327,10 +331,7 @@ export default function GracePeriodAlert({
   );
 }
 
-export const GracePeriodExtensionForm = ({
-  closePopUp,
-  submitGracePeriod,
-}) => {
+export const GracePeriodExtensionForm = ({ closePopUp, submitGracePeriod }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 
@@ -598,7 +599,6 @@ export const LicenseValidityTopAlert = ({
   const [errorMessage, setErrorMessage] = useState(null);
   const [validity, setValidity] = useState(false);
 
-
   ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
   const checkPartnerLicenseExpiration = async () => {
     try {
@@ -623,7 +623,7 @@ export const LicenseValidityTopAlert = ({
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     checkPartnerLicenseExpiration();
   }, [licenseValidityDaysLeft]);
 
@@ -654,18 +654,16 @@ export const LicenseValidityTopAlert = ({
                   />
                 </svg>
                 <p className="text-white flex gap-2">
-                  
                   {!validity ? (
                     <>
-                    {licenseValidityDaysLeft>1 ?(
-                      <span>
-                      Your License expires in {licenseValidityDaysLeft} days.
-                    </span>
-                    ):(
-                      <span>
-                      Your License expires today.
-                    </span>
-                    )}
+                      {licenseValidityDaysLeft > 1 ? (
+                        <span>
+                          Your License expires in {licenseValidityDaysLeft}{" "}
+                          days.
+                        </span>
+                      ) : (
+                        <span>Your License expires today.</span>
+                      )}
                     </>
                   ) : (
                     <span>Your License has expired</span>
@@ -1287,7 +1285,7 @@ export const GracePeriodAdminFlyOut = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setFileViewer(selectedRequest?.file_path)
+                      setFileViewer(selectedRequest?.file_path);
                     }}
                     title="Open"
                   >
@@ -1452,7 +1450,7 @@ export const GracePeriodAdminFlyOut = ({
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
                                     />
                                   </label>
-                                </div>                                
+                                </div>
                               </form>
                             </div>
 
@@ -1573,11 +1571,13 @@ export const GracePeriodAdminFlyOut = ({
         </div>
       </main>
 
-
-
-            { fileViewer && 
-                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-            }
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
 
       <Success
         message={successMessage}
@@ -1793,7 +1793,7 @@ export const LicenseRenewalAdminFlyout = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setFileViewer(selectedRequest?.file_path)
+                      setFileViewer(selectedRequest?.file_path);
                     }}
                     title="Open"
                   >
@@ -1958,7 +1958,7 @@ export const LicenseRenewalAdminFlyout = ({
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
                                     />
                                   </label>
-                                </div> 
+                                </div>
                               </form>
                             </div>
 
@@ -2079,9 +2079,13 @@ export const LicenseRenewalAdminFlyout = ({
         </div>
       </main>
 
-      { fileViewer && 
-                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-            }
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
 
       <Success
         message={successMessage}

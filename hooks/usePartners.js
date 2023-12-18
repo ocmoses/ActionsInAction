@@ -420,6 +420,7 @@ const usePartners = () => {
           email_type,
         }),
         headers: {
+          "Content-Type" : "application/json",
           apikey: process.env.NEXT_PUBLIC_APIKEY
         }
       }

@@ -611,7 +611,13 @@ export const LicenseValidityTopAlert = ({
           },
         }
       );
+
+      
+
       const response = checkPartnerLicenseExpirationResponse.data.data;
+      
+      console.log("Partner Validity Expiration", checkPartnerLicenseExpirationResponse);
+
       const license_validity = response.license_validity;
       if (license_validity == "not_expired") {
         setValidity(false);

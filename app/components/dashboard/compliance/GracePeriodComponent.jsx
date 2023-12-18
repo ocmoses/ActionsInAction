@@ -83,7 +83,6 @@ export default function GracePeriodAlert({
       {loading ? (
         <></>
       ) : (
-    
         
         <>
           {licenseRenewalStatus == "none" &&
@@ -208,6 +207,7 @@ export default function GracePeriodAlert({
                 </div>
               )}
             </>
+            
           ) : (
             <>
               {licenseRenewalStatus != "approved" ? (
@@ -655,6 +655,7 @@ export const LicenseValidityTopAlert = ({
                   />
                 </svg>
                 <p className="text-white flex gap-2">
+                  
                   {!validity ? (
                     <>
                     {licenseValidityDaysLeft>1 ?(

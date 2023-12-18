@@ -14,7 +14,10 @@ import ServiceConfigurationButton from "@/app/components/dashboard/ContractCompo
 export default function MenuBar({ open, openAction=null, closeAction=null }) {
 
 
-  const { partners, getPartnerContractCurrentlyRunning, } = usePartners();
+  const { partners, getPartnerContractCurrentlyRunning, partnerCategories} = usePartners();
+
+  // console.log("UsePartners in Menubar", usePartners());
+  // console.log("partnerCategories", partnerCategories);
 
   const segments = useSelectedLayoutSegments();
   const currentPath = segments?.reverse();
@@ -82,7 +85,10 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
             </li>
           )}
 
-          {PartnerMenu.map((menu) => (
+          {PartnerMenu.map((menu) =>  
+            // Compliance page is hidden until user selects 1 or more categories
+            menu.route == "/dashboard/compliance" && partnerCategories?.length == 0 ?
+            <></> :
             <li key={menu.label}>
               <Link
                 href={menu.route}
@@ -119,7 +125,7 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
                 )}
               </Link>
             </li>
-          ))}
+          )}
 
           {user?.role == "superAdmin" && (
             <div className={`fixed z-[99] bottom-4 left-0 pl-2 bg-black`}>

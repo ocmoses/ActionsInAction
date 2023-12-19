@@ -686,17 +686,22 @@ export default function Requests() {
     }));
   };
 
+  const getAllRequests = async () => {
+      await get_brds();
+      await get_questionnaires();
+      await get_revenue_share();
+      await get_change_order();
+      await get_grace_period();
+      await get_license_renewal();
+      await get_ips();
+      await get_shortcodes();    
+    
+  }
+
   useEffect(() => {
     setProcessing(false);
     clearErrors();
-    get_brds();
-    get_questionnaires();
-    get_revenue_share();
-    get_change_order();
-    get_grace_period();
-    get_license_renewal();
-    get_ips();
-    get_shortcodes();
+    getAllRequests().then((resp) => setPagedRequests(requests.slice(0,5)));
   }, []);
 
   useEffect(() => {}, [filteredRequests]);

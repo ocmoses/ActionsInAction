@@ -114,6 +114,10 @@ export default function IPCorrectionModal({rejected, closeAction}){
                     setError({[file_title]: resp.error});
                 }else{
                     setFiles({...files, [file_title]: file_title});
+                    if(file_title == "video_file"){
+                        setFiles({...files, video_file: file_title});
+                        setFiles({...files, authorization_video: file_title});
+                    }
                 }
             })
             .catch(error => {console.log(error.response), setSubmitting(false)});    

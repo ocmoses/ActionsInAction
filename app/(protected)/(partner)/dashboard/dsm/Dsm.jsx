@@ -17,7 +17,7 @@ export default function RegistrationForm() {
     <div className='fixed w-[100%] h-[100%] bg-white z-[5000] top-0 left-0'></div>
     <form
       id="submitService"
-      action="https://smprod.mtn.com.ng/DSDP/PartnerPortalLoginApi"
+      action="https://smprod.mtn.ng/DSDP/PartnerPortalLoginApi"
       method="POST"
       target='dsmiframe'
     >

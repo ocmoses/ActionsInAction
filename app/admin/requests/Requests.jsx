@@ -909,9 +909,7 @@ export default function Requests() {
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => {
-                selectedRequest?.request_type == request_types.SUPPLIER_QUESTION ? 
-                setFileViewer(selectedRequest.file_path) : 
-                setIsPreviewingDoc(!is_previewing_doc)
+                setFileViewer(selectedRequest?.file_path) 
               }}
             >
               <svg

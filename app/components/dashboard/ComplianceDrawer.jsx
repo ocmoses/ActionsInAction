@@ -17,6 +17,7 @@ export default function ComplianceDrawer({
     setOpenDrawer(false);
   };
 
+
   const { is_previewing_doc, doc_preview_path, handleCloseModal } = useApp();
   return (
     <>
@@ -26,6 +27,7 @@ export default function ComplianceDrawer({
           closeModal={handleCloseModal}
         />
       )}
+      
       <main
         className={
           "fixed overflow-hidden z-10 bg-black bg-opacity-75 inset-0 transform ease-in-out " +

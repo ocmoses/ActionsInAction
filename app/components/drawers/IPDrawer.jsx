@@ -80,9 +80,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
     const reasons = [
         "",
-        "It doesn't exist",
-        "I can see this clearly",
-        "Something else entirely",
+        "Incomplete Information",
+        "Wrong document",
+        "Inconsistent Information",
+        "Invalid or Expired Document",
+        "Poor Quality (Contents Not Clear)",
         "Others"
     ];
     
@@ -130,7 +132,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             setApprovals({...approvals, [expansion.VIDEO_FILE]: "approved"});
                             break;
                         case expansion.AGREEMENT_WITH_VAS_PARTNER: 
-                            setApprovals({...approvals, [expansion.VIDEO_AGREEMENT_WITH_VAS_PARTNER]: "approved"});
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_VAS_PARTNER]: "approved"});
                             break;
                         case expansion.AGREEMENT_WITH_AGENT: 
                             setApprovals({...approvals, [expansion.AGREEMENT_WITH_AGENT]: "approved"});
@@ -213,7 +215,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             setApprovals({...approvals, [expansion.VIDEO_FILE]: "rejected"});
                             break;
                         case expansion.AGREEMENT_WITH_VAS_PARTNER: 
-                            setApprovals({...approvals, [expansion.VIDEO_AGREEMENT_WITH_VAS_PARTNER]: "rejected"});
+                            setApprovals({...approvals, [expansion.AGREEMENT_WITH_VAS_PARTNER]: "rejected"});
                             break;
                         case expansion.AGREEMENT_WITH_AGENT: 
                             setApprovals({...approvals, [expansion.AGREEMENT_WITH_AGENT]: "rejected"});

@@ -686,17 +686,22 @@ export default function Requests() {
     }));
   };
 
+  const getAllRequests = async () => {
+      await get_brds();
+      await get_questionnaires();
+      await get_revenue_share();
+      await get_change_order();
+      await get_grace_period();
+      await get_license_renewal();
+      await get_ips();
+      await get_shortcodes();    
+    
+  }
+
   useEffect(() => {
     setProcessing(false);
     clearErrors();
-    get_brds();
-    get_questionnaires();
-    get_revenue_share();
-    get_change_order();
-    get_grace_period();
-    get_license_renewal();
-    get_ips();
-    get_shortcodes();
+    getAllRequests().then((resp) => setPagedRequests(requests.slice(0,5)));
   }, []);
 
   useEffect(() => {}, [filteredRequests]);
@@ -909,9 +914,7 @@ export default function Requests() {
             <div
               className="border-1 border-white/10 rounded-2xl px-3 py-1 text-white/70 inline-flex items-center text-[11px] cursor-pointer"
               onClick={() => {
-                selectedRequest?.request_type == request_types.SUPPLIER_QUESTION ? 
-                setFileViewer(selectedRequest.file_path) : 
-                setIsPreviewingDoc(!is_previewing_doc)
+                setFileViewer(selectedRequest?.file_path) 
               }}
             >
               <svg

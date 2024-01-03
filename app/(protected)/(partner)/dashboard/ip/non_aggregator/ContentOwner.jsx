@@ -317,7 +317,7 @@ export default function ContentOwner(){
                             4
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Aggrement between [content owner] and [Dreamvile Digital Limited] VAS partner</h4>
+                            <h4 className="font-mtn text-white text-md">Aggrement between content owner and VAS partner</h4>
                             <p className="text-white/60 text-sm"></p> 
                             <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">

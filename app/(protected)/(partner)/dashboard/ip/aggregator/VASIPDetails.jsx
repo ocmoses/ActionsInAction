@@ -276,7 +276,7 @@ export default function VASIPDetails({next}){
                             3
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agreement between [VAS partner] and [Dreamvile Digital Limited] aggregator</h4>
+                            <h4 className="font-mtn text-white text-md">Agreement between VAS partner and aggregator</h4>
                             <p className="text-white/60 text-sm"></p> 
                             <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">

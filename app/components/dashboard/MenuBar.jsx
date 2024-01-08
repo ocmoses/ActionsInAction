@@ -28,6 +28,11 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
 
   const { user } = useUsers();
 
+  const role = user?.role;
+  // console.log('', useAdmins());
+
+  console.log("Role here", role);
+
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
 

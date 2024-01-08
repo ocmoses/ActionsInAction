@@ -1427,6 +1427,32 @@ export const role_types = {
   DELEGATE: "delegate"
 }
 
+export const role_menu_map = {
+  SUPER_ADMIN: [
+    "Dashboard",
+    "Compliance",
+    "Requests",
+    "Reports",
+    "Contracts"
+  ],
+  ADMIN: [
+    "Dashboard",
+    "Compliance",
+    "Requests",
+    "Reports",
+    "Contracts"
+  ],
+  DIRECTOR: [
+    "Contracts"
+  ],
+  WITNESS: [
+    "Contracts"
+  ],
+  DELEGATE: [
+    "Contracts"
+  ]
+}
+
 export const contract_statuses = {
   PROCESSING: "processing",
   NOT_STARTED: "not_started",

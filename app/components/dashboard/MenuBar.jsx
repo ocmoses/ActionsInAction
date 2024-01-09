@@ -10,11 +10,15 @@ import { getPartnerInitials } from "@/app/modules/utilities";
 import useUsers from "@/hooks/useUsers";
 import usePartners from "@/hooks/usePartners";
 import ServiceConfigurationButton from "@/app/components/dashboard/ContractComponents";
+import {role_menu_map} from "@/app/modules/constants";
 
 export default function MenuBar({ open, openAction=null, closeAction=null }) {
 
 
-  const { partners, getPartnerContractCurrentlyRunning, } = usePartners();
+  const { partners, getPartnerContractCurrentlyRunning, partnerCategories} = usePartners();
+
+  // console.log("UsePartners in Menubar", usePartners());
+  // console.log("partnerCategories", partnerCategories);
 
   const segments = useSelectedLayoutSegments();
   const currentPath = segments?.reverse();
@@ -24,6 +28,11 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
   const [openSecondaryMenu, setOpenSecondaryMenu] = useState(false);
 
   const { user } = useUsers();
+
+  const role = user?.role;
+  // console.log('', useAdmins());
+
+  console.log("Role here", role);
 
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -82,44 +91,47 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
             </li>
           )}
 
-          {PartnerMenu.map((menu) => (
-            <li key={menu.label}>
-              <Link
-                href={menu.route}
-                className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
-                  !open && "tooltip tooltip-right tooltip-mtn"
-                }`}
-                data-tip={menu.label}
-              >
-                {menu.icon == "" ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className={`w-[20px] h-[20px] ${
-                      path === menu.route && "text-yellow-300"
-                    } `}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
-                    />
-                  </svg>
-                ) : (
-                  menu.icon
-                )}
+          {PartnerMenu.map((menu) =>  
+            // Compliance page is hidden until user selects 1 or more categories
+            menu.route == "/dashboard/compliance" && partnerCategories?.length == 0 ?
+            <></> : (role_menu_map[role]?.includes(menu.label) && <li key={menu.label} >
+                      <Link
+                        href={menu.route}
+                        className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
+                          !open && "tooltip tooltip-right tooltip-mtn"
+                        }`}
+                        data-tip={menu.label}
+                      >
+                        {menu.icon == "" ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className={`w-[20px] h-[20px] ${
+                              path === menu.route && "text-yellow-300"
+                            } `}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
+                            />
+                          </svg>
+                        ) : (
+                          menu.icon
+                        )}
 
-                {open && (
-                  <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
-                    {menu.label}
-                  </span>
-                )}
-              </Link>
-            </li>
-          ))}
+                        {open && (
+                          <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
+                            {menu.label}
+                          </span>
+                        )}
+                      </Link>
+                    </li>)
+            
+          )}
 
           {user?.role == "superAdmin" && (
             <div className={`fixed z-[99] bottom-4 left-0 pl-2 bg-black`}>

@@ -20,12 +20,11 @@ export default function MenuBar({ open }) {
 
   const [openSecondaryMenu, setOpenSecondaryMenu] = useState(false);
 
-  const {session} = useUsers();
+  
   const {admin} = useAdmins();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
 
-  // console.log('useAdmins', useAdmins());
 
   const getFullname = () => {
     
@@ -49,6 +48,7 @@ export default function MenuBar({ open }) {
     <ul className={`p-0 flex-grow h-full`}>
       {AdminMenu.map((menu) => {
         const path = `/${getPath(segments)}`;
+
         return (
           <li key={menu.label}>
             <Link

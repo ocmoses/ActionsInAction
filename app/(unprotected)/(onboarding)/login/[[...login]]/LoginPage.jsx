@@ -19,6 +19,8 @@ import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
 
 import LoginOtp from "./otp/LoginOtp";
+import {role_menu_map} from "@/app/modules/constants";
+
 
 function Login({ params }) {
   const router = useRouter();
@@ -31,6 +33,9 @@ function Login({ params }) {
   const [loginProcessing, setLoginProcessing] = useState(false);
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors({} );
   const { clearStore } = useLogout();
+  const {user} = useUsers();
+
+  console.log("User in LoginPage", user);
 
   const [data, setData] = useState({
     email:
@@ -117,17 +122,22 @@ function Login({ params }) {
   };
 
   const logInWithAuthZero = () => {
+
+    
+
     const redirect =
       params &&
       params?.length &&
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : PageRoutes.dashboard;
+        : (user ? role_menu_map[user.role][0] : PageRoutes.dashboard);
+        // PageRoutes.dashboard;
     //: getOtp();
+    router.push(redirect);
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    router.push(redirect);
+    
     setTimeout(() => {
       location.reload();
     }, 1000);

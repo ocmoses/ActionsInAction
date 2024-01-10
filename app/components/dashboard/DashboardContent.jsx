@@ -406,25 +406,25 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   if(user && role_menu_map[user.role][0] == "Dashboard"){
-  //     setHasdashboard(true);
-  //   }
+    if(user && role_menu_map[user.role][0] == "Dashboard"){
+      setHasdashboard(true);
+    }
 
-  //   const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
+    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
 
-  //   if(location != "Dashboard"){
-  //      window.location = location;
-  //   }   
+    if(location != "Dashboard" && location != null){
+       window.location = location;
+    }   
 
-  // }, [user]);
+  }, [user]);
 
 
 
   return (
 
-    // hasDashboard && 
+    hasDashboard && 
 
     (<>
 

@@ -6,7 +6,12 @@ export const PartnerMenu = [
   // },
   {
     label: "Dashboard",
-    icon: "",
+    icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.99992 14.6667H9.99992C13.3333 14.6667 14.6666 13.3334 14.6666 10V6.00004C14.6666 2.66671 13.3333 1.33337 9.99992 1.33337H5.99992C2.66659 1.33337 1.33325 2.66671 1.33325 6.00004V10C1.33325 13.3334 2.66659 14.6667 5.99992 14.6667Z" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66675 1.33337V14.6667" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66675 5.66663H14.6667" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66675 10.3334H14.6667" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>,
     route: "/dashboard",
   },
   {

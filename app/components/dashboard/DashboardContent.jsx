@@ -50,6 +50,8 @@ import IPCard from "@/app/components/dashboard/IPCard";
 import {suspended_categories} from "@/app/modules/constants";
 
 import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
+import { PartnerMenu } from "@/app/modules/menu";
+import {role_menu_map} from "@/app/modules/constants";
 
 export default function GetStarted({ type }) {
   const {
@@ -111,6 +113,8 @@ export default function GetStarted({ type }) {
   const [IPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
+
+  const [hasDashboard, setHasdashboard] = useState(false);
 
   useEffect(() => {
     setProcessing(false);
@@ -402,13 +406,27 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
+  // useEffect(() => {
 
+  //   if(user && role_menu_map[user.role][0] == "Dashboard"){
+  //     setHasdashboard(true);
+  //   }
 
+  //   const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
+
+  //   if(location != "Dashboard"){
+  //      window.location = location;
+  //   }   
+
+  // }, [user]);
 
 
 
   return (
-    <>
+
+    // hasDashboard && 
+
+    (<>
 
 
 
@@ -1029,6 +1047,6 @@ export default function GetStarted({ type }) {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
-    </>
+    </>)
   );
 }

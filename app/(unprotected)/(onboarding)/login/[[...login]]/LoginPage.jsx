@@ -19,7 +19,7 @@ import useApp from "@/hooks/useApp";
 import useUsers from "@/hooks/useUsers";
 
 import LoginOtp from "./otp/LoginOtp";
-import {role_menu_map} from "@/app/modules/constants";
+
 
 
 function Login({ params }) {
@@ -131,8 +131,7 @@ function Login({ params }) {
       params[0] !== "login" &&
       params[1] !== "getstarted"
         ? `/${params.join("/")}`
-        : (user ? role_menu_map[user.role][0] : PageRoutes.dashboard);
-        // PageRoutes.dashboard;
+        : PageRoutes.dashboard;
     //: getOtp();
     router.push(redirect);
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);

@@ -1429,7 +1429,7 @@ export const role_types = {
 
 export const role_menu_map = {
   "superAdmin": [
-    // "Dashboard",
+    "Dashboard",
     "Compliance",
     "Settings",
     "Contracts"

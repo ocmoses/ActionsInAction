@@ -130,11 +130,11 @@ export default function MenuBar({ open }) {
             >
               {
                 path == "/admin/dashboard/admins" ? 
-                (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" stroke="yellow">
-                  <path d="M6.10671 7.24671C6.04004 7.24004 5.96004 7.24004 5.88671 7.24671C4.30004 7.19337 3.04004 5.89337 3.04004 4.29337C3.04004 2.66004 4.36004 1.33337 6.00004 1.33337C7.63337 1.33337 8.96004 2.66004 8.96004 4.29337C8.95337 5.89337 7.69337 7.19337 6.10671 7.24671Z" stroke="yellow" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M10.9399 2.66663C12.2333 2.66663 13.2733 3.71329 13.2733 4.99996C13.2733 6.25996 12.2733 7.28663 11.0266 7.33329C10.9733 7.32663 10.9133 7.32663 10.8533 7.33329" stroke="yellow" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2.77323 9.70663C1.1599 10.7866 1.1599 12.5466 2.77323 13.62C4.60657 14.8466 7.61323 14.8466 9.44657 13.62C11.0599 12.54 11.0599 10.78 9.44657 9.70663C7.6199 8.48663 4.61323 8.48663 2.77323 9.70663Z" stroke="yellow" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12.2266 13.3334C12.7066 13.2334 13.1599 13.04 13.5332 12.7534C14.5732 11.9734 14.5732 10.6867 13.5332 9.90671C13.1666 9.62671 12.7199 9.44004 12.2466 9.33337" stroke="yellow" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" stroke="#efb703">
+                  <path d="M6.10671 7.24671C6.04004 7.24004 5.96004 7.24004 5.88671 7.24671C4.30004 7.19337 3.04004 5.89337 3.04004 4.29337C3.04004 2.66004 4.36004 1.33337 6.00004 1.33337C7.63337 1.33337 8.96004 2.66004 8.96004 4.29337C8.95337 5.89337 7.69337 7.19337 6.10671 7.24671Z" stroke="#efb703" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M10.9399 2.66663C12.2333 2.66663 13.2733 3.71329 13.2733 4.99996C13.2733 6.25996 12.2733 7.28663 11.0266 7.33329C10.9733 7.32663 10.9133 7.32663 10.8533 7.33329" stroke="#efb703" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2.77323 9.70663C1.1599 10.7866 1.1599 12.5466 2.77323 13.62C4.60657 14.8466 7.61323 14.8466 9.44657 13.62C11.0599 12.54 11.0599 10.78 9.44657 9.70663C7.6199 8.48663 4.61323 8.48663 2.77323 9.70663Z" stroke="#efb703" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12.2266 13.3334C12.7066 13.2334 13.1599 13.04 13.5332 12.7534C14.5732 11.9734 14.5732 10.6867 13.5332 9.90671C13.1666 9.62671 12.7199 9.44004 12.2466 9.33337" stroke="#efb703" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>) : 
                 (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" stroke="white">
                   <path d="M6.10671 7.24671C6.04004 7.24004 5.96004 7.24004 5.88671 7.24671C4.30004 7.19337 3.04004 5.89337 3.04004 4.29337C3.04004 2.66004 4.36004 1.33337 6.00004 1.33337C7.63337 1.33337 8.96004 2.66004 8.96004 4.29337C8.95337 5.89337 7.69337 7.19337 6.10671 7.24671Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -159,7 +159,7 @@ export default function MenuBar({ open }) {
             >
               {
                 path === "/admin/dashboard/admin-roles" ? 
-                (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-6 h-6">
+                (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#efb703" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                   </svg>
                 ):

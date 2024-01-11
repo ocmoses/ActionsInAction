@@ -11,7 +11,7 @@ export default function IPCard(){
 
     const {getIPProgressStatus} = usePartner();
 
-    const [percentage, setPercentage] = useState(0);
+    const [percentage, setPercentage] = useState(100);
 
     const [{ errors, setError, clearErrors }] = useErrors(null);
 

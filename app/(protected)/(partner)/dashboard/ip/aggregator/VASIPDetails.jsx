@@ -223,12 +223,12 @@ export default function VASIPDetails({next}){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Authorisation letter from VAS service provider to MTN</h4>
                             <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">See letter checklist</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         <FileInput
@@ -276,14 +276,14 @@ export default function VASIPDetails({next}){
                             3
                         </span> 
                         <div className="w-[250px] flex flex-col space-y-2">
-                            <h4 className="font-mtn text-white text-md">Agreement between [VAS partner] and [Dreamvile Digital Limited] aggregator</h4>
+                            <h4 className="font-mtn text-white text-md">Agreement between VAS partner and aggregator</h4>
                             <p className="text-white/60 text-sm"></p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">See agreement checklist</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput

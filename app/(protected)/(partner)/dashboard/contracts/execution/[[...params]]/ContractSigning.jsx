@@ -2322,7 +2322,7 @@ export default function ContractSigning({params}){
 
                                                 <div className="flex flex-col flex-1 space-y-1 justify-center">                
                                                     <p className="text-gray-500 text-sm">Upload</p>
-                                                    <p className="text-white text-md">Your signature</p>
+                                                    <p className="text-white text-md">Your signature (PNG)</p>
                                                     <p className="text-gray-500 text-sm">Drag and drop here or</p>
                                                 </div>
 

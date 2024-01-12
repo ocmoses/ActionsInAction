@@ -135,11 +135,14 @@ export default function Compliance({ params }) {
     setOpenDrawer(true);
   };
 
-
+  const goBack = () => {
+    router.back(); // Go back to the previous page
+    router.back(); // Go back to the page before the previous one
+  };
   return (
     // max-w-[1158px]
     <div className="mx-auto py-12 px-16 flex-grow">
-      <div onClick={() => router.push("dashboard/")} className="mb-12">
+      <div onClick={goBack} className="mb-12">
         <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
           <svg
             xmlns="http://www.w3.org/2000/svg"

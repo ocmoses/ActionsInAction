@@ -47,11 +47,19 @@ function Login({ params }) {
   const [notVerified, setNotVerified] = useState(null);
 
   ///////afoo///////////////////////////////////////////////////////////
-  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(false);
+  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState();
   const [sessionItems, setSessionItems] = useState();
   /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    const partnerLoginOtpStatus = JSON.parse(sessionStorage.getItem("partnerLoginOtpStatus"));
+    if (partnerLoginOtpStatus==null) {
+      setGetPartnerLoginOtp(false);
+    } else {
+      const sessionItems = JSON.parse(sessionStorage.getItem("loginResult"));
+      setSessionItems(sessionItems);
+      setGetPartnerLoginOtp(true);
+    }
     
     setForm(null);
     clearErrors();
@@ -113,7 +121,9 @@ function Login({ params }) {
 
     app.setStoreStates(serverSession, loginData?.categories, "login");
     setGetPartnerLoginOtp(true);
+    sessionStorage.setItem("partnerLoginOtpStatus", JSON.stringify("not_confirmed"));
     setSessionItems(result);
+    sessionStorage.setItem("loginResult", JSON.stringify(result));
   };
 
   const logInWithAuthZero = () => {
@@ -135,7 +145,7 @@ function Login({ params }) {
 
   return (
     <>
-      {!getPartnerLoginOtp && (
+      {getPartnerLoginOtp ===false && (
         <form method="POST" onSubmit={handleLogin}>
           <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
             <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">

@@ -279,8 +279,9 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
             </div>
           )}
           
+          {user?.role == "superAdmin" && (
           <ServiceConfigurationButton open={open}/>
-          
+          )}
 
           {user?.role == "superAdmin" && (
             <li>

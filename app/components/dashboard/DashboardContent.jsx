@@ -408,11 +408,11 @@ export default function GetStarted({ type }) {
 
   useEffect(() => {
 
-    if(user && role_menu_map[user.role][0] == "Dashboard"){
+    if(user && role_menu_map[user?.role][0] == "Dashboard"){
       setHasdashboard(true);
     }
 
-    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
+    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user?.role][0])?.route : null;
 
     // console.log("Location is: ", location);
 

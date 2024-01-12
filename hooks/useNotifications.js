@@ -30,7 +30,7 @@ export default function useNotifications(){
               next: { revalidate: 120 },
               headers: {
                 "Content-Type": "application/json",
-                'X-API-KEY': process.env.NEXT_PUBLIC_APIKEY,
+                'X-API-KEY': process.env.NEXT_PUBLIC_NOTIFICATION_APIKEY,
               },
             }
           ); 
@@ -103,7 +103,7 @@ export default function useNotifications(){
             // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
-              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+              'X-API-Key': process.env.NEXT_PUBLIC_NOTIFICATION_APIKEY,
             },
           }
         );
@@ -158,7 +158,7 @@ export default function useNotifications(){
             // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
-              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+              'X-API-Key': process.env.NEXT_PUBLIC_NOTIFICATION_APIKEY,
             },
           }
         );
@@ -213,7 +213,7 @@ export default function useNotifications(){
             // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
-              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+              'X-API-Key': process.env.NEXT_PUBLIC_NOTIFICATION_APIKEY,
             },
           }
         );
@@ -261,7 +261,7 @@ export default function useNotifications(){
             // method: 'PUT',
             headers: {
               // "Content-Type": "application/json",
-              'X-API-Key': process.env.NEXT_PUBLIC_APIKEY,
+              'X-API-Key': process.env.NEXT_PUBLIC_NOTIFICATION_APIKEY,
             },
           }
         );

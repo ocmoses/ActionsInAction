@@ -20,6 +20,8 @@ import useUsers from "@/hooks/useUsers";
 
 import LoginOtp from "./otp/LoginOtp";
 
+
+
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
@@ -31,6 +33,9 @@ function Login({ params }) {
   const [loginProcessing, setLoginProcessing] = useState(false);
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors({} );
   const { clearStore } = useLogout();
+  const {user} = useUsers();
+
+  console.log("User in LoginPage", user);
 
   const [data, setData] = useState({
     email:
@@ -127,6 +132,9 @@ function Login({ params }) {
   };
 
   const logInWithAuthZero = () => {
+
+    
+
     const redirect =
       params &&
       params?.length &&
@@ -135,9 +143,10 @@ function Login({ params }) {
         ? `/${params.join("/")}`
         : PageRoutes.dashboard;
     //: getOtp();
+    router.push(redirect);
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    router.push(redirect);
+    
     setTimeout(() => {
       location.reload();
     }, 1000);

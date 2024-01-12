@@ -438,19 +438,19 @@ const clearAllFilter = () => {
             {search.category && (
               <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
                 <PartnerFilterCheck
-                  title="Value Added Services"
-                  summary="Non-core services or features that are beyond the standard voice calls."
-                  value="Value Added Services"
-                  checked={selectedCategory.includes("Value Added Services")}
-                  onChange={() => toggleCategory("Value Added Services")}
-                />
-                <PartnerFilterCheck
                   title="Rich Media Services"
                   summary="Digital Services players, offering value-added services."
                   value="Rich Media Services"
                   checked={selectedCategory.includes("Rich Media Services")}
                   onChange={() => toggleCategory("Rich Media Services")}
                 />
+                <PartnerFilterCheck
+                  title="Value Added Services"
+                  summary="Non-core services or features that are beyond the standard voice calls."
+                  value="Value Added Services"
+                  checked={selectedCategory.includes("Value Added Services")}
+                  onChange={() => toggleCategory("Value Added Services")}
+                />                
                 <PartnerFilterCheck
                   title="Aggregator"
                   summary="Provide a concentration point to limit the number of devices that will."

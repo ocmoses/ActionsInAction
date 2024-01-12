@@ -17,6 +17,8 @@ import { STATES } from "@/app/modules/states";
 import Portal from "@/app/components/Portal";
 import { useState } from "react";
 import { useEffect } from "react";
+import FileViewer from "@/app/components/modals/FileViewer";
+
 
 export default function ComplianceLabelPartners({
   field,
@@ -34,6 +36,8 @@ export default function ComplianceLabelPartners({
   const [ApprovalStages, setApprovalStages] = useState(null);
   const [ApprovalStage, setApprovalStage] = useState(null);
   const [Approvals, setApproval] = useState(null);
+
+  const [fileViewer, setFileViewer] = useState(null);
 
   // console.log("Approvals: ", Approvals);
 
@@ -125,6 +129,9 @@ export default function ComplianceLabelPartners({
 
   return (
     <>
+    { fileViewer && 
+          <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+      }
       <div
         className={`w-full p-3 border border-[#212121] rounded-[8px] ${
           activeApproval === field && " rounded-xl bg-[#313131]"
@@ -224,7 +231,7 @@ export default function ComplianceLabelPartners({
                       {type === "file" && category[field]?.file_path && (
                         <span
                           onClick={() =>
-                            previewFiles(category[field]?.file_path ?? "")
+                            setFileViewer(category[field]?.file_path ?? NULL)
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"
                         >
@@ -245,9 +252,9 @@ export default function ComplianceLabelPartners({
                       {type === "shortcode_doc" && (
                         <span
                           onClick={() =>
-                            previewFiles(
+                            setFileViewer(
                               category_shortcode.shortcode?.shortcode_doc
-                                ?.file_path ?? ""
+                                ?.file_path ?? NULL
                             )
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"
@@ -289,9 +296,9 @@ export default function ComplianceLabelPartners({
                       {type === "pricing_doc" && (
                         <span
                           onClick={() =>
-                            previewFiles(
+                            setFileViewer(
                               category_shortcode.shortcode_pricing?.pricing_doc
-                                ?.file_path ?? ""
+                                ?.file_path ?? NULL
                             )
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"

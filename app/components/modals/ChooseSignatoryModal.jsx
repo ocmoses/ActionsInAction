@@ -43,7 +43,7 @@ export default function ChooseSignatoryModal(){
 
 
     return (chooseSignatoryModal && 
-            <GenericModal id="contract_signatories_modal" width={400} height={550} closeAction={() => {}}>
+            <GenericModal id="contract_signatories_modal" width={520} height={550} closeAction={() => {}}>
                 <>
                     <div className="flex pt-8 pb-4 w-[450px]">
                         <div className="text-white text-2xl mb-4 flex-1">Choose a {newSignatoryRole}</div>
@@ -81,8 +81,8 @@ export default function ChooseSignatoryModal(){
                         
                         (<div className="mb-4 rounded-lg bg-white/20 flex p-4 hover:bg-white/40 hover:border-px hover:border-gray-200" key={partner.uuid}
                                 onClick={() => {
-                                setSignatories({...signatories, director: {firstname: partner.firstname, lastname: partner.lastname, email: partner.email}}); 
-                                setChooseSignatoryModal(false); setContractSignatriesModal(true);
+                                    setSignatories({...signatories, director: {firstname: partner.firstname, lastname: partner.lastname, email: partner.email}}); 
+                                    setChooseSignatoryModal(false); setContractSignatriesModal(true);
                                 }
                             }>
 

@@ -11,6 +11,8 @@ export default function CategoryCard({
   pendingQuestionare=true
 }) {
 
+  console.log("Card Category", category);
+
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
   
@@ -21,13 +23,15 @@ export default function CategoryCard({
   };
   return (
     <>
-      <div
-        onClick={() => (!disabled ? (pendingQuestionare ? setShowQuestionare(true) : selectCategory(category)) : {})}
+      <div 
+        onClick={() => (disabled ? {} : (pendingQuestionare ? setShowQuestionare(true) : selectCategory(category)) )}
         className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] px-6 py-4 block ${
           disabled
             ? "cursor-not-allowed bg-white/10 text-white/70"
             : "cursor-pointer text-white bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
         } rounded-lg`}
+
+        title={`${disabled ? "Coming Soon" : "Click to select"}`}
       >
         <div>
           <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">

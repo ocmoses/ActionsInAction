@@ -132,6 +132,8 @@ export default function Filter({list, filterAction, keysArray=null, statusArray=
         }else if(filter.includes('status***')){
             const key = filter.split("***")[1];
             setSearchTags({...searchTags, status: searchTags.status.filter(k => k != key)}); 
+        }else{
+          setSearchTags({...searchTags});
         }
     
     };

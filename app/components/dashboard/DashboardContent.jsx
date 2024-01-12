@@ -26,9 +26,12 @@ import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
 import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
-import { user_statuses, questionnaire_pending } from "@/app/modules/constants";
+import { user_statuses, questionnaire_pending, ip_pending } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
+import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
+import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
 import BrdUpdates, {
@@ -44,7 +47,11 @@ import GracePeriodAlert, {
 import { useStoreState } from "easy-peasy";
 import axios from "axios";
 import IPCard from "@/app/components/dashboard/IPCard";
+import {suspended_categories} from "@/app/modules/constants";
 
+import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
+import { PartnerMenu } from "@/app/modules/menu";
+import {role_menu_map} from "@/app/modules/constants";
 
 export default function GetStarted({ type }) {
   const {
@@ -60,12 +67,16 @@ export default function GetStarted({ type }) {
     setValidationRules,
     setCurrentCategory,
     nextStage,
+    getIPStatus,
+    getPartnerContractCurrentlyRunning,
   } = usePartners();
-//////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
-////////////////////////////////////////////////////////////////
+  
+  ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
+    console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
     console.log("_finalApproval", { _finalApproval });
@@ -99,8 +110,11 @@ export default function GetStarted({ type }) {
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+  const [IPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
+
+  const [hasDashboard, setHasdashboard] = useState(false);
 
   useEffect(() => {
     setProcessing(false);
@@ -127,24 +141,51 @@ export default function GetStarted({ type }) {
     setProcessing(false);
   }, []);
 
-  useEffect(() => {
-    let check = () => 
-    getQuestionnaireStatus().then(response => {
-      console.log("Questionnaire status response", response);
-      console.log("response.status", response.status);
-      console.log("response.error", response.error);
-      if(response.status == 'rejected'){
-        setQuestionnaireAlert(true);        
-        setRejectionReason(response.rejectionReason);
-      }else if(response.error && response.error == questionnaire_pending){
-        setToFillQuestionnaire(true);
-      }else if(response.message && response.message == questionnaire_pending){
-        setToFillQuestionnaire(true);
-      }else {
-        setToFillQuestionnaire(false);        
-      }
-    }).catch(error => {console.log(error.response); setError({error: error.message})});
+  let check = () => {
+    getQuestionnaireStatus()
+      .then((response) => {
+        console.log("Questionnaire status response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (response.status == "rejected") {
+          setQuestionnaireAlert(true);
+          setRejectionReason(response.rejectionReason);
+        } else if (response.error && response.error == questionnaire_pending) {
+          setToFillQuestionnaire(true);
+        } else if (
+          response.message &&
+          response.message == questionnaire_pending
+        ) {
+          setToFillQuestionnaire(true);
+        } else {
+          setToFillQuestionnaire(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        setError({ error: error.message });
+      });
 
+    getIPStatus()
+      .then((response) => {
+        console.log("IPStatus response", response);
+        console.log("response.status", response.status);
+        console.log("response.error", response.error);
+        if (
+          response?.message == ip_pending ||
+          response?.error == ip_pending ||
+          response?.message == undefined
+        ) {
+          setIPAlert(true);
+        }
+      })
+      .catch((error) => {
+        console.log("IP error: ", error.response);
+        setError({ error: error.message });
+      });
+  };
+
+  useEffect(() => {
     check();
   }, []);
 
@@ -233,7 +274,10 @@ export default function GetStarted({ type }) {
       ).catch((error) => {
         console.log(error);
         setIsSaving(false);
-        return setError({dashboard: "Unable to reach the server. Please check your connection and retry"});
+        return setError({
+          dashboard:
+            "Unable to reach the server. Please check your connection and retry",
+        });
       });
       setIsSaving(false);
       if (result) {
@@ -246,12 +290,17 @@ export default function GetStarted({ type }) {
           return setError({ dashboard: data.message });
         }
       } else {
-        return setError({dashboard: "Cannot reach the server. Please check your connection"});
+        return setError({
+          dashboard: "Cannot reach the server. Please check your connection",
+        });
       }
     } catch (err) {
       console.log({ err });
       setIsSaving(false);
-      return setError({dashboard:"Something went wrong. Please check your connection and try again"});
+      return setError({
+        dashboard:
+          "Something went wrong. Please check your connection and try again",
+      });
     }
   };
 
@@ -274,80 +323,115 @@ export default function GetStarted({ type }) {
 
   //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
 
-  
-  
-  const [showGracePreriodAndLicenseRenewalAlert, setShowGracePreriodAndLicenseRenewalAlert] = useState(false);
+  const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
+  const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
+  const [gracePeriod, setGracePeriod] = useState(null);
+  const [licenseRenewal, setLicenseRenewal] = useState(null);
   const [popUpGracePeriodForm, setPopUpGracePeriodForm] = useState(false);
   const [gracePeriodSubmit, setGracePeriodSubmit] = useState(false);
   const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
   const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
-const [gracePeriodStatus, setGracePeriodStatus] = useState("");
-////////////partnerLicenseGracePeriodStatus function////////////////////
-const partnerLicenseGracePeriodStatus = async () => {
-  setShowGracePreriodAndLicenseRenewalAlert(false);
-  try {
-    const partnerLicenseGracePeriodStatusResponse = await axios.get(
-      `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
-      {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_APIKEY,
-          Authorization: `Bearer ${states.users.token}`,
-        },
-      }
-    );
-    const response=partnerLicenseGracePeriodStatusResponse.data.data;
-    if ("status" in response) {
-    console.log("partnerLicenseGracePeriodStatusResponse", response.status)
-      setGracePeriodStatus(response.status);
-    }else{
-      //console.log("partnerLicenseGracePeriodStatusResponse", 'none')
-      setGracePeriodStatus("none");
+  ////////////partnerLicenseGracePeriodStatus function////////////////////
+  const partnerLicenseGracePeriod = async () => {
+    setShowGracePreriodAlert(false);
+    try {
+      const partnerGracePeriodResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_LICENSE_GRACE_PERIOD_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      console.log("partnerGracePeriodResponse", partnerGracePeriodResponse.data.data);
+      setGracePeriod(partnerGracePeriodResponse.data.data);
+      setShowGracePreriodAlert(true);
+    } catch (error) {
+      console.log("An error occur while trying to fetch license grace period status");
+      setShowGracePreriodAlert(false);
     }
-    setShowGracePreriodAndLicenseRenewalAlert(true);
-  } catch (error) {
-    return setError({dashboard:"Something went wrong. Please check your connection and try again"});
-  }
-};
-////////////end partnerLicenseGracePeriodStatus function////////////////////
-
-const [licenseRenewalStatus, setLicenseRenewalStatus] = useState("");
-////////////partnerLicenseRenewalStatus function////////////////////
-const partnerLicenseRenewalStatus = async () => {
-  setShowGracePreriodAndLicenseRenewalAlert(false);
-  try {
-    const partnerLicenseRenewalStatusResponse = await axios.get(
-      `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
-      {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_APIKEY,
-          Authorization: `Bearer ${states.users.token}`,
-        },
-      }
-    );
-
-    const response=partnerLicenseRenewalStatusResponse.data.data;
-    if ("status" in response) {
-    console.log("partnerLicenseRenewalStatusResponse", response.status)
-    setLicenseRenewalStatus(response.status);
-    }else{
-      setLicenseRenewalStatus("none");
+  };
+  ////////////end partnerLicenseGracePeriodStatus function////////////////////
+  ////////////partnerLicenseRenewalStatus function////////////////////
+  const partnerLicenseRenewal = async () => {
+    setShowLicenseRenewalAlert(false);
+    try {
+      const partnerLicenseRenewalResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_LICENSE_RENEWAL_STATUS}${partner?.uuid}`,
+        {
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+      console.log("partnerLicenseRenewalResponse", partnerLicenseRenewalResponse.data.data);
+      setLicenseRenewal(partnerLicenseRenewalResponse.data.data);
+      setShowLicenseRenewalAlert(true);
+    } catch (error) {
+      console.log(
+        "An error occur while trying to fetch license renewal status"
+      );
+      setShowLicenseRenewalAlert(false);
     }
-    setShowGracePreriodAndLicenseRenewalAlert(true);
-  } catch (error) {
-    return setError({dashboard:"Something went wrong. Please check your connection and try again"});
-  }
-};
-////////////end partnerLicenseRenewalStatus function////////////////////
+  };
+  ////////////end partnerLicenseRenewalStatus function///////////////////
+  
+  const [displayServiceConfiguration, setDisplayServiceConfiguration] = useState(false);
+  ////////////getPartnerContract function////////////////////
+  const getPartnerContract = async () => {
+   setDisplayServiceConfiguration(false);
+   getPartnerContractCurrentlyRunning().then((response) => {
+     if ("contract_id" in response.result) {
+       setDisplayServiceConfiguration(true);
+     }else{
+       setDisplayServiceConfiguration(false);
+     }
+   })
+   .catch((error) => {
+     console.log("getPartnerContractCurrentlyRunning error: ", error);
+     setDisplayServiceConfiguration(false);
+   });
+ };
+ ////////////end getPartnerContract function///////////////////
+
+
   useEffect(() => {
-    partnerLicenseGracePeriodStatus();
-    partnerLicenseRenewalStatus();
+    partnerLicenseGracePeriod();
+    partnerLicenseRenewal();
+    getPartnerContract();
   }, [partner]);
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
+  useEffect(() => {
+
+    if(user && role_menu_map[user.role][0] == "Dashboard"){
+      setHasdashboard(true);
+    }
+
+    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
+
+    // console.log("Location is: ", location);
+
+    if(location != "/dashboard" && location != null){
+       window.location = location;
+    }   
+
+  }, [user]);
+
+
+
   return (
-    <>
+
+    hasDashboard && 
+
+    (<>
+
+
+
       {isOnboarding && (
         <>
           <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
@@ -366,7 +450,8 @@ const partnerLicenseRenewalStatus = async () => {
             <div className="w-full pt-[72px]">
               {user?.first_name && (
                 <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name}
+                  Hello, {user.first_name} 
+                  {/* <span className="text-white text-sm">This is a visible comment</span> */}
                 </h2>
               )}
 
@@ -378,6 +463,7 @@ const partnerLicenseRenewalStatus = async () => {
                         Welcome to the MTN Partner Portal, {user.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.
+
                       </p>
                       <p className="text-[#999999] text-center md:text-start">
                         Choose a partner category that best suits your service
@@ -451,30 +537,31 @@ const partnerLicenseRenewalStatus = async () => {
                               }
                             />
                           ) : FinalApproval.partner ? (
-                            <CallToAction
-                              message="Your contract is ready. Click here to sign"
-                              description="Describe the event and give further instructions if needed, include a call to action"
-                              onclick={() => showAgreement(true)}
-                              label="Take action"
-                              color="text-green-700"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
+                            // <CallToAction
+                            //   message="Your contract is ready. Click here to sign"
+                            //   description="Describe the event and give further instructions if needed, include a call to action"
+                            //   onclick={() => showAgreement(true)}
+                            //   label="Take action"
+                            //   color="text-green-700"
+                            //   desccolor="text-[#999999]"
+                            //   icon={
+                            //     <svg
+                            //       xmlns="http://www.w3.org/2000/svg"
+                            //       fill="none"
+                            //       viewBox="0 0 24 24"
+                            //       strokeWidth={1.5}
+                            //       stroke="currentColor"
+                            //       className=" w-[28px] h-[28px]"
+                            //     >
+                            //       <path
+                            //         strokeLinecap="round"
+                            //         strokeLinejoin="round"
+                            //         d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            //       />
+                            //     </svg>
+                            //   }
+                            // />
+                            <></>
                           ) : (
                             <CallToAction
                               message="Your application is currently being reviewed"
@@ -506,6 +593,8 @@ const partnerLicenseRenewalStatus = async () => {
                   )}
                 </div>
               )}
+
+              <ServiceConfigurationReadyAlert/>
 
               {questionnaireAlert && (
                 <>
@@ -550,9 +639,21 @@ const partnerLicenseRenewalStatus = async () => {
               )}
 
               {
-                true &&
+                IPAlert && 
+                //Need to negate the condition that shows the category files
+                !(!contractStarted &&
+                  partner?.contract_status === "not_started" &&
+                  partnerActiveCategories?.length > 0 ) &&
+
+                // And you have not submitted the IP details
+
                 <IPCard />
               }
+ 
+              <ChangeOrderRejection />
+              
+              <IPRejection />
+              
 
               {/* //================this is the popup==============================================================================================================*/}
 
@@ -583,7 +684,7 @@ const partnerLicenseRenewalStatus = async () => {
               {/*//==============================================================================================================================*/}
 
               {/* //================this is lisense grace period and License renewal==============================================================================================================*/}
-              {showGracePreriodAndLicenseRenewalAlert && (
+              {showGracePreriodAlert && showLicenseRenewalAlert && (
                 <>
                   {popUpGracePeriodForm && (
                     <PopUp closePopUp={() => setPopUpGracePeriodForm(false)}>
@@ -596,7 +697,7 @@ const partnerLicenseRenewalStatus = async () => {
                         <GracePeriodSuccess
                           gracePeriodSuccessOk={() => {
                             setPopUpGracePeriodForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowGracePreriodAlert(false);
                           }}
                         /> // If gracePeriodSubmit is true
                       )}
@@ -616,20 +717,19 @@ const partnerLicenseRenewalStatus = async () => {
                         <LicenseRenewalSuccess
                           SuccessOk={() => {
                             setPopUpLicenseRenewalForm(false);
-                            setShowGracePreriodAndLicenseRenewalAlert(false);
+                            setShowLicenseRenewalAlert(false);
                           }}
                         />
                       )}
                     </PopUp>
                   )}
-
+                  
                   <GracePeriodAlert
-                    gracePeriodStatus={gracePeriodStatus}
-                    licenseRenewalStatus={licenseRenewalStatus}
+                    gracePeriod={gracePeriod}
+                    licenseRenewal={licenseRenewal}
                     openGracePeriodForm={() => setPopUpGracePeriodForm(true)}
-                    popUpLicenseRenewalForm={() =>
-                      setPopUpLicenseRenewalForm(true)
-                    }
+                    popUpLicenseRenewalForm={() => setPopUpLicenseRenewalForm(true)}
+                    closeAlert={() => setShowLicenseRenewalAlert(false)}
                   />
                 </>
               )}
@@ -855,7 +955,8 @@ const partnerLicenseRenewalStatus = async () => {
                           setIsOpen={setIsOpen}
                           tmpCat={tmpCat}
                           setTmpCat={setTmpCat}
-                          disabled={partner?.edittable}
+                          disabled={partner?.edittable ||
+                                    suspended_categories.includes(category.category_name)}
                           pendingQuestionare={toFillQuestionnaire}
                         />
                       ))}
@@ -948,6 +1049,6 @@ const partnerLicenseRenewalStatus = async () => {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
-    </>
+    </>)
   );
 }

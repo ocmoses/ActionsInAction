@@ -44,11 +44,15 @@ export default function ContractStatus({dynamicData}) {
 
     console.log("contractIdxx", contractId);
 
+    console.log("SelectedAllRequiredSignatories", selectedAllRequiredSignatories);
+
 
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-                if(selectedAllRequiredSignatories && !isASignatory){
+
+                console.log("Got here333!");
+                if(selectedAllRequiredSignatories == true && !isASignatory){                    
                    return (<div></div>);
                 } else{
                     return  (<Renew />);
@@ -63,7 +67,7 @@ export default function ContractStatus({dynamicData}) {
     }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-            if(selectedAllRequiredSignatories && !isASignatory){
+            if(selectedAllRequiredSignatories == true && !isASignatory){
                 return (<div></div>);
             } else{
                 return  (<SelectServices />);
@@ -89,7 +93,7 @@ export default function ContractStatus({dynamicData}) {
             <div className="my-8 max-w-6xl">  
                 <CallToAction
                     style={{border: "1px solid rgba(255,255,255,.1)", marginBottom: "50px"}}
-                    message="Your contract has expired. Click here to renew"
+                    message={`${contractStatus == contract_statuses.EXPIRED ? "Your contract has expired." : "Your contract is expiring soon."} Click here to renew`}
                     description="Outline contract conditions and give contract warrantees."
                     onclick={() => setShowContractCategoryModal(true)}
                     button={'Renew your contract'}

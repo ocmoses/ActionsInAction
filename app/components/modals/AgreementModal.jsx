@@ -7,14 +7,14 @@ import useUsers from "@/hooks/useUsers";
 import { ContractContext } from "../../(protected)/(partner)/dashboard/contracts/ContractProvider";
 
 
-export default function ChooseSignatoryModal(){
+export default function AgreementModal({params}){
 
     const {
         agreementModal, 
         setAgreementModal,
         acceptingAgreement, 
-        setAcceptingAgreement
-
+        setAcceptingAgreement,
+        annexuresLink
     } = useContext(ContractContext);
 
     const {user} = useUsers();
@@ -36,8 +36,8 @@ export default function ChooseSignatoryModal(){
         setAcceptingAgreement(true);
         
         setTimeout(() => {
-            setAgreementModal(false); 
-            window.location = "/dashboard/contracts/annexures";
+            // setAgreementModal(false); 
+            window.location = annexuresLink;
         }, 2000);
 
         // router.push("/dashboard/contracts/execution");

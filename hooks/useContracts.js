@@ -64,8 +64,6 @@ const useContracts = () => {
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
- 
-
   //data for creating signatories
   const [data, setData] = useState({partner_uuid: partner?.uuid, phone: '', firstname: "", lastname: "", email: "", role: ""});
   
@@ -80,6 +78,10 @@ const useContracts = () => {
   const { setProcessing } = useProcessing();
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
+
+  const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
+
+  const [annexuresLink, setAnnexuresLink] = useState("");
 
   let currentContract = null; //Is there a current contract
   const contractStatus = partner?.contract_status; //What is the user's contract status
@@ -205,7 +207,7 @@ const useContracts = () => {
       if (result?.success) {
         const contracts = result.data?.contracts;
         
-        // console.log('Admin roles retrieved', admin_roles);
+        // console.log('All contracts retrieved by Admin', contracts);
         
         return {
           contracts
@@ -366,13 +368,66 @@ const useContracts = () => {
       getAllPartnerRoles()
         .then(resp => resp.partner_roles ? setPartnerRoles(resp.partner_roles) : setError({ error: resp.error }) )
         .catch(error =>  setError({ error: "Error fetching roles" }));
+
+        getAllAdminPartners()
+          .then(resp => resp.admin_partners ? setAdminPartners(resp.admin_partners) : setError({ error: resp.error }) )
+          .catch(error =>  setError({ error: "Error fetching admin partners" }));          
     }
 
-    getAllAdminPartners()
-      .then(resp => resp.admin_partners ? setAdminPartners(resp.admin_partners) : setError({ error: resp.error }) )
-      .catch(error =>  setError({ error: "Error fetching admin partners" }));
-          
   }, []);
+
+  const getContractBeingSigned = async () => {
+    try {
+      
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_CONTRACT_BEING_SIGNED.replace(':partner_uuid', partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey,
+            token: user.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${user.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("CONTRACT BEING SIGNED", result);
+      setProcessing(false);
+      if (result?.success) {
+        const contract = result.data;
+        return {
+          contract
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
  
   return { 
     ...states, 
@@ -434,7 +489,16 @@ const useContracts = () => {
     checkQuestionnaireStatus,
 
     showContractCategoryModal, 
-    setShowContractCategoryModal
+    setShowContractCategoryModal,
+
+    toFillQuestionnaire, 
+    setToFillQuestionnaire,
+
+    getContractBeingSigned,
+
+    annexuresLink, 
+    setAnnexuresLink
+
   };
 };
 

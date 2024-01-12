@@ -10,9 +10,12 @@ import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons"
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { ContractSettingsContext } from "@/app/(protected)/(partner)/dashboard/settings/company/contracts/ContractSettingsProvider";
+import {useRouter} from "next/navigation";
+import Success from "@/app/components/toasts/Success";
 
 
-function Review(){
+
+function Review({contract_id}){
 
     const {
         partner, 
@@ -29,6 +32,8 @@ function Review(){
     } = useContext(ContractSettingsContext);
 
     const {user} = useUsers();
+
+    const router = useRouter();
        
     const [{ errors, setError, clearErrors }] = useErrors(null);
     
@@ -38,6 +43,12 @@ function Review(){
 
     const [data, setData] = useState(null);
 
+    const [successMessage, setSuccessMessage] = useState("Change order submitted successfully");
+    const [successToast, setSuccessToast] = useState(false);
+    const successAction = () => setTimeout(() => {
+                                                  setSuccessToast(false);
+                                                }, 3000);
+
     useEffect(() => {
         getChangeOrderStatus().then(resp => resp.error ? setError({error: resp.error}) : setStatuses(resp.statuses) )
     }, []);
@@ -45,18 +56,19 @@ function Review(){
     const requestUpdate = async () => {
         
         setProcessing(true);
+        
+        setSuccessToast(true);
 
         setTimeout(() => {
 
             setProcessing(true);
             setRequestChangesModal(false);
+            router.push("/dashboard/settings/company/contracts/" + contract_id)
 
         }, 2000);
 
        
     }
-
-
 
     return (
         <div className="flex flex-col space-y-4">
@@ -263,6 +275,8 @@ function Review(){
                 }
                 
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
 
         </div>
     );

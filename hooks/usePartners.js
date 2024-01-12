@@ -22,6 +22,7 @@ import {
 import { forms, fieldCounts } from "@/app/modules/constants"
 import { getCategories } from "@/app/modules/categories"
 import useLogout from "@/hooks/useLogout";
+import axios from "axios";
 
 const usePartners = () => {
   const router = useRouter();
@@ -407,25 +408,52 @@ const usePartners = () => {
 
   const resendEmail = async (email, email_type) => {
     
-    setProcessing(true)
+    setProcessing(true);
 
-    const { data: resendEmailData, error: resendEmailError } = await fetchData(
-      RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
+    const response = await fetch(
+      `${RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK}`,
       {
-        method: "POST",
         cache: "no-store",
+        next: { revalidate: 120 },
+        method: "POST",
         body: JSON.stringify({
           email,
           email_type,
         }),
+        headers: {
+          "Content-Type" : "application/json",
+          apikey: process.env.NEXT_PUBLIC_APIKEY
+        }
       }
-    )
+    );
+
+    const result = await response.json();
+
+    console.log("response.json();", result);
+
+    const { data, error } = result;
+
+    // const { data: resendEmailData, error: resendEmailError } = await fetchData(
+    //   RemoteEndpoints.RESEND_CONFIRM_EMAIL_LINK,
+    //   {
+    //     method: "POST",
+    //     cache: "no-store",
+    //     body: JSON.stringify({
+    //       email,
+    //       email_type,
+    //     }),
+    //     headers: {
+    //       "Content-Type" : "application/json",
+    //       apikey: process.env.NEXT_PUBLIC_APIKEY
+    //     }
+    //   }
+    // )
     setProcessing(false)
-    if (resendEmailError) {
-      return setError({ verify: resendEmailError })
+    if (error) {
+      return setError({ verify: error })
     }
 
-    setSuccess(resendEmailData.message)
+    setSuccess(data?.message)
   }
   
   const updateStageStatus = (category, stage) => {
@@ -570,10 +598,10 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
-        return;
-      }
+      // if (response.status === 400 || response.status === 401 ) {
+      //   LogoutAdmin();
+      //   return;
+      // }
       if (!response)
         return {
           error: "This request has no response available",
@@ -628,8 +656,8 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
+      if (response.status === 401 ) {
+        Logout();
         return;
       }
       if (!response)
@@ -687,8 +715,8 @@ const usePartners = () => {
       );
 
       // console.log('states.users.token in usePartners', states.users.token);
-      if (response.status === 400 || response.status === 401 ) {
-        LogoutAdmin();
+      if (response.status === 401 ) {
+        Logout();
         return;
       }
       if (!response)
@@ -1077,14 +1105,14 @@ const usePartners = () => {
     }
   };
 
-  const getContractDynamicData = async () => {
+  const getContractDynamicData = async (contract_id) => {
     try {
       
       setProcessing(true);
       const response = await fetch(
         `${RemoteEndpoints.CONTRACT_DYNAMIC_CONTENT
             .replace(':partner_uuid', states.partners.partner.uuid)
-            .replace(':contract_id', "TESTD-2023-10AA09")}`,
+            .replace(':contract_id', contract_id)}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1113,9 +1141,10 @@ const usePartners = () => {
       }
 
       const result = await response.json();
+      // console.log("RESUILT OF DYNAMIC THINGS ENDPOINT", result);
       setProcessing(false);
       if (result?.success) {
-        const data = result?.data['dynamic-details'];
+        const data = result?.data;
 
         return {
           data
@@ -1198,6 +1227,135 @@ const usePartners = () => {
     
   };
 
+  const getIPStatus = async () => {
+    
+    try{
+      const response = await fetch(
+        `${RemoteEndpoints.GET_IP_STATUS.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response){
+        return {
+          error: "This request has no response available",
+        };
+      }        
+
+      const result = await response.json();
+
+      console.log("SUBMITTED IP DETAILS", result);
+
+      setProcessing(false);
+
+      if (result?.success) {
+        const data = result?.data;
+
+        if(!data){
+
+          //check other things
+
+        }        
+
+        return {
+          data
+        };
+        
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  
+  }
+
+  const getIPProgressStatus = async () => {
+    
+    try{
+      const response = await fetch(
+        `${RemoteEndpoints.GET_IP_COMPLETION_PERCENTAGE.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response){
+        return {
+          error: "This request has no response available",
+        };
+      }        
+
+      const result = await response.json();
+
+      console.log("Result from getting IP progress status", result);
+
+      setProcessing(false);
+
+      if (result?.success) {
+        const progress = result?.data['progress'];
+
+        if(!progress){
+
+          //check other things
+
+        }        
+
+        return {
+          progress
+        };
+        
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  
+  }
+
+
   const submitAnnexureResponses = async (data) => {
     try {
       setProcessing(true);
@@ -1223,10 +1381,10 @@ const usePartners = () => {
         error: "This request has no response available",
       };
 
-      if (response.status === 401 ) {
-        Logout();
-        return;
-      }
+      // if (response.status === 401 ) {
+      //   Logout();
+      //   return;
+      // }
 
       const result = await response.json();
 
@@ -1257,15 +1415,129 @@ const usePartners = () => {
     }
   };
 
-  
+  const ipFileUpload = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.IP_FILE_UPLOAD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+     
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("IP Upload response", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Created message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const downloadSignedContract = () => {
     return RemoteEndpoints.DOWNLOAD_CONTRACT
     .replace(':partner_uuid', states.partners.partner.uuid)
     .replace(':type', 'signed');
   };
 
-  console.log("States.partners", states.partners);
+  // console.log("States.partners", states.partners);
 
+
+
+
+  const getPartnerContractCurrentlyRunning = async () => {
+    try {
+      setProcessing(true);
+      const getPartnerContractResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_CURRENTLY_RUNNING}${states.partners.partner.uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+  const getPartnerContractValidityReminder = async (contract_id) => {
+    try {
+      setProcessing(true);
+      const getPartnerContractValidityRemainderResponse = await axios.get(
+        `${RemoteEndpoints.GET_PARTNER_CONTRACT_VALIDITY_REMAINDER}${states.partners.partner.uuid}/${contract_id}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      const result =getPartnerContractValidityRemainderResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return {error};
+    }
+  };
+
+
+
+  
 
   return {
     ...states.partners,
@@ -1300,7 +1572,11 @@ const usePartners = () => {
     downloadSignedContract,
     getAllShortcodes,
     getChangeOrderStatus,
-    submitAnnexureResponses
+    submitAnnexureResponses,
+    getIPStatus,
+    getIPProgressStatus,
+    ipFileUpload,
+    getPartnerContractCurrentlyRunning
   }
 }
 export default usePartners

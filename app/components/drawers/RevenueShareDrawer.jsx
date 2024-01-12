@@ -28,11 +28,13 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
   const successAction = () => setTimeout(() => {
-                                                  setSuccessToast(false)
+                                                  setSuccessToast(false);
+                                                  location.reload();
                                                 }, 3000);
 
   
   const handleFormChange = (e) => {
+    clearErrors();
     const field = e.target.id;
     setData((prevState) => ({
       ...prevState,
@@ -60,6 +62,12 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
       return false;
 
+    }else if(parseInt(data.content_provider_share) > 40){
+      
+      setError({error: "Content provider's share should be 40% or lower"});
+
+      return false;
+
     }else if(data.mtn_share.trim() == ""){
 
       setError({error: "Please enter MTN's share"});
@@ -75,6 +83,17 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     }else if(parseInt(data.mtn_share) >= 100){
       
       setError({error: "I wonder what you are thinking, higher than 100%?"});
+
+      return false;
+    }else if(parseInt(data.mtn_share) < 60){
+      
+      setError({error: "MTN share can't be less than 60%"});
+
+      return false;
+
+    }else if(parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
+      
+      setError({error: "These percentages don't add up"});
 
       return false;
     }
@@ -189,7 +208,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                   label=""
                   value={data.content_provider_share}
                   onChange={handleFormChange}
-                  onBlur={() => {}}
+                  onBlur={handleFormChange}
                   errors={errors}
                   disabled={false}
                 />
@@ -212,7 +231,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                   label=""
                   value={data.mtn_share}
                   onChange={handleFormChange}
-                  onBlur={() => {}}
+                  onBlur={handleFormChange}
                   errors={errors}
                   disabled={false}
                 />
@@ -222,13 +241,12 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
             </div>
             
           </div>
-
           
 
           {
             !approving && 
-            <div className="flex between">
-              <div>
+            <div className="flex between w-full">
+              <div className="w-1/2">
                 {errors && errors["error"] && (
                   <div className="mb-6">
                     <FormErrors error={errors["error"]} />
@@ -237,7 +255,9 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
               </div>
               {
                 request.status != "approved" &&
-                <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => approve()}>Finish</button>
+                  <div className="w-1/2 flex justify-end h-[34px]">
+                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => approve()}>Finish</button>
+                  </div>
               }
             </div>            
           }

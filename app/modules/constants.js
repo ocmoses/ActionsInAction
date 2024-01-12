@@ -1395,6 +1395,8 @@ export const roles = [
 
 export const questionnaire_pending = "This partner has not submitted any questionaire";
 
+export const ip_pending = "Partner has not started IP submission";
+
 export const user_statuses = {
   ACTIVE: "active",
   APPROVED: "approved"
@@ -1413,6 +1415,8 @@ export const request_types = {
   REVENUE_SHARE: "Revenue Share",
   CHANGE_ORDER: "Change Order",
   LICENSE_RENEWAL: "License Renewal",
+  VAS_CLEARANCE: "IP Compliance",
+  SHORTCODES: "Short Codes"
 }
 
 export const role_types = {
@@ -1423,12 +1427,45 @@ export const role_types = {
   DELEGATE: "delegate"
 }
 
+export const role_menu_map = {
+  "superAdmin": [
+    "Dashboard",
+    "Compliance",
+    "Settings",
+    "Contracts"
+  ],
+  "admin": [
+    "Dashboard",
+    "Compliance",
+    "Settings",
+    "Contracts"
+  ],
+  "director": [
+    "Contracts"
+  ],
+  "witness": [
+    "Contracts"
+  ],
+  "delegate": [
+    "Contracts"
+  ]
+}
+
 export const contract_statuses = {
   PROCESSING: "processing",
   NOT_STARTED: "not_started",
   EXPIRED: "expired",
-  ACTIVE: "active"
+  ACTIVE: "active",
+  UPDATE: "update",
+  EXPIRING: "expiring"
 }
+
+export const suspended_categories = [
+  "Marketplace",
+  "VAS Aggregator",
+ "Value Added Services",
+  // "Rich Media Services"
+]
 
 
 

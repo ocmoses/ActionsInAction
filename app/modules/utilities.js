@@ -1880,6 +1880,15 @@ export function base64(file_id, callback){
     });
 }
 
+export function secure(link){
+  if(link == null){
+    return "";
+  }else if(!link.includes('http://')){
+    return "";
+  }
+  return link.startsWith("http://") ? link.replace("http://", 'https://') : "";
+}
+
 export function formatNumber(number){
   const numberFormart = number.toLocaleString()
   return numberFormart;

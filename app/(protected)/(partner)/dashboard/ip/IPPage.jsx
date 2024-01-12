@@ -18,7 +18,7 @@ export default function IPPage() {
 
   // console.log("Partner", partner);
 
-  const [isAggregator, setIsAggregator] = useState(true);
+  const [isAggregator, setIsAggregator] = useState(false);
 
   useEffect(() => {
 

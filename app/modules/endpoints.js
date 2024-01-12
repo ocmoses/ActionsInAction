@@ -1,6 +1,6 @@
 import { apiURL } from "@/app/modules/constants";
 
-const NOTIFICATION_BASE = "http://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
+const NOTIFICATION_BASE = "https://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -137,11 +137,21 @@ const RemoteEndpoints = {
   GET_ALL_REVENUE_SHARE: `${apiURL}/v2/admin/get-all-revenue-share-request`,
   APPROVE_REVENUE_SHARE: `${apiURL}/v2/admin/approve-revenue-share-request`,
 
+  //change order
   GET_ALL_SHORTCODES: `${apiURL}/v2/contract/get-partner-shortcodes/:partner-uuid`,
   REQUEST_CHANGE: `${apiURL}/v2/contract/change-order/submit-change-order-request`,
   GET_CHANGE_ORDER_STATUS: `${apiURL}/v2/contract/change-order/get-partner-change-order-status/:partner-uuid`,
   GET_ALL_CHANGE_ORDER_REQUESTS: `${apiURL}/v2/admin/get-all-change-order-request`,
   APPROVE_OR_REJECT_CHANGE_ORDER: `${apiURL}/v2/admin/approve-change-order-request`,
+  GET_ALL_IP_REQUESTS: `${apiURL}/v2/admin/get-all-ip-request`,
+
+  //IP
+  GET_IP_STATUS: `${apiURL}/v2/ip/get-submitted-ip-details-of-partner/:partner_uuid`,
+  GET_IP_COMPLETION_PERCENTAGE: `${apiURL}/v2/ip/get-partner-ip-progress-percentage/:partner_uuid`,
+  SUBMIT_SERVICE_DETAILS: `${apiURL}/v2/ip/submit-service-details`,
+  IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
+  SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
+  APPROVE_REJECT_IP_DETAILS: `${apiURL}/v2/admin/approve-ip-request`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,
@@ -152,5 +162,10 @@ const RemoteEndpoints = {
   GET_PARTNER_LICENSE_RENEWAL_STATUS: `${apiURL}/v2/contract/license/get-partner-license-renewal-status/`,
   GET_ALL_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/get-all-license-renewal-request`,
   APPROVE_REJECT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/approve-reject-license-renewal-request`,
+  GET_ALL_PARTNER_SHORTCODES: `${apiURL}/v2/admin/get-all-partner-shortcode/`,
+  GET_SINGLE_PARTNER_SHORTCODE: `${apiURL}/v2/admin/get-single-partner-shortcode/`,
+  APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
+  GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
+  GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
 }
 export default RemoteEndpoints

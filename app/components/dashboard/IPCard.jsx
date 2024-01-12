@@ -1,21 +1,51 @@
 import { useRouter } from "next/navigation";
-
+import usePartner from "@/hooks/usePartners";
+import { useEffect, useState } from "react";
+import useErrors from "@/hooks/useErrors";
+import useUsers from "@/hooks/useUsers";
 
 
 export default function IPCard(){
 
     const router = useRouter();
 
+    const {getIPProgressStatus} = usePartner();
+
+    const [percentage, setPercentage] = useState(100);
+
+    const [{ errors, setError, clearErrors }] = useErrors(null);
+
+    const {user} = useUsers();  
+
+
+    useEffect(() => {
+        getIPProgressStatus().then(response => {
+            console.log("IP percentage response", response);
+            console.log("response.status", response.status);
+            console.log("response.error", response.error);
+            if(response.progress){
+              setPercentage(parseInt(response.progress)); 
+            }
+
+        }).catch(error => {console.log("IP error: ", error.response); setError({error: error.message})});
+
+    }, []);
+
     return (
-        <>
+        <>{
+            percentage < 100 && user.role == "superAdmin" &&
             <div className="w-6xl rounded-xl border-1 border-white/20 mt-8 bg-white/10">
                 <div className="flex justify-between p-6 border-b border-white/20">
                     <span className="text-white/80 text-md">Things to do</span>
                     <div className="flex space-y-4 flex-col">
                         <div className="w-[150px] h-2 rounded-full bg-gray-400 overflow-hidden">
-                            <div className="bg-green-300 w-[50px] h-full"></div>
+                            {
+                                Math.floor((percentage / 100) * 150) && 
+                                <div className={`bg-green-300 w-[${Math.floor((percentage / 100) * 150)}px] h-full`}></div>
+                            }
+                           
                         </div>
-                        <span className="text-white/60 text-sm">20% Almost there!</span>
+                        <span className="text-white/60 text-sm">{percentage}% {percentage >= 50 ? 'Almost there!' : ""}</span>
                     </div>
                 </div>
                 <div className="p-6 justify-between flex ">
@@ -38,6 +68,8 @@ export default function IPCard(){
 
                 </div>
             </div>
+        }
+           
         
         </>
     );

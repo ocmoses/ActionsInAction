@@ -59,7 +59,7 @@ const getServerSession = async () => {
             error: "Error reaching the server. Please check your connection",
             data: null,
           };
-        if (response.status === 500)
+        if (response?.status === 500)
           return {
             success: false,
             error: response.statusText,
@@ -114,7 +114,7 @@ const getServerSession = async () => {
             error: "Error reaching the server. Please check your connection",
             data: null,
           };
-        if (response.status === 500)
+        if (response?.status === 500)
           return {
             success: false,
             error: response.statusText,
@@ -125,7 +125,7 @@ const getServerSession = async () => {
           const User = userData(data);
           if (partnerID && User.partners?.length > 0) {
             User.partnerID = partnerID;
-            User.partner = User.partners.find((p) => p.uuid === partnerID);
+            User.partner = User.partners.find((p) => p?.uuid === partnerID);
           }
           return { success, error: null, data: User, type: "user" };
         } else {

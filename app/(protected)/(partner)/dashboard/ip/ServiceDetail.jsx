@@ -23,6 +23,10 @@ import FileInput from "@/app/components/form/FileInput";
 import DatePicker from "@/app/components/form/DatePicker";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
+
+
 export default function ServiceDetail({next}){ 
 
     const {
@@ -74,19 +78,19 @@ export default function ServiceDetail({next}){
         try {
             setSubmitting(true);
             const response = await fetch(
-            `${RemoteEndpoints.SUBMIT_SERVICE_DETAILS}`,
-                {
-                    cache: "no-store",
-                    next: { revalidate: 120 },
-                    method: 'POST',
-                    body: JSON.stringify(services),
-                    headers: {
-                    apikey: process.env.NEXT_PUBLIC_APIKEY,
-                    token: user.token,
-                    "Content-Type": "application/json",
-                    Authorization: `bearer ${user.token}`,
-                    },
-                }
+              `${RemoteEndpoints.SUBMIT_SERVICE_DETAILS}`,
+              {
+                cache: "no-store",
+                next: { revalidate: 120 },
+                method: "POST",
+                body: JSON.stringify(services),
+                headers: {
+                  apikey: process.env.NEXT_PUBLIC_APIKEY,
+                  token: user.token,
+                  "Content-Type": "application/json",
+                  Authorization: `bearer ${user.token}`,
+                },
+              }
             );
     
             if (!response)
@@ -161,62 +165,106 @@ export default function ServiceDetail({next}){
         {value: "ussd", title: "USSD"},
     ];
 
+
+
+    const [fetchingServiceType, setFetchingServiceType] = useState(false);
+    const [serviceTypeList, setServiceTypeList] = useState(null);
+    const fetchServiceType = async () => {
+      try {
+        setFetchingServiceType(true);
+        const response = await axios.get(
+          RemoteEndpoints.GET_SERVICE_TYPES,
+          {
+            headers: {
+                apikey: process.env.NEXT_PUBLIC_APIKEY,
+                token: user.token,
+              Authorization: `bearer ${user.token}`,
+            },
+          }
+        );
+        console.log("setServiceTypeList", response.data.data['service-types']);
+        setServiceTypeList(response.data.data['service-types']);
+        setFetchingServiceType(false);
+      } catch (error) {
+        setFetchingServiceType(false);
+        console.error("Error Service Type data:", error);
+      }
+    };
+    useEffect(() => {
+      fetchServiceType();
+    }, []);
     return (
-        <div className="flex flex-col space-y-8 w-[500px]">
-            <div className="text-center flex flex-col space-y-2">
-                <h2 className="text-4xl font-mtn text-white">Your service details</h2>
-                <h4 className="text-white/60 font-mtn text-2xl">What services will you be offering</h4>
-            </div>
+      <div className="flex flex-col space-y-8 w-[500px]">
+        <div className="text-center flex flex-col space-y-2">
+          <h2 className="text-4xl font-mtn text-white">Your service details</h2>
+          <h4 className="text-white/60 font-mtn text-2xl">
+            What services will you be offering
+          </h4>
+        </div>
 
-            <TextInput
-                id="service_type"
-                label="Service type"
-                value={services.service_type}
-                onChange={(e) => handleChange(e, 'service_type')}
-                onBlur={(e) => handleChange(e, 'service_type')}
+        <SelectInput
+          id="service_type"
+          label="Service type"
+          name="Service type"
+          value={services.service_type}
+          onChange={(e) => handleChange(e, "service_type")}
+        >
+          {!fetchingServiceType && <SelectInputOption value="" label="" />}
+          {fetchingServiceType ? (
+            <SelectInputOption value="" label="Fetching Service type..." />
+          ) : (
+            serviceTypeList?.map((eachServiceType) => (
+              <SelectInputOption
+                key={eachServiceType.id}
+                value={eachServiceType.name_of_service_type}
+                label={eachServiceType.name_of_service_type}
               />
+            ))
+          )}
+        </SelectInput>
 
-            <TextInput
-                id="service_name"
-                label="Service Name"
-                value={services.service_name}
-                onChange={(e) => handleChange(e, 'service_name')}
-                onBlur={(e) => handleChange(e, 'service_name')}
-              />
+        
+        <TextInput
+          id="service_name"
+          label="Service Name"
+          value={services.service_name}
+          onChange={(e) => handleChange(e, "service_name")}
+          onBlur={(e) => handleChange(e, "service_name")}
+        />
 
-              <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2">
+          <p className="text-white">Short code</p>
 
-                <p className="text-white">Short code</p>
+          <span className="text-white/60 text-sm">
+            This is the short code associated with this service.
+          </span>
+        </div>
 
-                <span className="text-white/60 text-sm">This is the short code associated with this service.</span>
+        <div className="flex space-x-4 flex-NOwrap w-full">
+          {shortcodes.map((s) => (
+            <ShortCode key={s} value={s} />
+          ))}
+        </div>
 
-              </div>
+        <div className="flex flex-col space-y-2">
+          <p className="text-white">Purpose /service usage</p>
 
-              <div className="flex space-x-4 flex-NOwrap w-full">
-                {
-                    shortcodes.map(s => <ShortCode key={s} value={s} />)
-                }
-              </div>
+          <span className="text-white/60 text-sm">
+            Provide a brief overview of what your service offers.
+          </span>
+        </div>
 
-              <div className="flex flex-col space-y-2">
+        <TextAreaInput
+          id="purpose_service_usage"
+          label="Describe the purpose..."
+          type="text"
+          name="message"
+          value={services.purpose_service_usage}
+          onChange={(e) => handleChange(e, "purpose_service_usage")}
+          onBlur={(e) => handleChange(e, "purpose_service_usage")}
+        />
 
-                <p className="text-white">Purpose /service usage</p>
-
-                <span className="text-white/60 text-sm">Provide a brief overview of what your service offers.</span>
-
-              </div>
-
-              <TextAreaInput
-                id="purpose_service_usage"
-                label="Describe the purpose..."
-                type="text"
-                name="message"
-                value={services.purpose_service_usage}
-                onChange={(e) => handleChange(e, 'purpose_service_usage')}
-                onBlur={(e) => handleChange(e, 'purpose_service_usage')}
-              />
-
-              {/* <textarea
+        {/* <textarea
                     value={services.purpose_service_usage}
                     onChange={(e) => handleChange(e, 'purpose_service_usage')}
                     onBlur={(e) => handleChange(e, 'purpose_service_usage')}
@@ -224,45 +272,43 @@ export default function ServiceDetail({next}){
                     rows="6"
               ></textarea> */}
 
+        <div className="flex flex-col space-y-2">
+          <p className="text-white">Bearer</p>
 
-              <div className="flex flex-col space-y-2">
-
-                <p className="text-white">Bearer</p>
-
-                <span className="text-white/60 text-sm">This is the bearer associated with this service.</span>
-
-              </div>
-
-              <div className="flex space-x-4 flex-nowrap w-full">
-                {
-                    bearers.map(b => <Bearer key={b.value} value={b.title} />)
-                }
-              </div>
-
-              {
-                errors?.error && (
-                <div className="my-6">
-                    <FormErrors error={errors.error} />
-                </div>
-              )}
-
-              <div className="flex justify-end item-end py-8">
-                {
-                    !submitting && 
-                    <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitService()}>Next</button>
-                }
-                {
-                    submitting && 
-                    <div className="flex px-4">
-                        <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                    </div>
-                }
-                
-            </div>
-
-
+          <span className="text-white/60 text-sm">
+            This is the bearer associated with this service.
+          </span>
         </div>
-    )
+
+        <div className="flex space-x-4 flex-nowrap w-full">
+          {bearers.map((b) => (
+            <Bearer key={b.value} value={b.title} />
+          ))}
+        </div>
+
+        {errors?.error && (
+          <div className="my-6">
+            <FormErrors error={errors.error} />
+          </div>
+        )}
+
+        <div className="flex justify-end item-end py-8">
+          {!submitting && (
+            <button
+              className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full"
+              onClick={() => submitService()}
+            >
+              Next
+            </button>
+          )}
+          {submitting && (
+            <div className="flex px-4">
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            </div>
+          )}
+        </div>
+      </div>
+    );
 
     function ShortCode({value}){
         return (

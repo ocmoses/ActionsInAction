@@ -721,11 +721,11 @@ export default function Requests() {
             </div>
           </div>
 
-          {errors && errors["error"] && (
+          {/*errors && errors["error"] && (
             <div className="mb-6">
               <FormErrors error={errors["error"]} />
             </div>
-          )}
+          )*/}
               {/*
              <ShortCodeAlert
                 displayShortCodeAlert={() => setDisplayShortCodeAlert(true)}
@@ -1041,11 +1041,11 @@ export default function Requests() {
           </div>
         )}
 
-        {errors && errors["error"] && (
+        {/*errors && errors["error"] && (
           <div className="mb-6 ml-8">
             <FormErrors error={errors["error"]} />
           </div>
-        )}
+        )*/}
       </ComplianceDrawer>
 
       {

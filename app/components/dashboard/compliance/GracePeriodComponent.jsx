@@ -620,13 +620,16 @@ export const LicenseValidityTopAlert = ({
       const license_validity = response.license_validity;
       if (license_validity == "not_expired") {
         setValidity(false);
-      } else {
+      } else if (license_validity == "expired") {
         setValidity(true);
+      }else{
+        setValidity(null); 
       }
     } catch (error) {
       setErrorMessage("Something went wrong while trying to license validity");
     }
   };
+
 
   useEffect(() => {
     checkPartnerLicenseExpiration();

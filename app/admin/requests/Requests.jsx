@@ -936,7 +936,7 @@ export default function Requests() {
           </div>
 
           <div className="flex h-full items-center px-2 w-32 ml-auto">
-            {selectedRequest?.status != "approved" && (
+            {selectedRequest?.status != "approved" && selectedRequest?.status != "rejected" && (
               <>
                 <div
                   className="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"

@@ -87,7 +87,7 @@ export default function GracePeriodAlert({
       ) : (
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft >= 0 &&
+          licenseValidityDaysLeft >= 1 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (
@@ -127,7 +127,7 @@ export default function GracePeriodAlert({
                                 <p>
                                   <span className="text-white">
                                     Your license expires in{" "}
-                                    {licenseValidityDaysLeft} days
+                                    {licenseValidityDaysLeft} days {licenseRenewalStatus}
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
@@ -214,8 +214,7 @@ export default function GracePeriodAlert({
               {licenseRenewalStatus != "approved" ? (
                 <>
                   {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ||
-                  licenseRenewalStatus == "none" ? (
+                  licenseRenewalStatus == "corrected" ? (
                     <></>
                   ) : (
                     
@@ -597,7 +596,7 @@ export const LicenseValidityTopAlert = ({
 }) => {
   const states = useStoreState((state) => state);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [validity, setValidity] = useState(false);
+  const [validity, setValidity] = useState(null);
 
   ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
   const checkPartnerLicenseExpiration = async () => {
@@ -635,7 +634,7 @@ export const LicenseValidityTopAlert = ({
 
   return (
     <>
-      {licenseValidityDaysLeft <= 60 && (
+      {licenseValidityDaysLeft <= 60 && validity!= null &&(
         <>
           {errorMessage && (
             <p className="text-red-500 text-sm font-italic">{errorMessage}</p>

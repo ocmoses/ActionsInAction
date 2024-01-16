@@ -65,6 +65,7 @@ export default function ServiceConfigurationButton({ open }) {
             }`}
             data-tip="Service Integration"
           >
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -76,10 +77,10 @@ export default function ServiceConfigurationButton({ open }) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"
+                d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
               />
             </svg>
-
+            
             {open && (
               <span className="hidden md:flex text-gray-100 transition-transform ease-in-out duration-500">
                 Service Integration

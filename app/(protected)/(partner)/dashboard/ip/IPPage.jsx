@@ -25,6 +25,7 @@ export default function IPPage() {
     for (const category in partnerCategories){
         if(category.category_name == "VAS Aggregator"){
             setIsAggregator(true);
+            alert('True');
             break;
         }
     }

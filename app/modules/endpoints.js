@@ -52,12 +52,12 @@ const RemoteEndpoints = {
   PARTNER_GET_ALL_CONTRACTS: `${apiURL}/v2/contract/get-partner-contracts/:partner_uuid`,
 
   //these ones would be changed to v2 later
-  COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
-  NCCLICENSE: `${apiURL}/v1/auth/register/ncclicense`,
-  NLRCLICENSE: `${apiURL}/v1/auth/register/nlrclicense`,
-  SHORTCODE: `${apiURL}/v1/auth/register/shortcode`,
-  INDEMNITY: `${apiURL}/v1/auth/register/indemnity`,
-  ACCOUNTINFO: `${apiURL}/v1/auth/register/accountinfo`,
+  COMPLIANCE: `${apiURL}/v2/auth/register/compliance`,
+  NCCLICENSE: `${apiURL}/v2/auth/register/ncclicense`,
+  NLRCLICENSE: `${apiURL}/v2/auth/register/nlrclicense`,
+  SHORTCODE: `${apiURL}/v2/auth/register/shortcode`,
+  INDEMNITY: `${apiURL}/v2/auth/register/indemnity`,
+  ACCOUNTINFO: `${apiURL}/v2/auth/register/accountinfo`,
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
   START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,

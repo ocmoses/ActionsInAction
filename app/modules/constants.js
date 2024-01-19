@@ -1463,7 +1463,7 @@ export const contract_statuses = {
 export const suspended_categories = [
   "Marketplace",
   "VAS Aggregator",
- "Value Added Services",
+  "Value Added Services",
   // "Rich Media Services"
 ]
 

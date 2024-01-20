@@ -13,12 +13,12 @@ import moment from "moment";
 import useErrors from "@/hooks/useErrors";
 import useApp from "@/hooks/useApp";
 import useAdmins from "@/hooks/useAdmins";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { filterPartner, partnerApprovals } from "@/app/modules/utilities";
 import DeptBadge from "./compliance/DeptBadge";
 import useRoles from "@/hooks/useRoles";
-import FileViewer from "@/app/components/modals/FileViewer";
+import {FileViewContext} from "@/app/providers/FileViewProvider";
 
 export default function ComplianceLabel({
   field,
@@ -45,7 +45,7 @@ export default function ComplianceLabel({
   const [{ setError, clearErrors }] = useErrors(null);
   const Approvals = partnerApprovals(partner, category);
 
-  const [fileViewer, setFileViewer] = useState(null);
+  const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
 
   useEffect(() => {

@@ -26,14 +26,14 @@ export default function PartnerWelcome({ resource }) {
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
 
   useEffect(() => {
-   setProcessing(false);
     setForm("partnerwelcome");
     setProcessing(false);
-    clearErrors();
     setRouteloading(false);
+    clearErrors();
   }, []);
+
+
   useEffect(() => {
-   setProcessing(false);
     setData((oldState) => ({
       ...oldState,
       email_type:
@@ -41,10 +41,21 @@ export default function PartnerWelcome({ resource }) {
     }));
   }, [resource]);
 
+
+  const handleFormChange = (e) => {
+    removeError(e.target.id);
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value,
+    }));
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     clearErrors();
     let error = false;
+
     if (!Util.isEmpty(required)) {
       for (const field in required) {
         if (!data[field]) {
@@ -54,22 +65,17 @@ export default function PartnerWelcome({ resource }) {
       }
       if (error) return;
     }
+
     const result = await registerPartner("partnerwelcome", data);
     if (result) {
       if (result?.error) return setError({ partnerwelcome: result.error });
     }
   };
-  const handleFormChange = (e) => {
-    removeError(e.target.id);
-    setData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
-  };
 
   return (
     <div className="w3-animate-opacity pt-[15vh] pb-20 w-full max-w-[492px]">
-      <form method="POST" onSubmit={handleSubmit} className="">
+      <form method="POST" onSubmit={handleSubmit}>
+
         <RegisterStepHeader
           title={title}
           titleClassName="font-mtn-bold font-bold mb-2"
@@ -78,6 +84,7 @@ export default function PartnerWelcome({ resource }) {
           hand={hand}
           className="mb-6"
         />
+
         <div className="mb-6">
           {errors && <FormErrors error={errors["partnerwelcome"]} />}
         </div>

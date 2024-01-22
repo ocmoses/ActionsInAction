@@ -1,4 +1,5 @@
 import RemoteEndPoints from "@/app/modules/endpoints";
+import {suspended_categories} from "@/app/modules/constants";
 
 export const getCategories = async (apikey) => {
   try {
@@ -39,8 +40,12 @@ export const getCategories = async (apikey) => {
       };
 
     const { data, success } = result;
+    
+    //This line sorts the data by showing active categories first
+    let sortedData = data.sort((a,b) => suspended_categories.includes(a.category_name) ? 1 :(suspended_categories.includes(b.category_name) ? -1 : 0));
+
     if (success) {
-      return { success, error: null, data };
+      return { success, error: null, data: sortedData };
     } else {
       if (data) {
         return { success, error: data.message, data: null };

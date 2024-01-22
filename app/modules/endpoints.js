@@ -52,12 +52,12 @@ const RemoteEndpoints = {
   PARTNER_GET_ALL_CONTRACTS: `${apiURL}/v2/contract/get-partner-contracts/:partner_uuid`,
 
   //these ones would be changed to v2 later
-  COMPLIANCE: `${apiURL}/v1/auth/register/compliance`,
-  NCCLICENSE: `${apiURL}/v1/auth/register/ncclicense`,
-  NLRCLICENSE: `${apiURL}/v1/auth/register/nlrclicense`,
-  SHORTCODE: `${apiURL}/v1/auth/register/shortcode`,
-  INDEMNITY: `${apiURL}/v1/auth/register/indemnity`,
-  ACCOUNTINFO: `${apiURL}/v1/auth/register/accountinfo`,
+  COMPLIANCE: `${apiURL}/v2/auth/register/compliance`,
+  NCCLICENSE: `${apiURL}/v2/auth/register/ncclicense`,
+  NLRCLICENSE: `${apiURL}/v2/auth/register/nlrclicense`,
+  SHORTCODE: `${apiURL}/v2/auth/register/shortcode`,
+  INDEMNITY: `${apiURL}/v2/auth/register/indemnity`,
+  ACCOUNTINFO: `${apiURL}/v2/auth/register/accountinfo`,
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
   START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,
@@ -106,9 +106,8 @@ const RemoteEndpoints = {
   DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/:type`,
   GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
   GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/contract/partner-contract-currently-being-signed/:partner_uuid`,
-  
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
-
+  GET_SERVICE_TYPES: `${apiURL}/v2/contract/service-types`,
 
 //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
@@ -152,6 +151,8 @@ const RemoteEndpoints = {
   IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
   SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
   APPROVE_REJECT_IP_DETAILS: `${apiURL}/v2/admin/approve-ip-request`,
+  ADD_DYNAMIC_FIELD: `${apiURL}/v2/admin/add-dynamic-field-to-ip`,
+  REMOVE_DYNAMIC_FIELD: `${apiURL}/v2/admin/remove-ip-dynamic-field`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,

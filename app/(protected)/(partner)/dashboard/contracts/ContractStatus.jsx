@@ -46,12 +46,16 @@ export default function ContractStatus({dynamicData}) {
 
     console.log("SelectedAllRequiredSignatories", selectedAllRequiredSignatories);
 
+    console.log("contractStatus==", contractStatus);
 
+    console.log("isASignatory==", isASignatory);
+
+   
     if(contractStatus == contract_statuses.EXPIRED || contractStatus == contract_statuses.EXPIRING){
+        
         if(!contractId && user.role == 'superAdmin' && 
             userStatus == user_statuses.APPROVED){
-
-                console.log("Got here333!");
+                
                 if(selectedAllRequiredSignatories == true && !isASignatory){                    
                    return (<div></div>);
                 } else{
@@ -65,12 +69,13 @@ export default function ContractStatus({dynamicData}) {
                 return (<SignedSuccess />);
         }
     }else if(contractStatus == contract_statuses.PROCESSING || contractStatus == contract_statuses.UPDATE){
+        
         if(!contractId && user.role == 'superAdmin' && 
-            userStatus == user_statuses.APPROVED){
+            userStatus == user_statuses.APPROVED){                
             if(selectedAllRequiredSignatories == true && !isASignatory){
                 return (<div></div>);
-            } else{
-                return  (<SelectServices />);
+            } else{                
+                return  <SelectServices />;
             }   
         }else if(contractId && userStatus == user_statuses.APPROVED && selectedAllRequiredSignatories && 
             !hasSigned){
@@ -126,6 +131,7 @@ export default function ContractStatus({dynamicData}) {
     }
 
     function SelectServices(){
+        console.log("Got here333!");
         return (
             <div className="my-8 max-w-6xl">          
                 <CallToAction

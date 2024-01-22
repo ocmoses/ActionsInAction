@@ -1,7 +1,10 @@
 import Compliance from "./Compliance";
+import FileViewProvider from "@/app/providers/FileViewProvider";
 
-function CompliancePage() {
-  return <Compliance />;
+async function CompliancePage() {
+  return (<FileViewProvider>
+           <Compliance />
+          </FileViewProvider>);
 }
 
 export default CompliancePage;

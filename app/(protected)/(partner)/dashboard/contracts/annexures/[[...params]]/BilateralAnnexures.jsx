@@ -57,6 +57,43 @@ export default function BilateralAnnexures({params}){
                                         annexure_h_xxii: "", annexure_h_xxiii: ""                                
                                     });
 
+    const numbersMap = {
+        a: "A",
+        b: "B",
+        c: "C",
+        d: "D",
+        e: "E",
+        f: "F",
+        g: "G",
+        h: "H",
+        i: "I",
+        ii: ".2",
+        iii: ".3",
+        iv: ".4",
+        v: ".5",
+        vi: ".6",
+        vii: ".7",
+        viii: ".8",
+        ix: ".9",
+        x: ".10",
+        xi: ".11",
+        xii: ".12",
+        xiii: ".13",
+        xiv: ".14",
+        xv: ".15",
+        xvi: ".16",
+        xvii: ".17",
+        xviii: ".18",
+        xix: ".19",
+        xx: ".20",
+        xxi: ".21",
+        xxii: ".22",
+        xxiii: ".23",
+        four: ".4",
+        five: ".5",
+        six: ".6",
+    }
+
     const handleOnChange = (e, field) => {
         clearErrors();
         setData({...data, [field]: e.target.value});
@@ -174,7 +211,24 @@ export default function BilateralAnnexures({params}){
 
         for(let i in data){
             if(!data[i] || data[i].trim() == ""){
-                setError({error: i.split("_").join(" ") + " has no response"});
+                let iArray = i.split("_");
+
+                let result = "";
+
+                for (let index = 0; index < iArray.length; index++) {
+                    if(index == 0){
+                        result += capitalizeFirst(iArray[index]);
+                    }else if(index == 1){
+                        result += " " + numbersMap[iArray[index]];
+                    }else if(index == 2){
+                        result += numbersMap[iArray[index]];
+                    }else if(index == 3){
+                        result += numbersMap[iArray[index]];
+                    }
+                                        
+                }
+
+                setError({error: result + " has no response"});
                 return false;
             }
         }
@@ -426,7 +480,7 @@ export default function BilateralAnnexures({params}){
                                             <div className="flex border border-white/20">
                                                 <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{index + 1}</span>
                                                 <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{shortcode}</span>
-                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
+                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.purpose_service_usage}</span>
                                                 <span className="text-white/60 w-1/3 p-2">SMS</span>
                                             </div>
                                         )

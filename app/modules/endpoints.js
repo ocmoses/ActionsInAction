@@ -151,6 +151,8 @@ const RemoteEndpoints = {
   IP_FILE_UPLOAD: `${apiURL}/v2/ip/ip-file-upload`,
   SUBMIT_IP_DETAILS: `${apiURL}/v2/ip/submit-ip-details`,
   APPROVE_REJECT_IP_DETAILS: `${apiURL}/v2/admin/approve-ip-request`,
+  ADD_DYNAMIC_FIELD: `${apiURL}/v2/admin/add-dynamic-field-to-ip`,
+  REMOVE_DYNAMIC_FIELD: `${apiURL}/v2/admin/remove-ip-dynamic-field`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,

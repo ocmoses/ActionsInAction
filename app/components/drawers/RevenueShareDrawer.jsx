@@ -58,17 +58,19 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
     }else if(parseInt(data.content_provider_share) >= 100){
       
-      setError({error: "I wonder what you are thinking, higher than 100%?"});
+      setError({error: "Content provider percentage cannot be higher than 100%"});
 
       return false;
 
-    }else if(parseInt(data.content_provider_share) > 40){
+    }
+    // else if(parseInt(data.content_provider_share) > 40){
       
-      setError({error: "Content provider's share should be 40% or lower"});
+    //   setError({error: "Content provider's share should be 40% or lower"});
 
-      return false;
+    //   return false;
 
-    }else if(data.mtn_share.trim() == ""){
+    // }
+    else if(data.mtn_share.trim() == ""){
 
       setError({error: "Please enter MTN's share"});
 
@@ -82,16 +84,18 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
     }else if(parseInt(data.mtn_share) >= 100){
       
-      setError({error: "I wonder what you are thinking, higher than 100%?"});
+      setError({error: "MTN's share cannot be higher than 100%"});
 
       return false;
-    }else if(parseInt(data.mtn_share) < 60){
+    }
+    // else if(parseInt(data.mtn_share) < 60){
       
-      setError({error: "MTN share can't be less than 60%"});
+    //   setError({error: "MTN share can't be less than 60%"});
 
-      return false;
+    //   return false;
 
-    }else if(parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
+    // }
+    else if(parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
       
       setError({error: "These percentages don't add up"});
 
@@ -199,7 +203,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
               <div>
                 <p className="text-white">Content provider’s share</p>
-                <span className="text-white/40">0% to 40%</span>
+                {/* <span className="text-white/40">0% to 40%</span> */}
               </div> 
 
               <div className="flex space-x-4 w-24 relative">
@@ -222,7 +226,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
               <div>
                 <p className="text-white">MTN share</p>
-                <span className="text-white/40">60%</span>
+                {/* <span className="text-white/40">60%</span> */}
               </div> 
 
               <div className="flex space-x-4 w-24 relative">

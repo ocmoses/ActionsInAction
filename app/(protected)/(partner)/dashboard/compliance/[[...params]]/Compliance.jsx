@@ -5,7 +5,7 @@ import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
 import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   filterCategory,
@@ -23,6 +23,8 @@ import { useRouter } from "next/navigation";
 import useRoles from "@/hooks/useRoles";
 import useUsers from "@/hooks/useUsers";
 import {useStoreState} from 'easy-peasy';
+import {FileViewContext} from "@/app/providers/FileViewProvider";
+import FileViewer from "@/app/components/modals/FileViewer";
 
 
 
@@ -53,6 +55,8 @@ export default function Compliance({ params }) {
   
   // const [ApprovalStages, setApprovalStages] = useState(null)
   // const [Approvals, setApproval] = useState(null)
+
+  const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
 
   const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
@@ -140,7 +144,12 @@ export default function Compliance({ params }) {
     router.back(); // Go back to the page before the previous one
   };
   return (
+  
     // max-w-[1158px]
+  <>
+    { fileViewer && 
+        <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+    }  
     <div className="mx-auto py-12 px-16 flex-grow">
       <div onClick={goBack} className="mb-12">
         <span className="flex gap-4 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80">
@@ -239,5 +248,7 @@ export default function Compliance({ params }) {
       )}
       
     </div>
+  </>
+    
   );
 }

@@ -35,7 +35,7 @@ function Login({ params }) {
   const { clearStore } = useLogout();
   const {user} = useUsers();
 
-  console.log("User in LoginPage", user);
+  // console.log("User in LoginPage", user);
 
   const [data, setData] = useState({
     email:

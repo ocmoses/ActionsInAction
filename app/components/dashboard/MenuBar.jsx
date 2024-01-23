@@ -100,7 +100,8 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
           {PartnerMenu.map((menu) =>  
             // Compliance page is hidden until user selects 1 or more categories
             menu.route == "/dashboard/compliance" && partnerCategories?.length == 0 ?
-            <></> : (role_menu_map[role]?.includes(menu.label) && <li key={menu.label} >
+            <></> : 
+            (role_menu_map[role]?.includes(menu.label) && <li key={menu.label} >
                       <Link
                         href={menu.route}
                         className={`flex items-center justify-start px-4 py-3 text-white gap-2 rounded-lg hover:bg-[#212121] ${
@@ -116,7 +117,9 @@ export default function MenuBar({ open, openAction=null, closeAction=null }) {
                             strokeWidth={1.5}
                             stroke="currentColor"
                             className={`w-[20px] h-[20px] ${
-                              path === menu.route && "text-yellow-300"
+                              path === menu.route ? 
+                              "text-yellow-300" : 
+                              (path.includes("/dashboard/compliance") ? "text-yellow-300" : "")
                             } `}
                           >
                             <path

@@ -31,6 +31,7 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
@@ -408,11 +409,11 @@ export default function GetStarted({ type }) {
 
   useEffect(() => {
 
-    if(user && role_menu_map[user.role][0] == "Dashboard"){
+    if(user && role_menu_map[user?.role][0] == "Dashboard"){
       setHasdashboard(true);
     }
 
-    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user.role][0])?.route : null;
+    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user?.role][0])?.route : null;
 
     // console.log("Location is: ", location);
 
@@ -653,6 +654,7 @@ export default function GetStarted({ type }) {
               <ChangeOrderRejection />
               
               <IPRejection />
+              <IPDynamicField />
               
 
               {/* //================this is the popup==============================================================================================================*/}

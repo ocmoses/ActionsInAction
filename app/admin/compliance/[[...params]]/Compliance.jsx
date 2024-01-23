@@ -9,7 +9,7 @@ import useLogout from "@/hooks/useLogout";
 import FormErrors from "@/app/components/FormErrors";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   getPartnerInitials,
@@ -27,6 +27,8 @@ import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
 import Router from "next/router";
+import {FileViewContext} from "@/app/providers/FileViewProvider";
+import FileViewer from "@/app/components/modals/FileViewer";
 
 export default function Compliance({ params }) {
   const { processing, setProcessing } = useProcessing();
@@ -49,13 +51,14 @@ export default function Compliance({ params }) {
 
   const {LogoutAdmin} = useLogout();
 
-
   // console.log("useAdmins from admin compliance", useAdmins());
 
   const [category, setCategory] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();
   const { isSuperadmin } = useRoles();
+  
+  const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
   //This is a hack
   let refreshed = 0;
@@ -190,127 +193,135 @@ export default function Compliance({ params }) {
     setOpenDrawer(true);
   };
   return (
-    <div className="max-w-[1158px] mx-auto py-12 px-16 min-h-screen">
-      <Link href="/admin/dashboard/">
-        <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-            />
-          </svg>
-          Applications
-        </span>
-      </Link>
-      {errors?.compliance && (
-        <div className="my-6">
-          <FormErrors error={errors.compliance} />
-        </div>
-      )}
-      {/* {processing && (
-        <div className="flex justify-center items-center">
-          <TailSpinPreloader width={40} height={40} fill="#efb703" />
-        </div>
-      )}
-      {!processing && partner && ( */}
-        <>
-          <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
-            <div className="flex items-center space-x-3">
-              <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-mtn text-white text-[12px] mr-2">
-                <span className="text-[24px]">
-                  {getPartnerInitials(partner?.company_name)}
-                </span>
-              </div>
-              <div>
-                <div className="font-bold text-[30px] text-white mb-1">
-                  {partner?.company_name}
+    <>
+        { fileViewer && 
+            <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+        }
+        <div className="max-w-[1158px] mx-auto py-12 px-16 min-h-screen">
+          <Link href="/admin/dashboard/">
+            <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+                />
+              </svg>
+              Applications
+            </span>
+          </Link>
+          {errors?.compliance && (
+            <div className="my-6">
+              <FormErrors error={errors.compliance} />
+            </div>
+          )}
+          {/* {processing && (
+            <div className="flex justify-center items-center">
+              <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            </div>
+          )}
+          {!processing && partner && ( */}
+            <>
+              <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
+                <div className="flex items-center space-x-3">
+                  <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-mtn text-white text-[12px] mr-2">
+                    <span className="text-[24px]">
+                      {getPartnerInitials(partner?.company_name)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="font-bold text-[30px] text-white mb-1">
+                      {partner?.company_name}
+                    </div>
+                    <div className="flex items-center gap-0 text-[16px] text-white/80">
+                      {partner?.categories?.length > 0 && (
+                        <Image
+                          alt={`${partner?.categories[0].country}`}
+                          src={`/assets/flags/${
+                            partner?.categories[0].country?.toLowerCase() ?? "ng"
+                          }.svg`}
+                          className={"inline mr-2 rounded-sm h-auto"}
+                          width={24}
+                          height={15}
+                          priority
+                        />
+                      )}
+                      <span>{partner?.email}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-0 text-[16px] text-white/80">
-                  {partner?.categories?.length > 0 && (
+
+                {DDCategories?.length > 0 && (
+                  <div className="py-3">
+                    <DropdownMenu
+                      options={DDCategories.map((cat) => ({
+                        key: cat.category_uuid,
+                        value: cat.category_uuid,
+                        label: allCategories[cat.category_uuid]?.category_name,
+                      }))}
+                      defaultvalue={{
+                        value: partner?.categories[0]?.category_uuid,
+                        label: partner?.categories[0]?.category_name,
+                      }}
+                      onselect={(option) => {
+                        setCategory(option.value);
+                      }}
+                      align="right"
+                      optionwidth={240}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-3 items-center text-[#999999] my-12">
+                <div className="flex justify-center items-center w-[30px] h-[30px] text-[#FFCB03] rounded-full bg-white/10">
+                  {activeCategory?.icon && (
                     <Image
-                      alt={`${partner?.categories[0].country}`}
-                      src={`/assets/flags/${
-                        partner?.categories[0].country?.toLowerCase() ?? "ng"
-                      }.svg`}
-                      className={"inline mr-2 rounded-sm h-auto"}
-                      width={24}
-                      height={15}
-                      priority
+                      src={activeCategory.icon}
+                      alt=""
+                      width={14}
+                      height={14}
                     />
                   )}
-                  <span>{partner?.email}</span>
                 </div>
+                <span className="font-mtn-extralight text-[18px] ">
+                  {" "}
+                  {activeCategory?.category_name}
+                </span>
               </div>
-            </div>
-
-            {DDCategories?.length > 0 && (
-              <div className="py-3">
-                <DropdownMenu
-                  options={DDCategories.map((cat) => ({
-                    key: cat.category_uuid,
-                    value: cat.category_uuid,
-                    label: allCategories[cat.category_uuid]?.category_name,
-                  }))}
-                  defaultvalue={{
-                    value: partner?.categories[0]?.category_uuid,
-                    label: partner?.categories[0]?.category_name,
-                  }}
-                  onselect={(option) => {
-                    setCategory(option.value);
-                  }}
-                  align="right"
-                  optionwidth={240}
-                />
-              </div>
-            )}
-          </div>
-          <div className="flex gap-3 items-center text-[#999999] my-12">
-            <div className="flex justify-center items-center w-[30px] h-[30px] text-[#FFCB03] rounded-full bg-white/10">
-              {activeCategory?.icon && (
-                <Image
-                  src={activeCategory.icon}
-                  alt=""
-                  width={14}
-                  height={14}
-                />
-              )}
-            </div>
-            <span className="font-mtn-extralight text-[18px] ">
-              {" "}
-              {activeCategory?.category_name}
-            </span>
-          </div>
-          <ComplianceCategories
-            partner={partner}
-            Stages={Stages}
-            activeCategory={activeCategory}
-            onclick={handleOpenDrawer}
-          />
-          <ComplianceDrawer
-            activeStage={activeStage}
-            category={activeCategory}
-            setOpenDrawer={setOpenDrawer}
-            openDrawer={openDrawer}
-          >
-            {activeStage && openDrawer && (
-              <ComplianceDetail
+              <ComplianceCategories
+                partner={partner}
+                Stages={Stages}
+                activeCategory={activeCategory}
+                onclick={handleOpenDrawer}
+              />
+              <ComplianceDrawer
                 activeStage={activeStage}
                 category={activeCategory}
                 setOpenDrawer={setOpenDrawer}
                 openDrawer={openDrawer}
-              />
-            )}
-          </ComplianceDrawer>
-        </>
-      {/* )} */}
-    </div>
+              >
+                {activeStage && openDrawer && (
+                  <ComplianceDetail
+                    activeStage={activeStage}
+                    category={activeCategory}
+                    setOpenDrawer={setOpenDrawer}
+                    openDrawer={openDrawer}
+                  />
+                )}
+              </ComplianceDrawer>
+            </>
+          {/* )} */}
+        </div>
+    
+    </>
+      
+    
   );
 }

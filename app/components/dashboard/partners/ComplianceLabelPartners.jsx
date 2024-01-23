@@ -16,8 +16,8 @@ import { COUNTRIES } from "@/app/modules/countries";
 import { STATES } from "@/app/modules/states";
 import Portal from "@/app/components/Portal";
 import { useState } from "react";
-import { useEffect } from "react";
-import FileViewer from "@/app/components/modals/FileViewer";
+import { useEffect, useContext } from "react";
+import {FileViewContext} from "@/app/providers/FileViewProvider";
 
 
 export default function ComplianceLabelPartners({
@@ -37,7 +37,7 @@ export default function ComplianceLabelPartners({
   const [ApprovalStage, setApprovalStage] = useState(null);
   const [Approvals, setApproval] = useState(null);
 
-  const [fileViewer, setFileViewer] = useState(null);
+  const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
   // console.log("Approvals: ", Approvals);
 
@@ -128,10 +128,7 @@ export default function ComplianceLabelPartners({
   
 
   return (
-    <>
-    { fileViewer && 
-          <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-      }
+    <>    
       <div
         className={`w-full p-3 border border-[#212121] rounded-[8px] ${
           activeApproval === field && " rounded-xl bg-[#313131]"

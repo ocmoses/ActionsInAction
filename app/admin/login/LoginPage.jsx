@@ -22,7 +22,7 @@ function Login({ params }) {
   );
   const { clearStore } = useLogout();
   const [data, setData] = useState({
-    username: process.env.NODE_ENV === "production" ? "" : "mosesoc",
+    username: process.env.NODE_ENV === "production" ? "" : "afoo",
     password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
   });
   useEffect(() => {

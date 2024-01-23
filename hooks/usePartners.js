@@ -128,7 +128,12 @@ const usePartners = () => {
 
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage
+    console.log("PROGRESS", progress)
     return progress[stage] && parseInt(progress[stage]) ? true : false
+  }
+
+  const skipStage = (stage) => {
+    category.profile_stage.stage = "1";
   }
 
   const checkRegStatus = async (partner) => {
@@ -1624,6 +1629,7 @@ const usePartners = () => {
     registerPartner,
     checkRegStatus,
     checkUpdateStatus,
+    skipStage,
     nextStage,
     resendEmail,
     validation,

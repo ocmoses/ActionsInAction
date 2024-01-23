@@ -78,6 +78,7 @@ export const ShortCodeFlyOut = ({
     successMessage: "",
     successToast: false,
   });
+  
   const get_single_partner_shortcode = async () => {
     try {
       let partner_shortcode_response = await getSinglePartnerShortcodes(selectedRequest.partner_uuid);
@@ -104,6 +105,7 @@ export const ShortCodeFlyOut = ({
 
   useEffect(() => {
     get_single_partner_shortcode();
+    console.log("selectedRequest.shortcode_uuid", selectedRequest.shortcode_uuid);
   }, [selectedRequest]); // Only run the effect when selectedRequest changes
   
   const approvalStatuses = (singlePartnerShortcode) => {
@@ -126,6 +128,7 @@ export const ShortCodeFlyOut = ({
     partner_uuid: selectedRequest.partner_uuid,
     shortcode: null,
     status: "",
+    shortcode_uuid: selectedRequest.shortcode_uuid,
   });
 
 

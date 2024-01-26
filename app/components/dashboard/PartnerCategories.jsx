@@ -26,6 +26,9 @@ export default function PartnerCategories({
       });
       setAllCats(Categories);
     }
+
+    console.log("finalApproval==", finalApproval);
+
   }, [categories]);
 
   return (

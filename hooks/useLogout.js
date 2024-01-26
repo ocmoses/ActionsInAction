@@ -2,7 +2,7 @@
 import { logout, logoutAdmin } from "@/app/modules/utilities";
 import { PageRoutes } from "@/app/modules/menu";
 
-import { useStoreActions, useStoreState } from "easy-peasy";
+import { useStoreActions } from "easy-peasy";
 import { model, clearPersistStore } from "@/store";
 import { useRouter } from "next/navigation";
 

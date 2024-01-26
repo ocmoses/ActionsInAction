@@ -28,8 +28,43 @@ jobs:
           head: HEAD
           extra_args: --debug #--only-verified
 
+ dependency-check:
+    needs: TruffleHog-Secret-Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+            node-version: '16'
+      - name: Install npm dependencies
+        run: npm install
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: '${{ github.event.repository.name }}_${{ github.ref_name }}'
+          path: '.'
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+              --failOnCVSS 7
+              --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+          name: Depcheck report
+          path: ${{github.workspace}}/reports
+      - name: Upload Test results
+        if: always()
+        uses: actions/upload-artifact@master
+        with:
+            name:  Depcheck_Report_${{ github.event.repository.name }}_${{ github.ref_name }}
+            path: ${{github.workspace}}/reports 
+
  linting:
-    needs:  TruffleHog-Secret-Scan
+    needs:  dependency-check
     runs-on:
       - self-hosted
       - tribe-frontend

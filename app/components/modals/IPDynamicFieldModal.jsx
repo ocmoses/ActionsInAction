@@ -16,7 +16,7 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
 
     const {
         partner,
-        ipFileUpload
+        dynamicFileUpload
     } = usePartners();
 
     const {user} = useUsers();
@@ -35,10 +35,11 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
 
     const validateFiles = () => {
 
-        for(const i in files){
-            if(files[i] == ""){
-                console.log("The i we are looking for", i);
-                setError({error: "Please upload a/an " + filesMap[i]});
+        console.log("FILES", files);
+
+        for(const i of dynamic){
+            if(!files[i[2]]){
+                setError({error: `${i[0]} file was not uploaded`});
                 return false;
             }
         }
@@ -70,34 +71,13 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
         
     }
 
-    const filesMap = {
-        // "service_details": "Service details",
-        "aggregator_and_vas_requirements": "Aggregator requirement",
-        "authorization_letter": "Authentication Letter",
-        "probate_of_will": "Probate of Will",
-        // "licensing_period": "Licensing Period",
-        "video_file": "Authorization Video",
-        "agreement_letter_btw_content_and_vas_partner": "Agreement with VAS Partner",
-        "agreement_letter_btw_content_and_agent": "Agreement with Agent",
-        "agreement_letter_btw_content_and_record_label": "Agreement with Record Label",
-        "agreement_letter_btw_content_and_music_composer": "Agreement with Music Composer",
-        "agreement_letter_btw_record_label_and_vas_partner": "Agreement between Record Label and VAS Partner",
-        "content_creator_id_front": "Content Creator ID",
-        "agent_id_front": "Agent ID",
-        "other_content_proof_of_ownership": "Additional Proof"
-    }
-
     const [files, setFiles] = useState({ });
 
-    const uploadFile = (file_title, file) => {
-   
+    const uploadFile = (number, file) => {   
         
         let formData = new FormData();
-        formData.append("file_title", file_title);
-        formData.append("licenser_type", "content_owner");
         formData.append("partner_uuid", partner?.uuid);
-        formData.append("partner_category_uuid", partner?.categories[0]?.category_uuid);
-        formData.append("agg_plus_vas_requirement", "no");
+        formData.append("dynamic_field_number", number);
         formData.append("file", file);
 
 
@@ -105,7 +85,7 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
 
         clearErrors();
 
-        ipFileUpload(formData)
+        dynamicFileUpload(formData)
             .then(resp => {
                 console.log(resp.message);
                 console.log(resp.message);
@@ -113,31 +93,15 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
                 if(resp.error){
                     setError({[file_title]: resp.error});
                 }else{
-                    setFiles({...files, [file_title]: file_title});
-                    if(file_title == "video_file"){
-                        setFiles({...files, video_file: file_title});
-                        setFiles({...files, authorization_video: file_title});
-                    }
+                    setFiles({...files, [number]:true});                    
                 }
             })
             .catch(error => {console.log(error.response), setSubmitting(false)});    
     }
 
     
-    useEffect(() => {
-
-        for(const i of rejected){
-            console.log("I that we are looking for", i);
-            if(i != "licensing_period" && i != "service_details"){
-                setFiles({...files, [i] : ""});
-            }
-            
-        }
-
-    }, []);
-
     
-    return (<GenericModal id="ip_correction_modal" width={550} height={510} closeAction={() => {}}>
+    return (<GenericModal id="ip_dynamic_modal" width={550} height={450} closeAction={() => {}}>
                 <>
                     <div className="flex flex-col pt-8 pb-4 relative">
                         <div className="text-white text-2xl mb-4 flex-1">Upload documents</div>
@@ -157,16 +121,16 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
                                         <div className="my-2 flex flex-col space-y-1">
 
                                             <p className="text-white font-mtn-bold">
-                                                {"Dynamics name"}
+                                                {aDynamic[0]}
                                             </p>
                                             {
-                                                aDynamic.request_type == "video" ? 
+                                                aDynamic[1] == "video" ? 
                                                 (<FileInput
                                                     id="authorization_video"
                                                     doc_id="authorization_video_doc"
-                                                    label="Authorization Video"
-                                                    value={files.authorization_video}
-                                                    onChange={(e) => uploadFile("authorization_video", e.target.value)}
+                                                    label={`${aDynamic[0]} Video`}
+                                                    value={files[aDynamic[2]]}
+                                                    onChange={(e) => uploadFile(aDynamic[2], e.target.value)}
                                                     allowedtypes={["video/3gpp", "video/mpeg","video/mp4", "video/quicktime"]}
                                                     errors={errors}
                                                     maxSize={40 * 1024 * 1024}
@@ -174,11 +138,11 @@ export default function IPDynamicFieldModal({dynamic, closeAction}){
                                                     style="flex-1"
                                                 />) : 
                                                 <FileInput
-                                                    id={rejection}
-                                                    doc_id={`${rejection}_doc`}
-                                                    label={filesMap[rejection]}
-                                                    value={files[rejection]}
-                                                    onChange={(e) => uploadFile(rejection, e.target.value)}
+                                                    id="dynamic_field"
+                                                    doc_id={`${'dynamic_field'}_doc`}
+                                                    label={aDynamic[0]}
+                                                    value={files[aDynamic[2]]}
+                                                    onChange={(e) => uploadFile(aDynamic[2], e.target.value)}
                                                     errors={errors}
                                                     disabled={false}
                                                     style="flex-1"

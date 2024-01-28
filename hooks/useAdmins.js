@@ -1380,6 +1380,57 @@ export default function useAdmins() {
     }
   }
 
+  const getDynamicFields = async (partner_uuid) => {    
+    
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_PARTNER_DYNAMIC_FIELD.replace(':partner_uuid', partner_uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'GET',
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("GET DYNAMIC FIELDS RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const data = result?.data;
+        
+        console.log('Get dynamic fields data: ', data);
+
+        return {
+          data
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
   /// //////////////////////////////////////////afolabi's functions starts here
   const getAllGracePeriod = async () => {
     try {
@@ -1629,6 +1680,7 @@ export default function useAdmins() {
     rejectIPDetail,
     addDynamicField,
     removeDynamicField,
+    getDynamicFields,
     getSinglePartnerShortcodes
   };
 }

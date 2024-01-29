@@ -1174,10 +1174,13 @@ export default function useAdmins() {
 
   const approveIPDetail = async (data) => {
 
+    let endpoint = data.dynamic_field_number ? 
+                    RemoteEndpoints.APPROVE_REJECT_DYNAMIC_FIELD : 
+                    RemoteEndpoints.APPROVE_REJECT_IP_DETAILS;
+
     try {
       setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.APPROVE_REJECT_IP_DETAILS}`,
+      const response = await fetch(endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },

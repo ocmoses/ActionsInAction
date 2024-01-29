@@ -114,6 +114,8 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
         setDynamicResponse(data);
 
+        // console.log("DYNAMIC SHIT", dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"])
+
         let dynamicFields = [];
         if(data.request_name_one && (data[data.request_name_one] + "_status" == null || "rejected")){
             
@@ -421,7 +423,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                 processDynamicFields(resp.data)
             })
             .catch(error => {
-                console.log("ERROR: ", error.response.data)
+                console.log("ERROR: ", error)
             });
 
     }, []);
@@ -1456,7 +1458,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                     </div>
 
                     {/* Additional Requirement One */}
-                    {hasDynamicField && dynamicFields.filter(field => field[1] == "one") != null &&
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "one") != null &&
                         (<div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -1514,9 +1516,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                dynamicResponse[dynamicResponse.request_name_one] + "_status" == "approved" || 
+                                                dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"] == "approved" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_ONE] == "approved" ? <Approved /> : 
-                                                dynamicResponse[dynamicResponse.request_name_one] + "_status" == "rejected" || 
+                                                dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"] == "rejected" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_ONE] == "rejected" ? <Declined /> : 
                                                 ApprovalActions()
                                             }                                             
@@ -1533,7 +1535,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                     }
 
                     {/* Additional Requirement two */}
-                    {hasDynamicField && dynamicFields.filter(field => field[1] == "two") != null &&
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "two") != null &&
                         (<div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -1572,7 +1574,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                         
                                         <p className="flex justify-between">
                                             <span className="text-white/60 ">File</span>
-                                            <span className="text-mtn" >{dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two] ? 
+                                            <span className="text-mtn" >{dynamicResponse[dynamicResponse.request_name_two] && dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two] ? 
                                                 <span onClick={() => setFileViewer((dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two]))} 
                                                         className="text-xs flex space-x-1 items-end cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
@@ -1591,9 +1593,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                dynamicResponse[dynamicResponse.request_name_two] + "_status" == "approved" || 
+                                                dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two + "_status"] == "approved" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_TWO] == "approved" ? <Approved /> : 
-                                                dynamicResponse[dynamicResponse.request_name_two] + "_status" == "rejected" || 
+                                                dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two + "_status"] == "rejected" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_TWO] == "rejected" ? <Declined /> : 
                                                 ApprovalActions()
                                             }                                             
@@ -1610,7 +1612,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                     }
 
                     {/* Additional Requirement two */}
-                    {hasDynamicField && dynamicFields.filter(field => field[1] == "three") != null &&
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "three") != null &&
                         (<div className="flex space-x-2 items-start w-full">
 
                         <span className="p-2 rounded-md bg-white/10 inline-flex">
@@ -1668,9 +1670,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
                                         <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                                             {
-                                                dynamicResponse[dynamicResponse.request_name_three] + "_status" == "approved" || 
+                                                dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three + "_status"] == "approved" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_THREE] == "approved" ? <Approved /> : 
-                                                dynamicResponse[dynamicResponse.request_name_three] + "_status" == "rejected" || 
+                                                dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three + "_status"] == "rejected" || 
                                                     approvals[expansion.ADDITIONAL_REQUIREMENT_THREE] == "rejected" ? <Declined /> : 
                                                 ApprovalActions()
                                             }                                             

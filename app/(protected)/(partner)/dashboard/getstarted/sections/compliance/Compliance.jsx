@@ -13,7 +13,7 @@ import useProcessing from "@/hooks/useProcessing";
 import FormErrors from "@/app/components/FormErrors";
 import axios from "axios";
 import { NextEndPoints } from "@/app/modules/endpoints";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Util } from "@/utils/utility";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { forms, company_type, questionnaire_pending } from "@/app/modules/constants";
@@ -23,7 +23,7 @@ import {
   fieldRequired,
 } from "@/app/modules/utilities";
 import {FileViewContext} from "@/app/providers/FileViewProvider";
-import FileViewer from "@/app/components/modals/FileViewer";
+// import FileViewer from "@/app/components/modals/FileViewer";
 
 
 function Compliance() {
@@ -72,7 +72,7 @@ function Compliance() {
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
 
-  const {fileViewer, setFileViewer} = useContext(FileViewContext);
+  // const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
   useEffect(() => {
     setProcessing(false);
@@ -460,9 +460,9 @@ function Compliance() {
 
   return (
     <>
-        { fileViewer && 
+        {/* { fileViewer && 
             <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-        }
+        } */}
       <div
         id="onboardingform"
         className="w3-animate-opacity pb-20 w-full max-w-[550px]"

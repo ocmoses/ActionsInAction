@@ -16,11 +16,14 @@ import {capitalizeFirst} from "@/app/modules/utilities";
 
 export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
+    console.log("IP REQUEST", request);
+
     const {
         approveIPDetail,
         rejectIPDetail,
         addDynamicField,
-        removeDynamicField        
+        removeDynamicField,
+        getDynamicFields        
     } = useAdmins();
 
     const ipTypes = {
@@ -45,7 +48,10 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         AGREEMENT_BETWEEN_RECORD_LABEL_AND_PARTNER: 'agreement_letter_btw_record_label_and_vas_partner',
         MEANS_OF_ID: 'means_of_id',
         AGENT_ID: 'means-of-agent-identification',
-        ADDITIONAL_PROOF: 'additional_proof'       
+        ADDITIONAL_PROOF: 'additional_proof',
+        ADDITIONAL_REQUIREMENT_ONE: 'additional_requirement_one',
+        ADDITIONAL_REQUIREMENT_TWO: 'additional_requirement_two',
+        ADDITIONAL_REQUIREMENT_THREE: 'additional_requirement_three'       
     }
 
     const [expanded, setExpanded] = useState(null);
@@ -60,7 +66,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     const [fileViewer, setFileViewer] = useState(null);
     
     const [data, setData] = useState({partner_uuid: request?.partner_uuid, ip_request_type: "", 
-                                        status: "", reasons_for_rejection: ""});
+                                        status: "", reasons_for_rejection: "", dynamic_field_number: null});
 
     const [newRequest, setNewRequest] = useState({partner_uuid: request?.partner_uuid, request_name: "", request_type: "", pdfAllowed: false, videoAllowed: false, imageAllowed: false});
 
@@ -83,6 +89,11 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     const [collapseAdded, setCollapseAdded] = useState(false);
 
     const [approvals, setApprovals] = useState({...expansion});
+    
+    const [dynamicResponse, setDynamicResponse] = useState({});
+    const [hasDynamicField, setHasDynamicField] = useState(false);
+
+    const [dynamicFields, setDynamicFields] = useState([]);
 
     const reasons = [
         "",
@@ -99,7 +110,36 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
         console.log("Typed reason", typedReason);
     };
 
-    const updateApprovalStatus = (approvalType) => {
+    const processDynamicFields = (data) => {
+
+        setDynamicResponse(data);
+
+        // console.log("DYNAMIC SHIT", dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"])
+
+        let dynamicFields = [];
+        if(data.request_name_one && (data[data.request_name_one] + "_status" == null || "rejected")){
+            
+            setHasDynamicField(true);
+            dynamicFields.push([data.request_name_one, 'one', data[data.request_name_one[data.request_name_one]]]);
+
+        }
+
+        if(data.request_name_two && (data[data.request_name_two] + "_status" == null || "rejected")){
+            
+            setHasDynamicField(true);
+            dynamicFields.push([data.request_name_two, 'two', data[data.request_name_one[data.request_name_one]]]);
+
+        } 
+
+        if(data.request_name_twothree && (data[data.request_name_three] + "_status" == null || "approved")){
+            
+            setHasDynamicField(true);
+            dynamicFields.push([data.request_name_three, 'three', data[data.request_name_one[data.request_name_one]]]);
+
+        }
+
+        setDynamicFields(dynamicFields);
+
 
     }
 
@@ -163,6 +203,15 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             break;
                         case expansion.ADDITIONAL_PROOF: 
                             setApprovals({...approvals, [expansion.ADDITIONAL_PROOF]: "approved"});
+                            break;
+                        case expansion.ADDITIONAL_REQUIREMENT_ONE:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_ONE]: "approved"});
+                            break;
+                        case expansion.ADDITIONAL_REQUIREMENT_TWO:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_TWO]: "approved"});
+                            break;
+                        case expansion.ADDITIONAL_REQUIREMENT_THREE:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_THREE]: "approved"});
                             break;  
                         default: break;
                         
@@ -246,7 +295,16 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                             break;
                         case expansion.ADDITIONAL_PROOF: 
                             setApprovals({...approvals, [expansion.ADDITIONAL_PROOF]: "rejected"});
-                            break;  
+                            break; 
+                        case expansion.ADDITIONAL_REQUIREMENT_ONE:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_ONE]: "rejected"});
+                            break;
+                        case expansion.ADDITIONAL_REQUIREMENT_TWO:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_TWO]: "rejected"});
+                            break;
+                        case expansion.ADDITIONAL_REQUIREMENT_THREE:
+                            setApprovals({...approvals, [expansion.ADDITIONAL_REQUIREMENT_THREE]: "rejected"});
+                            break; 
                         default: break;
                         
                     }
@@ -312,7 +370,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
     // 'other-content-proof-of-ownership'
     
     const setApprovalType = () => {
-        console.log("Expanded is: ", expanded);
+        // console.log("Expanded is: ", expanded);
         switch(expanded){
             case expansion.AGGREGATOR_AND_VAS: data.ip_request_type = "aggregator-and-vas";
                 break;
@@ -348,11 +406,25 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                 break;
             case expansion.ADDITIONAL_PROOF: data.ip_request_type = "other-content-proof-of-ownership";
                 break;
+            case expansion.ADDITIONAL_REQUIREMENT_ONE: delete data.ip_request_type;// = "additional-requirement-one";
+                break;
+            case expansion.ADDITIONAL_REQUIREMENT_TWO: delete data.ip_request_type;// = "additional-requirement-two";
+                break;
+            case expansion.ADDITIONAL_REQUIREMENT_THREE: delete data.ip_request_type;// = "additional-requirement-three";
+                break;
             default: data.ip_request_type = 'service-details';
         }
     }
 
     useEffect(() => {
+
+        getDynamicFields(request?.partner_uuid)
+            .then(resp => {
+                processDynamicFields(resp.data)
+            })
+            .catch(error => {
+                console.log("ERROR: ", error)
+            });
 
     }, []);
 
@@ -394,7 +466,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                             <span className="text-white/80 ml-2">{dynamicFieldName}</span>
 
                                             <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                                    onClick={() => {clearErrors(); expanded == tabs[1] ? setExpanded(null) : setExpanded(tabs[1])}}>
+                                                    onClick={() => {clearErrors(); 
+                                                                    expanded == tabs[1] ? setExpanded(null) : setExpanded(tabs[1]); 
+                                                                    setData({...data, dynamic_field_number: null}) }}>
                                                 {
                                                     expanded == tabs[1] ? 
                                                     (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -552,7 +626,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">Authorization Letter</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.AUTHORIZATION_LETTER ? setExpanded(null) : setExpanded(expansion.AUTHORIZATION_LETTER)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.AUTHORIZATION_LETTER ? setExpanded(null) : setExpanded(expansion.AUTHORIZATION_LETTER);
+                                                        setData({...data, dynamic_field_number: null}) }}>
                                     {
                                         expanded == expansion.AUTHORIZATION_LETTER ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -626,7 +702,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">License period</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.LICENSE_PERIOD ? setExpanded(null) : setExpanded(expansion.LICENSE_PERIOD)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.LICENSE_PERIOD ? setExpanded(null) : setExpanded(expansion.LICENSE_PERIOD);
+                                                        setData({...data, dynamic_field_number: null}) }}>
                                     {
                                         expanded == expansion.LICENSE_PERIOD ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -697,7 +775,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">Authorization Video</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.VIDEO_FILE ? setExpanded(null) : setExpanded(expansion.VIDEO_FILE)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.VIDEO_FILE ? setExpanded(null) : setExpanded(expansion.VIDEO_FILE);
+                                                        setData({...data, dynamic_field_number: null}) }}>
                                     {
                                         expanded == expansion.VIDEO_FILE ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -770,7 +850,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">Content Creator's ID</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.MEANS_OF_ID ? setExpanded(null) : setExpanded(expansion.MEANS_OF_ID)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.MEANS_OF_ID ? setExpanded(null) : setExpanded(expansion.MEANS_OF_ID);
+                                                        setData({...data, dynamic_field_number: null}) }}>
                                     {
                                         expanded == expansion.MEANS_OF_ID ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -846,7 +928,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <span className="text-white/80 ml-2">Agent ID</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == expansion.AGENT_ID ? setExpanded(null) : setExpanded(expansion.AGENT_ID)}}>
+                                            onClick={() => {clearErrors(); 
+                                                            expanded == expansion.AGENT_ID ? setExpanded(null) : setExpanded(expansion.AGENT_ID);
+                                                            setData({...data, dynamic_field_number: null}) }}>
                                         {
                                             expanded == expansion.AGENT_ID ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -924,7 +1008,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <span className="text-white/80 ml-2">Probate of will</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == expansion.PROBATE_OF_WILL ? setExpanded(null) : setExpanded(expansion.PROBATE_OF_WILL)}}>
+                                            onClick={() => {clearErrors(); 
+                                                            expanded == expansion.PROBATE_OF_WILL ? setExpanded(null) : setExpanded(expansion.PROBATE_OF_WILL);
+                                                            setData({...data, dynamic_field_number: null}) }}>
                                         {
                                             expanded == expansion.PROBATE_OF_WILL ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1000,7 +1086,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">Agreement with VAS Partner</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_VAS_PARTNER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_VAS_PARTNER)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.AGREEMENT_WITH_VAS_PARTNER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_VAS_PARTNER); 
+                                                        setData({...data, dynamic_field_number: null}) }}>
                                     {
                                         expanded == expansion.AGREEMENT_WITH_VAS_PARTNER ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1076,7 +1164,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <span className="text-white/80 ml-2">Agreement with Agent</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_AGENT ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_AGENT)}}>
+                                            onClick={() => {clearErrors(); 
+                                                            expanded == expansion.AGREEMENT_WITH_AGENT ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_AGENT);
+                                                            setData({...data, dynamic_field_number: null}) }}>
                                         {
                                             expanded == expansion.AGREEMENT_WITH_AGENT ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1153,7 +1243,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <span className="text-white/80 ml-2">Agreement with Record Label</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_RECORD_LABEL)}}>
+                                            onClick={() => {clearErrors(); 
+                                                            expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_RECORD_LABEL);
+                                                            setData({...data, dynamic_field_number: null}) }}>
                                         {
                                             expanded == expansion.AGREEMENT_WITH_RECORD_LABEL ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1230,7 +1322,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                     <span className="text-white/80 ml-2">Agreement with Composer</span>
 
                                     <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                            onClick={() => {clearErrors(); expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_MUSIC_COMPOSER)}}>
+                                            onClick={() => {clearErrors(); 
+                                                            expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER ? setExpanded(null) : setExpanded(expansion.AGREEMENT_WITH_MUSIC_COMPOSER);
+                                                            setData({...data, dynamic_field_number: null})}}>
                                         {
                                             expanded == expansion.AGREEMENT_WITH_MUSIC_COMPOSER ? 
                                             (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1305,7 +1399,9 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                                 <span className="text-white/80 ml-2">Additional Proof</span>
 
                                 <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
-                                        onClick={() => {clearErrors(); expanded == expansion.ADDITIONAL_PROOF ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_PROOF)}}>
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.ADDITIONAL_PROOF ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_PROOF); 
+                                                        setData({...data, dynamic_field_number: null})}}>
                                     {
                                         expanded == expansion.ADDITIONAL_PROOF ? 
                                         (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
@@ -1360,6 +1456,237 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
                         </div>
 
                     </div>
+
+                    {/* Additional Requirement One */}
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "one") != null &&
+                        (<div className="flex space-x-2 items-start w-full">
+
+                        <span className="p-2 rounded-md bg-white/10 inline-flex">
+                            <svg className="w-6 h-6" viewBox="0 0 16 15" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.24751 7.11244L6.39501 8.96494C5.36751 9.99244 5.36751 11.6499 6.39501 12.6774C7.42251 13.7049 9.08001 13.7049 10.1075 12.6774L13.025 9.75994C15.0725 7.71244 15.0725 4.38244 13.025 2.33494C10.9775 0.287441 7.64751 0.287441 5.60001 2.33494L2.42001 5.51494C0.66501 7.26994 0.66501 10.1199 2.42001 11.8824" stroke="gray" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </span>
+
+                        <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                            <div className={`p-2  ${expanded == expansion.ADDITIONAL_REQUIREMENT_ONE && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                                    <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
+                                </svg>
+                                <span className="text-white/80 ml-2">{dynamicFields[0][0]}</span>
+
+                                <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.ADDITIONAL_REQUIREMENT_ONE ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_REQUIREMENT_ONE);
+                                                        setData({...data, dynamic_field_number: "one"}) }}>
+                                    {
+                                        expanded == expansion.ADDITIONAL_REQUIREMENT_ONE ? 
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>)
+                                    :  
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg> )
+                                    }
+                                    
+                                </span>
+                            </div>
+                            {
+                                expanded == expansion.ADDITIONAL_REQUIREMENT_ONE && (
+                                    <div className="flex flex-col space-y-4 p-4">
+                                        
+                                        <p className="flex justify-between">
+                                            <span className="text-white/60 ">File</span>
+                                            <span className="text-mtn" >{dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one] ? 
+                                                <span onClick={() => setFileViewer((dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one]))} 
+                                                        className="text-xs flex space-x-1 items-end cursor-pointer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                    </svg> Preview
+                                                </span>
+                                                : "-"}
+                                            </span>
+                                        </p>
+
+                                        {errors && errors["error"] && (
+                                            <div className="mb-6">
+                                                <FormErrors error={errors["error"]} />
+                                            </div>
+                                        )}
+
+                                        <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
+                                            {
+                                                dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"] == "approved" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_ONE] == "approved" ? <Approved /> : 
+                                                dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"] == "rejected" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_ONE] == "rejected" ? <Declined /> : 
+                                                ApprovalActions()
+                                            }                                             
+                                        </div>
+
+                                    </div>
+                                )
+                            }
+                            
+                            
+                        </div>
+
+                        </div>)
+                    }
+
+                    {/* Additional Requirement two */}
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "two") != null &&
+                        (<div className="flex space-x-2 items-start w-full">
+
+                        <span className="p-2 rounded-md bg-white/10 inline-flex">
+                            <svg className="w-6 h-6" viewBox="0 0 16 15" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.24751 7.11244L6.39501 8.96494C5.36751 9.99244 5.36751 11.6499 6.39501 12.6774C7.42251 13.7049 9.08001 13.7049 10.1075 12.6774L13.025 9.75994C15.0725 7.71244 15.0725 4.38244 13.025 2.33494C10.9775 0.287441 7.64751 0.287441 5.60001 2.33494L2.42001 5.51494C0.66501 7.26994 0.66501 10.1199 2.42001 11.8824" stroke="gray" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </span>
+
+                        <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                            <div className={`p-2  ${expanded == expansion.ADDITIONAL_REQUIREMENT_TWO && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                                    <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
+                                </svg>
+                                <span className="text-white/80 ml-2">{dynamicFields[0][0]}</span>
+
+                                <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.ADDITIONAL_REQUIREMENT_TWO ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_REQUIREMENT_TWO);
+                                                        setData({...data, dynamic_field_number: "two"}) }}>
+                                    {
+                                        expanded == expansion.ADDITIONAL_REQUIREMENT_TWO ? 
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>)
+                                    :  
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg> )
+                                    }
+                                    
+                                </span>
+                            </div>
+                            {
+                                expanded == expansion.ADDITIONAL_REQUIREMENT_TWO && (
+                                    <div className="flex flex-col space-y-4 p-4">
+                                        
+                                        <p className="flex justify-between">
+                                            <span className="text-white/60 ">File</span>
+                                            <span className="text-mtn" >{dynamicResponse[dynamicResponse.request_name_two] && dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two] ? 
+                                                <span onClick={() => setFileViewer((dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two]))} 
+                                                        className="text-xs flex space-x-1 items-end cursor-pointer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                    </svg> Preview
+                                                </span>
+                                                : "-"}
+                                            </span>
+                                        </p>
+
+                                        {errors && errors["error"] && (
+                                            <div className="mb-6">
+                                                <FormErrors error={errors["error"]} />
+                                            </div>
+                                        )}
+
+                                        <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
+                                            {
+                                                dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two + "_status"] == "approved" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_TWO] == "approved" ? <Approved /> : 
+                                                dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two + "_status"] == "rejected" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_TWO] == "rejected" ? <Declined /> : 
+                                                ApprovalActions()
+                                            }                                             
+                                        </div>
+
+                                    </div>
+                                )
+                            }
+                            
+                            
+                        </div>
+
+                        </div>)
+                    }
+
+                    {/* Additional Requirement two */}
+                    {hasDynamicField && dynamicFields.find(field => field[1] == "three") != null &&
+                        (<div className="flex space-x-2 items-start w-full">
+
+                        <span className="p-2 rounded-md bg-white/10 inline-flex">
+                            <svg className="w-6 h-6" viewBox="0 0 16 15" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.24751 7.11244L6.39501 8.96494C5.36751 9.99244 5.36751 11.6499 6.39501 12.6774C7.42251 13.7049 9.08001 13.7049 10.1075 12.6774L13.025 9.75994C15.0725 7.71244 15.0725 4.38244 13.025 2.33494C10.9775 0.287441 7.64751 0.287441 5.60001 2.33494L2.42001 5.51494C0.66501 7.26994 0.66501 10.1199 2.42001 11.8824" stroke="gray" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </span>
+
+                        <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                            <div className={`p-2  ${expanded == expansion.ADDITIONAL_REQUIREMENT_THREE && 'border-b pb-4'} border-white/20 flex space-x-2 items-center w-full relative`}>
+                                <svg viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                                    <path d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z" fill="#8E8E8E"/>
+                                </svg>
+                                <span className="text-white/80 ml-2">{dynamicFields[0][0]}</span>
+
+                                <span className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer" 
+                                        onClick={() => {clearErrors(); 
+                                                        expanded == expansion.ADDITIONAL_REQUIREMENT_THREE ? setExpanded(null) : setExpanded(expansion.ADDITIONAL_REQUIREMENT_THREE);
+                                                        setData({...data, dynamic_field_number: "three"}) }}>
+                                    {
+                                        expanded == expansion.ADDITIONAL_REQUIREMENT_THREE ? 
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>)
+                                    :  
+                                        (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg> )
+                                    }
+                                    
+                                </span>
+                            </div>
+                            {
+                                expanded == expansion.ADDITIONAL_REQUIREMENT_THREE && (
+                                    <div className="flex flex-col space-y-4 p-4">
+                                        
+                                        <p className="flex justify-between">
+                                            <span className="text-white/60 ">File</span>
+                                            <span className="text-mtn" >{dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three] ? 
+                                                <span onClick={() => setFileViewer((dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three]))} 
+                                                        className="text-xs flex space-x-1 items-end cursor-pointer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 cursor-pointer">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                    </svg> Preview
+                                                </span>
+                                                : "-"}
+                                            </span>
+                                        </p>
+
+                                        {errors && errors["error"] && (
+                                            <div className="mb-6">
+                                                <FormErrors error={errors["error"]} />
+                                            </div>
+                                        )}
+
+                                        <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
+                                            {
+                                                dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three + "_status"] == "approved" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_THREE] == "approved" ? <Approved /> : 
+                                                dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three + "_status"] == "rejected" || 
+                                                    approvals[expansion.ADDITIONAL_REQUIREMENT_THREE] == "rejected" ? <Declined /> : 
+                                                ApprovalActions()
+                                            }                                             
+                                        </div>
+
+                                    </div>
+                                )
+                            }
+                            
+                            
+                        </div>
+
+                        </div>)
+                    }
                     
 
                 </div>              

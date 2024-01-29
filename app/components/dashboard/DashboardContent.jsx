@@ -77,10 +77,10 @@ export default function GetStarted({ type }) {
   ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-    console.log("this is the info on state", states)
+    // console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
-    console.log("_finalApproval", { _finalApproval });
+    // console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
   }, [partner]);
 
@@ -409,6 +409,8 @@ export default function GetStarted({ type }) {
 
   useEffect(() => {
 
+    console.log("USER", user);
+
     if(user && role_menu_map[user?.role][0] == "Dashboard"){
       setHasdashboard(true);
     }
@@ -451,7 +453,7 @@ export default function GetStarted({ type }) {
             <div className="w-full pt-[72px]">
               {user?.first_name && (
                 <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name} 
+                  Hello, {user?.first_name} 
                   {/* <span className="text-white text-sm">This is a visible comment</span> */}
                 </h2>
               )}

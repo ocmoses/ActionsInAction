@@ -20,15 +20,15 @@ export default function IPDynamicField(){
 
     const [dynamic, setDynamic] = useState([]);
 
-
-    let dynamicArray = [];    
-
     const hasDynamic = (data) => {
 
-        let result = true;
+        if(data.request_name_one && (data.request_name_one_status == "not_submitted" || data.request_name_one_status == "rejected") || 
+            data.request_name_two && (data.request_name_two_status == "not_submitted" || data.request_name_two_status == "rejected")  || 
+            data.request_name_three && (data.request_name_three_status == "not_submitted" || data.request_name_three_status == "rejected") ){
+            return true;
+        }
 
-       
-        return result;
+        return false;
 
     }
 
@@ -40,14 +40,23 @@ export default function IPDynamicField(){
                     console.log("ERROR", {error: resp.error});
                 }else{
 
-                    console.log("Dynamic ARRAY", dynamicArray)
+                    console.log("Dynamic ARRAY DATA", resp.data)
 
-                    if(!hasDynamic(resp.data)){
+                    if(hasDynamic(resp.data)){
+                        let dynamicArray = [];
+                        if(resp.data.request_name_one && resp.data.request_type_one){
+                            dynamicArray.push([resp.data.request_name_one, resp.data.request_type_one, "one"]);
+                        }
+                        if(resp.data.request_name_two && resp.data.request_type_two){
+                            dynamicArray.push([resp.data.request_name_two, resp.data.request_type_two, "two"]);
+                        }
+                        if(resp.data.request_name_three && resp.data.request_type_three){
+                            dynamicArray.push([resp.data.request_name_three, resp.data.request_type_three, "three"]);
+                        }
+
                         setDynamic(dynamicArray);
                         setShowAlert(true);
                     }
-
-                    console.log("Dynamic Array", dynamicArray);
 
                 }
 

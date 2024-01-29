@@ -31,6 +31,7 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 
 
 import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
@@ -50,6 +51,8 @@ import IPCard from "@/app/components/dashboard/IPCard";
 import {suspended_categories} from "@/app/modules/constants";
 
 import {ServiceConfigurationReadyAlert} from "@/app/components/dashboard/ContractComponents";
+import { PartnerMenu } from "@/app/modules/menu";
+import {role_menu_map} from "@/app/modules/constants";
 
 export default function GetStarted({ type }) {
   const {
@@ -74,10 +77,10 @@ export default function GetStarted({ type }) {
   ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-    console.log("this is the info on state", states)
+    // console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
-    console.log("_finalApproval", { _finalApproval });
+    // console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
   }, [partner]);
 
@@ -111,6 +114,8 @@ export default function GetStarted({ type }) {
   const [IPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
+
+  const [hasDashboard, setHasdashboard] = useState(false);
 
   useEffect(() => {
     setProcessing(false);
@@ -402,13 +407,31 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
+  useEffect(() => {
 
+    console.log("USER", user);
 
+    if(user && role_menu_map[user?.role][0] == "Dashboard"){
+      setHasdashboard(true);
+    }
+
+    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user?.role][0])?.route : null;
+
+    // console.log("Location is: ", location);
+
+    if(location != "/dashboard" && location != null){
+       window.location = location;
+    }   
+
+  }, [user]);
 
 
 
   return (
-    <>
+
+    hasDashboard && 
+
+    (<>
 
 
 
@@ -430,7 +453,7 @@ export default function GetStarted({ type }) {
             <div className="w-full pt-[72px]">
               {user?.first_name && (
                 <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name} 
+                  Hello, {user?.first_name} 
                   {/* <span className="text-white text-sm">This is a visible comment</span> */}
                 </h2>
               )}
@@ -633,6 +656,7 @@ export default function GetStarted({ type }) {
               <ChangeOrderRejection />
               
               <IPRejection />
+              <IPDynamicField />
               
 
               {/* //================this is the popup==============================================================================================================*/}
@@ -1029,6 +1053,6 @@ export default function GetStarted({ type }) {
           <PartnerAgreement showAgreement={showAgreement} partner={partner} />
         </Portal>
       )}
-    </>
+    </>)
   );
 }

@@ -41,6 +41,7 @@ export default function Team() {
     email: "",
     role: "",
     phone: "",
+    user_mode: "partner_admin"
   });
 //console.log("the partner uuid is ", partner.uuid)
   const [fetchingAdminPartners, setFetchingAdminPartners] = useState(false);

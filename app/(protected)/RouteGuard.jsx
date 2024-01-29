@@ -23,6 +23,9 @@ export default function RouteGuard({ children }) {
         if (currentUrl !== "/") router.push(`/login${currentUrl}`);
         
       } else {
+        sessionStorage.setItem("loginResult", JSON.stringify(null));
+        sessionStorage.setItem("partnerLoginOtpStatus", JSON.stringify(null));
+        
         if (session) {
           if (session?.status === "unauthenticated") {
             if (session?.user?.uuid) dologout.clearStore();

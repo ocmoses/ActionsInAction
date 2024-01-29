@@ -3,7 +3,8 @@ export default function FormErrors({ error, success, align }) {
               "No valid login detected for SuperAdmin",
               "response.json is not a function",
               "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
-              "response.json is not a function"
+              "response.json is not a function",
+              "Unexpected token '<', \"<html><hea\"... is not valid JSON"
             ];
   return ( !hide.includes(error)  && 
     <>

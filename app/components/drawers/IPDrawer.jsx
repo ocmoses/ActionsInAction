@@ -114,6 +114,7 @@ export default function IPDrawer({request, openDrawer, closeAction, refresh}){
 
         setDynamicResponse(data);
 
+        //Nothing was added
         // console.log("DYNAMIC SHIT", dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"])
 
         let dynamicFields = [];

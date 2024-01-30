@@ -70,7 +70,8 @@ export default function Requests() {
   const [successToast, setSuccessToast] = useState(false);
   const successAction = () =>
     setTimeout(() => {
-      setSuccessToast(false), location.reload();
+      setSuccessToast(false)
+      loadAllRequest();
     }, 3000);
 
   const [approve, setApprove] = useState(false);
@@ -510,11 +511,12 @@ export default function Requests() {
   };
 
   const get_shortcodes = async () => {
+
     if (fetchingShortcodes) return;
     setFetchingShortcodes(true);
 
     get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
-    // console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
+     //console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
 
     if (get_all_partner_shortcodes_response.error) {
       setError({ error: get_all_partner_shortcodes_response.error });
@@ -530,6 +532,7 @@ export default function Requests() {
           request_id: shortcode.request_id,
           created_at: shortcode.created_at,
           approved_on: shortcode.approved_on,
+          shortcode_uuid: shortcode.shortcode_uuid,
          // rejected_on: shortcode.rejected_on,
           status: shortcode.status,
           short_codes:shortcode.shortcodes,
@@ -589,9 +592,7 @@ export default function Requests() {
         approve_request_response = await approveOrRejectBrd(approvalData);
         break;
       case request_types.SUPPLIER_QUESTION:
-        approve_request_response = await approveOrRejectQuestionnaire(
-          approvalData
-        );
+        approve_request_response = await approveOrRejectQuestionnaire(approvalData);
         break;
     }
 
@@ -602,6 +603,7 @@ export default function Requests() {
       setSuccessMessage(approve_request_response.message);
       //set selected brd to null
       setSuccessToast(true);
+      
     } else {
       //set errors
       setError({ error: approve_request_response.error });
@@ -694,15 +696,18 @@ export default function Requests() {
       await get_grace_period();
       await get_license_renewal();
       await get_ips();
-      await get_shortcodes();    
-    
+      await get_shortcodes();
   }
 
   useEffect(() => {
     setProcessing(false);
     clearErrors();
-    getAllRequests().then((resp) => setPagedRequests(requests.slice(0,5)));
+    loadAllRequest();
   }, []);
+
+  const loadAllRequest = () => {
+    getAllRequests().then((resp) => setPagedRequests(requests.slice(0,5)));
+  };
 
   useEffect(() => {}, [filteredRequests]);
 
@@ -715,7 +720,7 @@ export default function Requests() {
           <div className="flex justify-between items-center mb-10">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Requests</h2>
-              <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
+              <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md" onClick={() => loadAllRequest()}>
                 {filteredRequests?.length}
               </span>
             </div>
@@ -1104,6 +1109,8 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
+            loadAllRequest={loadAllRequest}
+            successAction={successAction}
           />
         )}
 

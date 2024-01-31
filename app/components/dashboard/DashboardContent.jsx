@@ -420,8 +420,7 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-
-    if(user && role_menu_map[user?.role][0] == "Dashboard"){
+    if (user && role_menu_map[user?.role][0] == "Dashboard") {
       setHasdashboard(true);
     }
 
@@ -438,35 +437,30 @@ export default function GetStarted({ type }) {
   }, [user]);
 
   return (
-
-    hasDashboard && 
-
-    (<>
-
-
-
-      {isOnboarding && (
-        <>
-          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
-            <OnboardingLayout
-              isOnboarding={isOnboarding}
-              setIsOnboarding={setIsOnboarding}
-              setTmpCat={setTmpCat}
-              scrollpage={scrollpage}
-            />
-          </div>
-        </>
-      )}
-      {!isOnboarding && (
-        <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
-          <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
-            <div className="w-full pt-[72px]">
-              {user?.first_name && (
-                <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                  Hello, {user.first_name} 
-                  {/* <span className="text-white text-sm">This is a visible comment</span> */}
-                </h2>
-              )}
+    hasDashboard && (
+      <>
+        {isOnboarding && (
+          <>
+            <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
+              <OnboardingLayout
+                isOnboarding={isOnboarding}
+                setIsOnboarding={setIsOnboarding}
+                setTmpCat={setTmpCat}
+                scrollpage={scrollpage}
+              />
+            </div>
+          </>
+        )}
+        {!isOnboarding && (
+          <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
+            <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
+              <div className="w-full pt-[72px]">
+                {user?.first_name && (
+                  <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
+                    Hello, {user.first_name}
+                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
+                  </h2>
+                )}
 
                 {partner?.onboarding_type === "new" && (
                   <div>
@@ -509,13 +503,13 @@ export default function GetStarted({ type }) {
                                       xmlns="http://www.w3.org/2000/svg"
                                       fill="none"
                                       viewBox="0 0 24 24"
-                                      stroke-width="1.5"
+                                      strokeWidth="1.5"
                                       stroke="currentColor"
                                       className="w-12 h-12"
                                     >
                                       <path
                                         stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                        strokeLinejoin="round"
                                         d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
                                       />
                                     </svg>
@@ -523,13 +517,13 @@ export default function GetStarted({ type }) {
                                       xmlns="http://www.w3.org/2000/svg"
                                       fill="none"
                                       viewBox="0 0 24 24"
-                                      stroke-width="1.5"
+                                      strokeWidth="1.5"
                                       stroke="currentColor"
                                       className="w-6 h-6 absolute top-4 left-3"
                                     >
                                       <path
                                         stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                        strokeLinejoin="round"
                                         d="M3.75 9h16.5m-16.5 6.75h16.5"
                                       />
                                     </svg>
@@ -669,22 +663,22 @@ export default function GetStarted({ type }) {
 
                 {/* //================this is the popup==============================================================================================================*/}
 
-              {rejectedTeam?.rejected?.length > 0 && brdComplains && (
-                <>
-                  {popUp && (
-                    <PopUp closePopUp={closePopUp}>
-                      {!submitBrdFrom ? (
-                        <BrdUpdates
-                          closePopUp={closePopUp}
-                          submitBrd={submitBrd}
-                          loginPartnerID={partner.uuid}
-                          token={user.token}
-                        /> // If contactSubmit is true
-                      ) : (
-                        <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
-                      )}
-                    </PopUp>
-                  )}
+                {rejectedTeam?.rejected?.length > 0 && brdComplains && (
+                  <>
+                    {popUp && (
+                      <PopUp closePopUp={closePopUp}>
+                        {!submitBrdFrom ? (
+                          <BrdUpdates
+                            closePopUp={closePopUp}
+                            submitBrd={submitBrd}
+                            loginPartnerID={partner.uuid}
+                            token={user.token}
+                          /> // If contactSubmit is true
+                        ) : (
+                          <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+                        )}
+                      </PopUp>
+                    )}
 
                     <BrdRejectedAlert
                       openBrdPopUp={openBrdPopUp}
@@ -752,81 +746,81 @@ export default function GetStarted({ type }) {
 
                 {/*//==============================================================================================================================*/}
 
-              {partner?.onboarding_type === "migrated" && (
-                <>
-                  {partner?.is_login === "no" ? (
-                    <>
-                      <p className="mb-12 text-[#999999] max-w-[500px]">
-                        Welcome to the MTN Partner Portal, {user.first_name}!
-                        Explore advanced analytics, reporting, and dedicated
-                        support to grow your business today.
-                      </p>
+                {partner?.onboarding_type === "migrated" && (
+                  <>
+                    {partner?.is_login === "no" ? (
+                      <>
+                        <p className="mb-12 text-[#999999] max-w-[500px]">
+                          Welcome to the MTN Partner Portal, {user.first_name}!
+                          Explore advanced analytics, reporting, and dedicated
+                          support to grow your business today.
+                        </p>
+                        <p className="text-[#999999] text-center md:text-start">
+                          Review your details to get started
+                        </p>
+                      </>
+                    ) : (
                       <p className="text-[#999999] text-center md:text-start">
-                        Review your details to get started
+                        {partner?.contract_status === "not_started" ? (
+                          "Complete your setup to get started!"
+                        ) : (
+                          <>
+                            {FinalApproval.partner ? (
+                              <CallToAction
+                                message="Your contract is ready. Click here to sign"
+                                description="Describe the event and give further instructions if needed, include a call to action"
+                                onclick={() => showAgreement(true)}
+                                label="Take action"
+                                color="text-green-700"
+                                desccolor="text-[#999999]"
+                                icon={
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className=" w-[28px] h-[28px]"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                    />
+                                  </svg>
+                                }
+                              />
+                            ) : (
+                              <CallToAction
+                                message="Your application is currently being reviewed"
+                                description=""
+                                label=""
+                                color="text-[#FF9897]"
+                                desccolor="text-[#999999]"
+                                icon={
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className=" w-[28px] h-[28px]"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                    />
+                                  </svg>
+                                }
+                              />
+                            )}
+                          </>
+                        )}
                       </p>
-                    </>
-                  ) : (
-                    <p className="text-[#999999] text-center md:text-start">
-                      {partner?.contract_status === "not_started" ? (
-                        "Complete your setup to get started!"
-                      ) : (
-                        <>
-                          {FinalApproval.partner ? (
-                            <CallToAction
-                              message="Your contract is ready. Click here to sign"
-                              description="Describe the event and give further instructions if needed, include a call to action"
-                              onclick={() => showAgreement(true)}
-                              label="Take action"
-                              color="text-green-700"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
-                          ) : (
-                            <CallToAction
-                              message="Your application is currently being reviewed"
-                              description=""
-                              label=""
-                              color="text-[#FF9897]"
-                              desccolor="text-[#999999]"
-                              icon={
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className=" w-[28px] h-[28px]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                  />
-                                </svg>
-                              }
-                            />
-                          )}
-                        </>
-                      )}
-                    </p>
-                  )}
-                </>
-              )}
+                    )}
+                  </>
+                )}
 
                 {userStatus != user_statuses.APPROVED && partnerCategories && (
                   <PartnerCategories
@@ -889,19 +883,19 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
 
-              {!contractStarted &&
-                partner?.contract_status === "not_started" &&
-                partnerActiveCategories?.length > 0 && (
-                  <div
-                    id="categoryselect"
-                    className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
-                  >
-                    Dear {user.first_name}, please note that you can choose
-                    multiple service categories. However, you will be required
-                    to complete a selected category to enable you move to the
-                    next category
-                  </div>
-                )}
+                {!contractStarted &&
+                  partner?.contract_status === "not_started" &&
+                  partnerActiveCategories?.length > 0 && (
+                    <div
+                      id="categoryselect"
+                      className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
+                    >
+                      Dear {user.first_name}, please note that you can choose
+                      multiple service categories. However, you will be required
+                      to complete a selected category to enable you move to the
+                      next category
+                    </div>
+                  )}
 
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&

@@ -24,7 +24,6 @@ export default function MenuBar({
   openAction = null,
   closeAction = null,
 }) {
-
   const { partners, partnerCategories } = usePartners();
 
   const segments = useSelectedLayoutSegments();
@@ -369,7 +368,7 @@ export default function MenuBar({
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="gray"
                         className="w-10 h-10 ml-4 hover:bg-gray-700 hover:rounded-full p-2"
                       >

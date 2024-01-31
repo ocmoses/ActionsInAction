@@ -154,6 +154,9 @@ const RemoteEndpoints = {
   ADD_DYNAMIC_FIELD: `${apiURL}/v2/admin/add-dynamic-field-to-ip`,
   REMOVE_DYNAMIC_FIELD: `${apiURL}/v2/admin/remove-ip-dynamic-field`,
   CHECK_FOR_DYNAMIC_FIELD: `${apiURL}/v2/ip/check-if-partner-has-dynamic-ip-request/:partner_uuid`,
+  GET_PARTNER_DYNAMIC_FIELD: `${apiURL}/v2/admin/get-partner-dynamic-ip-request/:partner_uuid`,
+  UPLOAD_DYNAMIC_FIELD: `${apiURL}/v2/ip/submit-into-dynamic-field`,
+  APPROVE_REJECT_DYNAMIC_FIELD: `${apiURL}/v2/admin/approve-dynamic-ip-request`,
 
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,
@@ -169,5 +172,8 @@ const RemoteEndpoints = {
   APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
   GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
   GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
+
+
+  PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`
 }
 export default RemoteEndpoints

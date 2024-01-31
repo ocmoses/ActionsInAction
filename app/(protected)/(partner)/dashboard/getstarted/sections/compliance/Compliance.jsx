@@ -22,8 +22,6 @@ import {
   ValidateField,
   fieldRequired,
 } from "@/app/modules/utilities";
-import {FileViewContext} from "@/app/providers/FileViewProvider";
-// import FileViewer from "@/app/components/modals/FileViewer";
 
 
 function Compliance() {
@@ -459,10 +457,7 @@ function Compliance() {
   };
 
   return (
-    <>
-        {/* { fileViewer && 
-            <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-        } */}
+    <>        
       <div
         id="onboardingform"
         className="w3-animate-opacity pb-20 w-full max-w-[550px]"

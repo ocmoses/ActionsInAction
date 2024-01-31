@@ -1257,8 +1257,11 @@ export const filterApprovalFields = (partner) => {
 export const partnerApprovals = (partner, category) => {
   if (!category || !partner) return;
 
-  console.log("partner?.approvalStages", partner?.approvalStages);
-  console.log("category", category);
+  // console.log("CATEGORY", category);
+  console.log("PARTNER", partner);
+
+  // console.log("partner?.approvalStages", partner?.approvalStages);
+  // console.log("category", category);
 
   const Approvals = partner?.approvalStages[category.category_uuid];
   let stageApprovals = {};
@@ -1619,6 +1622,7 @@ export const partnerApprovals = (partner, category) => {
   }
   // console.log({ StageApprovals: StageApprovals })
   StageApprovals.fieldDates = fields;
+  console.log("STAGEAPPROVALS", StageApprovals);
   return StageApprovals;
 };
 export const getFinalApproval = (partner) => {
@@ -1631,9 +1635,16 @@ export const getFinalApproval = (partner) => {
 
   const categoryStatus = {};
 
+  console.log("THE_PARTNER", partner);
+
+  partner.compliance_status
+
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {
       const approval = partnerApprovals(partner, category);
+      
+      console.log("approval?", approval);
+
       if (!categoryStatus[category.category_uuid])
         categoryStatus[category.category_uuid] = {
           corrected: [],
@@ -1693,15 +1704,31 @@ export const getFinalApproval = (partner) => {
     status[cuuid].rejected = categoryStatus[cuuid].rejected.length;
     status[cuuid].corrected = categoryStatus[cuuid].corrected.length;
     status[cuuid].pending = categoryStatus[cuuid].pending.length;
+
+    //Checking if all stages were approved
+    for(const stage in partner?.compliance_status[cuuid]){
+
+      if(stage.status != 'approved'){
+        status[cuuid].status = false;
+        break;
+      }
+
+    }
+
   }
-  status.partner =
+  status.partner = 
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
+
   status.count = categoryStatus;
 
-  console.log("pending", pending);
-  console.log("corrected", corrected);
-  console.log("rejected", rejected);
-  console.log("categoryStatus", categoryStatus);
+  
+
+  // console.log("pending", pending);
+  // console.log("corrected", corrected);
+  // console.log("rejected", rejected);
+  // console.log("categoryStatus", categoryStatus);
+
+  console.log("STATUS", status);
 
   return status;
 };

@@ -80,10 +80,10 @@ export default function GetStarted({ type }) {
   ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-    console.log("this is the info on state", states);
+    // console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
-    console.log("_finalApproval", { _finalApproval });
+    // console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
   }, [partner]);
 
@@ -420,7 +420,8 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (user && role_menu_map[user?.role][0] == "Dashboard") {
+
+    if(user && role_menu_map[user?.role][0] == "Dashboard"){
       setHasdashboard(true);
     }
 
@@ -437,30 +438,35 @@ export default function GetStarted({ type }) {
   }, [user]);
 
   return (
-    hasDashboard && (
-      <>
-        {isOnboarding && (
-          <>
-            <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
-              <OnboardingLayout
-                isOnboarding={isOnboarding}
-                setIsOnboarding={setIsOnboarding}
-                setTmpCat={setTmpCat}
-                scrollpage={scrollpage}
-              />
-            </div>
-          </>
-        )}
-        {!isOnboarding && (
-          <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
-            <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
-              <div className="w-full pt-[72px]">
-                {user?.first_name && (
-                  <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                    Hello, {user.first_name}
-                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
-                  </h2>
-                )}
+
+    hasDashboard && 
+
+    (<>
+
+
+
+      {isOnboarding && (
+        <>
+          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
+            <OnboardingLayout
+              isOnboarding={isOnboarding}
+              setIsOnboarding={setIsOnboarding}
+              setTmpCat={setTmpCat}
+              scrollpage={scrollpage}
+            />
+          </div>
+        </>
+      )}
+      {!isOnboarding && (
+        <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
+          <div className="col-span-12 xl:col-span-10 w-full max-w-[837px] px-6 mx-auto">
+            <div className="w-full pt-[72px]">
+              {user?.first_name && (
+                <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
+                  Hello, {user.first_name} 
+                  {/* <span className="text-white text-sm">This is a visible comment</span> */}
+                </h2>
+              )}
 
                 {partner?.onboarding_type === "new" && (
                   <div>
@@ -663,22 +669,22 @@ export default function GetStarted({ type }) {
 
                 {/* //================this is the popup==============================================================================================================*/}
 
-                {rejectedTeam?.rejected?.length > 0 && brdComplains && (
-                  <>
-                    {popUp && (
-                      <PopUp closePopUp={closePopUp}>
-                        {!submitBrdFrom ? (
-                          <BrdUpdates
-                            closePopUp={closePopUp}
-                            submitBrd={submitBrd}
-                            loginPartnerID={partner.uuid}
-                            token={user.token}
-                          /> // If contactSubmit is true
-                        ) : (
-                          <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
-                        )}
-                      </PopUp>
-                    )}
+              {rejectedTeam?.rejected?.length > 0 && brdComplains && (
+                <>
+                  {popUp && (
+                    <PopUp closePopUp={closePopUp}>
+                      {!submitBrdFrom ? (
+                        <BrdUpdates
+                          closePopUp={closePopUp}
+                          submitBrd={submitBrd}
+                          loginPartnerID={partner.uuid}
+                          token={user.token}
+                        /> // If contactSubmit is true
+                      ) : (
+                        <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
+                      )}
+                    </PopUp>
+                  )}
 
                     <BrdRejectedAlert
                       openBrdPopUp={openBrdPopUp}
@@ -746,81 +752,81 @@ export default function GetStarted({ type }) {
 
                 {/*//==============================================================================================================================*/}
 
-                {partner?.onboarding_type === "migrated" && (
-                  <>
-                    {partner?.is_login === "no" ? (
-                      <>
-                        <p className="mb-12 text-[#999999] max-w-[500px]">
-                          Welcome to the MTN Partner Portal, {user.first_name}!
-                          Explore advanced analytics, reporting, and dedicated
-                          support to grow your business today.
-                        </p>
-                        <p className="text-[#999999] text-center md:text-start">
-                          Review your details to get started
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-[#999999] text-center md:text-start">
-                        {partner?.contract_status === "not_started" ? (
-                          "Complete your setup to get started!"
-                        ) : (
-                          <>
-                            {FinalApproval.partner ? (
-                              <CallToAction
-                                message="Your contract is ready. Click here to sign"
-                                description="Describe the event and give further instructions if needed, include a call to action"
-                                onclick={() => showAgreement(true)}
-                                label="Take action"
-                                color="text-green-700"
-                                desccolor="text-[#999999]"
-                                icon={
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className=" w-[28px] h-[28px]"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                    />
-                                  </svg>
-                                }
-                              />
-                            ) : (
-                              <CallToAction
-                                message="Your application is currently being reviewed"
-                                description=""
-                                label=""
-                                color="text-[#FF9897]"
-                                desccolor="text-[#999999]"
-                                icon={
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className=" w-[28px] h-[28px]"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                    />
-                                  </svg>
-                                }
-                              />
-                            )}
-                          </>
-                        )}
+              {partner?.onboarding_type === "migrated" && (
+                <>
+                  {partner?.is_login === "no" ? (
+                    <>
+                      <p className="mb-12 text-[#999999] max-w-[500px]">
+                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Explore advanced analytics, reporting, and dedicated
+                        support to grow your business today.
                       </p>
-                    )}
-                  </>
-                )}
+                      <p className="text-[#999999] text-center md:text-start">
+                        Review your details to get started
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[#999999] text-center md:text-start">
+                      {partner?.contract_status === "not_started" ? (
+                        "Complete your setup to get started!"
+                      ) : (
+                        <>
+                          {FinalApproval.partner ? (
+                            <CallToAction
+                              message="Your contract is ready. Click here to sign"
+                              description="Describe the event and give further instructions if needed, include a call to action"
+                              onclick={() => showAgreement(true)}
+                              label="Take action"
+                              color="text-green-700"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          ) : (
+                            <CallToAction
+                              message="Your application is currently being reviewed"
+                              description=""
+                              label=""
+                              color="text-[#FF9897]"
+                              desccolor="text-[#999999]"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className=" w-[28px] h-[28px]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                                  />
+                                </svg>
+                              }
+                            />
+                          )}
+                        </>
+                      )}
+                    </p>
+                  )}
+                </>
+              )}
 
                 {userStatus != user_statuses.APPROVED && partnerCategories && (
                   <PartnerCategories
@@ -883,19 +889,19 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
 
-                {!contractStarted &&
-                  partner?.contract_status === "not_started" &&
-                  partnerActiveCategories?.length > 0 && (
-                    <div
-                      id="categoryselect"
-                      className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
-                    >
-                      Dear {user.first_name}, please note that you can choose
-                      multiple service categories. However, you will be required
-                      to complete a selected category to enable you move to the
-                      next category
-                    </div>
-                  )}
+              {!contractStarted &&
+                partner?.contract_status === "not_started" &&
+                partnerActiveCategories?.length > 0 && (
+                  <div
+                    id="categoryselect"
+                    className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
+                  >
+                    Dear {user.first_name}, please note that you can choose
+                    multiple service categories. However, you will be required
+                    to complete a selected category to enable you move to the
+                    next category
+                  </div>
+                )}
 
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&

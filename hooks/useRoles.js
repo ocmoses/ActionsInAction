@@ -83,6 +83,7 @@ const useRoles = () => {
       };
     }
   };
+  
   const getAllAdminPrivileges = async (page, perPage) => {
     try {
       const params = [];

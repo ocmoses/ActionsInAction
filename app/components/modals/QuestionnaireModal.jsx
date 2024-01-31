@@ -11,6 +11,7 @@ import FileInput from "../form/FileInput";
 import Success from "@/app/components/toasts/Success";
 import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
+import {previewFile} from "@/hooks/useFileViewer";
 
 /**
  * 

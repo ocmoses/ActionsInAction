@@ -1624,6 +1624,7 @@ const usePartners = () => {
     registerPartner,
     checkRegStatus,
     checkUpdateStatus,
+    // skipStage,
     nextStage,
     resendEmail,
     validation,

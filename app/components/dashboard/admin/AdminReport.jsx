@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { formatNumber } from "@/app/modules/utilities";
 import { IncreaseArrow, DecreaseArrow } from "@/app/components/Icons";
-import Chart from "chart.js";
+// import Chart from "chart.js";
 
 export default function PartnerStatisticsReport({
   title,
@@ -128,7 +128,7 @@ export const PartnerReportBarChart = () => {
       },
     };
     let ctx = document.getElementById("bar-chart").getContext("2d");
-    window.myBar = new Chart(ctx, config);
+    // window.myBar = new Chart(ctx, config);
   }, []);
 
   return (

@@ -287,7 +287,14 @@ function NlrcLicense() {
                   label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}
                 />
                 <SkipButton 
-                  action={() => {skipStage("nlrclicense"); setForm("shortcode")}}
+                  action={() => skipStage({onboarding_stage: "nlrclicense",
+                                            partner_uuid: partner?.uuid,
+                                            category_uuid: category.category_uuid}) ? 
+                  
+                                          setForm("shortcode") : 
+                                          
+                                          {}
+                  }
                   />
               </div>
             {/* )} */}

@@ -150,7 +150,7 @@ export default function useAdmins() {
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
-        const admin_users = result.data?.admin_users.data;
+        const admin_users = result.data?.admin_users;
         // if (admins_users.length > 0)
         // admins_users.map((admin) => {
         //     filterPartner(admin, states.categories);

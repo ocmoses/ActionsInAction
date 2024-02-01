@@ -43,7 +43,7 @@ export default function ComplianceLabelPartners({
 
   // console.log({ type })
   // console.log({ field })
-  console.log("category in compliance label: ",  category);
+  // console.log("category in compliance label: ",  category);
   // console.log({ category_shortcode })
 
   const updateField = () => {

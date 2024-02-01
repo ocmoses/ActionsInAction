@@ -132,8 +132,36 @@ const usePartners = () => {
     return progress[stage] && parseInt(progress[stage]) ? true : false
   }
 
-  const skipStage = (stage) => {
-    category.profile_stage.stage = "1";
+  const skipStage = async (stageData) => {
+
+    const response = await Axios.post(
+      RemoteEndpoints.SKIPSTAGE,
+      stageData,
+      {
+        apikey: process.env.NEXT_PUBLIC_APIKEY,
+        token: states.users.token,
+        "Content-Type": "application/json",
+        Authorization: `bearer ${states.users.token}`,
+        timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+      }
+    ).catch((e) => {
+      // console.log("e", e);
+      return {
+        success: false,
+        error: `${e.message}. Please check your connection`,
+        message: e.response.data.data.message,
+        data: null,
+      };
+    });
+
+    console.log("SKIP RESPONSE", response);
+
+    if(response?.success){
+       category.profile_stage.stage = "1";
+       
+    }
+
+   
   }
 
   const checkRegStatus = async (partner) => {
@@ -425,6 +453,7 @@ const usePartners = () => {
     }
   };
 
+ 
   const resendEmail = async (email, email_type) => {
     
     setProcessing(true);

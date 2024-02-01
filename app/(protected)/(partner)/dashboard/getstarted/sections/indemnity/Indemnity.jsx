@@ -6,6 +6,7 @@ import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 import RegisterStepHeader from "@/app/components/RegisterStepHeader";
 import FormErrors from "@/app/components/FormErrors";
 import ButtonNext from "@/app/components/form/ButtonNext";
+import SkipButton from "@/app/components/form/SkipButton";
 import ButtonPrev from "@/app/components/form/ButtonPrev";
 import useErrors from "@/hooks/useErrors";
 import useProcessing from "@/hooks/useProcessing";
@@ -32,6 +33,7 @@ function Indemnity() {
     registerPartner,
     updatePartner,
     checkUpdateStatus,
+    skipStage,
     nextStage,
   } = usePartners();
   const { min_start_date, max_end_date, yesterday, tomorrow } =
@@ -236,7 +238,7 @@ function Indemnity() {
             {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : ( */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 justify-between">
                 {/* <ButtonPrev
                   onClick={() => moveToPrevForm("indemnity")}
                   type="button"
@@ -248,6 +250,17 @@ function Indemnity() {
                   type="submit"
                   label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
                 />
+                
+                <SkipButton 
+                  action={() => skipStage({onboarding_stage: "indemnity",
+                                            partner_uuid: partner?.uuid,
+                                            category_uuid: category.category_uuid}) ? 
+                  
+                                          setForm("accountinfo") : 
+                                          
+                                          {}
+                  }
+                  />
               </div>
             {/* )} */}
           </div>

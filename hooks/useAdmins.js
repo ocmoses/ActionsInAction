@@ -150,7 +150,7 @@ export default function useAdmins() {
       const result = await response.json();
       setProcessing(false);
       if (result?.success) {
-        const admin_users = result.data?.admin_users.data;
+        const admin_users = result.data?.admin_users;
         // if (admins_users.length > 0)
         // admins_users.map((admin) => {
         //     filterPartner(admin, states.categories);
@@ -1174,10 +1174,16 @@ export default function useAdmins() {
 
   const approveIPDetail = async (data) => {
 
+
+
+    let endpoint = data.dynamic_field_number ? 
+                    RemoteEndpoints.APPROVE_REJECT_DYNAMIC_FIELD : 
+                    RemoteEndpoints.APPROVE_REJECT_IP_DETAILS;                    
+                    
+
     try {
       setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.APPROVE_REJECT_IP_DETAILS}`,
+      const response = await fetch(endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1226,10 +1232,14 @@ export default function useAdmins() {
 
   const rejectIPDetail = async (data) => {
 
+    let endpoint = data.dynamic_field_number ? 
+                    RemoteEndpoints.APPROVE_REJECT_DYNAMIC_FIELD : 
+                    RemoteEndpoints.APPROVE_REJECT_IP_DETAILS;
+                    
+
     try {
       setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.APPROVE_REJECT_IP_DETAILS}`,
+      const response = await fetch(endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1259,6 +1269,161 @@ export default function useAdmins() {
 
         return {
           message: "Approved successfully"
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const addDynamicField = async (data) => {
+
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.ADD_DYNAMIC_FIELD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("ADD DYNAMIC FIELD RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Adding dynamic field message', message);
+
+        return {
+          message: "Added successfully"
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const removeDynamicField = async (data) => {
+
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.REMOVE_DYNAMIC_FIELD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'DELETE',
+          body: JSON.stringify(data),
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("REMOVE DYNAMIC FIELD RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Remove dynamic field message', message);
+
+        return {
+          message: "Deleted successfully"
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  }
+
+  const getDynamicFields = async (partner_uuid) => {    
+    
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.GET_PARTNER_DYNAMIC_FIELD.replace(':partner_uuid', partner_uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'GET',
+          headers: {
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.token}`,
+          },
+        }
+      );
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+      const result = await response.json();
+
+      console.log("GET DYNAMIC FIELDS RESPONSE", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const data = result?.data;
+        
+        console.log('Get dynamic fields data: ', data);
+
+        return {
+          data
         };
       }
       return {
@@ -1523,6 +1688,9 @@ export default function useAdmins() {
     getAllPartnersShortCodes,
     approveIPDetail,
     rejectIPDetail,
+    addDynamicField,
+    removeDynamicField,
+    getDynamicFields,
     getSinglePartnerShortcodes
   };
 }

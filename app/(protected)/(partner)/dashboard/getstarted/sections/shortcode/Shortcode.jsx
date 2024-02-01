@@ -506,10 +506,11 @@ function Shortcode() {
       });
   };
   const ValidatePricing = (field) => {
+    // console.log("FormDATA", formdata);
     removeError(field);
     const error = ValidateField(
       field,
-      "shortcode",
+      "shortcode_pricing",
       formdata.shortcode,
       category
     );

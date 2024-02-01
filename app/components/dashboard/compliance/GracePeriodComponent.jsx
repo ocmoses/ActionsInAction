@@ -87,7 +87,7 @@ export default function GracePeriodAlert({
       ) : (
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft >= 0 &&
+          licenseValidityDaysLeft >= 1 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (
@@ -127,7 +127,8 @@ export default function GracePeriodAlert({
                                 <p>
                                   <span className="text-white">
                                     Your license expires in{" "}
-                                    {licenseValidityDaysLeft} days
+                                    {licenseValidityDaysLeft} days{" "}
+                                    {licenseRenewalStatus}
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
@@ -213,12 +214,8 @@ export default function GracePeriodAlert({
             <>
               {licenseRenewalStatus != "approved" ? (
                 <>
-                  {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ||
-                  licenseRenewalStatus == "none" ? (
-                    <></>
-                  ) : (
-                    
+                  {licenseRenewalStatus == "rejected" ||
+                  licenseRenewalStatus == "expired" ? (
                     <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
                       <div className="p-[24px] ">
                         <div className="flex flex-row gap-3">
@@ -277,6 +274,8 @@ export default function GracePeriodAlert({
                         </div>
                       </div>
                     </div>
+                  ) : (
+                    <></>
                   )}
                 </>
               ) : (
@@ -597,7 +596,7 @@ export const LicenseValidityTopAlert = ({
 }) => {
   const states = useStoreState((state) => state);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [validity, setValidity] = useState(false);
+  const [validity, setValidity] = useState(null);
 
   ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
   const checkPartnerLicenseExpiration = async () => {
@@ -612,17 +611,20 @@ export const LicenseValidityTopAlert = ({
         }
       );
 
-      
-
       const response = checkPartnerLicenseExpirationResponse.data.data;
-      
-      console.log("Partner Validity Expiration", checkPartnerLicenseExpirationResponse);
+
+      console.log(
+        "Partner Validity Expiration",
+        checkPartnerLicenseExpirationResponse
+      );
 
       const license_validity = response.license_validity;
       if (license_validity == "not_expired") {
         setValidity(false);
-      } else {
+      } else if (license_validity == "expired") {
         setValidity(true);
+      } else {
+        setValidity(null);
       }
     } catch (error) {
       setErrorMessage("Something went wrong while trying to license validity");
@@ -635,7 +637,7 @@ export const LicenseValidityTopAlert = ({
 
   return (
     <>
-      {licenseValidityDaysLeft <= 60 && (
+      {licenseValidityDaysLeft <= 60 && validity != null && (
         <>
           {errorMessage && (
             <p className="text-red-500 text-sm font-italic">{errorMessage}</p>

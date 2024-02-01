@@ -128,7 +128,40 @@ const usePartners = () => {
 
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage
+    console.log("PROGRESS", progress)
     return progress[stage] && parseInt(progress[stage]) ? true : false
+  }
+
+  const skipStage = async (stageData) => {
+
+    const response = await Axios.post(
+      RemoteEndpoints.SKIPSTAGE,
+      stageData,
+      {
+        apikey: process.env.NEXT_PUBLIC_APIKEY,
+        token: states.users.token,
+        "Content-Type": "application/json",
+        Authorization: `bearer ${states.users.token}`,
+        timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+      }
+    ).catch((e) => {
+      // console.log("e", e);
+      return {
+        success: false,
+        error: `${e.message}. Please check your connection`,
+        message: e.response.data.data.message,
+        data: null,
+      };
+    });
+
+    console.log("SKIP RESPONSE", response);
+
+    if(response?.success){
+       category.profile_stage.stage = "1";
+       
+    }
+
+   
   }
 
   const checkRegStatus = async (partner) => {
@@ -180,7 +213,7 @@ const usePartners = () => {
     switch (frm) {
       // Existing partner flows
       case "partnerwelcome":
-        setProcessing(true)
+        setProcessing(true);
         const responsePartnerwelcome = await Axios.post(
           RemoteEndpoints.WELCOMEBACK,
           userdata,
@@ -191,44 +224,44 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           // console.log("e", e);
           return {
             success: false,
             error: `${e.message}. Please check your connection`,
             message: e.response.data.data.message,
             data: null,
-          }
-        })
-        
+          };
+        });
+
         console.log("responsePartnerwelcome", responsePartnerwelcome);
 
         if (!responsePartnerwelcome) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
-        
-        const { success, data, message } = responsePartnerwelcome
+
+        const { success, data, message } = responsePartnerwelcome;
 
         if (!success) {
-          setProcessing(false)
-          return { success: false, error: message, data: data }
+          setProcessing(false);
+          return { success: false, error: message, data: data };
         }
-        
 
-        setTmpUser(data.user)
-        setPartners(data.partners)
+        setTmpUser(data.user);
+        setPartners(data.partners);
         router.push(
           `/onboarding/verify/${data.user.uuid}/${userdata.email_type}`
-        )
-        break
+        );
+        break;
+
       case "setpassword":
-        setProcessing(true)
+        setProcessing(true);
         const responseSetpassword = await Axios.post(
           RemoteEndpoints.RESETPASSWORD,
           userdata,
@@ -239,45 +272,45 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check your connection`,
             data: null,
-          }
-        })
+          };
+        });
 
         console.log("responseSetpassword", responseSetpassword);
 
-
         if (!responseSetpassword) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         const { success: successSetpassword, data: setpassword } =
-          responseSetpassword
+          responseSetpassword;
         if (!successSetpassword) {
-          setProcessing(false)
-          return { success: false, error: setpassword.message, data: null }
+          setProcessing(false);
+          return { success: false, error: setpassword.message, data: null };
         }
-        setTmpUserUUID(null)
-        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY)
+        setTmpUserUUID(null);
+        const categories = await getCategories(process.env.NEXT_PUBLIC_APIKEY);
         const serverSession = {
           status: setpassword?.user?.uuid ? "authenticated" : "unauthenticated",
           User: setpassword,
           type: "user",
-        }
-        app.setStoreStates(serverSession, categories, "partner store")
-        if (userdata.type === "new") return router.push(PageRoutes.getstarted)
-        return router.push(PageRoutes.dashboard)
+        };
+        app.setStoreStates(serverSession, categories, "partner store");
+        if (userdata.type === "new") return router.push(PageRoutes.getstarted);
+        return router.push(PageRoutes.dashboard);
+        break;
       case "userinfo":
-        setProcessing(true)
+        setProcessing(true);
         const responseUserinfo = await Axios.post(
           RemoteEndpoints.USERINFO,
           userdata,
@@ -288,39 +321,44 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           // console.log("e", e);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             message: e.response.data.data.message,
             data: null,
-          }
-        })
+          };
+        });
         if (!responseUserinfo) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         // console.log('responseUserinfo', responseUserinfo);
 
-        const { success: successUserinfo, data: userinfo } = responseUserinfo
+        const { success: successUserinfo, data: userinfo } = responseUserinfo;
 
         if (!successUserinfo) {
-          setProcessing(false)
-          return { success: false, error: responseUserinfo.message, data: null }
+          setProcessing(false);
+          return {
+            success: false,
+            error: responseUserinfo.message,
+            data: null,
+          };
         }
-        const User = userData(userinfo)
-        users.setTmpUser(User.user)
-        router.push(`/onboarding/verify/${User.user.uuid}/new`)
-        break
+        const User = userData(userinfo);
+        users.setTmpUser(User.user);
+        router.push(`/onboarding/verify/${User.user.uuid}/new`);
+        break;
+
       case "category":
-        setProcessing(true)
+        setProcessing(true);
         const responseCategory = await Axios.post(
           RemoteEndpoints.CATEGORY,
           userdata,
@@ -331,48 +369,56 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!responseCategory) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error:
               "Something went wrong. Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
         const { success: successCategory, data: categoryData } =
-          responseCategory
+          responseCategory;
         if (!successCategory) {
-          setProcessing(false)
-          return { success: false, error: categoryData.message, data: null }
+          setProcessing(false);
+          return { success: false, error: categoryData.message, data: null };
         }
-        setCurrentCategory(categoryData.category, categoryData.partner)
-        updatePartner(categoryData.partner)
-        return { success: true, error: null, data: categoryData }
+        setCurrentCategory(categoryData.category, categoryData.partner);
+        updatePartner(categoryData.partner);
+        return { success: true, error: null, data: categoryData };
+        break;
       case "companydetail":
-        return updateCategory("companydetail", userdata)
+        return updateCategory("companydetail", userdata);
+        break;
       case "compliance":
-        return updateCategory("compliance", userdata)
+        return updateCategory("compliance", userdata);
+        break;
       case "ncclicense":
-        return updateCategory("ncclicense", userdata)
+        return updateCategory("ncclicense", userdata);
+        break;
       case "nlrclicense":
-        return updateCategory("nlrclicense", userdata)
+        return updateCategory("nlrclicense", userdata);
+        break;
       case "shortcode":
-        return updateCategory("shortcode", userdata)
+        return updateCategory("shortcode", userdata);
+        break;
       case "indemnity":
-        return updateCategory("indemnity", userdata)
+        return updateCategory("indemnity", userdata);
+        break;
       case "accountinfo":
-        return updateCategory("accountinfo", userdata)
+        return updateCategory("accountinfo", userdata);
+        break;
       case "complete_registration":
-        setProcessing(true)
+        setProcessing(true);
         const regResponse = await Axios.post(
           RemoteEndpoints.REGISTRATION_COMPLETION,
           userdata,
@@ -380,32 +426,34 @@ const usePartners = () => {
             timeout: process.env.NEXT_PUBLIC_TIMEOUT,
           }
         ).catch((e) => {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: `${e.message}. Please check you connection`,
             data: null,
-          }
-        })
+          };
+        });
         if (!regResponse) {
-          setProcessing(false)
+          setProcessing(false);
           return {
             success: false,
             error: ". Please check your connection and try again",
             data: null,
-          }
+          };
         }
 
-        const { success: regSuccess, data: regData } = regResponse
+        const { success: regSuccess, data: regData } = regResponse;
         if (!regSuccess) {
-          setProcessing(false)
-          return { success: false, error: regData.message, data: null }
+          setProcessing(false);
+          return { success: false, error: regData.message, data: null };
         }
 
-        return { success: true, error: null, data: regData }
+        return { success: true, error: null, data: regData };
+        break;
     }
-  }
+  };
 
+ 
   const resendEmail = async (email, email_type) => {
     
     setProcessing(true);
@@ -1355,6 +1403,74 @@ const usePartners = () => {
   
   }
 
+  const getDynamicField = async () => {
+    
+    try{
+      const response = await fetch(
+        `${RemoteEndpoints.CHECK_FOR_DYNAMIC_FIELD.replace(':partner_uuid', states.partners.partner.uuid)}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      // console.log('states.users.token in usePartners', states.users.token);
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+      if (!response){
+        return {
+          error: "This request has no response available",
+        };
+      }        
+
+      const result = await response.json();
+
+      console.log("Result from getting dynamic IP field", result);
+
+      setProcessing(false);
+
+      if (result?.success) {
+        const data = result?.data;
+
+        if(!data){
+
+          //check other things
+          return {
+            error:
+              result?.data?.message ??
+              "Something went wrong. Please check your connection and try again",
+          };
+
+        }        
+
+        return {
+          data
+        };
+        
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  
+  }
 
   const submitAnnexureResponses = async (data) => {
     try {
@@ -1473,6 +1589,64 @@ const usePartners = () => {
     }
   };
 
+  const dynamicFileUpload = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.UPLOAD_DYNAMIC_FIELD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: 'POST',
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+     
+      
+      if (!response)
+      return {
+        error: "This request has no response available",
+      };
+
+      if (response.status === 401 ) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("IP Upload response", result);
+
+      setProcessing(false);
+      if (result?.success) {
+        const message = result.data?.message;
+        
+        console.log('Uploaded message', message);
+
+        return {
+          message
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const downloadSignedContract = () => {
     return RemoteEndpoints.DOWNLOAD_CONTRACT
     .replace(':partner_uuid', states.partners.partner.uuid)
@@ -1547,6 +1721,7 @@ const usePartners = () => {
     registerPartner,
     checkRegStatus,
     checkUpdateStatus,
+    skipStage,
     nextStage,
     resendEmail,
     validation,
@@ -1576,6 +1751,8 @@ const usePartners = () => {
     getIPStatus,
     getIPProgressStatus,
     ipFileUpload,
+    getDynamicField,
+    dynamicFileUpload,
     getPartnerContractCurrentlyRunning
   }
 }

@@ -13,6 +13,9 @@ export default function PartnerCategories({
   categories,
   finalApproval,
 }) {
+
+  // console.log("PARTNER in PartnerCategories", partner);
+
   const router = useRouter();
   const [allCats, setAllCats] = useState([]);
   useEffect(() => {
@@ -23,6 +26,9 @@ export default function PartnerCategories({
       });
       setAllCats(Categories);
     }
+
+    console.log("finalApproval==", finalApproval);
+
   }, [categories]);
 
   return (
@@ -66,7 +72,8 @@ export default function PartnerCategories({
                             : 15
                         }
                         percent={
-                          partner?.sections[category.category_uuid].percent
+                          // partner?.sections[category.category_uuid].percent
+                          partner?.categories[0]?.percentage
                         }
                         // percent={category.percentage}
                       />

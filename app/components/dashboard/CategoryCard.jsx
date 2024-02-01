@@ -12,6 +12,7 @@ export default function CategoryCard({
 }) {
 
   console.log("Card Category", category);
+  console.log("To Fill Questionaire", pendingQuestionare);
 
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [{ errors, setError, removeError, clearErrors }] = useErrors();

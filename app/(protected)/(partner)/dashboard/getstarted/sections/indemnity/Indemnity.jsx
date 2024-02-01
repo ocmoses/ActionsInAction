@@ -250,8 +250,16 @@ function Indemnity() {
                   type="submit"
                   label={checkUpdateStatus("indemnity") ? "Update" : "Next"}
                 />
+                
                 <SkipButton 
-                  action={() => {skipStage("indemnity"); setForm("accountinfo")}}
+                  action={() => skipStage({onboarding_stage: "indemnity",
+                                            partner_uuid: partner?.uuid,
+                                            category_uuid: category.category_uuid}) ? 
+                  
+                                          setForm("accountinfo") : 
+                                          
+                                          {}
+                  }
                   />
               </div>
             {/* )} */}

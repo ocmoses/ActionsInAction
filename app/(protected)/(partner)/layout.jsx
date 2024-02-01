@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 import RouteGuard from "../RouteGuard";
 import { useState, useEffect } from "react";
 import NavbarDashboard from "@/app/components/dashboard/NavbarDashboard";
@@ -14,6 +15,7 @@ import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
 function Layout({ children }) {
+  const partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 
@@ -29,7 +31,8 @@ function Layout({ children }) {
   const licenseValidityRemainder = async () => {
     try {
       const licenseValidityRemainderResponse = await axios.get(
-        `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partner?.uuid}`,
+        `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partnersData[0].uuid}`,
+
         {
           headers: {
             apikey: apikey,
@@ -51,7 +54,10 @@ function Layout({ children }) {
   ////////////end licenseValidityRemainder function////////////////////
   useEffect(() => {
     licenseValidityRemainder();
+    //console.log("partnersData.uuid", partnersData[0].uuid);
   }, [partner]);
+
+  
 
 
   return (

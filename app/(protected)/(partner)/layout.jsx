@@ -15,7 +15,13 @@ import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
 function Layout({ children }) {
-  const partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
+  let partnersData;
+  if (typeof window !== 'undefined') {
+    partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
+  } else {
+    partnersData = null;
+  }
+  
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 

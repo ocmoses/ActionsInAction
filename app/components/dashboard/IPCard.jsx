@@ -33,7 +33,7 @@ export default function IPCard(){
 
     return (
         <>{
-            percentage < 100 && user.role == "superAdmin" &&
+            percentage < 100 && user?.role == "superAdmin" &&
             <div className="w-6xl rounded-xl border-1 border-white/20 mt-8 bg-white/10">
                 <div className="flex justify-between p-6 border-b border-white/20">
                     <span className="text-white/80 text-md">Things to do</span>

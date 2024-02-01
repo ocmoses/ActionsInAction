@@ -58,6 +58,7 @@ const RemoteEndpoints = {
   SHORTCODE: `${apiURL}/v2/auth/register/shortcode`,
   INDEMNITY: `${apiURL}/v2/auth/register/indemnity`,
   ACCOUNTINFO: `${apiURL}/v2/auth/register/accountinfo`,
+  SKIPSTAGE: `${apiURL}/v2/auth/register/skip-onboarding-stage`,
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
   START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,
@@ -172,5 +173,8 @@ const RemoteEndpoints = {
   APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
   GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
   GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
+
+
+  PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`
 }
 export default RemoteEndpoints

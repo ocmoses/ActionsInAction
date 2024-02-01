@@ -670,7 +670,7 @@ export default function GetStarted({ type }) {
                           closePopUp={closePopUp}
                           submitBrd={submitBrd}
                           loginPartnerID={partner.uuid}
-                          token={user.token}
+                          token={user?.token}
                         /> // If contactSubmit is true
                       ) : (
                         <BrdUpdatesSuccess closePopUp={closePopUp} /> // If contactSubmit is true
@@ -745,7 +745,7 @@ export default function GetStarted({ type }) {
                   {partner?.is_login === "no" ? (
                     <>
                       <p className="mb-12 text-[#999999] max-w-[500px]">
-                        Welcome to the MTN Partner Portal, {user.first_name}!
+                        Welcome to the MTN Partner Portal, {user?.first_name}!
                         Explore advanced analytics, reporting, and dedicated
                         support to grow your business today.
                       </p>
@@ -884,7 +884,7 @@ export default function GetStarted({ type }) {
                     id="categoryselect"
                     className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
                   >
-                    Dear {user.first_name}, please note that you can choose
+                    Dear {user?.first_name}, please note that you can choose
                     multiple service categories. However, you will be required
                     to complete a selected category to enable you move to the
                     next category

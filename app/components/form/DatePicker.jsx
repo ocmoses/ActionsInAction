@@ -5,6 +5,7 @@ import { inputDate } from "@/app/modules/utilities";
 import FormErrors from "@/app/components/FormErrors";
 import "react-datepicker/dist/react-datepicker.css";
 
+
 function FileInput({
   id,
   label,
@@ -23,7 +24,14 @@ function FileInput({
 
   useEffect(() => {
     setStartDate(value ? new Date(value) : "");
-  }, [value]);
+    
+    //This is to remove all the annoying dark marks in date pickers
+      const watermarks = document.querySelectorAll('.react-datepicker__calendar-icon');
+      watermarks.forEach(watermark => {
+        watermark.remove();
+      });
+        
+    }, [value]);
 
   const handleDateChange = (date) => {
     setStartDate(date);

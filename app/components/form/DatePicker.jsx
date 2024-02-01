@@ -32,7 +32,7 @@ function FileInput({
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div
-        className={
+        className={"min-h-16 " + 
           (border ? border + " " : "border-1 ") +
           (bg ? bg + " " : "bg-[#212121] ") +
           "relative w-full group  border-[#333333] rounded-[10px]"
@@ -44,7 +44,7 @@ function FileInput({
           onChange={(date) => handleDateChange(date)}
           maxDate={max}
           minDate={min}
-          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer z-50"
+          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer z-50 min-h-16"
           placeholderText={label}
           dateFormat="dd/MM/yyyy"
           peekNextMonth

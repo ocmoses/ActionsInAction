@@ -408,22 +408,22 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-
     console.log("USER", user);
 
-    if(user && role_menu_map[user?.role][0] == "Dashboard"){
-      setHasdashboard(true);
+    // Check if user and role_menu_map[user?.role] exist before accessing their properties
+    if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
+        setHasdashboard(true);
     }
 
-    const location = user ? PartnerMenu.find(item => item.label == role_menu_map[user?.role][0])?.route : null;
+    const location = user ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route : null;
 
     // console.log("Location is: ", location);
 
-    if(location != "/dashboard" && location != null){
-       window.location = location;
-    }   
+    if (location !== "/dashboard" && location != null) {
+        window.location = location;
+    }
+}, [user]);
 
-  }, [user]);
 
 
 

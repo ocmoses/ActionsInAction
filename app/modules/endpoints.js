@@ -58,6 +58,7 @@ const RemoteEndpoints = {
   SHORTCODE: `${apiURL}/v2/auth/register/shortcode`,
   INDEMNITY: `${apiURL}/v2/auth/register/indemnity`,
   ACCOUNTINFO: `${apiURL}/v2/auth/register/accountinfo`,
+  SKIPSTAGE: `${apiURL}/v2/auth/register/skip-onboarding-stage`,
   // version 2
   REGISTRATION_COMPLETION: `${apiURL}/v2/notification/new-partner-category`,
   START_CONTRACT: `${apiURL}/v2/notification/partner-start-contract-notification`,

@@ -410,12 +410,15 @@ export default function GetStarted({ type }) {
   useEffect(() => {
     console.log("USER", user);
 
-    // Check if user and role_menu_map[user?.role] exist before accessing their properties
+    // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
     if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
         setHasdashboard(true);
     }
 
-    const location = user ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route : null;
+    const location =
+        user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
+            ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
+            : null;
 
     // console.log("Location is: ", location);
 
@@ -423,6 +426,7 @@ export default function GetStarted({ type }) {
         window.location = location;
     }
 }, [user]);
+
 
 
 

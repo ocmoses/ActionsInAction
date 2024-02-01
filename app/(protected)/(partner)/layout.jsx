@@ -14,6 +14,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
+ 
 function Layout({ children }) {
   const partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
   const { partner } = usePartners();

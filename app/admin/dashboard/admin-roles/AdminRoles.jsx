@@ -16,6 +16,10 @@ import { useRouter } from "next/navigation";
 import useApp from "@/hooks/useApp";
 import TextInput from "@/app/components/form/TextInput";
 
+import Filter from "@/app/components/Filter";
+import TablePager from "@/app/components/TablePager";
+import EmptyTable from "@/app/components/EmptyTable";
+
 export default function AdminRoles({ allRoles }) {
   const { getAllAdmins } = useAdmins();
   const { getAllAdminRoles, getAllAdminPrivileges, deleteRole, createRole } =
@@ -49,6 +53,9 @@ export default function AdminRoles({ allRoles }) {
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [allFilteredRoles, setAllFilteredRoles] = useState([]);
+  const [allPagedRoles, setAllPagedRoles] = useState([]);
+
   let all_Admins = null;
   let all_Admin_Roles = null;
   let all_Admin_Privileges = null;
@@ -70,10 +77,16 @@ export default function AdminRoles({ allRoles }) {
   const get_all_admin_roles = async () => {
     if (fetchingAdminRoles) return;
     setFetchingAdminRoles(true);
-    all_Admin_Roles = await getAllAdminRoles(page, perPage);
-    setAdminRoles(all_Admin_Roles.admin_roles);
+    all_Admin_Roles = await getAllAdminRoles(page, perPage)
+      .then((resp) => {
+        setAllFilteredRoles(resp.admin_roles);
+      })
+      .catch((error) => {
+        console.log("Could not get all admin roles");
+      });
+    setAdminRoles(all_Admin_Roles?.admin_roles);
     setFetchingAdminRoles(false);
-    if (all_Admin_Roles.error) setError({ error: all_Admin_Roles.error });
+    if (all_Admin_Roles?.error) setError({ error: all_Admin_Roles?.error });
   };
 
   const get_all_admin_privileges = async () => {
@@ -193,31 +206,43 @@ export default function AdminRoles({ allRoles }) {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Roles</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {adminRoles?.length}
+                {allFilteredRoles?.length}
+              </span>
+            </div>
+            <div
+              className="inline-flex items-center gap-2 rounded-full pl-3 bg-white/10 p-2 pr-4 hover:bg-gray-500 cursor-pointer"
+              onClick={() => setModalOpen(true)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="white"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
+                />
+              </svg>
+              <span className="text-[12px] text-white">
+                Create a custom role
               </span>
             </div>
           </div>
+
           <br />
-          <div
-            className="inline-flex items-center gap-2 rounded-full pl-3 bg-white/10 p-2 pr-4 hover:bg-gray-500 cursor-pointer"
-            onClick={() => setModalOpen(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="white"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-              />
-            </svg>
-            <span className="text-[12px] text-white">Create a custom role</span>
-          </div>
+
+          <Filter
+            list={allFilteredRoles}
+            filterAction={setAllFilteredRoles}
+            keysArray={["uuid", "role_name", "description"]}
+            msg={
+              "Find an admin role by searching for their role name or description"
+            }
+          />
 
           {errors && errors["error"] && (
             <div className="mb-6">
@@ -225,7 +250,7 @@ export default function AdminRoles({ allRoles }) {
             </div>
           )}
 
-          <div className="w-full mt-10">
+          <div className="w-full">
             {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
@@ -252,7 +277,7 @@ export default function AdminRoles({ allRoles }) {
 
                 {/* row 1 */}
 
-                {adminRoles?.map((role) => (
+                {allPagedRoles?.map((role) => (
                   <tr
                     key={role.uuid}
                     className="border-b border-b-white/10 cursor-pointer bg-transparent"
@@ -369,79 +394,12 @@ export default function AdminRoles({ allRoles }) {
                 {/* row 2 */}
               </tbody>
             </table>
-            {/* For Nav links */}
-            {/* <div className="w-full flex justify-end">
-                  {!Util.isEmpty(navigation) &&
-                    navigation.links?.length > 0 &&
-                    navigation.links.map((nav, index) => {
-                      let link = null;
-                      if (index === 0) {
-                        if (nav.url) {
-                        }
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else if (index === navigation.links.length - 1) {
-                        link = (
-                          <div className="flex p-2 text-white">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                              />
-                            </svg>
-                          </div>
-                        );
-                      } else {
-                        if (nav.url) {
-                          link = nav.active ? (
-                            <div className="flex p-2 text-white bg-white/30">
-                              {index}
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => setPage(index)}
-                              className="flex p-2 text-white cursor-pointer hover:bg-white/10"
-                            >
-                              {index}
-                            </div>
-                          );
-                        } else {
-                          link = (
-                            <div className="flex p-2 text-white">
-                              {nav.label}
-                            </div>
-                          );
-                        }
-                      }
 
-                      return link;
-                    })}
-                </div> */}
-            {/* )} */}
+            {allFilteredRoles.length == 0 && allPagedRoles.length == 0 ? (
+              <EmptyTable list={"roles"} />
+            ) : (
+              <TablePager list={allFilteredRoles} action={setAllPagedRoles} />
+            )}
           </div>
         </div>
       </div>
@@ -450,10 +408,6 @@ export default function AdminRoles({ allRoles }) {
           id="create_modal"
           className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80"
         >
-          {/* <div id="modal_background" className="w-screen h-screen bg-black/70" 
-                onClick={(e) => {if(e.target.id == "modal_background") setModalOpen(false)}}>
-
-          </div> */}
 
           <div
             id="actualModal"
@@ -490,7 +444,7 @@ export default function AdminRoles({ allRoles }) {
               </h1>
             ) : (
               adminPrivileges.map((privilegeGroup, index) => (
-                <div className="flex space-x-4">
+                <div className="flex space-x-4" key={index}>
                   <div className="w-[200px]">
                     <span className="text-gray-200 text-xs font-mtn-extralight">
                       {titleCase(privilegeGroup.role_class_name)}
@@ -499,6 +453,7 @@ export default function AdminRoles({ allRoles }) {
                   <div className="flex flex-col w-[250px]">
                     {privilegeGroup.role_class.map((privilege, index) => (
                       <label
+                        key={index}
                         for={"privilege-" + index}
                         className="text-white h-6 mb-4"
                       >
@@ -589,7 +544,7 @@ export default function AdminRoles({ allRoles }) {
               </div>
               <div>
                 {adminPrivileges.map((privilegeGroup, index) => (
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-4" key={index}>
                     <div className="w-[200px]">
                       <span className="text-gray-200 text-xs font-mtn-extralight">
                         {titleCase(privilegeGroup.role_class_name)}
@@ -602,7 +557,7 @@ export default function AdminRoles({ allRoles }) {
                             (role) => role.role_name == currentRole.role_name
                           )
                           .privileges.includes(privilege.privilege) ? (
-                          <div className="flex space-x-2 py-2 text-white">
+                          <div className="flex space-x-2 py-2 text-white" key={index}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -620,7 +575,7 @@ export default function AdminRoles({ allRoles }) {
                             &nbsp;&nbsp; {privilege.privilege}
                           </div>
                         ) : (
-                          <div className="flex space-x-2 py-2 text-white">
+                          <div className="flex space-x-2 py-2 text-white" key={index}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -715,12 +670,12 @@ export default function AdminRoles({ allRoles }) {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="green"
-              class="w-6 h-6"
+              className="w-6 h-6"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
             &nbsp;&nbsp; {successMessage}

@@ -1,10 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  getPartnerInitials,
-  Util,
-  titleCase,
-} from "@/app/modules/utilities";
+import { getPartnerInitials, Util, titleCase } from "@/app/modules/utilities";
 
 import { TailSpinPreloader } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -355,11 +351,16 @@ export default function Admins({ allAdmins }) {
             </div>
           </div>
 
+          <br />
+
           <Filter
             list={allFilteredAdmins}
             filterAction={setAllFilteredAdmins}
             keysArray={["uuid", "username", "fullname", "email"]}
             rolesArray={["SuperAdmin", "Admin"]}
+            msg={
+              "Find an admin by searching for their username, fullname or email"
+            }
           />
 
           {errors && errors["error"] && (
@@ -368,7 +369,7 @@ export default function Admins({ allAdmins }) {
             </div>
           )}
 
-          <div className="w-full mt-10">
+          <div className="w-full">
             {/* {processing && (
               <div className="flex justify-center items-center">
                 <TailSpinPreloader width={40} height={40} fill="#efb703" />
@@ -681,15 +682,15 @@ export default function Admins({ allAdmins }) {
               <option value={``} className="py-2 bg-black text-[#333333]">
                 Select Department
               </option>
-              {departments &&
-                departments.map((department) => (
-                  <option
-                    value={`${department.department}`}
-                    className="py-2 bg-black"
-                  >
-                    {department.department}
-                  </option>
-                ))}
+              {departments?.map((department) => (
+                <option
+                  key={department.uuid}
+                  value={`${department.department}`}
+                  className="py-2 bg-black"
+                >
+                  {department.department}
+                </option>
+              ))}
             </select>
 
             <TextInput
@@ -701,24 +702,23 @@ export default function Admins({ allAdmins }) {
             />
 
             <div className="flex space-x-2">
-              {adminRoles &&
-                adminRoles.map((role) => (
-                  <div
-                    key={`role-${role.uuid}`}
-                    className={`p-4 rounded-md text-white text-sm cursor-pointer  ${
-                      data.role == role.uuid
-                        ? "text-mtn-500 border-1 border-yellow-500 bg-black"
-                        : "bg-gray-600"
-                    }`}
-                    onClick={() => {
-                      setData({ ...data, role: role.uuid });
-                      console.log("data", data);
-                      clearError();
-                    }}
-                  >
-                    {role.role_name[0].toUpperCase() + role.role_name.slice(1)}
-                  </div>
-                ))}
+              {adminRoles?.map((role) => (
+                <div
+                  key={`role-${role.uuid}`}
+                  className={`p-4 rounded-md text-white text-sm cursor-pointer  ${
+                    data.role == role.uuid
+                      ? "text-mtn-500 border-1 border-yellow-500 bg-black"
+                      : "bg-gray-600"
+                  }`}
+                  onClick={() => {
+                    setData({ ...data, role: role.uuid });
+                    console.log("data", data);
+                    clearError();
+                  }}
+                >
+                  {role.role_name[0].toUpperCase() + role.role_name.slice(1)}
+                </div>
+              ))}
             </div>
             {data.role != "" && (
               <div className="flex space-x-2 mt-4">
@@ -878,7 +878,7 @@ export default function Admins({ allAdmins }) {
               </div>
               <div>
                 {adminPrivileges.map((privilegeGroup, index) => (
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-4" key={privilegeGroup.uuid}>
                     <div className="w-[150px]">
                       <span className="text-gray-200 text-xs font-mtn-extralight">
                         {titleCase(privilegeGroup.role_class_name)}
@@ -892,7 +892,7 @@ export default function Admins({ allAdmins }) {
                               role.role_name == currentAdmin.role.role_name
                           )
                           .privileges.includes(privilege.privilege) ? (
-                          <div className="flex space-x-2 py-2 text-white">
+                          <div className="flex space-x-2 py-2 text-white" key={privilege.uuid}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -910,7 +910,7 @@ export default function Admins({ allAdmins }) {
                             &nbsp;&nbsp; {privilege.privilege}
                           </div>
                         ) : (
-                          <div className="flex space-x-2 py-2 text-white">
+                          <div className="flex space-x-2 py-2 text-white" key={privilege.uuid}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -1005,12 +1005,12 @@ export default function Admins({ allAdmins }) {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="green"
-              class="w-6 h-6"
+              className="w-6 h-6"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
             &nbsp;&nbsp; {successMessage}

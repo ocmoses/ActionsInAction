@@ -18,6 +18,7 @@ export default function Filter({
   keysArray = null,
   statusArray = null,
   rolesArray = null,
+  msg = null,
 }) {
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -610,7 +611,9 @@ export default function Filter({
                   />
                 </div>
                 <span className="text-gray-400 text-sm">
-                  Find a contract by searching for a partner by their name
+                  {msg
+                    ? msg
+                    : "Find a contract by searching for a partner by their name"}
                 </span>
               </div>
             )}

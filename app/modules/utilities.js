@@ -1687,7 +1687,7 @@ export const getFinalApproval = (partner) => {
 
   console.log("THE_PARTNER", partner);
 
-  partner.compliance_status
+  partner?.compliance_status
 
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {

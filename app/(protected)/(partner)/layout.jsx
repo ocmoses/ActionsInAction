@@ -23,6 +23,7 @@ function Layout({ children }) {
     partnersData = null;
   }
   
+  
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 

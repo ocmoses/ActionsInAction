@@ -291,7 +291,7 @@ export default function Admins({ allAdmins }) {
 
       <div id="compliance" className="flex flex-cols pb-12">
         <div className="w-full pt-[72px] px-12 mx-auto">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-10">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Admins</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
@@ -352,139 +352,136 @@ export default function Admins({ allAdmins }) {
           </div>
 
           <br />
-
-          <Filter
-            list={allFilteredAdmins}
-            filterAction={setAllFilteredAdmins}
-            keysArray={["uuid", "username", "fullname", "email"]}
-            rolesArray={["SuperAdmin", "Admin"]}
-            msg={
-              "Find an admin by searching for their username, fullname or email"
-            }
-          />
-
-          {errors && errors["error"] && (
-            <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-            </div>
-          )}
-
           <div className="w-full">
-            {/* {processing && (
-              <div className="flex justify-center items-center">
-                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            <Filter
+              list={allFilteredAdmins}
+              filterAction={setAllFilteredAdmins}
+              keysArray={["uuid", "username", "fullname", "email"]}
+              rolesArray={["SuperAdmin", "Admin"]}
+              msg={
+                "Find an admin by searching for their username, fullname or email"
+              }
+            />
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
               </div>
             )}
-            {!processing && ( */}
 
-            <table className="table w-full transparent">
-              <tbody>
-                {/* head */}
-                <tr className="border-b border-b-white/40 text-11">
-                  <th>
-                    <span className="text-[13px]">Name</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Username</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Role</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Last Active</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]"></span>
-                  </th>
-                </tr>
+            <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
+              <table className="table w-full transparent">
+                <tbody>
+                  {/* head */}
+                  <tr className="w-full bg-white/20 rounded-[5px]">
+                    <th>
+                      <span className="text-[13px]">Name</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Username</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Role</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Last Active</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]"></span>
+                    </th>
+                  </tr>
 
-                {/* row 1 */}
+                  {/* row 1 */}
 
-                {allPagedAdmins?.map((admin) => (
-                  <tr
-                    key={admin.uuid}
-                    className="border-b border-b-white/10 cursor-pointer bg-transparent"
-                    // onClick={() => goToAdminDetail(admin.uuid)}
-                  >
-                    {/* Name */}
-                    <td>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                          <span>{getPartnerInitials(admin.fullname)}</span>
+                  {allPagedAdmins?.map((admin) => (
+                    <tr
+                      key={admin.uuid}
+                      className="border-b border-b-white/10 cursor-pointer bg-transparent"
+                      // onClick={() => goToAdminDetail(admin.uuid)}
+                    >
+                      {/* Name */}
+                      <td>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                            <span>{getPartnerInitials(admin.fullname)}</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-white">
+                              {admin.fullname}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-white/80">
+                              {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
+                              {admin.email}
+                            </div>
+                          </div>
                         </div>
+                      </td>
+                      {/* Username */}
+                      <td>
+                        <div className="flex gap-0">
+                          <span>{admin.username}</span>
+                        </div>
+                      </td>
+                      {/* Role */}
+                      <td>
+                        <div className="flex gap-0">
+                          <span className="p-2 px-4 rounded-full text-white bg-gray-500">
+                            {admin.role.role_name[0].toUpperCase() +
+                              admin.role.role_name.slice(1)}
+                          </span>
+                        </div>
+                      </td>
+                      {/* Last login */}
+                      <td>
                         <div>
-                          <div className="font-bold text-white">
-                            {admin.fullname}
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-white/80">
-                            {/* <PhoneIcon className="h-3 w-3 text-mtn-500" />{" "} */}
-                            {admin.email}
-                          </div>
+                          {moment(admin?.updated_at).format("DD/MM/YYYY")}
                         </div>
-                      </div>
-                    </td>
-                    {/* Username */}
-                    <td>
-                      <div className="flex gap-0">
-                        <span>{admin.username}</span>
-                      </div>
-                    </td>
-                    {/* Role */}
-                    <td>
-                      <div className="flex gap-0">
-                        <span className="p-2 px-4 rounded-full text-white bg-gray-500">
-                          {admin.role.role_name[0].toUpperCase() +
-                            admin.role.role_name.slice(1)}
-                        </span>
-                      </div>
-                    </td>
-                    {/* Last login */}
-                    <td>
-                      <div>
-                        {moment(admin?.updated_at).format("DD/MM/YYYY")}
-                      </div>
-                    </td>
-                    <td>
-                      <div
-                        id={`action-${admin.uuid}`}
-                        className="flex gap-0"
-                        onClick={() => {
-                          setCurrentAdmin(admin);
-                          setDetailsModalOpen(true);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                      </td>
+                      <td>
+                        <div
+                          id={`action-${admin.uuid}`}
+                          className="flex gap-0"
+                          onClick={() => {
+                            setCurrentAdmin(admin);
+                            setDetailsModalOpen(true);
+                          }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                          />
-                        </svg>
-                      </div>
-                    </td>
-                    {/* <th>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                            />
+                          </svg>
+                        </div>
+                      </td>
+                      {/* <th>
                           <button className="btn btn-ghost btn-xs">
                             details
                           </button>
                         </th> */}
-                  </tr>
-                ))}
+                    </tr>
+                  ))}
 
-                {/* row 2 */}
-              </tbody>
-            </table>
-            {allFilteredAdmins.length == 0 && allPagedAdmins.length == 0 ? (
-              <EmptyTable list={"admins"} />
-            ) : (
-              <TablePager list={allFilteredAdmins} action={setAllPagedAdmins} />
-            )}
+                  {/* row 2 */}
+                </tbody>
+              </table>
+              {allFilteredAdmins.length == 0 && allPagedAdmins.length == 0 ? (
+                <EmptyTable list={"admins"} />
+              ) : (
+                <TablePager
+                  list={allFilteredAdmins}
+                  action={setAllPagedAdmins}
+                />
+              )}
+            </div>
 
             <div className="w-full flex justify-end">
               {!Util.isEmpty(navigation) &&
@@ -892,7 +889,10 @@ export default function Admins({ allAdmins }) {
                               role.role_name == currentAdmin.role.role_name
                           )
                           .privileges.includes(privilege.privilege) ? (
-                          <div className="flex space-x-2 py-2 text-white" key={privilege.uuid}>
+                          <div
+                            className="flex space-x-2 py-2 text-white"
+                            key={privilege.uuid}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -910,7 +910,10 @@ export default function Admins({ allAdmins }) {
                             &nbsp;&nbsp; {privilege.privilege}
                           </div>
                         ) : (
-                          <div className="flex space-x-2 py-2 text-white" key={privilege.uuid}>
+                          <div
+                            className="flex space-x-2 py-2 text-white"
+                            key={privilege.uuid}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"

@@ -91,7 +91,7 @@ export default function Dashboard({ allPartners }) {
   };
   return (
     <div id="compliance" className="flex flex-cols pb-12 min-h-screen">
-      <div className="w-full pt-[72px] px-12 mx-auto flex-grow">
+      <div className="w-full pt-[72px] px-12 mx-auto flex-grow ">
         <div className="flex justify-between items-center ">
           <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
             <h2>Applicants</h2>
@@ -115,17 +115,10 @@ export default function Dashboard({ allPartners }) {
             statusArray={["Submitted", "Not submitted"]}
           />
 
-          {/* {processing && (
-              <div className="flex justify-center items-center">
-                <TailSpinPreloader width={40} height={40} fill="#efb703" />
-              </div>
-            )}
-            {!processing && ( */}
-          <div className="border-1 border-white/20 rounded-lg">
+          <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
             <table className="table w-full transparent">
               <tbody>
-                {/* head */}
-                <tr className="text-11 bg-white/20 rounded-lg">
+                <tr className="w-full bg-white/20 rounded-[5px]">
                   <th>
                     <span className="text-[13px]">Company</span>
                   </th>

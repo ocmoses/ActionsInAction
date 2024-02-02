@@ -626,7 +626,7 @@ export const filterPartner = (partnerInfo, Categories) => {
     const partnercategories = partnerInfo?.categories?.sort((s1, s2) =>
       s1.id < s2.id ? -1 : s1.id > s2.id ? 1 : 0
     );
-    if (categories?.length >= 0) return partnerInfo;
+    if (!(categories?.length > 0)) return partnerInfo;
     const registeredCategories = [];
     const sections = {};
     let masterset = false;
@@ -866,16 +866,53 @@ export const filterPartner = (partnerInfo, Categories) => {
         categoriesCount == 0
           ? 0
           : Math.round(totalPercentage / categoriesCount);
+
+      // let Percent = 0;
+      // let sectionCount = 0;
+      // if (!Util.isEmpty(sections)) {
+      //   const count = {};
+      //   const completed = {};
+      //   for (const cuuid in sections) {
+      //     sections[cuuid].percent = 0;
+      //     if (!count[cuuid]) count[cuuid] = 0;
+      //     if (!completed[cuuid]) completed[cuuid] = 0;
+      //     for (const stage in sections[cuuid]) {
+      //       if (
+      //         stage !== "master" &&
+      //         stage !== "status" &&
+      //         stage !== "status_date" &&
+      //         stage !== "percent"
+      //       ) {
+      //         count[cuuid]++;
+      //         if (sections[cuuid][stage].completed === true) completed[cuuid]++;
+      //       }
+      //     }
+      //     if (completed[cuuid] > 0) {
+      //       sections[cuuid].percent = Math.ceil(
+      //         (completed[cuuid] / count[cuuid]) * categoryCompletionPercentage
+      //       );
+      //       Percent += sections[cuuid].percent;
+      //     }
+      //     sectionCount++;
+      //   }
+      //   partnerInfo.Percent =
+      //     Percent > 0 && sectionCount ? Math.ceil(Percent / sectionCount) : 0;
+      // }
       partnerInfo.sections = sections;
       partnerInfo.edittable = edittable;
       partnerInfo.allowedCategories = AllowedCategories(registeredCategories);
       partnerInfo.compliance_status = getApprovalStages(partnerInfo);
+
+      // console.log({ partnerInfo })
     }
   }
   return partnerInfo;
 };
 
 export const filterCategory = (category, partnerInfo) => {
+  console.log("selected category: ", category);
+  console.log("partnerInfo: ", partnerInfo);
+
   if (!category) return category;
   if (!partnerInfo) return category;
 
@@ -925,6 +962,8 @@ export const filterCategory = (category, partnerInfo) => {
 
   const approvals = category.compliance_approvals;
   const feedbacks = category.compliance_feedbacks;
+  ///////////////
+  const approvalStatuses = category.category_field_approval_status;
 
   category.approvedFields = {};
   category.approvedStages = {};
@@ -958,11 +997,19 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] = approval?.status;
+        ][approval?.field] = approval?.status; // approvalStatuses[approval?.field]; //
       }
     });
   }
 
+  // category.approvedFields[category.category_uuid]
+  // ["SPRM"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+  // category.approvedStages[category.category_uuid]
+  // ["shortcode"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
+
+  console.log("category.approvedFields in the end", category.approvedFields);
+  console.log("category.approvedStages in the end", category.approvedStages);
   category.feedbacks = {};
   if (feedbacks?.length > 0) {
     feedbacks.map((feedback) => {
@@ -978,22 +1025,14 @@ export const filterCategory = (category, partnerInfo) => {
 };
 
 export const getStatuses = (status, counts) => {
-  let bg;
-
-  switch (status) {
-    case "approved":
-      bg = "bg-[#18291F]";
-      break;
-    case "processing":
-    case "corrected":
-      bg = "bg-[#2D200A]";
-      break;
-    case "rejected":
-      bg = "bg-[#361513]";
-      break;
-    default:
-      bg = "bg-white/10";
-  }
+  let bg =
+    status === "approved"
+      ? "bg-[#18291F]"
+      : status === "processing" || status === "corrected"
+      ? "bg-[#2D200A]"
+      : status === "rejected"
+      ? "bg-[#361513]"
+      : "bg-white/10";
   let textcolor =
     status === "approved"
       ? "text-[#97CDAD]"
@@ -1637,12 +1676,12 @@ export const getFinalApproval = (partner) => {
 
   console.log("THE_PARTNER", partner);
 
-  partner.compliance_status
+  partner?.compliance_status;
 
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {
       const approval = partnerApprovals(partner, category);
-      
+
       console.log("approval?", approval);
 
       if (!categoryStatus[category.category_uuid])
@@ -1706,22 +1745,17 @@ export const getFinalApproval = (partner) => {
     status[cuuid].pending = categoryStatus[cuuid].pending.length;
 
     //Checking if all stages were approved
-    for(const stage in partner?.compliance_status[cuuid]){
-
-      if(stage.status != 'approved'){
+    for (const stage in partner?.compliance_status[cuuid]) {
+      if (stage.status != "approved") {
         status[cuuid].status = false;
         break;
       }
-
     }
-
   }
-  status.partner = 
+  status.partner =
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
 
   status.count = categoryStatus;
-
-  
 
   // console.log("pending", pending);
   // console.log("corrected", corrected);

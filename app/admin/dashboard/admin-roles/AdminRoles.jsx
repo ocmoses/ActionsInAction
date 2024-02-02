@@ -235,171 +235,167 @@ export default function AdminRoles({ allRoles }) {
 
           <br />
 
-          <Filter
-            list={allFilteredRoles}
-            filterAction={setAllFilteredRoles}
-            keysArray={["uuid", "role_name", "description"]}
-            msg={
-              "Find an admin role by searching for their role name or description"
-            }
-          />
-
-          {errors && errors["error"] && (
-            <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-            </div>
-          )}
-
           <div className="w-full">
-            {/* {processing && (
-              <div className="flex justify-center items-center">
-                <TailSpinPreloader width={40} height={40} fill="#efb703" />
+            <Filter
+              list={allFilteredRoles}
+              filterAction={setAllFilteredRoles}
+              keysArray={["uuid", "role_name", "description"]}
+              msg={
+                "Find an admin role by searching for their role name or description"
+              }
+            />
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
               </div>
             )}
-            {!processing && ( */}
-            <table className="table w-full transparent">
-              <tbody>
-                {/* head */}
-                <tr className="border-b border-b-white/40 text-12">
-                  <th>
-                    <span className="text-[13px]">Role</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Description</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Team members</span>
-                  </th>
-                  <th>
-                    <span className="text-[13px]">Action</span>
-                  </th>
-                </tr>
 
-                {/* row 1 */}
+            <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
+              <table className="table w-full transparent">
+                <tbody>
+                  {/* head */}
+                  <tr className="w-full bg-white/20 rounded-[5px]">
+                    <th>
+                      <span className="text-[13px]">Role</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Description</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Team members</span>
+                    </th>
+                    <th>
+                      <span className="text-[13px]">Action</span>
+                    </th>
+                  </tr>
 
-                {allPagedRoles?.map((role) => (
-                  <tr
-                    key={role.uuid}
-                    className="border-b border-b-white/10 cursor-pointer bg-transparent"
-                  >
-                    {/* Role */}
-                    <td>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                          <span className="text-white">
-                            {getPartnerInitials(
-                              role.role_name[0].toUpperCase()
-                            )}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-bold text-white">
-                            {role.role_name[0].toUpperCase() +
-                              role.role_name.slice(1)}
+                  {/* row 1 */}
+
+                  {allPagedRoles?.map((role) => (
+                    <tr
+                      key={role.uuid}
+                      className="border-b border-b-white/10 cursor-pointer bg-transparent"
+                    >
+                      {/* Role */}
+                      <td>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
+                            <span className="text-white">
+                              {getPartnerInitials(
+                                role.role_name[0].toUpperCase()
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-white">
+                              {role.role_name[0].toUpperCase() +
+                                role.role_name.slice(1)}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    {/* Description */}
-                    <td>
-                      <div className="flex gap-0">
-                        {role.privileges.description
-                          ? role.privileges.description
-                          : ellipsify(role.privileges.join(","))}
-                      </div>
-                    </td>
-                    {/* Role members */}
-                    <td>
-                      <div>{role.number_of_users}</div>
-                    </td>
-                    <td>
-                      <div
-                        id={`action-${role.uuid}`}
-                        className="flex gap-0"
-                        onClick={() => {
-                          setShowActions(`action-${role.uuid}`);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                      </td>
+                      {/* Description */}
+                      <td>
+                        <div className="flex gap-0">
+                          {role.privileges.description
+                            ? role.privileges.description
+                            : ellipsify(role.privileges.join(","))}
+                        </div>
+                      </td>
+                      {/* Role members */}
+                      <td>
+                        <div>{role.number_of_users}</div>
+                      </td>
+                      <td>
+                        <div
+                          id={`action-${role.uuid}`}
+                          className="flex gap-0"
+                          onClick={() => {
+                            setShowActions(`action-${role.uuid}`);
+                          }}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                          />
-                        </svg>
-                      </div>
-                      {showActions == `action-${role.uuid}` && (
-                        <div className="absolute right-0 bg-[#323232] w-48 rounded-xl p-4 shadow-lg ">
-                          <div
-                            className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
-                            onClick={() => {
-                              setShowActions(null);
-                              viewRoleDetails(role.uuid);
-                            }}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="gray"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                              />
-                            </svg>{" "}
-                            <span className="text-white">Role details</span>
-                          </div>
-                          <div
-                            className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
-                            onClick={() => displayDeleteModal(role.uuid)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="gray"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-                              />
-                            </svg>{" "}
-                            <span className="text-white">Delete role</span>
-                          </div>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                            />
+                          </svg>
                         </div>
-                      )}
-                    </td>
-                    {/* <th>
+                        {showActions == `action-${role.uuid}` && (
+                          <div className="absolute right-0 bg-[#323232] w-48 rounded-xl p-4 shadow-lg ">
+                            <div
+                              className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
+                              onClick={() => {
+                                setShowActions(null);
+                                viewRoleDetails(role.uuid);
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="gray"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                />
+                              </svg>{" "}
+                              <span className="text-white">Role details</span>
+                            </div>
+                            <div
+                              className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
+                              onClick={() => displayDeleteModal(role.uuid)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="gray"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
+                                />
+                              </svg>{" "}
+                              <span className="text-white">Delete role</span>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      {/* <th>
                           <button className="btn btn-ghost btn-xs">
                             details
                           </button>
                         </th> */}
-                  </tr>
-                ))}
+                    </tr>
+                  ))}
 
-                {/* row 2 */}
-              </tbody>
-            </table>
+                  {/* row 2 */}
+                </tbody>
+              </table>
 
-            {allFilteredRoles.length == 0 && allPagedRoles.length == 0 ? (
-              <EmptyTable list={"roles"} />
-            ) : (
-              <TablePager list={allFilteredRoles} action={setAllPagedRoles} />
-            )}
+              {allFilteredRoles.length == 0 && allPagedRoles.length == 0 ? (
+                <EmptyTable list={"roles"} />
+              ) : (
+                <TablePager list={allFilteredRoles} action={setAllPagedRoles} />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -408,7 +404,6 @@ export default function AdminRoles({ allRoles }) {
           id="create_modal"
           className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80"
         >
-
           <div
             id="actualModal"
             className="border-2 border-gray-500 rounded-xl shadow-xl p-8 shadow-black bg-[#111111] inline-flex flex-col w-[450px] pb-4"
@@ -557,7 +552,10 @@ export default function AdminRoles({ allRoles }) {
                             (role) => role.role_name == currentRole.role_name
                           )
                           .privileges.includes(privilege.privilege) ? (
-                          <div className="flex space-x-2 py-2 text-white" key={index}>
+                          <div
+                            className="flex space-x-2 py-2 text-white"
+                            key={index}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
@@ -575,7 +573,10 @@ export default function AdminRoles({ allRoles }) {
                             &nbsp;&nbsp; {privilege.privilege}
                           </div>
                         ) : (
-                          <div className="flex space-x-2 py-2 text-white" key={index}>
+                          <div
+                            className="flex space-x-2 py-2 text-white"
+                            key={index}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"

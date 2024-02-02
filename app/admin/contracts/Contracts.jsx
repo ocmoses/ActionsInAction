@@ -78,7 +78,7 @@ export default function Contracts() {
             statusArray={["active", "suspended", "pending", "expired"]}
           />
 
-          <div className="w-full border-1 border-white/20 rounded-lg">
+          <div className="w-full rounded-[17px] border-1 border-white/20 overflow-x-auto">
             <table className="table w-full transparent ">
               <tbody>
                 {/* head */}

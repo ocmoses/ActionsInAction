@@ -9,9 +9,9 @@ import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
 
-import ContactUsPopUp from "@/app/components/PopUps"
+import ContactUsPopUp from "@/app/components/PopUps";
 
-import './modules/bootstrap';
+import "./modules/bootstrap";
 
 const getServerSession = async () => {
   try {
@@ -66,7 +66,7 @@ const getServerSession = async () => {
             data: null,
           };
         const { success, data } = await response.json();
-        if (response?.ok){
+        if (response?.ok) {
           //Added for quick user storage/retrieval
           // localStorage.setItem('user', data.user);
           return {
@@ -77,7 +77,7 @@ const getServerSession = async () => {
             token: adminToken,
           };
         }
-          
+
         if (data?.message)
           return { success: false, error: data.message, data: null };
         return {
@@ -193,7 +193,7 @@ export default async function RootLayout({ children }) {
   return (
     <>
       <html lang="en">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <head />
         <body>
           <div id="portals" className="relative z-50"></div>

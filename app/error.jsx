@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 export default function Error({ error, reset }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.log(error.toString())
-  }, [error])
-  const [showError, setShowError] = useState(false)
+    console.log(error.toString());
+  }, [error]);
+  const [showError, setShowError] = useState(false);
   return (
     <div className="flex p-20 justify-center items-center flex-col gap-5 text-white mx-auto h-screen">
       <span className="flex justify-center items-center text-mtn-600">
@@ -36,6 +36,8 @@ export default function Error({ error, reset }) {
         </div>
         {showError ? (
           <div
+            role="button"
+            tabindex={0}
             onClick={() => {
               setShowError(false);
             }}
@@ -91,7 +93,6 @@ export default function Error({ error, reset }) {
       >
         Retry
       </button>
-      
     </div>
   );
 }

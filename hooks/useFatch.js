@@ -12,7 +12,6 @@ const useFetch = (initialUrl, options) => {
     setLoading(true);
     const fetchData = async () => {
       const errors = [];
-      let status = false;
       const headers = {
         apikey: "t7286gyfe987ffey87*Zzzht45334DSWTU",
         "content-type": "application/json",
@@ -40,34 +39,25 @@ const useFetch = (initialUrl, options) => {
             }
           } else if (response.status === 404) {
             errors.push("An error 404 was encountered. Please contact us");
-          } else {
-            if (
-              typeof data === "object" &&
-              data !== null &&
-              !Util.isEmpty(data)
-            ) {
-              for (const error in data) {
-                if (
-                  data[error].constructor === Array &&
-                  data[error].length > 0
-                ) {
-                  data[error].map((err) => {
-                    errors.push(err);
-                  });
-                } else {
-                  errors.push(
-                    data?.message ??
-                      "An error was encountered. Please reach out to us if issue persists"
-                  );
-                }
+          } else if (
+            typeof data === "object" &&
+            data !== null &&
+            !Util.isEmpty(data)
+          ) {
+            for (const error in data) {
+              if (data[error].constructor === Array && data[error].length > 0) {
+                data[error].map((err) => {
+                  errors.push(err);
+                });
+              } else {
+                errors.push(
+                  data?.message ??
+                    "An error was encountered. Please reach out to us if issue persists"
+                );
               }
-            } else if (
-              typeof data === "string" &&
-              data !== null &&
-              data !== ""
-            ) {
-              errors.push(data);
             }
+          } else if (typeof data === "string" && data !== null && data !== "") {
+            errors.push(data);
           }
         } else {
           errors.push(

@@ -39,8 +39,6 @@ export default function PartnerStatisticsReport({
   );
 }
 
-
-
 export const PartnerReportBarChart = () => {
   useEffect(() => {
     let config = {
@@ -139,9 +137,11 @@ export const PartnerReportBarChart = () => {
 };
 
 export const PartnerFilterTitle = ({ title, action }) => {
-
   return (
-    <div onClick={action} className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10">
+    <div
+      onClick={action}
+      className="rounded-[5px] p-2 text-white flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/10"
+    >
       <svg
         width="16"
         height="16"
@@ -156,30 +156,35 @@ export const PartnerFilterTitle = ({ title, action }) => {
               id="Vector"
               d="M12.0072 9.71587L12.0072 3.99302L6.28433 3.99302"
               stroke="#888888"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-miterlimit="10"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               id="Vector_2"
               d="M3.99302 12.0068L11.9268 4.07309"
               stroke="#888888"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-miterlimit="10"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
           </g>
         </g>
       </svg>
-    {title}
-  </div>
+      {title}
+    </div>
   );
 };
 
-export const PartnerFilterCheck = ({ title, summary, value, checked, onChange }) => {
-
+export const PartnerFilterCheck = ({
+  title,
+  summary,
+  value,
+  checked,
+  onChange,
+}) => {
   return (
     <div className="flex ">
       <div className="w-10 flex mr-1">
@@ -192,10 +197,10 @@ export const PartnerFilterCheck = ({ title, summary, value, checked, onChange })
         />
       </div>
       <div>
-        <span className="text-white">{title}</span><br/>
+        <span className="text-white">{title}</span>
+        <br />
         <span className="text-gray-400 text-[13px]">{summary}</span>
       </div>
     </div>
   );
 };
-

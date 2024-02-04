@@ -22,11 +22,11 @@ function Login({ params }) {
   );
   const { clearStore } = useLogout();
   const [data, setData] = useState({
-    username: process.env.NODE_ENV === "production" ? "" : "afoo",
-    password: process.env.NODE_ENV === "production" ? "" : "Password12345%",
+    username: process.env.NODE_ENV === "production" ? "" : "elijahu",
+    password: process.env.NODE_ENV === "production" ? "" : "",
   });
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setForm(null);
     clearErrors();
   }, []);
@@ -62,76 +62,75 @@ function Login({ params }) {
       setProcessing(false);
       return setError({ login: error });
     }
-    setToken(Data?.user.token); 
-    setAdmin(Data?.user.user);  
+    setToken(Data?.user.token);
+    setAdmin(Data?.user.user);
     setCategories(Data?.categories);
     setApprovals(Data?.user.user.department_privileges);
 
     const redirect =
-      params && params?.length && params[0] !== "login"
+      params?.length && params[0] !== "login"
         ? `/${params.join("/")}`
         : PageRoutes.admindashboard;
 
     return router.replace(redirect);
   };
   return (
-    <>
-      <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto min-h-screen">
-        <form method="POST" onSubmit={handleLogin}>
-          <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
-            <span
-              style={{
-                fontStyle: "normal",
-                fontWeight: 700,
-                fontSize: "36px",
-                lineHeight: "40px",
-              }}
-            >
-              Y’ello
-            </span>
-            <Image
-              src="/assets/icons/yello-hand.svg"
-              alt="Yello"
-              priority
-              width={36}
-              height={36}
-              className="h-auto animate-bounce"
-            />
-          </h1>
-          <p
-            className="font-hairline flex-wrap mb-16"
+    <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px] mx-auto min-h-screen">
+      <form method="POST" onSubmit={handleLogin}>
+        <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">
+          <span
             style={{
               fontStyle: "normal",
-              fontWeight: 400,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#999999",
+              fontWeight: 700,
+              fontSize: "36px",
+              lineHeight: "40px",
             }}
           >
-            Welcome back! please enter your details
-          </p>
-          <div className="mb-6">
-            {!success && errors && <FormErrors error={errors["login"]} />}
+            Y’ello
+          </span>
+          <Image
+            src="/assets/icons/yello-hand.svg"
+            alt="Yello"
+            priority
+            width={36}
+            height={36}
+            className="h-auto animate-bounce"
+          />
+        </h1>
+        <p
+          className="font-hairline flex-wrap mb-16"
+          style={{
+            fontStyle: "normal",
+            fontWeight: 400,
+            fontSize: "16px",
+            lineHeight: "24px",
+            color: "#999999",
+          }}
+        >
+          Welcome back! please enter your details
+        </p>
+        <div className="mb-6">
+          {!success && errors && <FormErrors error={errors["login"]} />}
+        </div>
+        <div className="w-full">
+          <div className="flex flex-col">
+            <TextInput
+              id="username"
+              label="AD Username"
+              value={data.username}
+              onChange={handleFormChange}
+              errors={errors}
+            />
+            <TextInput
+              id="password"
+              label="Password"
+              type="Password"
+              value={data.password}
+              onChange={handleFormChange}
+              errors={errors}
+            />
           </div>
-          <div className="w-full">
-            <div className="flex flex-col">
-              <TextInput
-                id="username"
-                label="AD Username"
-                value={data.username}
-                onChange={handleFormChange}
-                errors={errors}
-              />
-              <TextInput
-                id="password"
-                label="Password"
-                type="Password"
-                value={data.password}
-                onChange={handleFormChange}
-                errors={errors}
-              />
-            </div>
-            {/* <Link
+          {/* <Link
               href={`${PageRoutes.passwordreset}/reset`}
               className="inline-flex font-mtn-extralight  text-white text-start px-0 pb-1 mb-6"
               style={{
@@ -144,15 +143,14 @@ function Login({ params }) {
             >
               Reset your password?
             </Link> */}
-            {processing ? (
-              <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
-              <Button label="Continue" />
-            )}
-          </div>
-        </form>
-      </div>
-    </>
+          {processing ? (
+            <TailSpinPreloader width={40} height={40} fill="#efb703" />
+          ) : (
+            <Button label="Continue" />
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
 

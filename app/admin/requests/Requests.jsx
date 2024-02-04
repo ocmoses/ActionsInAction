@@ -515,6 +515,7 @@ export default function Requests() {
   };
 
   const get_shortcodes = async () => {
+
     if (fetchingShortcodes) return;
     setFetchingShortcodes(true);
 
@@ -594,9 +595,7 @@ export default function Requests() {
         approve_request_response = await approveOrRejectBrd(approvalData);
         break;
       case request_types.SUPPLIER_QUESTION:
-        approve_request_response = await approveOrRejectQuestionnaire(
-          approvalData
-        );
+        approve_request_response = await approveOrRejectQuestionnaire(approvalData);
         break;
     }
 
@@ -607,6 +606,7 @@ export default function Requests() {
       setSuccessMessage(approve_request_response.message);
       //set selected brd to null
       setSuccessToast(true);
+      
     } else {
       //set errors
       setError({ error: approve_request_response.error });
@@ -705,6 +705,7 @@ export default function Requests() {
   useEffect(() => {
     setProcessing(false);
     clearErrors();
+    loadAllRequest();
     loadAllRequest();
   }, []);
 
@@ -1116,6 +1117,8 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
+            loadAllRequest={loadAllRequest}
+            successAction={successAction}
             loadAllRequest={loadAllRequest}
             successAction={successAction}
           />

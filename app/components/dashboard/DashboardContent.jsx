@@ -420,21 +420,28 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    if (user && role_menu_map[user?.role][0] == "Dashboard") {
-      setHasdashboard(true);
+    console.log("USER", user);
+
+    // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
+    if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
+        setHasdashboard(true);
     }
 
-    const location = user
-      ? PartnerMenu.find((item) => item.label == role_menu_map[user?.role][0])
-          ?.route
-      : null;
+    const location =
+        user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
+            ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
+            : null;
 
     // console.log("Location is: ", location);
 
-    if (location != "/dashboard" && location != null) {
-      window.location = location;
+    if (location !== "/dashboard" && location != null) {
+        window.location = location;
     }
-  }, [user]);
+}, [user]);
+
+
+
+
 
   return (
     hasDashboard && (

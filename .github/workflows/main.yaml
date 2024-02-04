@@ -3,11 +3,11 @@ name: Amazon-Tribe-Frontend.
 on:
  push:
     branches:
-      - dev
-      - stage
+      - elijah-dev
+      #- stage
  workflow_dispatch:
     branches:
-      - main
+      #- main
 jobs:
 
 # Scan repo for secrets with Trufflehog 

@@ -20,7 +20,7 @@ export default function useFileViewer(){
         token = admin.token;
     }
 
-    console.log("USER FROM PREVIEW: ", user);
+    // console.log("USER FROM PREVIEW: ", user);
     console.log("ADMIN FROM PREVIEW: ", admin);
 
     const [fileViewer, setFileViewer] = useState(null);

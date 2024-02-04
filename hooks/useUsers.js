@@ -8,7 +8,7 @@ import useErrors from "@/hooks/useErrors";
 export default function useUsers() {
   const states = useStoreState((action) => action.users);
   const actions = useStoreActions((action) => action.users);
-  const { processing, setProcessing } = useProcessing();  
+  const { processing, setProcessing } = useProcessing();
   const { errors, setError, clearErrors } = useErrors(null);
 
   const handleLogin = async (data) => {
@@ -34,7 +34,7 @@ export default function useUsers() {
     const serverSession = {
       status: userdata?.data?.user?.uuid ? "authenticated" : "unauthenticated",
       User: userdata?.data,
-      token:  userdata?.data?.login_token?.access_token,      
+      token: userdata?.data?.login_token?.access_token,
       type: "user",
     };
     app.setStoreStates(serverSession, userdata?.categories, "login");
@@ -85,14 +85,14 @@ export default function useUsers() {
     setTmpUser(null);
     const serverSession = {
       status: loginData?.data?.user?.uuid ? "authenticated" : "unauthenticated",
-      User:  loginData?.data,
-      token:  loginData?.data?.login_token?.access_token,
+      User: loginData?.data,
+      token: loginData?.data?.login_token?.access_token,
       type: "user",
-      role: loginData?.data['login-user-role']
+      role: loginData?.data["login-user-role"],
     };
     app.setStoreStates(serverSession, loginData?.categories, "login");
     location.reload();
-  }
+  };
 
   return { ...states, ...actions, handleLogin, refreshSession };
 }

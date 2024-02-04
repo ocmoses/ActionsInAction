@@ -30,7 +30,6 @@ import RevenueShareDrawer from "@/app/components/drawers/RevenueShareDrawer";
 import ChangeOrderDrawer from "@/app/components/drawers/ChangeOrderDrawer";
 import IPDrawer from "@/app/components/drawers/IPDrawer";
 
-
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import Filter from "@/app/components/Filter";
@@ -44,7 +43,9 @@ import {
   GracePeriodAdminFlyOut,
   LicenseRenewalAdminFlyout,
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
-import ShortCodeAlert, {ShortCodeFlyOut} from "@/app/components/RequestComponent";
+import ShortCodeAlert, {
+  ShortCodeFlyOut,
+} from "@/app/components/RequestComponent";
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function Requests() {
@@ -60,7 +61,7 @@ export default function Requests() {
     getAllGracePeriod,
     getAllLicenceRenewal,
     getAllIP,
-    getAllPartnersShortCodes
+    getAllPartnersShortCodes,
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -70,7 +71,7 @@ export default function Requests() {
   const [successToast, setSuccessToast] = useState(false);
   const successAction = () =>
     setTimeout(() => {
-      setSuccessToast(false)
+      setSuccessToast(false);
       loadAllRequest();
     }, 3000);
 
@@ -130,22 +131,29 @@ export default function Requests() {
   const [fileViewer, setFileViewer] = useState(null);
 
   const open = (request) => {
-    switch(request.request_type){
-      case request_types.REVENUE_SHARE: setOpenRevenueShareDrawer(true); 
+    switch (request.request_type) {
+      case request_types.REVENUE_SHARE:
+        setOpenRevenueShareDrawer(true);
         break;
-      case request_types.CHANGE_ORDER: setOpenChangeOrderDrawer(true); 
+      case request_types.CHANGE_ORDER:
+        setOpenChangeOrderDrawer(true);
         break;
-        case  request_types.GRACE_PERIOD: setGracePeriodFlyout(true);
+      case request_types.GRACE_PERIOD:
+        setGracePeriodFlyout(true);
         break;
-        case  request_types.LICENSE_RENEWAL: setLicenseRenewalFlyout(true);
+      case request_types.LICENSE_RENEWAL:
+        setLicenseRenewalFlyout(true);
         break;
-        case request_types.VAS_CLEARANCE: setOpenIPDrawer(true);
+      case request_types.VAS_CLEARANCE:
+        setOpenIPDrawer(true);
         break;
-        case request_types.SHORTCODES: setShortcodesFlyout(true);
+      case request_types.SHORTCODES:
+        setShortcodesFlyout(true);
         break;
-      default: setOpenDrawer(true);
+      default:
+        setOpenDrawer(true);
     }
-  }
+  };
 
   const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
 
@@ -157,13 +165,12 @@ export default function Requests() {
   let get_brd_response = null;
   let get_questionnaire_response = null;
   let get_revenue_share_response = null;
-  let get_ips_response= null;
+  let get_ips_response = null;
   let get_grace_period_response = null;
   let get_license_renewal_response = null;
   let get_all_partner_shortcodes_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
- 
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -304,7 +311,6 @@ export default function Requests() {
   };
 
   const get_change_order = async (page, perPage) => {
-    
     let get_change_order_response = await getAllChangeOrder();
 
     console.log("All change order", get_change_order_response);
@@ -343,14 +349,14 @@ export default function Requests() {
 
     console.log("Requests", requests);
     clearErrors();
-
-  }
+  };
 
   const get_ips = async (page, perPage) => {
+    setRequests(
+      requests.filter((r) => r.request_type != request_types.VAS_CLEARANCE)
+    );
 
-    setRequests(requests.filter(r => r.request_type != request_types.VAS_CLEARANCE));
-    
-     get_ips_response = await getAllIP();
+    get_ips_response = await getAllIP();
 
     console.log("All IPs", get_ips_response);
 
@@ -370,8 +376,8 @@ export default function Requests() {
           status: ip.general_status ?? "pending",
           partner_uuid: ip.partner_uuid,
           uuid: ip.uuid ?? "",
-          ...ip
-        })
+          ...ip,
+        });
       }
     }
 
@@ -388,9 +394,7 @@ export default function Requests() {
 
     console.log("Requests", requests);
     clearErrors();
-
-  }
-
+  };
 
   const get_grace_period = async () => {
     if (fetchingGracePeriods) return;
@@ -516,7 +520,7 @@ export default function Requests() {
     setFetchingShortcodes(true);
 
     get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
-     //console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
+    //console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
 
     if (get_all_partner_shortcodes_response.error) {
       setError({ error: get_all_partner_shortcodes_response.error });
@@ -533,16 +537,15 @@ export default function Requests() {
           created_at: shortcode.created_at,
           approved_on: shortcode.approved_on,
           shortcode_uuid: shortcode.shortcode_uuid,
-         // rejected_on: shortcode.rejected_on,
+          // rejected_on: shortcode.rejected_on,
           status: shortcode.status,
-          short_codes:shortcode.shortcodes,
-          shortcodes_not_approved:shortcode.shortcodes_not_approved,
+          short_codes: shortcode.shortcodes,
+          shortcodes_not_approved: shortcode.shortcodes_not_approved,
           // file_name:
           //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
           // file_path: graceperiod.license_grace_period_file ?? "",
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
-         
         });
       }
     }
@@ -689,24 +692,25 @@ export default function Requests() {
   };
 
   const getAllRequests = async () => {
-      await get_brds();
-      await get_questionnaires();
-      await get_revenue_share();
-      await get_change_order();
-      await get_grace_period();
-      await get_license_renewal();
-      await get_ips();
-      await get_shortcodes();
-  }
+    await get_brds();
+    await get_questionnaires();
+    await get_revenue_share();
+    await get_change_order();
+    await get_grace_period();
+    await get_license_renewal();
+    await get_ips();
+    await get_shortcodes();
+  };
 
   useEffect(() => {
     setProcessing(false);
     clearErrors();
     loadAllRequest();
+    loadAllRequest();
   }, []);
 
   const loadAllRequest = () => {
-    getAllRequests().then((resp) => setPagedRequests(requests.slice(0,5)));
+    getAllRequests().then((resp) => setPagedRequests(requests.slice(0, 5)));
   };
 
   useEffect(() => {}, [filteredRequests]);
@@ -715,12 +719,15 @@ export default function Requests() {
 
   return (
     <>
-      <div id="approvals" className="flex flex-cols pb-12 min-h-screen">
+      <div id="approvals" className="flex flex-cols pb-12">
         <div className="w-full pt-[72px] px-12 mx-auto">
           <div className="flex justify-between items-center mb-10">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Requests</h2>
-              <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md" onClick={() => loadAllRequest()}>
+              <span
+                className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"
+                onClick={() => loadAllRequest()}
+              >
                 {filteredRequests?.length}
               </span>
             </div>
@@ -745,11 +752,17 @@ export default function Requests() {
               statusArray={["approved", "rejected", "not_approved"]}
             />
 
-            <div className="w-full border-1 border-white/20 rounded-lg">
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
+              </div>
+            )}
+
+            <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
               <table className="table w-full transparent ">
                 <tbody>
                   {/* head */}
-                  <tr className="border-b border-b-white/40 text-11 bg-white/20">
+                  <tr className="w-full bg-white/20 rounded-[5px]">
                     <th>
                       <span className="text-[13px]">Company</span>
                     </th>
@@ -853,17 +866,12 @@ export default function Requests() {
                     ))}
                 </tbody>
               </table>
-            
-                  {filteredRequests.length === 0 &&
-                  pagedRequests.length === 0 ? (
-                    <EmptyTable list={"Requests"} />
-                  ) : (
-                    <TablePager
-                      list={filteredRequests}
-                      action={setPagedRequests}
-                    />
-                  )}
-             
+
+              {filteredRequests.length === 0 && pagedRequests.length === 0 ? (
+                <EmptyTable list={"Requests"} />
+              ) : (
+                <TablePager list={filteredRequests} action={setPagedRequests} />
+              )}
             </div>
           </>
         </div>
@@ -1109,6 +1117,8 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
+            loadAllRequest={loadAllRequest}
+            successAction={successAction}
             loadAllRequest={loadAllRequest}
             successAction={successAction}
           />

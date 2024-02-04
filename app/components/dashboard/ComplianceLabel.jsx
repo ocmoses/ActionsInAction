@@ -30,6 +30,7 @@ export default function ComplianceLabel({
   const { isSuperadmin } = useRoles();
   const { previewFiles } = useApp();
   const {
+    approvals,
     admin,
     ApproveField,
     activeApproval,
@@ -46,6 +47,8 @@ export default function ComplianceLabel({
   const Approvals = partnerApprovals(partner, category);
 
   const {fileViewer, setFileViewer} = useContext(FileViewContext);
+
+  console.log("CAN APPROVE", approvals);
 
 
   useEffect(() => {
@@ -438,7 +441,8 @@ export default function ComplianceLabel({
                         </div>
                       </div>
                     </div>
-                    {!isSuperadmin() &&
+                    {approvals && approvals.can_approve.includes("compliance") &&
+                      !isSuperadmin() &&
                       !activeApproval &&
                       admin.department_code in fieldCounts[stage] &&
                       "fields" in fieldCounts[stage][admin.department_code] &&

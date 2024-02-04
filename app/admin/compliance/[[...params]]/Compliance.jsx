@@ -10,7 +10,6 @@ import FormErrors from "@/app/components/FormErrors";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import DropdownMenu from "@/app/components/dashboard/DropdownMenu";
 import { useState, useEffect, useContext } from "react";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import {
   getPartnerInitials,
   filterCategory,
@@ -26,7 +25,6 @@ import Image from "next/image";
 import useApp from "@/hooks/useApp";
 import useRoles from "@/hooks/useRoles";
 import Link from "next/link";
-import Router from "next/router";
 import {FileViewContext} from "@/app/providers/FileViewProvider";
 import FileViewer from "@/app/components/modals/FileViewer";
 
@@ -48,10 +46,6 @@ export default function Compliance({ params }) {
     activeStage,
     setActiveStage,
   } = useAdmins();
-
-  const {LogoutAdmin} = useLogout();
-
-  // console.log("useAdmins from admin compliance", useAdmins());
 
   const [category, setCategory] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -228,8 +222,7 @@ export default function Compliance({ params }) {
             </div>
           )}
           {!processing && partner && ( */}
-            <>
-              <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
+            <div className="flex space-y-3 sm:flex justify-between items-center space-x-3">
                 <div className="flex items-center space-x-3">
                   <div className="flex justify-center items-center rounded-full w-[64px] h-[64px] bg-mtn text-white text-[12px] mr-2">
                     <span className="text-[24px]">
@@ -316,7 +309,6 @@ export default function Compliance({ params }) {
                   />
                 )}
               </ComplianceDrawer>
-            </>
           {/* )} */}
         </div>
     

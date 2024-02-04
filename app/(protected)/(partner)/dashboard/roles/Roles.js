@@ -5,7 +5,7 @@ import {
   filterPartner,
   Util,
   ellipsify,
-  titleCase
+  titleCase,
 } from "@/app/modules/utilities";
 import { status_type, statusOptions } from "@/app/modules/constants";
 import { PageRoutes } from "@/app/modules/menu";
@@ -21,11 +21,9 @@ import useApp from "@/hooks/useApp";
 import TextInput from "@/app/components/form/TextInput";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
-
-
 export default function Roles() {
-  const {getAllAdminPartners} = usePartners();
-  const { getAllPartnerRoles, getAllPartnerPrivileges} = useRoles();
+  const { getAllAdminPartners } = usePartners();
+  const { getAllPartnerRoles, getAllPartnerPrivileges } = useRoles();
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [partners, setPartners] = useState([]);
@@ -34,7 +32,8 @@ export default function Roles() {
 
   const [fetchingPartners, setFetchingPartners] = useState(false);
   const [fetchingPartnerRoles, setFetchingPartnerRoles] = useState(false);
-  const [fetchingPartnerPrivileges, setFetchingPartnerPrivileges] = useState(false);
+  const [fetchingPartnerPrivileges, setFetchingPartnerPrivileges] =
+    useState(false);
 
   const router = useRouter();
   const { setRouteloading } = useApp();
@@ -52,7 +51,6 @@ export default function Roles() {
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  
   let all_Partners = null;
   let all_Partner_Roles = null;
   let all_Partner_Privileges = null;
@@ -71,7 +69,7 @@ export default function Roles() {
     if (fetchingPartnerRoles) return;
     setFetchingPartnerRoles(true);
     all_Partner_Roles = await getAllPartnerRoles(page, perPage);
-    
+
     console.log("all_Partner_Roles", all_Partner_Roles);
 
     setPartnerRoles(all_Partner_Roles.partner_roles);
@@ -86,25 +84,23 @@ export default function Roles() {
     all_Partner_Privileges = await getAllPartnerPrivileges(page, perPage);
     setPartnerPrivileges(all_Partner_Privileges.partner_privileges);
     setFetchingPartnerPrivileges(false);
-    if (all_Partner_Privileges.error) setError({ error: all_Partner_Privileges.error });
+    if (all_Partner_Privileges.error)
+      setError({ error: all_Partner_Privileges.error });
     // setNavigation(all_AdminRoles.navigation);
   };
 
-
   useEffect(() => {
-   setProcessing(false);
-    
+    setProcessing(false);
+
     get_all_partner_roles();
     get_all_partner_privileges();
     get_all_partners();
-    
   }, [page, perPage]);
 
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     setProcessing(true);
     if (all_Partner_Roles) {
-      
       setPartners(all_Partner_Roles.partner_roles);
       if (all_Partner_Roles.error) {
         setProcessing(false);
@@ -114,27 +110,29 @@ export default function Roles() {
         // }
         setError({ error: all_Partner_Roles.error });
       }
-    //   setNavigation(all_Admin_Roles.navigation);
+      //   setNavigation(all_Admin_Roles.navigation);
       setProcessing(false);
     }
   }, [all_Partner_Roles]);
 
-  
   const viewRoleDetails = (uuid) => {
     setCurrentRole(partnerRoles.find((role) => role.uuid == uuid));
     setDetailsModalOpen(true);
-  }
-
-
+  };
 
   const getMembers = (role) => {
-    return partners ? partners.filter(partner => partner.role.role_name == role.role_name).length : '-';
-  }
+    return partners
+      ? partners.filter((partner) => partner.role.role_name == role.role_name)
+          .length
+      : "-";
+  };
 
-  
   return (
     <>
-      <div className="flex flex-cols pb-12 min-h-screen" onClick={() => showActions != null ? setShowActions(null) : {}}>
+      <div
+        className="flex flex-cols pb-12 min-h-screen"
+        onClick={() => (showActions != null ? setShowActions(null) : {})}
+      >
         <div className="w-full pt-[72px] px-12 mx-auto">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
@@ -142,10 +140,11 @@ export default function Roles() {
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
                 {partnerRoles?.length}
               </span>
-            </div>            
-          </div><br/>
+            </div>
+          </div>
+          <br />
           {/* <div className="inline-flex items-center gap-2 rounded-full pl-3 bg-white/10 p-2 pr-4 hover:bg-gray-500 cursor-pointer" onClick={() => setModalOpen(true)}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" className="w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
             </svg>
             <span className="text-[12px] text-white">Create a custom role</span>                
@@ -180,7 +179,7 @@ export default function Roles() {
                       </th>
                       <th>
                         <span className="text-[13px]">Action</span>
-                      </th>                      
+                      </th>
                     </tr>
 
                     {/* row 1 */}
@@ -190,58 +189,95 @@ export default function Roles() {
                         <tr
                           key={role.uuid}
                           className="border-b border-b-white/10 cursor-pointer bg-transparent"
-                          
                         >
                           {/* Role */}
                           <td>
                             <div className="flex items-center space-x-3">
                               <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
                                 <span className="text-white">
-                                  {getPartnerInitials(role.role_name[0].toUpperCase())}
+                                  {getPartnerInitials(
+                                    role.role_name[0].toUpperCase()
+                                  )}
                                 </span>
                               </div>
                               <div>
                                 <div className="font-bold text-white">
-                                  {role.role_name[0].toUpperCase() + role.role_name.slice(1)}
-                                </div>                                
+                                  {role.role_name[0].toUpperCase() +
+                                    role.role_name.slice(1)}
+                                </div>
                               </div>
                             </div>
                           </td>
                           {/* Description */}
                           <td>
                             <div className="flex gap-0">
-                              {role.privileges.description ? role.privileges.description : ellipsify(role.privileges.join(','))}
+                              {role.privileges.description
+                                ? role.privileges.description
+                                : ellipsify(role.privileges.join(","))}
                             </div>
                           </td>
                           {/* Role members */}
                           <td>
-                            <div>
-                              {getMembers(role)}
-                            </div>
+                            <div>{getMembers(role)}</div>
                           </td>
                           <td>
-                            <div id={`action-${role.uuid}`} className="flex gap-0" onClick={() => {setShowActions(`action-${role.uuid}`)}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                                </svg>
+                            <div
+                              id={`action-${role.uuid}`}
+                              className="flex gap-0"
+                              onClick={() => {
+                                setShowActions(`action-${role.uuid}`);
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                                />
+                              </svg>
                             </div>
-                            {
-                              (showActions == `action-${role.uuid}`) && 
+                            {showActions == `action-${role.uuid}` && (
                               <div className="absolute right-0 bg-[#323232] w-48 rounded-xl p-4 shadow-lg ">
-                                <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full" 
-                                  onClick={() => {setShowActions(null); viewRoleDetails(role.uuid)}}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                  </svg> <span className="text-white">Role details</span>
+                                <div
+                                  className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
+                                  onClick={() => {
+                                    setShowActions(null);
+                                    viewRoleDetails(role.uuid);
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="gray"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                    />
+                                  </svg>{" "}
+                                  <span className="text-white">
+                                    Role details
+                                  </span>
                                 </div>
                                 {/* <div className="p-2 hover:bg-white/20 rounded-lg cursor-pointer flex space-x-4 w-full"
                                   onClick={() => displayDeleteModal(role.uuid)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" class="w-6 h-6">
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
                                   </svg> <span className="text-white">Delete role</span>
                                 </div>   */}
                               </div>
-                            }
+                            )}
                           </td>
                           {/* <th>
                           <button className="btn btn-ghost btn-xs">
@@ -331,84 +367,143 @@ export default function Roles() {
           </div>
         </div>
       </div>
-      
-      {      
-        detailsModalOpen && 
-        <div id="details_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "delete_modal") setDeleteModalOpen(false)}}>
-          <div id="actualModal" className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
+
+      {detailsModalOpen && (
+        <div
+          id="details_modal"
+          className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80"
+          onClick={(e) => {
+            if (e.target.id == "delete_modal") setDeleteModalOpen(false);
+          }}
+        >
+          <div
+            id="actualModal"
+            className="border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4"
+          >
             <div className="p-8 space-x-4 flex">
               <div className="flex flex-0 justify-center items-center rounded-full w-16 h-16 bg-purple-600 text-white text-[28px]">
                 <span>
-                  {getPartnerInitials(currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1))}
+                  {getPartnerInitials(
+                    currentRole.role_name[0].toUpperCase() +
+                      currentRole.role_name.slice(1)
+                  )}
                 </span>
               </div>
               <div>
-                <h1 className="text-white text-xl">{currentRole.role_name[0].toUpperCase() + currentRole.role_name.slice(1)}</h1>
-                <p className="text-gray-500 text-md">{ellipsify(currentRole.privileges.join(','))}</p>
+                <h1 className="text-white text-xl">
+                  {currentRole.role_name[0].toUpperCase() +
+                    currentRole.role_name.slice(1)}
+                </h1>
+                <p className="text-gray-500 text-md">
+                  {ellipsify(currentRole.privileges.join(","))}
+                </p>
                 <span className=" font-extralight text-[15px] inline-flex items-center justify-center bg-white/20 h-6 px-4 py-3 rounded-md text-white">
-                  {getMembers(currentRole) == 1 ? `${getMembers(currentRole)} team member` : `${getMembers(currentRole)} team members`}
+                  {getMembers(currentRole) == 1
+                    ? `${getMembers(currentRole)} team member`
+                    : `${getMembers(currentRole)} team members`}
                 </span>
               </div>
             </div>
-            <hr className="bg-gray-800"/>
+            <hr className="bg-gray-800" />
             <div className="p-8 pb-4  space-x-4 flex flex-col">
               <div className="text-white text-sm">
-                <p className="text-gray-200 font-mtn-medium-italic text-sm">Privileges</p>
+                <p className="text-gray-200 font-mtn-medium-italic text-sm">
+                  Privileges
+                </p>
               </div>
               <div>
-                {
-                  partnerPrivileges.map((privilegeGroup, index) => 
-
-                  privilegeGroup.role_class.length > 0 ? 
-                  (<div className="flex space-x-4">
-                    <div className="w-[150px]">
-                      <span className="text-gray-200 text-xs font-mtn-extralight">{titleCase(privilegeGroup.role_class_name)}</span>
+                {partnerPrivileges.map((privilegeGroup, index) =>
+                  privilegeGroup.role_class.length > 0 ? (
+                    <div className="flex space-x-4">
+                      <div className="w-[150px]">
+                        <span className="text-gray-200 text-xs font-mtn-extralight">
+                          {titleCase(privilegeGroup.role_class_name)}
+                        </span>
+                      </div>
+                      <div className="flex flex-col w-[300px]">
+                        {privilegeGroup.role_class.map((privilege, index) =>
+                          partnerRoles
+                            .find(
+                              (role) => role.role_name == currentRole.role_name
+                            )
+                            .privileges.includes(privilege.privilege) ? (
+                            <div className="flex space-x-2 py-2 text-white">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="green"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M4.5 12.75l6 6 9-13.5"
+                                />
+                              </svg>{" "}
+                              &nbsp;&nbsp; {privilege.privilege}
+                            </div>
+                          ) : (
+                            <div className="flex space-x-2 py-2 text-white">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="red"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>{" "}
+                              &nbsp;&nbsp; {privilege.privilege}
+                            </div>
+                          )
+                        )}
+                      </div>
                     </div>
-                    <div className="flex flex-col w-[300px]">
-                    {
-                      privilegeGroup.role_class.map((privilege, index) => 
-                      
-                        partnerRoles.find(role => role.role_name == currentRole.role_name).privileges.includes(privilege.privilege) ? 
-                        (<div className="flex space-x-2 py-2 text-white">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                          </svg> &nbsp;&nbsp; {privilege.privilege}
-                        </div>) : 
-                        (<div className="flex space-x-2 py-2 text-white">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg> &nbsp;&nbsp; {privilege.privilege}
-                        </div>)
-
-                      )
-                      
-                    }                      
-                    </div>
-                    
-                  </div>) : "")
-                }
+                  ) : (
+                    ""
+                  )
+                )}
               </div>
-            </div>           
+            </div>
 
-              
             <div className="flex py-8 px-2 space-x-4 justify-center">
-              <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full" onClick={() => setDetailsModalOpen(false)}>OK</button>
+              <button
+                className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+                onClick={() => setDetailsModalOpen(false)}
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>
-      }
-      
-      {
-        displaySuccess &&
+      )}
+
+      {displaySuccess && (
         <div className="fixed top-0 left-0 z-10 w-screen h-screen flex justify-center items-end">
-            <div className="min-w-48 rounded-xl bg-gray-800 text-white p-4 mb-12 flex spacing-x-4">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green" class="w-6 h-6">
-                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                </svg>&nbsp;&nbsp; {successMessage}
-            </div>
+          <div className="min-w-48 rounded-xl bg-gray-800 text-white p-4 mb-12 flex spacing-x-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="green"
+              class="w-6 h-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            &nbsp;&nbsp; {successMessage}
+          </div>
         </div>
-       
-      }
+      )}
     </>
   );
 }

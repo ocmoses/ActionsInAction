@@ -10,10 +10,14 @@ export default function ComplianceCategories({
   onclick,
   partner,
 }) {
-
+  
   
   const { admin } = useAdmins();
   const { isSuperadmin } = useRoles();
+
+  console.log({Stages,
+    activeCategory,
+    partner, fieldCounts, admin})
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-14">
       {/* {console.log({ Stages })} */}

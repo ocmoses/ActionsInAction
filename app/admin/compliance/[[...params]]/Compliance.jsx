@@ -47,6 +47,10 @@ export default function Compliance({ params }) {
     setActiveStage,
   } = useAdmins();
 
+  // console.log("==Stages", {partner,
+  //   Stages,
+  //   activeCategory});
+
   const [category, setCategory] = useState();
   const [openDrawer, setOpenDrawer] = useState(false);
   const { setRouteloading } = useApp();

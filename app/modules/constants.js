@@ -62,11 +62,20 @@ export const validities = {
   shortcode_pricing_2: "2 years",
   indemnity: "1 years",
 };
+// export const departments = [
+//   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
+//   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
+//   { code: "LEGA", name: "LEGAL", approval: true },
+//   { code: "INSU", name: "INSURANCE", approval: true },
+// ];
+
 export const departments = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
-  { code: "LEGA", name: "LEGAL", approval: true },
+  { code: "LEGA", name: "INTERNAL REGULATORY", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
+  { code: "PMAD", name: "PARTNER MANAGEMENT", approval: true },
+  { code: "COLG", name: "COMMERCIAL LEGAL", approval: true },
 ];
 export const categoryCombination = [
   ["VAS", "RMS"],
@@ -1203,57 +1212,110 @@ export const approvalFields = {
   },
 };
 
+// export const shortcodeApprovalFields = {
+//   // shortcode: {
+//   shortcodes: {
+//     title: "Short codes",
+//     categories: ["VAS", "RMS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA"],
+//   },
+//   shortcode_doc: {
+//     title: "Short code document",
+//     categories: ["VAS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+//   },
+//   shortcode_issue_date: {
+//     title: "Issue date",
+//     categories: ["VAS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+//   },
+//   shortcode_expiry_date: {
+//     title: "Expiry date",
+//     categories: ["VAS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+//   },
+//   pricing_shortcodes: {
+//     title: "Approved pricing shortcode",
+//     categories: ["VAS", "RMS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA"],
+//   },
+//   pricing_issue_date: {
+//     title: "Pricing approval Issue date",
+//     categories: ["VAS", "RMS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA"],
+//   },
+//   pricing_expiry_date: {
+//     title: "Pricing approval Expiry date",
+//     categories: ["VAS", "RMS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA"],
+//   },
+//   pricing_doc: {
+//     title: "NCC Pricing approval",
+//     categories: ["VAS", "RMS", "AGR"],
+//     type: "form",
+//     approval: ["SPRM", "LEGA"],
+//   },
+// };
+
 export const shortcodeApprovalFields = {
   // shortcode: {
   shortcodes: {
     title: "Short codes",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
   shortcode_doc: {
     title: "Short code document",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    approval: ["SPRM", "LEGA"],
   },
   shortcode_issue_date: {
     title: "Issue date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
   shortcode_expiry_date: {
     title: "Expiry date",
     categories: ["VAS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA", "RICO"], // REMOVE , "RICO"
+    approval: ["SPRM", "LEGA"],
   },
   pricing_shortcodes: {
     title: "Approved pricing shortcode",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
   pricing_issue_date: {
     title: "Pricing approval Issue date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
   pricing_expiry_date: {
     title: "Pricing approval Expiry date",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
   pricing_doc: {
     title: "NCC Pricing approval",
     categories: ["VAS", "RMS", "AGR"],
     type: "form",
-    approval: ["SPRM", "LEGA"],
+    approval: ["SPRM", "LEGA", "PMAD", "COLG"],
   },
 };
+
 export const shortcodeApprovalFieldsArray = [
   "shortcodes",
   "shortcode_doc",
@@ -1264,6 +1326,7 @@ export const shortcodeApprovalFieldsArray = [
   "pricing_expiry_date",
   "pricing_doc",
 ];
+
 const deptCategories = {};
 for (const field in approvalFields) {
   if (approvalFields[field].approval.length > 0) {
@@ -1284,12 +1347,22 @@ for (const field in approvalFields) {
 export const DeptCategories = deptCategories;
 const counts = {};
 
+// export const department = [
+//   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
+//   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
+//   { code: "LEGA", name: "LEGAL", approval: true },
+//   { code: "INSU", name: "INSURANCE", approval: true },
+// ];
+
 export const department = [
   { code: "SPRM", name: "SUPPLIER & RELATIONSHIP MANAGEMENT", approval: true },
   { code: "RICO", name: "RISK & COMPLIANCE", approval: true },
-  { code: "LEGA", name: "LEGAL", approval: true },
+  { code: "LEGA", name: "INTERNAL REGULATORY", approval: true },
   { code: "INSU", name: "INSURANCE", approval: true },
+  { code: "PMAD", name: "PARTNER MANAGEMENT", approval: true },
+  { code: "COLG", name: "COMMERCIAL LEGAL", approval: true },
 ];
+
 export const fieldsCounts = () => {
   for (const stage in complianceRequirements) {
     if (!counts[stage]) counts[stage] = { count: 0 };

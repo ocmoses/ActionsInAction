@@ -953,8 +953,11 @@ export default function Requests() {
           </div>
 
           <div className="flex h-full items-center px-2 w-32 ml-auto">
-            {selectedRequest?.request_type == request_types.BOARD_RESOLUTION && 
-            approvals && approvals.can_approve("board_resolution_document") && 
+            {approvals && 
+            (selectedRequest?.request_type == request_types.BOARD_RESOLUTION && 
+            approvals.can_approve("board_resolution_document") || 
+            selectedRequest?.request_type == request_types.SUPPLIER_QUESTION && 
+            approvals.can_approve("questionnaire")) && 
             selectedRequest?.status != "approved" &&
               selectedRequest?.status != "rejected" && (
                 <>

@@ -4,7 +4,8 @@ export default function FormErrors({ error, success, align }) {
               "response.json is not a function",
               "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
               "response.json is not a function",
-              "Unexpected token '<', \"<html><hea\"... is not valid JSON"
+              "Unexpected token '<', \"<html><hea\"... is not valid JSON",
+              "response.json is not a function"
             ];
   return ( !hide.includes(error)  && 
     <>

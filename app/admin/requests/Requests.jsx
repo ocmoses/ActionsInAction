@@ -51,6 +51,7 @@ import ShortCodeAlert, {
 export default function Requests() {
   const {
     getAllBoardResolutionDocuments,
+    approvals,
     approving,
     setApproving,
     approveOrRejectBrd,
@@ -952,7 +953,9 @@ export default function Requests() {
           </div>
 
           <div className="flex h-full items-center px-2 w-32 ml-auto">
-            {selectedRequest?.status != "approved" &&
+            {selectedRequest?.request_type == request_types.BOARD_RESOLUTION && 
+            approvals && approvals.can_approve("board_resolution_document") && 
+            selectedRequest?.status != "approved" &&
               selectedRequest?.status != "rejected" && (
                 <>
                   <div
@@ -1117,8 +1120,6 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
-            loadAllRequest={loadAllRequest}
-            successAction={successAction}
             loadAllRequest={loadAllRequest}
             successAction={successAction}
           />

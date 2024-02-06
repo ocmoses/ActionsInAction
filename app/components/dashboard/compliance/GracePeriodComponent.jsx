@@ -19,6 +19,7 @@ import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
+import useAdmins from "@/hooks/useAdmins";
 
 export default function GracePeriodAlert({
   gracePeriod,
@@ -1093,6 +1094,7 @@ export const GracePeriodAdminFlyOut = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1328,7 +1330,8 @@ export const GracePeriodAdminFlyOut = ({
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("license_grace_period") &&                 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!declineGracePeriodDoc ? (
@@ -1601,6 +1604,7 @@ export const LicenseRenewalAdminFlyout = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1836,7 +1840,8 @@ export const LicenseRenewalAdminFlyout = ({
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("licence_renewal") && 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!decline ? (

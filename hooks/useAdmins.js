@@ -3,7 +3,8 @@ import useApp from "@/hooks/useApp";
 import useLogout from "@/hooks/useLogout";
 import { useEffect, useState } from "react";
 import { filterCategory, getstages } from "@/app/modules/utilities";
-import { useStoreActions, useStoreState, filterPartner } from "easy-peasy";
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { filterPartner } from "@/app/modules/utilities";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
 export default function useAdmins() {

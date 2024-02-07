@@ -26,6 +26,11 @@ export const apikey =
     ? process.env.APIKEY
     : process.env.NEXT_PUBLIC_APIKEY;
 
+export const dsmUrl =
+    typeof window === "undefined"
+      ? process.env.DSM_URL
+      : process.env.NEXT_PUBLIC_DSM_URL;
+  
 export const onboarding_type = {
   new: "Registration",
   migrated: "Migration",

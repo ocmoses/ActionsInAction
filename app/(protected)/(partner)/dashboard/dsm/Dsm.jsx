@@ -18,7 +18,7 @@ export default function RegistrationForm() {
     
     <form
       id="submitService"
-      action="https://smprod.mtn.ng/DSDP/PartnerPortalLoginApi"
+      action={process.env.DSM_URL}
       method="POST"
       target='dsmiframe'
     >

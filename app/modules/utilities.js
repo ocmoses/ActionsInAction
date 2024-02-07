@@ -18,8 +18,6 @@ import {
 import Image from "next/image";
 import { isCancelException } from "react-pdf/dist/cjs/shared/utils";
 
-
-
 export const Decrypt = (data) => {
   const decrypted = CryptoJS.AES.decrypt(
     data,
@@ -292,7 +290,7 @@ export const set_admin_token = (token, uuid, req, res) => {
   if (token) {
     // SET COOKIES
     // const encryptedAuthToken = Encrypt(token)
-    // const encryptedUserId = Encrypt(uuid) 
+    // const encryptedUserId = Encrypt(uuid)
     // const decryptedAuthToken = Decrypt(encryptedAuthToken)
     const encryptedAuthToken = token;
     const encryptedUserId = uuid;
@@ -860,9 +858,14 @@ export const filterPartner = (partnerInfo, Categories) => {
       let categoriesCount = partnerInfo.categories.length;
 
       let totalPercentage = 0;
-      partnerInfo.categories.forEach((category) => totalPercentage += category.percentage);
+      partnerInfo.categories.forEach(
+        (category) => (totalPercentage += category.percentage)
+      );
 
-      partnerInfo.Percent = categoriesCount == 0 ? 0 : Math.round(totalPercentage/categoriesCount);
+      partnerInfo.Percent =
+        categoriesCount == 0
+          ? 0
+          : Math.round(totalPercentage / categoriesCount);
 
       // let Percent = 0;
       // let sectionCount = 0;
@@ -906,28 +909,21 @@ export const filterPartner = (partnerInfo, Categories) => {
   return partnerInfo;
 };
 
-
 export const filterCategory = (category, partnerInfo) => {
-
   console.log("selected category: ", category);
   console.log("partnerInfo: ", partnerInfo);
-
-  
 
   if (!category) return category;
   if (!partnerInfo) return category;
 
-
-
   ///////////////////////////////////////////////////////////////////////////////
-  const teamStatus = {}
-  partnerInfo.board_resolution_documents?.map(info=>{
-    if(typeof teamStatus[info.status]  === "undefined") teamStatus[info.status] = []
-    teamStatus[info.status].push(info)
-  })
+  const teamStatus = {};
+  partnerInfo.board_resolution_documents?.map((info) => {
+    if (typeof teamStatus[info.status] === "undefined")
+      teamStatus[info.status] = [];
+    teamStatus[info.status].push(info);
+  });
   ////////////////////////////////////////////////////////////////////////////////
-
-
 
   // return category
   const validations = [];
@@ -1001,7 +997,7 @@ export const filterCategory = (category, partnerInfo) => {
           ] = {};
         category.approvedStages[category.category_uuid][
           approval?.category_stage
-        ][approval?.field] =  approval?.status; // approvalStatuses[approval?.field]; //
+        ][approval?.field] = approval?.status; // approvalStatuses[approval?.field]; //
       }
     });
   }
@@ -1011,7 +1007,6 @@ export const filterCategory = (category, partnerInfo) => {
 
   // category.approvedStages[category.category_uuid]
   // ["shortcode"]["shortcodes-054f711c-0e47-43fa-8f77-763a9506a4eb"] = "approved";
-
 
   console.log("category.approvedFields in the end", category.approvedFields);
   console.log("category.approvedStages in the end", category.approvedStages);
@@ -1024,12 +1019,10 @@ export const filterCategory = (category, partnerInfo) => {
     });
   }
   //////////////////////////////////////////////////////////////////
-  category.teamStatus = teamStatus
+  category.teamStatus = teamStatus;
   //////////////////////////////////////////////////////////////////
   return category;
 };
-
-
 
 export const getStatuses = (status, counts) => {
   let bg =
@@ -1321,7 +1314,7 @@ export const partnerApprovals = (partner, category) => {
         Approvals && Approvals[stage] ? Approvals[stage] : {};
       stageFields[stage] =
         fieldCounts && fieldCounts[stage] ? fieldCounts[stage] : {};
-        // console.log("stageFields[stage]", stageFields[stage]);
+      // console.log("stageFields[stage]", stageFields[stage]);
     }
   });
   const Rejections = {};
@@ -1346,7 +1339,7 @@ export const partnerApprovals = (partner, category) => {
   }
   const StageApprovals = {
     counts: { fields: {}, status: {}, rejections: Rejections },
-  };  
+  };
   if (!Util.isEmpty(stageFields)) {
     for (const _stage in stageFields) {
       if (!StageApprovals[_stage])
@@ -1364,18 +1357,15 @@ export const partnerApprovals = (partner, category) => {
                 : {},
           },
         };
-      
 
-      try{
-
+      try {
         let _dept = "";
-        for(const depart in Approvals[_stage]){
+        for (const depart in Approvals[_stage]) {
           _dept = depart;
           break;
-        }     
+        }
 
-      
-        // for (const _dept in stageFields[_stage]) {        
+        // for (const _dept in stageFields[_stage]) {
         if (stageFields[_stage][_dept]?.fields?.length > 0) {
           stageFields[_stage][_dept].fields.map((field) => {
             if (!shortcodeApprovalFieldsArray.includes(field)) {
@@ -1474,14 +1464,13 @@ export const partnerApprovals = (partner, category) => {
             )
               StageApprovals[_stage][_dept].counts.status = "corrected";
             else StageApprovals[_stage][_dept].counts.status = "processing";
-          }else{
+          } else {
             throw new Exception("");
           }
         }
-      // }
-
-      }catch(e){
-        for (const _dept in stageFields[_stage]) {        
+        // }
+      } catch (e) {
+        for (const _dept in stageFields[_stage]) {
           if (stageFields[_stage][_dept]?.fields?.length > 0) {
             stageFields[_stage][_dept].fields.map((field) => {
               if (!shortcodeApprovalFieldsArray.includes(field)) {
@@ -1692,7 +1681,7 @@ export const getFinalApproval = (partner) => {
   if (partner?.categories?.length > 0) {
     partner.categories.map((category) => {
       const approval = partnerApprovals(partner, category);
-      
+
       console.log("approval?", approval);
 
       if (!categoryStatus[category.category_uuid])
@@ -1756,22 +1745,17 @@ export const getFinalApproval = (partner) => {
     status[cuuid].pending = categoryStatus[cuuid].pending.length;
 
     //Checking if all stages were approved
-    for(const stage in partner?.compliance_status[cuuid]){
-
-      if(stage.status != 'approved'){
+    for (const stage in partner?.compliance_status[cuuid]) {
+      if (stage.status != "approved") {
         status[cuuid].status = false;
         break;
       }
-
     }
-
   }
-  status.partner = 
+  status.partner =
     pending.length === 0 && corrected.length === 0 && rejected.length === 0;
 
   status.count = categoryStatus;
-
-  
 
   // console.log("pending", pending);
   // console.log("corrected", corrected);
@@ -1853,70 +1837,71 @@ export const getDeptCategoryStages = (admin, isSuperadmin) => {
   return { categories, stages };
 };
 
-export function ellipsify(text, length=35){
-  if(!text){
+export function ellipsify(text, length = 35) {
+  if (!text) {
     return "";
   }
-  if(text.length < length){
+  if (text.length < length) {
     return text;
   }
-  return text.substring(0, length) + '...';
+  return text.substring(0, length) + "...";
 }
 
-export function titleCase(text){
-  if(text.trim().length == 0){
+export function titleCase(text) {
+  if (text.trim().length == 0) {
     return text.trim();
   }
   let textArray = text.trim().split(" ");
-  for(let i = 0; i < textArray.length; i++){
-    textArray[i] = textArray[i].substring(0,1).toUpperCase() + textArray[i].slice(1);
+  for (let i = 0; i < textArray.length; i++) {
+    textArray[i] =
+      textArray[i].substring(0, 1).toUpperCase() + textArray[i].slice(1);
   }
   return textArray.join(" ");
 }
 
-export function capitalizeFirst(string){
-  if(!string || !string.length){
+export function capitalizeFirst(string) {
+  if (!string || !string.length) {
     return "";
   }
 
-  return string.slice(0,1).toUpperCase() + string.slice(1);
+  return string.slice(0, 1).toUpperCase() + string.slice(1);
 }
 
-export function base64(file_id, callback){
-  const fileInput = document.querySelector('#' + file_id);
+export function base64(file_id, callback) {
+  const fileInput = document.querySelector("#" + file_id);
 
-    // Listen for the change event so we can capture the file
-    fileInput.addEventListener('change', (e) => {
-        // Get a reference to the file
-        const file = e.target.files[0];
+  // Listen for the change event so we can capture the file
+  fileInput.addEventListener("change", (e) => {
+    // Get a reference to the file
+    const file = e.target.files[0];
 
-        // Encode the file using the FileReader API
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            // Use a regex to remove data url part
-            const base64String = reader.result
-                .replace('data:', '')
-                .replace(/^.+,/, '');
+    // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Use a regex to remove data url part
+      const base64String = reader.result
+        .replace("data:", "")
+        .replace(/^.+,/, "");
 
-                console.log('base64String', base64String);
+      console.log("base64String", base64String);
 
-            callback(base64String);
-            // Logs wL2dvYWwgbW9yZ...
-        };
-        reader.readAsDataURL(file);
-    });
+      callback(base64String);
+      // Logs wL2dvYWwgbW9yZ...
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-export function secure(link){
-  if(link == null){
+export function secure(link) {
+  if (link == null) {
     return "";
-  }else if(!link.includes('http://')){
+  } else if (!link.includes("http://")) {
     return "";
   }
-  return link.startsWith("http://") ? link.replace("http://", 'https://') : "";
+  return link.startsWith("http://") ? link.replace("http://", "https://") : "";
 }
 
-export function formatNumber(number){
-  const numberFormart = number.toLocaleString()
+export function formatNumber(number) {
+  const numberFormart = number.toLocaleString();
   return numberFormart;
 }

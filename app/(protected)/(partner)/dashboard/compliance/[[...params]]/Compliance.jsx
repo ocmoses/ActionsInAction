@@ -141,7 +141,7 @@ export default function Compliance({ params }) {
 
   const goBack = () => {
     router.back(); // Go back to the previous page
-    router.back(); // Go back to the page before the previous one
+    // router.back(); // Go back to the page before the previous one
   };
   return (
   

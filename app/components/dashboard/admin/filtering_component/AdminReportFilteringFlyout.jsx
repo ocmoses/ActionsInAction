@@ -5,10 +5,9 @@ import {
   PartnerFilterCheck,
 } from "@/app/components/dashboard/admin/AdminReport";
 
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import FilterTag from "@/app/components/FilterTag";
-
 
 export default function FilteringFlyout(props) {
   const [filterModal, setFilterModal] = useState(false);
@@ -26,17 +25,13 @@ export default function FilteringFlyout(props) {
   const todaysDate = `${year}-${month}-${day}`;
   ///////////////end of get today's date////////////////////////////////////////////
 
-
-   const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(todaysDate);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [filterTags, setFilterTags] = useState([]);
   const [clearFilter, setClearFilter] = useState(false);
 
- 
-
-  
   const getLast30Days = () => {
     const today = new Date();
     const last30Days = new Date(today);
@@ -81,67 +76,87 @@ export default function FilteringFlyout(props) {
     setEndDate(today.toISOString().split("T")[0]);
   };
 
-
-  
-///// to display filtered
+  ///// to display filtered
   const displayFilters = () => {
     let filterTags = [];
-    if(startDate != ""){
-        filterTags.push(<FilterTag message={`From ${startDate} to ${endDate}`} action={() => {removeFilter("date_range")}} />);
-    }
-   
-    if(selectedStatus.length != 0){
-      selectedStatus.forEach(eStatus => {
-        filterTags.push(<FilterTag message={`${eStatus}`} action={() => {removeFilter(`status***${eStatus}`)}} />);
-        });      
-    }
-
-    if(selectedCategory.length != 0){
-      selectedCategory.forEach(eCategory => {
-        filterTags.push(<FilterTag message={`${eCategory}`} action={() => {removeFilter(`category***${eCategory}`)}} />);
-        });      
+    if (startDate != "") {
+      filterTags.push(
+        <FilterTag
+          message={`From ${startDate} to ${endDate}`}
+          action={() => {
+            removeFilter("date_range");
+          }}
+        />
+      );
     }
 
-    if(!filterTags.length){
-        setFilterTags(<span className="text-sm text-gray-500 pt-1">No filters applied</span>);
-        setClearFilter(false);
-    }else{
+    if (selectedStatus.length != 0) {
+      selectedStatus.forEach((eStatus) => {
+        filterTags.push(
+          <FilterTag
+            message={`${eStatus}`}
+            action={() => {
+              removeFilter(`status***${eStatus}`);
+            }}
+          />
+        );
+      });
+    }
+
+    if (selectedCategory.length != 0) {
+      selectedCategory.forEach((eCategory) => {
+        filterTags.push(
+          <FilterTag
+            message={`${eCategory}`}
+            action={() => {
+              removeFilter(`category***${eCategory}`);
+            }}
+          />
+        );
+      });
+    }
+
+    if (!filterTags.length) {
+      setFilterTags(
+        <span className="text-sm text-gray-500 pt-1">No filters applied</span>
+      );
+      setClearFilter(false);
+    } else {
       setClearFilter(true);
-        setFilterTags(filterTags);
-    }    
-};
-///// end to display filtered
+      setFilterTags(filterTags);
+    }
+  };
+  ///// end to display filtered
 
-///// to remove  filtered
-const removeFilter = (filter) => {
-  if(filter =='date_range'){
-    getAllTime();      
-  }else if(filter.includes('category***')){
+  ///// to remove  filtered
+  const removeFilter = (filter) => {
+    if (filter == "date_range") {
+      getAllTime();
+    } else if (filter.includes("category***")) {
       const key = filter.split("***")[1];
       toggleCategory(key);
-  }else if(filter.includes('status***')){
+    } else if (filter.includes("status***")) {
       const key = filter.split("***")[1];
       toggleStatus(key);
-  }
-};
-///// end to remove  filtered
-  
-///// to clear  filtered
-const clearAllFilter = () => {
-  getAllTime(); 
-  if(selectedCategory.length != 0){
-    selectedCategory.forEach(eCategory => {
-      removeFilter(`category***${eCategory}`);
-      });      
-  }
-  if(selectedStatus.length != 0){
-    selectedStatus.forEach(eStatus => {
-      removeFilter(`status***${eStatus}`);
-      });      
-  }
-};
-///// end to clear  filtered
-  
+    }
+  };
+  ///// end to remove  filtered
+
+  ///// to clear  filtered
+  const clearAllFilter = () => {
+    getAllTime();
+    if (selectedCategory.length != 0) {
+      selectedCategory.forEach((eCategory) => {
+        removeFilter(`category***${eCategory}`);
+      });
+    }
+    if (selectedStatus.length != 0) {
+      selectedStatus.forEach((eStatus) => {
+        removeFilter(`status***${eStatus}`);
+      });
+    }
+  };
+  ///// end to clear  filtered
 
   useEffect(() => {
     ////// bring out search modals
@@ -155,21 +170,34 @@ const clearAllFilter = () => {
       true
     );
   }, []);
-  
+
   useEffect(() => {
     displayFilters();
 
     const filtered = props.searchedData.filter((item) => {
-
-      if ( !startDate && !endDate && selectedStatus.length === 0 &&  selectedCategory.length === 0 ) {
+      if (
+        !startDate &&
+        !endDate &&
+        selectedStatus.length === 0 &&
+        selectedCategory.length === 0
+      ) {
         return true;
       }
       // Apply date range filter
-      if ( (!startDate || item.date >= startDate) && (!endDate || item.date <= endDate) ) {
+      if (
+        (!startDate || item.date >= startDate) &&
+        (!endDate || item.date <= endDate)
+      ) {
         // Apply status filter
-        if (  selectedStatus.length === 0 || selectedStatus.includes(item.status) ) {
+        if (
+          selectedStatus.length === 0 ||
+          selectedStatus.includes(item.status)
+        ) {
           // Apply category filter
-          if ( selectedCategory.length === 0 || selectedCategory.includes(item.category)  ) {
+          if (
+            selectedCategory.length === 0 ||
+            selectedCategory.includes(item.category)
+          ) {
             return true;
           }
         }
@@ -178,7 +206,13 @@ const clearAllFilter = () => {
     });
 
     props.filterRecord(filtered);
-  }, [props.searchedData, startDate, endDate, selectedStatus, selectedCategory]);
+  }, [
+    props.searchedData,
+    startDate,
+    endDate,
+    selectedStatus,
+    selectedCategory,
+  ]);
 
   return (
     <>
@@ -290,38 +324,38 @@ const clearAllFilter = () => {
                 <path
                   d="M15.3334 11.94C15.3467 12.44 15.2134 12.9133 14.9734 13.32C14.84 13.56 14.66 13.78 14.46 13.96C14 14.3867 13.3934 14.6467 12.72 14.6667C11.7467 14.6867 10.8867 14.1867 10.4134 13.42C10.16 13.0267 10.0067 12.5533 10 12.0533C9.98003 11.2133 10.3534 10.4533 10.9534 9.95333C11.4067 9.58 11.98 9.34667 12.6067 9.33334C14.08 9.30001 15.3 10.4667 15.3334 11.94Z"
                   stroke="#888888"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke-miterlimit="10"
                   stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M11.6267 12.02L12.3 12.66L13.6934 11.3133"
                   stroke="#888888"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M2.1134 4.96002L8.00006 8.36668L13.8467 4.98"
                   stroke="#888888"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M8 14.4067V8.36002"
                   stroke="#888888"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M14.4067 6.11335V9.8867C14.4067 9.92003 14.4067 9.94667 14.4 9.98C13.9334 9.57334 13.3334 9.33336 12.6667 9.33336C12.04 9.33336 11.46 9.55336 11 9.92003C10.3867 10.4067 10 11.16 10 12C10 12.5 10.14 12.9734 10.3867 13.3734C10.4467 13.48 10.52 13.58 10.6 13.6734L9.38005 14.3467C8.62005 14.7734 7.38004 14.7734 6.62004 14.3467L3.06004 12.3734C2.25337 11.9267 1.59338 10.8067 1.59338 9.8867V6.11335C1.59338 5.19335 2.25337 4.07336 3.06004 3.62669L6.62004 1.65334C7.38004 1.22668 8.62005 1.22668 9.38005 1.65334L12.94 3.62669C13.7467 4.07336 14.4067 5.19335 14.4067 6.11335Z"
                   stroke="#888888"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinejoin="round"
                 />
               </svg>
               &nbsp; &nbsp;
@@ -450,7 +484,7 @@ const clearAllFilter = () => {
                   value="Value Added Services"
                   checked={selectedCategory.includes("Value Added Services")}
                   onChange={() => toggleCategory("Value Added Services")}
-                />                
+                />
                 <PartnerFilterCheck
                   title="Aggregator"
                   summary="Provide a concentration point to limit the number of devices that will."
@@ -507,7 +541,6 @@ const clearAllFilter = () => {
     </>
   );
 
-
   function toggleStatus(status) {
     setSelectedStatus((prevStatus) =>
       prevStatus.includes(status)
@@ -516,7 +549,6 @@ const clearAllFilter = () => {
     );
   }
 
-
   function toggleCategory(category) {
     setSelectedCategory((prevCategory) =>
       prevCategory.includes(category)
@@ -524,41 +556,7 @@ const clearAllFilter = () => {
         : [...prevCategory, category]
     );
   }
-  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const DownloadFlyout = () => {
   const downloadTableAsCSV = () => {
@@ -584,44 +582,44 @@ export const DownloadFlyout = () => {
     link.click();
   };
 
-
-
   const [pdfContent, setPdfContent] = useState(null);
 
   const generatePDF = () => {
-    const pdf = new jsPDF('p', 'mm', 'a4');
-  
-    const content = document.getElementById('myTable'); // Replace 'myTable' with the ID of your table
-  
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const content = document.getElementById("myTable"); // Replace 'myTable' with the ID of your table
+
     // Make the table visible
-    content.style.display = 'block'; // You can use 'block' or any other suitable display style
-  
+    content.style.display = "block"; // You can use 'block' or any other suitable display style
+
     html2canvas(content).then((canvas) => {
       // After capturing, hide the table again
-      content.style.display = 'none'; // Set the display style back to 'none'
-  
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
-      pdf.save('partnerReport.pdf');
+      content.style.display = "none"; // Set the display style back to 'none'
+
+      const imgData = canvas.toDataURL("image/png");
+      pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+      pdf.save("partnerReport.pdf");
     });
   };
-  
 
   return (
     <div className="absolute z-20 ml-[-36px] w-[150px] min-h-[70px] mt-3 rounded-[5px] bg-[#333333]">
       <div className=" flex flex-col text-[16px] ">
-        <div className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 " onClick={generatePDF}>
+        <div
+          className="flex gap-3 py-[10px] px-[20px] rounded-[5px] hover:bg-white/10 "
+          onClick={generatePDF}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="currentColor"
             className="w-[14px]  inline-block mr-1"
           >
             <path
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
               d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
             />
           </svg>
@@ -641,44 +639,44 @@ export const DownloadFlyout = () => {
             <path
               d="M11.25 15.75V20.25H13.875"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M4.875 15.75L8.25 20.25"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M8.25 15.75L4.875 20.25"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M16.5 19.875C16.9063 20.1781 17.3994 20.3424 17.9062 20.3438C18.75 20.3437 19.5 20.0625 19.5 19.125C19.5 17.625 16.5 18.2812 16.5 16.875C16.5 16.125 17.0625 15.6562 17.9062 15.6562C18.4131 15.6576 18.9062 15.8219 19.3125 16.125"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M4.5 12V3.75C4.5 3.55109 4.57902 3.36032 4.71967 3.21967C4.86032 3.07902 5.05109 3 5.25 3H14.25L19.5 8.25V12"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
             <path
               d="M14.25 3V8.25H19.5"
               stroke="#999999"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinejoin="round"
             />
           </svg>
           XLS

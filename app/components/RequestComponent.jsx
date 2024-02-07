@@ -65,6 +65,8 @@ export const ShortCodeFlyOut = ({
   loadAllRequest
 }) => {
 
+  const {approvals} = useAdmins();
+
   const { getSinglePartnerShortcodes } = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
@@ -300,6 +302,7 @@ export const ShortCodeFlyOut = ({
                               fill="#efb703"
                             />
                           ) : (
+                            approvals.can_approve.includes("shortcode_zerorating") && 
                             <button
                               className="flex text-[12px] leading-[20px] gap-2 text-white hover:text-gray-400"
                               title="Approve"

@@ -1,6 +1,6 @@
 "use client";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import { useRouter, useSelectedLayoutSegments } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PageRoutes } from "@/app/modules/menu";
 import useAdmins from "@/hooks/useAdmins";
@@ -26,7 +26,7 @@ export default function RouteGuard({ children }) {
         }
       } else {
         const path = path_name?.replace("/admin/login", "");
-        router.push(path ? path : "/admin/dashboard");
+        router.push(path || "/admin/dashboard");
       }
     }
   }, [session, router]);

@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useEffect } from 'react';
-
+import { dsmUrl } from "@/app/modules/constants";
 export default function RegistrationForm() {
   const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
   const submitFormOnLoad = () => {
@@ -18,7 +18,7 @@ export default function RegistrationForm() {
     
     <form
       id="submitService"
-      action={process.env.DSM_URL}
+      action={dsmUrl}
       method="POST"
       target='dsmiframe'
     >

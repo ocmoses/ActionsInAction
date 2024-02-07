@@ -6,7 +6,7 @@ export default function NavLinks() {
   const links = [
     { href: "/", text: "Y'ello", active: pathname === "/" },
     { href: "/discover", text: "Discover", active: pathname === "/discover" },
-    { href: "/faq", text: "FAQ", active: pathname === "/faq" },
+    { href: "/faq", text: "FAQs", active: pathname === "/faq" },
   ]
   return (
     <nav className="space-x-10 max-[700px]:hidden">

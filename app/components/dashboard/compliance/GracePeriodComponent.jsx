@@ -19,6 +19,7 @@ import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
+import useAdmins from "@/hooks/useAdmins";
 
 export default function GracePeriodAlert({
   gracePeriod,
@@ -692,9 +693,9 @@ export const LicenseValidityTopAlert = ({
                     <path
                       d="M3.125 10H16.875M16.875 10L11.25 4.375M16.875 10L11.25 15.625"
                       stroke="white"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </p>
@@ -1093,6 +1094,7 @@ export const GracePeriodAdminFlyOut = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1259,9 +1261,9 @@ export const GracePeriodAdminFlyOut = ({
                   <path
                     d="M9.24751 9.11244L7.39501 10.9649C6.36751 11.9924 6.36751 13.6499 7.39501 14.6774C8.42251 15.7049 10.08 15.7049 11.1075 14.6774L14.025 11.7599C16.0725 9.71244 16.0725 6.38244 14.025 4.33494C11.9775 2.28744 8.64751 2.28744 6.60001 4.33494L3.42001 7.51494C1.66501 9.26994 1.66501 12.1199 3.42001 13.8824"
                     stroke="#888888"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -1307,28 +1309,29 @@ export const GracePeriodAdminFlyOut = ({
                       <path
                         d="M6.5 5.4999L10.6 1.3999"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M11 3.4V1H8.59998"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("license_grace_period") &&                 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!declineGracePeriodDoc ? (
@@ -1601,6 +1604,7 @@ export const LicenseRenewalAdminFlyout = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1767,9 +1771,9 @@ export const LicenseRenewalAdminFlyout = ({
                   <path
                     d="M9.24751 9.11244L7.39501 10.9649C6.36751 11.9924 6.36751 13.6499 7.39501 14.6774C8.42251 15.7049 10.08 15.7049 11.1075 14.6774L14.025 11.7599C16.0725 9.71244 16.0725 6.38244 14.025 4.33494C11.9775 2.28744 8.64751 2.28744 6.60001 4.33494L3.42001 7.51494C1.66501 9.26994 1.66501 12.1199 3.42001 13.8824"
                     stroke="#888888"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -1815,28 +1819,29 @@ export const LicenseRenewalAdminFlyout = ({
                       <path
                         d="M6.5 5.4999L10.6 1.3999"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M11 3.4V1H8.59998"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("licence_renewal") && 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!decline ? (

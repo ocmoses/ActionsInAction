@@ -41,10 +41,6 @@ export default function TablePager({list, action, perPage=5, pages=null}){
     }
 
     getPageLinks();
-    
-
-    // console.log("pageLinks", pageLinks);
-
 
     useEffect(() => {      
       setLinks(pageLinks);
@@ -77,10 +73,6 @@ export default function TablePager({list, action, perPage=5, pages=null}){
           );
 
           setProcessing(false);
-    
-          // console.log("response", response);
-          // console.log("response.status", response.status);
-          // console.log("response.status === 401", response.status === 401);
     
           if (response.status === 401 ) {
             Logout();

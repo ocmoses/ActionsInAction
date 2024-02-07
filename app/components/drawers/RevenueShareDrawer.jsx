@@ -12,7 +12,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 
 export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
-  const {approveRevenueShare} = useAdmins();
+  const {approveRevenueShare, approvals} = useAdmins();
 
   // console.log("REVENUE SHARE REQUEST", request);
   
@@ -257,7 +257,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                   </div>
                 )}
               </div>
-              {
+              {approvals && approvals.can_approve.includes("revenue_share") &&
                 request.status != "approved" &&
                   <div className="w-1/2 flex justify-end h-[34px]">
                     <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => approve()}>Finish</button>

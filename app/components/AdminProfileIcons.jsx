@@ -5,12 +5,8 @@ import { useStoreState } from "easy-peasy";
 export default function AdminProfileIcons() {
   const notifications = useStoreState((state) => state.notifications);
 
- 
-  // console.log('notifications from adminProfileIcons', notifications);
-
   return (
-    <>
-      <div className="flex gap-6 items-center justify-end">
+    <div className="flex gap-6 items-center justify-end">
         <div className=" text-[#888888] w-[20px] h-[20px] cursor-pointer group/help">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +26,5 @@ export default function AdminProfileIcons() {
         <Notifications count={notifications.count} />
         <AdminAvartar />
       </div>
-    </>
   );
 }

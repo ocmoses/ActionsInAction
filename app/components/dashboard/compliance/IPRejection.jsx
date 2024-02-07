@@ -45,7 +45,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["probate-of-will"].probate_of_will_status == "rejected"){
+        if(data["probate-of-will"]?.probate_of_will_status == "rejected"){
             //add 
             if(!rejectionArray.includes("probate_of_will")){
                 rejectionArray.push("probate_of_will");
@@ -54,7 +54,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["authorization-letter"].authorization_letter_status == "rejected"){
+        if(data["authorization-letter"]?.authorization_letter_status == "rejected"){
             //add 
             if(!rejectionArray.includes("authorization_letter")){
                 rejectionArray.push("authorization_letter");
@@ -72,7 +72,7 @@ export default function IPRejection(){
             
         // }
 
-        if(data["video-file"].authorization_video_status == "rejected"){
+        if(data["video-file"]?.authorization_video_status == "rejected"){
             //add 
             if(!rejectionArray.includes("video_file")){
                 rejectionArray.push("video_file");
@@ -81,7 +81,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-content-and-vas-partner"].agreement_letter_content_and_vas_partner_status == "rejected"){
+        if(data["agreement-letter-btw-content-and-vas-partner"]?.agreement_letter_content_and_vas_partner_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_content_and_vas_partner")){
                 rejectionArray.push("agreement_letter_btw_content_and_vas_partner");
@@ -90,7 +90,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-content-and-agent"].agreement_letter_content_and_agent_status == "rejected"){
+        if(data["agreement-letter-btw-content-and-agent"]?.agreement_letter_content_and_agent_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_content_and_agent")){
                 rejectionArray.push("agreement_letter_btw_content_and_agent");
@@ -99,7 +99,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-agent-and-vas-partner"].agreement_letter_agent_and_vas_partner_status == "rejected"){
+        if(data["agreement-letter-btw-agent-and-vas-partner"]?.agreement_letter_agent_and_vas_partner_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_agent_and_vas_partner")){
                 rejectionArray.push("agreement_letter_btw_agent_and_vas_partner");
@@ -108,7 +108,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-content-and-record-label"].agreement_letter_content_and_record_label_status == "rejected"){
+        if(data["agreement-letter-btw-content-and-record-label"]?.agreement_letter_content_and_record_label_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_content_and_record_label")){
                 rejectionArray.push("agreement_letter_btw_content_and_record_label");
@@ -117,7 +117,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-content-and-music-composer"].agreement_letter_content_and_music_composer_status == "rejected"){
+        if(data["agreement-letter-btw-content-and-music-composer"]?.agreement_letter_content_and_music_composer_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_content_and_music_composer")){
                 rejectionArray.push("agreement_letter_btw_content_and_music_composer");
@@ -126,7 +126,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["agreement-letter-btw-record-label-and-vas-partner"].agreement_letter_record_label_and_vas_partner_status == "rejected"){
+        if(data["agreement-letter-btw-record-label-and-vas-partner"]?.agreement_letter_record_label_and_vas_partner_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agreement_letter_btw_record_label_and_vas_partner")){
                 rejectionArray.push("agreement_letter_btw_record_label_and_vas_partner");
@@ -135,7 +135,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["means-of-identification"].means_of_id_status == "rejected"){
+        if(data["means-of-identification"]?.means_of_id_status == "rejected"){
             //add 
             if(!rejectionArray.includes("content_creator_id_front")){
                 rejectionArray.push("content_creator_id_front");
@@ -144,7 +144,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["means-of-agent-identification"].means_of_agent_id_status == "rejected"){
+        if(data["means-of-agent-identification"]?.means_of_agent_id_status == "rejected"){
             //add 
             if(!rejectionArray.includes("agent_id_front")){
                 rejectionArray.push("agent_id_front");
@@ -152,7 +152,7 @@ export default function IPRejection(){
             }
         }
 
-        if(data["other-content-proof-of-ownership"].other_content_proof_of_ownership_status == "rejected"){
+        if(data["other-content-proof-of-ownership"]?.other_content_proof_of_ownership_status == "rejected"){
             //add 
             if(!rejectionArray.includes("other_content_proof_of_ownership")){
                 rejectionArray.push("other_content_proof_of_ownership");

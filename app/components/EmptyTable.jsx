@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { TailSpinPreloader } from "@/app/components/Icons";
 export default function EmptyTable({ list }) {
     const [delayedExecution, setDelayedExecution] = useState(false);

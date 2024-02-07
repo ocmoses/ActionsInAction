@@ -10,9 +10,10 @@ RUN apt install -y nodejs
 RUN npm --version && node --version
 
 # WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install
 COPY . ./
+RUN rm package-lock.json
+RUN npm install
+
 RUN npm run build
 
 # RUN apt update && apt install curl gnupg2 ca-certificates lsb-release ubuntu-keyring -y

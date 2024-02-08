@@ -1035,7 +1035,7 @@ export default function Requests() {
         <IPDrawer
           request={selectedRequest}
           openDrawer={openIPDrawer}
-          closeAction={() => setOpenIPDrawer(false)}
+          closeAction={() => {setOpenIPDrawer(false); setSelectedRequest(null)} }
           refresh={() => get_ips()}
         />
       )}

@@ -659,32 +659,6 @@ export default function Reports() {
                             </div>
                           ))}
 
-                        {/*
-                          {partner.category.map((name, index) => (
-                          <div
-                            key={index}
-                            title={name}
-                            className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px] ml-[-8px]"
-                          >
-                            <span>{getPartnerInitials(name)} </span>
-                          </div>
-                        ))}  
-                         
-                     <div
-                          title={partner.category}
-                          className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]"
-                        >
-                          <span>{getPartnerInitials(partner.category)}</span>
-                        </div>
-
-                       
-                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
-                          <span>R</span>
-                        </div>
-                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
-                          <span>+1</span>
-                        </div>
-                        */}
                       </div>
                     </td>
                     <td>

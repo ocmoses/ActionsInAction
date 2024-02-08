@@ -1,0 +1,376 @@
+import React, { useEffect, useState, useRef } from "react";
+import TextInput from "@/app/components/form/TextInput";
+import FilterTag, {
+  PartnerFilterCheck,
+  PartnerFilterTitle,
+} from "@/app/components/dashboard/partners/requests/FilteringComponents";
+
+export default function FilteringFlyout() {
+  ///////////////get today's date////////////////////////////////////////////
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+  const day = String(today.getDate()).padStart(2, "0");
+  const todaysDate = `${year}-${month}-${day}`;
+  ///////////////end of get today's date////////////////////////////////////////////
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState(todaysDate);
+
+  ////to open filter/close modal
+  const [filterModal, setFilterModal] = useState(false);
+  //// to apply filter search
+  const filterRef = useRef(null);
+  const [search, setSearch] = useState({
+    date: true,
+    category: false,
+    status: false,
+  });
+  useEffect(() => {
+    ////// bring out search modals
+    document.addEventListener(
+      "click",
+      function (e) {
+        if (filterRef.current && !filterRef.current.contains(e.target)) {
+          setFilterModal(false);
+        }
+      },
+      true
+    );
+  }, []);
+
+  const alertYes = () => {
+    alert("YES");
+  };
+
+  return (
+    <>
+
+    
+      <div
+        className="flex items-center gap-2 rounded-full p-3 px-6 hover:bg-white/20 cursor-pointer border border-white/20"
+        onClick={() => setFilterModal(!filterModal)}
+      >
+        <svg
+          className="w-4 h-4"
+          fill="white"
+          viewBox="0 0 32 32"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M30 6.749h-28c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h28c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM24 14.75h-16c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h16c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0zM19 22.75h-6.053c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25v0h6.053c0.69 0 1.25-0.56 1.25-1.25s-0.56-1.25-1.25-1.25v0z"></path>
+        </svg>
+        <span className="text-[13px] text-white">Add Filter</span>
+      </div>{" "}
+
+
+
+      <div className="text-gray-700 border-l-1 border-white/10 p-1 px-3 relative right-0 flex">
+        {/* <FilterTag
+            message="active"
+            action={alertYes}
+          /> */}
+        <span className="text-sm text-gray-500 pt-2">No filters applied</span>
+      </div>
+
+
+
+      <div
+        ref={filterRef}
+        className={`border-1 border-white/20 w-[650px] absolute mt-[48px] z-[9999] bg-[#121212] rounded-xl shadow-xl animate-[slide-up-fade_1s_ease-in-out] ${
+          filterModal ? "block" : "hidden"
+        }`}
+      >
+        <div className="flex">
+
+          <div className="w-[250px] p-4 border-r-1 border-white/20 flex flex-col gap-1">
+
+            {/* ///////search.date/////////////////////////////////////////////////////////////////////////////////////////////////// */}
+            <div
+              className={`${
+                search.date ? "bg-white/20 text-white" : "text-gray-400"
+              }
+                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+              onClick={() => {
+                if (!search.date) {
+                  setSearch({
+                    ...search,
+                    date: true,
+                    category: false,
+                    status: false,
+                  });
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M14 4V3.006C14 2.45 13.55 2 12.994 2H11V3H10V2H6V3H5V2H3.006C2.45 2 2 2.45 2 3.006V12.994C2 13.55 2.45 14 3.006 14H12.994C13.55 14 14 13.55 14 12.994V5H2V4H14ZM11 1H12.994C14.102 1 15 1.897 15 3.006V12.994C15.0001 13.2575 14.9483 13.5184 14.8476 13.7618C14.7468 14.0053 14.599 14.2264 14.4127 14.4127C14.2264 14.599 14.0053 14.7468 13.7618 14.8476C13.5184 14.9483 13.2575 15.0001 12.994 15H3.006C2.74253 15.0001 2.48162 14.9483 2.23818 14.8476C1.99474 14.7468 1.77355 14.599 1.58725 14.4127C1.40095 14.2264 1.25319 14.0053 1.15243 13.7618C1.05167 13.5184 0.999869 13.2575 1 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0H6V1H10V0H11V1ZM4 7H6V8H4V7ZM7 7H9V8H7V7ZM10 7H12V8H10V7ZM4 9H6V10H4V9ZM7 9H9V10H7V9ZM10 9H12V10H10V9ZM4 11H6V12H4V11ZM7 11H9V12H7V11ZM10 11H12V12H10V11Z"
+                  fill="#888888"
+                />
+              </svg>
+              &nbsp; &nbsp;
+              <span className="flex-1">Date</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </div>
+
+
+            {/* ///////search.category/////////////////////////////////////////////////////////////////////////////////////////////////// */}
+            <div
+              className={`${
+                search.category ? "bg-white/20 text-white" : "text-gray-400"
+              }
+                  rounded-[5px] py-3 px-4 flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+              onClick={() => {
+                if (!search.category) {
+                  setSearch({
+                    ...search,
+                    date: false,
+                    category: true,
+                    status: false,
+                  });
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="16"
+                viewBox="0 0 17 16"
+                fill="none"
+              >
+                <path
+                  d="M15.3334 11.94C15.3467 12.44 15.2134 12.9133 14.9734 13.32C14.84 13.56 14.66 13.78 14.46 13.96C14 14.3867 13.3934 14.6467 12.72 14.6667C11.7467 14.6867 10.8867 14.1867 10.4134 13.42C10.16 13.0267 10.0067 12.5533 10 12.0533C9.98003 11.2133 10.3534 10.4533 10.9534 9.95333C11.4067 9.58 11.98 9.34667 12.6067 9.33334C14.08 9.30001 15.3 10.4667 15.3334 11.94Z"
+                  stroke="#888888"
+                  strokeWidth="1.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.6267 12.02L12.3 12.66L13.6934 11.3133"
+                  stroke="#888888"
+                  strokeWidth="1.5"
+                  stroke-linecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M2.1134 4.96002L8.00006 8.36668L13.8467 4.98"
+                  stroke="#888888"
+                  strokeWidth="1.5"
+                  stroke-linecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8 14.4067V8.36002"
+                  stroke="#888888"
+                  strokeWidth="1.5"
+                  stroke-linecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14.4067 6.11335V9.8867C14.4067 9.92003 14.4067 9.94667 14.4 9.98C13.9334 9.57334 13.3334 9.33336 12.6667 9.33336C12.04 9.33336 11.46 9.55336 11 9.92003C10.3867 10.4067 10 11.16 10 12C10 12.5 10.14 12.9734 10.3867 13.3734C10.4467 13.48 10.52 13.58 10.6 13.6734L9.38005 14.3467C8.62005 14.7734 7.38004 14.7734 6.62004 14.3467L3.06004 12.3734C2.25337 11.9267 1.59338 10.8067 1.59338 9.8867V6.11335C1.59338 5.19335 2.25337 4.07336 3.06004 3.62669L6.62004 1.65334C7.38004 1.22668 8.62005 1.22668 9.38005 1.65334L12.94 3.62669C13.7467 4.07336 14.4067 5.19335 14.4067 6.11335Z"
+                  stroke="#888888"
+                  strokeWidth="1.5"
+                  stroke-linecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              &nbsp; &nbsp;
+              <span className="flex-1">Category</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </div>
+
+
+               {/* ///////search.status/////////////////////////////////////////////////////////////////////////////////////////////////// */}
+            <div
+              className={`${
+                search.status ? "bg-white/20 text-white" : "text-gray-400"
+              }
+                  rounded-[5px] py-3 px-4  flex w-full items-center cursor-pointer transition ease-in-out delay-150 hover:bg-white/20 `}
+              onClick={() => {
+                if (!search.status) {
+                  setSearch({
+                    ...search,
+                    date: false,
+                    category: false,
+                    status: true,
+                  });
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <g clip-path="url(#clip0_7467_2654)">
+                  <path
+                    d="M6.25466 14.9697L0.996535 9.71156C0.681335 9.39636 0.599855 9.24924 0.54625 9.07239C0.492645 8.89553 0.492645 8.71466 0.54625 8.5378C0.599856 8.36094 0.681336 8.21382 0.996535 7.89862L7.43011 1.46504C7.61269 1.28246 7.68246 1.22592 7.7686 1.17205C7.85473 1.11818 7.94233 1.0819 8.04132 1.05908C8.14032 1.03627 8.22964 1.02692 8.48784 1.02692L13.6606 1.02692C14.1056 1.02692 14.267 1.07313 14.4298 1.15998C14.5926 1.24683 14.7204 1.37431 14.8077 1.53685C14.895 1.69938 14.9417 1.86063 14.943 2.30565L14.958 7.45589C14.9588 7.71475 14.9496 7.80437 14.9269 7.90372C14.9042 8.00307 14.8679 8.09101 14.814 8.17747C14.76 8.26392 14.7034 8.33394 14.5203 8.51699L8.0676 14.9697C7.7524 15.2849 7.60529 15.3664 7.42843 15.42C7.25157 15.4736 7.0707 15.4736 6.89384 15.42C6.71698 15.3664 6.56986 15.2849 6.25466 14.9697ZM7.3605 14.2626L13.8132 7.80988C13.9054 7.71769 13.9393 7.6819 13.9548 7.66289C13.9572 7.63849 13.9584 7.58918 13.958 7.4588L13.943 2.30856C13.9425 2.12775 13.9401 2.06363 13.9348 2.03431C13.9055 2.02913 13.8414 2.02692 13.6606 2.02692H8.48784C8.35764 2.02692 8.30839 2.02822 8.28402 2.03069C8.26503 2.04618 8.22929 2.08008 8.13722 2.17215L1.70364 8.60573C1.57566 8.73371 1.53183 8.78067 1.51475 8.80509C1.53183 8.82952 1.57566 8.87647 1.70364 9.00446L6.96177 14.2626C7.08975 14.3906 7.13671 14.4344 7.16113 14.4515C7.18556 14.4344 7.23251 14.3906 7.3605 14.2626ZM12.3327 3.6556C13.1138 4.43665 13.1138 5.70298 12.3327 6.48402C11.5517 7.26507 10.2853 7.26507 9.50428 6.48402C8.72323 5.70298 8.72323 4.43665 9.50428 3.6556C10.2853 2.87455 11.5517 2.87455 12.3327 3.6556ZM11.6256 4.3627C11.2351 3.97218 10.6019 3.97218 10.2114 4.3627C9.82086 4.75323 9.82086 5.38639 10.2114 5.77692C10.6019 6.16744 11.2351 6.16744 11.6256 5.77692C12.0161 5.38639 12.0161 4.75323 11.6256 4.3627ZM6.80758 11.28L4.68626 9.15865C4.491 8.96338 4.491 8.6468 4.68626 8.45154C4.88152 8.25628 5.1981 8.25628 5.39337 8.45154L7.51469 10.5729C7.70995 10.7681 7.70995 11.0847 7.51469 11.28C7.31942 11.4752 7.00284 11.4752 6.80758 11.28ZM8.22179 9.86575L6.10047 7.74443C5.90521 7.54917 5.90521 7.23259 6.10047 7.03733C6.29573 6.84206 6.61232 6.84206 6.80758 7.03733L8.9289 9.15865C9.12416 9.35391 9.12416 9.67049 8.9289 9.86575C8.73364 10.061 8.41706 10.061 8.22179 9.86575Z"
+                    fill="#888888"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_7467_2654">
+                    <rect width="16" height="16" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+              &nbsp; &nbsp;
+              <span className="flex-1">Status</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </div>
+
+          </div>
+
+          <div className="flex-1 p-4 min-h-[300px] bg-white/5">
+            {search.date && (
+              <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
+                <div className=" flex flex-row justify-between gap-2 border-b-1 border-white/20 text-white ">
+                  <TextInput
+                    label="From"
+                    type="date"
+                    value={startDate}
+                    onChange=""
+                  />
+
+                  <TextInput
+                    label="To"
+                    type="date"
+                    value={endDate}
+                    onChange=""
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-gray-400">Show results for</h3>
+                  <PartnerFilterTitle title="Last 30 Days" action="" />
+                  <PartnerFilterTitle title="This Month" action="" />
+                  <PartnerFilterTitle title="This Year" action="" />
+                  <PartnerFilterTitle title="Last 1 Year" action="" />
+                  <PartnerFilterTitle title="All Time" action="" />
+                </div>
+              </div>
+            )}
+
+            {search.category && (
+              <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
+                <PartnerFilterCheck
+                  title="Rich Media Services"
+                  summary="Digital Services players, offering value-added services."
+                  value="Rich Media Services"
+                  checked=""
+                  onChange=""
+                />
+                <PartnerFilterCheck
+                  title="Value Added Services"
+                  summary="Non-core services or features that are beyond the standard voice calls."
+                  value="Value Added Services"
+                  checked=""
+                  onChange=""
+                />
+                <PartnerFilterCheck
+                  title="Aggregator"
+                  summary="Provide a concentration point to limit the number of devices that will."
+                  value="Aggregator"
+                  checked=""
+                  onChange=""
+                />
+                <PartnerFilterCheck
+                  title="Marketplace"
+                  summary="Providers who offer apps developed specifically for easy, convenient shopping"
+                  value="Marketplace"
+                  checked=""
+                  onChange=""
+                />
+              </div>
+            )}
+
+            {search.status && (
+              <div className="flex flex-col space-y-4 animate-[slide-left_1s_ease-in-out]">
+                <PartnerFilterCheck
+                  title="Active"
+                  summary="Contract is still active"
+                  value="active"
+                  checked=""
+                  onChange=""
+                />
+                <PartnerFilterCheck
+                  title="Expired"
+                  summary="Contract has expired"
+                  value="expired"
+                  checked=""
+                  onChange=""
+                />
+
+                <PartnerFilterCheck
+                  title="In review"
+                  summary="Contract has not started"
+                  value="in_review"
+                  checked=""
+                  onChange=""
+                />
+                <PartnerFilterCheck
+                  title="New"
+                  summary="Just Registered"
+                  value="new"
+                  checked=""
+                  onChange=""
+                />
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
+}

@@ -1,9 +1,4 @@
 export const PartnerMenu = [
-  // {
-  //   label: "Get started",
-  //   icon: "",
-  //   route: "/dashboard/getstarted",
-  // },
   {
     label: "Dashboard",
     icon: (
@@ -82,11 +77,13 @@ export const PartnerMenu = [
     ),
     route: "/dashboard",
   },
+
   {
     label: "Compliance",
     icon: "",
     route: "/dashboard/compliance",
   },
+
   {
     label: "Contracts",
     icon: (
@@ -154,31 +151,100 @@ export const PartnerMenu = [
     route: "/dashboard/contracts",
   },
 
-  // {
-  //   label: "Payment",
-  //   icon: "",
-  //   route: "",
-  // },
-  // {
-  //   label: "Users",
-  //   icon: "",
-  //   route: "",
-  // },
-  // {
-  //   label: "Reports",
-  //   icon: "",
-  //   route: "/admin/reports",
-  // },
-  // {
-  //   label: "Audit log",
-  //   icon: "",
-  //   route: "",
-  // },
-  // {
-  //   label: "Settings",
-  //   icon: "",
-  //   route: "",
-  // },
+  {
+    label: "Requests",
+    icon: (
+      <div className="relative inline-flex">
+        <svg
+          className="w-6 h-6"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g id="Slot &#60;Icon&#62;">
+            <path
+              id="Vector"
+              d="M13 13.5H3C2.86739 13.5 2.74021 13.4473 2.64645 13.3536C2.55268 13.2598 2.5 13.1326 2.5 13V4.5L3.5 2.5H12.5L13.5 4.5V13C13.5 13.1326 13.4473 13.2598 13.3536 13.3536C13.2598 13.4473 13.1326 13.5 13 13.5Z"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_2"
+              d="M5.88086 9.38123L7.99961 11.5L10.1184 9.38123"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_3"
+              d="M8 6.5V11.5"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_4"
+              d="M2.5 4.5H13.5"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+        </svg>
+      </div>
+    ),
+    activeIcon: (
+      <div className="relative inline-flex">
+       <svg
+          className="w-6 h-6"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g id="Slot &#60;Icon&#62;">
+            <path
+              id="Vector"
+              d="M13 13.5H3C2.86739 13.5 2.74021 13.4473 2.64645 13.3536C2.55268 13.2598 2.5 13.1326 2.5 13V4.5L3.5 2.5H12.5L13.5 4.5V13C13.5 13.1326 13.4473 13.2598 13.3536 13.3536C13.2598 13.4473 13.1326 13.5 13 13.5Z"
+              stroke="#efb703"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_2"
+              d="M5.88086 9.38123L7.99961 11.5L10.1184 9.38123"
+              stroke="#efb703"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_3"
+              d="M8 6.5V11.5"
+              stroke="#efb703"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector_4"
+              d="M2.5 4.5H13.5"
+              stroke="#efb703"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+        </svg>
+      </div>
+    ),
+    route: "/dashboard/requests",
+  },
 ];
 
 export const PartnerCompanySettingsMenu = [

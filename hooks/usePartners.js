@@ -1325,9 +1325,9 @@ const usePartners = () => {
       setProcessing(false);
 
       if (result?.success) {
-        const progress = result?.data["progress"];
+        const data = result?.data;
 
-        if (!progress) {
+        if (!data) {
           //check other things
           return {
             error:

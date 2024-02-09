@@ -1521,7 +1521,6 @@ export const role_types = {
 };
 
 export const role_menu_map = {
-<<<<<<< HEAD
   "superAdmin": [
     "Dashboard",
     "Compliance",
@@ -1545,14 +1544,6 @@ export const role_menu_map = {
     "Contracts"
   ]
 }
-=======
-  superAdmin: ["Dashboard", "Compliance", "Settings", "Contracts"],
-  admin: ["Dashboard", "Compliance", "Settings", "Contracts"],
-  director: ["Contracts"],
-  witness: ["Contracts"],
-  delegate: ["Contracts"],
-};
->>>>>>> 4f258fbea6f36224fc7d6ad203a6243d7794f8da
 
 export const contract_statuses = {
   PROCESSING: "processing",

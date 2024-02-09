@@ -176,7 +176,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
         <>
             <SideDrawer request={request} openDrawer={openDrawer} closeAction={() => closeAction()}>
 
-                <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-scroll">
+                <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-auto">
 
                     <div className="flex space-x-4">
                         <p className="text-white">{request?.request_type}</p>

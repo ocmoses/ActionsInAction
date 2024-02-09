@@ -63,14 +63,14 @@ export default function IPRejection(){
             
         }
 
-        // if(data["licensing-period"].license_period_status == "rejected"){
-        //     //add 
-        //     if(!rejectionArray.includes("licensing_period")){
-        //         rejectionArray.push("licensing_period");
-        //         result = false;
-        //     }
+        if(data["licensing-period"].license_period_status == "rejected"){
+            //add 
+            if(!rejectionArray.includes("licensing_period")){
+                rejectionArray.push("licensing_period");
+                result = false;
+            }
             
-        // }
+        }
 
         if(data["video-file"]?.authorization_video_status == "rejected"){
             //add 
@@ -169,10 +169,10 @@ export default function IPRejection(){
             .then(resp => {
 
                 if(resp.error){
-                    console.log("ERROR", {error: resp.error});
+                    console.log("IP REJECTION ERROR", {error: resp.error});
                 }else{
 
-                    console.log("Rejection ARRAY", rejectionArray)
+                    console.log("REJECTION ARRAY", rejectionArray)
 
                     if(!allApproved(resp.data)){
                         setRejected(rejectionArray);
@@ -180,10 +180,6 @@ export default function IPRejection(){
                     }
 
                     console.log("Rejection Array", rejectionArray);
-
-                    // setContractId(resp.statuses.contract_id);
-
-                    // process(resp.statuses);
 
                 }
 

@@ -1,6 +1,7 @@
 import { apiURL } from "@/app/modules/constants";
 
-const NOTIFICATION_BASE = "https://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/"; 
+const NOTIFICATION_BASE =
+  "https://" + process.env.NEXT_PUBLIC_NOTIFICATION_IP + "/api/";
 
 export const EndPointHeaders = {
   apikey: `${process.env.APIKEY}`,
@@ -23,7 +24,6 @@ export const NextEndPoints = {
   AUTH_ADMIN: "/api/next/users/auth-admin",
 
   GET_NOTIFICATIONS: `/api/next/users/notifications`,
-  
 };
 
 const RemoteEndpoints = {
@@ -71,7 +71,6 @@ const RemoteEndpoints = {
   PARTNER_FILE_UPDATE: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
   FAQ: `${apiURL}/v2/faq/get-faq`,
 
-
   //Notifications
   GET_ALL_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/:partner-portal-uuid/:user-uuid`,
   GET_UNREAD_NOTIFICATIONS: `${NOTIFICATION_BASE}notifications/unread/:partner-portal-uuid/:user-uuid`,
@@ -103,20 +102,20 @@ const RemoteEndpoints = {
   SELECT_SERVICE: `${apiURL}/v2/contract/partner-selects-service-type`,
   SUBMIT_SIGNATORIES: `${apiURL}/v2/contract/select-who-signs-contract`,
   SIGN_CONTRACT: `${apiURL}/v2/contract/sign-contract`,
-  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid/:contract_id`, 
+  CONTRACT_DYNAMIC_CONTENT: `${apiURL}/v2/contract/get-dynamic-content-for-contract/:partner_uuid/:contract_id`,
   DOWNLOAD_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/:type`,
   GET_ALL_CONTRACTS: `${apiURL}/v2/admin/get-all-signed-contracts`,
   GET_CONTRACT_BEING_SIGNED: `${apiURL}/v2/contract/partner-contract-currently-being-signed/:partner_uuid`,
   VERIFY_PARTNER_LINK: `${apiURL}/v2/partner-user/check-link-token/:link`,
   GET_SERVICE_TYPES: `${apiURL}/v2/contract/service-types`,
 
-//Admin Reports
+  //Admin Reports
   PARTNER_STATISTICS: `${apiURL}/v2/reporting/dashboard-stats`,
   PARTNER_LIST: `${apiURL}/v2/reporting/partner-reports`,
   PORTAL_VISITOR_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/portal_visitor`,
   PORTAL_PARTNER_CONTACT_SUBJECTS: `${apiURL}/v2/contact-us/get-contact-subjects/logged_in_partner`,
-  PARTNER_PORTAL_CONTACT_MAIL:`${apiURL}/v2/contact-us/send-contact-message`,
-  UPDATE_ADMIN_USER_ROLE:`${apiURL}/v2/admin/update-admin-user-role`,
+  PARTNER_PORTAL_CONTACT_MAIL: `${apiURL}/v2/contact-us/send-contact-message`,
+  UPDATE_ADMIN_USER_ROLE: `${apiURL}/v2/admin/update-admin-user-role`,
 
   //questionnaire
   GET_QUESTIONNAIRE: `${apiURL}/v2/questionnaire/get-questionnaire`,
@@ -125,10 +124,10 @@ const RemoteEndpoints = {
   GET_ALL_QUESTIONNAIRE_RESPONSE: `${apiURL}/v2/admin/get-all-answered-questionnaire`,
   APPROVE_REJECT_QUESTIONNAIRE: `${apiURL}/v2/admin/approve-reject-questionnaire`,
 
-//service integration
+  //service integration
   DSM_ENDPOINT: `/dashboard/dsm`,
 
-//Grace Period
+  //Grace Period
   PARTNER_LICENSE_VALIDITY_REMAINDER: `${apiURL}/v2/contract/license/get-license-validity-remainder/`,
   PARTNER_LICENSE_GRACE_PERIOD_STATUS: `${apiURL}/v2/contract/license/get-partner-license-grace-period-status/`,
   SUBMIT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/contract/license/submit-license-grace-period-request`,
@@ -174,7 +173,9 @@ const RemoteEndpoints = {
   GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
   GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
 
+  PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`,
 
-  PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`
-}
-export default RemoteEndpoints
+  // VAS
+  GET_VAS_TYPE: `${apiURL}/v2/vas-partner/choose-vas-type`,
+};
+export default RemoteEndpoints;

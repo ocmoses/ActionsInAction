@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { NavLinksMobile } from "./NavLinks";
+import TextInput from "@/app/components/form/TextInput";
+import { useState } from "react";
 
 export default function PopUp({ closePopUp, children }) {
   return (
@@ -146,6 +148,304 @@ export const BrdUpdatesSuccess = ({ closePopUp }) => {
         >
           Got-It!
         </button>
+      </div>
+    </div>
+  );
+};
+
+export const ChooseAggregatorSuccess = ({ closePopUp }) => {
+  return (
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <Image
+        priority
+        src="/assets/icons/check.svg"
+        width={76.71}
+        height={38.32}
+        alt="MTN Nigeria Logo"
+        className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+      />
+      <h2 className="text-white font-mtn-bold text-2xl my-4">
+        Thanks for your submission
+      </h2>
+      <p className=" text-mtn-500 my-5">What’s next?</p>
+      <p className=" text-gray-400">
+        The aggregator (Blue Wale Media) will be notified to complete your
+        onboarding.
+      </p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={closePopUp}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const ForAggregatorSuccess = ({ closePopUp }) => {
+  return (
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <Image
+        priority
+        src="/assets/icons/check.svg"
+        width={76.71}
+        height={38.32}
+        alt="MTN Nigeria Logo"
+        className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+      />
+      <h2 className="text-white font-mtn-bold text-2xl my-4">
+        For Aggregators
+      </h2>
+      <p className=" text-gray-400 max-w-[60%] m-[auto]">
+        Interested in becoming an MTN aggregator? Please contact
+        #VASDigitalProposals@mtn.com
+      </p>
+      <p className=" text-mtn-500 my-5">copy email</p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={closePopUp}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const CRBTSuccess = ({ SuccessOk, category }) => {
+  return (
+    <div className=" flex flex-col justify-center items-center my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <div className="flex justify-center items-center w-[60px] h-[60px] text-[#FFCB03] rounded-full bg-white/20">
+        {category?.icon ? (
+          <Image src={category.icon} alt="" width={40} height={40} />
+        ) : (
+          <></>
+        )}
+      </div>
+      <h2 className="text-white font-mtn-bold text-2xl my-4">For CRBT VAS</h2>
+
+      <p className=" text-gray-400 max-w-[60%] m-[auto]">
+        Interested in becoming a CRBT VAS partner? Please contact
+        #VASHUB.NG@mtn.com
+      </p>
+      <p className=" text-mtn-500 my-5">copy email</p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={() => SuccessOk()}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const ServiceNamePop = ({ close, category }) => {
+  const [serviceName, setServiceName] = useState(null);
+
+  return (
+    <div className=" flex flex-col justify-center items-center my-4 text-center animate-[slide-left_1s_ease-in-out]">
+      <div className="flex flex-none justify-between items-end w-full pl-4 pr-2 pt-6 mb-4">
+        <div></div>
+        <div className="flex justify-center items-center w-[40px] h-[40px] rounded-full bg-white/10">
+          <div
+            onClick={close}
+            className="text-[#999999] cursor-pointer hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h2 className="text-white font-mtn-bold text-2xl my-4">
+        What’s your service name?
+      </h2>
+      <div className="w-full">
+        <TextInput
+          id="servicename"
+          label="Service name"
+          value={serviceName}
+          onChange={(e) => {}}
+        />
+      </div>
+
+      <div className="flex py-8 px-2 space-x-4 justify-end">
+        <button
+          className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => {}}
+        >
+          Cancel
+        </button>
+        <button
+          className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+          onClick={() => {}}
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const AggregatorCard = ({ title, subtitle, checked, onChange }) => {
+  return (
+    <div className="flex flex-row space-x-4 w-full rounded-lg p-4 mb-4 bg-white/10">
+      <div className="flex justify-center items-center w-[45px] h-[40px] rounded-full bg-white/10">
+        <Image
+          priority
+          src="/assets/icons/spark.png"
+          width={20}
+          height={20}
+          alt="spark icon"
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
+        <div className="flex flex-col">
+          <div>
+            <span className="text-white text-[16px]">{title}</span>
+          </div>
+          <p className="text-[#999999] text-[12px]">{subtitle}</p>
+        </div>
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="rounded h-5 w-5 accent-yellow-500"
+        />
+      </div>
+    </div>
+  );
+};
+
+const Card = ({ title, subtitle, checked, onChange }) => {
+  return (
+    <div className="flex flex-row space-x-4 w-full rounded-lg p-4 mb-4 bg-white/10">
+      <div className="flex justify-center items-center w-[45px] h-[40px] rounded-[50%] bg-white/10">
+        {title[0].toUpperCase()}
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
+        <div className="flex flex-col">
+          <div>
+            <span className="text-white text-[16px]">{title}</span>
+          </div>
+          <p className="text-[#999999] text-[12px]">{subtitle}</p>
+        </div>
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="rounded h-5 w-5 accent-yellow-500"
+        />
+      </div>
+    </div>
+  );
+};
+
+export const ChooseAggregator = ({ close, category }) => {
+  const [choosenAggregator, setChoosenAggregator] = useState(null);
+
+  const [selectedCard, setSelectedCard] = useState(null);
+
+  const handleCardSelect = (index) => {
+    setSelectedCard(index);
+  };
+  return (
+    <div className=" flex flex-col justify-center items-start text-start animate-[slide-left_1s_ease-in-out]">
+      <div className="flex flex-none justify-between items-end w-full pl-4 pr-2 pt-6 mb-4">
+        <div></div>
+        <div className="flex justify-center items-center w-[40px] h-[40px] rounded-full bg-white/10">
+          <div
+            onClick={close}
+            className="text-[#999999] cursor-pointer hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h4 className="text-white font-mtn-bold text-2xl">
+        Choose an aggregator
+      </h4>
+      <div className="flex flex-row space-x-1">
+        <p className="text-[12px]">
+          We require VAS partners to register with existing MTN aggregators.
+        </p>
+        <p className="text-[12px] text-mtn"> Learn more.</p>
+      </div>
+      <div className="w-full mt-4">
+        <TextInput
+          id="choosenAggregator"
+          label="Search partners"
+          value={choosenAggregator}
+          onChange={(e) => {}}
+        />
+      </div>
+      <div className="w-full border-b">
+        <AggregatorCard
+          title="I'm an aggregator"
+          subtitle="I’m an existing MTN aggregator"
+          checked={selectedCard === 1}
+          onChange={() => handleCardSelect(1)}
+        />
+      </div>
+      <div className="w-full mt-6">
+        <Card
+          title="Lottery"
+          subtitle="Help text describing lotery VAS service"
+          checked={selectedCard === 2}
+          onChange={() => handleCardSelect(2)}
+        />
+        <Card
+          title="Other VAS"
+          subtitle="Help text describing other VAS service"
+          checked={selectedCard === 3}
+          onChange={() => handleCardSelect(3)}
+        />
+      </div>
+      <div className="flex flex-row py-8 px-2 justify-between w-full items-center">
+        <div></div>
+        <div className="space-x-4">
+          <button
+            className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+            onClick={() => {}}
+          >
+            Cancel
+          </button>
+          <button
+            className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+            onClick={() => {}}
+          >
+            Create
+          </button>
+        </div>
       </div>
     </div>
   );

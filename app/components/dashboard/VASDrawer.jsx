@@ -28,6 +28,7 @@ const Card = ({ title, subtitle, checked, onChange }) => {
 };
 
 export default function VASDrawer({
+  action,
   category,
   setOpenDrawer,
   openDrawer,
@@ -52,7 +53,7 @@ export default function VASDrawer({
     getVasTypes().then((res) => {
       setVasTypes(res.result);
     });
-  }, [category]);
+  }, []);
 
   return (
     <>
@@ -146,7 +147,7 @@ export default function VASDrawer({
                 </div>
               </div>
               <div>
-                <Button label="Get started" />
+                <Button label="Get started" onClick={action} />
               </div>
             </div>
           </section>

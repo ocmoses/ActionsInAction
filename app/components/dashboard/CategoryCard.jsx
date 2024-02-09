@@ -19,24 +19,41 @@ export default function CategoryCard({
   pendingQuestionare = true,
 }) {
   console.log("Card Category", category);
-  console.log("To Fill Questionaire", pendingQuestionare);
-
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [showCRBTSuccess, setCRBTSuccess] = useState(false);
-  const [showServiceNamePop, setServiceNamePop] = useState(false);
+  const [showServiceNamePop, setShowServiceNamePop] = useState(false);
   const [showChooseAggregator, setChooseAggregator] = useState(false);
   const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
     useState(false);
   const [showForAggregatorSuccess, setForAggregatorSuccess] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
-  const [vasData, SetVasData] = useState({
+  const [vasData, setVasData] = useState({
     vas_partner_uuid: "",
     vas_category_uuid: "",
     vas_type_uuid: "",
     service_name: "",
     aggregator_uuid: "",
   });
+
+  const handleService = () => {
+    setOpenDrawer(false);
+    setShowServiceNamePop(true);
+  };
+
+  const hnadleChoose = () => {
+    setShowServiceNamePop(false);
+    setChooseAggregator(true);
+  };
+
+  const hnadleAggregatorSuccess = () => {
+    setChooseAggregator(false);
+    setChooseAggregatorSuccess(true);
+  };
+
+  const closeFinish = () => {
+    setChooseAggregatorSuccess(false);
+  };
 
   const handleVasType = (field, value) => {
     setVasData((prevUserData) => ({
@@ -97,6 +114,7 @@ export default function CategoryCard({
       )}
 
       <VASDrawer
+        action={handleService}
         category={category}
         setOpenDrawer={setOpenDrawer}
         openDrawer={openDrawer}
@@ -110,31 +128,19 @@ export default function CategoryCard({
 
       {showServiceNamePop && (
         <PopUp closePopUp={() => {}}>
-          <ServiceNamePop
-            close={() => {
-              setServiceNamePop(false);
-            }}
-          />
+          <ServiceNamePop close={() => {}} action={hnadleChoose} />
         </PopUp>
       )}
 
       {showChooseAggregator && (
         <PopUp closePopUp={() => {}}>
-          <ChooseAggregator
-            close={() => {
-              setChooseAggregator(false);
-            }}
-          />
+          <ChooseAggregator close={() => {}} action={hnadleAggregatorSuccess} />
         </PopUp>
       )}
 
       {showChooseAggregatorSuccess && (
         <PopUp closePopUp={() => {}}>
-          <ChooseAggregatorSuccess
-            close={() => {
-              setChooseAggregatorSuccess(false);
-            }}
-          />
+          <ChooseAggregatorSuccess close={() => {}} action={closeFinish} />
         </PopUp>
       )}
 

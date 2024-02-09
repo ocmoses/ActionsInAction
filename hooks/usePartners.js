@@ -1544,6 +1544,30 @@ const usePartners = () => {
     }
   };
 
+  const getAggregators = async () => {
+    try {
+      setProcessing(true);
+      const aggregatorResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = aggregatorResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
   const getPartnerContractValidityReminder = async (contract_id) => {
     try {
       setProcessing(true);
@@ -1611,6 +1635,7 @@ const usePartners = () => {
     dynamicFileUpload,
     getPartnerContractCurrentlyRunning,
     getVasTypes,
+    getAggregators,
   };
 };
 export default usePartners;

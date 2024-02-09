@@ -424,15 +424,10 @@ export default function GetStarted({ type }) {
             ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
             : null;
 
-<<<<<<< HEAD
     // console.log("Location is: ", location);
 
     if (location !== "/dashboard" && location != null) {
         window.location = location;
-=======
-    if (location != "/dashboard" && location != null) {
-      window.location = location;
->>>>>>> 4f258fbea6f36224fc7d6ad203a6243d7794f8da
     }
 }, [user]);
 

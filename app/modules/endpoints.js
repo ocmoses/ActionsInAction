@@ -175,6 +175,7 @@ const RemoteEndpoints = {
   PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`,
 
   // VAS
-  GET_VAS_TYPE: `${apiURL}/v2/vas-partner/choose-vas-type`,
+  GET_VAS_TYPE: `${apiURL}/v2/vas-partner/vas-type`,
+  GET_AGGREGATOR: `${apiURL}/v2/vas-partner/aggregators`,
 };
 export default RemoteEndpoints;

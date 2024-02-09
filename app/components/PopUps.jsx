@@ -3,6 +3,7 @@ import Image from "next/image";
 import { NavLinksMobile } from "./NavLinks";
 import TextInput from "@/app/components/form/TextInput";
 import { useState } from "react";
+import usePartners from "@/hooks/usePartners";
 
 export default function PopUp({ closePopUp, children }) {
   return (
@@ -153,7 +154,7 @@ export const BrdUpdatesSuccess = ({ closePopUp }) => {
   );
 };
 
-export const ChooseAggregatorSuccess = ({ closePopUp }) => {
+export const ChooseAggregatorSuccess = ({ action, closePopUp }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <Image
@@ -175,7 +176,7 @@ export const ChooseAggregatorSuccess = ({ closePopUp }) => {
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={closePopUp}
+          onClick={action}
         >
           Got-It!
         </button>
@@ -244,7 +245,7 @@ export const CRBTSuccess = ({ SuccessOk, category }) => {
   );
 };
 
-export const ServiceNamePop = ({ close, category }) => {
+export const ServiceNamePop = ({ action, close, category }) => {
   const [serviceName, setServiceName] = useState(null);
 
   return (
@@ -294,7 +295,7 @@ export const ServiceNamePop = ({ close, category }) => {
         </button>
         <button
           className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
-          onClick={() => {}}
+          onClick={action}
         >
           Create
         </button>
@@ -357,14 +358,19 @@ const Card = ({ title, subtitle, checked, onChange }) => {
   );
 };
 
-export const ChooseAggregator = ({ close, category }) => {
+export const ChooseAggregator = ({ action, close, category }) => {
+  const { getAggregators } = usePartners();
+
   const [choosenAggregator, setChoosenAggregator] = useState(null);
 
   const [selectedCard, setSelectedCard] = useState(null);
 
+  const [aggregators, setAggregators] = useState([]);
+
   const handleCardSelect = (index) => {
     setSelectedCard(index);
   };
+
   return (
     <div className=" flex flex-col justify-center items-start text-start animate-[slide-left_1s_ease-in-out]">
       <div className="flex flex-none justify-between items-end w-full pl-4 pr-2 pt-6 mb-4">
@@ -418,14 +424,14 @@ export const ChooseAggregator = ({ close, category }) => {
       </div>
       <div className="w-full mt-6">
         <Card
-          title="Lottery"
-          subtitle="Help text describing lotery VAS service"
+          title="Beta Zoo Communications"
+          subtitle="catalogapp.io"
           checked={selectedCard === 2}
           onChange={() => handleCardSelect(2)}
         />
         <Card
-          title="Other VAS"
-          subtitle="Help text describing other VAS service"
+          title="Beta Zoo Communications"
+          subtitle="catalogapp.io"
           checked={selectedCard === 3}
           onChange={() => handleCardSelect(3)}
         />
@@ -441,7 +447,7 @@ export const ChooseAggregator = ({ close, category }) => {
           </button>
           <button
             className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
-            onClick={() => {}}
+            onClick={action}
           >
             Create
           </button>

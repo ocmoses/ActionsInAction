@@ -91,6 +91,10 @@ export default function GetStarted({ type }) {
   const [tmpCat, setTmpCat] = useState(null);
   const [isOnboarding, setIsOnboarding] = useState(false);
 
+  const [showRechooseAggregator, setRechooseAggregator] = useState(true);
+  const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
+    useState(false);
+
   const { setForm, setProcessing, setActiveCategory } = useProcessing();
 
   const [{ errors, setError, success, setSuccess, clearErrors }] =
@@ -411,6 +415,10 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
+  const dismiss = () => {
+    setRechooseAggregator(false);
+  }
+
   useEffect(() => {
     if (user && role_menu_map[user?.role][0] == "Dashboard") {
       setHasdashboard(true);
@@ -588,10 +596,10 @@ export default function GetStarted({ type }) {
                 )}
 
                 {/* //TODO: implement conditionl rendering */}
-                <ChooseAggregatorCard />
+                {showRechooseAggregator && <ChooseAggregatorCard dismissAction={dismiss} />}
 
                 {/* //TODO: implement conditionl rendering */}
-                <ChooseAggregatorSuccessCard />
+                {showChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
 
                 <ServiceConfigurationReadyAlert />
 

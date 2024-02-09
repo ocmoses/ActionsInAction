@@ -134,6 +134,8 @@ export default function IPDrawer({
   const processDynamicFields = (data) => {
     setDynamicResponse(data);
 
+    console.log("DYNAMIC SHIT", dynamicResponse)
+
     // console.log("DYNAMIC SHIT", dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"])
 
     let dynamicFields = [];
@@ -157,19 +159,19 @@ export default function IPDrawer({
       dynamicFields.push([
         data.request_name_two,
         "two",
-        data[data.request_name_one[data.request_name_one]],
+        data[data.request_name_two[data.request_name_two]],
       ]);
     }
 
     if (
-      data.request_name_twothree &&
+      data.request_name_three &&
       (data[data.request_name_three] + "_status" == null || "approved")
     ) {
       setHasDynamicField(true);
       dynamicFields.push([
         data.request_name_three,
         "three",
-        data[data.request_name_one[data.request_name_one]],
+        data[data.request_name_three[data.request_name_three]],
       ]);
     }
 
@@ -2902,7 +2904,7 @@ export default function IPDrawer({
               </div>
             )}
 
-          {/* Additional Requirement two */}
+          {/* Additional Requirement three */}
           {hasDynamicField &&
             dynamicFields.find((field) => field[1] == "three") != null && (
               <div className="flex space-x-2 items-start w-full">

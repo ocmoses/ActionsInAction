@@ -479,7 +479,7 @@ export default function IPDrawer({
     //call endpoint to remove dynamic field
     let data = { partner_uuid: request?.partner_uuid, request_name: fieldName };
     removeDynamicField(data)
-      .then((resp) => showSuccess(resp.message))
+      .then((resp) => {console.log("REMOVE FIELD RESPONSE", resp); showSuccess(resp.message) })
       .catch((error) => setError({ error: error.response.data.message }));
   };
 
@@ -706,7 +706,7 @@ export default function IPDrawer({
 
                         <div
                           className="text-red-500 cursor-pointer"
-                          onClick={deleteDynamicField(dynamicFieldName)}
+                          onClick={() => deleteDynamicField(dynamicFieldName)}
                         >
                           Remove
                         </div>
@@ -2786,7 +2786,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[0][0]}
+                      {dynamicFields[1][0]}
                     </span>
 
                     <span
@@ -2942,7 +2942,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[0][0]}
+                      {dynamicFields[2][0]}
                     </span>
 
                     <span

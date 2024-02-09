@@ -15,6 +15,8 @@ import { CompanyInitial, FileUploadIcon,
   InfoIcon, } from "@/app/components/Icons";
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 
+import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
+
 export default function FilteringFlyout() {
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
@@ -392,9 +394,8 @@ export default function FilteringFlyout() {
 
 
 export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
-  useEffect(() => {
-   console.log('partnerDetails', partnerDetails);
-  }, [partnerDetails]);
+  const [aggregatorComplianceFormFlyout, setAggregatorComplianceFormFlyout] = useState(false);
+
   return (
     <>
       <main
@@ -437,7 +438,9 @@ export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
                       </div>
 
                       <div className="flex flex-col gap-4 justify-between items-end">
-                        <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-mtn-300 py-2 px-3 text-[11px] text-black text-center">
+                        <div 
+                        onClick={() => setAggregatorComplianceFormFlyout(true)}
+                        className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-mtn-300 py-2 px-3 text-[11px] text-black text-center">
                           Finish up
                         </div>
                       </div>
@@ -494,6 +497,14 @@ export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
           </div>
         </div>
       </main>
+
+
+      {aggregatorComplianceFormFlyout && (
+          <AggregatorComplianceModal
+            closeAggregatorComplianceFormFlyout={() => setAggregatorComplianceFormFlyout(false)}
+            partnerDetails={partnerDetails}
+          />
+        )}
     </>
   );
 };

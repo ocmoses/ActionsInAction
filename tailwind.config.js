@@ -13,6 +13,7 @@ module.exports = {
       'zoom-in': 'zoom-in 0.5s ease-in',
       'fade-in': 'fadeIn 0.5s ease-in',
       'slide-left': 'slide-left 0.5s ease-in',
+      'slide-right': 'slide-right 0.5s ease-in',
     },
     keyframes: {
       'slide-up-fade': {
@@ -33,6 +34,10 @@ module.exports = {
         },
         'slide-left': {
           '0%': { opacity: 0, transform: 'translateX(20px)' },
+          '100%': { opacity: 1, transform: 'translateX(0)' },
+        },
+        'slide-right': {
+          '0%': { opacity: 0, transform: 'translateX(-20px)' },
           '100%': { opacity: 1, transform: 'translateX(0)' },
         },
       },

@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 
 function Login({ params }) {
   const router = useRouter();
-  const { setToken, setAdmin, setCategories } = useAdmins();
+  const { setToken, setAdmin, setCategories, setApprovals } = useAdmins();
   const { processing, setProcessing, setForm } = useProcessing();
   const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
     {}
@@ -57,6 +57,7 @@ function Login({ params }) {
     });
     const result = await response.json();
     const { data: Data, error } = result;
+    // console.log("DATA__", Data);
     if (error) {
       setProcessing(false);
       return setError({ login: error });
@@ -64,6 +65,8 @@ function Login({ params }) {
     setToken(Data?.user.token);
     setAdmin(Data?.user.user);
     setCategories(Data?.categories);
+    setApprovals(Data?.user.user.department_privileges);
+
     const redirect =
       params?.length && params[0] !== "login"
         ? `/${params.join("/")}`

@@ -12,13 +12,20 @@ export default function useFileViewer(){
     const {user} = useUsers();
     const {admin} = useAdmins();
 
-    console.log("USER FROM PREVIEW: ", user);
+    let token = "";
+    
+    if(!admin){
+        token = user.token;
+    }else{
+        token = admin.token;
+    }
+
+    // console.log("USER FROM PREVIEW: ", user);
     console.log("ADMIN FROM PREVIEW: ", admin);
 
     const [fileViewer, setFileViewer] = useState(null);
     
     const previewFile = async (file) => {
-
 
         try {
             const response = await fetch(
@@ -29,9 +36,9 @@ export default function useFileViewer(){
                 method: 'GET',
                 headers: {
                     apikey: process.env.NEXT_PUBLIC_APIKEY,
-                    token: user.token,
-                    // "Content-Type": "application/json",
-                    Authorization: `bearer ${user.token}`,
+                    token: token,
+                    "Content-Type": "application/octet-stream",
+                    Authorization: `bearer ${token}`,
                 },
             }
             );
@@ -40,7 +47,7 @@ export default function useFileViewer(){
             return {
                 error: "This request has no response available",
             };
-            const result = await response.json();
+            const result = await response.blob();
 
             console.log("FILE PREVIEW RESPONSE", result);
 

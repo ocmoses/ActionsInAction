@@ -1,57 +1,41 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
-  getPartnerInitials,
-  filterPartner,
-  Util,
-  titleCase,
   getInitials,
+  ellipsify,
+  capitalizeFirst,
 } from "@/app/modules/utilities";
-import {
-  status_type,
-  statusOptions,
-  request_types,
-  docPrefix,
-} from "@/app/modules/constants";
-import { PageRoutes } from "@/app/modules/menu";
+import { request_types, docPrefix } from "@/app/modules/constants";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
 import useAdmins from "@/hooks/useAdmins";
 import useErrors from "@/hooks/useErrors";
-import FormErrors from "@/app/components/FormErrors";
 import moment from "moment";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import useApp from "@/hooks/useApp";
-import { ellipsify, capitalizeFirst } from "@/app/modules/utilities";
-import TextInput from "@/app/components/form/TextInput";
 import ComplianceDrawer from "@/app/components/dashboard/ComplianceDrawer";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 import RevenueShareDrawer from "@/app/components/drawers/RevenueShareDrawer";
 import ChangeOrderDrawer from "@/app/components/drawers/ChangeOrderDrawer";
 import IPDrawer from "@/app/components/drawers/IPDrawer";
-
 import Confirm from "@/app/components/Confirm";
 import Success from "@/app/components/toasts/Success";
 import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
-
 import FileViewer from "@/app/components/modals/FileViewer";
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 import {
   GracePeriodAdminFlyOut,
   LicenseRenewalAdminFlyout,
 } from "@/app/components/dashboard/compliance/GracePeriodComponent";
-import ShortCodeAlert, {
-  ShortCodeFlyOut,
-} from "@/app/components/RequestComponent";
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+import { ShortCodeFlyOut } from "@/app/components/RequestComponent";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 export default function Requests() {
   const {
     getAllBoardResolutionDocuments,
     approving,
+    approvals,
     setApproving,
     approveOrRejectBrd,
     getAllQuestionnaire,
@@ -72,7 +56,7 @@ export default function Requests() {
   const successAction = () =>
     setTimeout(() => {
       setSuccessToast(false);
-      loadAllRequest();
+      location.reload();
     }, 3000);
 
   const [approve, setApprove] = useState(false);
@@ -110,7 +94,7 @@ export default function Requests() {
       : "Request Approval";
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const { is_previewing_doc, handleCloseModal, setIsPreviewingDoc } = useApp();
+  const { is_previewing_doc, handleCloseModal } = useApp();
 
   const [openRevenueShareDrawer, setOpenRevenueShareDrawer] = useState(false);
   const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
@@ -131,6 +115,10 @@ export default function Requests() {
   const [fileViewer, setFileViewer] = useState(null);
 
   const open = (request) => {
+
+    console.log("Admin can approve", approvals);
+    console.log("selectedRequest?.request_type", selectedRequest?.request_type);
+
     switch (request.request_type) {
       case request_types.REVENUE_SHARE:
         setOpenRevenueShareDrawer(true);
@@ -211,8 +199,6 @@ export default function Requests() {
 
     setRequests(requests);
     setFilteredRequests(requests);
-
-    //console.log("Requests", requests);
 
     setBrds(get_brd_response.brds);
     clearErrors();
@@ -401,7 +387,6 @@ export default function Requests() {
     setFetchingGracePeriods(true);
 
     get_grace_period_response = await getAllGracePeriod();
-    // console.log("All get_grace_period_response", get_grace_period_response);
 
     if (get_grace_period_response.error) {
       setError({ error: get_grace_period_response.error });
@@ -460,7 +445,6 @@ export default function Requests() {
     setFetchingLicenseRenewals(true);
 
     get_license_renewal_response = await getAllLicenceRenewal();
-    // console.log("All get_license_renewal_response", get_license_renewal_response);
 
     if (get_license_renewal_response.error) {
       setError({ error: get_license_renewal_response.error });
@@ -519,7 +503,6 @@ export default function Requests() {
     setFetchingShortcodes(true);
 
     get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
-    //console.log("All get_all_partner_shortcodes_response", get_all_partner_shortcodes_response);
 
     if (get_all_partner_shortcodes_response.error) {
       setError({ error: get_all_partner_shortcodes_response.error });
@@ -535,14 +518,9 @@ export default function Requests() {
           request_id: shortcode.request_id,
           created_at: shortcode.created_at,
           approved_on: shortcode.approved_on,
-          shortcode_uuid: shortcode.shortcode_uuid,
-          // rejected_on: shortcode.rejected_on,
           status: shortcode.status,
           short_codes: shortcode.shortcodes,
           shortcodes_not_approved: shortcode.shortcodes_not_approved,
-          // file_name:
-          //   graceperiod.license_grace_period_file?.split("/").pop() ?? "",
-          // file_path: graceperiod.license_grace_period_file ?? "",
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
         });
@@ -621,8 +599,6 @@ export default function Requests() {
     clearErrors();
 
     approvalData.status = "rejected";
-
-    // console.log("RejectData", reason);
 
     if (approving) return;
     setApproving(true);
@@ -705,12 +681,8 @@ export default function Requests() {
   useEffect(() => {
     setProcessing(false);
     clearErrors();
-    loadAllRequest();
-  }, []);
-
-  const loadAllRequest = () => {
     getAllRequests().then((resp) => setPagedRequests(requests.slice(0, 5)));
-  };
+  }, []);
 
   useEffect(() => {}, [filteredRequests]);
 
@@ -723,156 +695,135 @@ export default function Requests() {
           <div className="flex justify-between items-center mb-10">
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Requests</h2>
-              <span
-                className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md"
-                onClick={() => loadAllRequest()}
-              >
+              <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
                 {filteredRequests?.length}
               </span>
             </div>
           </div>
 
-          {/*errors && errors["error"] && (
-            <div className="mb-6">
-              <FormErrors error={errors["error"]} />
-            </div>
-          )*/}
-          {/*
-             <ShortCodeAlert
-                displayShortCodeAlert={() => setDisplayShortCodeAlert(true)}
-              />
-             */}
+          <br />
+          <Filter
+            list={requests}
+            filterAction={setFilteredRequests}
+            keysArray={["company", "email", "request_type", "request_id"]}
+            statusArray={["approved", "rejected", "not_approved"]}
+          />
 
-          <>
-            <Filter
-              list={requests}
-              filterAction={setFilteredRequests}
-              keysArray={["company", "email", "request_type", "request_id"]}
-              statusArray={["approved", "rejected", "not_approved"]}
-            />
+          <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
+            <table className="table w-full transparent">
+              <tbody>
+                {/* head */}
+                <tr className="w-full bg-white/20 rounded-[5px]">
+                  <th>
+                    <span className="text-[13px]">Company</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Request type</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Request ID</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Request Date</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]">Status</span>
+                  </th>
+                  <th>
+                    <span className="text-[13px]"></span>
+                  </th>
+                </tr>
 
-            {errors && errors["error"] && (
-              <div className="mb-6">
-                <FormErrors error={errors["error"]} />
-              </div>
-            )}
-
-            <div className="rounded-[17px] border-1 border-white/20 overflow-x-auto">
-              <table className="table w-full transparent ">
-                <tbody>
-                  {/* head */}
-                  <tr className="w-full bg-white/20 rounded-[5px]">
-                    <th>
-                      <span className="text-[13px]">Company</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Request type</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Request ID</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Request Date</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]">Status</span>
-                    </th>
-                    <th>
-                      <span className="text-[13px]"></span>
-                    </th>
-                  </tr>
-
-                  {pagedRequests &&
-                    pagedRequests.length > 0 &&
-                    pagedRequests.map((request) => (
-                      <tr
-                        className="border-b border-b-white/10 cursor-pointer bg-transparent"
-                        key={request.uuid}
-                      >
-                        {/* Company */}
-                        <td>
-                          <div className="flex items-center space-x-3">
-                            <div className="flex items-center font-bold space-x-4">
-                              <CompanyInitial
-                                initials={getInitials(
-                                  request.company
-                                ).toUpperCase()}
-                                email={request.email}
-                              />
-                              <div className="flex flex-col">
-                                <p>{request.company}</p>
-                                {request.email && (
-                                  <span className="text-sm text-gray-500">
-                                    {request.email}
-                                  </span>
-                                )}
-                              </div>
+                {pagedRequests &&
+                  pagedRequests.length > 0 &&
+                  pagedRequests.map((request) => (
+                    <tr
+                      className="border-b border-b-white/10 cursor-pointer bg-transparent"
+                      key={request.uuid}
+                    >
+                      {/* Company */}
+                      <td>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center font-bold space-x-4">
+                            <CompanyInitial
+                              initials={getInitials(
+                                request.company
+                              ).toUpperCase()}
+                              email={request.email}
+                            />
+                            <div className="flex flex-col">
+                              <p>{request.company}</p>
+                              {request.email && (
+                                <span className="text-sm text-gray-500">
+                                  {request.email}
+                                </span>
+                              )}
                             </div>
                           </div>
-                        </td>
-                        {/* Request type */}
-                        <td>
-                          <div className="flex gap-0 flex-col">
-                            <span className="text-white text-sm">
-                              {request.request_type}
-                            </span>
-                          </div>
-                        </td>
-                        {/* Request ID */}
-                        <td>
-                          <div className="flex gap-0 flex-col">
-                            <span className="text-white">
-                              {request.request_id}
-                            </span>
-                          </div>
-                        </td>
-                        {/* Request Date */}
-                        <td>
-                          <div>
-                            {moment(request.created_at ?? moment()).format(
-                              "MMM YYYY"
-                            )}
-                          </div>
-                        </td>
-                        {/* Status */}
-                        <td>
-                          <div
-                            className={` py-1 px-2 rounded text-white inline-flex text-sm ${
-                              request.status.toLowerCase() == "rejected"
-                                ? "bg-red-700/50"
-                                : request.status.toLowerCase() == "approved"
-                                ? "bg-green-900/50"
-                                : "bg-white/20"
-                            }`}
-                          >
-                            {capitalizeFirst(request.status.replace("_", " "))}
-                          </div>
-                        </td>
-                        {/* Action */}
-                        <td>
-                          <span
-                            onClick={() => {
-                              setSelectedRequest(request);
-                              open(request);
-                              console.log("selectedRequest", request);
-                            }}
-                            className="text-yellow-600 cursor-pointer"
-                          >
-                            Review
+                        </div>
+                      </td>
+                      {/* Request type */}
+                      <td>
+                        <div className="flex gap-0 flex-col">
+                          <span className="text-white text-sm">
+                            {request.request_type}
                           </span>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                        </div>
+                      </td>
+                      {/* Request ID */}
+                      <td>
+                        <div className="flex gap-0 flex-col">
+                          <span className="text-white">
+                            {request.request_id}
+                          </span>
+                        </div>
+                      </td>
+                      {/* Request Date */}
+                      <td>
+                        <div>
+                          {moment(request.created_at ?? moment()).format(
+                            "MMM YYYY"
+                          )}
+                        </div>
+                      </td>
+                      {/* Status */}
+                      <td>
+                        <div
+                          className={` py-1 px-2 rounded text-white inline-flex text-sm ${
+                            request.status.toLowerCase() == "rejected"
+                              ? "bg-red-700/50"
+                              : request.status.toLowerCase() == "approved"
+                              ? "bg-green-900/50"
+                              : "bg-white/20"
+                          }`}
+                        >
+                          {capitalizeFirst(request.status.replace("_", " "))}
+                        </div>
+                      </td>
+                      {/* Action */}
+                      <td>
+                        <span
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            open(request);
+                            console.log("selectedRequest", request);
+                          }}
+                          className="text-yellow-600 cursor-pointer"
+                        >
+                          Review
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
 
-              {filteredRequests.length === 0 && pagedRequests.length === 0 ? (
-                <EmptyTable list={"Requests"} />
-              ) : (
-                <TablePager list={filteredRequests} action={setPagedRequests} />
-              )}
-            </div>
-          </>
+            {filteredRequests.length === 0 && pagedRequests.length === 0 ? (
+              <EmptyTable list={"Requests"} />
+            ) : (
+              <TablePager list={filteredRequests} action={setPagedRequests} />
+            )}
+          </div>
         </div>
       </div>
 
@@ -951,7 +902,12 @@ export default function Requests() {
           </div>
 
           <div className="flex h-full items-center px-2 w-32 ml-auto">
-            {selectedRequest?.status != "approved" &&
+            {approvals && 
+            ((selectedRequest?.request_type == request_types.BOARD_RESOLUTION && 
+            approvals.can_approve.includes("board_resolution_document")) || 
+            (selectedRequest?.request_type == request_types.SUPPLIER_QUESTION && 
+            approvals.can_approve.includes("questionnaire")) ) && 
+            selectedRequest?.status != "approved" &&
               selectedRequest?.status != "rejected" && (
                 <>
                   <div
@@ -1056,12 +1012,6 @@ export default function Requests() {
             </div>
           </div>
         )}
-
-        {/*errors && errors["error"] && (
-          <div className="mb-6 ml-8">
-            <FormErrors error={errors["error"]} />
-          </div>
-        )*/}
       </ComplianceDrawer>
 
       {selectedRequest?.request_type == request_types.REVENUE_SHARE && (
@@ -1116,8 +1066,6 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
-            loadAllRequest={loadAllRequest}
-            successAction={successAction}
           />
         )}
 

@@ -28,6 +28,9 @@ export default function IPDrawer({
     getDynamicFields,
   } = useAdmins();
 
+  //Too bad I can't use approvals here. 
+  let admin_approvals = useAdmins().approvals;
+
   const ipTypes = {
     CONTENT_OWNER: "content_owner",
     AGENT_AND_CONTENT: "agent_and_content",
@@ -3112,6 +3115,10 @@ export default function IPDrawer({
   }
 
   function ApprovalActions() {
+    if(!admin_approvals.can_approve.includes("ip_compliance")){
+      return <></>
+    }
+
     return declining != request ? (
       <>
         <span

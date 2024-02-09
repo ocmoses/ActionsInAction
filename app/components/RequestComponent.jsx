@@ -61,8 +61,11 @@ function actionDate(targetDate) {
 /////////////////////////////////////////////////////////////////////////////////////
 export const ShortCodeFlyOut = ({
   closeShortCodeFlyOut,
-  selectedRequest
+  selectedRequest,
+  loadAllRequest
 }) => {
+
+  const {approvals} = useAdmins();
 
   const { getSinglePartnerShortcodes } = useAdmins();
   const states = useStoreState((state) => state);
@@ -70,7 +73,7 @@ export const ShortCodeFlyOut = ({
     overview: true,
     activity: false,
   });
-
+  
 
   const [singlePartnerShortcode, setSinglePartnerShortcode] = useState();
   const [approvalStatusList, setApprovalStatusList] = useState([]);
@@ -78,6 +81,15 @@ export const ShortCodeFlyOut = ({
     successMessage: "",
     successToast: false,
   });
+
+  const successAction = () => {
+    setTimeout(() => {
+      setSuccess((prevState) => ({
+        ...prevState,
+        successToast: false,
+      }));
+    }, 3000);
+  };
   
   const get_single_partner_shortcode = async () => {
     try {
@@ -105,10 +117,10 @@ export const ShortCodeFlyOut = ({
 
   useEffect(() => {
     get_single_partner_shortcode();
-    console.log("selectedRequest.shortcode_uuid", selectedRequest.shortcode_uuid);
   }, [selectedRequest]); // Only run the effect when selectedRequest changes
   
   const approvalStatuses = (singlePartnerShortcode) => {
+    console.error("singlePartnerShortcode.lenght", singlePartnerShortcode.lenght);
     const shortcodes = singlePartnerShortcode.shortcodes;
     const notApprovedShortcodes = singlePartnerShortcode.shortcodes_not_approved;
     const statusList = shortcodes.map(code => {
@@ -122,6 +134,7 @@ export const ShortCodeFlyOut = ({
     if (singlePartnerShortcode) {
       setApprovalStatusList(approvalStatuses(singlePartnerShortcode));
     }
+   
   }, [singlePartnerShortcode]);
 
   let [formData, setFormData] = useState({
@@ -135,7 +148,7 @@ export const ShortCodeFlyOut = ({
   const [sendAction, setSendAction] = useState(false);
   const [eachCode, setEachCode] = useState(null);
   
-  const _approve = (code) => {
+  const _approve = (code, count) => {
     setEachCode(code);
     formData.shortcode = code;
     formData.status = "approved";
@@ -157,15 +170,13 @@ export const ShortCodeFlyOut = ({
       );
       success.successMessage=response.data.data.message
       success.successToast=true;
+      loadAllRequest();
       get_single_partner_shortcode();
-
+      
     } catch (err) {
       setSendAction(false);
       success.successMessage=err.response.data.data.message
       success.successToast=true;
-      setTimeout(() => {
-        success.successToast=false;
-      }, 3000);
     }
   };
 
@@ -290,10 +301,11 @@ export const ShortCodeFlyOut = ({
                               fill="#efb703"
                             />
                           ) : (
+                            approvals.can_approve.includes("shortcode_zerorating") && 
                             <button
                               className="flex text-[12px] leading-[20px] gap-2 text-white hover:text-gray-400"
                               title="Approve"
-                              onClick={() => _approve(code.code)}
+                              onClick={() => _approve(code.code, index + 1)}
                               
                             >
                               <svg
@@ -356,6 +368,7 @@ export const ShortCodeFlyOut = ({
       <Success
         message={success.successMessage}
         visible={success.successToast}
+        action={successAction}
       />    
     </>
   );

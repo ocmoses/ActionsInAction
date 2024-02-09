@@ -7,7 +7,7 @@ export default function FileViewer({id, link, closeAction}){
 
   useEffect(() => {
     previewFile(link)
-      .then(resp => {document.querySelector('#' + id + '_frame').srcdoc = resp.data})
+      .then(resp => {document.querySelector('#' + id + '_frame').src = URL.createObjectURL(resp.data); })
       .catch(error => console.log("PREVIEW ERROR: ", error));
   }, []);
 

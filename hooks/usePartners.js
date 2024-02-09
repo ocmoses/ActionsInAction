@@ -124,14 +124,14 @@ const usePartners = () => {
   };
 
   const checkUpdateStatus = (stage) => {
-    const progress = category.profile_stage
-    console.log("PROGRESS", progress)
-    return progress[stage] && parseInt(progress[stage]) ? true : false
-  }
+    const progress = category.profile_stage;
+    console.log("PROGRESS", progress);
+    return progress[stage] && parseInt(progress[stage]) ? true : false;
+  };
 
   const skipStage = (stage) => {
     category.profile_stage.stage = "1";
-  }
+  };
 
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null;
@@ -276,6 +276,7 @@ const usePartners = () => {
         if (userdata.type === "new") return router.push(PageRoutes.getstarted);
         return router.push(PageRoutes.dashboard);
       }
+
       case "userinfo": {
         setProcessing(true);
         const responseUserinfo = await Axios.post(
@@ -1305,11 +1306,10 @@ const usePartners = () => {
               result?.data?.message ??
               "Something went wrong. Please check your connection and try again",
           };
-
-        }        
+        }
 
         return {
-          data
+          data,
         };
       }
       return {
@@ -1437,28 +1437,24 @@ const usePartners = () => {
   const dynamicFileUpload = async (data) => {
     try {
       setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.UPLOAD_DYNAMIC_FIELD}`,
-        {
-          cache: "no-store",
-          next: { revalidate: 120 },
-          method: 'POST',
-          body: data,
-          headers: {
-            apikey: process.env.NEXT_PUBLIC_APIKEY,
-            token: states.users.token,
-            Authorization: `bearer ${states.users.token}`,
-          },
-        }
-      );
-     
-      
-      if (!response)
-      return {
-        error: "This request has no response available",
-      };
+      const response = await fetch(`${RemoteEndpoints.UPLOAD_DYNAMIC_FIELD}`, {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        method: "POST",
+        body: data,
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          token: states.users.token,
+          Authorization: `bearer ${states.users.token}`,
+        },
+      });
 
-      if (response.status === 401 ) {
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
         Logout();
         return;
       }
@@ -1470,11 +1466,11 @@ const usePartners = () => {
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.message;
-        
-        console.log('Uploaded message', message);
+
+        console.log("Uploaded message", message);
 
         return {
-          message
+          message,
         };
       }
       return {
@@ -1516,6 +1512,30 @@ const usePartners = () => {
       );
       setProcessing(false);
       const result = getPartnerContractResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getVasTypes = async () => {
+    try {
+      setProcessing(true);
+      const vasTypeResponse = await axios.get(
+        `${RemoteEndpoints.GET_VAS_TYPE}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = vasTypeResponse.data.data;
       return { result };
     } catch (error) {
       setProcessing(false);
@@ -1588,7 +1608,8 @@ const usePartners = () => {
     ipFileUpload,
     getDynamicField,
     dynamicFileUpload,
-    getPartnerContractCurrentlyRunning
-  }
-}
-export default usePartners
+    getPartnerContractCurrentlyRunning,
+    getVasTypes,
+  };
+};
+export default usePartners;

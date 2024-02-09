@@ -20,8 +20,6 @@ import useUsers from "@/hooks/useUsers";
 
 import LoginOtp from "./otp/LoginOtp";
 
-
-
 function Login({ params }) {
   const router = useRouter();
   const app = useApp();
@@ -31,9 +29,11 @@ function Login({ params }) {
   //console.log("the tempUser is ", tmpuser)
   const { processing, setProcessing, setForm } = useProcessing();
   const [loginProcessing, setLoginProcessing] = useState(false);
-  const [{ errors, setError, removeError, clearErrors, success }] = useErrors({} );
+  const [{ errors, setError, removeError, clearErrors, success }] = useErrors(
+    {}
+  );
   const { clearStore } = useLogout();
-  const {user} = useUsers();
+  const { user } = useUsers();
 
   // console.log("User in LoginPage", user);
 
@@ -45,10 +45,10 @@ function Login({ params }) {
           : ""
         : tmpuser?.email
         ? tmpuser?.email
-        : "elijahu@ebsafr.com",
+        : "elijah.ugwu@mtn.com",
     password: process.env.NODE_ENV === "production" ? "" : "Password1000!",
   });
-  
+
   const [notVerified, setNotVerified] = useState(null);
 
   ///////afoo///////////////////////////////////////////////////////////
@@ -57,15 +57,17 @@ function Login({ params }) {
   /////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    const partnerLoginOtpStatus = JSON.parse(sessionStorage.getItem("partnerLoginOtpStatus"));
-    if (partnerLoginOtpStatus==null) {
+    const partnerLoginOtpStatus = JSON.parse(
+      sessionStorage.getItem("partnerLoginOtpStatus")
+    );
+    if (partnerLoginOtpStatus == null) {
       setGetPartnerLoginOtp(false);
     } else {
       const sessionItems = JSON.parse(sessionStorage.getItem("loginResult"));
       setSessionItems(sessionItems);
       setGetPartnerLoginOtp(true);
     }
-    
+
     setForm(null);
     clearErrors();
     setNotVerified(null);
@@ -126,15 +128,15 @@ function Login({ params }) {
 
     app.setStoreStates(serverSession, loginData?.categories, "login");
     setGetPartnerLoginOtp(true);
-    sessionStorage.setItem("partnerLoginOtpStatus", JSON.stringify("not_confirmed"));
+    sessionStorage.setItem(
+      "partnerLoginOtpStatus",
+      JSON.stringify("not_confirmed")
+    );
     setSessionItems(result);
     sessionStorage.setItem("loginResult", JSON.stringify(result));
   };
 
   const logInWithAuthZero = () => {
-
-    
-
     const redirect =
       params &&
       params?.length &&
@@ -146,7 +148,7 @@ function Login({ params }) {
     router.push(redirect);
     if (params?.includes("getstarted")) app.toggleGetstartedLink(true);
     else app.toggleGetstartedLink(false);
-    
+
     setTimeout(() => {
       location.reload();
     }, 1000);
@@ -154,7 +156,7 @@ function Login({ params }) {
 
   return (
     <>
-      {getPartnerLoginOtp ===false && (
+      {getPartnerLoginOtp === false && (
         <form method="POST" onSubmit={handleLogin}>
           <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">
             <h1 className="flex items-center gap-4 font-mtn-extrabold-italic  text-white">

@@ -1,22 +1,67 @@
 import Image from "next/image";
 import useErrors from "@/hooks/useErrors";
-import {useState} from "react";
+import { useState } from "react";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
+import VASDrawer from "@/app/components/dashboard/VASDrawer";
+import PopUp, {
+  CRBTSuccess,
+  ServiceNamePop,
+  ChooseAggregator,
+  ChooseAggregatorSuccess,
+  ForAggregatorSuccess,
+} from "@/app/components/PopUps";
 
 export default function CategoryCard({
   category,
   setIsOpen,
   setTmpCat,
   disabled,
-  pendingQuestionare=true
+  pendingQuestionare = true,
 }) {
-
   console.log("Card Category", category);
-  console.log("To Fill Questionaire", pendingQuestionare);
-
   const [showQuestionare, setShowQuestionare] = useState(false);
+  const [showCRBTSuccess, setCRBTSuccess] = useState(false);
+  const [showServiceNamePop, setShowServiceNamePop] = useState(false);
+  const [showChooseAggregator, setChooseAggregator] = useState(false);
+  const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
+    useState(false);
+  const [showForAggregatorSuccess, setForAggregatorSuccess] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
-  
+  const [vasData, setVasData] = useState({
+    vas_partner_uuid: "",
+    vas_category_uuid: "",
+    vas_type_uuid: "",
+    service_name: "",
+    aggregator_uuid: "",
+  });
+
+  const handleService = () => {
+    setOpenDrawer(false);
+    setShowServiceNamePop(true);
+  };
+
+  const hnadleChoose = () => {
+    setShowServiceNamePop(false);
+    setChooseAggregator(true);
+  };
+
+  const hnadleAggregatorSuccess = () => {
+    setChooseAggregator(false);
+    setChooseAggregatorSuccess(true);
+  };
+
+  const closeFinish = () => {
+    setChooseAggregatorSuccess(false);
+  };
+
+  const handleVasType = (field, value) => {
+    setVasData((prevUserData) => ({
+      ...prevUserData,
+      [field]: value,
+    }));
+  };
+
   const selectCategory = (category) => {
     clearErrors();
     setTmpCat(category);
@@ -24,14 +69,26 @@ export default function CategoryCard({
   };
   return (
     <>
-      <div 
-        onClick={() => (disabled ? {} : (pendingQuestionare ? setShowQuestionare(true) : selectCategory(category)) )}
-        className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] px-6 py-4 block ${
+      <div
+        onClick={() => {
+          if (disabled) {
+            return;
+          }
+          if (category.category_code == "VAS") {
+            setOpenDrawer(true);
+            return;
+          }
+          if (pendingQuestionare) {
+            setShowQuestionare(true);
+          } else {
+            selectCategory(category);
+          }
+        }}
+        className={`flex gap-6 justify-center md:justify-start w-full max-w-[406.5px] min-h-[140px] px-6 py-4 ${
           disabled
             ? "cursor-not-allowed bg-white/10 text-white/70"
             : "cursor-pointer text-white bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
         } rounded-lg`}
-
         title={`${disabled ? "Coming Soon" : "Click to select"}`}
       >
         <div>
@@ -48,12 +105,54 @@ export default function CategoryCard({
           </p>
         </div>
       </div>
- 
-      {      
-        showQuestionare && 
-        <QuestionnaireModal hide={() => setShowQuestionare(false)} action={() => selectCategory(category)} />
-      }
+
+      {showQuestionare && (
+        <QuestionnaireModal
+          hide={() => setShowQuestionare(false)}
+          action={() => selectCategory(category)}
+        />
+      )}
+
+      <VASDrawer
+        action={handleService}
+        category={category}
+        setOpenDrawer={setOpenDrawer}
+        openDrawer={openDrawer}
+      />
+
+      {showCRBTSuccess && (
+        <PopUp closePopUp={() => {}}>
+          <CRBTSuccess SuccessOk={() => {}} category={category} />
+        </PopUp>
+      )}
+
+      {showServiceNamePop && (
+        <PopUp closePopUp={() => {}}>
+          <ServiceNamePop close={() => {}} action={hnadleChoose} />
+        </PopUp>
+      )}
+
+      {showChooseAggregator && (
+        <PopUp closePopUp={() => {}}>
+          <ChooseAggregator close={() => {}} action={hnadleAggregatorSuccess} />
+        </PopUp>
+      )}
+
+      {showChooseAggregatorSuccess && (
+        <PopUp closePopUp={() => {}}>
+          <ChooseAggregatorSuccess close={() => {}} action={closeFinish} />
+        </PopUp>
+      )}
+
+      {showForAggregatorSuccess && (
+        <PopUp closePopUp={() => {}}>
+          <ForAggregatorSuccess
+            close={() => {
+              setForAggregatorSuccess(false);
+            }}
+          />
+        </PopUp>
+      )}
     </>
-    
   );
 }

@@ -12,6 +12,8 @@ import {
   Loading,
 } from "@/app/components/Icons";
 import { TailSpinPreloader } from "@/app/components/Icons";
+import SelectInput from "@/app/components/form/SelectInput";
+import SelectInputOption from "@/app/components/form/SelectInputOption";
 
 export default function AggregatorComplianceModal({
   closeAggregatorComplianceFormFlyout,
@@ -25,6 +27,13 @@ export default function AggregatorComplianceModal({
     return () => clearTimeout(delayTimer);
   }, []);
 
+  const [currentPanel, setCurrentPanel] = useState({
+    NCCLicensedetails: true,
+    NLRCLicensedetails: false,
+    ShortCodeDetais: false,
+    ReviewAndSubmit: false,
+  });
+
   return (
     <>
       <main className="w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
@@ -37,7 +46,7 @@ export default function AggregatorComplianceModal({
 
         <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
           {!delayedExecution ? (
-            <Loading style="h-[500px]"/>
+            <Loading style="h-[500px]" />
           ) : (
             <>
               <AggregatorComplianceProgressiveNav
@@ -45,17 +54,57 @@ export default function AggregatorComplianceModal({
                   closeAggregatorComplianceFormFlyout
                 }
                 partnerDetails={partnerDetails}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
               />
+
               <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
                 <div className="pt-[50px] w-[100%] h-auto flex justify-center">
-                  <div className="w-[480px] h-auto">
-                    <CompanyDetail
-                      closeAggregatorComplianceFormFlyout={
-                        closeAggregatorComplianceFormFlyout
-                      }
-                      partnerDetails={partnerDetails}
-                    />
-                  </div>
+                 
+                    {currentPanel.NCCLicensedetails && (
+                      <NCCLicensedetails
+                        closeAggregatorComplianceFormFlyout={
+                          closeAggregatorComplianceFormFlyout
+                        }
+                        partnerDetails={partnerDetails}
+                        currentPanel={currentPanel}
+                        setCurrentPanel={setCurrentPanel}
+                      />
+                    )}
+
+                    {currentPanel.NLRCLicensedetails && (
+                      <NLRCLicensedetails
+                        closeAggregatorComplianceFormFlyout={
+                          closeAggregatorComplianceFormFlyout
+                        }
+                        partnerDetails={partnerDetails}
+                        currentPanel={currentPanel}
+                        setCurrentPanel={setCurrentPanel}
+                      />
+                    )}
+
+                    {currentPanel.ShortCodeDetais && (
+                      <ShortCodeDetais
+                        closeAggregatorComplianceFormFlyout={
+                          closeAggregatorComplianceFormFlyout
+                        }
+                        partnerDetails={partnerDetails}
+                        currentPanel={currentPanel}
+                        setCurrentPanel={setCurrentPanel}
+                      />
+                    )}
+
+                    {currentPanel.ReviewAndSubmit && (
+                      <ReviewAndSubmit
+                        closeAggregatorComplianceFormFlyout={
+                          closeAggregatorComplianceFormFlyout
+                        }
+                        partnerDetails={partnerDetails}
+                        currentPanel={currentPanel}
+                        setCurrentPanel={setCurrentPanel}
+                      />
+                    )}
+                
                 </div>
               </div>
             </>
@@ -132,14 +181,39 @@ export const AggregatorComplianceNav = ({
 export const AggregatorComplianceProgressiveNav = ({
   closeAggregatorComplianceFormFlyout,
   partnerDetails,
+  currentPanel,
+  setCurrentPanel,
 }) => {
+  // const [currentPanel, setCurrentPanel] = useState({
+  //   NCCLicensedetails: true,
+  //   NLRCLicensedetails: false,
+  //   ShortCodeDetais: false,
+  //   ReviewAndSubmit: false,
+  // });
   return (
     <>
       <nav className="w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
         <div className="pt-[50px] w-[100%] h-auto flex justify-center">
           <div className="w-[80%] h-auto">
-            <li className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer">
-              <div className="h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ">
+            <li
+              className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer"
+              onClick={() => {
+                if (!currentPanel.NCCLicensedetails) {
+                  setCurrentPanel({
+                    ...currentPanel,
+                    NCCLicensedetails: true,
+                    NLRCLicensedetails: false,
+                    ShortCodeDetais: false,
+                    ReviewAndSubmit: false,
+                  });
+                }
+              }}
+            >
+              <div
+                className={`h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ${
+                  currentPanel.NCCLicensedetails ? "border border-mtn-400" : ""
+                } `}
+              >
                 <svg
                   width="20"
                   height="20"
@@ -165,11 +239,34 @@ export const AggregatorComplianceProgressiveNav = ({
                   />
                 </svg>
               </div>
-              <p className=" group-hover:text-mtn-400">NCC VAS</p>
+              <p
+                className={`group-hover:text-mtn-400 ${
+                  currentPanel.NCCLicensedetails ? "text-mtn-400" : ""
+                } `}
+              >
+                NCC VAS
+              </p>
             </li>
 
-            <li className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer">
-              <div className="h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ">
+            <li
+              className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer"
+              onClick={() => {
+                if (!currentPanel.NLRCLicensedetails) {
+                  setCurrentPanel({
+                    ...currentPanel,
+                    NCCLicensedetails: false,
+                    NLRCLicensedetails: true,
+                    ShortCodeDetais: false,
+                    ReviewAndSubmit: false,
+                  });
+                }
+              }}
+            >
+              <div
+                className={`h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ${
+                  currentPanel.NLRCLicensedetails ? "border border-mtn-400" : ""
+                } `}
+              >
                 <svg
                   width="20"
                   height="20"
@@ -191,11 +288,34 @@ export const AggregatorComplianceProgressiveNav = ({
                   />
                 </svg>
               </div>
-              <p className=" group-hover:text-mtn-400">NLRC Licence</p>
+              <p
+                className={`group-hover:text-mtn-400 ${
+                  currentPanel.NLRCLicensedetails ? "text-mtn-400" : ""
+                } `}
+              >
+                NLRC Licence
+              </p>
             </li>
 
-            <li className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer">
-              <div className="h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ">
+            <li
+              className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer"
+              onClick={() => {
+                if (!currentPanel.ShortCodeDetais) {
+                  setCurrentPanel({
+                    ...currentPanel,
+                    NCCLicensedetails: false,
+                    NLRCLicensedetails: false,
+                    ShortCodeDetais: true,
+                    ReviewAndSubmit: false,
+                  });
+                }
+              }}
+            >
+              <div
+                className={`h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ${
+                  currentPanel.ShortCodeDetais ? "border border-mtn-400" : ""
+                } `}
+              >
                 <svg
                   width="20"
                   height="20"
@@ -240,11 +360,34 @@ export const AggregatorComplianceProgressiveNav = ({
                   </defs>
                 </svg>
               </div>
-              <p className=" group-hover:text-mtn-400">Short Code</p>
+              <p
+                className={`group-hover:text-mtn-400 ${
+                  currentPanel.ShortCodeDetais ? "text-mtn-400" : ""
+                } `}
+              >
+                Short Code
+              </p>
             </li>
 
-            <li className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer">
-              <div className="h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ">
+            <li
+              className="w-[100%] min-h-[50px] flex gap-5 items-center group cursor-pointer"
+              onClick={() => {
+                if (!currentPanel.ReviewAndSubmit) {
+                  setCurrentPanel({
+                    ...currentPanel,
+                    NCCLicensedetails: false,
+                    NLRCLicensedetails: false,
+                    ShortCodeDetais: false,
+                    ReviewAndSubmit: true,
+                  });
+                }
+              }}
+            >
+              <div
+                className={`h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ${
+                  currentPanel.ReviewAndSubmit ? "border border-mtn-400" : ""
+                } `}
+              >
                 <svg
                   width="20"
                   height="20"
@@ -266,7 +409,13 @@ export const AggregatorComplianceProgressiveNav = ({
                   />
                 </svg>
               </div>
-              <p className=" group-hover:text-mtn-400">Review and Submit</p>
+              <p
+                className={`group-hover:text-mtn-400 ${
+                  currentPanel.ReviewAndSubmit ? "text-mtn-400" : ""
+                } `}
+              >
+                Review and Submit
+              </p>
             </li>
           </div>
         </div>
@@ -275,9 +424,11 @@ export const AggregatorComplianceProgressiveNav = ({
   );
 };
 
-export const CompanyDetail = ({
+export const NCCLicensedetails = ({
   closeAggregatorComplianceFormFlyout,
   partnerDetails,
+  currentPanel,
+  setCurrentPanel,
 }) => {
   const [doc, setDoc] = useState(null);
   const [fileSize, setfFileSize] = useState(null);
@@ -321,125 +472,577 @@ export const CompanyDetail = ({
 
   return (
     <>
-      <div className="mb-12 w-full flex flex-col gap-3">
-        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-          Your company's NCC License details
-        </h1>
-        <p>Let’s get you started, Choose a partner category</p>
+      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+        <div className="mb-5 w-full flex flex-col gap-3">
+          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+            Your company's NCC License details
+          </h1>
+          <p>Let’s get you started, Choose a partner category</p>
+        </div>
+
+        <TextInput
+          id="vas_license_id"
+          label="VAS License ID"
+          type="text"
+          name="vas_license_id"
+        />
+
+        <div className="flex gap-3">
+          <div className="w-[50%]">
+            <TextInput
+              id="license_issue_date"
+              label="Issuing Date"
+              type="date"
+              name="license_issue_date"
+            />
+          </div>
+          <div className="w-[50%]">
+            <TextInput
+              id="license_expiring_date"
+              label="Expiry Date"
+              type="date"
+              name="license_expiring_date"
+            />
+          </div>
+        </div>
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+            <label>
+              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  name="files"
+                  id="files"
+                  accept=".pdf,.PDF"
+                />
+
+                {!doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadIcon />
+                      </div>
+
+                      <div className="text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            NCC VAS License
+                          </span>
+                          <br />
+                          Drag and drop here or
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadActiveIcon />
+                      </div>
+
+                      <div className="flex text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            {doc?.file_name}
+                          </span>
+                          <br />
+                          {doc ? getFileSizeText(doc.file_size) : "0"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
+        </FileInputWrapper>
+
+        <div className="flex gap-2 justify-start mt-4">
+          <button
+            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+            onClick={closeAggregatorComplianceFormFlyout}
+          >
+            &lt; Back
+          </button>
+
+          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={() => {
+              setCurrentPanel({
+                ...currentPanel,
+                NCCLicensedetails: false,
+                NLRCLicensedetails: true,
+                ShortCodeDetais: false,
+                ReviewAndSubmit: false,
+              });
+          }}>
+            Next &gt;
+          </button>
+        </div>
       </div>
+    </>
+  );
+};
 
-      <TextInput
-        id="vas_license_id"
-        label="VAS License ID"
-        type="text"
-        name="vas_license_id"
-      />
+export const NLRCLicensedetails = ({
+  closeAggregatorComplianceFormFlyout,
+  partnerDetails,
+  currentPanel,
+  setCurrentPanel,
+}) => {
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
+  const [formData, setFormData] = useState({
+    partner_uuid: null,
+    file: null,
+  });
 
-      <div className="flex gap-3">
-        <div className="w-[50%]">
-          <TextInput
-            id="license_issue_date"
-            label="Issuing Date"
-            type="date"
-            name="license_issue_date"
-          />
+  const [errorMessage, setErrorMessage] = useState("");
+  const [sendAction, setSendAction] = useState(false);
+
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+  const handleFileChange = (e) => {
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setErrorMessage("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setErrorMessage("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
+
+  return (
+    <>
+      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+        <div className="mb-5 w-full flex flex-col gap-3">
+          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+            Provide your company's NLRC License details
+          </h1>
         </div>
-        <div className="w-[50%]">
-          <TextInput
-            id="license_expiring_date"
-            label="Expiry Date"
-            type="date"
-            name="license_expiring_date"
-          />
+
+        <SelectInput
+          id="subject"
+          label="Licence Type"
+          name="subject"
+        ></SelectInput>
+
+        <TextInput
+          id="vas_license_id"
+          label="NLRC License ID"
+          type="text"
+          name="vas_license_id"
+        />
+
+        <div className="flex gap-3">
+          <div className="w-[50%]">
+            <TextInput
+              id="license_issue_date"
+              label="Issuing Date"
+              type="date"
+              name="license_issue_date"
+            />
+          </div>
+          <div className="w-[50%]">
+            <TextInput
+              id="license_expiring_date"
+              label="Expiry Date"
+              type="date"
+              name="license_expiring_date"
+            />
+          </div>
+        </div>
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+            <label>
+              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  name="files"
+                  id="files"
+                  accept=".pdf,.PDF"
+                />
+
+                {!doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadIcon />
+                      </div>
+
+                      <div className="text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            NLRC VAS License
+                          </span>
+                          <br />
+                          Drag and drop here or
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadActiveIcon />
+                      </div>
+
+                      <div className="flex text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            {doc?.file_name}
+                          </span>
+                          <br />
+                          {doc ? getFileSizeText(doc.file_size) : "0"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
+        </FileInputWrapper>
+
+        <div className="flex gap-2 justify-start mt-4">
+          <button
+            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+            onClick={() => {
+              setCurrentPanel({
+                ...currentPanel,
+                NCCLicensedetails: true,
+                NLRCLicensedetails: false,
+                ShortCodeDetais: false,
+                ReviewAndSubmit: false,
+              });
+             }}
+          >
+            &lt; Back
+          </button>
+
+          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full" 
+          onClick={() => {
+              setCurrentPanel({
+                ...currentPanel,
+                NCCLicensedetails: false,
+                NLRCLicensedetails: false,
+                ShortCodeDetais: true,
+                ReviewAndSubmit: false,
+              });
+             }} >
+            Next &gt;
+          </button>
         </div>
       </div>
-      <FileInputWrapper>
-        <div className="p-[8px] w-full rounded-[10px]">
-          <label>
-            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                name="files"
-                id="files"
-                accept=".pdf,.PDF"
-              />
+    </>
+  );
+};
 
-              {!doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadIcon />
-                    </div>
+export const ShortCodeDetais = ({
+  closeAggregatorComplianceFormFlyout,
+  partnerDetails,
+  currentPanel,
+  setCurrentPanel,
+}) => {
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
+  const [formData, setFormData] = useState({
+    partner_uuid: null,
+    file: null,
+  });
 
-                    <div className="text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          NCC VAS License
-                        </span>
-                        <br />
-                        Drag and drop here or
-                      </p>
-                    </div>
-                  </div>
+  const [errorMessage, setErrorMessage] = useState("");
+  const [sendAction, setSendAction] = useState(false);
 
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-              {doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadActiveIcon />
-                    </div>
+  useEffect(() => {
+    setDoc(null);
+  }, []);
 
-                    <div className="flex text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          {doc?.file_name}
-                        </span>
-                        <br />
-                        {doc ? getFileSizeText(doc.file_size) : "0"}
-                      </p>
-                    </div>
-                  </div>
+  const handleFileChange = (e) => {
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
 
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </label>
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setErrorMessage("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setErrorMessage("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
+
+  return (
+    <>
+      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+        <div className="mb-5 w-full flex flex-col gap-3">
+          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+            Provide your company's short code details
+          </h1>
+          <p>Let’s get you started, Choose a partner category</p>
         </div>
-      </FileInputWrapper>
 
-      <div className="flex gap-2 justify-start mt-4">
-        <button
-          className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-          onClick={closeAggregatorComplianceFormFlyout}
-        >
-          &lt; Back
-        </button>
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+            <label>
+              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  name="files"
+                  id="files"
+                  accept=".pdf,.PDF"
+                />
 
-        <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full">
-          Next &gt;
-        </button>
+                {!doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadIcon />
+                      </div>
+
+                      <div className="text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            Short Code Document
+                          </span>
+                          <br />
+                          Drag and drop here or
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {doc?.file_name && (
+                  <div
+                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                  >
+                    <div className="flex flex-row gap-3">
+                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                        <FileUploadActiveIcon />
+                      </div>
+
+                      <div className="flex text-[#999999]">
+                        <p>
+                          Upload <br />
+                          <span className="text-white font-mtn-bold">
+                            {doc?.file_name}
+                          </span>
+                          <br />
+                          {doc ? getFileSizeText(doc.file_size) : "0"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 justify-between items-end">
+                      <InfoIcon width={16} height={16} iconClass="" />
+                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                        Choose file
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
+        </FileInputWrapper>
+
+        <div className="flex gap-3 mb-[-20px]">
+          <div className="w-[50%]">
+            <TextInput
+              id="license_issue_date"
+              label="Issuing Date"
+              type="date"
+              name="license_issue_date"
+            />
+          </div>
+          <div className="w-[50%]">
+            <TextInput
+              id="license_expiring_date"
+              label="Expiry Date"
+              type="date"
+              name="license_expiring_date"
+            />
+          </div>
+        </div>
+
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+            <p>Enter applicable short codes</p>
+           
+          </div>
+        </FileInputWrapper>
+
+        <div className="flex gap-2 justify-start">
+          <button
+            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+            onClick={() => {
+              setCurrentPanel({
+                ...currentPanel,
+                NCCLicensedetails: false,
+                NLRCLicensedetails: true,
+                ShortCodeDetais: false,
+                ReviewAndSubmit: false,
+              });
+            }}
+          >
+            &lt; Back
+          </button>
+
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => {
+              setCurrentPanel({
+                ...currentPanel,
+                NCCLicensedetails: false,
+                NLRCLicensedetails: false,
+                ShortCodeDetais: false,
+                ReviewAndSubmit: true,
+              });
+            }}
+          >
+            Next &gt;
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const ReviewAndSubmit = ({
+  closeAggregatorComplianceFormFlyout,
+  partnerDetails,
+  currentPanel,
+  setCurrentPanel,
+}) => {
+  return (
+    <>
+      <div className="max-w-[600px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+        <div className="mb-8 w-full flex flex-col gap-3">
+          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+            Review your application
+          </h1>
+        </div>
+
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+        afoo
+          </div>
+        </FileInputWrapper>
+
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+        afoo
+          </div>
+        </FileInputWrapper>
+
+        <FileInputWrapper>
+          <div className="p-[8px] w-full rounded-[10px]">
+        afoo
+          </div>
+        </FileInputWrapper>
+
+
+        <div className="flex flex-col gap-2  text-center justify-between">
+          <p>
+            By clicking submit application, I/We confirm that the information
+            provided are accurate and truthful.
+          </p>
+          <button
+            className="w-[250px] border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full m-auto"
+            onClick={closeAggregatorComplianceFormFlyout}
+          >
+            Submit Application &gt;
+          </button>
+        </div>
       </div>
     </>
   );

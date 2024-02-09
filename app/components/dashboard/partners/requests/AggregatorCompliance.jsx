@@ -60,51 +60,49 @@ export default function AggregatorComplianceModal({
 
               <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
                 <div className="pt-[50px] w-[100%] h-auto flex justify-center">
-                 
-                    {currentPanel.NCCLicensedetails && (
-                      <NCCLicensedetails
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.NCCLicensedetails && (
+                    <NCCLicensedetails
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.NLRCLicensedetails && (
-                      <NLRCLicensedetails
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.NLRCLicensedetails && (
+                    <NLRCLicensedetails
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.ShortCodeDetais && (
-                      <ShortCodeDetais
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.ShortCodeDetais && (
+                    <ShortCodeDetais
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.ReviewAndSubmit && (
-                      <ReviewAndSubmit
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
-                
+                  {currentPanel.ReviewAndSubmit && (
+                    <ReviewAndSubmit
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
                 </div>
               </div>
             </>
@@ -589,8 +587,9 @@ export const NCCLicensedetails = ({
             &lt; Back
           </button>
 
-          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={() => {
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => {
               setCurrentPanel({
                 ...currentPanel,
                 NCCLicensedetails: false,
@@ -598,7 +597,8 @@ export const NCCLicensedetails = ({
                 ShortCodeDetais: false,
                 ReviewAndSubmit: false,
               });
-          }}>
+            }}
+          >
             Next &gt;
           </button>
         </div>
@@ -780,13 +780,14 @@ export const NLRCLicensedetails = ({
                 ShortCodeDetais: false,
                 ReviewAndSubmit: false,
               });
-             }}
+            }}
           >
             &lt; Back
           </button>
 
-          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full" 
-          onClick={() => {
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => {
               setCurrentPanel({
                 ...currentPanel,
                 NCCLicensedetails: false,
@@ -794,7 +795,8 @@ export const NLRCLicensedetails = ({
                 ShortCodeDetais: true,
                 ReviewAndSubmit: false,
               });
-             }} >
+            }}
+          >
             Next &gt;
           </button>
         </div>
@@ -957,7 +959,6 @@ export const ShortCodeDetais = ({
         <FileInputWrapper>
           <div className="p-[8px] w-full rounded-[10px]">
             <p>Enter applicable short codes</p>
-           
           </div>
         </FileInputWrapper>
 
@@ -1005,7 +1006,7 @@ export const ReviewAndSubmit = ({
 }) => {
   return (
     <>
-      <div className="max-w-[600px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+      <div className="max-w-[650px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-5">
         <div className="mb-8 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
             Review your application
@@ -1013,23 +1014,92 @@ export const ReviewAndSubmit = ({
         </div>
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3>NCC VAS Licence</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
+
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3>NCC VAS Licence</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
+
+
+
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3>NCC VAS Licence</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
-
 
         <div className="flex flex-col gap-2  text-center justify-between">
           <p>

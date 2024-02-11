@@ -129,20 +129,14 @@ const usePartners = () => {
     return progress[stage] && parseInt(progress[stage]) ? true : false;
   };
 
-<<<<<<< HEAD
   const skipStage = async (stageData) => {
-
-    const response = await Axios.post(
-      RemoteEndpoints.SKIPSTAGE,
-      stageData,
-      {
-        apikey: process.env.NEXT_PUBLIC_APIKEY,
-        token: states.users.token,
-        "Content-Type": "application/json",
-        Authorization: `bearer ${states.users.token}`,
-        timeout: process.env.NEXT_PUBLIC_TIMEOUT,
-      }
-    ).catch((e) => {
+    const response = await Axios.post(RemoteEndpoints.SKIPSTAGE, stageData, {
+      apikey: process.env.NEXT_PUBLIC_APIKEY,
+      token: states.users.token,
+      "Content-Type": "application/json",
+      Authorization: `bearer ${states.users.token}`,
+      timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+    }).catch((e) => {
       // console.log("e", e);
       return {
         success: false,
@@ -154,18 +148,10 @@ const usePartners = () => {
 
     console.log("SKIP RESPONSE", response);
 
-    if(response?.success){
-       category.profile_stage.stage = "1";
-       
+    if (response?.success) {
+      category.profile_stage.stage = "1";
     }
-
-   
-  }
-=======
-  const skipStage = (stage) => {
-    category.profile_stage.stage = "1";
   };
->>>>>>> 4f258fbea6f36224fc7d6ad203a6243d7794f8da
 
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null;
@@ -446,7 +432,6 @@ const usePartners = () => {
     }
   };
 
- 
   const resendEmail = async (email, email_type) => {
     setProcessing(true);
 
@@ -1578,12 +1563,15 @@ const usePartners = () => {
     }
   };
 
-  const getAggregators = async () => {
+  const getAggregators = async (uuid) => {
     try {
       setProcessing(true);
       const aggregatorResponse = await axios.get(
         `${RemoteEndpoints.GET_AGGREGATOR}`,
         {
+          params: {
+            vas_partner_uuid: uuid, // "db6ddc9c-b62d-4bea-b8f4-6bce5875f523",
+          },
           headers: {
             cache: "no-store",
             next: { revalidate: 120 },
@@ -1599,6 +1587,50 @@ const usePartners = () => {
     } catch (error) {
       setProcessing(false);
       return { error };
+    }
+  };
+
+  const submitVasPartner = async (data) => {
+    try {
+      setProcessing(true);
+
+      const response = await fetch(`${RemoteEndpoints.SUBMIT_VAS_PARTNER}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          Authorization: `Bearer ${states.users.token}`,
+          token: states.users.token,
+        },
+        body: JSON.stringify(data),
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          Logout();
+          return;
+        }
+        throw new Error("Request failed with status " + response.status);
+      }
+
+      const result = await response.json();
+      setProcessing(false);
+
+      // if (result?.success) {
+      return { result };
+      // } else {
+      //   throw new Error(
+      //     result?.data?.message ||
+      //       "Something went wrong. Please check your connection and try again"
+      //   );
+      // }
+    } catch (error) {
+      return {
+        error:
+          error.message ||
+          "Something went wrong. Please check your connection and try again",
+      };
     }
   };
 
@@ -1670,6 +1702,8 @@ const usePartners = () => {
     getPartnerContractCurrentlyRunning,
     getVasTypes,
     getAggregators,
+    submitVasPartner,
   };
 };
+
 export default usePartners;

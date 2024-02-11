@@ -43,7 +43,6 @@ function Layout({ children }) {
     try {
       const licenseValidityRemainderResponse = await axios.get(
         `${RemoteEndpoints.PARTNER_LICENSE_VALIDITY_REMAINDER}${partnersData[0].uuid}`,
-
         {
           headers: {
             apikey: apikey,
@@ -81,7 +80,6 @@ function Layout({ children }) {
           id="partnerdashboard"
           className="mx-auto flex flex-col h-full w-screen pb-[50px] bg-[#111111]"
         >
-
           <NavbarDashboard
             open={open}
             setOpen={setOpen}
@@ -89,7 +87,6 @@ function Layout({ children }) {
           />
 
           <div className="flex h-full">
-
             <div
               className={` ${
                 open ? "w-[250px]" : "w-[60px] "
@@ -141,14 +138,12 @@ function Layout({ children }) {
 
               {children}
             </div>
-
           </div>
 
           <MainMenuSideDrawer menuOpen={menuOpen} setMenuOpen={setMenuOpen}>
             {menuOpen && <MobileMenuBar setMenuOpen={setMenuOpen} />}
           </MainMenuSideDrawer>
         </div>
-        
       </RouteGuard>
     </>
   );

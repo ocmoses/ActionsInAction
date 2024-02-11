@@ -32,13 +32,15 @@ export default function VASDrawer({
   category,
   setOpenDrawer,
   openDrawer,
+  onTypeSelect,
 }) {
   const { getVasTypes } = usePartners();
   const [selectedCard, setSelectedCard] = useState(null);
   const [vasTypes, setVasTypes] = useState([]);
 
-  const handleCardSelect = (index) => {
+  const handleCardSelect = (type, uuid, index) => {
     setSelectedCard(index);
+    onTypeSelect(type, uuid);
   };
 
   const { setActiveApproval } = useAdmins();
@@ -54,6 +56,8 @@ export default function VASDrawer({
       setVasTypes(res.result);
     });
   }, []);
+
+  const isButtonDisabled = selectedCard === null;
 
   return (
     <>
@@ -126,28 +130,23 @@ export default function VASDrawer({
                   {vasTypes?.length > 0 &&
                     vasTypes.map((type, index) => (
                       <Card
+                        key={type.uuid}
                         title={type.type}
                         subtitle={type.descr}
                         checked={selectedCard === index}
-                        onChange={() => handleCardSelect(index)}
+                        onChange={() =>
+                          handleCardSelect(type.type, type.uuid, index)
+                        }
                       />
                     ))}
-                  {/* <Card
-                    title="Other VAS"
-                    subtitle="Help text describing other VAS service"
-                    checked={selectedCard === 2}
-                    onChange={() => handleCardSelect(2)}
-                  />
-                  <Card
-                    title="CRBT"
-                    subtitle="Help text describing CRBT VAS service"
-                    checked={selectedCard === 3}
-                    onChange={() => handleCardSelect(3)}
-                  /> */}
                 </div>
               </div>
               <div>
-                <Button label="Get started" onClick={action} />
+                <Button
+                  label="Get started"
+                  onClick={action}
+                  disabled={isButtonDisabled}
+                />
               </div>
             </div>
           </section>

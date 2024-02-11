@@ -417,36 +417,31 @@ export default function GetStarted({ type }) {
 
   const dismiss = () => {
     setRechooseAggregator(false);
-  }
+  };
 
   useEffect(() => {
     console.log("USER", user);
 
     // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
-    if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
-        setHasdashboard(true);
+    if (
+      user &&
+      role_menu_map[user?.role] &&
+      role_menu_map[user?.role][0] === "Dashboard"
+    ) {
+      setHasdashboard(true);
     }
 
     const location =
-        user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
-            ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
-            : null;
-
-<<<<<<< HEAD
-    // console.log("Location is: ", location);
+      user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
+        ? PartnerMenu.find(
+            (item) => item.label === role_menu_map[user?.role][0]
+          )?.route
+        : null;
 
     if (location !== "/dashboard" && location != null) {
-        window.location = location;
-=======
-    if (location != "/dashboard" && location != null) {
       window.location = location;
->>>>>>> 4f258fbea6f36224fc7d6ad203a6243d7794f8da
     }
-}, [user]);
-
-
-
-
+  }, [user]);
 
   return (
     hasDashboard && (
@@ -608,12 +603,6 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-
-                {/* //TODO: implement conditionl rendering */}
-                {showRechooseAggregator && <ChooseAggregatorCard dismissAction={dismiss} />}
-
-                {/* //TODO: implement conditionl rendering */}
-                {showChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
 
                 <ServiceConfigurationReadyAlert />
 
@@ -886,7 +875,7 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {!contractStarted &&
+                {/* {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerActiveCategories?.length > 0 && (
                     <div
@@ -898,7 +887,7 @@ export default function GetStarted({ type }) {
                       to complete a selected category to enable you move to the
                       next category
                     </div>
-                  )}
+                  )} */}
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -978,6 +967,15 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
               </div>
+
+              {/* //TODO: implement conditionl rendering */}
+              {showRechooseAggregator && (
+                <ChooseAggregatorCard dismissAction={dismiss} />
+              )}
+
+              {/* //TODO: implement conditionl rendering */}
+              {showChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+
               <div className="flex flex-col mt-12">
                 <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
                   Learn how to use

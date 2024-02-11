@@ -27,10 +27,10 @@ export const apikey =
     : process.env.NEXT_PUBLIC_APIKEY;
 
 export const dsmUrl =
-    typeof window === "undefined"
-      ? process.env.DSM_URL
-      : process.env.NEXT_PUBLIC_DSM_URL;
-  
+  typeof window === "undefined"
+    ? process.env.DSM_URL
+    : process.env.NEXT_PUBLIC_DSM_URL;
+
 export const onboarding_type = {
   new: "Registration",
   migrated: "Migration",
@@ -1147,7 +1147,6 @@ export const approvalFields = {
     stage: "shortcode",
   },
 
-
   // indemnity: {
   indemnity_no: {
     title: "Professional indemnity insurance number",
@@ -1177,7 +1176,6 @@ export const approvalFields = {
     approval: ["SPRM", "INSU", "PMAD", "COLG"],
     stage: "indemnity",
   },
-
 
   // accountinfo: {
   audited_account_1_doc: {
@@ -1521,38 +1519,12 @@ export const role_types = {
 };
 
 export const role_menu_map = {
-<<<<<<< HEAD
-  "superAdmin": [
-    "Dashboard",
-    "Compliance",
-    "Settings",
-    "Contracts",
-    "Requests"
-  ],
-  "admin": [
-    "Dashboard",
-    "Compliance",
-    "Settings",
-    "Contracts"
-  ],
-  "director": [
-    "Contracts"
-  ],
-  "witness": [
-    "Contracts"
-  ],
-  "delegate": [
-    "Contracts"
-  ]
-}
-=======
   superAdmin: ["Dashboard", "Compliance", "Settings", "Contracts"],
   admin: ["Dashboard", "Compliance", "Settings", "Contracts"],
   director: ["Contracts"],
   witness: ["Contracts"],
   delegate: ["Contracts"],
 };
->>>>>>> 4f258fbea6f36224fc7d6ad203a6243d7794f8da
 
 export const contract_statuses = {
   PROCESSING: "processing",

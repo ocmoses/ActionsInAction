@@ -2,8 +2,7 @@
 import Image from "next/image";
 import { NavLinksMobile } from "./NavLinks";
 import TextInput from "@/app/components/form/TextInput";
-import { useState } from "react";
-import usePartners from "@/hooks/usePartners";
+import { useState, useEffect } from "react";
 
 export default function PopUp({ closePopUp, children }) {
   return (
@@ -113,7 +112,7 @@ export const MobileMenu = ({ closeMobileMenu }) => {
               />
             </svg>
           </div>
-          <br clear="all" />
+          <br />
           <ul>
             <NavLinksMobile />
           </ul>
@@ -154,7 +153,7 @@ export const BrdUpdatesSuccess = ({ closePopUp }) => {
   );
 };
 
-export const ChooseAggregatorSuccess = ({ action, closePopUp }) => {
+export const ChooseAggregatorSuccess = ({ action, selectedAggregator }) => {
   return (
     <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <Image
@@ -170,7 +169,7 @@ export const ChooseAggregatorSuccess = ({ action, closePopUp }) => {
       </h2>
       <p className=" text-mtn-500 my-5">What’s next?</p>
       <p className=" text-gray-400">
-        The aggregator (Blue Wale Media) will be notified to complete your
+        The aggregator (${selectedAggregator}) will be notified to complete your
         onboarding.
       </p>
       <div className="flex gap-2 justify-center mt-10">
@@ -185,29 +184,69 @@ export const ChooseAggregatorSuccess = ({ action, closePopUp }) => {
   );
 };
 
-export const ForAggregatorSuccess = ({ closePopUp }) => {
+export const ForAggregatorSuccess = ({ action, category }) => {
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard
+      .writeText("VASDigitalProposals@mtn.com")
+      .then(() => {
+        setCopySuccess(true);
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Error copying email: ", error);
+      });
+  };
+
+  useEffect(() => {
+    if (copySuccess) {
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    }
+  }, [copySuccess]);
   return (
-    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+    <div className="flex flex-col justify-center items-center my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <Image
         priority
-        src="/assets/icons/check.svg"
-        width={76.71}
-        height={38.32}
+        src="/assets/icons/spark.png"
+        width={40}
+        height={40}
         alt="MTN Nigeria Logo"
         className=" text-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
       />
       <h2 className="text-white font-mtn-bold text-2xl my-4">
         For Aggregators
       </h2>
-      <p className=" text-gray-400 max-w-[60%] m-[auto]">
+      <p className=" text-gray-400 m-[auto]">
         Interested in becoming an MTN aggregator? Please contact
-        #VASDigitalProposals@mtn.com
+        VASDigitalProposals@mtn.com
       </p>
-      <p className=" text-mtn-500 my-5">copy email</p>
+      <span
+        className=" text-mtn-500 my-5 cursor-pointer"
+        onClick={handleCopyEmail}
+      >
+        <div className="flex flex-row space-x-2">
+          <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
+          {"   "}
+          <div>Copy email</div>
+        </div>
+      </span>
+      {showToast && (
+        <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
+          Email copied!
+        </div>
+      )}
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={closePopUp}
+          onClick={action}
         >
           Got-It!
         </button>
@@ -216,7 +255,33 @@ export const ForAggregatorSuccess = ({ closePopUp }) => {
   );
 };
 
-export const CRBTSuccess = ({ SuccessOk, category }) => {
+export const CRBTSuccess = ({ action, category }) => {
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard
+      .writeText("VASHUB.NG@mtn.com")
+      .then(() => {
+        setCopySuccess(true);
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Error copying email: ", error);
+      });
+  };
+
+  useEffect(() => {
+    if (copySuccess) {
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    }
+  }, [copySuccess]);
   return (
     <div className=" flex flex-col justify-center items-center my-10 text-center animate-[slide-left_1s_ease-in-out]">
       <div className="flex justify-center items-center w-[60px] h-[60px] text-[#FFCB03] rounded-full bg-white/20">
@@ -228,15 +293,29 @@ export const CRBTSuccess = ({ SuccessOk, category }) => {
       </div>
       <h2 className="text-white font-mtn-bold text-2xl my-4">For CRBT VAS</h2>
 
-      <p className=" text-gray-400 max-w-[60%] m-[auto]">
+      <p className=" text-gray-400 m-[auto]">
         Interested in becoming a CRBT VAS partner? Please contact
-        #VASHUB.NG@mtn.com
+        VASHUB.NG@mtn.com
       </p>
-      <p className=" text-mtn-500 my-5">copy email</p>
+      <span
+        className=" text-mtn-500 my-5 cursor-pointer"
+        onClick={handleCopyEmail}
+      >
+        <div className="flex flex-row space-x-2">
+          <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
+          {"   "}
+          <div>Copy email</div>
+        </div>
+      </span>
+      {showToast && (
+        <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
+          Email copied!
+        </div>
+      )}
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={() => SuccessOk()}
+          onClick={action}
         >
           Got-It!
         </button>
@@ -245,8 +324,16 @@ export const CRBTSuccess = ({ SuccessOk, category }) => {
   );
 };
 
-export const ServiceNamePop = ({ action, close, category }) => {
-  const [serviceName, setServiceName] = useState(null);
+export const ServiceNamePop = ({ action, cancel, onTextChange }) => {
+  const [serviceName, setServiceName] = useState("");
+
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    setServiceName(value);
+    onTextChange(value);
+  };
+
+  const isButtonDisabled = serviceName.trim() === "";
 
   return (
     <div className=" flex flex-col justify-center items-center my-4 text-center animate-[slide-left_1s_ease-in-out]">
@@ -254,7 +341,7 @@ export const ServiceNamePop = ({ action, close, category }) => {
         <div></div>
         <div className="flex justify-center items-center w-[40px] h-[40px] rounded-full bg-white/10">
           <div
-            onClick={close}
+            onClick={cancel}
             className="text-[#999999] cursor-pointer hover:text-white"
           >
             <svg
@@ -281,21 +368,23 @@ export const ServiceNamePop = ({ action, close, category }) => {
         <TextInput
           id="servicename"
           label="Service name"
-          value={serviceName}
-          onChange={(e) => {}}
+          onChange={handleInputChange}
         />
       </div>
 
       <div className="flex py-8 px-2 space-x-4 justify-end">
         <button
           className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
-          onClick={() => {}}
+          onClick={cancel}
         >
           Cancel
         </button>
         <button
-          className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+          className={`text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full ${
+            isButtonDisabled ? "opacity-50 cursor-not-allowed bg-white/20" : ""
+          }`}
           onClick={action}
+          disabled={isButtonDisabled}
         >
           Create
         </button>
@@ -358,26 +447,28 @@ const Card = ({ title, subtitle, checked, onChange }) => {
   );
 };
 
-export const ChooseAggregator = ({ action, close, category }) => {
-  const { getAggregators } = usePartners();
-
-  const [choosenAggregator, setChoosenAggregator] = useState(null);
-
+export const ChooseAggregator = ({
+  action,
+  cancel,
+  aggregators,
+  onAggregatorSelect,
+}) => {
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const [aggregators, setAggregators] = useState([]);
-
-  const handleCardSelect = (index) => {
+  const handleCardSelect = (companyName, uuid, index) => {
     setSelectedCard(index);
+    onAggregatorSelect(index, companyName, uuid);
   };
 
+  const isButtonDisabled = selectedCard === null;
+
   return (
-    <div className=" flex flex-col justify-center items-start text-start animate-[slide-left_1s_ease-in-out]">
-      <div className="flex flex-none justify-between items-end w-full pl-4 pr-2 pt-6 mb-4">
+    <div className="max-h-[90vh] overflow-y-auto flex flex-col justify-center items-start text-start animate-[slide-left_1s_ease-in-out]">
+      <div className="flex flex-none justify-between items-end w-full">
         <div></div>
         <div className="flex justify-center items-center w-[40px] h-[40px] rounded-full bg-white/10">
           <div
-            onClick={close}
+            onClick={cancel}
             className="text-[#999999] cursor-pointer hover:text-white"
           >
             <svg
@@ -410,7 +501,6 @@ export const ChooseAggregator = ({ action, close, category }) => {
         <TextInput
           id="choosenAggregator"
           label="Search partners"
-          value={choosenAggregator}
           onChange={(e) => {}}
         />
       </div>
@@ -418,36 +508,48 @@ export const ChooseAggregator = ({ action, close, category }) => {
         <AggregatorCard
           title="I'm an aggregator"
           subtitle="I’m an existing MTN aggregator"
-          checked={selectedCard === 1}
-          onChange={() => handleCardSelect(1)}
+          checked={selectedCard === 0}
+          onChange={() => handleCardSelect("I'm an aggregator", "", 0)}
         />
       </div>
-      <div className="w-full mt-6">
-        <Card
-          title="Beta Zoo Communications"
-          subtitle="catalogapp.io"
-          checked={selectedCard === 2}
-          onChange={() => handleCardSelect(2)}
-        />
-        <Card
-          title="Beta Zoo Communications"
-          subtitle="catalogapp.io"
-          checked={selectedCard === 3}
-          onChange={() => handleCardSelect(3)}
-        />
+      <div
+        className="w-full mt-6"
+        style={{ maxHeight: "300px", overflowY: "auto" }}
+      >
+        {aggregators?.length > 0 &&
+          aggregators.map((aggregator, index) => (
+            <Card
+              key={aggregator.uuid}
+              title={aggregator.company_name}
+              subtitle={aggregator.email}
+              checked={selectedCard === index + 1}
+              onChange={() =>
+                handleCardSelect(
+                  aggregator.company_name,
+                  aggregator.uuid,
+                  index + 1
+                )
+              }
+            />
+          ))}
       </div>
-      <div className="flex flex-row py-8 px-2 justify-between w-full items-center">
+      <div className="flex flex-row py-4 px-2 justify-between w-full items-center">
         <div></div>
         <div className="space-x-4">
           <button
             className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
-            onClick={() => {}}
+            onClick={cancel}
           >
             Cancel
           </button>
           <button
-            className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+            className={`text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full ${
+              isButtonDisabled
+                ? "opacity-50 cursor-not-allowed bg-white/20"
+                : ""
+            }`}
             onClick={action}
+            disabled={isButtonDisabled}
           >
             Create
           </button>

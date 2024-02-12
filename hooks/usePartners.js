@@ -1531,6 +1531,7 @@ const usePartners = () => {
         }
       );
       setProcessing(false);
+
       const result = getPartnerContractResponse.data.data;
       return { result };
     } catch (error) {
@@ -1570,7 +1571,7 @@ const usePartners = () => {
         `${RemoteEndpoints.GET_AGGREGATOR}`,
         {
           params: {
-            vas_partner_uuid: uuid, // "db6ddc9c-b62d-4bea-b8f4-6bce5875f523",
+            vas_partner_uuid: uuid,
           },
           headers: {
             cache: "no-store",
@@ -1616,15 +1617,71 @@ const usePartners = () => {
 
       const result = await response.json();
       setProcessing(false);
-
-      // if (result?.success) {
       return { result };
-      // } else {
-      //   throw new Error(
-      //     result?.data?.message ||
-      //       "Something went wrong. Please check your connection and try again"
-      //   );
-      // }
+    } catch (error) {
+      return {
+        error:
+          error.message ||
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const getRejectedRequest = async (uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_REJECTED_REQUEST}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = response.data.data[0];
+      console.log("Res", result);
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const changeAggregator = async (data) => {
+    try {
+      setProcessing(true);
+
+      const response = await fetch(`${RemoteEndpoints.CHANGE_AGGREGATOR}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          Authorization: `Bearer ${states.users.token}`,
+          token: states.users.token,
+        },
+        body: JSON.stringify(data),
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          Logout();
+          return;
+        }
+        throw new Error("Request failed with status " + response.status);
+      }
+
+      const result = await response.json();
+      setProcessing(false);
+      return { result };
     } catch (error) {
       return {
         error:
@@ -1703,6 +1760,8 @@ const usePartners = () => {
     getVasTypes,
     getAggregators,
     submitVasPartner,
+    getRejectedRequest,
+    changeAggregator,
   };
 };
 

@@ -169,7 +169,7 @@ export const ChooseAggregatorSuccess = ({ action, selectedAggregator }) => {
       </h2>
       <p className=" text-mtn-500 my-5">What’s next?</p>
       <p className=" text-gray-400">
-        The aggregator (${selectedAggregator}) will be notified to complete your
+        The aggregator ({selectedAggregator}) will be notified to complete your
         onboarding.
       </p>
       <div className="flex gap-2 justify-center mt-10">
@@ -184,7 +184,7 @@ export const ChooseAggregatorSuccess = ({ action, selectedAggregator }) => {
   );
 };
 
-export const ForAggregatorSuccess = ({ action, category }) => {
+export const ForAggregatorSuccess = ({ action }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [showToast, setShowToast] = useState(false);
 

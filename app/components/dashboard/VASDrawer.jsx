@@ -10,7 +10,7 @@ import usePartners from "@/hooks/usePartners";
 
 const Card = ({ title, subtitle, checked, onChange }) => {
   return (
-    <div className="rounded-lg p-4 mb-4 bg-[#111111]">
+    <div className="rounded-lg p-4 mb-4 bg-[#111111]" onClick={onChange}>
       <div className="flex items-center justify-between">
         <div>
           <span className="text-white text-[16px]">{title}</span>

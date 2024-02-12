@@ -39,8 +39,12 @@ import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
-
-import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
+import PopUp, {
+  BrdUpdatesSuccess,
+  ChooseAggregator,
+  ChooseAggregatorSuccess,
+  ForAggregatorSuccess,
+} from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
@@ -74,6 +78,9 @@ export default function GetStarted({ type }) {
     nextStage,
     getIPStatus,
     getPartnerContractCurrentlyRunning,
+    getRejectedRequest,
+    getAggregators,
+    changeAggregator,
   } = usePartners();
   const states = useStoreState((state) => state);
   const [FinalApproval, setFinalApproval] = useState(false);
@@ -90,9 +97,9 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false);
   const [tmpCat, setTmpCat] = useState(null);
   const [isOnboarding, setIsOnboarding] = useState(false);
-
-  const [showRechooseAggregator, setRechooseAggregator] = useState(true);
-  const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
+  const [rejectedRequest, setRejectedRequest] = useState(null);
+  const [rechooseAggregator, setRechooseAggregator] = useState(false);
+  const [showReChooseAggregatorSuccess, setReChooseAggregatorSuccess] =
     useState(false);
 
   const { setForm, setProcessing, setActiveCategory } = useProcessing();
@@ -415,10 +422,6 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
-  const dismiss = () => {
-    setRechooseAggregator(false);
-  };
-
   useEffect(() => {
     console.log("USER", user);
 
@@ -442,6 +445,66 @@ export default function GetStarted({ type }) {
       window.location = location;
     }
   }, [user]);
+
+  const [showChooseAggregator, setShowChooseAggregator] = useState(false);
+  const [showChooseAggregatorSuccess, setShowChooseAggregatorSuccess] =
+    useState(false);
+  const [showForAggregatorSuccess, setShowForAggregatorSuccess] =
+    useState(false);
+  const [selectedAggregator, setSelectedAggregator] = useState();
+  const [vasData, setVasData] = useState({
+    service_uuid: "",
+    aggregator_uuid: "",
+  });
+  const [aggregators, setAggregators] = useState([]);
+  const [aggregatorIndex, setAggregatorIndex] = useState();
+  const [aggregator, setAggregator] = useState();
+
+  useEffect(() => {
+    getRejectedRequest(partner.uuid).then((res) => {
+      setRejectedRequest(res.result);
+      if (res.result) {
+        setRechooseAggregator(true);
+        setAggregator(res.result["aggregator"]);
+        handleVasData("service_uuid", res.result["service_uuid"]);
+      }
+    });
+  }, [partner.uuid]);
+
+  useEffect(() => {
+    getAggregators(partner.uuid).then((res) => {
+      setAggregators(res.result);
+    });
+  }, [partner.uuid]);
+
+  const handleAggregatorSelect = (index, companyName, uuid) => {
+    setAggregatorIndex(index);
+    handleVasData("aggregator_uuid", uuid);
+    setSelectedAggregator(companyName);
+  };
+
+  const handleAggregatorSuccess = async () => {
+    setProcessing(true);
+    setShowChooseAggregator(false);
+    if (aggregatorIndex == 0) {
+      setShowForAggregatorSuccess(true);
+      return;
+    }
+    await changeAggregator(vasData).then((res) => {
+      if (res.result.success) {
+        setShowChooseAggregatorSuccess(true);
+      }
+      setProcessing(false);
+    });
+    setProcessing(false);
+  };
+
+  const handleVasData = (field, value) => {
+    setVasData((prevUserData) => ({
+      ...prevUserData,
+      [field]: value,
+    }));
+  };
 
   return (
     hasDashboard && (
@@ -968,13 +1031,47 @@ export default function GetStarted({ type }) {
                   )}
               </div>
 
-              {/* //TODO: implement conditionl rendering */}
-              {showRechooseAggregator && (
-                <ChooseAggregatorCard dismissAction={dismiss} />
+              {/* //TODO: change == to !== */}
+              {rechooseAggregator && rejectedRequest !== null && (
+                <ChooseAggregatorCard
+                  // TODO: replace with the actual aggregator value
+                  aggregator={aggregator}
+                  action={() => setShowChooseAggregator(true)}
+                  dismissAction={() => setRechooseAggregator(false)}
+                />
               )}
 
               {/* //TODO: implement conditionl rendering */}
-              {showChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+              {showReChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+
+              {showChooseAggregator && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregator
+                    cancel={() => setShowChooseAggregator(false)}
+                    action={handleAggregatorSuccess}
+                    aggregators={aggregators}
+                    onAggregatorSelect={handleAggregatorSelect}
+                  />
+                </PopUp>
+              )}
+
+              {showChooseAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregatorSuccess
+                    action={() => setShowChooseAggregatorSuccess(false)}
+                    selectedAggregator={selectedAggregator}
+                  />
+                </PopUp>
+              )}
+
+              {showForAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ForAggregatorSuccess
+                    action={() => setShowForAggregatorSuccess(false)}
+                    category={category}
+                  />
+                </PopUp>
+              )}
 
               <div className="flex flex-col mt-12">
                 <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">

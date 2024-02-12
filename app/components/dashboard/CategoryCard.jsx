@@ -217,7 +217,6 @@ export default function CategoryCard({
         <PopUp closePopUp={() => {}}>
           <ForAggregatorSuccess
             action={() => setShowForAggregatorSuccess(false)}
-            category={category}
           />
         </PopUp>
       )}

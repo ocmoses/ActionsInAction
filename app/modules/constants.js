@@ -27,10 +27,10 @@ export const apikey =
     : process.env.NEXT_PUBLIC_APIKEY;
 
 export const dsmUrl =
-    typeof window === "undefined"
-      ? process.env.DSM_URL
-      : process.env.NEXT_PUBLIC_DSM_URL;
-  
+  typeof window === "undefined"
+    ? process.env.DSM_URL
+    : process.env.NEXT_PUBLIC_DSM_URL;
+
 export const onboarding_type = {
   new: "Registration",
   migrated: "Migration",
@@ -1147,7 +1147,6 @@ export const approvalFields = {
     stage: "shortcode",
   },
 
-
   // indemnity: {
   indemnity_no: {
     title: "Professional indemnity insurance number",
@@ -1177,7 +1176,6 @@ export const approvalFields = {
     approval: ["SPRM", "INSU", "PMAD", "COLG"],
     stage: "indemnity",
   },
-
 
   // accountinfo: {
   audited_account_1_doc: {

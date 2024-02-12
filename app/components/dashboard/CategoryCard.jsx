@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import useErrors from "@/hooks/useErrors";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import VASDrawer from "@/app/components/dashboard/VASDrawer";
+import useProcessing from "@/hooks/useProcessing";
+import { TailSpinPreloader } from "@/app/components/Icons";
 import PopUp, {
   CRBTSuccess,
   ServiceNamePop,
@@ -10,6 +14,7 @@ import PopUp, {
   ChooseAggregatorSuccess,
   ForAggregatorSuccess,
 } from "@/app/components/PopUps";
+import usePartners from "@/hooks/usePartners";
 
 export default function CategoryCard({
   category,
@@ -18,48 +23,95 @@ export default function CategoryCard({
   disabled,
   pendingQuestionare = true,
 }) {
-  console.log("Card Category", category);
+  const { partner, getAggregators, submitVasPartner } = usePartners();
+  const { processing, setProcessing } = useProcessing();
   const [showQuestionare, setShowQuestionare] = useState(false);
-  const [showCRBTSuccess, setCRBTSuccess] = useState(false);
+  const [showCRBTSuccess, setShowCRBTSuccess] = useState(false);
   const [showServiceNamePop, setShowServiceNamePop] = useState(false);
-  const [showChooseAggregator, setChooseAggregator] = useState(false);
-  const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
+  const [showChooseAggregator, setShowChooseAggregator] = useState(false);
+  const [showChooseAggregatorSuccess, setShowChooseAggregatorSuccess] =
     useState(false);
-  const [showForAggregatorSuccess, setForAggregatorSuccess] = useState(false);
+  const [showForAggregatorSuccess, setShowForAggregatorSuccess] =
+    useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [{ errors, setError, removeError, clearErrors }] = useErrors();
   const [vasData, setVasData] = useState({
-    vas_partner_uuid: "",
-    vas_category_uuid: "",
+    vas_partner_uuid: partner.uuid,
+    vas_category_uuid: category.uuid,
     vas_type_uuid: "",
     service_name: "",
     aggregator_uuid: "",
   });
+  const [aggregators, setAggregators] = useState([]);
+  const [selectedAggregator, setSelectedAggregator] = useState();
+  const [aggregatorIndex, setAggregatorIndex] = useState();
+  const [vasType, setVasType] = useState();
+
+  useEffect(() => {
+    getAggregators(partner.uuid).then((res) => {
+      setAggregators(res.result);
+    });
+  }, [partner.uuid]);
+
+  const handleVasTypeSelect = (type, uuid) => {
+    setVasType(type);
+    handleVasData("vas_type_uuid", uuid);
+  };
+
+  const handleServiceNameChange = (value) => {
+    handleVasData("service_name", value);
+  };
+
+  const handleAggregatorSelect = (index, companyName, uuid) => {
+    setAggregatorIndex(index);
+    handleVasData("aggregator_uuid", uuid);
+    setSelectedAggregator(companyName);
+  };
 
   const handleService = () => {
     setOpenDrawer(false);
+    if (vasType == "CRBT") {
+      setShowCRBTSuccess(true);
+      return;
+    }
     setShowServiceNamePop(true);
   };
 
-  const hnadleChoose = () => {
+  const handleChoose = () => {
     setShowServiceNamePop(false);
-    setChooseAggregator(true);
+    setShowChooseAggregator(true);
   };
 
-  const hnadleAggregatorSuccess = () => {
-    setChooseAggregator(false);
-    setChooseAggregatorSuccess(true);
+  const handleAggregatorSuccess = async () => {
+    setProcessing(true);
+    setShowChooseAggregator(false);
+    if (aggregatorIndex == 0) {
+      setShowForAggregatorSuccess(true);
+      return;
+    }
+    await submitVasPartner(vasData).then((res) => {
+      if (res.result.success) {
+        setShowChooseAggregatorSuccess(true);
+      }
+      setProcessing(false);
+    });
+    setProcessing(false);
   };
 
-  const closeFinish = () => {
-    setChooseAggregatorSuccess(false);
-  };
-
-  const handleVasType = (field, value) => {
+  const handleVasData = (field, value) => {
     setVasData((prevUserData) => ({
       ...prevUserData,
       [field]: value,
     }));
+  };
+
+  const cancel = () => {
+    setOpenDrawer(false);
+    setShowServiceNamePop(false);
+    setShowChooseAggregator(false);
+    setShowChooseAggregatorSuccess(false);
+    setShowCRBTSuccess(false);
+    setShowForAggregatorSuccess(false);
   };
 
   const selectCategory = (category) => {
@@ -67,6 +119,7 @@ export default function CategoryCard({
     setTmpCat(category);
     setIsOpen(true);
   };
+
   return (
     <>
       <div
@@ -118,38 +171,52 @@ export default function CategoryCard({
         category={category}
         setOpenDrawer={setOpenDrawer}
         openDrawer={openDrawer}
+        onTypeSelect={handleVasTypeSelect}
       />
-
-      {showCRBTSuccess && (
-        <PopUp closePopUp={() => {}}>
-          <CRBTSuccess SuccessOk={() => {}} category={category} />
-        </PopUp>
-      )}
 
       {showServiceNamePop && (
         <PopUp closePopUp={() => {}}>
-          <ServiceNamePop close={() => {}} action={hnadleChoose} />
+          <ServiceNamePop
+            cancel={cancel}
+            action={handleChoose}
+            onTextChange={handleServiceNameChange}
+          />
         </PopUp>
       )}
 
       {showChooseAggregator && (
         <PopUp closePopUp={() => {}}>
-          <ChooseAggregator close={() => {}} action={hnadleAggregatorSuccess} />
+          <ChooseAggregator
+            cancel={cancel}
+            action={handleAggregatorSuccess}
+            aggregators={aggregators}
+            onAggregatorSelect={handleAggregatorSelect}
+          />
+        </PopUp>
+      )}
+
+      {showCRBTSuccess && (
+        <PopUp closePopUp={() => {}}>
+          <CRBTSuccess
+            action={() => setShowCRBTSuccess(false)}
+            category={category}
+          />
         </PopUp>
       )}
 
       {showChooseAggregatorSuccess && (
         <PopUp closePopUp={() => {}}>
-          <ChooseAggregatorSuccess close={() => {}} action={closeFinish} />
+          <ChooseAggregatorSuccess
+            action={() => setShowChooseAggregatorSuccess(false)}
+            selectedAggregator={selectedAggregator}
+          />
         </PopUp>
       )}
 
       {showForAggregatorSuccess && (
         <PopUp closePopUp={() => {}}>
           <ForAggregatorSuccess
-            close={() => {
-              setForAggregatorSuccess(false);
-            }}
+            action={() => setShowForAggregatorSuccess(false)}
           />
         </PopUp>
       )}

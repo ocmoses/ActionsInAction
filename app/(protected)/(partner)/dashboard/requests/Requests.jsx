@@ -10,13 +10,43 @@ import {
   ellipsify,
   capitalizeFirst,
 } from "@/app/modules/utilities";
+
+import usePartners from "@/hooks/usePartners";
+
+
 export default function Requests() {
-  const [requestFlyout, setRequestFlyout] = useState(false);
+  const {getAggregatorRequest} = usePartners();
+  const [error, setError] = useState("");
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+
+   const [requestFlyout, setRequestFlyout] = useState(false);
   const [partnerDetails, setPartnerDetails] = useState({
     name: 'StockMax Limited',
     email: 'sunaf4real@gmail.com',
   });
 
+
+  let getAggregatorRequestResponse = null;
+  const get_aggregator_request = async () => {
+    try {
+      getAggregatorRequestResponse = await getAggregatorRequest();
+      let getAggregatorRequest_response = getAggregatorRequestResponse.result;
+      if (getAggregatorRequest_response.data == null) {
+        setError(getAggregatorRequest_response.message);
+      }else{
+        console.log('getAggregatorRequest_response.data', getAggregatorRequest_response.data)
+        setSelectedRequest(getAggregatorRequest_response.data);
+      }
+
+    } catch (error) {
+     // console.log('error', error);
+      setError(error.message);
+    }
+  };
+  useEffect(() => {
+    get_aggregator_request();
+  }, []);
   return (
     <>
       <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -25,7 +55,7 @@ export default function Requests() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Requests</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                25
+              {selectedRequest?.length}
               </span>
             </div>
           </div>
@@ -34,7 +64,9 @@ export default function Requests() {
             <div className="flex flex-row gap-3">
               <FilteringFlyout />
             </div>
-
+            {error &&(
+              <div className=" text-red-600">{error}</div>
+            )}
             <div className="rounded-[10px] border-1 border-white/20 overflow-x-auto">
               <table className="table w-full transparent rounded-[10px]">
                 <tbody>
@@ -59,6 +91,54 @@ export default function Requests() {
                       <span className="text-[13px]"></span>
                     </th>
                   </tr>
+
+                  {selectedRequest &&
+                  selectedRequest.length > 0 &&
+                  selectedRequest.map((eachRequest) => (
+                    <tr 
+                      className="border-b border-b-white/10 bg-transparent  hover:bg-white/5 cursor-pointer group/request-1"
+                      key={eachRequest.service_uuid}
+                    >
+                    <td>
+                      <div className="flex items-center font-bold space-x-4">
+                        <CompanyInitial
+                          initials={getInitials(
+                            eachRequest.service_name
+                          ).toUpperCase()}
+                        />
+                        <div className="flex flex-col">
+                          <p>{eachRequest.service_name}</p>
+                          <span className="text-sm text-gray-500">
+                            {eachRequest.email}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>FR748959</td>
+
+                    <td>08131252996</td>
+
+                    <td>Feb 2024</td>
+
+                    <td>
+                      <div
+                        className={` py-1 px-2 rounded text-white inline-flex text-sm bg-white/20`}
+                      >
+                        {capitalizeFirst("pending")}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="w-[120px] h-[50px] bg-transparent mt-2">
+                        <div className="hidden  group-hover/request-1:flex gap-3">
+                          <RequestApproveBtn/>
+                          <RequestRejectBtn/>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  ))}
 
                   <tr className="border-b border-b-white/10 bg-transparent  hover:bg-white/5 cursor-pointer group/request-1">
                     <td>

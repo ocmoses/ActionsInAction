@@ -39,8 +39,12 @@ import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
-
-import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
+import PopUp, {
+  BrdUpdatesSuccess,
+  ChooseAggregator,
+  ChooseAggregatorSuccess,
+  ForAggregatorSuccess,
+} from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
@@ -74,6 +78,9 @@ export default function GetStarted({ type }) {
     nextStage,
     getIPStatus,
     getPartnerContractCurrentlyRunning,
+    getRejectedRequest,
+    getAggregators,
+    changeAggregator,
   } = usePartners();
   const states = useStoreState((state) => state);
   const [FinalApproval, setFinalApproval] = useState(false);
@@ -90,9 +97,9 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false);
   const [tmpCat, setTmpCat] = useState(null);
   const [isOnboarding, setIsOnboarding] = useState(false);
-
-  const [showRechooseAggregator, setRechooseAggregator] = useState(true);
-  const [showChooseAggregatorSuccess, setChooseAggregatorSuccess] =
+  const [rejectedRequest, setRejectedRequest] = useState(null);
+  const [rechooseAggregator, setRechooseAggregator] = useState(false);
+  const [showReChooseAggregatorSuccess, setReChooseAggregatorSuccess] =
     useState(false);
 
   const { setForm, setProcessing, setActiveCategory } = useProcessing();
@@ -415,33 +422,89 @@ export default function GetStarted({ type }) {
 
   //////////end code////////////////////////////////////////////////////////////////////////////
 
-  const dismiss = () => {
-    setRechooseAggregator(false);
-  }
-
   useEffect(() => {
     console.log("USER", user);
 
     // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
-    if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
-        setHasdashboard(true);
+    if (
+      user &&
+      role_menu_map[user?.role] &&
+      role_menu_map[user?.role][0] === "Dashboard"
+    ) {
+      setHasdashboard(true);
     }
 
     const location =
-        user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
-            ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
-            : null;
-
-    // console.log("Location is: ", location);
+      user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
+        ? PartnerMenu.find(
+            (item) => item.label === role_menu_map[user?.role][0]
+          )?.route
+        : null;
 
     if (location !== "/dashboard" && location != null) {
-        window.location = location;
+      window.location = location;
     }
-}, [user]);
+  }, [user]);
 
+  const [showChooseAggregator, setShowChooseAggregator] = useState(false);
+  const [showChooseAggregatorSuccess, setShowChooseAggregatorSuccess] =
+    useState(false);
+  const [showForAggregatorSuccess, setShowForAggregatorSuccess] =
+    useState(false);
+  const [selectedAggregator, setSelectedAggregator] = useState();
+  const [vasData, setVasData] = useState({
+    service_uuid: "",
+    aggregator_uuid: "",
+  });
+  const [aggregators, setAggregators] = useState([]);
+  const [aggregatorIndex, setAggregatorIndex] = useState();
+  const [aggregator, setAggregator] = useState();
 
+  useEffect(() => {
+    getRejectedRequest(partner.uuid).then((res) => {
+      setRejectedRequest(res.result);
+      if (res.result) {
+        setRechooseAggregator(true);
+        setAggregator(res.result["aggregator"]);
+        handleVasData("service_uuid", res.result["service_uuid"]);
+      }
+    });
+  }, [partner.uuid]);
 
+  useEffect(() => {
+    getAggregators(partner.uuid).then((res) => {
+      setAggregators(res.result);
+    });
+  }, [partner.uuid]);
 
+  const handleAggregatorSelect = (index, companyName, uuid) => {
+    setAggregatorIndex(index);
+    handleVasData("aggregator_uuid", uuid);
+    setSelectedAggregator(companyName);
+  };
+
+  const handleAggregatorSuccess = async () => {
+    setProcessing(true);
+    setShowChooseAggregator(false);
+    if (aggregatorIndex == 0) {
+      setShowForAggregatorSuccess(true);
+      return;
+    }
+    await changeAggregator(vasData).then((res) => {
+      if (res.result.success) {
+        setShowChooseAggregatorSuccess(true);
+      }
+      setProcessing(false);
+    });
+    setProcessing(false);
+  };
+
+  const handleVasData = (field, value) => {
+    setVasData((prevUserData) => ({
+      ...prevUserData,
+      [field]: value,
+    }));
+  };
 
   return (
     hasDashboard && (
@@ -603,12 +666,6 @@ export default function GetStarted({ type }) {
                     )}
                   </div>
                 )}
-
-                {/* //TODO: implement conditionl rendering */}
-                {showRechooseAggregator && <ChooseAggregatorCard dismissAction={dismiss} />}
-
-                {/* //TODO: implement conditionl rendering */}
-                {showChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
 
                 <ServiceConfigurationReadyAlert />
 
@@ -881,7 +938,7 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {!contractStarted &&
+                {/* {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerActiveCategories?.length > 0 && (
                     <div
@@ -893,7 +950,7 @@ export default function GetStarted({ type }) {
                       to complete a selected category to enable you move to the
                       next category
                     </div>
-                  )}
+                  )} */}
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -973,6 +1030,49 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
               </div>
+
+              {/* //TODO: change == to !== */}
+              {rechooseAggregator && rejectedRequest !== null && (
+                <ChooseAggregatorCard
+                  // TODO: replace with the actual aggregator value
+                  aggregator={aggregator}
+                  action={() => setShowChooseAggregator(true)}
+                  dismissAction={() => setRechooseAggregator(false)}
+                />
+              )}
+
+              {/* //TODO: implement conditionl rendering */}
+              {showReChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+
+              {showChooseAggregator && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregator
+                    cancel={() => setShowChooseAggregator(false)}
+                    action={handleAggregatorSuccess}
+                    aggregators={aggregators}
+                    onAggregatorSelect={handleAggregatorSelect}
+                  />
+                </PopUp>
+              )}
+
+              {showChooseAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregatorSuccess
+                    action={() => setShowChooseAggregatorSuccess(false)}
+                    selectedAggregator={selectedAggregator}
+                  />
+                </PopUp>
+              )}
+
+              {showForAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ForAggregatorSuccess
+                    action={() => setShowForAggregatorSuccess(false)}
+                    category={category}
+                  />
+                </PopUp>
+              )}
+
               <div className="flex flex-col mt-12">
                 <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
                   Learn how to use

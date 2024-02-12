@@ -51,10 +51,13 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
     const reasons = [
         "",
-        "It doesn't exist",
-        "I can see this clearly",
-        "Something else entirely",
-        "Others"
+        "Incomplete Information",
+        "Wrong document",
+        "Inconsistent Information",
+        "Invalid or Expired Document",
+        "Invalid or incorrect date",
+        "Poor Quality (Contents Not Clear)",
+        "Others",
     ];
     
     const handleChange = (e) => {

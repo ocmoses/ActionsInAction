@@ -1,6 +1,10 @@
 import Image from "next/image";
 
-export default function ChooseAggregatorCard({ dismissAction }) {
+export default function ChooseAggregatorCard({
+  aggregator,
+  action,
+  dismissAction,
+}) {
   return (
     <div
       className={`flex flex-col gap-4 max-w-[837px] mt-16 w3-animate-opacity`}
@@ -23,14 +27,14 @@ export default function ChooseAggregatorCard({ dismissAction }) {
           <div className="flex flex-col justify-center items-center sm:items-start h-full">
             <span className=" text-lg text-white">Choose aggregator</span>
             <span className="text-[#999999] text-[12px] text-center md:text-left">
-              Light Ray Limited rejected your request. Please choose another
+              {aggregator} rejected your request. Please choose another
               aggregator from the list of registered partners.
             </span>
             <br></br>
             <div className="flex space-x-4 justify-end">
               <button
                 className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
-                onClick={() => {}}
+                onClick={action}
               >
                 Choose aggregator
               </button>

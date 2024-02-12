@@ -1483,18 +1483,21 @@ export const roles = [
   },
 ];
 
-export const questionnaire_pending = "This partner has not submitted any questionaire";
+export const questionnaire_pending =
+  "This partner has not submitted any questionaire";
 
 export const ip_pending = "Partner has not started IP submission";
 
 export const user_statuses = {
   ACTIVE: "active",
-  APPROVED: "approved"
-}
+  APPROVED: "approved",
+};
 
-export const questionnaire_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+export const questionnaire_link =
+  "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
 
-export const conduct_link = "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+export const conduct_link =
+  "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
 
 export const docPrefix = "http://10.1.44.25/dms/PARTNER_ONBOARDING/";
 
@@ -1506,16 +1509,16 @@ export const request_types = {
   CHANGE_ORDER: "Change Order",
   LICENSE_RENEWAL: "License Renewal",
   VAS_CLEARANCE: "IP Compliance",
-  SHORTCODES: "Short Codes"
-}
+  SHORTCODES: "Short Codes",
+};
 
 export const role_types = {
   SUPER_ADMIN: "superAdmin",
   ADMIN: "admin",
   DIRECTOR: "director",
   WITNESS: "witness",
-  DELEGATE: "delegate"
-}
+  DELEGATE: "delegate",
+};
 
 export const role_menu_map = {
   "superAdmin": [
@@ -1548,15 +1551,12 @@ export const contract_statuses = {
   EXPIRED: "expired",
   ACTIVE: "active",
   UPDATE: "update",
-  EXPIRING: "expiring"
-}
+  EXPIRING: "expiring",
+};
 
 export const suspended_categories = [
   "Marketplace",
   "VAS Aggregator",
-  "Value Added Services",
+  // "Value Added Services",
   // "Rich Media Services"
-]
-
-
-
+];

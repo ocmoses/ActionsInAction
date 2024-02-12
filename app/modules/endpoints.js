@@ -178,5 +178,9 @@ const RemoteEndpoints = {
   // VAS
   GET_VAS_TYPE: `${apiURL}/v2/vas-partner/vas-type`,
   GET_AGGREGATOR: `${apiURL}/v2/vas-partner/aggregators`,
+
+
+  ////// AGGREGATOR REQUESTS
+  GET_AGGREGATOR_REQUEST: `${apiURL}/v2/aggregator/requests`,
 };
 export default RemoteEndpoints;

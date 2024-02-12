@@ -37,7 +37,7 @@ export default function IntelectualPropertiesModal({
   return (
     <>
       <main className="w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
-        <IntelectualPropertiesNav
+        <IntelectualPropertiesHeader
           closeIntelectualPropertiesFlyout={
             closeIntelectualPropertiesFlyout
           }
@@ -59,7 +59,7 @@ export default function IntelectualPropertiesModal({
               />
 
               <div className="w-[100%] h-[calc(100%-90px)] absolute bottom-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
-                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+                <div className="pt-[20px] w-[100%] h-auto flex justify-center">
                   {currentPanel.NCCLicensedetails && (
                     <NCCLicensedetails
                     closeIntelectualPropertiesFlyout={
@@ -113,7 +113,7 @@ export default function IntelectualPropertiesModal({
   );
 }
 
-export const IntelectualPropertiesNav = ({
+export const IntelectualPropertiesHeader = ({
   closeIntelectualPropertiesFlyout,
   partnerDetails,
 }) => {
@@ -352,7 +352,7 @@ export const NCCLicensedetails = ({
 
   return (
     <>
-      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+      <div className="max-w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  bg-red-400">
         <div className="mb-5 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
             Your company's NCC License details
@@ -537,7 +537,7 @@ export const NLRCLicensedetails = ({
 
   return (
     <>
-      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+      <div className="max-w-[70%] h-auto animate-[slide-left_1s_ease-in-out] bg-red-400">
         <div className="mb-5 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
             Provide your company's NLRC License details

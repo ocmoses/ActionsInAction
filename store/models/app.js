@@ -102,6 +102,13 @@ const app = {
           updated_at: "2023-04-12T14:48:25.000000Z",
         },
         {
+          id: 12,
+          uuid: "252ad0a6-d939-11ed-ba7c-acde48001123",
+          created_at: "2023-04-12T14:48:25.000000Z",
+          updated_at: "2023-04-12T14:48:25.000000Z",
+          rejection_reason: "Invalid or incorrect date"
+        },
+        {
           id: 5,
           uuid: "252ad0a6-d939-11ed-ba7c-acde48001122",
           rejection_reason: "Poor Quality (Contents Not Clear)",

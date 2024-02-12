@@ -16,7 +16,7 @@ import { CompanyInitial, FileUploadIcon,
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 
 import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
-
+import IntelectualPropertiesModal from "@/app/components/dashboard/partners/requests/IntelectualPropertiesDetail";
 export default function FilteringFlyout() {
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
@@ -390,7 +390,8 @@ export default function FilteringFlyout() {
 
 export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
   const [aggregatorComplianceFormFlyout, setAggregatorComplianceFormFlyout] = useState(false);
-
+  const [intelectualPropertiesFlyout, setIntelectualPropertiesFlyout] = useState(false);
+  
   return (
     <>
       <main
@@ -472,7 +473,9 @@ export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
                       </div>
 
                       <div className="flex flex-col gap-4 justify-between items-end">
-                        <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
+                        <div 
+                        onClick={() => setIntelectualPropertiesFlyout(true)}
+                        className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
                           Start
                         </div>
                       </div>
@@ -497,6 +500,13 @@ export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
       {aggregatorComplianceFormFlyout && (
           <AggregatorComplianceModal
             closeAggregatorComplianceFormFlyout={() => setAggregatorComplianceFormFlyout(false)}
+            partnerDetails={partnerDetails}
+          />
+        )}
+
+        {intelectualPropertiesFlyout && (
+          <IntelectualPropertiesModal
+            closeIntelectualPropertiesFlyout={() => setIntelectualPropertiesFlyout(false)}
             partnerDetails={partnerDetails}
           />
         )}

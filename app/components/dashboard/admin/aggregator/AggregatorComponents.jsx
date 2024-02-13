@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { CompanyInitial, RequestApproveBtn, RequestRejectBtn } from "@/app/components/Icons";
+import Confirm from "@/app/components/Confirm";
 
 export default function AggregatorSelector({
   icon,
@@ -78,7 +78,7 @@ export const AggregatorVerlidationModal = ({
           e.target.id == "modal" && closeOpenAggregatorValidationFlyout();
         }}
       >
-        <div className="w-[475px] h-screen fixed right-0  top-0 border-l border-white/10 bg-[#111111] animate-[slide-left_1s_ease-in-out]">
+        <div className="w-[500px] h-screen fixed right-0  top-0 border-l border-white/10 bg-[#111111] animate-[slide-left_1s_ease-in-out]">
           <div className="h-screen w-[100%] flex flex-col">
                 {/* -----start title-------------------------------------------------------------- */}
                 <div className="min-h-[110px] bg-black border-b border-white/10">
@@ -159,17 +159,36 @@ export const AggregatorVerlidationModal = ({
                   
 
                  {/* -----start body-------------------------------------------------------------- */}
-                <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px]">
-                <NCCLicenceVerlidationBody/>
+                <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+                  <NCCLicenceVerlidationBody/>
+                  <NLRCLicenceVerlidationBody/>
+                  <ShortCodeVerlidationBody/>
                   
                 </div>
                 {/* -----start body-------------------------------------------------------------- */}
 
                 {/* -----start nav-------------------------------------------------------------- */}
-                <div className="h-[60px] bg-black border-b border-white/10">
-                  <div className="p-5 pb-0 flex flex-col gap-3">
+                <div className="h-[60px] bg-black border-b border-white/10 flex justify-between items-center">
+                  <div className="p-5 flex gap-3 cursor-pointer">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="40" height="40" rx="20" fill="white" fill-opacity="0.1"/>
+                      <path d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4" stroke="#FAFAFA" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Previous</span>
+                      <h5 className="font-mtn-bold">VAS Licence</h5>
+                    </div>
+                  </div>
 
-
+                  <div className="p-5 flex gap-3 cursor-pointer">
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Next</span>
+                      <h5 className="font-mtn-bold">VAS Licence</h5>
+                    </div>
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="40" height="40" rx="20" fill="white" fill-opacity="0.1"/>
+                      <path d="M17.425 26.6L22.8584 21.1667C23.5 20.525 23.5 19.475 22.8584 18.8334L17.425 13.4" stroke="#FAFAFA" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                   </div>
                 </div>
                 {/* -----start nav-------------------------------------------------------------- */}
@@ -186,10 +205,70 @@ export const AggregatorVerlidationModal = ({
 export const NCCLicenceVerlidationBody = ({}) => {
   return (
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
-      <AggregatorVerifierText 
-      status={"pending"}
-      title={"VAS Licence ID"}
-      text={"AD12345689"}
+      <AggregatorVerifier
+       type={"file"}
+       status={"pending"}
+       title={"VAS Licence ID"}
+       text={"AD12345689"} 
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Issuing date"}
+        text={"20 / Mar / 2022"}
+      />
+
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Expiry date"}
+        text={"20 / Mar / 2022"}
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"NCC VAS License document"}
+        text={"4433tessst7777788888 (1).pdf"}
+      />
+    </div>
+  );
+};
+
+
+
+export const NLRCLicenceVerlidationBody = ({}) => {
+  return (
+    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
+      <AggregatorVerifier
+       type={"file"}
+       status={"pending"}
+       title={"NLRC Licence type"}
+       text={"National lottery"} 
+      />
+      <AggregatorVerifier
+       type={"file"}
+       status={"pending"}
+       title={"NLRC Licence ID"}
+       text={"AD12345689"} 
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Issuing date"}
+        text={"20 / Mar / 2022"}
+      />
+
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Expiry date"}
+        text={"20 / Mar / 2022"}
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"NLRC License document"}
+        text={"4433tessst7777788888 (1).pdf"}
       />
     </div>
   );
@@ -199,10 +278,112 @@ export const NCCLicenceVerlidationBody = ({}) => {
 
 
 
-export const AggregatorVerifierText = ({status, title, text}) => {
+export const ShortCodeVerlidationBody = ({}) => {
   return (
-    <div className="border border-white/10 rounded-[7px] p-3 flex flex-col gap-5">
-      <DeclinePanel/>
+    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
+      <AggregatorVerifier
+       type={"file"}
+       status={"pending"}
+       title={"Short code"}
+       text={"123, 3452"} 
+      />
+      <AggregatorVerifier
+       type={"file"}
+       status={"pending"}
+       title={"Short code document"}
+       text={"VBEC-2023-3977377_file (2).pdf"} 
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Issuing date"}
+        text={"20 / Mar / 2022"}
+      />
+
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Expiry date"}
+        text={"20 / Mar / 2022"}
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Approved pricing shortcode"}
+        text={"123, 3452"}
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Pricing Issuing date"}
+        text={"20 / Mar / 2022"}
+      />
+
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"Pricing Expiry date"}
+        text={"20 / Mar / 2022"}
+      />
+      <AggregatorVerifier
+        type={"file"}
+        status={"pending"}
+        title={"NCC Pricing approval"}
+        text={"VBEC-2023-6651133_file.pdf"}
+      />
+
+    </div>
+  );
+};
+
+
+export const AggregatorVerifier = ({type, status, title, text}) => {
+  const [showBtn, setShowBtn] = useState(true);
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
+  const [showOthersTextbox, setShowOthersTextbox] = useState(false);
+  const approveRequest = async () => {
+
+  };
+  const handleApprove = () => {
+    setShowBtn(false);
+    setApprove(true)
+};
+  const handleReject = () => {''
+    setShowBtn(false);
+    setReject(true)
+};
+
+  const cancel = () => {
+    setApprove(false);
+    setReject(false);
+    setShowBtn(true);
+  };
+  return (
+    <div className={`border border-white/10 rounded-[7px] p-3 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
+        {(approve || reject) && (
+            <>
+              {approve && (
+                <Confirm
+                  yestext="Yes"
+                  notext="No"
+                  type="approve"
+                  onYes={() => approveRequest()}
+                  onNo={cancel}
+                />
+              )}
+              {reject && (
+                <Confirm
+                  yestext="Reject"
+                  notext="Cancel"
+                  type="reject"
+                  onYes={(reason) => rejectRequest(reason)}
+                  onNo={cancel}
+                  othersAction={setShowOthersTextbox}
+                />
+              )}
+            </>
+          )}
 
       <div className="flex justify-between">
         <div className="flex gap-3">
@@ -214,12 +395,17 @@ export const AggregatorVerifierText = ({status, title, text}) => {
             </svg>
             <div className="flex flex-col">
               <span className="text-[11px]">{title}</span>
-              <h3 className="font-mtn text-white">{title}</h3>
+              <h3 className="font-mtn-bold text-white">{text}</h3>
             </div>
         </div>
         <div className="flex gap-3">
-          <RequestApproveBtn />
-          <RequestRejectBtn />
+          {showBtn && (
+            <>
+              <RequestRejectBtn action={handleReject}/>
+              <RequestApproveBtn action={handleApprove} />
+            </>
+            )}
+        
         </div>
       </div>
 
@@ -231,55 +417,23 @@ export const AggregatorVerifierText = ({status, title, text}) => {
 
 
 
-
-
-
-
-
-
-
-
-export const ApprovePanel = () => {
+export const RequestApproveBtn = ({action}) => {
   return (
-      <div className="border border-green-600 p-2 rounded-[7px] bg-white/10 flex justify-between">
-        <div className="flex flex-col">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#F3AF33" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path></svg>
-          <p className="text-[13px]">Are you sure you want to approve?</p>
-        </div>
-
-        <div className="flex flex-col justify-between">
-          <div></div>
-            <div className="flex gap-2">
-              <button className=" text-white bg-green-600 w-[50px] h-[20px] text-[10px] rounded-full hover:opacity-50">
-                Yes
-              </button>
-              <button className="text-white bg-gray-600  w-[50px] h-[20px] text-[10px] rounded-full hover:opacity-50">
-                No
-              </button>
-            </div>
-        </div>
-      </div>
+    <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={action} className="cursor-pointer hover:opacity-50">
+    <rect x="1.2998" y="0.5" width="35" height="35" rx="17.5" fill="#1C1C1C"/>
+    <rect x="1.2998" y="0.5" width="35" height="35" rx="17.5" stroke="#4DCD97"/>
+    <path d="M20.6936 13.9012L12.2936 22.1512C12.1884 22.2543 12.0471 22.312 11.8998 22.312C11.7526 22.312 11.6112 22.2543 11.5061 22.1512L7.90606 18.6159C7.85331 18.5642 7.81126 18.5026 7.78231 18.4347C7.75335 18.3667 7.73807 18.2937 7.73733 18.2198C7.73659 18.146 7.75041 18.0727 7.77799 18.0042C7.80558 17.9356 7.84639 17.8732 7.8981 17.8205C7.9498 17.7677 8.0114 17.7256 8.07936 17.6967C8.14732 17.6677 8.22031 17.6525 8.29418 17.6517C8.36805 17.651 8.44133 17.6648 8.50986 17.6924C8.57839 17.72 8.64081 17.7608 8.69356 17.8125L11.8998 20.9606L19.9061 13.0978C19.9581 13.0431 20.0206 12.9995 20.0899 12.9695C20.1591 12.9395 20.2337 12.9237 20.3092 12.9232C20.3847 12.9226 20.4595 12.9372 20.5292 12.9662C20.5989 12.9951 20.6621 13.0378 20.7149 13.0917C20.7678 13.1456 20.8093 13.2095 20.8369 13.2798C20.8646 13.35 20.8778 13.4251 20.8758 13.5005C20.8738 13.576 20.8566 13.6503 20.8253 13.7189C20.794 13.7876 20.7492 13.8493 20.6936 13.9003V13.9012ZM29.7011 13.1062C29.5966 12.9999 29.4542 12.9394 29.3051 12.938C29.1561 12.9366 29.0125 12.9944 28.9061 13.0987L20.8998 20.9615L19.0033 19.0987C18.9506 19.047 18.8882 19.0061 18.8197 18.9784C18.7512 18.9508 18.6779 18.9369 18.6041 18.9375C18.5302 18.9382 18.4572 18.9534 18.3892 18.9822C18.3212 19.0111 18.2596 19.0531 18.2078 19.1058C18.156 19.1585 18.1151 19.2208 18.0875 19.2893C18.0598 19.3578 18.0459 19.4311 18.0466 19.505C18.0472 19.5788 18.0624 19.6518 18.0913 19.7198C18.1201 19.7878 18.1621 19.8495 18.2148 19.9012L20.5061 22.1512C20.6112 22.2543 20.7526 22.312 20.8998 22.312C21.0471 22.312 21.1884 22.2543 21.2936 22.1512L29.6936 13.9012C29.7999 13.7968 29.8604 13.6544 29.8618 13.5053C29.8632 13.3562 29.8054 13.2127 29.7011 13.1062Z" fill="#8E8E8E"/>
+  </svg>
   );
-};
+}
 
-export const DeclinePanel = () => {
+export const RequestRejectBtn = ({action}) => {
   return (
-      <div className="border border-red-600 p-2 rounded-[7px] bg-white/10 flex justify-between">
-        <div className="flex flex-col">
-          <p className="text-[13px]">Reason for rejection</p>
-        </div>
-
-        <div className="flex flex-col justify-between">
-          <div></div>
-            <div className="flex gap-2">
-              <button className=" text-white bg-red-600 w-[50px] h-[20px] text-[10px] rounded-full hover:opacity-50">
-                Reject
-              </button>
-              <button className="text-white bg-gray-600  w-[50px] h-[20px] text-[10px] rounded-full hover:opacity-50">
-                Cancel
-              </button>
-            </div>
-        </div>
-      </div>
+    <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={action} className="cursor-pointer hover:opacity-50">
+    <path d="M1.2998 18C1.2998 8.33502 9.13482 0.5 18.7998 0.5C28.4648 0.5 36.2998 8.33502 36.2998 18C36.2998 27.665 28.4648 35.5 18.7998 35.5C9.13482 35.5 1.2998 27.665 1.2998 18Z" fill="#1C1C1C"/>
+    <path d="M1.2998 18C1.2998 8.33502 9.13482 0.5 18.7998 0.5C28.4648 0.5 36.2998 8.33502 36.2998 18C36.2998 27.665 28.4648 35.5 18.7998 35.5C9.13482 35.5 1.2998 27.665 1.2998 18Z" stroke="#E44A34"/>
+    <path d="M18.7997 16.586L13.5067 11.293C13.3181 11.1109 13.0655 11.0101 12.8033 11.0123C12.5411 11.0146 12.2903 11.1198 12.1049 11.3052C11.9195 11.4906 11.8143 11.7414 11.812 12.0036C11.8098 12.2658 11.9106 12.5184 12.0927 12.707L17.3857 18L12.0927 23.293C11.9106 23.4816 11.8098 23.7342 11.812 23.9964C11.8143 24.2586 11.9195 24.5094 12.1049 24.6948C12.2903 24.8802 12.5411 24.9854 12.8033 24.9877C13.0655 24.99 13.3181 24.8892 13.5067 24.707L18.7997 19.414L24.0927 24.707C24.2813 24.8892 24.5339 24.99 24.7961 24.9877C25.0583 24.9854 25.3091 24.8802 25.4945 24.6948C25.68 24.5094 25.7851 24.2586 25.7874 23.9964C25.7897 23.7342 25.6889 23.4816 25.5067 23.293L20.2137 18L25.5067 12.707C25.6022 12.6148 25.6784 12.5044 25.7308 12.3824C25.7832 12.2604 25.8108 12.1292 25.812 11.9964C25.8131 11.8636 25.7878 11.732 25.7375 11.6091C25.6873 11.4862 25.613 11.3745 25.5191 11.2806C25.4252 11.1867 25.3136 11.1125 25.1907 11.0622C25.0678 11.0119 24.9361 10.9866 24.8033 10.9878C24.6705 10.9889 24.5393 11.0165 24.4173 11.0689C24.2953 11.1213 24.185 11.1975 24.0927 11.293L18.7997 16.586Z" fill="#8E8E8E"/>
+  </svg>
+    
   );
-};
+}

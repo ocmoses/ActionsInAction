@@ -227,7 +227,7 @@ export default function Requests() {
                               statusColour[eachRequest.status.replace("-", "")]
                             }`}
                           >
-                            {capitalizeFirst(eachRequest.status)} {statusColour[eachRequest.status.replace("-", "")]}
+                            {capitalizeFirst(eachRequest.status)}
                           </div>
                         </td>
 

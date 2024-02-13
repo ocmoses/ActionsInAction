@@ -1646,7 +1646,7 @@ const usePartners = () => {
         }
       );
       setProcessing(false);
-      const result = response.data.data[0];
+      const result = response.data.data;
       console.log("Res", result);
       return { result };
     } catch (error) {

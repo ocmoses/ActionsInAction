@@ -3,6 +3,7 @@ import Image from "next/image";
 import { NavLinksMobile } from "./NavLinks";
 import TextInput from "@/app/components/form/TextInput";
 import { useState, useEffect } from "react";
+import { NewSuccess } from "@/app/components/toasts/Success";
 
 export default function PopUp({ closePopUp, children }) {
   return (
@@ -263,11 +264,12 @@ export const ForAggregatorSuccess = ({ action }) => {
           <div>Copy email</div>
         </div>
       </span>
-      {showToast && (
+      {showToast && <NewSuccess message={"Email copied!"} />}
+      {/* {showToast && (
         <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
           Email copied!
         </div>
-      )}
+      )} */}
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
@@ -332,11 +334,12 @@ export const CRBTSuccess = ({ action, category }) => {
           <div>Copy email</div>
         </div>
       </span>
-      {showToast && (
+      {showToast && <NewSuccess message={"Email copied!"} />}
+      {/* {showToast && (
         <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
           Email copied!
         </div>
-      )}
+      )} */}
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
@@ -479,10 +482,27 @@ export const ChooseAggregator = ({
   onAggregatorSelect,
 }) => {
   const [selectedCard, setSelectedCard] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredAggregators, setFilteredAggregators] = useState([]);
+
+  useEffect(() => {
+    setFilteredAggregators(aggregators);
+  }, [aggregators]);
 
   const handleCardSelect = (companyName, uuid, index) => {
     setSelectedCard(index);
     onAggregatorSelect(index, companyName, uuid);
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = aggregators.filter(
+      (aggregator) =>
+        aggregator.company_name.toLowerCase().includes(query) ||
+        aggregator.email.toLowerCase().includes(query)
+    );
+    setFilteredAggregators(filtered);
   };
 
   const isButtonDisabled = selectedCard === null;
@@ -527,7 +547,8 @@ export const ChooseAggregator = ({
         <TextInput
           id="choosenAggregator"
           label="Search partners"
-          onChange={(e) => {}}
+          value={searchQuery}
+          onChange={handleSearch}
         />
       </div>
       <div className="w-full border-b">
@@ -542,8 +563,8 @@ export const ChooseAggregator = ({
         className="w-full mt-6"
         style={{ maxHeight: "300px", overflowY: "auto" }}
       >
-        {aggregators?.length > 0 &&
-          aggregators.map((aggregator, index) => (
+        {filteredAggregators?.length > 0 ? (
+          filteredAggregators.map((aggregator, index) => (
             <Card
               key={aggregator.uuid}
               title={aggregator.company_name}
@@ -557,7 +578,10 @@ export const ChooseAggregator = ({
                 )
               }
             />
-          ))}
+          ))
+        ) : (
+          <p>No matching aggregators found.</p>
+        )}
       </div>
       <div className="flex flex-row py-4 px-2 justify-between w-full items-center">
         <div></div>

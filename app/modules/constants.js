@@ -1519,12 +1519,29 @@ export const role_types = {
 };
 
 export const role_menu_map = {
-  superAdmin: ["Dashboard", "Compliance", "Settings", "Contracts"],
-  admin: ["Dashboard", "Compliance", "Settings", "Contracts"],
-  director: ["Contracts"],
-  witness: ["Contracts"],
-  delegate: ["Contracts"],
-};
+  "superAdmin": [
+    "Dashboard",
+    "Compliance",
+    "Settings",
+    "Contracts",
+    "Requests"
+  ],
+  "admin": [
+    "Dashboard",
+    "Compliance",
+    "Settings",
+    "Contracts"
+  ],
+  "director": [
+    "Contracts"
+  ],
+  "witness": [
+    "Contracts"
+  ],
+  "delegate": [
+    "Contracts"
+  ]
+}
 
 export const contract_statuses = {
   PROCESSING: "processing",

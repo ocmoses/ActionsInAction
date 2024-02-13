@@ -60,51 +60,49 @@ export default function AggregatorComplianceModal({
 
               <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
                 <div className="pt-[50px] w-[100%] h-auto flex justify-center">
-                 
-                    {currentPanel.NCCLicensedetails && (
-                      <NCCLicensedetails
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.NCCLicensedetails && (
+                    <NCCLicensedetails
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.NLRCLicensedetails && (
-                      <NLRCLicensedetails
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.NLRCLicensedetails && (
+                    <NLRCLicensedetails
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.ShortCodeDetais && (
-                      <ShortCodeDetais
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
+                  {currentPanel.ShortCodeDetais && (
+                    <ShortCodeDetais
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
 
-                    {currentPanel.ReviewAndSubmit && (
-                      <ReviewAndSubmit
-                        closeAggregatorComplianceFormFlyout={
-                          closeAggregatorComplianceFormFlyout
-                        }
-                        partnerDetails={partnerDetails}
-                        currentPanel={currentPanel}
-                        setCurrentPanel={setCurrentPanel}
-                      />
-                    )}
-                
+                  {currentPanel.ReviewAndSubmit && (
+                    <ReviewAndSubmit
+                      closeAggregatorComplianceFormFlyout={
+                        closeAggregatorComplianceFormFlyout
+                      }
+                      partnerDetails={partnerDetails}
+                      currentPanel={currentPanel}
+                      setCurrentPanel={setCurrentPanel}
+                    />
+                  )}
                 </div>
               </div>
             </>
@@ -589,8 +587,9 @@ export const NCCLicensedetails = ({
             &lt; Back
           </button>
 
-          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-          onClick={() => {
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => {
               setCurrentPanel({
                 ...currentPanel,
                 NCCLicensedetails: false,
@@ -598,7 +597,8 @@ export const NCCLicensedetails = ({
                 ShortCodeDetais: false,
                 ReviewAndSubmit: false,
               });
-          }}>
+            }}
+          >
             Next &gt;
           </button>
         </div>
@@ -780,13 +780,14 @@ export const NLRCLicensedetails = ({
                 ShortCodeDetais: false,
                 ReviewAndSubmit: false,
               });
-             }}
+            }}
           >
             &lt; Back
           </button>
 
-          <button className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full" 
-          onClick={() => {
+          <button
+            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+            onClick={() => {
               setCurrentPanel({
                 ...currentPanel,
                 NCCLicensedetails: false,
@@ -794,7 +795,8 @@ export const NLRCLicensedetails = ({
                 ShortCodeDetais: true,
                 ReviewAndSubmit: false,
               });
-             }} >
+            }}
+          >
             Next &gt;
           </button>
         </div>
@@ -957,7 +959,6 @@ export const ShortCodeDetais = ({
         <FileInputWrapper>
           <div className="p-[8px] w-full rounded-[10px]">
             <p>Enter applicable short codes</p>
-           
           </div>
         </FileInputWrapper>
 
@@ -1005,7 +1006,7 @@ export const ReviewAndSubmit = ({
 }) => {
   return (
     <>
-      <div className="max-w-[600px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+      <div className="max-w-[650px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-5">
         <div className="mb-8 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
             Review your application
@@ -1013,23 +1014,145 @@ export const ReviewAndSubmit = ({
         </div>
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3>NCC VAS Licence</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS Licence ID</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+              <div className="flex">
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Issuing date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2000</h3>
+                </div>
+
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Expiry date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2030</h3>
+                </div>
+              </div>
+              
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>VAS document</span>
+                <h3 className="text-[14px] text-white flex gap-3">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.8 0C9.074 0 9.337 0.113 9.526 0.312L12.726 3.74C12.902 3.926 13 4.173 13 4.429V13C13 13.552 12.552 14 12 14H2C1.448 14 1 13.552 1 13V1C1 0.448 1.448 0 2 0H8.8ZM12 5H8.5C8.224 5 8 4.776 8 4.5V1H2V13H12V5ZM4.5 11C4.22386 11 4 10.7761 4 10.5C4 10.2239 4.22386 10 4.5 10H9.5C9.77614 10 10 10.2239 10 10.5C10 10.7761 9.77614 11 9.5 11H4.5ZM4.5 8C4.22386 8 4 7.77614 4 7.5C4 7.22386 4.22386 7 4.5 7H9.5C9.77614 7 10 7.22386 10 7.5C10 7.77614 9.77614 8 9.5 8H4.5ZM5.5 16C5.22386 16 5 15.7761 5 15.5C5 15.2239 5.22386 15 5.5 15H14V6.5C14 6.22386 14.2239 6 14.5 6C14.7761 6 15 6.22386 15 6.5V15C15 15.5523 14.5523 16 14 16H5.5Z" fill="#FFCB03"/>
+                  </svg>
+                  <span>GalaxoSmilth_VAS_document.pdf</span>
+                </h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3> NLRC VAS License</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span> NLRC License Number</span>
+                <h3 className="text-[14px] text-white">NCC1234-456</h3>
+              </div>
+              <div className="flex">
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Issuing date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2000</h3>
+                </div>
+
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Expiry date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2030</h3>
+                </div>
+              </div>
+              
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>NLRC document</span>
+                <h3 className="text-[14px] text-white flex gap-3">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.8 0C9.074 0 9.337 0.113 9.526 0.312L12.726 3.74C12.902 3.926 13 4.173 13 4.429V13C13 13.552 12.552 14 12 14H2C1.448 14 1 13.552 1 13V1C1 0.448 1.448 0 2 0H8.8ZM12 5H8.5C8.224 5 8 4.776 8 4.5V1H2V13H12V5ZM4.5 11C4.22386 11 4 10.7761 4 10.5C4 10.2239 4.22386 10 4.5 10H9.5C9.77614 10 10 10.2239 10 10.5C10 10.7761 9.77614 11 9.5 11H4.5ZM4.5 8C4.22386 8 4 7.77614 4 7.5C4 7.22386 4.22386 7 4.5 7H9.5C9.77614 7 10 7.22386 10 7.5C10 7.77614 9.77614 8 9.5 8H4.5ZM5.5 16C5.22386 16 5 15.7761 5 15.5C5 15.2239 5.22386 15 5.5 15H14V6.5C14 6.22386 14.2239 6 14.5 6C14.7761 6 15 6.22386 15 6.5V15C15 15.5523 14.5523 16 14 16H5.5Z" fill="#FFCB03"/>
+                  </svg>
+                  <span>GalaxoSmilth_VAS_document.pdf</span>
+                </h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
 
         <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-        afoo
+          <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+            <div className="flex flex-col justify-between w-[150px] ">
+              <h3> Short code</h3>
+              <button className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full">
+                Edit
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
+            <div className="flex">
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Short code issue date</span>
+                  <h3 className="text-[14px] text-white">Sep 12, 1986</h3>
+                </div>
+
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>Short code expiry date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2000</h3>
+                </div>
+              </div>
+
+
+              <div className="flex">
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>NCC pricing approval issue date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2000</h3>
+                </div>
+
+                <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
+                  <span>NCC pricing approval expiry date</span>
+                  <h3 className="text-[14px] text-white">Jun 12, 2030</h3>
+                </div>
+              </div>
+              
+
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>Short code document</span>
+                <h3 className="text-[14px] text-white flex gap-3">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.8 0C9.074 0 9.337 0.113 9.526 0.312L12.726 3.74C12.902 3.926 13 4.173 13 4.429V13C13 13.552 12.552 14 12 14H2C1.448 14 1 13.552 1 13V1C1 0.448 1.448 0 2 0H8.8ZM12 5H8.5C8.224 5 8 4.776 8 4.5V1H2V13H12V5ZM4.5 11C4.22386 11 4 10.7761 4 10.5C4 10.2239 4.22386 10 4.5 10H9.5C9.77614 10 10 10.2239 10 10.5C10 10.7761 9.77614 11 9.5 11H4.5ZM4.5 8C4.22386 8 4 7.77614 4 7.5C4 7.22386 4.22386 7 4.5 7H9.5C9.77614 7 10 7.22386 10 7.5C10 7.77614 9.77614 8 9.5 8H4.5ZM5.5 16C5.22386 16 5 15.7761 5 15.5C5 15.2239 5.22386 15 5.5 15H14V6.5C14 6.22386 14.2239 6 14.5 6C14.7761 6 15 6.22386 15 6.5V15C15 15.5523 14.5523 16 14 16H5.5Z" fill="#FFCB03"/>
+                  </svg>
+                  <span>GalaxoSmilth_VAS_document.pdf</span>
+                </h3>
+              </div>
+
+
+              
+              <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
+                <span>NCC pricing approval document</span>
+                <h3 className="text-[14px] text-white flex gap-3">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.8 0C9.074 0 9.337 0.113 9.526 0.312L12.726 3.74C12.902 3.926 13 4.173 13 4.429V13C13 13.552 12.552 14 12 14H2C1.448 14 1 13.552 1 13V1C1 0.448 1.448 0 2 0H8.8ZM12 5H8.5C8.224 5 8 4.776 8 4.5V1H2V13H12V5ZM4.5 11C4.22386 11 4 10.7761 4 10.5C4 10.2239 4.22386 10 4.5 10H9.5C9.77614 10 10 10.2239 10 10.5C10 10.7761 9.77614 11 9.5 11H4.5ZM4.5 8C4.22386 8 4 7.77614 4 7.5C4 7.22386 4.22386 7 4.5 7H9.5C9.77614 7 10 7.22386 10 7.5C10 7.77614 9.77614 8 9.5 8H4.5ZM5.5 16C5.22386 16 5 15.7761 5 15.5C5 15.2239 5.22386 15 5.5 15H14V6.5C14 6.22386 14.2239 6 14.5 6C14.7761 6 15 6.22386 15 6.5V15C15 15.5523 14.5523 16 14 16H5.5Z" fill="#FFCB03"/>
+                  </svg>
+                  <span>GalaxoSmilth_VAS_document.pdf</span>
+                </h3>
+              </div>
+            </div>
           </div>
         </FileInputWrapper>
-
 
         <div className="flex flex-col gap-2  text-center justify-between">
           <p>

@@ -459,30 +459,23 @@ export default function GetStarted({ type }) {
   const [aggregators, setAggregators] = useState([]);
   const [aggregatorIndex, setAggregatorIndex] = useState();
   const [aggregator, setAggregator] = useState();
-  const [showPartnerCategories, setShowPartnerCategories] = useState(false);
+  const [showPartnerCategories, setShowPartnerCategories] = useState(true);
+  const [vasPartnerData, setVasPartnerData] = useState([]);
 
   useEffect(() => {
     getVasPartnerRequest(partner.uuid).then((res) => {
-      if (res.result && res.result["status"] == "declined") {
-        setRejectedRequest(res.result);
-        setRechooseAggregator(true);
-        setAggregator(res.result["aggregator"]);
-        handleVasData("service_uuid", res.result["service_uuid"]);
-      }
-      if (res.result && res.result["status"] == "accepted") {
-        setReChooseAggregatorSuccess(true);
-      }
-      if (res.result && res.result["status"] == "in-progress") {
+      if (res.result?.length > 0) {
         setShowPartnerCategories(false);
+        setVasPartnerData(res.result);
       }
     });
-  }, [partner.uuid]);
+  }, [partner?.uuid]);
 
   useEffect(() => {
-    getAggregators(partner.uuid).then((res) => {
+    getAggregators(partner?.uuid).then((res) => {
       setAggregators(res.result);
     });
-  }, [partner.uuid]);
+  }, [partner?.uuid]);
 
   const handleAggregatorSelect = (index, companyName, uuid) => {
     setAggregatorIndex(index);
@@ -740,7 +733,7 @@ export default function GetStarted({ type }) {
                           <BrdUpdates
                             closePopUp={closePopUp}
                             submitBrd={submitBrd}
-                            loginPartnerID={partner.uuid}
+                            loginPartnerID={partner?.uuid}
                             token={user.token}
                           /> // If contactSubmit is true
                         ) : (
@@ -1039,18 +1032,24 @@ export default function GetStarted({ type }) {
                   )}
               </div>
 
-              {/* //TODO: change == to !== */}
-              {rechooseAggregator && rejectedRequest !== null && (
-                <ChooseAggregatorCard
-                  // TODO: replace with the actual aggregator value
-                  aggregator={aggregator}
-                  action={() => setShowChooseAggregator(true)}
-                  dismissAction={() => setRechooseAggregator(false)}
-                />
+              {vasPartnerData.map((item) =>
+                item.status !== "decline" ? null : (
+                  <ChooseAggregatorCard
+                    aggregator={item.aggregator}
+                    action={() => {
+                      handleVasData("service_uuid", item.service_uuid);
+                      setShowChooseAggregator(true);
+                    }}
+                    dismissAction={() => setRechooseAggregator(false)}
+                  />
+                )
               )}
 
-              {/* //TODO: implement conditionl rendering */}
-              {showReChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+              {vasPartnerData.map((item) =>
+                item.status !== "in-progress" ? null : (
+                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                )
+              )}
 
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>

@@ -156,9 +156,11 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
           setError({ [file_title]: resp.error });
         } else {
           setFiles({ ...files, [file_title]: file_title });
-          if (file_title == "video_file" || file_title == 'authorization_video') {
-            setFiles({ ...files, video_file: file_title });
-            setFiles({ ...files, authorization_video: file_title });
+          
+          if(file_title == 'authorization_video') {
+            setFiles({ ...files, authorization_video: file_title });           
+            setFiles({ ...files, video_file: file_title });    
+            // setFiles({ ...files, video_file: file_title });         
           }
         }
       })

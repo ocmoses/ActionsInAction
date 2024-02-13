@@ -516,3 +516,92 @@ export const RequestFinishUpModal = ({closeRequestFlyout, partnerDetails}) => {
     </>
   );
 };
+
+
+
+export const ApproveRejectRequestModal = ({
+  closeApproveRejectRequestFlyout,
+  partnerDetails,
+}) => {
+  return (
+    <>
+      <main
+        id="modal"
+        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
+        onClick={(e) => {
+          e.target.id == "modal" && closeApproveRejectRequestFlyout();
+        }}
+      >
+        <div className="border-1 border-gray-700 rounded-xl shadow-xl bg-[#111111] flex flex-col gap-3 w-[550px] p-10 pt-4">
+          <div className="flex justify-end mb-[-40px]">
+            <button
+              className="h-[40px] w-[40px] flex justify-center bg-white/20 items-center text-[18px] rounded-[100%] text-gray-100 hover:bg-white/20 transition ease-in-out delay-150"
+              onClick={() => closeApproveRejectRequestFlyout()}
+            >
+              X
+            </button>
+          </div>
+          
+          <CompanyInitial
+            initials={getInitials(partnerDetails.service_name).toUpperCase()}
+          />
+
+         <div className="flex flex-col"> 
+            <h2 className=" text-[#FFF] font-bold text-[20px]">
+              {partnerDetails.service_name}
+            </h2>
+            VAS Service Provider
+          </div>
+
+          <div className="bg-white/10 p-4 flex justify-between text-[13px] items-center rounded-[7px]">
+            <div className="flex flex-col gap-0">
+              <span>Email</span>
+              <p className="text-white">{partnerDetails.email}</p>
+            </div>
+            <div className="flex gap-2 cursor-pointer hover:opacity-60">
+              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.875 3.15625H6.875C6.75068 3.15625 6.63145 3.20564 6.54354 3.29354C6.45564 3.38145 6.40625 3.50068 6.40625 3.625V6.90625H3.125C3.00068 6.90625 2.88145 6.95564 2.79354 7.04354C2.70564 7.13145 2.65625 7.25068 2.65625 7.375V17.375C2.65625 17.4993 2.70564 17.6185 2.79354 17.7065C2.88145 17.7944 3.00068 17.8438 3.125 17.8438H13.125C13.2493 17.8438 13.3685 17.7944 13.4565 17.7065C13.5444 17.6185 13.5938 17.4993 13.5938 17.375V14.0938H16.875C16.9993 14.0938 17.1185 14.0444 17.2065 13.9565C17.2944 13.8685 17.3438 13.7493 17.3438 13.625V3.625C17.3438 3.50068 17.2944 3.38145 17.2065 3.29354C17.1185 3.20564 16.9993 3.15625 16.875 3.15625ZM12.6562 16.9062H3.59375V7.84375H12.6562V16.9062ZM16.4062 13.1562H13.5938V7.375C13.5938 7.25068 13.5444 7.13145 13.4565 7.04354C13.3685 6.95564 13.2493 6.90625 13.125 6.90625H7.34375V4.09375H16.4062V13.1562Z" fill="#8E8E8E"/>
+              </svg>
+              <span className="text-mtn">Copy Email</span>
+            </div>
+          </div>
+
+
+          <div className="bg-white/10 p-4 flex justify-between text-[13px] items-center rounded-[7px]">
+            <div className="flex flex-col gap-0">
+              <span>Phone</span>
+              <p className="text-white"> {partnerDetails.telephone}</p>
+            </div>
+            <div className="flex gap-2 cursor-pointer hover:opacity-60">
+              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.875 3.15625H6.875C6.75068 3.15625 6.63145 3.20564 6.54354 3.29354C6.45564 3.38145 6.40625 3.50068 6.40625 3.625V6.90625H3.125C3.00068 6.90625 2.88145 6.95564 2.79354 7.04354C2.70564 7.13145 2.65625 7.25068 2.65625 7.375V17.375C2.65625 17.4993 2.70564 17.6185 2.79354 17.7065C2.88145 17.7944 3.00068 17.8438 3.125 17.8438H13.125C13.2493 17.8438 13.3685 17.7944 13.4565 17.7065C13.5444 17.6185 13.5938 17.4993 13.5938 17.375V14.0938H16.875C16.9993 14.0938 17.1185 14.0444 17.2065 13.9565C17.2944 13.8685 17.3438 13.7493 17.3438 13.625V3.625C17.3438 3.50068 17.2944 3.38145 17.2065 3.29354C17.1185 3.20564 16.9993 3.15625 16.875 3.15625ZM12.6562 16.9062H3.59375V7.84375H12.6562V16.9062ZM16.4062 13.1562H13.5938V7.375C13.5938 7.25068 13.5444 7.13145 13.4565 7.04354C13.3685 6.95564 13.2493 6.90625 13.125 6.90625H7.34375V4.09375H16.4062V13.1562Z" fill="#8E8E8E"/>
+              </svg>
+              <span className="text-mtn">Copy Phone</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2 mt-[20px]">
+            <button
+              className="border-1 border-white/20 text-white  hover:opacity-50 p-4 py-2 rounded-full flex gap-2"
+              onClick={() => closeApproveRejectRequestFlyout()}
+            >
+              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.99997 9.32167L5.58914 4.91084C5.43197 4.75904 5.22147 4.67505 5.00297 4.67694C4.78447 4.67884 4.57546 4.76648 4.42096 4.92099C4.26645 5.0755 4.17881 5.28451 4.17691 5.50301C4.17501 5.7215 4.25901 5.932 4.41081 6.08917L8.82164 10.5L4.41081 14.9108C4.25901 15.068 4.17501 15.2785 4.17691 15.497C4.17881 15.7155 4.26645 15.9245 4.42096 16.079C4.57546 16.2335 4.78447 16.3212 5.00297 16.3231C5.22147 16.325 5.43197 16.241 5.58914 16.0892L9.99997 11.6783L14.4108 16.0892C14.568 16.241 14.7785 16.325 14.997 16.3231C15.2155 16.3212 15.4245 16.2335 15.579 16.079C15.7335 15.9245 15.8211 15.7155 15.823 15.497C15.8249 15.2785 15.7409 15.068 15.5891 14.9108L11.1783 10.5L15.5891 6.08917C15.6687 6.0123 15.7322 5.92035 15.7759 5.81868C15.8196 5.71701 15.8426 5.60766 15.8435 5.49701C15.8445 5.38636 15.8234 5.27663 15.7815 5.17421C15.7396 5.0718 15.6777 4.97875 15.5995 4.90051C15.5212 4.82227 15.4282 4.76039 15.3258 4.71849C15.2234 4.67659 15.1136 4.6555 15.003 4.65646C14.8923 4.65743 14.783 4.68041 14.6813 4.72409C14.5796 4.76776 14.4877 4.83125 14.4108 4.91084L9.99997 9.32167Z" fill="#747474"/>
+              </svg>
+              <span>Decline Request</span>
+            </button>
+            <button
+              className="text-black bg-mtn-500 p-4 py-2 rounded-full hover:opacity-50 flex gap-2"
+              onClick={() => closeApproveRejectRequestFlyout()}
+            >
+              <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.8313 6.45625L7.83128 16.4562C7.74339 16.544 7.62425 16.5933 7.50003 16.5933C7.37581 16.5933 7.25667 16.544 7.16878 16.4562L2.79378 12.0812C2.71098 11.9924 2.6659 11.8749 2.66804 11.7534C2.67018 11.632 2.71938 11.5161 2.80526 11.4302C2.89115 11.3443 3.00701 11.2952 3.12845 11.293C3.24989 11.2909 3.36742 11.3359 3.45628 11.4187L7.50003 15.4617L17.1688 5.79375C17.2576 5.71095 17.3752 5.66587 17.4966 5.66801C17.618 5.67015 17.7339 5.71935 17.8198 5.80523C17.9057 5.89112 17.9549 6.00698 17.957 6.12842C17.9592 6.24986 17.9141 6.36739 17.8313 6.45625Z" fill="#1C1C1C"/>
+              </svg>
+              <span>Accept Request</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+};

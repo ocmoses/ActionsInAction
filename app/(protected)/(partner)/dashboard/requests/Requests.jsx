@@ -52,27 +52,28 @@ export default function Requests() {
     completed: "bg-[#216E4E]",
   };
 
-  useEffect(() => {
-    let getAggregatorRequestResponse = null;
-    const get_aggregator_request = async () => {
-      try {
-        getAggregatorRequestResponse = await getAggregatorRequest();
-        let getAggregatorRequest_response = getAggregatorRequestResponse.result;
-        if (getAggregatorRequest_response.data == null) {
-          setError(getAggregatorRequest_response.message);
-        } else {
-          console.log(
-            "getAggregatorRequest_response.data",
-            getAggregatorRequest_response.data
-          );
-          setSelectedRequest(getAggregatorRequest_response.data);
-          setFilteredData(getAggregatorRequest_response.data);
-        }
-      } catch (error) {
-        // console.log('error', error);
-        setError(error.message);
+  let getAggregatorRequestResponse = null;
+  const get_aggregator_request = async () => {
+    try {
+      getAggregatorRequestResponse = await getAggregatorRequest();
+      let getAggregatorRequest_response = getAggregatorRequestResponse.result;
+      if (getAggregatorRequest_response.data == null) {
+        setError(getAggregatorRequest_response.message);
+      } else {
+        console.log(
+          "getAggregatorRequest_response.data",
+          getAggregatorRequest_response.data
+        );
+        setSelectedRequest(getAggregatorRequest_response.data);
+        setFilteredData(getAggregatorRequest_response.data);
       }
-    };
+    } catch (error) {
+      // console.log('error', error);
+      setError(error.message);
+    }
+  };
+
+  useEffect(() => {
     get_aggregator_request();
   }, []);
 
@@ -142,6 +143,7 @@ export default function Requests() {
       setSendAction(false);
       successAction(response.data.message);
       get_aggregator_request();
+      window.location.reload();
     } catch (err) {
       setSendAction(false);
       successAction(err.response.data.data.message);

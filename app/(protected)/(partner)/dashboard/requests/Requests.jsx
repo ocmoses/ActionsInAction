@@ -124,6 +124,7 @@ export default function Requests() {
   };
 
   const approveRejectAction = async (url) => {
+    setApproveRejectRequestFlyout(false);
     try {
       setSendAction(true);
       const response = await axios.post(
@@ -299,6 +300,10 @@ export default function Requests() {
             setApproveRejectRequestFlyout(false)
           }
           partnerDetails={partnerDetails}
+          approveRequest={_approveRequest}
+          rejectRequest={_rejectRequest}
+          successAction={successAction}
+          setRequestFlyout={setRequestFlyout}
         />
       )}
 

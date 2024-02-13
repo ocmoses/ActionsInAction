@@ -43,9 +43,7 @@ export default function Requests() {
   const [filteredData, setFilteredData] = useState([]);
   const [requestFlyout, setRequestFlyout] = useState(false);
   const [partnerDetails, setPartnerDetails] = useState();
-
-  const [approveRejectRequestFlyout, setApproveRejectRequestFlyout] =
-    useState(false);
+  const [approveRejectRequestFlyout, setApproveRejectRequestFlyout] =useState(false);
 
   const statusColour = {
     pending: "#353535",
@@ -53,6 +51,7 @@ export default function Requests() {
     inprogress: "#E2B204",
     completed: "#216E4E",
   };
+
   useEffect(() => {
     let getAggregatorRequestResponse = null;
     const get_aggregator_request = async () => {
@@ -113,15 +112,22 @@ export default function Requests() {
   const _approveRequest = (eachRequest) => {
     formData.service_uuid = eachRequest.service_uuid;
     setServiceUuid(eachRequest.service_uuid);
-    approveRequest();
+    let url = RemoteEndpoints.APPROVE_VAS_PARTNERS
+    approveRejectAction(url);
   };
 
-  const approveRequest = async (e) => {
+  const _rejectRequest = (eachRequest) => {
+    formData.service_uuid = eachRequest.service_uuid;
+    setServiceUuid(eachRequest.service_uuid);
+    let url = RemoteEndpoints.REJECT_VAS_PARTNERS
+    approveRejectAction(url);
+  };
+
+  const approveRejectAction = async (url) => {
     try {
       setSendAction(true);
       const response = await axios.post(
-        RemoteEndpoints.APPROVE_VAS_PARTNERS,
-        formData,
+        url,formData,
         {
           headers: {
             apikey: apikey,
@@ -259,14 +265,11 @@ export default function Requests() {
                               ) : (
                                 <>
                                   <div className="hidden  group-hover/request-1:flex gap-3">
-                                    <div>
+                                    <div onClick={() => _rejectRequest(eachRequest)}>
                                       <RequestRejectBtn />
                                     </div>
-                                    <div
-                                      onClick={() =>
-                                        _approveRequest(eachRequest)
-                                      }
-                                    >
+                                    
+                                    <div onClick={() => _approveRequest(eachRequest)}>
                                       <RequestApproveBtn />
                                     </div>
                                   </div>

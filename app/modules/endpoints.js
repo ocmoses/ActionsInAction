@@ -188,6 +188,7 @@ const RemoteEndpoints = {
 
 
   APPROVE_VAS_PARTNERS: `${apiURL}/v2/aggregator/request/approve`,
+  REJECT_VAS_PARTNERS: `${apiURL}/v2/aggregator/request/reject`,
 
 };
 export default RemoteEndpoints;

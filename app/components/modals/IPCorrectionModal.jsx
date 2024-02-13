@@ -32,6 +32,14 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     }, 3000);
 
   const validateFiles = () => {
+    
+    console.log("FILES", files);
+
+    if(!data.license_start_date || !data.license_end_date){
+      setError({ error: "Please fill licensing period"});
+      return false;
+    }
+
     for (const i in files) {
       if (files[i] == "") {
         console.log("The i we are looking for", i);
@@ -40,10 +48,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
       }
     }
 
-    if(!data.license_start_date || !data.license_end_date){
-      setError({ error: "Please fill licensing period"});
-      return false;
-    }
+    
 
     return true;
   };
@@ -54,8 +59,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     }
     setSubmitting(true);
     if(rejected.includes('licensing_period')){
-
-      console.log('HERE');
 
       updateLicenseInfo()
         .then(resp => {
@@ -98,6 +101,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     probate_of_will: "Probate of Will",
     "licensing_period": "Licensing Period",
     video_file: "Authorization Video",
+    authorization_video: "Authorization Video",
     agreement_letter_btw_content_and_vas_partner: "Agreement with VAS Partner",
     agreement_letter_btw_content_and_agent: "Agreement with Agent",
     agreement_letter_btw_content_and_record_label:
@@ -152,9 +156,11 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
           setError({ [file_title]: resp.error });
         } else {
           setFiles({ ...files, [file_title]: file_title });
-          if (file_title == "video_file") {
-            setFiles({ ...files, video_file: file_title });
-            setFiles({ ...files, authorization_video: file_title });
+          
+          if(file_title == 'authorization_video') {
+            setFiles({ ...files, authorization_video: file_title });           
+            setFiles({ ...files, video_file: file_title });    
+            // setFiles({ ...files, video_file: file_title });         
           }
         }
       })

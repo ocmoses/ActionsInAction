@@ -141,6 +141,7 @@ export default function Requests() {
       );
       setSendAction(false);
       successAction(response.data.message);
+      get_aggregator_request();
     } catch (err) {
       setSendAction(false);
       successAction(err.response.data.data.message);
@@ -241,8 +242,22 @@ export default function Requests() {
                             />
                           ) : (
                             <div className="w-[120px] h-[50px] bg-transparent mt-2">
-                              {eachRequest.status === "in-progress" ||
-                              eachRequest.status === "completed" ? (
+                              {(eachRequest.status === "pending") && (
+                                <>
+                                  <div className="hidden  group-hover/request-1:flex gap-3">
+                                    <div onClick={() => _rejectRequest(eachRequest)}>
+                                      <RequestRejectBtn />
+                                    </div>
+                                    
+                                    <div onClick={() => _approveRequest(eachRequest)}>
+                                      <RequestApproveBtn />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+
+                              {(eachRequest.status === "in-progress" ||
+                              eachRequest.status === "completed" ) && (
                                 <div className="flex gap-3">
                                   <button
                                     onClick={() => {
@@ -269,19 +284,8 @@ export default function Requests() {
                                     </svg>
                                   </button>
                                 </div>
-                              ) : (
-                                <>
-                                  <div className="hidden  group-hover/request-1:flex gap-3">
-                                    <div onClick={() => _rejectRequest(eachRequest)}>
-                                      <RequestRejectBtn />
-                                    </div>
-                                    
-                                    <div onClick={() => _approveRequest(eachRequest)}>
-                                      <RequestApproveBtn />
-                                    </div>
-                                  </div>
-                                </>
-                              )}
+                            )}
+                             
                             </div>
                           )}
                         </td>

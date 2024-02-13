@@ -81,6 +81,9 @@ export default function Requests() {
     setApproveRejectRequestFlyout(true);
   };
 
+ 
+  
+
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     status: false,
@@ -242,7 +245,10 @@ export default function Requests() {
                               eachRequest.status === "completed" ? (
                                 <div className="flex gap-3">
                                   <button
-                                    onClick={() => setRequestFlyout(true)}
+                                    onClick={() => {
+                                      setRequestFlyout(true);
+                                      setPartnerDetails(eachRequest);
+                                    }}
                                     className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white flex"
                                   >
                                     Finish up (0/2)

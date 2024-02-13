@@ -78,7 +78,7 @@ export default function GetStarted({ type }) {
     nextStage,
     getIPStatus,
     getPartnerContractCurrentlyRunning,
-    getRejectedRequest,
+    getVasPartnerRequest,
     getAggregators,
     changeAggregator,
   } = usePartners();
@@ -459,14 +459,21 @@ export default function GetStarted({ type }) {
   const [aggregators, setAggregators] = useState([]);
   const [aggregatorIndex, setAggregatorIndex] = useState();
   const [aggregator, setAggregator] = useState();
+  const [showPartnerCategories, setShowPartnerCategories] = useState(false);
 
   useEffect(() => {
-    getRejectedRequest(partner.uuid).then((res) => {
-      setRejectedRequest(res.result);
-      if (res.result) {
+    getVasPartnerRequest(partner.uuid).then((res) => {
+      if (res.result && res.result["status"] == "declined") {
+        setRejectedRequest(res.result);
         setRechooseAggregator(true);
         setAggregator(res.result["aggregator"]);
         handleVasData("service_uuid", res.result["service_uuid"]);
+      }
+      if (res.result && res.result["status"] == "accepted") {
+        setReChooseAggregatorSuccess(true);
+      }
+      if (res.result && res.result["status"] == "in-progress") {
+        setShowPartnerCategories(false);
       }
     });
   }, [partner.uuid]);
@@ -1004,7 +1011,8 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {!contractStarted &&
+                {showPartnerCategories &&
+                  !contractStarted &&
                   partner?.contract_status === "not_started" &&
                   !showProgress && (
                     <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">

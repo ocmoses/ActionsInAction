@@ -184,6 +184,31 @@ export const ChooseAggregatorSuccess = ({ action, selectedAggregator }) => {
   );
 };
 
+export const ChooseAggregatorFailure = ({ action, msg }) => {
+  return (
+    <div className="my-10 text-center animate-[slide-left_1s_ease-in-out]">
+      <Image
+        priority
+        src="/assets/icons/error.svg"
+        width={76.71}
+        height={38.32}
+        alt="logo"
+        className=" ext-white min-w-[76px] m-auto hover:text-mtn-300 hover:scale-[110%] h-auto transition-transform ease-in-out duration-500"
+      />
+      <h2 className="text-white font-mtn-bold text-2xl my-4">Sorry</h2>
+      <p className="text-red-500">{msg}</p>
+      <div className="flex gap-2 justify-center mt-10">
+        <button
+          className="text-black bg-mtn hover:bg-mtn-800 p-8 py-2 rounded-full"
+          onClick={action}
+        >
+          Got-It!
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export const ForAggregatorSuccess = ({ action }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -491,6 +516,7 @@ export const ChooseAggregator = ({
       <h4 className="text-white font-mtn-bold text-2xl">
         Choose an aggregator
       </h4>
+
       <div className="flex flex-row space-x-1">
         <p className="text-[12px]">
           We require VAS partners to register with existing MTN aggregators.

@@ -1627,11 +1627,11 @@ const usePartners = () => {
     }
   };
 
-  const getRejectedRequest = async (uuid) => {
+  const getVasPartnerRequest = async (uuid) => {
     try {
       setProcessing(true);
       const response = await axios.get(
-        `${RemoteEndpoints.GET_REJECTED_REQUEST}`,
+        `${RemoteEndpoints.GET_VAS_PARTNER_REQUEST}`,
         {
           params: {
             vas_partner_uuid: uuid,
@@ -1760,7 +1760,7 @@ const usePartners = () => {
     getVasTypes,
     getAggregators,
     submitVasPartner,
-    getRejectedRequest,
+    getVasPartnerRequest,
     changeAggregator,
   };
 };

@@ -461,7 +461,7 @@ export default function GetStarted({ type }) {
   const [aggregator, setAggregator] = useState();
 
   useEffect(() => {
-    getRejectedRequest(partner.uuid).then((res) => {
+    getRejectedRequest(partner?.uuid).then((res) => {
       setRejectedRequest(res.result);
       if (res.result) {
         setRechooseAggregator(true);
@@ -469,13 +469,13 @@ export default function GetStarted({ type }) {
         handleVasData("service_uuid", res.result["service_uuid"]);
       }
     });
-  }, [partner.uuid]);
+  }, [partner?.uuid]);
 
   useEffect(() => {
-    getAggregators(partner.uuid).then((res) => {
+    getAggregators(partner?.uuid).then((res) => {
       setAggregators(res.result);
     });
-  }, [partner.uuid]);
+  }, [partner?.uuid]);
 
   const handleAggregatorSelect = (index, companyName, uuid) => {
     setAggregatorIndex(index);
@@ -733,7 +733,7 @@ export default function GetStarted({ type }) {
                           <BrdUpdates
                             closePopUp={closePopUp}
                             submitBrd={submitBrd}
-                            loginPartnerID={partner.uuid}
+                            loginPartnerID={partner?.uuid}
                             token={user.token}
                           /> // If contactSubmit is true
                         ) : (

@@ -17,6 +17,9 @@ import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 
 import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
 import IntelectualPropertiesModal from "@/app/components/dashboard/partners/requests/IntelectualPropertiesDetail";
+
+
+
 export default function FilteringFlyout() {
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();

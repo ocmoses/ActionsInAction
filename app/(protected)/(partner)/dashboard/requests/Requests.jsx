@@ -46,10 +46,10 @@ export default function Requests() {
   const [approveRejectRequestFlyout, setApproveRejectRequestFlyout] =useState(false);
 
   const statusColour = {
-    pending: "#353535",
-    decline: "#AD2B19",
-    inprogress: "#E2B204",
-    completed: "#216E4E",
+    pending: "bg-[#353535]",
+    decline: "bg-[#AD2B19]",
+    inprogress: "bg-[#E2B204]",
+    completed: "bg-[#216E4E]",
   };
 
   useEffect(() => {
@@ -223,11 +223,11 @@ export default function Requests() {
 
                         <td>
                           <div
-                            className={`py-1 px-2 rounded text-white inline-flex text-sm bg-[${
+                            className={`py-1 px-2 rounded text-white inline-flex text-sm ${
                               statusColour[eachRequest.status.replace("-", "")]
-                            }]`}
+                            }`}
                           >
-                            {capitalizeFirst(eachRequest.status)}
+                            {capitalizeFirst(eachRequest.status)} {statusColour[eachRequest.status.replace("-", "")]}
                           </div>
                         </td>
 

@@ -146,7 +146,7 @@ export const AggregatorComplianceNav = ({
           <span className="hidden sm:flex text-[#999999] group-hover:!text-white">
             Partner category:
           </span>
-          <span className="font-bold">Rich Media Service</span>
+          <span className="font-bold">Value Added Service</span>
         </div>
       </div>
       <div className="flex justify-end items-center gap-3 text-white px-3">

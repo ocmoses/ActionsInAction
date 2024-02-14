@@ -78,7 +78,7 @@ export default function GetStarted({ type }) {
     nextStage,
     getIPStatus,
     getPartnerContractCurrentlyRunning,
-    getRejectedRequest,
+    getVasPartnerRequest,
     getAggregators,
     changeAggregator,
   } = usePartners();
@@ -459,14 +459,14 @@ export default function GetStarted({ type }) {
   const [aggregators, setAggregators] = useState([]);
   const [aggregatorIndex, setAggregatorIndex] = useState();
   const [aggregator, setAggregator] = useState();
+  const [showPartnerCategories, setShowPartnerCategories] = useState(true);
+  const [vasPartnerData, setVasPartnerData] = useState([]);
 
   useEffect(() => {
-    getRejectedRequest(partner?.uuid).then((res) => {
-      setRejectedRequest(res.result);
-      if (res.result) {
-        setRechooseAggregator(true);
-        setAggregator(res.result["aggregator"]);
-        handleVasData("service_uuid", res.result["service_uuid"]);
+    getVasPartnerRequest(partner.uuid).then((res) => {
+      if (res.result?.length > 0) {
+        setShowPartnerCategories(false);
+        setVasPartnerData(res.result);
       }
     });
   }, [partner?.uuid]);
@@ -1004,7 +1004,8 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {!contractStarted &&
+                {showPartnerCategories &&
+                  !contractStarted &&
                   partner?.contract_status === "not_started" &&
                   !showProgress && (
                     <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">
@@ -1031,18 +1032,24 @@ export default function GetStarted({ type }) {
                   )}
               </div>
 
-              {/* //TODO: change == to !== */}
-              {rechooseAggregator && rejectedRequest !== null && (
-                <ChooseAggregatorCard
-                  // TODO: replace with the actual aggregator value
-                  aggregator={aggregator}
-                  action={() => setShowChooseAggregator(true)}
-                  dismissAction={() => setRechooseAggregator(false)}
-                />
+              {vasPartnerData.map((item) =>
+                item.status !== "decline" ? null : (
+                  <ChooseAggregatorCard
+                    aggregator={item.aggregator}
+                    action={() => {
+                      handleVasData("service_uuid", item.service_uuid);
+                      setShowChooseAggregator(true);
+                    }}
+                    dismissAction={() => setRechooseAggregator(false)}
+                  />
+                )
               )}
 
-              {/* //TODO: implement conditionl rendering */}
-              {showReChooseAggregatorSuccess && <ChooseAggregatorSuccessCard />}
+              {vasPartnerData.map((item) =>
+                item.status !== "in-progress" ? null : (
+                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                )
+              )}
 
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>

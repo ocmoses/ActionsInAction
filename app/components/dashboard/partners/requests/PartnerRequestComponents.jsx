@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import TextInput from "@/app/components/form/TextInput";
+import Link from "next/link";
 import FilterTag, {
   PartnerFilterCheck,
   PartnerFilterTitle,
@@ -506,12 +507,11 @@ export const RequestFinishUpModal = ({
                   </div>
 
                   <div className="flex flex-col gap-4 justify-between items-end">
-                    <div
-                      onClick={() => setIntelectualPropertiesFlyout(true)}
-                      className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center"
-                    >
-                      Start
-                    </div>
+                    <Link href="/dashboard/ip">
+                      <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
+                        Start
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>

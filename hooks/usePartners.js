@@ -1627,11 +1627,11 @@ const usePartners = () => {
     }
   };
 
-  const getRejectedRequest = async (uuid) => {
+  const getVasPartnerRequest = async (uuid) => {
     try {
       setProcessing(true);
       const response = await axios.get(
-        `${RemoteEndpoints.GET_REJECTED_REQUEST}`,
+        `${RemoteEndpoints.GET_VAS_PARTNER_REQUEST}`,
         {
           params: {
             vas_partner_uuid: uuid,
@@ -1646,7 +1646,7 @@ const usePartners = () => {
         }
       );
       setProcessing(false);
-      const result = response.data.data[0];
+      const result = response.data.data;
       console.log("Res", result);
       return { result };
     } catch (error) {
@@ -1714,6 +1714,7 @@ const usePartners = () => {
       return { error };
     }
   };
+
   const getAggregatorRequest = async () => {
     try {
       setProcessing(true);
@@ -1728,8 +1729,8 @@ const usePartners = () => {
             "Content-Type": "application/json",
           },
           params: {
-            aggregator_uuid: states.partners.partner.uuid
-          }
+            aggregator_uuid: states.partners.partner.uuid,
+          },
         }
       );
       setProcessing(false);
@@ -1740,10 +1741,6 @@ const usePartners = () => {
       return { error };
     }
   };
-  
-
-
-
 
   return {
     ...states.partners,
@@ -1790,7 +1787,7 @@ const usePartners = () => {
     getVasTypes,
     getAggregators,
     submitVasPartner,
-    getRejectedRequest,
+    getVasPartnerRequest,
     changeAggregator,
     getAggregatorRequest,
   };

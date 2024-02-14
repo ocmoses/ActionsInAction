@@ -206,11 +206,11 @@ export default function Requests() {
                           <div className="flex items-center font-bold space-x-4">
                             <CompanyInitial
                               initials={getInitials(
-                                eachRequest.service_name
+                                eachRequest.vas_partner
                               ).toUpperCase()}
                             />
                             <div className="flex flex-col">
-                              <p>{eachRequest.service_name}</p>
+                              <p>{eachRequest.vas_partner}</p>
                               <span className="text-sm text-gray-500">
                                 {eachRequest.email}
                               </span>

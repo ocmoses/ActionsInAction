@@ -398,13 +398,13 @@ export const RequestFinishUpModal = ({
       >
         <div className="border-1 border-gray-700 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[550px] justify-center items-center">
           <CompanyInitial
-            initials={getInitials(partnerDetails.service_name).toUpperCase()}
+            initials={getInitials(partnerDetails.vas_partner).toUpperCase()}
             className="mt-[-20px]"
           />
           <div className="py-8 px-8 flex flex-col gap-4 min-w-full">
             <div className="text-center">
               <h2 className=" text-[#FFF] font-bold text-[20px]">
-                {partnerDetails.service_name}
+                {partnerDetails.vas_partner}
               </h2>
               {partnerDetails.email}
             </div>
@@ -582,12 +582,12 @@ export const ApproveRejectRequestModal = ({
           </div>
 
           <CompanyInitial
-            initials={getInitials(partnerDetails.service_name).toUpperCase()}
+            initials={getInitials(partnerDetails.vas_partner).toUpperCase()}
           />
 
           <div className="flex flex-col">
             <h2 className=" text-[#FFF] font-bold text-[20px]">
-              {partnerDetails.service_name}
+              {partnerDetails.vas_partner}
             </h2>
             VAS Service Provider
           </div>

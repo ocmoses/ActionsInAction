@@ -13,6 +13,7 @@ import PopUp, {
   ChooseAggregator,
   ChooseAggregatorSuccess,
   ForAggregatorSuccess,
+  ChooseAggregatorFailure,
 } from "@/app/components/PopUps";
 import usePartners from "@/hooks/usePartners";
 
@@ -46,6 +47,9 @@ export default function CategoryCard({
   const [selectedAggregator, setSelectedAggregator] = useState();
   const [aggregatorIndex, setAggregatorIndex] = useState();
   const [vasType, setVasType] = useState();
+  const [showChooseAggregatorFailure, setShowChooseAggregatorFailure] =
+    useState(false);
+  const [failureMsg, setFailureMsg] = useState();
 
   useEffect(() => {
     getAggregators(partner.uuid).then((res) => {
@@ -92,6 +96,9 @@ export default function CategoryCard({
     await submitVasPartner(vasData).then((res) => {
       if (res.result.success) {
         setShowChooseAggregatorSuccess(true);
+      } else {
+        setFailureMsg(res.result.message);
+        setShowChooseAggregatorFailure(true);
       }
       setProcessing(false);
     });
@@ -209,6 +216,15 @@ export default function CategoryCard({
           <ChooseAggregatorSuccess
             action={() => setShowChooseAggregatorSuccess(false)}
             selectedAggregator={selectedAggregator}
+          />
+        </PopUp>
+      )}
+
+      {showChooseAggregatorFailure && (
+        <PopUp closePopUp={() => {}}>
+          <ChooseAggregatorFailure
+            action={() => setShowChooseAggregatorFailure(false)}
+            msg={failureMsg}
           />
         </PopUp>
       )}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import TextInput from "@/app/components/form/TextInput";
+import Link from "next/link";
 import FilterTag, {
   PartnerFilterCheck,
   PartnerFilterTitle,

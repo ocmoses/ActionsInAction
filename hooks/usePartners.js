@@ -1714,6 +1714,8 @@ const usePartners = () => {
       return { error };
     }
   };
+
+
   const getAggregatorRequest = async () => {
     try {
       setProcessing(true);
@@ -1741,6 +1743,32 @@ const usePartners = () => {
     }
   };
   
+
+
+  const getAggregatorVasPartnerDetails = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      setProcessing(true);
+      const getAggregatorVasPartnerDetailsResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_VAS_PARTNERS_DETAILS}/${aggregator_uuid}/${vas_partner_uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+          
+        }
+      );
+      setProcessing(false);
+      const result = getAggregatorVasPartnerDetailsResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
 
 
 
@@ -1793,6 +1821,7 @@ const usePartners = () => {
     getRejectedRequest,
     changeAggregator,
     getAggregatorRequest,
+    getAggregatorVasPartnerDetails,
   };
 };
 

@@ -69,7 +69,7 @@ export default function Requests() {
       }
     } catch (error) {
       // console.log('error', error);
-      setError(error.message);
+      setError(error.data.message);
     }
   };
 
@@ -87,12 +87,14 @@ export default function Requests() {
 
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
+    alert: false,
     status: false,
   });
-  const successAction = (message) => {
+  const successAction = (message, alert) => {
     setShowSuccessToast((prevState) => ({
       ...prevState,
       message: message,
+      alert: alert,
       status: true,
     }));
 
@@ -100,6 +102,7 @@ export default function Requests() {
       setShowSuccessToast((prevState) => ({
         ...prevState,
         message: "",
+        alert: false,
         status: false,
       }));
     }, 3000);
@@ -141,12 +144,12 @@ export default function Requests() {
         }
       );
       setSendAction(false);
-      successAction(response.data.message);
+      successAction(response.data.message, true);
       get_aggregator_request();
       window.location.reload();
     } catch (err) {
       setSendAction(false);
-      successAction(err.response.data.data.message);
+      successAction(err.response.data.data.message, false);
     }
   };
 
@@ -244,14 +247,22 @@ export default function Requests() {
                             />
                           ) : (
                             <div className="w-[120px] h-[50px] bg-transparent mt-2">
-                              {(eachRequest.status === "pending") && (
+                              {eachRequest.status === "pending" && (
                                 <>
                                   <div className="hidden  group-hover/request-1:flex gap-3">
-                                    <div onClick={() => _rejectRequest(eachRequest)}>
+                                    <div
+                                      onClick={() =>
+                                        _rejectRequest(eachRequest)
+                                      }
+                                    >
                                       <RequestRejectBtn />
                                     </div>
-                                    
-                                    <div onClick={() => _approveRequest(eachRequest)}>
+
+                                    <div
+                                      onClick={() =>
+                                        _approveRequest(eachRequest)
+                                      }
+                                    >
                                       <RequestApproveBtn />
                                     </div>
                                   </div>
@@ -259,7 +270,7 @@ export default function Requests() {
                               )}
 
                               {(eachRequest.status === "in-progress" ||
-                              eachRequest.status === "completed" ) && (
+                                eachRequest.status === "completed") && (
                                 <div className="flex gap-3">
                                   <button
                                     onClick={() => {
@@ -286,8 +297,7 @@ export default function Requests() {
                                     </svg>
                                   </button>
                                 </div>
-                            )}
-                             
+                              )}
                             </div>
                           )}
                         </td>
@@ -295,12 +305,11 @@ export default function Requests() {
                     ))}
                 </tbody>
               </table>
-              {selectedRequest?.length == 0? (
+              {selectedRequest?.length == 0 ? (
                 <EmptyTable list={"Record"} />
               ) : (
                 <TablePager list={selectedRequest} action={setFilteredData} />
               )}
-              
             </div>
           </div>
         </div>
@@ -327,7 +336,10 @@ export default function Requests() {
       )}
 
       {showSuccessToast.status && (
-        <NewSuccess message={showSuccessToast.message} />
+        <NewSuccess
+          message={showSuccessToast.message}
+          alert={showSuccessToast.alert}
+        />
       )}
     </>
   );

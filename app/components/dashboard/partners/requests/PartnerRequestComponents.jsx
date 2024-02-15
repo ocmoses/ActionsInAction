@@ -507,7 +507,9 @@ export const RequestFinishUpModal = ({
                   </div>
 
                   <div className="flex flex-col gap-4 justify-between items-end">
-                    <Link href="/dashboard/ip">
+                    <Link
+                      href={`/dashboard/ip/${partnerDetails.vas_partner_uuid}`}
+                    >
                       <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
                         Start
                       </div>

@@ -27,11 +27,10 @@ import ServiceDetail from "./ServiceDetail";
 import VASIPDetails from "./aggregator/VASIPDetails";
 import ContentOwner from "./aggregator/ContentOwner";
 import IsAgent from "./aggregator/IsAgent";
+import IsRecordLabel from "./aggregator/IsRecordLabel";
 
-export default function AggregatorIPPage() {
+export default function AggregatorIPPage({ params }) {
   const { partner, getAllServices, getAllShortcodes } = usePartners();
-
-  // console.log("Partner", partner);
 
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -132,8 +131,6 @@ export default function AggregatorIPPage() {
   };
 
   const handleFormChange = () => {};
-
-  // console.log("isSuperadmin", isSuperadmin);
 
   useEffect(() => {
     getAllServices().then((resp) =>
@@ -249,7 +246,7 @@ export default function AggregatorIPPage() {
           </span>
         </div>
 
-        {step == 1 && <ServiceDetail next={() => setStep(2)} />}
+        {step == 1 && <ServiceDetail params={params} next={() => setStep(2)} />}
         {step == 2 && <Licensing />}
         {step == 3 && <VASIPDetails next={() => setStep(4)} />}
         {step == 4 && ownerType == owner.CONTENT_CREATOR && <ContentOwner />}

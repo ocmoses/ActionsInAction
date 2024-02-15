@@ -278,7 +278,7 @@ export default function GetStarted({ type }) {
             apikey: process.env.NEXT_PUBLIC_APIKEY,
           },
           timeout: process.TIMEOUT,
-          redirect: "follow", // manual, *follow, error
+          redirect: "follow",
           referrerPolicy: "no-referrer",
         }
       ).catch((error) => {
@@ -462,14 +462,18 @@ export default function GetStarted({ type }) {
   const [showPartnerCategories, setShowPartnerCategories] = useState(true);
   const [vasPartnerData, setVasPartnerData] = useState([]);
 
-  useEffect(() => {
+  const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
       if (res.result?.length > 0) {
         setShowPartnerCategories(false);
         setVasPartnerData(res.result);
       }
     });
-  }, [partner?.uuid]);
+  };
+
+  useEffect(() => {
+    fetchVasPartnerRequest();
+  }, [partner?.uuid, showChooseAggregatorSuccess]);
 
   useEffect(() => {
     getAggregators(partner?.uuid).then((res) => {
@@ -1065,7 +1069,10 @@ export default function GetStarted({ type }) {
               {showChooseAggregatorSuccess && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregatorSuccess
-                    action={() => setShowChooseAggregatorSuccess(false)}
+                    action={() => {
+                      setShowChooseAggregatorSuccess(false);
+                      fetchVasPartnerRequest();
+                    }}
                     selectedAggregator={selectedAggregator}
                   />
                 </PopUp>

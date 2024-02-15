@@ -79,76 +79,84 @@ export default function VASDrawer({
         {
           <section
             className={
-              " w-screen h-full max-w-[480px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
+              " w-screen max-w-[380px] right-0 absolute border-l-2 border-l-white/20 bg-[#030303]/90 h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform " +
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
             }
           >
-            <div className="relative flex-none flex flex-col space-y-5 w-screen max-w-[480px] h-full border-l border-l-white/40 p-[32px]">
-              <div className="flex flex-none justify-between items-end w-full pl-4 pr-2 pt-6 mb-4">
-                <div></div>
-                <div
-                  onClick={closeDrawer}
-                  className="text-[#999999] cursor-pointer hover:text-white"
+            <article className="relative w-screen max-w-[380px] pb-10 h-full">
+              <div
+                onClick={closeDrawer}
+                className="absolute z-50 text-[#999999] cursor-pointer hover:text-white top-[30px] right-[40px]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-10 h-10"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-8 h-8"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </div>
-              <div className="flex justify-center items-center w-[60px] h-[60px] text-[#FFCB03] rounded-full bg-white/20">
-                {category?.icon ? (
-                  <Image src={category.icon} alt="" width={40} height={40} />
-                ) : (
-                  <></>
-                )}
-              </div>
-              <div className="flex flex-col">
-                <span className=" text-white text-[16px]">
-                  {category?.category_name} ({category.category_code})
-                </span>
-                <span className=" text-[#999999] text-[12px]">
-                  {category?.description}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-white text-[16px] mb-2">
-                  Choose your VAS type
-                </span>
+              <div className="p-0 h-full pt-[50px]">
+                <div className="h-full overflow-x-hidden scrollbar scrollbar-thumb-[#FFCB03] scrollbar-track-[#212121] !scrollbar-w-[4px]">
+                  <div className="w-full px-6">
+                    <div className="flex justify-center items-center w-[60px] h-[60px] text-[#FFCB03] rounded-full bg-white/20">
+                      {category?.icon ? (
+                        <Image
+                          src={category.icon}
+                          alt=""
+                          width={40}
+                          height={40}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className=" text-white text-[16px]">
+                        {category?.category_name} ({category.category_code})
+                      </span>
+                      <span className=" text-[#999999] text-[12px]">
+                        {category?.description}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white text-[16px] mb-2">
+                        Choose your VAS type
+                      </span>
 
-                <div>
-                  {vasTypes?.length > 0 &&
-                    vasTypes.map((type, index) => (
-                      <Card
-                        key={type.uuid}
-                        title={type.type}
-                        subtitle={type.descr}
-                        checked={selectedCard === index}
-                        onChange={() =>
-                          handleCardSelect(type.type, type.uuid, index)
-                        }
+                      <div>
+                        {vasTypes?.length > 0 &&
+                          vasTypes.map((type, index) => (
+                            <Card
+                              key={type.uuid}
+                              title={type.type}
+                              subtitle={type.descr}
+                              checked={selectedCard === index}
+                              onChange={() =>
+                                handleCardSelect(type.type, type.uuid, index)
+                              }
+                            />
+                          ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Button
+                        label="Get started"
+                        onClick={action}
+                        disabled={isButtonDisabled}
                       />
-                    ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <Button
-                  label="Get started"
-                  onClick={action}
-                  disabled={isButtonDisabled}
-                />
-              </div>
-            </div>
+            </article>
           </section>
         }
         <section

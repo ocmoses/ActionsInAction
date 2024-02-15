@@ -23,6 +23,15 @@ import { useStoreState } from "easy-peasy"
 import { NewSuccess } from "@/app/components/toasts/Success";
 
 
+
+  function getToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
 export default function AggregatorComplianceModal({ closeAggregatorComplianceFormFlyout, partnerDetails,}) {
  /////////////////////////////////////////////////////////////////////////
   const [currentPanel, setCurrentPanel] = useState({
@@ -51,7 +60,7 @@ let getAggregatorVasPartnerDetailsResponse = null;
       let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
       
       setVasPartnerResponse(vas_partner_response);
-     if(vas_partner_response.profile_stage.percentage<=60){ /////// NCCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage<60){ /////// NCCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: true,
@@ -60,7 +69,7 @@ let getAggregatorVasPartnerDetailsResponse = null;
         ReviewAndSubmit: false,
       });
      }
-     if(vas_partner_response.profile_stage.percentage<=90){ /////// NLRCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage>=60 && vas_partner_response.profile_stage.percentage<90){ /////// NLRCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: false,
@@ -69,13 +78,23 @@ let getAggregatorVasPartnerDetailsResponse = null;
         ReviewAndSubmit: false,
       });
      }
-     if(vas_partner_response.profile_stage.percentage<=100){ /////// NLRCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage>=90 && vas_partner_response.profile_stage.percentage<100){ /////// NLRCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: false,
         NLRCLicensedetails: false,
         ShortCodeDetais: true,
         ReviewAndSubmit: false,
+      });
+     }
+
+     if(vas_partner_response.profile_stage.percentage==100){ /////// NLRCLicensedetails done
+      setCurrentPanel({
+        ...currentPanel,
+        NCCLicensedetails: false,
+        NLRCLicensedetails: false,
+        ShortCodeDetais: false,
+        ReviewAndSubmit: true,
       });
      }
 
@@ -193,12 +212,12 @@ export const AggregatorComplianceNav = ({
             size={22}
             thickness={2}
             textsize={8}
-            percent={partnerDetails?.profile_stage.percentage}
+            percent={partnerDetails?.profile_stage ? partnerDetails.profile_stage.percentage : '0'}
             hidelabel={true}
           />
 
           <span className="flex text-white text-[12px] flex-nowrap">
-          {partnerDetails?.profile_stage.percentage}%
+          {partnerDetails?.profile_stage ? partnerDetails.profile_stage.percentage : '0'}%
             <span className="hidden sm:flex"> &nbsp;completed</span>
           </span>
         </div>
@@ -242,7 +261,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
                   (currentPanel.NCCLicensedetails) ? "border border-mtn-400" : ""
                 } `}
               >
-                {partnerDetails?.profile_stage.ncclicense == 0 ?(
+                {partnerDetails?.profile_stage === null ?(
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M19.4141 16.8619H12.1255L11.6695 17.3179C11.5597 17.4278 11.4106 17.4896 11.2552 17.4896H8.74477C8.58934 17.4896 8.44031 17.4278 8.33047 17.3179L7.87449 16.8619H0.585938C0.262344 16.8619 0 17.1243 0 17.4479V18.1588C0 19.1876 0.835547 19.9999 1.84117 19.9999H18.1588C19.1877 19.9999 20 19.1644 20 18.1588V17.4479C20 17.1242 19.7377 16.8619 19.4141 16.8619Z" fill="#666666"/>
                   <path d="M11.8409 0.828613V2.59373H13.606L11.8409 0.828613Z" fill="#666666"/>
@@ -290,7 +309,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
                   currentPanel.NLRCLicensedetails ? "border border-mtn-400" : ""
                 } `}
               >
-                {partnerDetails?.profile_stage.percentage <90 ?(
+                {partnerDetails?.profile_stage == null || partnerDetails?.profile_stage.percentage <90 ?(
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M14.7588 0.833313H14.531C14.7075 1.14251 14.8089 1.49979 14.8089 1.88046V3.03464H16.0742C16.4356 3.03464 16.7814 3.12562 17.0863 3.29592V3.16079C17.0863 1.87538 16.0443 0.833313 14.7588 0.833313Z" fill="#686868"/>
                   <path d="M16.7855 4.40326C16.5983 4.21345 16.3458 4.10889 16.0745 4.10889H13.7351V1.88046C13.7351 1.30393 13.2657 0.834745 12.6881 0.833313H3.33337V19.1666H17.0866V5.17344C17.0908 4.87803 16.9839 4.6045 16.7855 4.40326ZM13.5735 16.8737H6.83558V15.7999H13.5735V16.8737ZM13.5735 14.6185H6.83558V13.5448H13.5735V14.6185ZM12.4006 9.31803L12.5297 11.7742L10.2242 10.9176L7.92816 11.7994L8.0304 9.34202L6.4822 7.43088L8.85092 6.76873L10.1901 4.70576L11.5518 6.75394L13.9276 7.39009L12.4006 9.31803Z" fill="#686868"/>
@@ -309,7 +328,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
               </div>
               <p
                 className={`group-hover:text-mtn-400 ${
-                  (currentPanel.NLRCLicensedetails || partnerDetails?.profile_stage.percentage>=90) ? "text-mtn-400" : ""
+                  (currentPanel.NLRCLicensedetails || (partnerDetails?.profile_stage !==null && partnerDetails?.profile_stage.percentage>=90)) ? "text-mtn-400" : ""
                 } `}
               >
                 NLRC Licence
@@ -444,6 +463,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
 };
 
 export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
+  const [startDate, setstartDate] = useState(getToday());
   const [formData, setFormData] = useState({
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
     aggregator_uuid: partnerDetails.aggregator_uuid,
@@ -696,6 +716,7 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                     label="Issuing Date"
                     type="date"
                     name="ncc_issue_date"
+                    max={startDate}
                     value={
                       formData.ncc_issue_date ||
                       vasPartnerResponse?.ncc_issue_date
@@ -709,6 +730,7 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                     label="Expiry Date"
                     type="date"
                     name="ncc_expiry_date"
+                    min={startDate}
                     value={
                       formData.ncc_expiry_date ||
                       vasPartnerResponse?.ncc_expiry_date
@@ -818,11 +840,11 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                       className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
                       onClick={() => saveNCCLicensedetails()}
                     >
-                      {vasPartnerResponse?.profile_stage.ncclicense === 0 ? (
-                        <span> Next &gt;</span>
-                      ) : (
-                        <span> update &gt;</span>
-                      )}
+                      {vasPartnerResponse?.profile_stage=== null ? (
+                              <span> Next &gt;</span>
+                          ) : (
+                              <span> update &gt;</span>
+                          )}
                     </button>
                   </>
                 )}
@@ -843,7 +865,8 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
 };
 
 export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel,  setCurrentPanel,}) => {
-  const [formData, setFormData] = useState({
+  const [startDate, setstartDate] = useState(getToday());
+    const [formData, setFormData] = useState({
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
     aggregator_uuid: partnerDetails.aggregator_uuid,
     vas_category_uuid: partnerDetails.vas_category_uuid,
@@ -1113,6 +1136,7 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
                     label="Issuing Date"
                     type="date"
                     name="nlrc_issue_date"
+                    max={startDate}
                     value={
                       formData.nlrc_issue_date ||
                       vasPartnerResponse?.nlrc_issue_date
@@ -1126,6 +1150,7 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
                     label="Expiry Date"
                     type="date"
                     name="nlrc_expiry_date"
+                    min={startDate}
                     value={
                       formData.nlrc_expiry_date ||
                       vasPartnerResponse?.nlrc_expiry_date
@@ -1549,7 +1574,8 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
 };
 
 export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage, setGetShortCodeList,}) => {
-  const [error, setError] = useState("");
+  const [startDate, setstartDate] = useState(getToday());
+    const [error, setError] = useState("");
   const clearError = () => {
     setError(null);
   };
@@ -1698,6 +1724,7 @@ export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage, set
             label="Issuing Date"
             type="date"
             name="shortcode_issue_date"
+            max={startDate}
             value={formData.shortcode_issue_date}
             onChange={handleChange}
           />
@@ -1708,6 +1735,7 @@ export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage, set
             label="Expiry Date"
             type="date"
             name="shortcode_expiry_date"
+            min={startDate}
             value={formData.shortcode_expiry_date}
             onChange={handleChange}
           />
@@ -1810,7 +1838,8 @@ export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage, set
 
 
 export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPage, setGetShortCodeList}) => {
-  const states = useStoreState((state) => state);
+  const [startDate, setstartDate] = useState(getToday());
+   const states = useStoreState((state) => state);
   const [error, setError] = useState("");
   const clearError = () => {
     setError(null);
@@ -2010,6 +2039,7 @@ export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPa
             label="Issuing Date"
             type="date"
             name="pricing_issue_date"
+            max={startDate}
             value={formData.pricing_issue_date}
             onChange={handleChange}
           />
@@ -2020,6 +2050,7 @@ export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPa
             label="Expiry Date"
             type="date"
             name="pricing_expiry_date"
+            min={startDate}
             value={formData.pricing_expiry_date}
             onChange={handleChange}
           />

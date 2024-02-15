@@ -47,7 +47,7 @@ export default function Requests() {
 
   const statusColour = {
     pending: "bg-[#353535]",
-    decline: "bg-[#AD2B19]",
+    declined: "bg-[#AD2B19]",
     inprogress: "bg-[#E2B204]",
     completed: "bg-[#216E4E]",
   };

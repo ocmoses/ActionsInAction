@@ -22,6 +22,14 @@ import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
 import IntelectualPropertiesModal from "@/app/components/dashboard/partners/requests/IntelectualPropertiesDetail";
 
+
+
+
+
+
+
+
+
 export default function FilteringFlyout() {
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
@@ -378,177 +386,28 @@ export default function FilteringFlyout() {
   );
 }
 
-export const RequestFinishUpModal = ({
-  closeRequestFlyout,
-  partnerDetails,
-}) => {
-  const [aggregatorComplianceFormFlyout, setAggregatorComplianceFormFlyout] =
-    useState(false);
-  const [intelectualPropertiesFlyout, setIntelectualPropertiesFlyout] =
-    useState(false);
 
-  return (
-    <>
-      <main
-        id="modal"
-        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
-        onClick={(e) => {
-          e.target.id == "modal" && closeRequestFlyout();
-        }}
-      >
-        <div className="border-1 border-gray-700 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[550px] justify-center items-center">
-          <CompanyInitial
-            initials={getInitials(partnerDetails.vas_partner).toUpperCase()}
-            className="mt-[-20px]"
-          />
-          <div className="py-8 px-8 flex flex-col gap-4 min-w-full">
-            <div className="text-center">
-              <h2 className=" text-[#FFF] font-bold text-[20px]">
-                {partnerDetails.vas_partner}
-              </h2>
-              {partnerDetails.email}
-            </div>
 
-            <FileInputWrapper>
-              <div className="py-[24px] px-[16px] w-full rounded-[10px]">
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px]  z-1">
-                      <svg
-                        width="40"
-                        height="41"
-                        viewBox="0 0 40 41"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M31.2498 8.83333V18.8333C31.2498 19.5233 30.6898 20.0833 29.9998 20.0833C29.3098 20.0833 28.7498 19.5233 28.7498 18.8333V8.83333C28.7498 7.685 27.8148 6.75 26.6665 6.75H9.99984C8.8515 6.75 7.9165 7.685 7.9165 8.83333V32.1667C7.9165 33.315 8.8515 34.25 9.99984 34.25H26.6665C27.3565 34.25 27.9165 34.81 27.9165 35.5C27.9165 36.19 27.3565 36.75 26.6665 36.75H9.99984C7.4715 36.75 5.4165 34.695 5.4165 32.1667V8.83333C5.4165 6.305 7.4715 4.25 9.99984 4.25H26.6665C29.1948 4.25 31.2498 6.305 31.2498 8.83333ZM26.2498 12.1667C26.2498 11.4767 25.6898 10.9167 24.9998 10.9167H11.6665C10.9765 10.9167 10.4165 11.4767 10.4165 12.1667C10.4165 12.8567 10.9765 13.4167 11.6665 13.4167H24.9998C25.6898 13.4167 26.2498 12.8567 26.2498 12.1667ZM19.5832 17.1667C19.5832 16.4767 19.0232 15.9167 18.3332 15.9167H11.6665C10.9765 15.9167 10.4165 16.4767 10.4165 17.1667C10.4165 17.8567 10.9765 18.4167 11.6665 18.4167H18.3332C19.0232 18.4167 19.5832 17.8567 19.5832 17.1667ZM11.6665 20.9167C10.9765 20.9167 10.4165 21.4767 10.4165 22.1667C10.4165 22.8567 10.9765 23.4167 11.6665 23.4167H14.9998C15.6898 23.4167 16.2498 22.8567 16.2498 22.1667C16.2498 21.4767 15.6898 20.9167 14.9998 20.9167H11.6665Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M32.375 18.9717L27.7783 17.8233C27.05 17.6417 26.2833 17.6417 25.555 17.8233L20.9583 18.9717C19.6583 19.2967 18.75 20.4617 18.75 21.8017V29.4917C18.75 31.6183 19.9317 33.53 21.8333 34.4817L24.6167 35.8733C25.2583 36.1933 25.9633 36.355 26.6667 36.355C27.37 36.355 28.075 36.1933 28.7167 35.8733L31.5 34.4817C33.4017 33.53 34.5833 31.6183 34.5833 29.4917V21.8017C34.5833 20.4617 33.675 19.2983 32.375 18.9717ZM32.0833 29.4917C32.0833 30.665 31.4317 31.72 30.3817 32.245L27.5983 33.6367C27.0133 33.93 26.3183 33.93 25.735 33.6367L22.9517 32.245C21.9017 31.72 21.25 30.665 21.25 29.4917V21.8017C21.25 21.61 21.38 21.4433 21.565 21.3967L26.1617 20.2483C26.3267 20.2067 26.4967 20.1867 26.6667 20.1867C26.8367 20.1867 27.0067 20.2067 27.1717 20.2483L31.7683 21.3967C31.9533 21.4433 32.0833 21.61 32.0833 21.8017V29.4917Z"
-                          fill="#E4B809"
-                        />
-                      </svg>
-                    </div>
 
-                    <div className="text-[#999999]">
-                      <p>
-                        <span className="text-white font-mtn-bold">
-                          Compliance details
-                        </span>
-                        <br />
-                        Submit basic company details for compliance.
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <div
-                      onClick={() => setAggregatorComplianceFormFlyout(true)}
-                      className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-mtn-300 py-2 px-3 text-[11px] text-black text-center"
-                    >
-                      Finish up
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </FileInputWrapper>
 
-            <FileInputWrapper>
-              <div className="py-[24px] px-[16px] w-full rounded-[10px]">
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px]  z-1">
-                      <svg
-                        width="40"
-                        height="41"
-                        viewBox="0 0 40 41"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clip-path="url(#clip0_10714_150593)">
-                          <path
-                            d="M11.3769 16.7448C11.3083 19.4322 12.4625 21.9493 14.5436 23.6507C15.2711 24.2454 15.6885 25.1449 15.6885 26.1183V27.1678C15.6885 27.5992 16.0383 27.949 16.4697 27.949H17.2574V31.09C17.2574 31.5214 17.6072 31.8712 18.0386 31.8712H21.9607C22.3921 31.8712 22.742 31.5214 22.742 31.09V27.949H23.5297C23.9611 27.949 24.3109 27.5992 24.3109 27.1678V26.1183C24.3109 25.1449 24.7281 24.2455 25.4555 23.6508C27.47 22.0042 28.6253 19.5692 28.6253 16.9701C28.6253 12.1656 24.7083 8.28068 19.8768 8.34521C15.2671 8.40951 11.4949 12.1335 11.3769 16.7448ZM21.1796 30.3087H18.82V27.949H21.1796V30.3087ZM19.9997 18.5421C19.5654 18.5421 19.2121 18.1887 19.2121 17.7545C19.2121 17.3201 19.5654 16.9669 19.9997 16.9669C20.4341 16.9669 20.7874 17.3201 20.7874 17.7545C20.7874 18.1887 20.4341 18.5421 19.9997 18.5421ZM27.0629 16.9701C27.0629 19.0983 26.1166 21.0924 24.4667 22.4411C22.5454 24.0119 22.7652 26.3051 22.7485 26.3865C22.066 26.3865 21.4655 26.3865 20.781 26.3865V19.9705C21.6939 19.6478 22.3499 18.7765 22.3499 17.7545C22.3499 16.4587 21.2956 15.4044 19.9997 15.4044C18.7039 15.4044 17.6496 16.4587 17.6496 17.7545C17.6496 18.7765 18.3056 19.6478 19.2185 19.9705V26.3865C18.5347 26.3865 17.9328 26.3865 17.251 26.3865C17.2316 26.2919 17.4868 24.0385 15.5325 22.4409C13.8281 21.0475 12.8827 18.9858 12.9389 16.7847C13.0346 13.0448 16.1566 9.95975 19.8988 9.90764C23.8331 9.84935 27.0629 13.0195 27.0629 16.9701Z"
-                            fill="#E4B809"
-                          />
-                          <path
-                            d="M36.2957 5.12552L20.2146 0.530056C20.0743 0.4899 19.9257 0.4899 19.7853 0.530056L3.70426 5.12552C3.36895 5.22138 3.1377 5.52787 3.1377 5.8767V18.4628C3.1377 27.8044 8.85379 36.2077 17.5904 39.617L19.7159 40.4465C19.8072 40.4821 19.9036 40.5 20 40.5C20.0963 40.5 20.1927 40.4821 20.284 40.4465L22.4096 39.617C31.1121 36.221 36.8622 27.8411 36.8622 18.4628V5.87677C36.8622 5.52795 36.631 5.22138 36.2957 5.12552ZM35.2997 18.4628C35.2997 27.2388 30.0171 34.971 21.8414 38.1615L20 38.8801L18.1585 38.1615C9.98293 34.971 4.7002 27.2388 4.7002 18.4628V6.46607L20 2.09381L35.2997 6.46607V18.4628Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_10714_150593">
-                            <rect
-                              width="40"
-                              height="40"
-                              fill="white"
-                              transform="translate(0 0.5)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </div>
 
-                    <div className="text-[#999999]">
-                      <p>
-                        <span className="text-white font-mtn-bold">
-                          Intellectual Property details
-                        </span>
-                        <br />
-                        Provide details to prove intellectual property
-                        ownership.
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <Link href="/dashboard/ip">
-                      <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
-                        Start
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </FileInputWrapper>
 
-            <div className="flex gap-2 justify-end">
-              <button
-                className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-                onClick={() => closeRequestFlyout()}
-              >
-                I'll do this later
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
 
-      {aggregatorComplianceFormFlyout && (
-        <AggregatorComplianceModal
-          closeAggregatorComplianceFormFlyout={() =>
-            setAggregatorComplianceFormFlyout(false)
-          }
-          partnerDetails={partnerDetails}
-        />
-      )}
 
-      {intelectualPropertiesFlyout && (
-        <IntelectualPropertiesModal
-          closeIntelectualPropertiesFlyout={() =>
-            setIntelectualPropertiesFlyout(false)
-          }
-          partnerDetails={partnerDetails}
-        />
-      )}
-    </>
-  );
-};
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const ApproveRejectRequestModal = ({
   closeApproveRejectRequestFlyout,
@@ -730,3 +589,221 @@ export const ApproveRejectRequestModal = ({
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const RequestFinishUpModal = ({
+  closeRequestFlyout,
+  partnerDetails,
+}) => {
+  const [aggregatorComplianceFormFlyout, setAggregatorComplianceFormFlyout] =
+    useState(false);
+  const [intelectualPropertiesFlyout, setIntelectualPropertiesFlyout] =
+    useState(false);
+
+  return (
+    <>
+      <main
+        id="modal"
+        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
+        onClick={(e) => {
+          e.target.id == "modal" && closeRequestFlyout();
+        }}
+      >
+        <div className="border-1 border-gray-700 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[550px] justify-center items-center">
+          <CompanyInitial
+            initials={getInitials(partnerDetails.vas_partner).toUpperCase()}
+            className="mt-[-20px]"
+          />
+          <div className="py-8 px-8 flex flex-col gap-4 min-w-full">
+            <div className="text-center">
+              <h2 className=" text-[#FFF] font-bold text-[20px]">
+                {partnerDetails.vas_partner}
+              </h2>
+              {partnerDetails.email}
+            </div>
+
+            <FileInputWrapper>
+              <div className="py-[24px] px-[16px] w-full rounded-[10px]">
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px]  z-1">
+                      <svg
+                        width="40"
+                        height="41"
+                        viewBox="0 0 40 41"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M31.2498 8.83333V18.8333C31.2498 19.5233 30.6898 20.0833 29.9998 20.0833C29.3098 20.0833 28.7498 19.5233 28.7498 18.8333V8.83333C28.7498 7.685 27.8148 6.75 26.6665 6.75H9.99984C8.8515 6.75 7.9165 7.685 7.9165 8.83333V32.1667C7.9165 33.315 8.8515 34.25 9.99984 34.25H26.6665C27.3565 34.25 27.9165 34.81 27.9165 35.5C27.9165 36.19 27.3565 36.75 26.6665 36.75H9.99984C7.4715 36.75 5.4165 34.695 5.4165 32.1667V8.83333C5.4165 6.305 7.4715 4.25 9.99984 4.25H26.6665C29.1948 4.25 31.2498 6.305 31.2498 8.83333ZM26.2498 12.1667C26.2498 11.4767 25.6898 10.9167 24.9998 10.9167H11.6665C10.9765 10.9167 10.4165 11.4767 10.4165 12.1667C10.4165 12.8567 10.9765 13.4167 11.6665 13.4167H24.9998C25.6898 13.4167 26.2498 12.8567 26.2498 12.1667ZM19.5832 17.1667C19.5832 16.4767 19.0232 15.9167 18.3332 15.9167H11.6665C10.9765 15.9167 10.4165 16.4767 10.4165 17.1667C10.4165 17.8567 10.9765 18.4167 11.6665 18.4167H18.3332C19.0232 18.4167 19.5832 17.8567 19.5832 17.1667ZM11.6665 20.9167C10.9765 20.9167 10.4165 21.4767 10.4165 22.1667C10.4165 22.8567 10.9765 23.4167 11.6665 23.4167H14.9998C15.6898 23.4167 16.2498 22.8567 16.2498 22.1667C16.2498 21.4767 15.6898 20.9167 14.9998 20.9167H11.6665Z"
+                          fill="white"
+                        />
+                        <path
+                          d="M32.375 18.9717L27.7783 17.8233C27.05 17.6417 26.2833 17.6417 25.555 17.8233L20.9583 18.9717C19.6583 19.2967 18.75 20.4617 18.75 21.8017V29.4917C18.75 31.6183 19.9317 33.53 21.8333 34.4817L24.6167 35.8733C25.2583 36.1933 25.9633 36.355 26.6667 36.355C27.37 36.355 28.075 36.1933 28.7167 35.8733L31.5 34.4817C33.4017 33.53 34.5833 31.6183 34.5833 29.4917V21.8017C34.5833 20.4617 33.675 19.2983 32.375 18.9717ZM32.0833 29.4917C32.0833 30.665 31.4317 31.72 30.3817 32.245L27.5983 33.6367C27.0133 33.93 26.3183 33.93 25.735 33.6367L22.9517 32.245C21.9017 31.72 21.25 30.665 21.25 29.4917V21.8017C21.25 21.61 21.38 21.4433 21.565 21.3967L26.1617 20.2483C26.3267 20.2067 26.4967 20.1867 26.6667 20.1867C26.8367 20.1867 27.0067 20.2067 27.1717 20.2483L31.7683 21.3967C31.9533 21.4433 32.0833 21.61 32.0833 21.8017V29.4917Z"
+                          fill="#E4B809"
+                        />
+                      </svg>
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        <span className="text-white font-mtn-bold">
+                          Compliance details
+                        </span>
+                        <br />
+                        Submit basic company details for compliance.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <div
+                      onClick={() => setAggregatorComplianceFormFlyout(true)}
+                      className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-mtn-300 py-2 px-3 text-[11px] text-black text-center"
+                    >
+                      Finish up
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FileInputWrapper>
+
+            <FileInputWrapper>
+              <div className="py-[24px] px-[16px] w-full rounded-[10px]">
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px]  z-1">
+                      <svg
+                        width="40"
+                        height="41"
+                        viewBox="0 0 40 41"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_10714_150593)">
+                          <path
+                            d="M11.3769 16.7448C11.3083 19.4322 12.4625 21.9493 14.5436 23.6507C15.2711 24.2454 15.6885 25.1449 15.6885 26.1183V27.1678C15.6885 27.5992 16.0383 27.949 16.4697 27.949H17.2574V31.09C17.2574 31.5214 17.6072 31.8712 18.0386 31.8712H21.9607C22.3921 31.8712 22.742 31.5214 22.742 31.09V27.949H23.5297C23.9611 27.949 24.3109 27.5992 24.3109 27.1678V26.1183C24.3109 25.1449 24.7281 24.2455 25.4555 23.6508C27.47 22.0042 28.6253 19.5692 28.6253 16.9701C28.6253 12.1656 24.7083 8.28068 19.8768 8.34521C15.2671 8.40951 11.4949 12.1335 11.3769 16.7448ZM21.1796 30.3087H18.82V27.949H21.1796V30.3087ZM19.9997 18.5421C19.5654 18.5421 19.2121 18.1887 19.2121 17.7545C19.2121 17.3201 19.5654 16.9669 19.9997 16.9669C20.4341 16.9669 20.7874 17.3201 20.7874 17.7545C20.7874 18.1887 20.4341 18.5421 19.9997 18.5421ZM27.0629 16.9701C27.0629 19.0983 26.1166 21.0924 24.4667 22.4411C22.5454 24.0119 22.7652 26.3051 22.7485 26.3865C22.066 26.3865 21.4655 26.3865 20.781 26.3865V19.9705C21.6939 19.6478 22.3499 18.7765 22.3499 17.7545C22.3499 16.4587 21.2956 15.4044 19.9997 15.4044C18.7039 15.4044 17.6496 16.4587 17.6496 17.7545C17.6496 18.7765 18.3056 19.6478 19.2185 19.9705V26.3865C18.5347 26.3865 17.9328 26.3865 17.251 26.3865C17.2316 26.2919 17.4868 24.0385 15.5325 22.4409C13.8281 21.0475 12.8827 18.9858 12.9389 16.7847C13.0346 13.0448 16.1566 9.95975 19.8988 9.90764C23.8331 9.84935 27.0629 13.0195 27.0629 16.9701Z"
+                            fill="#E4B809"
+                          />
+                          <path
+                            d="M36.2957 5.12552L20.2146 0.530056C20.0743 0.4899 19.9257 0.4899 19.7853 0.530056L3.70426 5.12552C3.36895 5.22138 3.1377 5.52787 3.1377 5.8767V18.4628C3.1377 27.8044 8.85379 36.2077 17.5904 39.617L19.7159 40.4465C19.8072 40.4821 19.9036 40.5 20 40.5C20.0963 40.5 20.1927 40.4821 20.284 40.4465L22.4096 39.617C31.1121 36.221 36.8622 27.8411 36.8622 18.4628V5.87677C36.8622 5.52795 36.631 5.22138 36.2957 5.12552ZM35.2997 18.4628C35.2997 27.2388 30.0171 34.971 21.8414 38.1615L20 38.8801L18.1585 38.1615C9.98293 34.971 4.7002 27.2388 4.7002 18.4628V6.46607L20 2.09381L35.2997 6.46607V18.4628Z"
+                            fill="white"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_10714_150593">
+                            <rect
+                              width="40"
+                              height="40"
+                              fill="white"
+                              transform="translate(0 0.5)"
+                            />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        <span className="text-white font-mtn-bold">
+                          Intellectual Property details
+                        </span>
+                        <br />
+                        Provide details to prove intellectual property
+                        ownership.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <div
+                      onClick={() => setIntelectualPropertiesFlyout(true)}
+                      className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center"
+                    >
+                      Start
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FileInputWrapper>
+
+            <div className="flex gap-2 justify-end">
+              <button
+                className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+                onClick={() => closeRequestFlyout()}
+              >
+                I'll do this later
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {aggregatorComplianceFormFlyout && (
+        <AggregatorComplianceModal
+          closeAggregatorComplianceFormFlyout={() =>
+            setAggregatorComplianceFormFlyout(false)
+          }
+          partnerDetails={partnerDetails}
+        />
+      )}
+
+      {/* {intelectualPropertiesFlyout && (
+        <IntelectualPropertiesModal
+          closeIntelectualPropertiesFlyout={() =>
+            setIntelectualPropertiesFlyout(false)
+          }
+          partnerDetails={partnerDetails}
+        />
+      )} */}
+    </>
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

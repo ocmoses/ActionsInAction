@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import usePartners from "@/hooks/usePartners";
 import UserPercentage from "@/app/components/UserPercentage";
@@ -11,14 +12,33 @@ import {
   InfoIcon,
   Loading,
 } from "@/app/components/Icons";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import SelectInput from "@/app/components/form/SelectInput";
 import SelectInputOption from "@/app/components/form/SelectInputOption";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { apikey } from "@/app/modules/constants";
+import axios from "axios";
+import { TailSpinPreloader } from "@/app/components/Icons";
+import useUsers from "@/hooks/useUsers";
+import { useStoreState } from "easy-peasy"
+import { NewSuccess } from "@/app/components/toasts/Success";
 
-export default function AggregatorComplianceModal({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-}) {
+
+
+
+
+
+
+
+
+export default function AggregatorComplianceModal({ closeAggregatorComplianceFormFlyout, partnerDetails,}) {
+ /////////////////////////////////////////////////////////////////////////
+  const [currentPanel, setCurrentPanel] = useState({
+    NCCLicensedetails: true,
+    NLRCLicensedetails: false,
+    ShortCodeDetais: false,
+    ReviewAndSubmit: false,
+  }); 
+  
   const [delayedExecution, setDelayedExecution] = useState(false);
   useEffect(() => {
     const delayTimer = setTimeout(() => {
@@ -26,97 +46,125 @@ export default function AggregatorComplianceModal({
     }, 2000);
     return () => clearTimeout(delayTimer);
   }, []);
+//////////////////////////////////////////////////////////////////////////////
+const {getAggregatorVasPartnerDetails,} = usePartners();
+const [vasPartnerResponse, setVasPartnerResponse] = useState();
+let getAggregatorVasPartnerDetailsResponse = null;
+  const get_aggregator_vas_partner_details = async () => {
+    try {
+      
+      getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+      let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+      setVasPartnerResponse(vas_partner_response);
+     if(vas_partner_response.profile_stage.percentage<=60){ /////// NCCLicensedetails done
+      setCurrentPanel({
+        ...currentPanel,
+        NCCLicensedetails: true,
+        NLRCLicensedetails: false,
+        ShortCodeDetais: false,
+        ReviewAndSubmit: false,
+      });
+     }
+     if(vas_partner_response.profile_stage.percentage<=100){ /////// NLRCLicensedetails done
+      setCurrentPanel({
+        ...currentPanel,
+        NCCLicensedetails: false,
+        NLRCLicensedetails: true,
+        ShortCodeDetais: false,
+        ReviewAndSubmit: false,
+      });
+     }
 
-  const [currentPanel, setCurrentPanel] = useState({
-    NCCLicensedetails: true,
-    NLRCLicensedetails: false,
-    ShortCodeDetais: false,
-    ReviewAndSubmit: false,
-  });
+    } catch (error) {
+      console.log("getAggregatorVasPartnerDetails_response error", error);
+    }
+  };
+  useEffect(() => {
+    get_aggregator_vas_partner_details();
+  }, []);
+///////////////////////////////////////////////////////////////////////////////
+
+
 
   return (
     <>
       <main className="w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
-        <AggregatorComplianceNav
-          closeAggregatorComplianceFormFlyout={
-            closeAggregatorComplianceFormFlyout
-          }
-          partnerDetails={partnerDetails}
-        />
-
-        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
-          {!delayedExecution ? (
-            <Loading style="h-[500px]" />
-          ) : (
-            <>
-              <AggregatorComplianceProgressiveNav
+        {!delayedExecution ? (
+          <div className="w-[100%] flex justify-center">
+          <Loading style="h-[600px]" />
+          </div>
+        ) : (
+          <>
+            {currentPanel.NCCLicensedetails && (
+              <NCCLicensedetails
                 closeAggregatorComplianceFormFlyout={
                   closeAggregatorComplianceFormFlyout
                 }
-                partnerDetails={partnerDetails}
+                partnerDetails={vasPartnerResponse}
                 currentPanel={currentPanel}
                 setCurrentPanel={setCurrentPanel}
               />
+            )}
 
-              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
-                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
-                  {currentPanel.NCCLicensedetails && (
-                    <NCCLicensedetails
-                      closeAggregatorComplianceFormFlyout={
-                        closeAggregatorComplianceFormFlyout
-                      }
-                      partnerDetails={partnerDetails}
-                      currentPanel={currentPanel}
-                      setCurrentPanel={setCurrentPanel}
-                    />
-                  )}
+            {currentPanel.NLRCLicensedetails && (
+              <NLRCLicensedetails
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+            )}
 
-                  {currentPanel.NLRCLicensedetails && (
-                    <NLRCLicensedetails
-                      closeAggregatorComplianceFormFlyout={
-                        closeAggregatorComplianceFormFlyout
-                      }
-                      partnerDetails={partnerDetails}
-                      currentPanel={currentPanel}
-                      setCurrentPanel={setCurrentPanel}
-                    />
-                  )}
+            {currentPanel.ShortCodeDetais && (
+              <ShortCodeDetais
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+            )}
 
-                  {currentPanel.ShortCodeDetais && (
-                    <ShortCodeDetais
-                      closeAggregatorComplianceFormFlyout={
-                        closeAggregatorComplianceFormFlyout
-                      }
-                      partnerDetails={partnerDetails}
-                      currentPanel={currentPanel}
-                      setCurrentPanel={setCurrentPanel}
-                    />
-                  )}
-
-                  {currentPanel.ReviewAndSubmit && (
-                    <ReviewAndSubmit
-                      closeAggregatorComplianceFormFlyout={
-                        closeAggregatorComplianceFormFlyout
-                      }
-                      partnerDetails={partnerDetails}
-                      currentPanel={currentPanel}
-                      setCurrentPanel={setCurrentPanel}
-                    />
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+            {currentPanel.ReviewAndSubmit && (
+              <ReviewAndSubmit
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+            )}
+          </>
+        )}
       </main>
     </>
   );
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const AggregatorComplianceNav = ({
   closeAggregatorComplianceFormFlyout,
   partnerDetails,
 }) => {
+
   return (
     <header className=" flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
@@ -146,7 +194,7 @@ export const AggregatorComplianceNav = ({
           <span className="hidden sm:flex text-[#999999] group-hover:!text-white">
             Partner category:
           </span>
-          <span className="font-bold">Value Added Service</span>
+          <span className="font-bold">{partnerDetails?.category_name}</span>
         </div>
       </div>
       <div className="flex justify-end items-center gap-3 text-white px-3">
@@ -155,12 +203,12 @@ export const AggregatorComplianceNav = ({
             size={22}
             thickness={2}
             textsize={8}
-            percent={25}
+            percent={partnerDetails?.profile_stage.percentage}
             hidelabel={true}
           />
 
           <span className="flex text-white text-[12px] flex-nowrap">
-            25%
+          {partnerDetails?.profile_stage.percentage}%
             <span className="hidden sm:flex"> &nbsp;completed</span>
           </span>
         </div>
@@ -176,18 +224,10 @@ export const AggregatorComplianceNav = ({
   );
 };
 
-export const AggregatorComplianceProgressiveNav = ({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-  currentPanel,
-  setCurrentPanel,
-}) => {
-  // const [currentPanel, setCurrentPanel] = useState({
-  //   NCCLicensedetails: true,
-  //   NLRCLicensedetails: false,
-  //   ShortCodeDetais: false,
-  //   ReviewAndSubmit: false,
-  // });
+export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
+  useEffect(() => {
+    console.log('partnerDetails', partnerDetails);
+  }, []);
   return (
     <>
       <nav className="w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
@@ -209,37 +249,32 @@ export const AggregatorComplianceProgressiveNav = ({
             >
               <div
                 className={`h-[40px] w-[40px] rounded-full  group-hover:border group-hover:border-mtn-400 flex items-center justify-center ${
-                  currentPanel.NCCLicensedetails ? "border border-mtn-400" : ""
+                  (currentPanel.NCCLicensedetails) ? "border border-mtn-400" : ""
                 } `}
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M19.4141 16.8619H12.1255L11.6695 17.3179C11.5597 17.4278 11.4106 17.4896 11.2552 17.4896H8.74477C8.58934 17.4896 8.44031 17.4278 8.33047 17.3179L7.87449 16.8619H0.585938C0.262344 16.8619 0 17.1243 0 17.4479V18.1588C0 19.1876 0.835547 19.9999 1.84117 19.9999H18.1588C19.1877 19.9999 20 19.1644 20 18.1588V17.4479C20 17.1242 19.7377 16.8619 19.4141 16.8619Z"
-                    fill="#666666"
-                  />
-                  <path
-                    d="M11.8409 0.828613V2.59373H13.606L11.8409 0.828613Z"
-                    fill="#666666"
-                  />
-                  <path
-                    d="M8.53197 15.8616L8.98795 16.3176H11.013L11.469 15.8616C11.5788 15.7517 11.7279 15.69 11.8833 15.69H18.1177V7.48945C18.1177 6.47425 17.2917 5.64832 16.2765 5.64832H15.6072V12.5936C15.6072 13.5629 14.8187 14.3514 13.8494 14.3514H6.15154C5.18228 14.3514 4.39373 13.5629 4.39373 12.5936V5.64832H3.72443C2.70924 5.64832 1.8833 6.47425 1.8833 7.48945V15.69H8.11768C8.27307 15.69 8.42213 15.7517 8.53197 15.8616Z"
-                    fill="#666666"
-                  />
-                  <path
-                    d="M6.15112 13.1797H13.849C14.1726 13.1797 14.435 12.9173 14.435 12.5938V3.76563H11.2553C10.9317 3.76563 10.6694 3.50328 10.6694 3.17969V0H6.15112C5.82753 0 5.56519 0.262344 5.56519 0.585938V12.5938C5.56519 12.9173 5.82749 13.1797 6.15112 13.1797ZM7.48964 2.51043H8.74483C9.52089 2.53898 9.52132 3.65359 8.74483 3.6823H7.48964C6.71358 3.65371 6.71315 2.53914 7.48964 2.51043ZM7.48964 5.02082H8.74483C9.52089 5.04938 9.52132 6.16399 8.74483 6.1927H7.48964C6.71358 6.16414 6.71315 5.04957 7.48964 5.02082ZM7.48964 7.53125H12.5105C12.8341 7.53125 13.0964 7.79359 13.0964 8.11719C13.0964 8.44078 12.8341 8.70313 12.5105 8.70313H7.48964C6.71464 8.67504 6.71218 7.56031 7.48964 7.53125ZM7.48964 10.0417H12.5105C12.8341 10.0417 13.0964 10.304 13.0964 10.6276C13.0964 10.9512 12.8341 11.2136 12.5105 11.2136H7.48964C6.71464 11.1855 6.71218 10.0707 7.48964 10.0417Z"
-                    fill="#666666"
-                  />
-                </svg>
+                {partnerDetails?.profile_stage.percentage <60 ?(
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.4141 16.8619H12.1255L11.6695 17.3179C11.5597 17.4278 11.4106 17.4896 11.2552 17.4896H8.74477C8.58934 17.4896 8.44031 17.4278 8.33047 17.3179L7.87449 16.8619H0.585938C0.262344 16.8619 0 17.1243 0 17.4479V18.1588C0 19.1876 0.835547 19.9999 1.84117 19.9999H18.1588C19.1877 19.9999 20 19.1644 20 18.1588V17.4479C20 17.1242 19.7377 16.8619 19.4141 16.8619Z" fill="#666666"/>
+                  <path d="M11.8409 0.828613V2.59373H13.606L11.8409 0.828613Z" fill="#666666"/>
+                  <path d="M8.53197 15.8616L8.98795 16.3176H11.013L11.469 15.8616C11.5788 15.7517 11.7279 15.69 11.8833 15.69H18.1177V7.48945C18.1177 6.47425 17.2917 5.64832 16.2765 5.64832H15.6072V12.5936C15.6072 13.5629 14.8187 14.3514 13.8494 14.3514H6.15154C5.18228 14.3514 4.39373 13.5629 4.39373 12.5936V5.64832H3.72443C2.70924 5.64832 1.8833 6.47425 1.8833 7.48945V15.69H8.11768C8.27307 15.69 8.42213 15.7517 8.53197 15.8616Z" fill="#666666"/>
+                  <path d="M6.15112 13.1797H13.849C14.1726 13.1797 14.435 12.9173 14.435 12.5938V3.76563H11.2553C10.9317 3.76563 10.6694 3.50328 10.6694 3.17969V0H6.15112C5.82753 0 5.56519 0.262344 5.56519 0.585938V12.5938C5.56519 12.9173 5.82749 13.1797 6.15112 13.1797ZM7.48964 2.51043H8.74483C9.52089 2.53898 9.52132 3.65359 8.74483 3.6823H7.48964C6.71358 3.65371 6.71315 2.53914 7.48964 2.51043ZM7.48964 5.02082H8.74483C9.52089 5.04938 9.52132 6.16399 8.74483 6.1927H7.48964C6.71358 6.16414 6.71315 5.04957 7.48964 5.02082ZM7.48964 7.53125H12.5105C12.8341 7.53125 13.0964 7.79359 13.0964 8.11719C13.0964 8.44078 12.8341 8.70313 12.5105 8.70313H7.48964C6.71464 8.67504 6.71218 7.56031 7.48964 7.53125ZM7.48964 10.0417H12.5105C12.8341 10.0417 13.0964 10.304 13.0964 10.6276C13.0964 10.9512 12.8341 11.2136 12.5105 11.2136H7.48964C6.71464 11.1855 6.71218 10.0707 7.48964 10.0417Z" fill="#666666"/>
+                  </svg>
+                ):(
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M29.4141 26.8619H22.1255L21.6695 27.3179C21.5597 27.4278 21.4106 27.4896 21.2552 27.4896H18.7448C18.5893 27.4896 18.4403 27.4278 18.3305 27.3179L17.8745 26.8619H10.5859C10.2623 26.8619 10 27.1243 10 27.4479V28.1588C10 29.1876 10.8355 29.9999 11.8412 29.9999H28.1588C29.1877 29.9999 30 29.1644 30 28.1588V27.4479C30 27.1242 29.7377 26.8619 29.4141 26.8619Z" fill="#666666"/>
+                  <path d="M21.8409 10.8286V12.5937H23.606L21.8409 10.8286Z" fill="#666666"/>
+                  <path d="M18.532 25.8616L18.9879 26.3176H21.013L21.469 25.8616C21.5788 25.7517 21.7279 25.69 21.8833 25.69H28.1177V17.4894C28.1177 16.4743 27.2917 15.6483 26.2765 15.6483H25.6072V22.5936C25.6072 23.5629 24.8187 24.3514 23.8494 24.3514H16.1515C15.1823 24.3514 14.3937 23.5629 14.3937 22.5936V15.6483H13.7244C12.7092 15.6483 11.8833 16.4743 11.8833 17.4894V25.69H18.1177C18.2731 25.69 18.4221 25.7517 18.532 25.8616Z" fill="#666666"/>
+                  <path d="M16.1511 23.1797H23.849C24.1726 23.1797 24.435 22.9173 24.435 22.5938V13.7656H21.2553C20.9317 13.7656 20.6694 13.5033 20.6694 13.1797V10H16.1511C15.8275 10 15.5652 10.2623 15.5652 10.5859V22.5938C15.5652 22.9173 15.8275 23.1797 16.1511 23.1797ZM17.4896 12.5104H18.7448C19.5209 12.539 19.5213 13.6536 18.7448 13.6823H17.4896C16.7136 13.6537 16.7132 12.5391 17.4896 12.5104ZM17.4896 15.0208H18.7448C19.5209 15.0494 19.5213 16.164 18.7448 16.1927H17.4896C16.7136 16.1641 16.7132 15.0496 17.4896 15.0208ZM17.4896 17.5313H22.5105C22.8341 17.5313 23.0964 17.7936 23.0964 18.1172C23.0964 18.4408 22.8341 18.7031 22.5105 18.7031H17.4896C16.7146 18.675 16.7122 17.5603 17.4896 17.5313ZM17.4896 20.0417H22.5105C22.8341 20.0417 23.0964 20.304 23.0964 20.6276C23.0964 20.9512 22.8341 21.2136 22.5105 21.2136H17.4896C16.7146 21.1855 16.7122 20.0707 17.4896 20.0417Z" fill="#666666"/>
+                  <path d="M38.5488 27.6476C38.3497 27.4471 38.2374 27.1763 38.2362 26.8937V25.9433C38.2354 25.365 38.0054 24.8107 37.5965 24.4018C37.1875 23.9928 36.6332 23.7628 36.0549 23.762H35.106C34.8238 23.7611 34.5533 23.6494 34.3528 23.4509L33.5416 22.6389C33.1323 22.2306 32.5777 22.0013 31.9995 22.0013C31.4214 22.0013 30.8668 22.2306 30.4575 22.6389L29.647 23.4509C29.4465 23.65 29.1757 23.7623 28.8931 23.7635H27.9427C27.3647 23.7643 26.8105 23.9941 26.4017 24.4027C25.9928 24.8113 25.7626 25.3653 25.7614 25.9433V26.8937C25.7605 27.1759 25.6488 27.4464 25.4503 27.6469L24.6376 28.4581C24.2293 28.8674 24 29.422 24 30.0001C24 30.5783 24.2293 31.1329 24.6376 31.5422L25.4503 32.3527C25.6494 32.5532 25.7617 32.824 25.7629 33.1066V34.057C25.7637 34.6353 25.9937 35.1896 26.4026 35.5985C26.8116 36.0075 27.3659 36.2375 27.9442 36.2383H28.8931C29.1754 36.2394 29.4459 36.3514 29.6463 36.5502L30.4575 37.3621C30.8667 37.7706 31.4213 38 31.9995 38C32.5778 38 33.1324 37.7706 33.5416 37.3621L34.3521 36.5509C34.5526 36.3518 34.8234 36.2395 35.106 36.2383H36.0564C36.6347 36.2375 37.189 36.0075 37.5979 35.5985C38.0069 35.1896 38.2369 34.6353 38.2377 34.057V33.1066C38.2388 32.8242 38.3511 32.5536 38.5503 32.3534L39.3615 31.5422C39.7698 31.1329 39.9991 30.5783 39.9991 30.0001C39.9991 29.422 39.7698 28.8674 39.3615 28.4581L38.5488 27.6476Z" fill="#FFCB03"/>
+                  <path d="M31.254 32.0465C31.1807 32.0466 31.1081 32.0323 31.0404 32.0042C30.9727 31.9761 30.9112 31.9348 30.8596 31.8827L29.3711 30.3943C29.2725 30.2885 29.2188 30.1485 29.2214 30.0039C29.224 29.8593 29.2825 29.7213 29.3848 29.6191C29.4871 29.5168 29.625 29.4582 29.7696 29.4557C29.9142 29.4531 30.0542 29.5068 30.16 29.6054L31.254 30.6987L33.8365 28.1169C33.9423 28.0183 34.0823 27.9646 34.2269 27.9672C34.3715 27.9697 34.5095 28.0283 34.6117 28.1306C34.714 28.2329 34.7726 28.3708 34.7751 28.5154C34.7777 28.66 34.724 28.8 34.6254 28.9058L31.6485 31.8827C31.5968 31.9348 31.5354 31.9761 31.4677 32.0042C31.4 32.0323 31.3273 32.0466 31.254 32.0465Z" fill="#282320"/>
+                  <path d="M31.9998 37.9993C31.7134 37.9997 31.4298 37.9436 31.1652 37.8342C30.9006 37.7247 30.6601 37.5641 30.4577 37.3615L29.6458 36.5488C29.5472 36.4497 29.4299 36.3711 29.3008 36.3175C29.1716 36.264 29.0332 36.2366 28.8934 36.237H27.9422C27.3641 36.2364 26.8098 36.0064 26.401 35.5976C25.9921 35.1888 25.7622 34.6345 25.7616 34.0564V33.106C25.7621 32.9662 25.7348 32.8278 25.6814 32.6986C25.628 32.5695 25.5495 32.4522 25.4505 32.3536L24.6378 31.5416C24.2295 31.1323 24.0002 30.5777 24.0002 29.9995C24.0002 29.4214 24.2295 28.8668 24.6378 28.4575L25.4505 27.6455C25.5497 27.547 25.6283 27.4297 25.6818 27.3005C25.7353 27.1714 25.7627 27.0329 25.7624 26.8931V25.942C25.763 25.3638 25.9929 24.8095 26.4017 24.4007C26.8105 23.9919 27.3648 23.762 27.943 23.7614H28.8934C29.0331 23.7618 29.1716 23.7345 29.3007 23.6811C29.4299 23.6277 29.5471 23.5493 29.6458 23.4503L30.4577 22.6376C30.8671 22.2293 31.4216 22 31.9998 22C32.5779 22 33.1325 22.2293 33.5418 22.6376L34.3538 23.4503C34.4524 23.5494 34.5696 23.628 34.6988 23.6815C34.8279 23.7351 34.9664 23.7625 35.1062 23.7621H36.0574C36.6355 23.7627 37.1898 23.9926 37.5986 24.4015C38.0074 24.8103 38.2374 25.3646 38.238 25.9427V26.8931C38.2375 27.0329 38.2648 27.1713 38.3182 27.3005C38.3716 27.4296 38.4501 27.5469 38.5491 27.6455L39.361 28.4575C39.7693 28.8668 39.9986 29.4214 39.9986 29.9995C39.9986 30.5777 39.7693 31.1323 39.361 31.5416L38.5491 32.3536C38.4499 32.4521 38.3713 32.5694 38.3178 32.6985C38.2643 32.8277 38.2369 32.9662 38.2372 33.106V34.0571C38.2366 34.6353 38.0067 35.1896 37.5979 35.5984C37.1891 36.0072 36.6348 36.2371 36.0566 36.2377H35.1062C34.9664 36.2374 34.8279 36.2648 34.6988 36.3183C34.5696 36.3718 34.4524 36.4504 34.3538 36.5496L33.5418 37.3615C33.3394 37.5641 33.099 37.7247 32.8344 37.8342C32.5698 37.9436 32.2862 37.9997 31.9998 37.9993ZM27.9422 24.8777C27.66 24.8779 27.3894 24.9901 27.1899 25.1897C26.9904 25.3892 26.8782 25.6598 26.878 25.942V26.8931C26.879 27.1799 26.823 27.4641 26.7133 27.7291C26.6035 27.994 26.4422 28.2346 26.2387 28.4367L25.4275 29.2479C25.228 29.4478 25.116 29.7187 25.116 30.001C25.116 30.2834 25.228 30.5543 25.4275 30.7542L26.2387 31.5654C26.442 31.7673 26.6032 32.0076 26.713 32.2723C26.8227 32.537 26.8788 32.8209 26.878 33.1075V34.0586C26.8782 34.3408 26.9904 34.6114 27.1899 34.8109C27.3894 35.0105 27.66 35.1227 27.9422 35.1229H28.8934C29.1799 35.1222 29.4637 35.1783 29.7284 35.2881C29.9931 35.3978 30.2334 35.5589 30.4354 35.7622L31.2466 36.5734C31.4466 36.7728 31.7174 36.8848 31.9998 36.8848C32.2822 36.8848 32.553 36.7728 32.753 36.5734L33.5642 35.7622C33.7662 35.5589 34.0065 35.3978 34.2712 35.2881C34.5359 35.1783 34.8197 35.1222 35.1062 35.1229H36.0574C36.3396 35.1227 36.6101 35.0105 36.8097 34.8109C37.0092 34.6114 37.1214 34.3408 37.1216 34.0586V33.106C37.1208 32.8194 37.1769 32.5355 37.2866 32.2708C37.3963 32.0061 37.5576 31.7658 37.7609 31.5639L38.5721 30.7527C38.7715 30.5528 38.8835 30.2819 38.8835 29.9995C38.8835 29.7172 38.7715 29.4463 38.5721 29.2464L37.7609 28.4367C37.5577 28.2346 37.3966 27.9943 37.2868 27.7297C37.1771 27.465 37.1209 27.1811 37.1216 26.8946V25.942C37.1214 25.6598 37.0092 25.3892 36.8097 25.1897C36.6101 24.9901 36.3396 24.8779 36.0574 24.8777H35.1062C34.8194 24.8788 34.5353 24.8228 34.2703 24.713C34.0053 24.6033 33.7648 24.442 33.5627 24.2384L32.7515 23.4272C32.5515 23.2278 32.2807 23.1158 31.9983 23.1158C31.7159 23.1158 31.4451 23.2278 31.2451 23.4272L30.4369 24.2384C30.235 24.4418 29.9947 24.603 29.73 24.7127C29.4653 24.8225 29.1814 24.8786 28.8948 24.8777H27.9422Z" fill="#282320"/>
+                  </svg>
+                  )}
+               
               </div>
               <p
                 className={`group-hover:text-mtn-400 ${
-                  currentPanel.NCCLicensedetails ? "text-mtn-400" : ""
+                  (currentPanel.NCCLicensedetails || partnerDetails?.profile_stage.percentage>=60) ? "text-mtn-400" : ""
                 } `}
               >
                 NCC VAS
@@ -422,27 +457,89 @@ export const AggregatorComplianceProgressiveNav = ({
   );
 };
 
-export const NCCLicensedetails = ({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-  currentPanel,
-  setCurrentPanel,
-}) => {
-  const [doc, setDoc] = useState(null);
-  const [fileSize, setfFileSize] = useState(null);
+export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
   const [formData, setFormData] = useState({
-    partner_uuid: null,
-    file: null,
+    vas_partner_uuid: partnerDetails.vas_partner_uuid,
+    aggregator_uuid: partnerDetails.aggregator_uuid,
+    vas_category_uuid: partnerDetails.vas_category_uuid,
+    vas_type_uuid: partnerDetails.vas_type_uuid,
+    vas_license_id: "",
+    ncc_issue_date: "",
+    ncc_expiry_date: "",
+    ncc_doc: {},
+    ncc_file: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [sendAction, setSendAction] = useState(false);
 
-  useEffect(() => {
-    setDoc(null);
-  }, []);
+  const {getAggregatorVasPartnerDetails,} = usePartners();
+  const [vasPartnerResponse, setVasPartnerResponse] = useState();
+  let getAggregatorVasPartnerDetailsResponse = null;
+    const get_aggregator_vas_partner_details = async () => {
+      try {
+        
+        getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+        let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+        setVasPartnerResponse(vas_partner_response);
+       
+        if(vas_partner_response.profile_stage.ncclicense>0){ /////// NCCLicensedetails done
+          setFormData({
+            ...formData,
+            vas_partner_uuid: vas_partner_response.vas_partner_uuid,
+            aggregator_uuid: vas_partner_response.aggregator_uuid,
+            vas_category_uuid: vas_partner_response.vas_category_uuid,
+            vas_type_uuid: vas_partner_response.vas_type_uuid,
+            vas_license_id: vas_partner_response.vas_license_id,
+            ncc_issue_date: vas_partner_response.ncc_issue_date,
+            ncc_expiry_date: vas_partner_response.ncc_expiry_date,
+            ncc_doc: {
+              file_name: vas_partner_response.ncc_doc.file_name,
+              file_size: vas_partner_response.ncc_doc.file_size,
+              file_type: vas_partner_response.ncc_doc.file_size,
+              file_path: vas_partner_response.ncc_doc.file_path
+          },
+            ncc_file: "",
+          });
+         }
 
+
+
+      } catch (error) {
+        console.log("getAggregatorVasPartnerDetails_response error", error);
+      }
+    };
+  
+    useEffect(() => {
+      get_aggregator_vas_partner_details();
+    }, []);
+  
+  const states = useStoreState((state) => state);
+
+  //console.log("usePartners", partner);
+  //console.log("useUsers()", useUsers());
+
+  const [nextBtn, setNextBtn] = useState(true);
+   /////////////////////////////
+   const partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
+   console.log("partnersData", partnersData);
+ ///////////////////////////////////////////
+   const [error, setError] = useState("");
+   const clearError = () => {
+     setError(null);
+   };
+ 
+ 
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
   const handleFileChange = (e) => {
+    const inputName = e.target.name;
     const validImageTypes = ["application/pdf"];
     let file = e.target.files[0];
     const fileType = file["type"];
@@ -454,165 +551,348 @@ export const NCCLicensedetails = ({
         file_size: file.size,
       });
       setfFileSize(filesize);
-      setErrorMessage("");
+      setError("");
     } else {
       setDoc({
         file_name: null,
         file_size: null,
       });
-      setErrorMessage("Only PDF files are allowed");
+      setError("Only PDF files are allowed");
     }
     setFormData({
       ...formData,
-      file: e.target.files[0],
+      ncc_doc:{},
+      [inputName]: e.target.files[0],
     });
   };
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+
+
+  const saveNCCLicensedetails = async () => {
+    const vas_license_id = formData.vas_license_id;
+    const ncc_issue_date = formData.ncc_issue_date;
+    const ncc_expiry_date = formData.ncc_expiry_date;
+    clearError();
+    if (vas_license_id === "") {
+      setError("Provide VAS Licence ID To Continue!");
+    } else if (ncc_issue_date === "") {
+      setError("Provide Issue Date To Continue!");
+    } else if (ncc_expiry_date === "") {
+      setError("Provide Expiry Date ID To Continue!");
+    } else {
+
+      try {
+       
+          const formDataToSend = new FormData();
+          formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+          formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
+          formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
+          formDataToSend.append("vas_type_uuid", formData.vas_type_uuid);
+          formDataToSend.append("vas_license_id", formData.vas_license_id);
+          formDataToSend.append("ncc_issue_date", formData.ncc_issue_date);
+          formDataToSend.append("ncc_expiry_date", formData.ncc_expiry_date);
+          formDataToSend.append("ncc_doc", JSON.stringify(formData.ncc_doc));
+          formDataToSend.append("ncc_file", formData.ncc_file);
+          setSendAction(true);
+          const response = await axios.post(
+            RemoteEndpoints.VAS_PERTNER_ONBOARDING_NCCLICENSE,
+            formDataToSend,
+            {
+              headers: {
+                apikey: apikey,
+                Authorization: `Bearer ${states.users.token}`,
+              },
+            }
+          );
+          sessionStorage.setItem(
+            "session_NCCLicensedetails",
+            JSON.stringify(response)
+          );
+          console.log('saveNCCLicensedetails response', response);
+          successAction(response.data.data.message, true);
+          
+          setCurrentPanel({
+            ...currentPanel,
+            NCCLicensedetails: false,
+            NLRCLicensedetails: true,
+            ShortCodeDetais: false,
+            ReviewAndSubmit: false,
+          });
+          setSendAction(false);
+       
+      } catch (err) {
+      setSendAction(false);
+      successAction(err.response.data.data.message, false);
+    } 
+      
+    }
+  };
+  const [sendAction, setSendAction] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState({
+    message: "",
+    alert: false,
+    status: false,
+  });
+  const successAction = (message, alert) => {
+    setShowSuccessToast((prevState) => ({
+      ...prevState,
+      message: message,
+      alert: alert,
+      status: true,
+    }));
+
+    const timeoutId = setTimeout(() => {
+      setShowSuccessToast((prevState) => ({
+        ...prevState,
+        message: "",
+        alert: false,
+        status: false,
+      }));
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  };
+
 
   return (
     <>
-      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
-        <div className="mb-5 w-full flex flex-col gap-3">
-          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-            Your company's NCC License details
-          </h1>
-          <p>Let’s get you started, Choose a partner category</p>
-        </div>
+      <AggregatorComplianceNav
+        closeAggregatorComplianceFormFlyout={
+          closeAggregatorComplianceFormFlyout
+        }
+        partnerDetails={vasPartnerResponse}
+      />
 
-        <TextInput
-          id="vas_license_id"
-          label="VAS License ID"
-          type="text"
-          name="vas_license_id"
+      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+        <AggregatorComplianceProgressiveNav
+          closeAggregatorComplianceFormFlyout={
+            closeAggregatorComplianceFormFlyout
+          }
+          partnerDetails={vasPartnerResponse}
+          currentPanel={currentPanel}
+          setCurrentPanel={setCurrentPanel}
         />
 
-        <div className="flex gap-3">
-          <div className="w-[50%]">
-            <TextInput
-              id="license_issue_date"
-              label="Issuing Date"
-              type="date"
-              name="license_issue_date"
-            />
-          </div>
-          <div className="w-[50%]">
-            <TextInput
-              id="license_expiring_date"
-              label="Expiry Date"
-              type="date"
-              name="license_expiring_date"
-            />
-          </div>
-        </div>
-        <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-            <label>
-              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  name="files"
-                  id="files"
-                  accept=".pdf,.PDF"
-                />
-
-                {!doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+        <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+          <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+            <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+              <div className="mb-5 w-full flex flex-col gap-3">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                  Your company's NCC License details
+                </h1>
+                <p>Let’s get you started, Choose a partner category</p>
+              </div>
+              {error && (
+                <div className="text-red-500 flex gap-3 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
                   >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadIcon />
-                      </div>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+              <TextInput
+                id="vas_license_id"
+                label="VAS License ID"
+                type="text"
+                name="vas_license_id"
+                value={
+                  formData.vas_license_id || vasPartnerResponse?.vas_license_id
+                }
+                onChange={handleChange}
+              />
 
-                      <div className="text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            NCC VAS License
-                          </span>
-                          <br />
-                          Drag and drop here or
-                        </p>
-                      </div>
-                    </div>
+              <div className="flex gap-3">
+                <div className="w-[50%]">
+                  <TextInput
+                    id="ncc_issue_date"
+                    label="Issuing Date"
+                    type="date"
+                    name="ncc_issue_date"
+                    value={
+                      formData.ncc_issue_date ||
+                      vasPartnerResponse?.ncc_issue_date
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <TextInput
+                    id="ncc_expiry_date"
+                    label="Expiry Date"
+                    type="date"
+                    name="ncc_expiry_date"
+                    value={
+                      formData.ncc_expiry_date ||
+                      vasPartnerResponse?.ncc_expiry_date
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <FileInputWrapper>
+                <div className="p-[8px] w-full rounded-[10px]">
+                  <label>
+                    <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        name="ncc_file"
+                        id="ncc_file"
+                        accept=".pdf,.PDF"
+                      />
 
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                  >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadActiveIcon />
-                      </div>
+                      {!doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              {vasPartnerResponse ? (
+                                <FileUploadActiveIcon />
+                              ) : (
+                                <FileUploadIcon />
+                              )}
+                            </div>
 
-                      <div className="flex text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            {doc?.file_name}
-                          </span>
-                          <br />
-                          {doc ? getFileSizeText(doc.file_size) : "0"}
-                        </p>
-                      </div>
-                    </div>
+                            <div className="text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  {vasPartnerResponse
+                                    ? vasPartnerResponse.ncc_doc.file_name
+                                    : "NCC VAS License"}
+                                </span>
+                                <br />
+                                {vasPartnerResponse
+                                  ? getFileSizeText(
+                                      vasPartnerResponse.ncc_doc.file_size
+                                    )
+                                  : "Drag and drop here or"}
+                              </p>
+                            </div>
+                          </div>
 
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              <FileUploadActiveIcon />
+                            </div>
+
+                            <div className="flex text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  {doc?.file_name}
+                                </span>
+                                <br />
+                                {doc ? getFileSizeText(doc.file_size) : "0"}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </label>
+                </div>
+              </FileInputWrapper>
+              <div className="flex gap-2 justify-start mt-4">
+                {sendAction ? (
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                ) : (
+                  <>
+                    <button
+                      className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+                      onClick={closeAggregatorComplianceFormFlyout}
+                    >
+                      &lt; Back
+                    </button>
+
+                    <button
+                      className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+                      onClick={() => saveNCCLicensedetails()}
+                    >
+                      {vasPartnerResponse?.profile_stage.ncclicense == 0 ? (
+                        <span> Next &gt;</span>
+                      ) : (
+                        <span> update &gt;</span>
+                      )}
+                    </button>
+                  </>
                 )}
               </div>
-            </label>
+            </div>
           </div>
-        </FileInputWrapper>
-
-        <div className="flex gap-2 justify-start mt-4">
-          <button
-            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-            onClick={closeAggregatorComplianceFormFlyout}
-          >
-            &lt; Back
-          </button>
-
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={() => {
-              setCurrentPanel({
-                ...currentPanel,
-                NCCLicensedetails: false,
-                NLRCLicensedetails: true,
-                ShortCodeDetais: false,
-                ReviewAndSubmit: false,
-              });
-            }}
-          >
-            Next &gt;
-          </button>
         </div>
       </div>
+
+      {showSuccessToast.status && (
+        <NewSuccess
+          message={showSuccessToast.message}
+          alert={showSuccessToast.alert}
+        />
+      )}
     </>
   );
 };
 
-export const NLRCLicensedetails = ({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-  currentPanel,
-  setCurrentPanel,
-}) => {
+export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel,  setCurrentPanel,}) => {
+  const {getAggregatorVasPartnerDetails,} = usePartners();
+  const [vasPartnerResponse, setVasPartnerResponse] = useState();
+  let getAggregatorVasPartnerDetailsResponse = null;
+    const get_aggregator_vas_partner_details = async () => {
+      try {
+        
+        getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+        let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+        setVasPartnerResponse(vas_partner_response);
+       
+      } catch (error) {
+        console.log("getAggregatorVasPartnerDetails_response error", error);
+      }
+    };
+  
+    useEffect(() => {
+      get_aggregator_vas_partner_details();
+    }, []);
+  
+   
+ 
+ 
+ 
+ 
   const [doc, setDoc] = useState(null);
   const [fileSize, setfFileSize] = useState(null);
   const [formData, setFormData] = useState({
@@ -655,6 +935,31 @@ export const NLRCLicensedetails = ({
 
   return (
     <>
+
+<AggregatorComplianceNav
+          closeAggregatorComplianceFormFlyout={
+            closeAggregatorComplianceFormFlyout
+          }
+          partnerDetails={vasPartnerResponse}
+          
+        />
+
+        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+          
+            
+              <AggregatorComplianceProgressiveNav
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+
+              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+
+
       <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
         <div className="mb-5 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
@@ -801,16 +1106,37 @@ export const NLRCLicensedetails = ({
           </button>
         </div>
       </div>
+      </div>
+      </div>
+      </div>
     </>
   );
 };
 
-export const ShortCodeDetais = ({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-  currentPanel,
-  setCurrentPanel,
-}) => {
+export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
+  const {getAggregatorVasPartnerDetails,} = usePartners();
+  const [vasPartnerResponse, setVasPartnerResponse] = useState();
+  let getAggregatorVasPartnerDetailsResponse = null;
+    const get_aggregator_vas_partner_details = async () => {
+      try {
+        
+        getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+        let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+        setVasPartnerResponse(vas_partner_response);
+       
+      } catch (error) {
+        console.log("getAggregatorVasPartnerDetails_response error", error);
+      }
+    };
+  
+    useEffect(() => {
+      get_aggregator_vas_partner_details();
+    }, []);
+  
+  
+ 
+ 
+ 
   const [doc, setDoc] = useState(null);
   const [fileSize, setfFileSize] = useState(null);
   const [formData, setFormData] = useState({
@@ -853,6 +1179,30 @@ export const ShortCodeDetais = ({
 
   return (
     <>
+<AggregatorComplianceNav
+          closeAggregatorComplianceFormFlyout={
+            closeAggregatorComplianceFormFlyout
+          }
+          partnerDetails={vasPartnerResponse}
+          
+        />
+
+        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+          
+            
+              <AggregatorComplianceProgressiveNav
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+
+              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+
+
       <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
         <div className="mb-5 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
@@ -994,18 +1344,60 @@ export const ShortCodeDetais = ({
           </button>
         </div>
       </div>
+      </div></div></div>
     </>
   );
 };
 
-export const ReviewAndSubmit = ({
-  closeAggregatorComplianceFormFlyout,
-  partnerDetails,
-  currentPanel,
-  setCurrentPanel,
-}) => {
+export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
+  const {getAggregatorVasPartnerDetails,} = usePartners();
+  const [vasPartnerResponse, setVasPartnerResponse] = useState();
+  let getAggregatorVasPartnerDetailsResponse = null;
+    const get_aggregator_vas_partner_details = async () => {
+      try {
+        
+        getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+        let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+        setVasPartnerResponse(vas_partner_response);
+       
+      } catch (error) {
+        console.log("getAggregatorVasPartnerDetails_response error", error);
+      }
+    };
+  
+    useEffect(() => {
+      get_aggregator_vas_partner_details();
+    }, []);
+  
+  
+
+
   return (
     <>
+<AggregatorComplianceNav
+          closeAggregatorComplianceFormFlyout={
+            closeAggregatorComplianceFormFlyout
+          }
+          partnerDetails={vasPartnerResponse}
+          
+        />
+
+        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+          
+            
+              <AggregatorComplianceProgressiveNav
+                closeAggregatorComplianceFormFlyout={
+                  closeAggregatorComplianceFormFlyout
+                }
+                partnerDetails={vasPartnerResponse}
+                currentPanel={currentPanel}
+                setCurrentPanel={setCurrentPanel}
+              />
+
+              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+
+
       <div className="max-w-[650px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-5">
         <div className="mb-8 w-full flex flex-col gap-3">
           <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
@@ -1166,6 +1558,9 @@ export const ReviewAndSubmit = ({
             Submit Application &gt;
           </button>
         </div>
+      </div>
+      </div>
+      </div>
       </div>
     </>
   );

@@ -1627,11 +1627,11 @@ const usePartners = () => {
     }
   };
 
-  const getVasPartnerRequest = async (uuid) => {
+  const getRejectedRequest = async (uuid) => {
     try {
       setProcessing(true);
       const response = await axios.get(
-        `${RemoteEndpoints.GET_VAS_PARTNER_REQUEST}`,
+        `${RemoteEndpoints.GET_REJECTED_REQUEST}`,
         {
           params: {
             vas_partner_uuid: uuid,
@@ -1646,7 +1646,7 @@ const usePartners = () => {
         }
       );
       setProcessing(false);
-      const result = response.data.data;
+      const result = response.data.data[0];
       console.log("Res", result);
       return { result };
     } catch (error) {
@@ -1715,6 +1715,7 @@ const usePartners = () => {
     }
   };
 
+
   const getAggregatorRequest = async () => {
     try {
       setProcessing(true);
@@ -1729,8 +1730,8 @@ const usePartners = () => {
             "Content-Type": "application/json",
           },
           params: {
-            aggregator_uuid: states.partners.partner.uuid,
-          },
+            aggregator_uuid: states.partners.partner.uuid
+          }
         }
       );
       setProcessing(false);
@@ -1741,6 +1742,36 @@ const usePartners = () => {
       return { error };
     }
   };
+  
+
+
+  const getAggregatorVasPartnerDetails = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      setProcessing(true);
+      const getAggregatorVasPartnerDetailsResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_VAS_PARTNERS_DETAILS}/${aggregator_uuid}/${vas_partner_uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+          
+        }
+      );
+      setProcessing(false);
+      const result = getAggregatorVasPartnerDetailsResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+
+
 
   return {
     ...states.partners,
@@ -1787,9 +1818,10 @@ const usePartners = () => {
     getVasTypes,
     getAggregators,
     submitVasPartner,
-    getVasPartnerRequest,
+    getRejectedRequest,
     changeAggregator,
     getAggregatorRequest,
+    getAggregatorVasPartnerDetails,
   };
 };
 

@@ -211,8 +211,8 @@ export default function GetStarted({ type }) {
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
-      if (partner.categories?.length > 0) {
-        partner.categories.map((_category) => {
+      if (partner?.categories?.length > 0) {
+        partner?.categories.map((_category) => {
           const category = filterCategory(_category, partner);
           setRejectedTeam(category?.teamStatus);
           partnerActiveCat.push(category.uuid);
@@ -463,7 +463,7 @@ export default function GetStarted({ type }) {
   const [vasPartnerData, setVasPartnerData] = useState([]);
 
   useEffect(() => {
-    getVasPartnerRequest(partner.uuid).then((res) => {
+    getVasPartnerRequest(partner?.uuid).then((res) => {
       if (res.result?.length > 0) {
         setShowPartnerCategories(false);
         setVasPartnerData(res.result);

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function ChooseAggregatorSuccessCard({}) {
+export default function ChooseAggregatorSuccessCard({ aggregator }) {
   return (
     <>
       <div
@@ -26,8 +26,8 @@ export default function ChooseAggregatorSuccessCard({}) {
                 Your request was accepted
               </span>
               <span className="text-[#999999] text-[12px] text-center md:text-left">
-                The aggregator, Light Ray Limited accepted your request. We’ll
-                notify you once they complete your onboarding requirements.
+                The aggregator, {aggregator} accepted your request. We’ll notify
+                you once they complete your onboarding requirements.
               </span>
             </div>
           </div>

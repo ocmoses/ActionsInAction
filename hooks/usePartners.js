@@ -1715,7 +1715,6 @@ const usePartners = () => {
     }
   };
 
-
   const getAggregatorRequest = async () => {
     try {
       setProcessing(true);
@@ -1730,8 +1729,8 @@ const usePartners = () => {
             "Content-Type": "application/json",
           },
           params: {
-            aggregator_uuid: states.partners.partner.uuid
-          }
+            aggregator_uuid: states.partners.partner.uuid,
+          },
         }
       );
       setProcessing(false);
@@ -1742,10 +1741,11 @@ const usePartners = () => {
       return { error };
     }
   };
-  
 
-
-  const getAggregatorVasPartnerDetails = async (aggregator_uuid, vas_partner_uuid) => {
+  const getAggregatorVasPartnerDetails = async (
+    aggregator_uuid,
+    vas_partner_uuid
+  ) => {
     try {
       setProcessing(true);
       const getAggregatorVasPartnerDetailsResponse = await axios.get(
@@ -1758,7 +1758,6 @@ const usePartners = () => {
             Authorization: `Bearer ${states.users.token}`,
             "Content-Type": "application/json",
           },
-          
         }
       );
       setProcessing(false);
@@ -1770,8 +1769,33 @@ const usePartners = () => {
     }
   };
 
-
-
+  const getVasPartnerRequest = async (uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_VAS_PARTNER_REQUEST}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = response.data.data;
+      console.log("Res", result);
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
 
   return {
     ...states.partners,
@@ -1822,6 +1846,7 @@ const usePartners = () => {
     changeAggregator,
     getAggregatorRequest,
     getAggregatorVasPartnerDetails,
+    getVasPartnerRequest,
   };
 };
 

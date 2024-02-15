@@ -1033,7 +1033,7 @@ export default function GetStarted({ type }) {
               </div>
 
               {vasPartnerData.map((item) =>
-                item.status !== "decline" ? null : (
+                item.status !== "declined" ? null : (
                   <ChooseAggregatorCard
                     aggregator={item.aggregator}
                     action={() => {

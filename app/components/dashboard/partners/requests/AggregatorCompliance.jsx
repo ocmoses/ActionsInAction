@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef  } from "react";
 import usePartners from "@/hooks/usePartners";
 import UserPercentage from "@/app/components/UserPercentage";
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
@@ -1292,6 +1292,21 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
 
 
 export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
+  const [formData, setFormData] = useState({
+    vas_partner_uuid: partnerDetails.vas_partner_uuid,
+    aggregator_uuid: partnerDetails.aggregator_uuid,
+    vas_category_uuid: partnerDetails.vas_category_uuid,
+    temp_shortcodes: "",
+    shortcodes: "",
+    shortcode_issue_date: "",
+    shortcode_expiry_date: "",
+    shortcode_file: "",
+    pricing_shortcodes: "",
+    pricing_issue_date: "",
+    pricing_expiry_date: "",
+    pricing_file: "",
+  });
+
   const {getAggregatorVasPartnerDetails,} = usePartners();
   const [vasPartnerResponse, setVasPartnerResponse] = useState();
   let getAggregatorVasPartnerDetailsResponse = null;
@@ -1306,223 +1321,263 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
         console.log("getAggregatorVasPartnerDetails_response error", error);
       }
     };
-  
+
     useEffect(() => {
       get_aggregator_vas_partner_details();
     }, []);
   
   
  
- 
- 
-  const [doc, setDoc] = useState(null);
-  const [fileSize, setfFileSize] = useState(null);
-  const [formData, setFormData] = useState({
-    partner_uuid: null,
-    file: null,
-  });
+    const states = useStoreState((state) => state);
+    const [error, setError] = useState("");
+      const clearError = () => {
+        setError(null);
+      };
+   
+   
+      const handleChange = (event) => {
+       const { name, value } = event.target;
+       setFormData({
+         ...formData,
+         [name]: value,
+       });
+     };
+     const [doc, setDoc] = useState(null);
+     const [fileSize, setfFileSize] = useState(null);
+     const handleFileChange = (e) => {
+       const inputName = e.target.name;
+       const validImageTypes = ["application/pdf"];
+       let file = e.target.files[0];
+       const fileType = file["type"];
+       const filesize = file["size"];
+   
+       if (validImageTypes.includes(fileType)) {
+         setDoc({
+           file_name: file.name,
+           file_size: file.size,
+         });
+         setfFileSize(filesize);
+         setError("");
+       } else {
+         setDoc({
+           file_name: null,
+           file_size: null,
+         });
+         setError("Only PDF files are allowed");
+       }
+       setFormData({
+         ...formData,
+         nlrc_doc:{},
+         [inputName]: e.target.files[0],
+       });
+     };
+     useEffect(() => {
+       setDoc(null);
+     }, []);
+    
+  
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        // Clear the value of the TextInput
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          shortcodes: prevFormData.shortcodes
+            ? `${prevFormData.shortcodes}, ${prevFormData.temp_shortcodes}`
+            : prevFormData.temp_shortcodes,
+          temp_shortcodes: "", // Clear temp_shortcodes after appending to shortcodes
+        }));
+      }
+    };
+    const updateShortCodes = (updatedCodesString) => {
+      console.log("updatedCodesString", updatedCodesString);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        shortcodes: updatedCodesString,
+      }));
+    };
+  
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [sendAction, setSendAction] = useState(false);
 
-  useEffect(() => {
-    setDoc(null);
-  }, []);
-
-  const handleFileChange = (e) => {
-    const validImageTypes = ["application/pdf"];
-    let file = e.target.files[0];
-    const fileType = file["type"];
-    const filesize = file["size"];
-
-    if (validImageTypes.includes(fileType)) {
-      setDoc({
-        file_name: file.name,
-        file_size: file.size,
-      });
-      setfFileSize(filesize);
-      setErrorMessage("");
-    } else {
-      setDoc({
-        file_name: null,
-        file_size: null,
-      });
-      setErrorMessage("Only PDF files are allowed");
-    }
-    setFormData({
-      ...formData,
-      file: e.target.files[0],
-    });
-  };
 
   return (
     <>
-<AggregatorComplianceNav
+      <AggregatorComplianceNav
+        closeAggregatorComplianceFormFlyout={
+          closeAggregatorComplianceFormFlyout
+        }
+        partnerDetails={vasPartnerResponse}
+      />
+
+      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+        <AggregatorComplianceProgressiveNav
           closeAggregatorComplianceFormFlyout={
             closeAggregatorComplianceFormFlyout
           }
           partnerDetails={vasPartnerResponse}
-          
+          currentPanel={currentPanel}
+          setCurrentPanel={setCurrentPanel}
         />
 
-        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
-          
-            
-              <AggregatorComplianceProgressiveNav
-                closeAggregatorComplianceFormFlyout={
-                  closeAggregatorComplianceFormFlyout
-                }
-                partnerDetails={vasPartnerResponse}
-                currentPanel={currentPanel}
-                setCurrentPanel={setCurrentPanel}
-              />
-
-              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
-                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
-
-
-      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
-        <div className="mb-5 w-full flex flex-col gap-3">
-          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-            Provide your company's short code details
-          </h1>
-          <p>Let’s get you started, Choose a partner category</p>
-        </div>
-
-        <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-            <label>
-              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  name="files"
-                  id="files"
-                  accept=".pdf,.PDF"
-                />
-
-                {!doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                  >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadIcon />
-                      </div>
-
-                      <div className="text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            Short Code Document
-                          </span>
-                          <br />
-                          Drag and drop here or
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                  >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadActiveIcon />
-                      </div>
-
-                      <div className="flex text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            {doc?.file_name}
-                          </span>
-                          <br />
-                          {doc ? getFileSizeText(doc.file_size) : "0"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
-                    </div>
-                  </div>
-                )}
+        <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+          <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+            <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+              <div className="mb-5 w-full flex flex-col gap-3">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                  Provide your company's short code details
+                </h1>
+                <p>Let’s get you started, Choose a partner category</p>
               </div>
-            </label>
-          </div>
-        </FileInputWrapper>
 
-        <div className="flex gap-3 mb-[-20px]">
-          <div className="w-[50%]">
-            <TextInput
-              id="license_issue_date"
-              label="Issuing Date"
-              type="date"
-              name="license_issue_date"
-            />
-          </div>
-          <div className="w-[50%]">
-            <TextInput
-              id="license_expiring_date"
-              label="Expiry Date"
-              type="date"
-              name="license_expiring_date"
-            />
-          </div>
-        </div>
+              <FileInputWrapper>
+                <div className="p-[8px] w-full rounded-[10px]">
+                  <label>
+                    <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        name="files"
+                        id="files"
+                        accept=".pdf,.PDF"
+                      />
 
-        <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-            <p>Enter applicable short codes</p>
+                      {!doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              <FileUploadIcon />
+                            </div>
+
+                            <div className="text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  Short Code Document
+                                </span>
+                                <br />
+                                Drag and drop here or
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              <FileUploadActiveIcon />
+                            </div>
+
+                            <div className="flex text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  {doc?.file_name}
+                                </span>
+                                <br />
+                                {doc ? getFileSizeText(doc.file_size) : "0"}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                </div>
+              </FileInputWrapper>
+
+              <div className="flex gap-3 mb-[-20px]">
+                <div className="w-[50%]">
+                  <TextInput
+                    id="license_issue_date"
+                    label="Issuing Date"
+                    type="date"
+                    name="license_issue_date"
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <TextInput
+                    id="license_expiring_date"
+                    label="Expiry Date"
+                    type="date"
+                    name="license_expiring_date"
+                  />
+                </div>
+              </div>
+
+              <div className="p-[8px] w-full rounded-[10px] flex flex-col gap-3">
+                <p>Enter applicable short codes: <br/><span className="text-[9px]">(Enter multiple comma seperated shortcodes and pree 'Enter' to apply)</span></p>
+                <div className="flex gap-3">
+                  <ShortCodesMarker
+                    shortCodes={formData.shortcodes}
+                    updateShortCodes={updateShortCodes}
+                  />
+                </div>
+                <TextInput
+                  id="temp_shortcodes"
+                  label="Type Shortcodes Here"
+                  type="text"
+                  name="temp_shortcodes"
+                  value={formData.temp_shortcodes}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </div>
+
+              <div className="flex gap-2 justify-start">
+                <button
+                  className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+                  onClick={() => {
+                    setCurrentPanel({
+                      ...currentPanel,
+                      NCCLicensedetails: false,
+                      NLRCLicensedetails: true,
+                      ShortCodeDetais: false,
+                      ReviewAndSubmit: false,
+                    });
+                  }}
+                >
+                  &lt; Back
+                </button>
+
+                <button
+                  className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+                  onClick={() => {
+                    setCurrentPanel({
+                      ...currentPanel,
+                      NCCLicensedetails: false,
+                      NLRCLicensedetails: false,
+                      ShortCodeDetais: false,
+                      ReviewAndSubmit: true,
+                    });
+                  }}
+                >
+                  Next &gt;
+                </button>
+              </div>
+            </div>
           </div>
-        </FileInputWrapper>
-
-        <div className="flex gap-2 justify-start">
-          <button
-            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-            onClick={() => {
-              setCurrentPanel({
-                ...currentPanel,
-                NCCLicensedetails: false,
-                NLRCLicensedetails: true,
-                ShortCodeDetais: false,
-                ReviewAndSubmit: false,
-              });
-            }}
-          >
-            &lt; Back
-          </button>
-
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={() => {
-              setCurrentPanel({
-                ...currentPanel,
-                NCCLicensedetails: false,
-                NLRCLicensedetails: false,
-                ShortCodeDetais: false,
-                ReviewAndSubmit: true,
-              });
-            }}
-          >
-            Next &gt;
-          </button>
         </div>
       </div>
-      </div></div></div>
     </>
   );
 };
@@ -1740,6 +1795,54 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
       </div>
       </div>
       </div>
+    </>
+  );
+};
+
+
+
+
+
+export const ShortCodesMarker = ({
+  shortCodes,
+  updateShortCodes,
+}) => {
+
+  const deleteNumber = (numberToDelete) => {
+    const codesArray = shortCodes.split(',').map(code => code.trim());
+    const updatedCodesArray = codesArray.filter(code => code !== numberToDelete);
+    const updatedCodesString = updatedCodesArray.join(', ');
+
+    updateShortCodes(updatedCodesString);
+  };
+  return (
+    <>
+    {shortCodes ? shortCodes.split(',').map((number, index) => (
+      <button 
+      key={index} 
+      className="flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center">
+      <span className="text-white font-mtn-medium">{number.trim()}</span>
+      <div onClick={()=> deleteNumber(number.trim())}>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 12L12 4M4 4L12 12"
+          stroke="#888888"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      </div>
+    </button>
+    
+    )): null}
+     
     </>
   );
 };

@@ -463,7 +463,7 @@ export default function GetStarted({ type }) {
   const [vasPartnerData, setVasPartnerData] = useState([]);
 
   useEffect(() => {
-    getVasPartnerRequest(partner.uuid).then((res) => {
+    getVasPartnerRequest(partner?.uuid).then((res) => {
       if (res.result?.length > 0) {
         setShowPartnerCategories(false);
         setVasPartnerData(res.result);
@@ -1033,7 +1033,7 @@ export default function GetStarted({ type }) {
               </div>
 
               {vasPartnerData.map((item) =>
-                item.status !== "decline" ? null : (
+                item.status !== "declined" ? null : (
                   <ChooseAggregatorCard
                     aggregator={item.aggregator}
                     action={() => {

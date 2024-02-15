@@ -457,10 +457,10 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
 
 export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
   const [formData, setFormData] = useState({
-    vas_partner_uuid: partnerDetails.vas_partner_uuid,
-    aggregator_uuid: partnerDetails.aggregator_uuid,
-    vas_category_uuid: partnerDetails.vas_category_uuid,
-    vas_type_uuid: partnerDetails.vas_type_uuid,
+    vas_partner_uuid: partnerDetails?.vas_partner_uuid,
+    aggregator_uuid: partnerDetails?.aggregator_uuid,
+    vas_category_uuid: partnerDetails?.vas_category_uuid,
+    vas_type_uuid: partnerDetails?.vas_type_uuid,
     vas_license_id: "",
     ncc_issue_date: "",
     ncc_expiry_date: "",
@@ -1333,13 +1333,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
       const clearError = () => {
         setError(null);
       };
-   
-   
-
-  
-
-
-
+      const [nextPage, setNextPage] = useState(false);
   return (
     <>
       <AggregatorComplianceNav
@@ -1363,9 +1357,8 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
               
-            <ShortCodesDoc formData={formData} setFormData={setFormData}/>
-
-
+            <ShortCodesDoc formData={formData} setFormData={setFormData} nextPage={nextPage} setNextPage={setNextPage}/>
+            <ShortCodesPricingDoc formData={formData} setFormData={setFormData} nextPage={nextPage} setNextPage={setNextPage}/>
 
               <div className="flex gap-2 justify-start">
                 <button
@@ -1405,6 +1398,15 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
     </>
   );
 };
+
+
+
+
+
+
+
+
+
 
 export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
   const {getAggregatorVasPartnerDetails,} = usePartners();
@@ -1624,9 +1626,6 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 };
 
 
-
-
-
 export const ShortCodesMarker = ({
   shortCodes,
   updateShortCodes,
@@ -1674,7 +1673,7 @@ export const ShortCodesMarker = ({
 
 
 
-export const ShortCodesDoc = ({formData, setFormData}) => {
+export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage}) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -1737,7 +1736,7 @@ export const ShortCodesDoc = ({formData, setFormData}) => {
    }));
  };
   return (
-    <section>
+    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${nextPage ? `hidden` : `flex`}`}>
       <div className="mb-5 w-full flex flex-col gap-3">
         <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
           Provide your company's short code details
@@ -1863,12 +1862,175 @@ export const ShortCodesDoc = ({formData, setFormData}) => {
 };
 
 
-export const ShortCodesPricingDoc = () => {
 
 
+export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPage}) => {
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
+  const handleFileChange = (e) => {
+    const inputName = e.target.name;
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setError("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setError("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      nlrc_doc:{},
+      [inputName]: e.target.files[0],
+    });
+  };
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+ 
+
+ 
+ const updateShortCodes = (updatedCodesString) => {
+   console.log("updatedCodesString", updatedCodesString);
+   setFormData((prevFormData) => ({
+     ...prevFormData,
+     shortcodes: updatedCodesString,
+   }));
+ };
   return (
-    <>
-    
-    </>
+    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${nextPage ? `flex` : `hidden`}`}>
+      <div className="mb-5 w-full flex flex-col gap-3">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+        Provide your short code pricing details
+        </h1>
+      </div>
+
+      <div className="p-[8px] w-full rounded-[10px] flex flex-col gap-3">
+                <p>Your shortcodes <span className="text-mtn-500">Edit</span></p>
+                <div className="flex gap-3">
+                  <ShortCodesMarker
+                    shortCodes={formData.shortcodes}
+                    updateShortCodes={updateShortCodes}
+                  />
+                </div>
+              </div>
+
+              <p>Pricing detail for your short codes</p>
+              <div className="flex gap-3 mb-[-20px]">
+        <div className="w-[50%]">
+          <TextInput
+            id="license_issue_date"
+            label="Issuing Date"
+            type="date"
+            name="license_issue_date"
+          />
+        </div>
+        <div className="w-[50%]">
+          <TextInput
+            id="license_expiring_date"
+            label="Expiry Date"
+            type="date"
+            name="license_expiring_date"
+          />
+        </div>
+      </div>
+
+      <FileInputWrapper>
+        <div className="p-[8px] w-full rounded-[10px]">
+          <label>
+            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="hidden"
+                name="files"
+                id="files"
+                accept=".pdf,.PDF"
+              />
+
+              {!doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadIcon />
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                        NCC Pricing approval
+                        </span>
+                        <br />
+                        Drag and drop here or
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+              {doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadActiveIcon />
+                    </div>
+
+                    <div className="flex text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          {doc?.file_name}
+                        </span>
+                        <br />
+                        {doc ? getFileSizeText(doc.file_size) : "0"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+      </FileInputWrapper>
+
+
+
+            
+    </section>
   );
 };

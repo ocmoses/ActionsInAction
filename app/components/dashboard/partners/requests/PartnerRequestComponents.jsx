@@ -22,6 +22,14 @@ import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
 import IntelectualPropertiesModal from "@/app/components/dashboard/partners/requests/IntelectualPropertiesDetail";
 
+
+
+
+
+
+
+
+
 export default function FilteringFlyout() {
   ///////////////get today's date////////////////////////////////////////////
   const today = new Date();
@@ -584,12 +592,12 @@ export const ApproveRejectRequestModal = ({
           </div>
 
           <CompanyInitial
-            initials={getInitials(partnerDetails.service_name).toUpperCase()}
+            initials={getInitials(partnerDetails.vas_partner).toUpperCase()}
           />
 
           <div className="flex flex-col">
             <h2 className=" text-[#FFF] font-bold text-[20px]">
-              {partnerDetails.service_name}
+              {partnerDetails.vas_partner}
             </h2>
             VAS Service Provider
           </div>
@@ -732,3 +740,44 @@ export const ApproveRejectRequestModal = ({
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

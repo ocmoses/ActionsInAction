@@ -69,7 +69,7 @@ export default function Requests() {
       }
     } catch (error) {
       // console.log('error', error);
-      setError(error.data.message);
+      setError(error.data.data.message);
     }
   };
 

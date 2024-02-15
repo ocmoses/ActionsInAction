@@ -16,6 +16,8 @@ export default function TextInput({
   margin,
   errors,
   onKeyDown,
+  min,
+  max,
 }) {
   const [Type, setType] = useState(type ?? "text");
 
@@ -44,6 +46,8 @@ export default function TextInput({
           onKeyUp={onKeyUp}
           onBlur={onBlur}
           onKeyDown={onKeyDown}
+          min={min}
+          max={max}
           style={{
             fontStyle: "normal",
             fontWeight: 400,

@@ -24,10 +24,13 @@ import { NewSuccess } from "@/app/components/toasts/Success";
 
 
 
-
-
-
-
+  function getToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
 export default function AggregatorComplianceModal({ closeAggregatorComplianceFormFlyout, partnerDetails,}) {
  /////////////////////////////////////////////////////////////////////////
@@ -50,12 +53,14 @@ const {getAggregatorVasPartnerDetails,} = usePartners();
 const [vasPartnerResponse, setVasPartnerResponse] = useState();
 let getAggregatorVasPartnerDetailsResponse = null;
   const get_aggregator_vas_partner_details = async () => {
+    console.log('partnerDetails response', partnerDetails);
     try {
       
-      getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
+      getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails?.aggregator_uuid, partnerDetails?.vas_partner_uuid);
       let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
+      
       setVasPartnerResponse(vas_partner_response);
-     if(vas_partner_response.profile_stage.percentage<=60){ /////// NCCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage<60){ /////// NCCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: true,
@@ -64,7 +69,7 @@ let getAggregatorVasPartnerDetailsResponse = null;
         ReviewAndSubmit: false,
       });
      }
-     if(vas_partner_response.profile_stage.percentage<=90){ /////// NLRCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage>=60 && vas_partner_response.profile_stage.percentage<90){ /////// NLRCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: false,
@@ -73,7 +78,7 @@ let getAggregatorVasPartnerDetailsResponse = null;
         ReviewAndSubmit: false,
       });
      }
-     if(vas_partner_response.profile_stage.percentage<=100){ /////// NLRCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage>=90 && vas_partner_response.profile_stage.percentage<100){ /////// NLRCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: false,
@@ -83,11 +88,22 @@ let getAggregatorVasPartnerDetailsResponse = null;
       });
      }
 
+     if(vas_partner_response.profile_stage.percentage==100){ /////// NLRCLicensedetails done
+      setCurrentPanel({
+        ...currentPanel,
+        NCCLicensedetails: false,
+        NLRCLicensedetails: false,
+        ShortCodeDetais: false,
+        ReviewAndSubmit: true,
+      });
+     }
+
     } catch (error) {
       console.log("getAggregatorVasPartnerDetails_response error", error);
     }
   };
   useEffect(() => {
+    
     get_aggregator_vas_partner_details();
   }, []);
 ///////////////////////////////////////////////////////////////////////////////
@@ -153,8 +169,6 @@ let getAggregatorVasPartnerDetailsResponse = null;
   );
 }
 
-
-
 export const AggregatorComplianceNav = ({
   closeAggregatorComplianceFormFlyout,
   partnerDetails,
@@ -198,12 +212,12 @@ export const AggregatorComplianceNav = ({
             size={22}
             thickness={2}
             textsize={8}
-            percent={partnerDetails?.profile_stage.percentage}
+            percent={partnerDetails?.profile_stage ? partnerDetails.profile_stage.percentage : '0'}
             hidelabel={true}
           />
 
           <span className="flex text-white text-[12px] flex-nowrap">
-          {partnerDetails?.profile_stage.percentage}%
+          {partnerDetails?.profile_stage ? partnerDetails.profile_stage.percentage : '0'}%
             <span className="hidden sm:flex"> &nbsp;completed</span>
           </span>
         </div>
@@ -218,9 +232,6 @@ export const AggregatorComplianceNav = ({
     </header>
   );
 };
-
-
-
 
 export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
   useEffect(() => {
@@ -250,7 +261,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
                   (currentPanel.NCCLicensedetails) ? "border border-mtn-400" : ""
                 } `}
               >
-                {partnerDetails?.profile_stage.percentage <60 ?(
+                {partnerDetails?.profile_stage === null ?(
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M19.4141 16.8619H12.1255L11.6695 17.3179C11.5597 17.4278 11.4106 17.4896 11.2552 17.4896H8.74477C8.58934 17.4896 8.44031 17.4278 8.33047 17.3179L7.87449 16.8619H0.585938C0.262344 16.8619 0 17.1243 0 17.4479V18.1588C0 19.1876 0.835547 19.9999 1.84117 19.9999H18.1588C19.1877 19.9999 20 19.1644 20 18.1588V17.4479C20 17.1242 19.7377 16.8619 19.4141 16.8619Z" fill="#666666"/>
                   <path d="M11.8409 0.828613V2.59373H13.606L11.8409 0.828613Z" fill="#666666"/>
@@ -298,7 +309,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
                   currentPanel.NLRCLicensedetails ? "border border-mtn-400" : ""
                 } `}
               >
-                {partnerDetails?.profile_stage.percentage <90 ?(
+                {partnerDetails?.profile_stage == null || partnerDetails?.profile_stage.percentage <90 ?(
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M14.7588 0.833313H14.531C14.7075 1.14251 14.8089 1.49979 14.8089 1.88046V3.03464H16.0742C16.4356 3.03464 16.7814 3.12562 17.0863 3.29592V3.16079C17.0863 1.87538 16.0443 0.833313 14.7588 0.833313Z" fill="#686868"/>
                   <path d="M16.7855 4.40326C16.5983 4.21345 16.3458 4.10889 16.0745 4.10889H13.7351V1.88046C13.7351 1.30393 13.2657 0.834745 12.6881 0.833313H3.33337V19.1666H17.0866V5.17344C17.0908 4.87803 16.9839 4.6045 16.7855 4.40326ZM13.5735 16.8737H6.83558V15.7999H13.5735V16.8737ZM13.5735 14.6185H6.83558V13.5448H13.5735V14.6185ZM12.4006 9.31803L12.5297 11.7742L10.2242 10.9176L7.92816 11.7994L8.0304 9.34202L6.4822 7.43088L8.85092 6.76873L10.1901 4.70576L11.5518 6.75394L13.9276 7.39009L12.4006 9.31803Z" fill="#686868"/>
@@ -317,7 +328,7 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
               </div>
               <p
                 className={`group-hover:text-mtn-400 ${
-                  (currentPanel.NLRCLicensedetails || partnerDetails?.profile_stage.percentage>=90) ? "text-mtn-400" : ""
+                  (currentPanel.NLRCLicensedetails || (partnerDetails?.profile_stage !==null && partnerDetails?.profile_stage.percentage>=90)) ? "text-mtn-400" : ""
                 } `}
               >
                 NLRC Licence
@@ -451,16 +462,13 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
   );
 };
 
-
-
-
-
 export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
+  const [startDate, setstartDate] = useState(getToday());
   const [formData, setFormData] = useState({
-    vas_partner_uuid: partnerDetails?.vas_partner_uuid,
-    aggregator_uuid: partnerDetails?.aggregator_uuid,
-    vas_category_uuid: partnerDetails?.vas_category_uuid,
-    vas_type_uuid: partnerDetails?.vas_type_uuid,
+    vas_partner_uuid: partnerDetails.vas_partner_uuid,
+    aggregator_uuid: partnerDetails.aggregator_uuid,
+    vas_category_uuid: partnerDetails.vas_category_uuid,
+    vas_type_uuid: partnerDetails.vas_type_uuid,
     vas_license_id: "",
     ncc_issue_date: "",
     ncc_expiry_date: "",
@@ -478,7 +486,6 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
         getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
         let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
         setVasPartnerResponse(vas_partner_response);
-       
         if(vas_partner_response.profile_stage.ncclicense>0){ /////// NCCLicensedetails done
           setFormData({
             ...formData,
@@ -709,6 +716,7 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                     label="Issuing Date"
                     type="date"
                     name="ncc_issue_date"
+                    max={startDate}
                     value={
                       formData.ncc_issue_date ||
                       vasPartnerResponse?.ncc_issue_date
@@ -722,6 +730,7 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                     label="Expiry Date"
                     type="date"
                     name="ncc_expiry_date"
+                    min={startDate}
                     value={
                       formData.ncc_expiry_date ||
                       vasPartnerResponse?.ncc_expiry_date
@@ -831,11 +840,11 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                       className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
                       onClick={() => saveNCCLicensedetails()}
                     >
-                      {vasPartnerResponse?.profile_stage.ncclicense == 0 ? (
-                        <span> Next &gt;</span>
-                      ) : (
-                        <span> update &gt;</span>
-                      )}
+                      {vasPartnerResponse?.profile_stage=== null ? (
+                              <span> Next &gt;</span>
+                          ) : (
+                              <span> update &gt;</span>
+                          )}
                     </button>
                   </>
                 )}
@@ -855,10 +864,9 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
   );
 };
 
-
-
 export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel,  setCurrentPanel,}) => {
-  const [formData, setFormData] = useState({
+  const [startDate, setstartDate] = useState(getToday());
+    const [formData, setFormData] = useState({
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
     aggregator_uuid: partnerDetails.aggregator_uuid,
     vas_category_uuid: partnerDetails.vas_category_uuid,
@@ -1128,6 +1136,7 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
                     label="Issuing Date"
                     type="date"
                     name="nlrc_issue_date"
+                    max={startDate}
                     value={
                       formData.nlrc_issue_date ||
                       vasPartnerResponse?.nlrc_issue_date
@@ -1141,6 +1150,7 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
                     label="Expiry Date"
                     type="date"
                     name="nlrc_expiry_date"
+                    min={startDate}
                     value={
                       formData.nlrc_expiry_date ||
                       vasPartnerResponse?.nlrc_expiry_date
@@ -1291,12 +1301,42 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
   const [formData, setFormData] = useState({
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
     aggregator_uuid: partnerDetails.aggregator_uuid,
     vas_category_uuid: partnerDetails.vas_category_uuid,
-    temp_shortcodes: "",
     shortcodes: "",
     shortcode_issue_date: "",
     shortcode_expiry_date: "",
@@ -1305,35 +1345,28 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
     pricing_issue_date: "",
     pricing_expiry_date: "",
     pricing_file: "",
+    
   });
-
+  
   const {getAggregatorVasPartnerDetails,} = usePartners();
   const [vasPartnerResponse, setVasPartnerResponse] = useState();
   let getAggregatorVasPartnerDetailsResponse = null;
     const get_aggregator_vas_partner_details = async () => {
       try {
-        
         getAggregatorVasPartnerDetailsResponse = await getAggregatorVasPartnerDetails(partnerDetails.aggregator_uuid, partnerDetails.vas_partner_uuid);
         let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
         setVasPartnerResponse(vas_partner_response);
-       
       } catch (error) {
         console.log("getAggregatorVasPartnerDetails_response error", error);
       }
     };
-
     useEffect(() => {
       get_aggregator_vas_partner_details();
     }, []);
   
-  
- 
-    const states = useStoreState((state) => state);
-    const [error, setError] = useState("");
-      const clearError = () => {
-        setError(null);
-      };
       const [nextPage, setNextPage] = useState(false);
+      const [getShortCodeList, setGetShortCodeList] = useState(true);
+      
   return (
     <>
       <AggregatorComplianceNav
@@ -1356,9 +1389,153 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
         <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
+           
+            {getShortCodeList &&(
+                <ShortCodesList partnerDetails={partnerDetails} currentPanel={currentPanel} setCurrentPanel={setCurrentPanel} setGetShortCodeList={setGetShortCodeList}/>
+             )}
               
-            <ShortCodesDoc formData={formData} setFormData={setFormData} nextPage={nextPage} setNextPage={setNextPage}/>
-            <ShortCodesPricingDoc formData={formData} setFormData={setFormData} nextPage={nextPage} setNextPage={setNextPage}/>
+            {!getShortCodeList &&( 
+              <>
+              <ShortCodesDoc
+                formData={formData}
+                setFormData={setFormData}
+                nextPage={nextPage}
+                setNextPage={setNextPage}
+                setGetShortCodeList={setGetShortCodeList}
+              />
+              <ShortCodesPricingDoc
+                formData={formData}
+                setFormData={setFormData}
+                nextPage={nextPage}
+                setNextPage={setNextPage}
+                setGetShortCodeList={setGetShortCodeList}
+              />
+              </>
+              )}
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+
+
+export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, setGetShortCodeList}) => {
+ 
+  return (
+    
+    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}>
+      <div className="mb-5 w-full flex flex-col gap-3">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+        Provide your company's short code details
+        </h1>
+        <p>Check the list of your shortcodes below</p>
+      </div>
+    <FileInputWrapper>
+                <div className="flex justify-between p-3 items-center">
+                  <div className="flex gap-3 items-center">
+                    <div className="h-[40px] w-[40px] rounded-full bg-black flex items-center justify-center ">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_11321_7656)">
+                          <path
+                            d="M7.65668 11.7579C7.97971 11.7579 8.24261 11.495 8.24261 11.172C8.24261 10.849 7.97971 10.5861 7.65668 10.5861C7.33365 10.5861 7.07074 10.849 7.07074 11.172C7.07074 11.495 7.33365 11.7579 7.65668 11.7579Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M7.65668 7.07043C7.97971 7.07043 8.24261 6.80753 8.24261 6.4845C8.24261 6.16147 7.97971 5.89856 7.65668 5.89856C7.33365 5.89856 7.07074 6.16147 7.07074 6.4845C7.07074 6.80753 7.33365 7.07043 7.65668 7.07043Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M12.3442 7.07043C12.6672 7.07043 12.9301 6.80753 12.9301 6.4845C12.9301 6.16147 12.6672 5.89856 12.3442 5.89856C12.0211 5.89856 11.7582 6.16147 11.7582 6.4845C11.7582 6.80753 12.0211 7.07043 12.3442 7.07043Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M12.3442 11.7579C12.6672 11.7579 12.9301 11.495 12.9301 11.172C12.9301 10.849 12.6672 10.5861 12.3442 10.5861C12.0211 10.5861 11.7582 10.849 11.7582 11.172C11.7582 11.495 12.0211 11.7579 12.3442 11.7579Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M3.55511 14.1407H16.4457V3.51575H3.55511V14.1407ZM10.5864 6.4845C10.5864 5.51526 11.3749 4.72668 12.3442 4.72668C13.3134 4.72668 14.102 5.51526 14.102 6.4845C14.102 7.24835 13.6122 7.8996 12.9301 8.1416V9.51489C13.6122 9.7569 14.102 10.4081 14.102 11.172C14.102 12.1412 13.3134 12.9298 12.3442 12.9298C11.3749 12.9298 10.5864 12.1412 10.5864 11.172C10.5864 10.4081 11.0762 9.7569 11.7582 9.51489V8.1416C11.0762 7.8996 10.5864 7.24835 10.5864 6.4845ZM7.65668 4.72668C8.62591 4.72668 9.41449 5.51526 9.41449 6.4845C9.41449 7.45374 8.62591 8.24231 7.65668 8.24231C6.68744 8.24231 5.89886 7.45374 5.89886 6.4845C5.89886 5.51526 6.68744 4.72668 7.65668 4.72668ZM7.65668 9.41418C8.62591 9.41418 9.41449 10.2028 9.41449 11.172C9.41449 12.1412 8.62591 12.9298 7.65668 12.9298C6.68744 12.9298 5.89886 12.1412 5.89886 11.172C5.89886 10.2028 6.68744 9.41418 7.65668 9.41418Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M3.55511 18.2423C3.55511 19.2115 4.34369 20.0001 5.31293 20.0001H14.6879C15.6572 20.0001 16.4457 19.2115 16.4457 18.2423V15.3126H3.55511V18.2423ZM8.82855 17.0704H11.1723V18.2423H8.82855V17.0704Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M14.6879 0.00012207H5.31293C4.34369 0.00012207 3.55511 0.788696 3.55511 1.75793V2.34387H16.4457V1.75793C16.4457 0.788696 15.6572 0.00012207 14.6879 0.00012207Z"
+                            fill="#686868"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_11321_7656">
+                            <rect width="20" height="20" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col gap-0">
+                      <h3 className="text-white font-mtn-medium">
+                        12345, 12345
+                      </h3>
+                      <span>Issued 10/02/2021</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="border border-white/20 text-white/20 text-[11px] py-1 px-2 rounded-full w-[50px]">
+                      Edit
+                    </button>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                        stroke="#686868"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M9.17004 14.83L14.83 9.16998"
+                        stroke="#686868"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M14.83 14.83L9.17004 9.16998"
+                        stroke="#686868"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </FileInputWrapper>
+              
+      <div className="flex gap-2 justify-end">
+        <button
+          className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => setGetShortCodeList(false)}
+        >
+         Add Shortcodes
+        </button>
+      </div>
+            
 
               <div className="flex gap-2 justify-start">
                 <button
@@ -1391,19 +1568,646 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
                   Next &gt;
                 </button>
               </div>
-            </div>
-          </div>
+              </section>
+    
+  );
+};
+
+export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage, setGetShortCodeList,}) => {
+  const [startDate, setstartDate] = useState(getToday());
+    const [error, setError] = useState("");
+  const clearError = () => {
+    setError(null);
+  };
+ 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      // Clear the value of the TextInput
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        shortcodes: prevFormData.shortcodes
+          ? `${prevFormData.shortcodes}, ${prevFormData.temp_shortcodes}`
+          : prevFormData.temp_shortcodes,
+          pricing_shortcodes: prevFormData.pricing_shortcodes
+          ? `${prevFormData.pricing_shortcodes}, ${prevFormData.temp_shortcodes}`
+          : prevFormData.temp_shortcodes,
+        temp_shortcodes: "", // Clear temp_shortcodes after appending to shortcodes
+      }));
+    }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
+  const handleFileChange = (e) => {
+    const inputName = e.target.name;
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setError("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setError("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      [inputName]: e.target.files[0],
+    });
+  };
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+  const updateShortCodes = (updatedCodesString) => {
+    console.log("updatedCodesString", updatedCodesString);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      shortcodes: updatedCodesString,
+      pricing_shortcodes: updatedCodesString,
+    }));
+  };
+
+  const viewNextPage = async () => {
+    const shortcodes = formData.shortcodes;
+    const shortcode_issue_date = formData.shortcode_issue_date;
+    const shortcode_expiry_date = formData.shortcode_expiry_date;
+
+    clearError();
+    if (shortcodes === "") {
+      setError("Provide Your ShortCodes To Continue!");
+    } else if (shortcode_issue_date === "") {
+      setError("Provide Issue Date To Continue!");
+    } else if (shortcode_expiry_date === "") {
+      setError("Provide Expiry Date To Continue!");
+    } else {
+      setNextPage(true);
+    }
+  };
+
+  return (
+    <section
+      className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
+        nextPage ? `hidden` : `flex`
+      }`}
+    >
+      <div className="mb-5 w-full flex flex-col gap-3">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+          Provide your company's short code details
+        </h1>
+      </div>
+      {error && (
+                <div className="text-red-500 flex gap-3 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+    <div className=" w-full rounded-[10px] flex flex-col gap-2 mb-[-20px]">
+        <p>
+          Enter applicable short codes: <br />
+          <span className="text-[10px] text-mtn-500">
+            (Enter multiple comma seperated shortcodes and pree 'Enter' to
+            apply)
+          </span>
+        </p>
+        <div className="flex gap-3">
+          <ShortCodesMarker
+            shortCodes={formData.shortcodes}
+            updateShortCodes={updateShortCodes}
+          />
+        </div>
+        <TextInput
+          id="temp_shortcodes"
+          label="Type Shortcodes Here"
+          type="text"
+          name="temp_shortcodes"
+          value={formData.temp_shortcodes}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
+
+      <div className="flex gap-3 mb-[-20px]">
+        <div className="w-[50%]">
+          <TextInput
+            id="shortcode_issue_date"
+            label="Issuing Date"
+            type="date"
+            name="shortcode_issue_date"
+            max={startDate}
+            value={formData.shortcode_issue_date}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="w-[50%]">
+          <TextInput
+            id="shortcode_expiry_date"
+            label="Expiry Date"
+            type="date"
+            name="shortcode_expiry_date"
+            min={startDate}
+            value={formData.shortcode_expiry_date}
+            onChange={handleChange}
+          />
         </div>
       </div>
-    </>
+
+      <FileInputWrapper>
+        <div className="p-[8px] w-full rounded-[10px]">
+          <label>
+            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+              <input
+                type="file"
+                className="hidden"
+                name="shortcode_file"
+                id="shortcode_file"
+                accept=".pdf,.PDF"
+                onChange={handleFileChange}
+              />
+
+              {!doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadIcon />
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          Short Code Document
+                        </span>
+                        <br />
+                        Drag and drop here or
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+              {doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadActiveIcon />
+                    </div>
+
+                    <div className="flex text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          {doc?.file_name}
+                        </span>
+                        <br />
+                        {doc ? getFileSizeText(doc.file_size) : "0"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+      </FileInputWrapper>
+
+      <div className="flex gap-2 justify-end">
+      <button
+          className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => setGetShortCodeList(true)}
+        >
+          Go Back
+        </button>
+        <button
+          className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => viewNextPage()}
+        >
+          Add Shortcode Pricing
+        </button>
+      </div>
+    </section>
   );
 };
 
 
+export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPage, setGetShortCodeList}) => {
+  const [startDate, setstartDate] = useState(getToday());
+   const states = useStoreState((state) => state);
+  const [error, setError] = useState("");
+  const clearError = () => {
+    setError(null);
+  };
+ 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const [doc, setDoc] = useState(null);
+  const [fileSize, setfFileSize] = useState(null);
+  const handleFileChange = (e) => {
+    const inputName = e.target.name;
+    const validImageTypes = ["application/pdf"];
+    let file = e.target.files[0];
+    const fileType = file["type"];
+    const filesize = file["size"];
+
+    if (validImageTypes.includes(fileType)) {
+      setDoc({
+        file_name: file.name,
+        file_size: file.size,
+      });
+      setfFileSize(filesize);
+      setError("");
+    } else {
+      setDoc({
+        file_name: null,
+        file_size: null,
+      });
+      setError("Only PDF files are allowed");
+    }
+    setFormData({
+      ...formData,
+      [inputName]: e.target.files[0],
+    });
+  };
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+  const updateShortCodes = (updatedCodesString) => {
+    console.log("updatedCodesString", updatedCodesString);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      shortcodes: updatedCodesString,
+      pricing_shortcodes: updatedCodesString,
+    }));
+  };
+
+
+
+  const saveShortCodesDetails = async () => {
+    const pricing_shortcodes = formData.pricing_shortcodes;
+    const pricing_issue_date = formData.pricing_issue_date;
+    const pricing_expiry_date = formData.pricing_expiry_date;
+    clearError();
+    if (pricing_shortcodes === "") {
+      setError("Provide Your ShortCodes To Continue!");
+    } else if (pricing_issue_date === "") {
+      setError("Provide Issue Date To Continue!");
+    } else if (pricing_expiry_date === "") {
+      setError("Provide Expiry Date ID To Continue!");
+    } else {
+
+      try {
+       
+        const formDataToSend = new FormData();
+
+        // Append simple key-value pairs
+        formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+        formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
+        formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
+        
+        // Append shortcode object
+        formDataToSend.append("shortcode[shortcode_issue_date]", formData.shortcode_issue_date);
+        formDataToSend.append("shortcode[shortcode_expiry_date]", formData.shortcode_expiry_date);
+        formDataToSend.append("shortcode[shortcode_file]", formData.shortcode_file);
+        
+        formData.shortcodes.split(", ").forEach((code, index) => {
+          formDataToSend.append(`shortcode[shortcodes][${index}]`, code.trim());
+        });
+        
+        // Append shortcode_pricing object
+        formDataToSend.append("shortcode_pricing[pricing_issue_date]", formData.pricing_issue_date);
+        formDataToSend.append("shortcode_pricing[pricing_expiry_date]", formData.pricing_expiry_date);
+        formDataToSend.append("shortcode_pricing[pricing_file]", formData.pricing_file);
+        
+        formData.pricing_shortcodes.split(", ").forEach((code, index) => {
+          formDataToSend.append(`shortcode_pricing[pricing_shortcodes][${index}]`, code.trim());
+        });
+        
+          setSendAction(true);
+          const response = await axios.post(
+            RemoteEndpoints.VAS_PERTNER_ONBOARDING_SHORTCODES,
+            formDataToSend,
+            {
+              headers: {
+                apikey: apikey,
+                Authorization: `Bearer ${states.users.token}`,
+              },
+            }
+          );
+          successAction(response.data.data.message, true);
+          setCurrentPanel({
+            ...currentPanel,
+            NCCLicensedetails: false,
+            NLRCLicensedetails: false,
+            ShortCodeDetais: true,
+            ReviewAndSubmit: false,
+          });
+          setSendAction(false);
+       
+      } catch (err) {
+      setSendAction(false);
+      successAction(err.response.data.data.message, false);
+    } 
+      
+    }
+  };
+
+  const [sendAction, setSendAction] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState({
+    message: "",
+    alert: false,
+    status: false,
+  });
+  const successAction = (message, alert) => {
+    setShowSuccessToast((prevState) => ({
+      ...prevState,
+      message: message,
+      alert: alert,
+      status: true,
+    }));
+
+    const timeoutId = setTimeout(() => {
+      setShowSuccessToast((prevState) => ({
+        ...prevState,
+        message: "",
+        alert: false,
+        status: false,
+      }));
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  };
 
 
 
 
+
+  return (
+    <>
+    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${nextPage ? `flex` : `hidden`}`}>
+      <div className="mb-5 w-full flex flex-col gap-3">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+        Provide your short code pricing details
+        </h1>
+      </div>
+      {error && (
+                <div className="text-red-500 flex gap-3 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+      <div className="p-[8px] w-full rounded-[10px] flex flex-col gap-3">
+                <p>Your shortcodes <span className="text-mtn-500 cursor-pointer" onClick={() => setNextPage(false)}>Edit</span></p>
+                <div className="flex gap-3">
+                  <ShortCodesMarker
+                    shortCodes={formData.shortcodes}
+                    updateShortCodes={updateShortCodes}
+                  />
+                </div>
+              </div>
+
+              <p>Pricing detail for your short codes</p>
+              <div className="flex gap-3 mb-[-20px]">
+        <div className="w-[50%]">
+          <TextInput
+            id="pricing_issue_date"
+            label="Issuing Date"
+            type="date"
+            name="pricing_issue_date"
+            max={startDate}
+            value={formData.pricing_issue_date}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="w-[50%]">
+          <TextInput
+            id="pricing_expiry_date"
+            label="Expiry Date"
+            type="date"
+            name="pricing_expiry_date"
+            min={startDate}
+            value={formData.pricing_expiry_date}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      <FileInputWrapper>
+        <div className="p-[8px] w-full rounded-[10px]">
+          <label>
+            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+              <input
+                type="file"
+                className="hidden"
+                name="pricing_file"
+                id="pricing_file"
+                accept=".pdf,.PDF"
+                onChange={handleFileChange}
+              />
+
+              {!doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadIcon />
+                    </div>
+
+                    <div className="text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                        NCC Pricing approval
+                        </span>
+                        <br />
+                        Drag and drop here or
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+              {doc?.file_name && (
+                <div
+                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                >
+                  <div className="flex flex-row gap-3">
+                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                      <FileUploadActiveIcon />
+                    </div>
+
+                    <div className="flex text-[#999999]">
+                      <p>
+                        Upload <br />
+                        <span className="text-white font-mtn-bold">
+                          {doc?.file_name}
+                        </span>
+                        <br />
+                        {doc ? getFileSizeText(doc.file_size) : "0"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 justify-between items-end">
+                    <InfoIcon width={16} height={16} iconClass="" />
+                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                      Choose file
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+      </FileInputWrapper>
+
+
+      <div className="flex gap-2 justify-end">
+      {sendAction ? (
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                ) : (
+                  <>
+      <button
+          className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => setNextPage(false)}
+        >
+          Go Back
+        </button>
+        <button
+          className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
+          onClick={() => saveShortCodesDetails()}
+        >
+         Save and continue
+        </button>
+        </>
+        )}
+      </div>
+            
+    </section>
+
+{showSuccessToast.status && (
+  <NewSuccess
+    message={showSuccessToast.message}
+    alert={showSuccessToast.alert}
+  />
+)}
+</>
+  );
+};
+
+
+export const ShortCodesMarker = ({ shortCodes, updateShortCodes,}) => {
+
+  const deleteNumber = (numberToDelete) => {
+    const codesArray = shortCodes.split(',').map(code => code.trim());
+    const updatedCodesArray = codesArray.filter(code => code !== numberToDelete);
+    const updatedCodesString = updatedCodesArray.join(', ');
+
+    updateShortCodes(updatedCodesString);
+  };
+  return (
+    <>
+    {shortCodes ? shortCodes.split(',').map((number, index) => (
+      <button 
+      key={index} 
+      className="flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center">
+      <span className="text-white font-mtn-medium">{number.trim()}</span>
+      <div onClick={()=> deleteNumber(number.trim())}>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 12L12 4M4 4L12 12"
+          stroke="#888888"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      </div>
+    </button>
+    
+    )): null}
+     
+    </>
+  );
+};
 
 
 
@@ -1622,415 +2426,5 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
       </div>
       </div>
     </>
-  );
-};
-
-
-export const ShortCodesMarker = ({
-  shortCodes,
-  updateShortCodes,
-}) => {
-
-  const deleteNumber = (numberToDelete) => {
-    const codesArray = shortCodes.split(',').map(code => code.trim());
-    const updatedCodesArray = codesArray.filter(code => code !== numberToDelete);
-    const updatedCodesString = updatedCodesArray.join(', ');
-
-    updateShortCodes(updatedCodesString);
-  };
-  return (
-    <>
-    {shortCodes ? shortCodes.split(',').map((number, index) => (
-      <button 
-      key={index} 
-      className="flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center">
-      <span className="text-white font-mtn-medium">{number.trim()}</span>
-      <div onClick={()=> deleteNumber(number.trim())}>
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M4 12L12 4M4 4L12 12"
-          stroke="#888888"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-      </div>
-    </button>
-    
-    )): null}
-     
-    </>
-  );
-};
-
-
-
-
-export const ShortCodesDoc = ({formData, setFormData, nextPage, setNextPage}) => {
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-  const [doc, setDoc] = useState(null);
-  const [fileSize, setfFileSize] = useState(null);
-  const handleFileChange = (e) => {
-    const inputName = e.target.name;
-    const validImageTypes = ["application/pdf"];
-    let file = e.target.files[0];
-    const fileType = file["type"];
-    const filesize = file["size"];
-
-    if (validImageTypes.includes(fileType)) {
-      setDoc({
-        file_name: file.name,
-        file_size: file.size,
-      });
-      setfFileSize(filesize);
-      setError("");
-    } else {
-      setDoc({
-        file_name: null,
-        file_size: null,
-      });
-      setError("Only PDF files are allowed");
-    }
-    setFormData({
-      ...formData,
-      nlrc_doc:{},
-      [inputName]: e.target.files[0],
-    });
-  };
-  useEffect(() => {
-    setDoc(null);
-  }, []);
- 
-
- const handleKeyDown = (event) => {
-   if (event.key === "Enter") {
-     event.preventDefault();
-     // Clear the value of the TextInput
-     setFormData((prevFormData) => ({
-       ...prevFormData,
-       shortcodes: prevFormData.shortcodes
-         ? `${prevFormData.shortcodes}, ${prevFormData.temp_shortcodes}`
-         : prevFormData.temp_shortcodes,
-       temp_shortcodes: "", // Clear temp_shortcodes after appending to shortcodes
-     }));
-   }
- };
- const updateShortCodes = (updatedCodesString) => {
-   console.log("updatedCodesString", updatedCodesString);
-   setFormData((prevFormData) => ({
-     ...prevFormData,
-     shortcodes: updatedCodesString,
-   }));
- };
-  return (
-    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${nextPage ? `hidden` : `flex`}`}>
-      <div className="mb-5 w-full flex flex-col gap-3">
-        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-          Provide your company's short code details
-        </h1>
-        <p>Let’s get you started, Choose a partner category</p>
-      </div>
-
-      <FileInputWrapper>
-        <div className="p-[8px] w-full rounded-[10px]">
-          <label>
-            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                name="files"
-                id="files"
-                accept=".pdf,.PDF"
-              />
-
-              {!doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadIcon />
-                    </div>
-
-                    <div className="text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          Short Code Document
-                        </span>
-                        <br />
-                        Drag and drop here or
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-              {doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadActiveIcon />
-                    </div>
-
-                    <div className="flex text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          {doc?.file_name}
-                        </span>
-                        <br />
-                        {doc ? getFileSizeText(doc.file_size) : "0"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </label>
-        </div>
-      </FileInputWrapper>
-
-      <div className="flex gap-3 mb-[-20px]">
-        <div className="w-[50%]">
-          <TextInput
-            id="license_issue_date"
-            label="Issuing Date"
-            type="date"
-            name="license_issue_date"
-          />
-        </div>
-        <div className="w-[50%]">
-          <TextInput
-            id="license_expiring_date"
-            label="Expiry Date"
-            type="date"
-            name="license_expiring_date"
-          />
-        </div>
-      </div>
-
-            <div className="p-[8px] w-full rounded-[10px] flex flex-col gap-3">
-                <p>Enter applicable short codes: <br/><span className="text-[10px] text-mtn-500">(Enter multiple comma seperated shortcodes and pree 'Enter' to apply)</span></p>
-                <div className="flex gap-3">
-                  <ShortCodesMarker
-                    shortCodes={formData.shortcodes}
-                    updateShortCodes={updateShortCodes}
-                  />
-                </div>
-                <TextInput
-                  id="temp_shortcodes"
-                  label="Type Shortcodes Here"
-                  type="text"
-                  name="temp_shortcodes"
-                  value={formData.temp_shortcodes}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                />
-              </div>
-    </section>
-  );
-};
-
-
-
-
-export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPage}) => {
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-  const [doc, setDoc] = useState(null);
-  const [fileSize, setfFileSize] = useState(null);
-  const handleFileChange = (e) => {
-    const inputName = e.target.name;
-    const validImageTypes = ["application/pdf"];
-    let file = e.target.files[0];
-    const fileType = file["type"];
-    const filesize = file["size"];
-
-    if (validImageTypes.includes(fileType)) {
-      setDoc({
-        file_name: file.name,
-        file_size: file.size,
-      });
-      setfFileSize(filesize);
-      setError("");
-    } else {
-      setDoc({
-        file_name: null,
-        file_size: null,
-      });
-      setError("Only PDF files are allowed");
-    }
-    setFormData({
-      ...formData,
-      nlrc_doc:{},
-      [inputName]: e.target.files[0],
-    });
-  };
-  useEffect(() => {
-    setDoc(null);
-  }, []);
- 
-
- 
- const updateShortCodes = (updatedCodesString) => {
-   console.log("updatedCodesString", updatedCodesString);
-   setFormData((prevFormData) => ({
-     ...prevFormData,
-     shortcodes: updatedCodesString,
-   }));
- };
-  return (
-    <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${nextPage ? `flex` : `hidden`}`}>
-      <div className="mb-5 w-full flex flex-col gap-3">
-        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-        Provide your short code pricing details
-        </h1>
-      </div>
-
-      <div className="p-[8px] w-full rounded-[10px] flex flex-col gap-3">
-                <p>Your shortcodes <span className="text-mtn-500">Edit</span></p>
-                <div className="flex gap-3">
-                  <ShortCodesMarker
-                    shortCodes={formData.shortcodes}
-                    updateShortCodes={updateShortCodes}
-                  />
-                </div>
-              </div>
-
-              <p>Pricing detail for your short codes</p>
-              <div className="flex gap-3 mb-[-20px]">
-        <div className="w-[50%]">
-          <TextInput
-            id="license_issue_date"
-            label="Issuing Date"
-            type="date"
-            name="license_issue_date"
-          />
-        </div>
-        <div className="w-[50%]">
-          <TextInput
-            id="license_expiring_date"
-            label="Expiry Date"
-            type="date"
-            name="license_expiring_date"
-          />
-        </div>
-      </div>
-
-      <FileInputWrapper>
-        <div className="p-[8px] w-full rounded-[10px]">
-          <label>
-            <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                name="files"
-                id="files"
-                accept=".pdf,.PDF"
-              />
-
-              {!doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadIcon />
-                    </div>
-
-                    <div className="text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                        NCC Pricing approval
-                        </span>
-                        <br />
-                        Drag and drop here or
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-              {doc?.file_name && (
-                <div
-                  className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                >
-                  <div className="flex flex-row gap-3">
-                    <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                      <FileUploadActiveIcon />
-                    </div>
-
-                    <div className="flex text-[#999999]">
-                      <p>
-                        Upload <br />
-                        <span className="text-white font-mtn-bold">
-                          {doc?.file_name}
-                        </span>
-                        <br />
-                        {doc ? getFileSizeText(doc.file_size) : "0"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 justify-between items-end">
-                    <InfoIcon width={16} height={16} iconClass="" />
-                    <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                      Choose file
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </label>
-        </div>
-      </FileInputWrapper>
-
-
-
-            
-    </section>
   );
 };

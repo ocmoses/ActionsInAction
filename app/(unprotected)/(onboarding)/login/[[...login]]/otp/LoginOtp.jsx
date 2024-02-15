@@ -108,13 +108,14 @@ export default function LoginOtp(props) {
           //setErrorMessage("Correct OTP");
           props.logInWithAuthZero();
         } else {
-          setErrorMessage(response.data.authZero.error_description);
+          console.log('accept OTP Response 1', response)
+          setErrorMessage("Invalid OTP.");
           setSendAction(false);
         }
       }
     } catch (err) {
+      setErrorMessage("Network Error.");
       setSendAction(false);
-      console.log(setErrorMessage, err);
     }
   };
 

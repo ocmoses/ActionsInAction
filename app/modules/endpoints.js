@@ -191,5 +191,6 @@ const RemoteEndpoints = {
   REJECT_VAS_PARTNERS: `${apiURL}/v2/aggregator/request/reject`,
   VAS_PERTNER_ONBOARDING_NCCLICENSE: `${apiURL}/v2/aggregator/vas-partner-onboarding/ncclicense`,
   GET_AGGREGATOR_VAS_PARTNERS_DETAILS:`${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details`,
+  VAS_PERTNER_ONBOARDING_NLRCLICENSE: `${apiURL}/v2/aggregator/vas-partner-onboarding/nlrclicense`,
 };
 export default RemoteEndpoints;

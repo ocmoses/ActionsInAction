@@ -15,13 +15,12 @@ import {
 import SelectInput from "@/app/components/form/SelectInput";
 import SelectInputOption from "@/app/components/form/SelectInputOption";
 import RemoteEndpoints from "@/app/modules/endpoints";
-import { apikey } from "@/app/modules/constants";
+import { apikey, license_type } from "@/app/modules/constants";
 import axios from "axios";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import useUsers from "@/hooks/useUsers";
 import { useStoreState } from "easy-peasy"
 import { NewSuccess } from "@/app/components/toasts/Success";
-
 
 
 
@@ -65,12 +64,21 @@ let getAggregatorVasPartnerDetailsResponse = null;
         ReviewAndSubmit: false,
       });
      }
-     if(vas_partner_response.profile_stage.percentage<=100){ /////// NLRCLicensedetails done
+     if(vas_partner_response.profile_stage.percentage<=90){ /////// NLRCLicensedetails done
       setCurrentPanel({
         ...currentPanel,
         NCCLicensedetails: false,
         NLRCLicensedetails: true,
         ShortCodeDetais: false,
+        ReviewAndSubmit: false,
+      });
+     }
+     if(vas_partner_response.profile_stage.percentage<=100){ /////// NLRCLicensedetails done
+      setCurrentPanel({
+        ...currentPanel,
+        NCCLicensedetails: false,
+        NLRCLicensedetails: false,
+        ShortCodeDetais: true,
         ReviewAndSubmit: false,
       });
      }
@@ -147,19 +155,6 @@ let getAggregatorVasPartnerDetailsResponse = null;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const AggregatorComplianceNav = ({
   closeAggregatorComplianceFormFlyout,
   partnerDetails,
@@ -223,6 +218,9 @@ export const AggregatorComplianceNav = ({
     </header>
   );
 };
+
+
+
 
 export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
   useEffect(() => {
@@ -300,30 +298,26 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
                   currentPanel.NLRCLicensedetails ? "border border-mtn-400" : ""
                 } `}
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14.7588 0.833313H14.531C14.7075 1.14251 14.8089 1.49979 14.8089 1.88046V3.03464H16.0742C16.4356 3.03464 16.7814 3.12562 17.0863 3.29592V3.16079C17.0863 1.87538 16.0443 0.833313 14.7588 0.833313Z"
-                    fill="#686868"
-                  />
-                  <path
-                    d="M16.7855 4.40326C16.5983 4.21345 16.3458 4.10889 16.0745 4.10889H13.7351V1.88046C13.7351 1.30393 13.2657 0.834745 12.6881 0.833313H3.33337V19.1666H17.0866V5.17344C17.0908 4.87803 16.9839 4.6045 16.7855 4.40326ZM13.5735 16.8737H6.83558V15.7999H13.5735V16.8737ZM13.5735 14.6185H6.83558V13.5448H13.5735V14.6185ZM12.4006 9.31803L12.5297 11.7742L10.2242 10.9176L7.92816 11.7994L8.0304 9.34202L6.4822 7.43088L8.85092 6.76873L10.1901 4.70576L11.5518 6.75394L13.9276 7.39009L12.4006 9.31803Z"
-                    fill="#686868"
-                  />
-                  <path
-                    d="M10.8828 7.68613L10.2013 6.66125L9.53124 7.69354L8.34595 8.0249L9.12064 8.98114L9.06947 10.2108L10.2184 9.76958L11.372 10.1982L11.3074 8.96918L12.0716 8.00446L10.8828 7.68613Z"
-                    fill="#666666"
-                  />
-                </svg>
+                {partnerDetails?.profile_stage.percentage <90 ?(
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.7588 0.833313H14.531C14.7075 1.14251 14.8089 1.49979 14.8089 1.88046V3.03464H16.0742C16.4356 3.03464 16.7814 3.12562 17.0863 3.29592V3.16079C17.0863 1.87538 16.0443 0.833313 14.7588 0.833313Z" fill="#686868"/>
+                  <path d="M16.7855 4.40326C16.5983 4.21345 16.3458 4.10889 16.0745 4.10889H13.7351V1.88046C13.7351 1.30393 13.2657 0.834745 12.6881 0.833313H3.33337V19.1666H17.0866V5.17344C17.0908 4.87803 16.9839 4.6045 16.7855 4.40326ZM13.5735 16.8737H6.83558V15.7999H13.5735V16.8737ZM13.5735 14.6185H6.83558V13.5448H13.5735V14.6185ZM12.4006 9.31803L12.5297 11.7742L10.2242 10.9176L7.92816 11.7994L8.0304 9.34202L6.4822 7.43088L8.85092 6.76873L10.1901 4.70576L11.5518 6.75394L13.9276 7.39009L12.4006 9.31803Z" fill="#686868"/>
+                  <path d="M10.8828 7.68613L10.2013 6.66125L9.53124 7.69354L8.34595 8.0249L9.12064 8.98114L9.06947 10.2108L10.2184 9.76958L11.372 10.1982L11.3074 8.96918L12.0716 8.00446L10.8828 7.68613Z" fill="#666666"/>
+                  </svg>
+                ):(
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24.7588 10.8333H24.531C24.7075 11.1425 24.8089 11.4998 24.8089 11.8805V13.0346H26.0742C26.4356 13.0346 26.7814 13.1256 27.0863 13.2959V13.1608C27.0863 11.8754 26.0443 10.8333 24.7588 10.8333Z" fill="#666666"/>
+                  <path d="M26.7855 14.4033C26.5983 14.2134 26.3458 14.1089 26.0745 14.1089H23.7351V11.8805C23.7351 11.3039 23.2657 10.8347 22.6881 10.8333H13.3334V29.1666H27.0866V15.1734C27.0908 14.878 26.9839 14.6045 26.7855 14.4033ZM23.5735 26.8737H16.8356V25.7999H23.5735V26.8737ZM23.5735 24.6185H16.8356V23.5448H23.5735V24.6185ZM22.4006 19.318L22.5297 21.7742L20.2242 20.9176L17.9282 21.7994L18.0304 19.342L16.4822 17.4309L18.8509 16.7687L20.1901 14.7058L21.5518 16.7539L23.9276 17.3901L22.4006 19.318Z" fill="#666666"/>
+                  <path d="M20.8828 17.6861L20.2013 16.6613L19.5312 17.6935L18.3459 18.0249L19.1206 18.9811L19.0695 20.2108L20.2184 19.7696L21.372 20.1982L21.3074 18.9692L22.0716 18.0045L20.8828 17.6861Z" fill="#666666"/>
+                  <path d="M38.5488 27.6476C38.3497 27.4471 38.2374 27.1763 38.2362 26.8937V25.9433C38.2354 25.365 38.0054 24.8107 37.5965 24.4018C37.1875 23.9928 36.6332 23.7628 36.0549 23.762H35.106C34.8238 23.7611 34.5533 23.6494 34.3528 23.4509L33.5416 22.6389C33.1323 22.2306 32.5777 22.0013 31.9995 22.0013C31.4214 22.0013 30.8668 22.2306 30.4575 22.6389L29.647 23.4509C29.4465 23.65 29.1757 23.7623 28.8931 23.7635H27.9427C27.3647 23.7643 26.8105 23.9941 26.4017 24.4027C25.9928 24.8113 25.7626 25.3653 25.7614 25.9433V26.8937C25.7605 27.1759 25.6488 27.4464 25.4503 27.6469L24.6376 28.4581C24.2293 28.8674 24 29.422 24 30.0001C24 30.5783 24.2293 31.1329 24.6376 31.5422L25.4503 32.3527C25.6494 32.5532 25.7617 32.824 25.7629 33.1066V34.057C25.7637 34.6353 25.9937 35.1896 26.4026 35.5985C26.8116 36.0075 27.3659 36.2375 27.9442 36.2383H28.8931C29.1754 36.2394 29.4459 36.3514 29.6463 36.5502L30.4575 37.3621C30.8667 37.7706 31.4213 38 31.9995 38C32.5778 38 33.1324 37.7706 33.5416 37.3621L34.3521 36.5509C34.5526 36.3518 34.8234 36.2395 35.106 36.2383H36.0564C36.6347 36.2375 37.189 36.0075 37.5979 35.5985C38.0069 35.1896 38.2369 34.6353 38.2377 34.057V33.1066C38.2388 32.8242 38.3511 32.5536 38.5503 32.3534L39.3615 31.5422C39.7698 31.1329 39.9991 30.5783 39.9991 30.0001C39.9991 29.422 39.7698 28.8674 39.3615 28.4581L38.5488 27.6476Z" fill="#FFCB03"/>
+                  <path d="M31.254 32.0465C31.1807 32.0466 31.1081 32.0323 31.0404 32.0042C30.9727 31.9761 30.9112 31.9348 30.8596 31.8827L29.3711 30.3943C29.2725 30.2885 29.2188 30.1485 29.2214 30.0039C29.224 29.8593 29.2825 29.7213 29.3848 29.6191C29.4871 29.5168 29.625 29.4582 29.7696 29.4557C29.9142 29.4531 30.0542 29.5068 30.16 29.6054L31.254 30.6987L33.8365 28.1169C33.9423 28.0183 34.0823 27.9646 34.2269 27.9672C34.3715 27.9697 34.5095 28.0283 34.6117 28.1306C34.714 28.2329 34.7726 28.3708 34.7751 28.5154C34.7777 28.66 34.724 28.8 34.6254 28.9058L31.6485 31.8827C31.5968 31.9348 31.5354 31.9761 31.4677 32.0042C31.4 32.0323 31.3273 32.0466 31.254 32.0465Z" fill="#282320"/>
+                  <path d="M31.9998 37.9993C31.7134 37.9997 31.4298 37.9436 31.1652 37.8342C30.9006 37.7247 30.6601 37.5641 30.4577 37.3615L29.6458 36.5488C29.5472 36.4497 29.4299 36.3711 29.3008 36.3175C29.1716 36.264 29.0332 36.2366 28.8934 36.237H27.9422C27.3641 36.2364 26.8098 36.0064 26.401 35.5976C25.9921 35.1888 25.7622 34.6345 25.7616 34.0564V33.106C25.7621 32.9662 25.7348 32.8278 25.6814 32.6986C25.628 32.5695 25.5495 32.4522 25.4505 32.3536L24.6378 31.5416C24.2295 31.1323 24.0002 30.5777 24.0002 29.9995C24.0002 29.4214 24.2295 28.8668 24.6378 28.4575L25.4505 27.6455C25.5497 27.547 25.6283 27.4297 25.6818 27.3005C25.7353 27.1714 25.7627 27.0329 25.7624 26.8931V25.942C25.763 25.3638 25.9929 24.8095 26.4017 24.4007C26.8105 23.9919 27.3648 23.762 27.943 23.7614H28.8934C29.0331 23.7618 29.1716 23.7345 29.3007 23.6811C29.4299 23.6277 29.5471 23.5493 29.6458 23.4503L30.4577 22.6376C30.8671 22.2293 31.4216 22 31.9998 22C32.5779 22 33.1325 22.2293 33.5418 22.6376L34.3538 23.4503C34.4524 23.5494 34.5696 23.628 34.6988 23.6815C34.8279 23.7351 34.9664 23.7625 35.1062 23.7621H36.0574C36.6355 23.7627 37.1898 23.9926 37.5986 24.4015C38.0074 24.8103 38.2374 25.3646 38.238 25.9427V26.8931C38.2375 27.0329 38.2648 27.1713 38.3182 27.3005C38.3716 27.4296 38.4501 27.5469 38.5491 27.6455L39.361 28.4575C39.7693 28.8668 39.9986 29.4214 39.9986 29.9995C39.9986 30.5777 39.7693 31.1323 39.361 31.5416L38.5491 32.3536C38.4499 32.4521 38.3713 32.5694 38.3178 32.6985C38.2643 32.8277 38.2369 32.9662 38.2372 33.106V34.0571C38.2366 34.6353 38.0067 35.1896 37.5979 35.5984C37.1891 36.0072 36.6348 36.2371 36.0566 36.2377H35.1062C34.9664 36.2374 34.8279 36.2648 34.6988 36.3183C34.5696 36.3718 34.4524 36.4504 34.3538 36.5496L33.5418 37.3615C33.3394 37.5641 33.099 37.7247 32.8344 37.8342C32.5698 37.9436 32.2862 37.9997 31.9998 37.9993ZM27.9422 24.8777C27.66 24.8779 27.3894 24.9901 27.1899 25.1897C26.9904 25.3892 26.8782 25.6598 26.878 25.942V26.8931C26.879 27.1799 26.823 27.4641 26.7133 27.7291C26.6035 27.994 26.4422 28.2346 26.2387 28.4367L25.4275 29.2479C25.228 29.4478 25.116 29.7187 25.116 30.001C25.116 30.2834 25.228 30.5543 25.4275 30.7542L26.2387 31.5654C26.442 31.7673 26.6032 32.0076 26.713 32.2723C26.8227 32.537 26.8788 32.8209 26.878 33.1075V34.0586C26.8782 34.3408 26.9904 34.6114 27.1899 34.8109C27.3894 35.0105 27.66 35.1227 27.9422 35.1229H28.8934C29.1799 35.1222 29.4637 35.1783 29.7284 35.2881C29.9931 35.3978 30.2334 35.5589 30.4354 35.7622L31.2466 36.5734C31.4466 36.7728 31.7174 36.8848 31.9998 36.8848C32.2822 36.8848 32.553 36.7728 32.753 36.5734L33.5642 35.7622C33.7662 35.5589 34.0065 35.3978 34.2712 35.2881C34.5359 35.1783 34.8197 35.1222 35.1062 35.1229H36.0574C36.3396 35.1227 36.6101 35.0105 36.8097 34.8109C37.0092 34.6114 37.1214 34.3408 37.1216 34.0586V33.106C37.1208 32.8194 37.1769 32.5355 37.2866 32.2708C37.3963 32.0061 37.5576 31.7658 37.7609 31.5639L38.5721 30.7527C38.7715 30.5528 38.8835 30.2819 38.8835 29.9995C38.8835 29.7172 38.7715 29.4463 38.5721 29.2464L37.7609 28.4367C37.5577 28.2346 37.3966 27.9943 37.2868 27.7297C37.1771 27.465 37.1209 27.1811 37.1216 26.8946V25.942C37.1214 25.6598 37.0092 25.3892 36.8097 25.1897C36.6101 24.9901 36.3396 24.8779 36.0574 24.8777H35.1062C34.8194 24.8788 34.5353 24.8228 34.2703 24.713C34.0053 24.6033 33.7648 24.442 33.5627 24.2384L32.7515 23.4272C32.5515 23.2278 32.2807 23.1158 31.9983 23.1158C31.7159 23.1158 31.4451 23.2278 31.2451 23.4272L30.4369 24.2384C30.235 24.4418 29.9947 24.603 29.73 24.7127C29.4653 24.8225 29.1814 24.8786 28.8948 24.8777H27.9422Z" fill="#282320"/>
+                  </svg>
+                  )}
               </div>
               <p
                 className={`group-hover:text-mtn-400 ${
-                  currentPanel.NLRCLicensedetails ? "text-mtn-400" : ""
+                  (currentPanel.NLRCLicensedetails || partnerDetails?.profile_stage.percentage>=90) ? "text-mtn-400" : ""
                 } `}
               >
                 NLRC Licence
@@ -457,6 +451,10 @@ export const AggregatorComplianceProgressiveNav = ({ closeAggregatorComplianceFo
   );
 };
 
+
+
+
+
 export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,}) => {
   const [formData, setFormData] = useState({
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
@@ -501,8 +499,6 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
           });
          }
 
-
-
       } catch (error) {
         console.log("getAggregatorVasPartnerDetails_response error", error);
       }
@@ -513,15 +509,6 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
     }, []);
   
   const states = useStoreState((state) => state);
-
-  //console.log("usePartners", partner);
-  //console.log("useUsers()", useUsers());
-
-  const [nextBtn, setNextBtn] = useState(true);
-   /////////////////////////////
-   const partnersData = JSON.parse(sessionStorage.getItem("partnersData"));
-   console.log("partnersData", partnersData);
- ///////////////////////////////////////////
    const [error, setError] = useState("");
    const clearError = () => {
      setError(null);
@@ -773,12 +760,12 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
                               <p>
                                 Upload <br />
                                 <span className="text-white font-mtn-bold">
-                                  {vasPartnerResponse
+                                  {vasPartnerResponse?.ncc_doc
                                     ? vasPartnerResponse.ncc_doc.file_name
                                     : "NCC VAS License"}
                                 </span>
                                 <br />
-                                {vasPartnerResponse
+                                {vasPartnerResponse?.ncc_doc
                                   ? getFileSizeText(
                                       vasPartnerResponse.ncc_doc.file_size
                                     )
@@ -868,7 +855,21 @@ export const NCCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerD
   );
 };
 
+
+
 export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel,  setCurrentPanel,}) => {
+  const [formData, setFormData] = useState({
+    vas_partner_uuid: partnerDetails.vas_partner_uuid,
+    aggregator_uuid: partnerDetails.aggregator_uuid,
+    vas_category_uuid: partnerDetails.vas_category_uuid,
+    nlrc_license_type: "",
+    nlrc_license_id: "",
+    nlrc_issue_date: "",
+    nlrc_expiry_date: "",
+    nlrc_doc: {},
+    nlrc_file: "",
+  });
+
   const {getAggregatorVasPartnerDetails,} = usePartners();
   const [vasPartnerResponse, setVasPartnerResponse] = useState();
   let getAggregatorVasPartnerDetailsResponse = null;
@@ -879,6 +880,26 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
         let vas_partner_response = getAggregatorVasPartnerDetailsResponse.result[0];
         setVasPartnerResponse(vas_partner_response);
        
+        if(vas_partner_response.profile_stage.nlrclicense>0){ /////// NCCLicensedetails done
+          setFormData({
+            ...formData,
+            vas_partner_uuid: vas_partner_response.vas_partner_uuid,
+            aggregator_uuid: vas_partner_response.aggregator_uuid,
+            vas_category_uuid: vas_partner_response.vas_category_uuid,
+            nlrc_license_type: vas_partner_response.nlrc_license_type,
+            nlrc_license_id: vas_partner_response.nlrc_license_id,
+            nlrc_issue_date: vas_partner_response.nlrc_issue_date,
+            nlrc_expiry_date: vas_partner_response.nlrc_expiry_date,
+            nlrc_doc: {
+              file_name: vas_partner_response.nlrc_doc.file_name,
+              file_size: vas_partner_response.nlrc_doc.file_size,
+              file_type: vas_partner_response.nlrc_doc.file_size,
+              file_path: vas_partner_response.nlrc_doc.file_path
+          },
+          nlrc_file: "",
+          });
+         }
+
       } catch (error) {
         console.log("getAggregatorVasPartnerDetails_response error", error);
       }
@@ -888,26 +909,24 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
       get_aggregator_vas_partner_details();
     }, []);
   
-   
- 
- 
- 
- 
+ const states = useStoreState((state) => state);
+ const [error, setError] = useState("");
+   const clearError = () => {
+     setError(null);
+   };
+
+
+   const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
   const [doc, setDoc] = useState(null);
   const [fileSize, setfFileSize] = useState(null);
-  const [formData, setFormData] = useState({
-    partner_uuid: null,
-    file: null,
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [sendAction, setSendAction] = useState(false);
-
-  useEffect(() => {
-    setDoc(null);
-  }, []);
-
   const handleFileChange = (e) => {
+    const inputName = e.target.name;
     const validImageTypes = ["application/pdf"];
     let file = e.target.files[0];
     const fileType = file["type"];
@@ -919,199 +938,358 @@ export const NLRCLicensedetails = ({closeAggregatorComplianceFormFlyout, partner
         file_size: file.size,
       });
       setfFileSize(filesize);
-      setErrorMessage("");
+      setError("");
     } else {
       setDoc({
         file_name: null,
         file_size: null,
       });
-      setErrorMessage("Only PDF files are allowed");
+      setError("Only PDF files are allowed");
     }
     setFormData({
       ...formData,
-      file: e.target.files[0],
+      nlrc_doc:{},
+      [inputName]: e.target.files[0],
     });
   };
+  useEffect(() => {
+    setDoc(null);
+  }, []);
+
+
+  const saveNLRCLicenseDetails = async () => {
+    const nlrc_license_type = formData.nlrc_license_type;
+    const nlrc_license_id = formData.nlrc_license_id;
+    const nlrc_issue_date = formData.nlrc_issue_date;
+    const nlrc_expiry_date = formData.nlrc_expiry_date;
+    clearError();
+    if (nlrc_license_type === "") {
+      setError("Select NLRC Licence Type To Continue!");
+    } else if (nlrc_license_id === "") {
+      setError("Provide NLRC License ID To Continue!");
+    } else if (nlrc_issue_date === "") {
+      setError("Provide Issue Date To Continue!");
+    } else if (nlrc_expiry_date === "") {
+      setError("Provide Expiry Date ID To Continue!");
+    } else {
+
+      try {
+       
+          const formDataToSend = new FormData();
+          formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+          formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
+          formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
+          formDataToSend.append("nlrc_license_type", formData.nlrc_license_type);
+          formDataToSend.append("nlrc_license_id", formData.nlrc_license_id);
+          formDataToSend.append("nlrc_issue_date", formData.nlrc_issue_date);
+          formDataToSend.append("nlrc_expiry_date", formData.nlrc_expiry_date);
+          formDataToSend.append("nlrc_doc", JSON.stringify(formData.nlrc_doc));
+          formDataToSend.append("nlrc_file", formData.nlrc_file);
+          setSendAction(true);
+          const response = await axios.post(
+            RemoteEndpoints.VAS_PERTNER_ONBOARDING_NLRCLICENSE,
+            formDataToSend,
+            {
+              headers: {
+                apikey: apikey,
+                Authorization: `Bearer ${states.users.token}`,
+              },
+            }
+          );
+          successAction(response.data.data.message, true);
+          setCurrentPanel({
+            ...currentPanel,
+            NCCLicensedetails: false,
+            NLRCLicensedetails: false,
+            ShortCodeDetais: true,
+            ReviewAndSubmit: false,
+          });
+          setSendAction(false);
+       
+      } catch (err) {
+      setSendAction(false);
+      successAction(err.response.data.data.message, false);
+    } 
+      
+    }
+  };
+
+  const [sendAction, setSendAction] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState({
+    message: "",
+    alert: false,
+    status: false,
+  });
+  const successAction = (message, alert) => {
+    setShowSuccessToast((prevState) => ({
+      ...prevState,
+      message: message,
+      alert: alert,
+      status: true,
+    }));
+
+    const timeoutId = setTimeout(() => {
+      setShowSuccessToast((prevState) => ({
+        ...prevState,
+        message: "",
+        alert: false,
+        status: false,
+      }));
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  };
+
 
   return (
     <>
+      <AggregatorComplianceNav
+        closeAggregatorComplianceFormFlyout={
+          closeAggregatorComplianceFormFlyout
+        }
+        partnerDetails={vasPartnerResponse}
+      />
 
-<AggregatorComplianceNav
+      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+        <AggregatorComplianceProgressiveNav
           closeAggregatorComplianceFormFlyout={
             closeAggregatorComplianceFormFlyout
           }
           partnerDetails={vasPartnerResponse}
-          
+          currentPanel={currentPanel}
+          setCurrentPanel={setCurrentPanel}
         />
 
-        <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
-          
-            
-              <AggregatorComplianceProgressiveNav
-                closeAggregatorComplianceFormFlyout={
-                  closeAggregatorComplianceFormFlyout
+        <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
+          <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+            <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
+              <div className="mb-5 w-full flex flex-col gap-3">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                  Provide your company's NLRC License details
+                </h1>
+              </div>
+              {error && (
+                <div className="text-red-500 flex gap-3 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+              <SelectInput
+                id="nlrc_license_type"
+                label="Licence Type"
+                name="nlrc_license_type"
+                onChange={handleChange}
+              >
+                <SelectInputOption value={
+                  formData.nlrc_license_type ||
+                  vasPartnerResponse?.nlrc_license_type
+                } label={
+                  formData.nlrc_license_type ||
+                  vasPartnerResponse?.nlrc_license_type
+                } />
+                {license_type.map((ct) => (
+                  <SelectInputOption
+                    key={ct.value}
+                    value={ct.value}
+                    label={ct.label}
+                  />
+                ))}
+              </SelectInput>
+
+              <TextInput
+                id="nlrc_license_id"
+                label="NLRC License ID"
+                type="text"
+                name="nlrc_license_id"
+                value={
+                  formData.nlrc_license_id ||
+                  vasPartnerResponse?.nlrc_license_id
                 }
-                partnerDetails={vasPartnerResponse}
-                currentPanel={currentPanel}
-                setCurrentPanel={setCurrentPanel}
+                onChange={handleChange}
               />
 
-              <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
-                <div className="pt-[50px] w-[100%] h-auto flex justify-center">
+              <div className="flex gap-3">
+                <div className="w-[50%]">
+                  <TextInput
+                    id="nlrc_issue_date"
+                    label="Issuing Date"
+                    type="date"
+                    name="nlrc_issue_date"
+                    value={
+                      formData.nlrc_issue_date ||
+                      vasPartnerResponse?.nlrc_issue_date
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="w-[50%]">
+                  <TextInput
+                    id="nlrc_expiry_date"
+                    label="Expiry Date"
+                    type="date"
+                    name="nlrc_expiry_date"
+                    value={
+                      formData.nlrc_expiry_date ||
+                      vasPartnerResponse?.nlrc_expiry_date
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <FileInputWrapper>
+                <div className="p-[8px] w-full rounded-[10px]">
+                  <label>
+                    <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        name="nlrc_file"
+                        id="nlrc_file"
+                        accept=".pdf,.PDF"
+                      />
 
+                      {!doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              {vasPartnerResponse?.nlrc_doc ? (
+                                <FileUploadActiveIcon />
+                              ) : (
+                                <FileUploadIcon />
+                              )}
+                            </div>
 
-      <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
-        <div className="mb-5 w-full flex flex-col gap-3">
-          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
-            Provide your company's NLRC License details
-          </h1>
-        </div>
+                            <div className="text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  {vasPartnerResponse?.nlrc_doc
+                                    ? vasPartnerResponse.nlrc_doc.file_name
+                                    : "NLRC VAS License"}
+                                </span>
+                                <br />
+                                {vasPartnerResponse?.nlrc_doc
+                                  ? getFileSizeText(
+                                      vasPartnerResponse.nlrc_doc.file_size
+                                    )
+                                  : "Drag and drop here or"}
+                              </p>
+                            </div>
+                          </div>
 
-        <SelectInput
-          id="subject"
-          label="Licence Type"
-          name="subject"
-        ></SelectInput>
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {doc?.file_name && (
+                        <div
+                          className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                              <FileUploadActiveIcon />
+                            </div>
 
-        <TextInput
-          id="vas_license_id"
-          label="NLRC License ID"
-          type="text"
-          name="vas_license_id"
-        />
+                            <div className="flex text-[#999999]">
+                              <p>
+                                Upload <br />
+                                <span className="text-white font-mtn-bold">
+                                  {doc?.file_name}
+                                </span>
+                                <br />
+                                {doc ? getFileSizeText(doc.file_size) : "0"}
+                              </p>
+                            </div>
+                          </div>
 
-        <div className="flex gap-3">
-          <div className="w-[50%]">
-            <TextInput
-              id="license_issue_date"
-              label="Issuing Date"
-              type="date"
-              name="license_issue_date"
-            />
-          </div>
-          <div className="w-[50%]">
-            <TextInput
-              id="license_expiring_date"
-              label="Expiry Date"
-              type="date"
-              name="license_expiring_date"
-            />
-          </div>
-        </div>
-        <FileInputWrapper>
-          <div className="p-[8px] w-full rounded-[10px]">
-            <label>
-              <div className="border-1 border-dashed  border-[#333333] w-full rounded-[11px] bg-[#030303] py-[24px] px-[16px]">
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  name="files"
-                  id="files"
-                  accept=".pdf,.PDF"
-                />
-
-                {!doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                  >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadIcon />
-                      </div>
-
-                      <div className="text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            NLRC VAS License
-                          </span>
-                          <br />
-                          Drag and drop here or
-                        </p>
-                      </div>
+                          <div className="flex flex-col gap-4 justify-between items-end">
+                            <InfoIcon width={16} height={16} iconClass="" />
+                            <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
+                              Choose file
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </label>
+                </div>
+              </FileInputWrapper>
 
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {doc?.file_name && (
-                  <div
-                    className={`group cursor-pointer flex gap-2 justify-between items-center w-full relative`}
-                  >
-                    <div className="flex flex-row gap-3">
-                      <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadActiveIcon />
-                      </div>
+              <div className="flex gap-2 justify-start mt-4">
+                {sendAction ? (
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                ) : (
+                  <>
+                    <button
+                      className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
+                      onClick={() => {
+                        setCurrentPanel({
+                          ...currentPanel,
+                          NCCLicensedetails: true,
+                          NLRCLicensedetails: false,
+                          ShortCodeDetais: false,
+                          ReviewAndSubmit: false,
+                        });
+                      }}
+                    >
+                      &lt; Back
+                    </button>
 
-                      <div className="flex text-[#999999]">
-                        <p>
-                          Upload <br />
-                          <span className="text-white font-mtn-bold">
-                            {doc?.file_name}
-                          </span>
-                          <br />
-                          {doc ? getFileSizeText(doc.file_size) : "0"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 justify-between items-end">
-                      <InfoIcon width={16} height={16} iconClass="" />
-                      <div className="rounded-full border-1 whitespace-nowrap border-mtn-300 group-hover:border-mtn-100 bg-transparent py-2 px-3 text-[11px] text-white">
-                        Choose file
-                      </div>
-                    </div>
-                  </div>
+                    <button
+                      className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
+                      onClick={() => saveNLRCLicenseDetails()}
+                    >
+                      {vasPartnerResponse?.profile_stage.nlrclicense == 0 ? (
+                        <span> Next &gt;</span>
+                      ) : (
+                        <span> update &gt;</span>
+                      )}
+                    </button>
+                  </>
                 )}
               </div>
-            </label>
+            </div>
           </div>
-        </FileInputWrapper>
-
-        <div className="flex gap-2 justify-start mt-4">
-          <button
-            className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 p-8 py-2 rounded-full"
-            onClick={() => {
-              setCurrentPanel({
-                ...currentPanel,
-                NCCLicensedetails: true,
-                NLRCLicensedetails: false,
-                ShortCodeDetais: false,
-                ReviewAndSubmit: false,
-              });
-            }}
-          >
-            &lt; Back
-          </button>
-
-          <button
-            className="border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
-            onClick={() => {
-              setCurrentPanel({
-                ...currentPanel,
-                NCCLicensedetails: false,
-                NLRCLicensedetails: false,
-                ShortCodeDetais: true,
-                ReviewAndSubmit: false,
-              });
-            }}
-          >
-            Next &gt;
-          </button>
         </div>
       </div>
-      </div>
-      </div>
-      </div>
+      {showSuccessToast.status && (
+        <NewSuccess
+          message={showSuccessToast.message}
+          alert={showSuccessToast.alert}
+        />
+      )}
     </>
   );
 };
+
+
+
+
+
+
+
+
+
 
 export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
   const {getAggregatorVasPartnerDetails,} = usePartners();

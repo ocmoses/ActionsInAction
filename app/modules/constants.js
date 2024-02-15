@@ -1492,10 +1492,10 @@ export const user_statuses = {
 };
 
 export const questionnaire_link =
-  "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+  "https://staging-dmsthirdparty.mtn.ng/dms/partner_onboarding/Oracle----Supplier-Questionnaire_2024-02-15-03-18.docx";
 
 export const conduct_link =
-  "https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
+  "https://staging-dmsthirdparty.mtn.ng/dms/partner_onboarding/Supplier-Code-of-Conduct-(3)_2024-02-15-03-21.pdf";
 
 export const docPrefix = "http://10.1.44.25/dms/PARTNER_ONBOARDING/";
 

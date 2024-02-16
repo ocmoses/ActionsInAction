@@ -43,7 +43,8 @@ export default function Requests() {
   const [filteredData, setFilteredData] = useState([]);
   const [requestFlyout, setRequestFlyout] = useState(false);
   const [partnerDetails, setPartnerDetails] = useState();
-  const [approveRejectRequestFlyout, setApproveRejectRequestFlyout] =useState(false);
+  const [approveRejectRequestFlyout, setApproveRejectRequestFlyout] =
+    useState(false);
 
   const statusColour = {
     pending: "bg-[#353535]",
@@ -82,9 +83,6 @@ export default function Requests() {
     setApproveRejectRequestFlyout(true);
   };
 
- 
-  
-
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -119,14 +117,14 @@ export default function Requests() {
   const _approveRequest = (eachRequest) => {
     formData.service_uuid = eachRequest.service_uuid;
     setServiceUuid(eachRequest.service_uuid);
-    let url = RemoteEndpoints.APPROVE_VAS_PARTNERS
+    let url = RemoteEndpoints.APPROVE_VAS_PARTNERS;
     approveRejectAction(url);
   };
 
   const _rejectRequest = (eachRequest) => {
     formData.service_uuid = eachRequest.service_uuid;
     setServiceUuid(eachRequest.service_uuid);
-    let url = RemoteEndpoints.REJECT_VAS_PARTNERS
+    let url = RemoteEndpoints.REJECT_VAS_PARTNERS;
     approveRejectAction(url);
   };
 
@@ -134,15 +132,12 @@ export default function Requests() {
     setApproveRejectRequestFlyout(false);
     try {
       setSendAction(true);
-      const response = await axios.post(
-        url,formData,
-        {
-          headers: {
-            apikey: apikey,
-            //Authorization: `Bearer ${states.admins.token}`,
-          },
-        }
-      );
+      const response = await axios.post(url, formData, {
+        headers: {
+          apikey: apikey,
+          //Authorization: `Bearer ${states.admins.token}`,
+        },
+      });
       setSendAction(false);
       successAction(response.data.message, true);
       get_aggregator_request();
@@ -221,13 +216,21 @@ export default function Requests() {
                           </div>
                         </td>
 
-                        <td>{eachRequest.request_id}</td>
+                        <td
+                          onClick={() => viewVasPartnersDetail({ eachRequest })}
+                        >{eachRequest.request_id}</td>
 
-                        <td>{eachRequest.telephone}</td>
+                        <td
+                          onClick={() => viewVasPartnersDetail({ eachRequest })}
+                        >{eachRequest.telephone}</td>
 
-                        <td>{actionDate(eachRequest.service_submitted_on)}</td>
+                        <td
+                          onClick={() => viewVasPartnersDetail({ eachRequest })}
+                        >{actionDate(eachRequest.service_submitted_on)}</td>
 
-                        <td>
+                        <td
+                          onClick={() => viewVasPartnersDetail({ eachRequest })}
+                        >
                           <div
                             className={`py-1 px-2 rounded text-white inline-flex text-sm ${
                               statusColour[eachRequest.status.replace("-", "")]

@@ -612,7 +612,7 @@ export const ApproveRejectRequestModal = ({
               onClick={() => {
                 navigator.clipboard
                   .writeText(partnerDetails.email)
-                  .then(() => successAction("Email Copied!"))
+                  .then(() => successAction("Email Copied!", true))
                   .catch((error) =>
                     console.error("Error copying email:", error)
                   );
@@ -644,7 +644,7 @@ export const ApproveRejectRequestModal = ({
               onClick={() => {
                 navigator.clipboard
                   .writeText(partnerDetails.telephone)
-                  .then(() => successAction("Phone Number Copied!"))
+                  .then(() => successAction("Phone Number Copied!", true))
                   .catch((error) =>
                     console.error("Error copying Phone Number:", error)
                   );

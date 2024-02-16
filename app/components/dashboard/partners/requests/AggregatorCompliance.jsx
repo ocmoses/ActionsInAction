@@ -1575,6 +1575,7 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
             </div>
           </div>
           <div className="flex gap-2">
+            
             <button 
             className="border border-white/20 text-white/20 text-[11px] py-1 px-2 rounded-full w-[50px]"
             onClick={() => {

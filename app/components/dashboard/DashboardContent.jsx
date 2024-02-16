@@ -44,6 +44,7 @@ import PopUp, {
   ChooseAggregator,
   ChooseAggregatorSuccess,
   ForAggregatorSuccess,
+  ChooseAggregatorFailure,
 } from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
@@ -97,10 +98,7 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false);
   const [tmpCat, setTmpCat] = useState(null);
   const [isOnboarding, setIsOnboarding] = useState(false);
-  const [rejectedRequest, setRejectedRequest] = useState(null);
-  const [rechooseAggregator, setRechooseAggregator] = useState(false);
-  const [showReChooseAggregatorSuccess, setReChooseAggregatorSuccess] =
-    useState(false);
+  const [rechooseAggregator, setRechooseAggregator] = useState(true);
 
   const { setForm, setProcessing, setActiveCategory } = useProcessing();
 
@@ -211,8 +209,8 @@ export default function GetStarted({ type }) {
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
-      if (partner.categories?.length > 0) {
-        partner.categories.map((_category) => {
+      if (partner?.categories?.length > 0) {
+        partner?.categories.map((_category) => {
           const category = filterCategory(_category, partner);
           setRejectedTeam(category?.teamStatus);
           partnerActiveCat.push(category.uuid);
@@ -458,9 +456,11 @@ export default function GetStarted({ type }) {
   });
   const [aggregators, setAggregators] = useState([]);
   const [aggregatorIndex, setAggregatorIndex] = useState();
-  const [aggregator, setAggregator] = useState();
-  const [showPartnerCategories, setShowPartnerCategories] = useState(true);
+  const [showPartnerCategories, setShowPartnerCategories] = useState(false);
   const [vasPartnerData, setVasPartnerData] = useState([]);
+  const [showChooseAggregatorFailure, setShowChooseAggregatorFailure] =
+    useState(false);
+  const [failureMsg, setFailureMsg] = useState();
 
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
@@ -497,6 +497,12 @@ export default function GetStarted({ type }) {
     await changeAggregator(vasData).then((res) => {
       if (res.result.success) {
         setShowChooseAggregatorSuccess(true);
+        setRechooseAggregator(false);
+        return;
+      }
+      if (!res.result.success) {
+        setFailureMsg(res.result.message);
+        setShowChooseAggregatorFailure(true);
       }
       setProcessing(false);
     });
@@ -1035,26 +1041,24 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
               </div>
-
-              {vasPartnerData.map((item) =>
-                item.status !== "declined" ? null : (
-                  <ChooseAggregatorCard
-                    aggregator={item.aggregator}
-                    action={() => {
-                      handleVasData("service_uuid", item.service_uuid);
-                      setShowChooseAggregator(true);
-                    }}
-                    dismissAction={() => setRechooseAggregator(false)}
-                  />
-                )
-              )}
-
+              {rechooseAggregator &&
+                vasPartnerData.map((item) =>
+                  item.status !== "declined" ? null : (
+                    <ChooseAggregatorCard
+                      aggregator={item.aggregator}
+                      action={() => {
+                        handleVasData("service_uuid", item.service_uuid);
+                        setShowChooseAggregator(true);
+                      }}
+                      dismissAction={() => setRechooseAggregator(false)}
+                    />
+                  )
+                )}
               {vasPartnerData.map((item) =>
                 item.status !== "in-progress" ? null : (
                   <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
                 )
               )}
-
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator
@@ -1065,7 +1069,6 @@ export default function GetStarted({ type }) {
                   />
                 </PopUp>
               )}
-
               {showChooseAggregatorSuccess && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregatorSuccess
@@ -1077,7 +1080,6 @@ export default function GetStarted({ type }) {
                   />
                 </PopUp>
               )}
-
               {showForAggregatorSuccess && (
                 <PopUp closePopUp={() => {}}>
                   <ForAggregatorSuccess
@@ -1086,7 +1088,14 @@ export default function GetStarted({ type }) {
                   />
                 </PopUp>
               )}
-
+              {failureMsg && showChooseAggregatorFailure && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregatorFailure
+                    action={() => setShowChooseAggregatorFailure(false)}
+                    msg={failureMsg}
+                  />
+                </PopUp>
+              )}
               <div className="flex flex-col mt-12">
                 <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
                   Learn how to use

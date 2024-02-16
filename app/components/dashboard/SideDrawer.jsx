@@ -20,7 +20,7 @@ export default function SideDrawer({request, openDrawer, closeAction, children})
               (openDrawer ? " translate-x-0 " : " translate-x-full ")
           }
           >
-          <div className="relative flex-none flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40">
+          <div className="relative flex-none flex flex-col w-screen max-w-[480px] h-full border-l border-l-white/40 ">
               <div className="p-6 w-full flex justify-between">
                 <div className="text-white flex w-full space-x-4">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +56,7 @@ export default function SideDrawer({request, openDrawer, closeAction, children})
               </div>
               {
                 view == "overview" &&
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto pb-[100px]">
                   {children}
                 </div>
 

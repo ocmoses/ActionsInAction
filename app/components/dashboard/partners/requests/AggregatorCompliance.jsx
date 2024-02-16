@@ -2649,6 +2649,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
           </div>
         </div>
       </div>
+      
       {showSuccessToast.status && (
         <NewSuccess
           message={showSuccessToast.message}

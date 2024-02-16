@@ -1789,7 +1789,7 @@ const usePartners = () => {
       );
       setProcessing(false);
       const result = response.data.data;
-      console.log("Res", result);
+      
       return { result };
     } catch (error) {
       setProcessing(false);

@@ -1916,24 +1916,27 @@ export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPa
         formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
         formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
         formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
-        
-        // Append shortcode object
-        formDataToSend.append("shortcode[shortcode_issue_date]", formData.shortcode_issue_date);
-        formDataToSend.append("shortcode[shortcode_expiry_date]", formData.shortcode_expiry_date);
-        formDataToSend.append("shortcode[shortcode_file]", formData.shortcode_file);
-        
-        formData.shortcodes.split(", ").forEach((code, index) => {
-          formDataToSend.append(`shortcode[shortcodes][${index}]`, code.trim());
-        });
-        
-        // Append shortcode_pricing object
-        formDataToSend.append("shortcode_pricing[pricing_issue_date]", formData.pricing_issue_date);
-        formDataToSend.append("shortcode_pricing[pricing_expiry_date]", formData.pricing_expiry_date);
-        formDataToSend.append("shortcode_pricing[pricing_file]", formData.pricing_file);
-        
-        formData.pricing_shortcodes.split(", ").forEach((code, index) => {
-          formDataToSend.append(`shortcode_pricing[pricing_shortcodes][${index}]`, code.trim());
-        });
+
+          // Append shortcode object
+          formDataToSend.append("shortcodes[0][shortcode][shortcode_issue_date]", formData.shortcode_issue_date);
+          formDataToSend.append("shortcodes[0][shortcode][shortcode_expiry_date]", formData.shortcode_expiry_date);
+          formDataToSend.append("shortcodes[0][shortcode][shortcode_file]", formData.shortcode_file);
+
+          // Convert comma-separated shortcodes to an array and append each shortcode
+          formData.shortcodes.split(", ").forEach((code, index) => {
+            formDataToSend.append(`shortcodes[0][shortcode][shortcodes][${index}]`, code.trim());
+          });
+
+          // Append shortcode_pricing object
+          formDataToSend.append("shortcodes[0][shortcode_pricing][pricing_issue_date]", formData.pricing_issue_date);
+          formDataToSend.append("shortcodes[0][shortcode_pricing][pricing_expiry_date]", formData.pricing_expiry_date);
+          formDataToSend.append("shortcodes[0][shortcode_pricing][pricing_file]", formData.pricing_file);
+
+          // Convert comma-separated pricing_shortcodes to an array and append each pricing shortcode
+          formData.pricing_shortcodes.split(", ").forEach((code, index) => {
+            formDataToSend.append(`shortcodes[0][shortcode_pricing][pricing_shortcodes][${index}]`, code.trim());
+          });
+
         
           setSendAction(true);
           const response = await axios.post(
@@ -1958,7 +1961,7 @@ export const ShortCodesPricingDoc = ({formData, setFormData, nextPage, setNextPa
        
       } catch (err) {
       setSendAction(false);
-      successAction(err.response.data.data.message, false);
+      successAction(err.response.data.message, false);
     } 
       
     }

@@ -309,6 +309,13 @@ export default function ContentOwner() {
               label="Authorization Video"
               value={files.authorization_video}
               onChange={handleFormChange}
+              allowedtypes={[
+                "video/3gpp",
+                "video/mpeg",
+                "video/mp4",
+                "video/quicktime",
+              ]}
+              maxSize={40 * 1024 * 1024}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -424,7 +431,10 @@ export default function ContentOwner() {
       {successToast && (
         <PopUp closePopUp={() => {}}>
           <SuccessCard
-            action={() => setSuccessToast(false)}
+            action={() => {
+              setSuccessToast(false);
+              router.push("/dashboard/requests");
+            }}
             msg={
               "We’ll review your submissions and notify your once that process is completed."
             }

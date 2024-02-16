@@ -1425,7 +1425,8 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
 
 
 export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, setGetShortCodeList}) => {
- 
+
+   
   return (
     
     <section  className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}>

@@ -138,10 +138,10 @@ export const ShortCodeFlyOut = ({
   }, [singlePartnerShortcode]);
 
   let [formData, setFormData] = useState({
-    partner_uuid: selectedRequest.partner_uuid,
+    partner_uuid: selectedRequest?.partner_uuid,
     shortcode: null,
     status: "",
-    shortcode_uuid: selectedRequest.shortcode_uuid,
+    shortcode_uuid: selectedRequest?.uuid,
   });
 
 

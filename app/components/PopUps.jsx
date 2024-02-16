@@ -264,7 +264,7 @@ export const ForAggregatorSuccess = ({ action }) => {
           <div>Copy email</div>
         </div>
       </span>
-      {showToast && <NewSuccess message={"Email copied!"} />}
+      {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
       {/* {showToast && (
         <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
           Email copied!
@@ -334,7 +334,7 @@ export const CRBTSuccess = ({ action, category }) => {
           <div>Copy email</div>
         </div>
       </span>
-      {showToast && <NewSuccess message={"Email copied!"} />}
+      {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
       {/* {showToast && (
         <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
           Email copied!
@@ -538,10 +538,12 @@ export const ChooseAggregator = ({
       </h4>
 
       <div className="flex flex-row space-x-1">
-        <p className="text-[12px]">
+        <p className="text-[12px] text-white">
           We require VAS partners to register with existing MTN aggregators.
         </p>
-        <p className="text-[12px] text-mtn"> Learn more.</p>
+        <p className="text-[12px] text-mtn">
+          <a href="mailto:VASDigitalProposals@mtn.com">Learn more.</a>
+        </p>
       </div>
       <div className="w-full mt-4">
         <TextInput

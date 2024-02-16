@@ -456,7 +456,7 @@ export default function GetStarted({ type }) {
   });
   const [aggregators, setAggregators] = useState([]);
   const [aggregatorIndex, setAggregatorIndex] = useState();
-  const [showPartnerCategories, setShowPartnerCategories] = useState(false);
+  const [showPartnerCategories, setShowPartnerCategories] = useState(true);
   const [vasPartnerData, setVasPartnerData] = useState([]);
   const [showChooseAggregatorFailure, setShowChooseAggregatorFailure] =
     useState(false);

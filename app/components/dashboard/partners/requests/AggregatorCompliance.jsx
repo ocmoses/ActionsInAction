@@ -1389,6 +1389,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
     }
   };
   useEffect(() => {
+    console.log('partnerDetails 1', partnerDetails);
     get_aggregator_vas_partner_details();
   }, []);
 
@@ -1417,7 +1418,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
             <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3">
               {getShortCodeList && (
                 <ShortCodesList
-                  partnerDetails={vasPartnerResponse}
+                  partnerDetails={partnerDetails}
                   currentPanel={currentPanel}
                   setCurrentPanel={setCurrentPanel}
                   setGetShortCodeList={setGetShortCodeList}
@@ -1457,7 +1458,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
   );
 };
 
-export const ShortCodesList = ({  partnerDetails, currentPanel, setCurrentPanel, setGetShortCodeList, setShortCodeUuid }) => {
+export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, setGetShortCodeList, setShortCodeUuid }) => {
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -1482,6 +1483,7 @@ export const ShortCodesList = ({  partnerDetails, currentPanel, setCurrentPanel,
 
     return () => clearTimeout(timeoutId);
   };
+
   
   const { getAggregatorVasPartnerDetails } = usePartners();
   const [vasPartnerResponse, setVasPartnerResponse] = useState();
@@ -1496,11 +1498,12 @@ export const ShortCodesList = ({  partnerDetails, currentPanel, setCurrentPanel,
       let vas_partner_response =
         getAggregatorVasPartnerDetailsResponse.result[0];
       setVasPartnerResponse(vas_partner_response);
-    } catch (err) {
-      console.log("error", err);
-      successAction('Network Error!', false);
+    } catch (error) {
+      console.log("error 1", error);
+      successAction('Network Error! eee', false);
     }
   };
+
 
   useEffect(() => {
     get_aggregator_vas_partner_details();
@@ -1568,15 +1571,15 @@ export const ShortCodesList = ({  partnerDetails, currentPanel, setCurrentPanel,
             </div>
             <div className="flex flex-col gap-0">
               <h3 className="text-white font-mtn-medium">{shortcodeItem.shortcode.shortcodes.join(', ')}</h3>
-              <span>Issued {shortcodeItem.shortcode.shortcode_issue_date} eee {shortcodeItem.uuid}</span>
+              <span>Issued {shortcodeItem.shortcode.shortcode_issue_date}</span>
             </div>
           </div>
           <div className="flex gap-2">
             <button 
             className="border border-white/20 text-white/20 text-[11px] py-1 px-2 rounded-full w-[50px]"
             onClick={() => {
-              setShortCodeUuid(shortcodeItem.uuid);
               setGetShortCodeList(false);
+              setShortCodeUuid(shortcodeItem.uuid);
             }}
             >
               Edit
@@ -1668,19 +1671,7 @@ export const ShortCodesList = ({  partnerDetails, currentPanel, setCurrentPanel,
 
 export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage, setNextPage, setGetShortCodeList,shortCodeUuid }) => {
   
-    // Filter the partnerDetails array
-    const filteredRecords = partnerDetails.filter(item => {
-      // Iterate through the shortcodes array of each item
-      return item.shortcodes.some(shortcode => {
-        // Check if the shortcode uuid matches the specified value
-        return shortcode.uuid === shortCodeUuid;
-      });
-    });
-  
-    useEffect(() => {
-      console.log(partnerDetails);
-      console.log(filteredRecords)
-    }, []); 
+ 
   
   const states = useStoreState((state) => state);
   const [showSuccessToast, setShowSuccessToast] = useState({
@@ -1761,6 +1752,8 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
     });
   };
   useEffect(() => {
+    console.log('partnerDetails.shortcodes', partnerDetails.shortcodes)
+    console.log('shortCodeUuid', shortCodeUuid);
     setDoc(null);
   }, []);
 
@@ -2649,7 +2642,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
           </div>
         </div>
       </div>
-      
+
       {showSuccessToast.status && (
         <NewSuccess
           message={showSuccessToast.message}

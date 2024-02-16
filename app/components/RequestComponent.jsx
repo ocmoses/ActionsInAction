@@ -116,6 +116,7 @@ export const ShortCodeFlyOut = ({
   };
 
   useEffect(() => {
+    console.log('selectedRequest', selectedRequest);
     get_single_partner_shortcode();
   }, [selectedRequest]); // Only run the effect when selectedRequest changes
   
@@ -141,7 +142,7 @@ export const ShortCodeFlyOut = ({
     partner_uuid: selectedRequest.partner_uuid,
     shortcode: null,
     status: "",
-    shortcode_uuid: selectedRequest.shortcode_uuid,
+    shortcode_uuid: selectedRequest.uuid,
   });
 
 

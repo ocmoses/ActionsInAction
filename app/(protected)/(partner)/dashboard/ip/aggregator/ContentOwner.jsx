@@ -175,16 +175,16 @@ export default function ContentOwner() {
   };
 
   const validateEntries = () => {
-    if (data.authorization_letter == "") {
+    if (files.authorization_letter == "") {
       setError({ error: "Please upload authorization letter" });
       return false;
-    } else if (data.authorization_video == "") {
+    } else if (files.authorization_video == "") {
       setError({ error: "Please upload authorization video" });
       return false;
-    } else if (data.agreement_letter == "") {
+    } else if (files.agreement_letter_btw_content_and_vas_partner == "") {
       setError({ error: "Please upload agreement letter" });
       return false;
-    } else if (data.content_creator_id == "") {
+    } else if (files.content_creator_id_front == "") {
       setError({ error: "Please upload creator ID" });
       return false;
     } else if (data.license_start_date == "") {
@@ -240,7 +240,9 @@ export default function ContentOwner() {
               doc_id="authorization_letter_doc"
               label="Authorization Letter"
               value={files.authorization_letter}
-              onChange={handleFormChange}
+              onChange={(e) =>
+                uploadFile("authorization_letter", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -308,7 +310,9 @@ export default function ContentOwner() {
               doc_id="authorization_video_doc"
               label="Authorization Video"
               value={files.authorization_video}
-              onChange={handleFormChange}
+              onChange={(e) =>
+                uploadFile("authorization_video", e.target.value)
+              }
               allowedtypes={[
                 "video/3gpp",
                 "video/mpeg",
@@ -340,11 +344,16 @@ export default function ContentOwner() {
             </div>
 
             <FileInput
-              id="agreement_letter"
+              id="agreement_letter_btw_content_and_vas_partner"
               doc_id="agreement_letter_doc"
               label="Agreement Letter"
-              value={files.agreement_letter}
-              onChange={handleFormChange}
+              value={files.agreement_letter_btw_content_and_vas_partner}
+              onChange={(e) =>
+                uploadFile(
+                  "agreement_letter_btw_content_and_vas_partner",
+                  e.target.value
+                )
+              }
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -367,11 +376,13 @@ export default function ContentOwner() {
             </div>
 
             <FileInput
-              id="content_creator_id"
+              id="content_creator_id_front"
               doc_id="content_creator_id_doc"
               label="ID (Content creator)"
-              value={data.content_creator_id}
-              onChange={handleFormChange}
+              value={data.content_creator_id_front}
+              onChange={(e) =>
+                uploadFile("content_creator_id_front", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -393,11 +404,13 @@ export default function ContentOwner() {
             </div>
 
             <FileInput
-              id="other_content_proof"
+              id="other_content_proof_of_ownership"
               doc_id="other_content_proof_doc"
               label="Other proof of ownership"
-              value={data.other_content_proof}
-              onChange={handleFormChange}
+              value={data.other_content_proof_of_ownership}
+              onChange={(e) =>
+                uploadFile("other_content_proof_of_ownership", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"

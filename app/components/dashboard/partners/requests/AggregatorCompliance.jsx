@@ -30,7 +30,7 @@ function getToday() {
   return `${year}-${month}-${day}`;
 }
 
-export default function AggregatorComplianceModal({closeAggregatorComplianceFormFlyout, partnerDetails,}) {
+export default function AggregatorComplianceModal({closeAggregatorComplianceFormFlyout, realTimeReloadRequestFlyout, partnerDetails}) {
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -83,7 +83,7 @@ export default function AggregatorComplianceModal({closeAggregatorComplianceForm
         );
       let vas_partner_response =
         getAggregatorVasPartnerDetailsResponse.result[0];
-
+console.log('vas_partner_response', vas_partner_response);
       setVasPartnerResponse(vas_partner_response);
       if (vas_partner_response.profile_stage.ncclicense !==1) {
         /////// NCCLicensedetails done
@@ -195,6 +195,7 @@ export default function AggregatorComplianceModal({closeAggregatorComplianceForm
                 partnerDetails={vasPartnerResponse}
                 currentPanel={currentPanel}
                 setCurrentPanel={setCurrentPanel}
+                realTimeReloadRequestFlyout={realTimeReloadRequestFlyout}
               />
             )}
           </>
@@ -2461,7 +2462,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
   );
 };
 
-export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
+export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,realTimeReloadRequestFlyout,}) => {
   const states = useStoreState((state) => state);
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
@@ -2570,6 +2571,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
         }
       );
      console.log('response', response);
+     realTimeReloadRequestFlyout();
      closeAggregatorComplianceFormFlyout();
       setSendAction(false);
     } catch (err) {

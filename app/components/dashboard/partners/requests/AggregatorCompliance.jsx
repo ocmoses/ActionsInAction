@@ -1361,13 +1361,16 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
     vas_partner_uuid: partnerDetails.vas_partner_uuid,
     aggregator_uuid: partnerDetails.aggregator_uuid,
     vas_category_uuid: partnerDetails.vas_category_uuid,
+    shortcode_uuid: "",
     shortcodes: "",
     shortcode_issue_date: "",
     shortcode_expiry_date: "",
+    shortcode_doc: {},
     shortcode_file: "",
     pricing_shortcodes: "",
     pricing_issue_date: "",
     pricing_expiry_date: "",
+    pricing_doc: {},
     pricing_file: "",
   });
 
@@ -1622,7 +1625,10 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
       <div className="flex gap-2 justify-end">
         <button
           className="border-1 border-gray-200 text-white text-[11px] bg-none hover:bg-gray-800 p-4 py-2 rounded-full"
-          onClick={() => setGetShortCodeList(false)}
+          onClick={() => {
+            setGetShortCodeList(false);
+            setShortCodeUuid('');
+          }}
         >
           Add Shortcodes
         </button>
@@ -1671,9 +1677,6 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
 };
 
 export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage, setNextPage, setGetShortCodeList,shortCodeUuid }) => {
-  
- 
-  
   const states = useStoreState((state) => state);
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
@@ -1753,8 +1756,6 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
     });
   };
   useEffect(() => {
-    console.log('partnerDetails.shortcodes', partnerDetails.shortcodes)
-    console.log('shortCodeUuid', shortCodeUuid);
     setDoc(null);
   }, []);
 
@@ -1783,6 +1784,62 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
     }
   };
   const [startDate, setstartDate] = useState(getToday());
+
+
+
+ 
+  useEffect(() => {
+    if(shortCodeUuid===''){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        shortcode_uuid: "",
+        shortcodes: "",
+        shortcode_issue_date: "",
+        shortcode_expiry_date: "",
+        shortcode_doc: {},
+        shortcode_file: "",
+        pricing_shortcodes: "",
+        pricing_issue_date: "",
+        pricing_expiry_date: "",
+        pricing_doc: {},
+        pricing_file: "",
+      }));
+    }else{
+      filteredShortCodeDetails()
+    }
+    
+  }, [shortCodeUuid]);
+  
+  const [filesName, setFilesName] = useState({
+    shortcode_file_name: " Short Code Document",
+    shortcode_file_size: "Drag and drop here or",
+  });
+  const filteredShortCodeDetails = () => {
+    const eachShortCodeDetails = partnerDetails.shortcodes.filter(
+      item => item.uuid === shortCodeUuid
+   );
+   setFilesName((filesName) => ({
+    ...filesName,
+    shortcode_file_name: eachShortCodeDetails[0].shortcode.shortcode_doc.file_name,
+    shortcode_file_size: getFileSizeText(eachShortCodeDetails[0].shortcode.shortcode_doc.file_size),
+  }));
+ 
+   setFormData((prevFormData) => ({
+    ...prevFormData,
+    shortcode_uuid: eachShortCodeDetails[0].uuid,
+    shortcodes: eachShortCodeDetails[0].shortcode.shortcodes.join(', '),
+    shortcode_issue_date: eachShortCodeDetails[0].shortcode.shortcode_issue_date,
+    shortcode_expiry_date: eachShortCodeDetails[0].shortcode.shortcode_expiry_date,
+    shortcode_doc: {
+      file_name: eachShortCodeDetails[0].shortcode.shortcode_doc.file_name,
+      file_size: eachShortCodeDetails[0].shortcode.shortcode_doc.file_size,
+      file_type: eachShortCodeDetails[0].shortcode.shortcode_doc.file_size,
+      file_path: eachShortCodeDetails[0].shortcode.shortcode_doc.file_path,
+    },
+    shortcode_file:""
+  }));
+  };
+
   return (
     <>
     <section
@@ -1865,17 +1922,21 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
                 >
                   <div className="flex flex-row gap-3">
                     <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
+                    {shortCodeUuid ? (
+                      <FileUploadActiveIcon />
+                    ) : (
                       <FileUploadIcon />
+                    )}
                     </div>
 
                     <div className="text-[#999999]">
                       <p>
                         Upload <br />
                         <span className="text-white font-mtn-bold">
-                          Short Code Document
+                          {filesName.shortcode_file_name}
                         </span>
                         <br />
-                        Drag and drop here or
+                        {filesName.shortcode_file_size}
                       </p>
                     </div>
                   </div>
@@ -2035,9 +2096,11 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
         const formDataToSend = new FormData();
 
         // Append simple key-value pairs
+        
         formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
         formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
         formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
+        formDataToSend.append("uuid", formData.shortcode_uuid);
 
         // Append shortcode object
         formDataToSend.append(
@@ -2047,6 +2110,10 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
         formDataToSend.append(
           "shortcodes[0][shortcode][shortcode_expiry_date]",
           formData.shortcode_expiry_date
+        );
+        formDataToSend.append(
+          "shortcodes[0][shortcode][shortcode_doc]",
+          JSON.stringify(formData.shortcode_doc)
         );
         formDataToSend.append(
           "shortcodes[0][shortcode][shortcode_file]",
@@ -2069,6 +2136,10 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
         formDataToSend.append(
           "shortcodes[0][shortcode_pricing][pricing_expiry_date]",
           formData.pricing_expiry_date
+        );
+        formDataToSend.append(
+          "shortcodes[0][shortcode_pricing][pricing_doc]",
+          JSON.stringify(formData.pricing_doc)
         );
         formDataToSend.append(
           "shortcodes[0][shortcode_pricing][pricing_file]",
@@ -2124,6 +2195,58 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
 
   const [startDate, setstartDate] = useState(getToday());
   
+  useEffect(() => {
+    if(shortCodeUuid===''){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        shortcode_uuid: "",
+        shortcodes: "",
+        shortcode_issue_date: "",
+        shortcode_expiry_date: "",
+        shortcode_doc: {},
+        shortcode_file: "",
+        pricing_shortcodes: "",
+        pricing_issue_date: "",
+        pricing_expiry_date: "",
+        pricing_doc: {},
+        pricing_file: "",
+      }));
+    }else{
+      filteredShortCodeDetails()
+    }
+    
+  }, [shortCodeUuid]);
+  
+  const [filesName, setFilesName] = useState({
+    pricing_shortcode_file_name: " Pricing Short Code Document",
+    pricing_shortcode_file_size: "Drag and drop here or",
+  });
+  const filteredShortCodeDetails = () => {
+    const eachShortCodeDetails = partnerDetails.shortcodes.filter(
+      item => item.uuid === shortCodeUuid
+   );
+   setFilesName((filesName) => ({
+    ...filesName,
+    pricing_shortcode_file_name: eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_name,
+    pricing_shortcode_file_size: getFileSizeText(eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_size),
+  }));
+ 
+   setFormData((prevFormData) => ({
+    ...prevFormData,
+    pricing_shortcodes: eachShortCodeDetails[0].shortcode_pricing.pricing_shortcodes.join(', '),
+    pricing_issue_date: eachShortCodeDetails[0].shortcode_pricing.pricing_issue_date,
+    pricing_expiry_date: eachShortCodeDetails[0].shortcode_pricing.pricing_expiry_date,
+    pricing_doc: {
+      file_name: eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_name,
+      file_size: eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_size,
+      file_type: eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_size,
+      file_path: eachShortCodeDetails[0].shortcode_pricing.pricing_doc.file_path,
+    },
+    pricing_file:""
+  }));
+  };
+
+
   return (
     <>
       <section
@@ -2200,17 +2323,21 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
                   >
                     <div className="flex flex-row gap-3">
                       <div className="flex justify-center items-center rounded-full min-w-[55px] h-[55px] bg-[#111111] z-1">
-                        <FileUploadIcon />
+                      {shortCodeUuid ? (
+                      <FileUploadActiveIcon />
+                    ) : (
+                      <FileUploadIcon />
+                    )}
                       </div>
 
                       <div className="text-[#999999]">
                         <p>
                           Upload <br />
                           <span className="text-white font-mtn-bold">
-                            NCC Pricing approval
-                          </span>
-                          <br />
-                          Drag and drop here or
+                          {filesName.pricing_shortcode_file_name}
+                        </span>
+                        <br />
+                        {filesName.pricing_shortcode_file_size}
                         </p>
                       </div>
                     </div>
@@ -2335,6 +2462,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
 };
 
 export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel, }) => {
+  const states = useStoreState((state) => state);
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -2360,6 +2488,12 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
     return () => clearTimeout(timeoutId);
   };
   
+  const [formData, setFormData] = useState({
+    vas_partner_uuid: partnerDetails.vas_partner_uuid,
+    aggregator_uuid: partnerDetails.aggregator_uuid,
+    vas_category_uuid: partnerDetails.vas_category_uuid,
+  });
+
   const { getAggregatorVasPartnerDetails } = usePartners();
   const [vasPartnerResponse, setVasPartnerResponse] = useState();
   let getAggregatorVasPartnerDetailsResponse = null;
@@ -2373,6 +2507,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
       let vas_partner_response =
         getAggregatorVasPartnerDetailsResponse.result[0];
       setVasPartnerResponse(vas_partner_response);
+      console.log('vas_partner_response', vas_partner_response);
     } catch (error) {
       console.log("error", err);
       successAction('Network Error!', false);
@@ -2382,6 +2517,70 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
   useEffect(() => {
     get_aggregator_vas_partner_details();
   }, []);
+
+
+
+
+
+  const [sendAction, setSendAction] = useState(false);
+  const submitCategoryDetails = async () => {
+      try {
+        const formDataToSend = new FormData();
+        // Append simple key-value pairs
+        formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+        formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
+        formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
+        formDataToSend.append("status", "open");
+
+        setSendAction(true);
+        const response = await axios.post(
+          RemoteEndpoints.VAS_PERTNER_FINAL_CATEGORY_SUBMISSION,
+          formDataToSend,
+          {
+            headers: {
+              apikey: apikey,
+              Authorization: `Bearer ${states.users.token}`,
+            },
+          }
+        );
+       console.log('response', response);
+       submitComplianceDetails();
+      } catch (err) {
+        setSendAction(false);
+        console.log('error', err);
+        successAction('Network Error.', false);
+      }
+    
+  };
+
+  const submitComplianceDetails = async () => {
+    try {
+      const formDataToSend = new FormData();
+      // Append simple key-value pairs
+      formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+      formDataToSend.append("aggregator_uuid", formData.aggregator_uuid);
+      const response = await axios.post(
+        RemoteEndpoints.VAS_PERTNER_FINAL_COMPLIANCE_SUBMISSION,
+        formDataToSend,
+        {
+          headers: {
+            apikey: apikey,
+            Authorization: `Bearer ${states.users.token}`,
+          },
+        }
+      );
+     console.log('response', response);
+     closeAggregatorComplianceFormFlyout();
+      setSendAction(false);
+    } catch (err) {
+      setSendAction(false);
+      console.log('error', err);
+      successAction('Network Error.', false);
+    }
+  
+};
+
+
 
   return (
     <>
@@ -2598,7 +2797,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                             fill="#FFCB03"
                           />
                         </svg>
-                        <span>{shortcodeItem.shortcode.shortcode_doc.file_name}</span>
+                        <span>{shortcodeItem.shortcode.shortcode_doc?.file_name}</span>
                       </h3>
                     </div>
 
@@ -2619,7 +2818,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                             fill="#FFCB03"
                           />
                         </svg>
-                        <span>{shortcodeItem.shortcode_pricing.pricing_doc.file_name}</span>
+                        <span>{shortcodeItem.shortcode_pricing.pricing_doc?.file_name}</span>
                       </h3>
                     </div>
                   </div>
@@ -2632,12 +2831,18 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                   By clicking submit application, I/We confirm that the
                   information provided are accurate and truthful.
                 </p>
+                {sendAction ? (
+                  <div className="w-[50px] m-auto">
+                  <TailSpinPreloader width={40} height={40} fill="#efb703" />
+                  </div>
+                ) : (
                 <button
                   className="w-[250px] border-1 border-mtn text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full m-auto"
-                  onClick={closeAggregatorComplianceFormFlyout}
+                  onClick={() => submitCategoryDetails()}
                 >
                   Submit Application &gt;
                 </button>
+                )}
               </div>
             </div>
           </div>

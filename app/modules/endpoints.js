@@ -193,5 +193,7 @@ const RemoteEndpoints = {
   GET_AGGREGATOR_VAS_PARTNERS_DETAILS:`${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details`,
   VAS_PERTNER_ONBOARDING_NLRCLICENSE: `${apiURL}/v2/aggregator/vas-partner-onboarding/nlrclicense`,
   VAS_PERTNER_ONBOARDING_SHORTCODES: `${apiURL}/v2/aggregator/vas-partner-onboarding/shortcode`,
+  VAS_PERTNER_FINAL_CATEGORY_SUBMISSION: `${apiURL}/v2/aggregator/vas-partner-onboarding/final-category-submission`,
+  VAS_PERTNER_FINAL_COMPLIANCE_SUBMISSION: `${apiURL}/v2/aggregator/vas-partner-onboarding/final-submission-for-compliance`,
 };
 export default RemoteEndpoints;

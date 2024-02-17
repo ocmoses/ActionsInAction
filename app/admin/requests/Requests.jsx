@@ -281,20 +281,20 @@ export default function Requests() {
       }
     }
 
-    //Added just for test
-    if (!requests.find((request) => request.uuid == "wqtyiw-wjjkeww-jwejw-khjwi")) {
-        requests.push({
-          company: "Aggregator Company",
-          email: "aggregator.email.com",
-          request_type: request_types.REVENUE_SHARE,
-          request_id: "RSH9871",
-          created_at: "2024-02-16",
-          status: "pending",
-          partner_uuid: "fgwqtyiw-wjjkeww-jwejw-khjwiu",
-          uuid: "wqtyiw-wjjkeww-jwejw-khjwi",
-          vas_partner_uuid: "bdhdf-dbnbnds-dnsdnb"
-        });
-    }
+    //Added just for
+    // if (!requests.find((request) => request.uuid == "wqtyiw-wjjkeww-jwejw-khjwi")) {
+    //     requests.push({
+    //       company: "Aggregator Company",
+    //       email: "aggregator.email.com",
+    //       request_type: request_types.REVENUE_SHARE,
+    //       request_id: "RSH9871",
+    //       created_at: "2024-02-16",
+    //       status: "pending",
+    //       partner_uuid: "fgwqtyiw-wjjkeww-jwejw-khjwiu",
+    //       uuid: "wqtyiw-wjjkeww-jwejw-khjwi",
+    //       vas_partner_uuid: "bdhdf-dbnbnds-dnsdnb"
+    //     });
+    // }
 
     
 

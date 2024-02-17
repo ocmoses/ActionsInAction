@@ -148,6 +148,13 @@ export default function Requests() {
     }
   };
 
+  const realTimeReloadRequestFlyout = () => {
+    setRequestFlyout(false);
+    setTimeout(() => {
+      setRequestFlyout(true);
+    }, 2000);
+  };
+
   return (
     <>
       <div id="reports" className="flex flex-cols pb-12 min-h-screen">
@@ -334,6 +341,7 @@ export default function Requests() {
       {requestFlyout && (
         <RequestFinishUpModal
           closeRequestFlyout={() => setRequestFlyout(false)}
+          realTimeReloadRequestFlyout={realTimeReloadRequestFlyout}
           partnerDetails={partnerDetails}
         />
       )}

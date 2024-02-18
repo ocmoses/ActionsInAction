@@ -48,7 +48,9 @@ export default function ComplianceLabel({
 
   const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
-  console.log("CAN APPROVE", approvals);
+  console.log("CATEGORY IN LABELS", category);
+
+  console.log("FIELDS STUFF", complianceRequirements[stage]);
 
 
   useEffect(() => {
@@ -466,18 +468,43 @@ export default function ComplianceLabel({
                           admin.department_code
                         ][field] === "corrected") && (
                         <div className="flex gap-3 items-center justify-end">
-                          <div
-                            onClick={() => Approve("reject")}
-                            className="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
-                          >
-                            {rejectIcon}
-                          </div>
-                          <div
-                            onClick={() => Approve()}
-                            className="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center"
-                          >
-                            {checkedIcon}
-                          </div>
+                          {
+                            category && category[field] != null ? (
+                              <div
+                                onClick={() => Approve("reject")}
+                                className="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
+                              >
+                                {rejectIcon}
+                              </div>
+                            ) : (
+                              <div
+                                onClick={() => Approve("reject")}
+                                className="w-[64px] h-[36px] cursor-pointer flex justify-center items-center"
+                              >
+                                <button className="border-1 rounded-lg text-red-300 hover:text-red-300/50 border-1 border-red-300  w-[64px] h-[24px]  text-sm">Request</button>
+                              </div>
+                            )
+                          }
+
+                          {
+                            category && category[field] != null ? (
+                              <div
+                                onClick={() => Approve()}
+                                className="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center"
+                              >
+                                {checkedIcon}
+                              </div>
+                            ) : (
+                              <div
+                                onClick={() => Approve()}
+                                className="w-[36px] h-[36px] cursor-pointer flex justify-center items-center"
+                              >
+                                <button className="border-1 rounded-lg text-green-400 hover:text-green-400/50 border-1 border-green-400 w-[64px] h-[24px] text-sm">Skip</button>
+                              </div>
+                            )
+                          }
+                          
+                          
                         </div>
                       )}
                   </div>

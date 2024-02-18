@@ -27,6 +27,11 @@ export default function ComplianceLabelPartners({
   category_shortcode,
   type,
 }) {
+
+  console.log("CATEGORY FIELD", category[field]);
+
+  const [provided, setProvided] = useState(true);
+
   const { previewFiles } = useApp();
   const { partner, activeApproval } = usePartners();
 
@@ -48,6 +53,10 @@ export default function ComplianceLabelPartners({
 
   const updateField = () => {
     let field_value = category[field];
+
+    if(!field_value){
+      setProvided(false);
+    }
     if (category_shortcode) {
       switch (type) {
         case "shortcodes":
@@ -361,6 +370,7 @@ export default function ComplianceLabelPartners({
                     field={field}
                     approvals={Approvals}
                     onclick={updateField}
+                    categoryField={category[field]}
                   />
                 )}
             </>
@@ -368,7 +378,7 @@ export default function ComplianceLabelPartners({
       </div>
       {showModal && (
         <Portal>
-          <ComplianceFieldEditModal setShowModal={setShowModal} data={data} />
+          <ComplianceFieldEditModal setShowModal={setShowModal} data={data} provided={provided} />
         </Portal>
       )}
     </>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Confirm from "@/app/components/Confirm";
 import useApp from "@/hooks/useApp";
 import useAdmins from "@/hooks/useAdmins";
@@ -8,7 +8,16 @@ import { useRouter} from "next/navigation";
 import {Loading} from "@/app/components/Icons";
 import {getInitials} from "@/app/modules/utilities";
 import { NewSuccess } from "@/app/components/toasts/Success";
-
+import FileViewer from "@/app/components/modals/FileViewer";
+/////////////////////////////////////////////////////////////////////////////////////
+function actionDate(targetDate) {
+  const originalDate = new Date(targetDate);
+  const day = originalDate.getDate();
+  const month = originalDate.toLocaleString("en-US", { month: "short" });
+  const year = originalDate.getFullYear();
+  
+  return `${day} / ${month} / ${year}`;
+}
 
 
 export default function AggregatorPage({ params,realTimePageReloader}) {
@@ -323,13 +332,6 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
       </>
     );
 }
-  
-
-
-
-
-
-
 
 export const AggregatorVerlidationModal = ({realTimePageReloader,openAggregatorValidationFlyout,setOpenAggregatorValidationFlyout,vasPartnersDetails}) => {
     const [delayedExecution, setDelayedExecution] = useState(false);
@@ -592,34 +594,47 @@ const [showSuccessToast, setShowSuccessToast] = useState({
 };
 
 export const NCCLicenceVerlidationBody = ({newVasPartnersDetails}) => {
+  const [fileViewer, setFileViewer] = useState(null);
   return (
+    <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
       <AggregatorVerifier
-       type={"file"}
+       type={"text"}
        status={"pending"}
        title={"VAS Licence ID"}
        text={newVasPartnersDetails?.vas_license_id} 
       />
       <AggregatorVerifier
-        type={"file"}
+        type={"text"}
         status={"pending"}
         title={"Issuing date"}
-        text={newVasPartnersDetails?.ncc_issue_date}
+        text={actionDate(newVasPartnersDetails?.ncc_issue_date)}
       />
 
       <AggregatorVerifier
-        type={"file"}
+        type={"text"}
         status={"pending"}
         title={"Expiry date"}
-        text={newVasPartnersDetails?.ncc_expiry_date}
+        text={actionDate(newVasPartnersDetails?.ncc_expiry_date)}
       />
       <AggregatorVerifier
         type={"file"}
         status={"pending"}
         title={"NCC VAS License document"}
-        text={"4433tessst7777788888 (1).pdf"}
+        text={newVasPartnersDetails?.ncc_doc.file_name}
+        file={newVasPartnersDetails?.ncc_doc}
+        setFileViewer={setFileViewer}
       />
     </div>
+
+{fileViewer && (
+  <FileViewer
+    id="file_viewer"
+    link={fileViewer}
+    closeAction={() => setFileViewer(null)}
+  />
+)}
+</>
   );
 };
 
@@ -719,7 +734,7 @@ export const ShortCodeVerlidationBody = ({}) => {
   );
 };
 
-export const AggregatorVerifier = ({type, status, title, text}) => {
+export const AggregatorVerifier = ({type, status, title, text, file, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
@@ -777,7 +792,26 @@ export const AggregatorVerifier = ({type, status, title, text}) => {
             </svg>
             <div className="flex flex-col">
               <span className="text-[11px]">{title}</span>
-              <h3 className="font-mtn-bold text-white">{text}</h3>
+              {type=='text' ? (
+                <h3 className="font-mtn-bold text-white">{text}</h3>
+              ):(
+                <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center"
+                onClick={() =>
+                  setFileViewer(file?.file_path ?? NULL)
+                }
+                >
+                  <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.8 0C10.074 0 10.337 0.113 10.526 0.312L13.726 3.74C13.902 3.926 14 4.173 14 4.429V15C14 15.552 13.552 16 13 16H1C0.448 16 0 15.552 0 15V1C0 0.448 0.448 0 1 0H9.8ZM13 5H9.5C9.224 5 9 4.776 9 4.5V1H1V15H13V5ZM4.5 12C4.22386 12 4 11.7761 4 11.5C4 11.2239 4.22386 11 4.5 11H9.5C9.77614 11 10 11.2239 10 11.5C10 11.7761 9.77614 12 9.5 12H4.5ZM4.5 9C4.22386 9 4 8.77614 4 8.5C4 8.22386 4.22386 8 4.5 8H9.5C9.77614 8 10 8.22386 10 8.5C10 8.77614 9.77614 9 9.5 9H4.5Z" fill="#999999"/>
+                  </svg>
+                  <span>{text}</span>
+                  <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.5 5.4999L10.6 1.3999" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M11 3.4V1H8.59998" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              )}
+              
             </div>
         </div>
         <div className="flex gap-3">

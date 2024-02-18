@@ -94,7 +94,7 @@ export const ShortCodeFlyOut = ({
   const get_single_partner_shortcode = async () => {
     try {
       let partner_shortcode_response = await getSinglePartnerShortcodes(selectedRequest.partner_uuid);
-  
+      console.log('partner_shortcode_response', partner_shortcode_response);
       if (partner_shortcode_response && partner_shortcode_response.partnershortcodes) {
         const foundEntry = partner_shortcode_response.partnershortcodes.find(
           entry => entry.request_id === selectedRequest.request_id
@@ -132,6 +132,7 @@ export const ShortCodeFlyOut = ({
   };
   
   useEffect(() => {
+    console.log('singlePartnerShortcode', singlePartnerShortcode);
     if (singlePartnerShortcode) {
       setApprovalStatusList(approvalStatuses(singlePartnerShortcode));
     }
@@ -171,7 +172,7 @@ export const ShortCodeFlyOut = ({
       );
       success.successMessage=response.data.data.message
       success.successToast=true;
-      loadAllRequest();
+      //loadAllRequest();
       get_single_partner_shortcode();
       
     } catch (err) {

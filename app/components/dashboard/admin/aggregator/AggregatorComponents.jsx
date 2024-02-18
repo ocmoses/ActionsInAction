@@ -7,6 +7,10 @@ import useAdmins from "@/hooks/useAdmins";
 import { useRouter} from "next/navigation";
 import {Loading} from "@/app/components/Icons";
 import {getInitials} from "@/app/modules/utilities";
+import { NewSuccess } from "@/app/components/toasts/Success";
+
+
+
 export default function AggregatorPage({ params,realTimePageReloader}) {
 const [delayedExecution, setDelayedExecution] = useState(false);
 //////////////////////////////////////////////////////////////////////////////
@@ -52,12 +56,11 @@ const [showSuccessToast, setShowSuccessToast] = useState({
       };
   
 
-const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useState(false);
-  const [currentPanel, setCurrentPanel] = useState({
-    NCCLicensedetails: true,
-    NLRCLicensedetails: false,
-    ShortCodeDetais: false,
-  });
+const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useState({
+    opens: false,
+    modal: null,
+    modalTitle: ""
+});
 
   ////////////////////////////////////////////////////////////////////
   const router = useRouter();
@@ -114,7 +117,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                   <h1 className="text-white text-[24px] font-mtn-medium">
                     {vasPartnersDetails?.vas_partner}
                   </h1>
-                  <p onClick={() => realTimePageReloader()}>Lagos, Nigeria</p>
+                  <p>Lagos, Nigeria</p>
                 </div>
               </div>
 
@@ -149,7 +152,12 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                   title={"VAS License"}
                   message={"NCC issued value added service license"}
                   openAggregatorValidationFlyout={() =>
-                    setOpenAggregatorValidationFlyout(true)
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      modal: 1,
+                      modalTitle: "VAS License",
+                    })
                   }
                 />
 
@@ -182,6 +190,14 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                   }
                   title={"NLRC License"}
                   message={"Lottery License for gambling based services"}
+                  openAggregatorValidationFlyout={() =>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      modal: 2,
+                      modalTitle: "NLRC License",
+                    })
+                  }
                 />
 
                 <AggregatorSelector
@@ -236,21 +252,26 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     </svg>
                   }
                   title={"Short codes"}
-                  message={
-                    "This is a short description of this compliance item"
+                  message={"This is a short description of this compliance item"}
+                  openAggregatorValidationFlyout={() =>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      modal: 3,
+                      modalTitle: "Short codes",
+                    })
                   }
                 />
               </div>
             </div>
           </div>
 
-          {openAggregatorValidationFlyout && (
+          {openAggregatorValidationFlyout.opens && (
             <AggregatorVerlidationModal
-              closeOpenAggregatorValidationFlyout={() =>
-                setOpenAggregatorValidationFlyout(false)
-              }
-              currentPanel={currentPanel}
-              setCurrentPanel={setCurrentPanel}
+              realTimePageReloader={realTimePageReloader}
+              openAggregatorValidationFlyout={openAggregatorValidationFlyout}
+              setOpenAggregatorValidationFlyout={setOpenAggregatorValidationFlyout}
+              vasPartnersDetails={vasPartnersDetails}
             />
           )}
 
@@ -266,15 +287,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
   );
 }
 
-
-
-
-export const AggregatorSelector = ({
-    icon,
-    title,
-    message,
-    openAggregatorValidationFlyout,
-  }) => {
+export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,}) => {
 
     return (
       <>
@@ -309,7 +322,7 @@ export const AggregatorSelector = ({
         </div>
       </>
     );
-  }
+}
   
 
 
@@ -318,19 +331,68 @@ export const AggregatorSelector = ({
 
 
 
+export const AggregatorVerlidationModal = ({realTimePageReloader,openAggregatorValidationFlyout,setOpenAggregatorValidationFlyout,vasPartnersDetails}) => {
+    const [delayedExecution, setDelayedExecution] = useState(false);
+    //////////////////////////////////////////////////////////////////////////////
+const [showSuccessToast, setShowSuccessToast] = useState({
+    message: "",
+    alert: false,
+    status: false,
+  });
+  const successAction = (message, alert) => {
+    setShowSuccessToast((prevState) => ({
+      ...prevState,
+      message: message,
+      alert: alert,
+      status: true,
+    }));
 
+    const timeoutId = setTimeout(() => {
+      setShowSuccessToast((prevState) => ({
+        ...prevState,
+        message: "",
+        alert: false,
+        status: false,
+      }));
+    }, 3000);
 
-
-
-export const AggregatorVerlidationModal = ({
-  closeOpenAggregatorValidationFlyout,
-  currentPanel,
-  setCurrentPanel,
-}) => {
-  const [tab, setTab] = useState({
+    return () => clearTimeout(timeoutId);
+  };
+////////////////////////////////////////////////////////////////////
+     const [tab, setTab] = useState({
     overview: true,
     activity: false,
   });
+  const closeOpenAggregatorValidationFlyout =()=>{
+    setOpenAggregatorValidationFlyout({
+        ...openAggregatorValidationFlyout,
+        opens: false,
+      });
+  }
+
+  const { getSingleAggregatorVasPartnerDetails } = useAdmins();
+  const [newVasPartnersDetails, setNewVasPartnersDetails] = useState();
+  let getVasPartnersDetailsResponse = null;
+  const getVasPartnersDetailsFunction = async (aggregator_uuid,vas_partner_uuid) => {
+      try {
+        getVasPartnersDetailsResponse = await getSingleAggregatorVasPartnerDetails(aggregator_uuid, vas_partner_uuid);
+          let get_vas_partners_details_response = getVasPartnersDetailsResponse.result.data.vas_partner[0];
+          console.log('get_vas_partners_details_response',get_vas_partners_details_response);
+          setNewVasPartnersDetails(get_vas_partners_details_response);
+        setDelayedExecution(true);
+      } catch (err) {
+        console.log("error", err);
+        successAction('Network Error 1!', false);
+      }
+    };
+
+  useEffect(() => {
+    console.log('vasPartnersDetails',vasPartnersDetails);
+    getVasPartnersDetailsFunction(vasPartnersDetails?.aggregator_uuid,vasPartnersDetails?.vas_partner_uuid );
+  }, []);
+
+
+
 
   return (
     <>
@@ -343,146 +405,213 @@ export const AggregatorVerlidationModal = ({
       >
         <div className="w-[500px] h-screen fixed right-0  top-0 border-l border-white/10 bg-[#111111] animate-[slide-left_1s_ease-in-out]">
           <div className="h-screen w-[100%] flex flex-col">
-                {/* -----start title-------------------------------------------------------------- */}
-                <div className="min-h-[110px] bg-black border-b border-white/10">
-                  <div className="p-5 pb-0 flex flex-col gap-3">
-
-                    <div className="h-[40px] flex flex-row justify-between ">
-                    <div className="flex gap-3 flex-wrap h-[40px] items-center">
-                      <div className="h-[40px] w-[40px] rounded-[100%] border border-white/20 flex justify-center items-center">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <g clip-path="url(#clip0_10714_163794)">
-                          <path d="M8.68667 1.24665L1.36 0.13332C1.02 0.079987 0.673333 0.17332 0.413333 0.39332C0.153333 0.619987 0 0.946654 0 1.28665V15.3333C0 15.7 0.3 16 0.666667 16H2.83333V12.5C2.83333 11.8533 3.35333 11.3333 4 11.3333H5.66667C6.31333 11.3333 6.83333 11.8533 6.83333 12.5V16H9.66667V2.39999C9.66667 1.82665 9.25333 1.33999 8.68667 1.24665ZM3.66667 9.83332H2.66667C2.39067 9.83332 2.16667 9.60932 2.16667 9.33332C2.16667 9.05732 2.39067 8.83332 2.66667 8.83332H3.66667C3.94267 8.83332 4.16667 9.05732 4.16667 9.33332C4.16667 9.60932 3.94267 9.83332 3.66667 9.83332ZM3.66667 7.83332H2.66667C2.39067 7.83332 2.16667 7.60932 2.16667 7.33332C2.16667 7.05732 2.39067 6.83332 2.66667 6.83332H3.66667C3.94267 6.83332 4.16667 7.05732 4.16667 7.33332C4.16667 7.60932 3.94267 7.83332 3.66667 7.83332ZM3.66667 5.83332H2.66667C2.39067 5.83332 2.16667 5.60932 2.16667 5.33332C2.16667 5.05732 2.39067 4.83332 2.66667 4.83332H3.66667C3.94267 4.83332 4.16667 5.05732 4.16667 5.33332C4.16667 5.60932 3.94267 5.83332 3.66667 5.83332ZM3.66667 3.83332H2.66667C2.39067 3.83332 2.16667 3.60932 2.16667 3.33332C2.16667 3.05732 2.39067 2.83332 2.66667 2.83332H3.66667C3.94267 2.83332 4.16667 3.05732 4.16667 3.33332C4.16667 3.60932 3.94267 3.83332 3.66667 3.83332ZM7 9.83332H6C5.724 9.83332 5.5 9.60932 5.5 9.33332C5.5 9.05732 5.724 8.83332 6 8.83332H7C7.276 8.83332 7.5 9.05732 7.5 9.33332C7.5 9.60932 7.276 9.83332 7 9.83332ZM7 7.83332H6C5.724 7.83332 5.5 7.60932 5.5 7.33332C5.5 7.05732 5.724 6.83332 6 6.83332H7C7.276 6.83332 7.5 7.05732 7.5 7.33332C7.5 7.60932 7.276 7.83332 7 7.83332ZM7 5.83332H6C5.724 5.83332 5.5 5.60932 5.5 5.33332C5.5 5.05732 5.724 4.83332 6 4.83332H7C7.276 4.83332 7.5 5.05732 7.5 5.33332C7.5 5.60932 7.276 5.83332 7 5.83332ZM7 3.83332H6C5.724 3.83332 5.5 3.60932 5.5 3.33332C5.5 3.05732 5.724 2.83332 6 2.83332H7C7.276 2.83332 7.5 3.05732 7.5 3.33332C7.5 3.60932 7.276 3.83332 7 3.83332Z" fill="#686868"/>
-                          <path d="M15.0792 7.22789L10.3325 6.23389V15.9999H14.8325C15.4759 15.9999 15.9992 15.4766 15.9992 14.8332V8.36789C15.9992 7.81722 15.6239 7.34855 15.0792 7.22789ZM13.4992 13.9999H12.4992C12.2232 13.9999 11.9992 13.7759 11.9992 13.4999C11.9992 13.2239 12.2232 12.9999 12.4992 12.9999H13.4992C13.7752 12.9999 13.9992 13.2239 13.9992 13.4999C13.9992 13.7759 13.7752 13.9999 13.4992 13.9999ZM13.4992 11.9999H12.4992C12.2232 11.9999 11.9992 11.7759 11.9992 11.4999C11.9992 11.2239 12.2232 10.9999 12.4992 10.9999H13.4992C13.7752 10.9999 13.9992 11.2239 13.9992 11.4999C13.9992 11.7759 13.7752 11.9999 13.4992 11.9999ZM13.4992 9.99989H12.4992C12.2232 9.99989 11.9992 9.77589 11.9992 9.49989C11.9992 9.22389 12.2232 8.99989 12.4992 8.99989H13.4992C13.7752 8.99989 13.9992 9.22389 13.9992 9.49989C13.9992 9.77589 13.7752 9.99989 13.4992 9.99989Z" fill="#686868"/>
-                          </g>
-                          <defs>
+            {/* -----start title-------------------------------------------------------------- */}
+            <div className="min-h-[110px] bg-black border-b border-white/10">
+              <div className="p-5 pb-0 flex flex-col gap-3">
+                <div className="h-[40px] flex flex-row justify-between ">
+                  <div className="flex gap-3 flex-wrap h-[40px] items-center">
+                    <div className="h-[40px] w-[40px] rounded-[100%] border border-white/20 flex justify-center items-center">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clip-path="url(#clip0_10714_163794)">
+                          <path
+                            d="M8.68667 1.24665L1.36 0.13332C1.02 0.079987 0.673333 0.17332 0.413333 0.39332C0.153333 0.619987 0 0.946654 0 1.28665V15.3333C0 15.7 0.3 16 0.666667 16H2.83333V12.5C2.83333 11.8533 3.35333 11.3333 4 11.3333H5.66667C6.31333 11.3333 6.83333 11.8533 6.83333 12.5V16H9.66667V2.39999C9.66667 1.82665 9.25333 1.33999 8.68667 1.24665ZM3.66667 9.83332H2.66667C2.39067 9.83332 2.16667 9.60932 2.16667 9.33332C2.16667 9.05732 2.39067 8.83332 2.66667 8.83332H3.66667C3.94267 8.83332 4.16667 9.05732 4.16667 9.33332C4.16667 9.60932 3.94267 9.83332 3.66667 9.83332ZM3.66667 7.83332H2.66667C2.39067 7.83332 2.16667 7.60932 2.16667 7.33332C2.16667 7.05732 2.39067 6.83332 2.66667 6.83332H3.66667C3.94267 6.83332 4.16667 7.05732 4.16667 7.33332C4.16667 7.60932 3.94267 7.83332 3.66667 7.83332ZM3.66667 5.83332H2.66667C2.39067 5.83332 2.16667 5.60932 2.16667 5.33332C2.16667 5.05732 2.39067 4.83332 2.66667 4.83332H3.66667C3.94267 4.83332 4.16667 5.05732 4.16667 5.33332C4.16667 5.60932 3.94267 5.83332 3.66667 5.83332ZM3.66667 3.83332H2.66667C2.39067 3.83332 2.16667 3.60932 2.16667 3.33332C2.16667 3.05732 2.39067 2.83332 2.66667 2.83332H3.66667C3.94267 2.83332 4.16667 3.05732 4.16667 3.33332C4.16667 3.60932 3.94267 3.83332 3.66667 3.83332ZM7 9.83332H6C5.724 9.83332 5.5 9.60932 5.5 9.33332C5.5 9.05732 5.724 8.83332 6 8.83332H7C7.276 8.83332 7.5 9.05732 7.5 9.33332C7.5 9.60932 7.276 9.83332 7 9.83332ZM7 7.83332H6C5.724 7.83332 5.5 7.60932 5.5 7.33332C5.5 7.05732 5.724 6.83332 6 6.83332H7C7.276 6.83332 7.5 7.05732 7.5 7.33332C7.5 7.60932 7.276 7.83332 7 7.83332ZM7 5.83332H6C5.724 5.83332 5.5 5.60932 5.5 5.33332C5.5 5.05732 5.724 4.83332 6 4.83332H7C7.276 4.83332 7.5 5.05732 7.5 5.33332C7.5 5.60932 7.276 5.83332 7 5.83332ZM7 3.83332H6C5.724 3.83332 5.5 3.60932 5.5 3.33332C5.5 3.05732 5.724 2.83332 6 2.83332H7C7.276 2.83332 7.5 3.05732 7.5 3.33332C7.5 3.60932 7.276 3.83332 7 3.83332Z"
+                            fill="#686868"
+                          />
+                          <path
+                            d="M15.0792 7.22789L10.3325 6.23389V15.9999H14.8325C15.4759 15.9999 15.9992 15.4766 15.9992 14.8332V8.36789C15.9992 7.81722 15.6239 7.34855 15.0792 7.22789ZM13.4992 13.9999H12.4992C12.2232 13.9999 11.9992 13.7759 11.9992 13.4999C11.9992 13.2239 12.2232 12.9999 12.4992 12.9999H13.4992C13.7752 12.9999 13.9992 13.2239 13.9992 13.4999C13.9992 13.7759 13.7752 13.9999 13.4992 13.9999ZM13.4992 11.9999H12.4992C12.2232 11.9999 11.9992 11.7759 11.9992 11.4999C11.9992 11.2239 12.2232 10.9999 12.4992 10.9999H13.4992C13.7752 10.9999 13.9992 11.2239 13.9992 11.4999C13.9992 11.7759 13.7752 11.9999 13.4992 11.9999ZM13.4992 9.99989H12.4992C12.2232 9.99989 11.9992 9.77589 11.9992 9.49989C11.9992 9.22389 12.2232 8.99989 12.4992 8.99989H13.4992C13.7752 8.99989 13.9992 9.22389 13.9992 9.49989C13.9992 9.77589 13.7752 9.99989 13.4992 9.99989Z"
+                            fill="#686868"
+                          />
+                        </g>
+                        <defs>
                           <clipPath id="clip0_10714_163794">
-                          <rect width="16" height="16" fill="white"/>
+                            <rect width="16" height="16" fill="white" />
                           </clipPath>
-                          </defs>
-                        </svg>
-                      </div>
-                      <h2 className="text-white">VAS License</h2>
+                        </defs>
+                      </svg>
                     </div>
+                    <h2 className="text-white">
+                      {openAggregatorValidationFlyout.modalTitle}
+                    </h2>
+                  </div>
 
-                    <button
-                      className="h-[40px] w-[40px] flex justify-center bg-transparent items-center text-[18px] rounded-[100%] text-gray-100 hover:bg-white/20 transition ease-in-out delay-150"
-                      onClick={() => closeOpenAggregatorValidationFlyout()}
-                    >
-                      X
-                    </button>
-                    </div>
+                  <button
+                    className="h-[40px] w-[40px] flex justify-center bg-transparent items-center text-[18px] rounded-[100%] text-gray-100 hover:bg-white/20 transition ease-in-out delay-150"
+                    onClick={() => closeOpenAggregatorValidationFlyout()}
+                  >
+                    X
+                  </button>
+                </div>
 
-                    <div className="flex gap-5">
-                    <button
-                      className={`${
-                        tab.overview
-                          ? "border-mtn-500 text-white"
-                          : "border-transparent text-gray-400"
-                      }
+                <div className="flex gap-5">
+                  <button
+                    className={`${
+                      tab.overview
+                        ? "border-mtn-500 text-white"
+                        : "border-transparent text-gray-400"
+                    }
                       py-2 border-b text-[14px] hover:border-mtn-500 hover:text-white transition ease-in-out delay-150`}
-                      onClick={() => {
-                        if (!tab.overview) {
-                          setTab({
-                            ...tab,
-                            overview: true,
-                            activity: false,
-                          });
-                        }
-                      }}
-                    >
-                      Overview
-                    </button>
-
-                    <button
-                      className={`${
-                        tab.activity
-                          ? "border-mtn-500 text-white"
-                          : "border-transparent text-gray-400"
+                    onClick={() => {
+                      if (!tab.overview) {
+                        setTab({
+                          ...tab,
+                          overview: true,
+                          activity: false,
+                        });
                       }
+                    }}
+                  >
+                    Overview
+                  </button>
+
+                  <button
+                    className={`${
+                      tab.activity
+                        ? "border-mtn-500 text-white"
+                        : "border-transparent text-gray-400"
+                    }
                       py-2 border-b text-[14px] hover:border-mtn-500 hover:text-white transition ease-in-out delay-150`}
-                      onClick={() => {
-                        if (!tab.activity) {
-                          setTab({
-                            ...tab,
-                            overview: false,
-                            activity: true,
-                          });
-                        }
-                      }}
-                    >
-                      Activity
-                    </button>
-                    </div>
-                    
-                  </div>
+                    onClick={() => {
+                      if (!tab.activity) {
+                        setTab({
+                          ...tab,
+                          overview: false,
+                          activity: true,
+                        });
+                      }
+                    }}
+                  >
+                    Activity
+                  </button>
                 </div>
-                {/* ------end title------------------------------------------------------------- */}
-                    
-                  
+              </div>
+            </div>
+            {/* ------end title------------------------------------------------------------- */}
 
-                 {/* -----start body-------------------------------------------------------------- */}
-                <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
-                  <NCCLicenceVerlidationBody/>
-                  <NLRCLicenceVerlidationBody/>
-                  <ShortCodeVerlidationBody/>
-                  
+            {/* -----start body-------------------------------------------------------------- */}
+            <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+              {!delayedExecution ? (
+                <div className="w-[100%] flex justify-center">
+                  <Loading style="h-[200px]" />
                 </div>
-                {/* -----start body-------------------------------------------------------------- */}
+              ) : (
+                <>
+                  {openAggregatorValidationFlyout.modal === 1 && (
+                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  )}
+                  {openAggregatorValidationFlyout.modal === 2 && (
+                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  )}
+                  {openAggregatorValidationFlyout.modal === 3 && (
+                    <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  )}
+                </>
+              )}
+            </div>
+            {/* -----start body-------------------------------------------------------------- */}
 
-                {/* -----start nav-------------------------------------------------------------- */}
-                <div className="h-[60px] bg-black border-b border-white/10 flex justify-between items-center">
-                  <div className="p-5 flex gap-3 cursor-pointer">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="40" height="40" rx="20" fill="white" fill-opacity="0.1"/>
-                      <path d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4" stroke="#FAFAFA" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div className="flex flex-col text-[13px]">
-                      <span className="text-[11px]">Previous</span>
-                      <h5 className="font-mtn-bold">VAS Licence</h5>
-                    </div>
-                  </div>
-
-                  <div className="p-5 flex gap-3 cursor-pointer">
-                    <div className="flex flex-col text-[13px]">
-                      <span className="text-[11px]">Next</span>
-                      <h5 className="font-mtn-bold">VAS Licence</h5>
-                    </div>
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="40" height="40" rx="20" fill="white" fill-opacity="0.1"/>
-                      <path d="M17.425 26.6L22.8584 21.1667C23.5 20.525 23.5 19.475 22.8584 18.8334L17.425 13.4" stroke="#FAFAFA" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </div>
+            {/* -----start nav-------------------------------------------------------------- */}
+            <div className="h-[60px] bg-black border-b border-white/10 flex justify-between items-center">
+              <div className="p-5 flex gap-3 cursor-pointer">
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    width="40"
+                    height="40"
+                    rx="20"
+                    fill="white"
+                    fill-opacity="0.1"
+                  />
+                  <path
+                    d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
+                    stroke="#FAFAFA"
+                    stroke-width="1.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div className="flex flex-col text-[13px]">
+                  <span className="text-[11px]">Previous</span>
+                  <h5 className="font-mtn-bold">VAS Licence</h5>
                 </div>
-                {/* -----start nav-------------------------------------------------------------- */}
+              </div>
+
+              <div className="p-5 flex gap-3 cursor-pointer">
+                <div className="flex flex-col text-[13px]">
+                  <span className="text-[11px]">Next</span>
+                  <h5 className="font-mtn-bold">VAS Licence</h5>
+                </div>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    width="40"
+                    height="40"
+                    rx="20"
+                    fill="white"
+                    fill-opacity="0.1"
+                  />
+                  <path
+                    d="M17.425 26.6L22.8584 21.1667C23.5 20.525 23.5 19.475 22.8584 18.8334L17.425 13.4"
+                    stroke="#FAFAFA"
+                    stroke-width="1.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+            {/* -----start nav-------------------------------------------------------------- */}
           </div>
         </div>
       </section>
+      {showSuccessToast.status && (
+            <NewSuccess
+              message={showSuccessToast.message}
+              alert={showSuccessToast.alert}
+            />
+          )}
     </>
   );
 };
 
-export const NCCLicenceVerlidationBody = ({}) => {
+export const NCCLicenceVerlidationBody = ({newVasPartnersDetails}) => {
   return (
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
       <AggregatorVerifier
        type={"file"}
        status={"pending"}
        title={"VAS Licence ID"}
-       text={"AD12345689"} 
+       text={newVasPartnersDetails?.vas_license_id} 
       />
       <AggregatorVerifier
         type={"file"}
         status={"pending"}
         title={"Issuing date"}
-        text={"20 / Mar / 2022"}
+        text={newVasPartnersDetails?.ncc_issue_date}
       />
 
       <AggregatorVerifier
         type={"file"}
         status={"pending"}
         title={"Expiry date"}
-        text={"20 / Mar / 2022"}
+        text={newVasPartnersDetails?.ncc_expiry_date}
       />
       <AggregatorVerifier
         type={"file"}

@@ -1457,6 +1457,29 @@ export default function useAdmins() {
   };
 
 
+  const getSingleAggregatorVasPartnerDetails = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_VAS_PARTNER_DETAILS}/${aggregator_uuid}/${vas_partner_uuid}`,
+        {
+          headers: {
+            apikey: apikey,
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerDetails response', response );
+      const result = response.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerApprovalDetails error', error );
+    }
+  };
 
   
  /// //////////////////////////////////////////afolabi's functions Ends here
@@ -1497,5 +1520,6 @@ export default function useAdmins() {
     getSinglePartnerShortcodes,
     getAllAggregatorRequests,
     getSingleAggregatorVasPartnerApprovalDetails,
+    getSingleAggregatorVasPartnerDetails,
   };
 }

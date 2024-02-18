@@ -197,5 +197,6 @@ const RemoteEndpoints = {
   VAS_PERTNER_FINAL_COMPLIANCE_SUBMISSION: `${apiURL}/v2/aggregator/vas-partner-onboarding/final-submission-for-compliance`,
   GET_AGGREGATOR_REQUESTS:`${apiURL}/v2/admin/approved/requests`,
   GET_AGGREGATOR_REQUEST:`${apiURL}/v2/admin/approved/request`,
+  GET_AGGREGATOR_VAS_PARTNER_DETAILS:`${apiURL}/v2/admin/vas-partner/get-vas-partner-details`,
 };
 export default RemoteEndpoints;

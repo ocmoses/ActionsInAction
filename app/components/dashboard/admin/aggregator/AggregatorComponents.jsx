@@ -9,6 +9,9 @@ import {Loading} from "@/app/components/Icons";
 import {getInitials} from "@/app/modules/utilities";
 import { NewSuccess } from "@/app/components/toasts/Success";
 import FileViewer from "@/app/components/modals/FileViewer";
+import {useStoreState } from "easy-peasy";
+import RemoteEndpoints from "@/app/modules/endpoints";
+import { apikey } from "@/app/modules/constants";
 /////////////////////////////////////////////////////////////////////////////////////
 function actionDate(targetDate) {
   const originalDate = new Date(targetDate);
@@ -164,7 +167,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
-                      modal: 1,
+                      modal: "ncc_licence",
                       modalTitle: "VAS License",
                     })
                   }
@@ -334,7 +337,8 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
 }
 
 export const AggregatorVerlidationModal = ({realTimePageReloader,openAggregatorValidationFlyout,setOpenAggregatorValidationFlyout,vasPartnersDetails}) => {
-    const [delayedExecution, setDelayedExecution] = useState(false);
+  const states = useStoreState((action) => action.admins);
+  const [delayedExecution, setDelayedExecution] = useState(false);
     //////////////////////////////////////////////////////////////////////////////
 const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
@@ -382,6 +386,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
           console.log('get_vas_partners_details_response',get_vas_partners_details_response);
           setNewVasPartnersDetails(get_vas_partners_details_response);
         setDelayedExecution(true);
+        setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
         console.log("error", err);
         successAction('Network Error 1!', false);
@@ -389,13 +394,58 @@ const [showSuccessToast, setShowSuccessToast] = useState({
     };
 
   useEffect(() => {
-    console.log('vasPartnersDetails',vasPartnersDetails);
-    getVasPartnersDetailsFunction(vasPartnersDetails?.aggregator_uuid,vasPartnersDetails?.vas_partner_uuid );
-  }, []);
+   
+    if (vasPartnersDetails) {
+      getVasPartnersDetailsFunction(vasPartnersDetails.aggregator_uuid,vasPartnersDetails.vas_partner_uuid );
+    }
+  }, [vasPartnersDetails]);
 
+  const [formData, setFormData] = useState({});
+  const setFormDataParams = async (newVasPartnersDetails) => {
+    setFormData({
+      ...formData,
+      partner_uuid: newVasPartnersDetails?.aggregator_uuid,
+      user_uuid: vasPartnersDetails.aggregator_user_uuid,
+      vas_partner_uuid: newVasPartnersDetails?.vas_partner_uuid,
+      category_uuid: newVasPartnersDetails?.vas_category_uuid,
+      admin_user: states.admin.uuid,
+    });
+  };
+ 
+  const approveRejectRequest = async () => {
+      try {
+        const formDataToSend = new FormData();
+        formDataToSend.append("partner_uuid", formData.partner_uuid);
+        formDataToSend.append("user_uuid", formData.user_uuid);
+        formDataToSend.append("vas_partner_uuid", formData.vas_partner_uuid);
+        formDataToSend.append("category_uuid", formData.category_uuid);
+        formDataToSend.append("admin_user", formData.admin_user);
+        formDataToSend.append("category_stage", formData.category_stage);
+        formDataToSend.append("status", formData.status);
+        formDataToSend.append("feedback", formData.feedback);
+        formDataToSend.append("field", formData.field);
+        formDataToSend.append("approval_uuid", formData.approval_uuid);
+        setDelayedExecution(false);
+        const response = await axios.post(
+          RemoteEndpoints.APPROVE_REJECT_AGGREGATOR_VAS_PARTNER,
+          formDataToSend,
+          {
+            headers: {
+              apikey: apikey,
+              Authorization: `Bearer ${states.admin.token}`,
+            },
+          }
+        );
 
-
-
+        setDelayedExecution(true);
+        successAction(feedback, true);
+      } catch (err) {
+        setDelayedExecution(true);
+        console.log("error", err);
+        successAction(err.response.data.data.message, false);
+      }
+   
+  };
   return (
     <>
       <section
@@ -503,14 +553,14 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                 </div>
               ) : (
                 <>
-                  {openAggregatorValidationFlyout.modal === 1 && (
-                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  {openAggregatorValidationFlyout.modal === 'ncc_licence' && (
+                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
-                  {openAggregatorValidationFlyout.modal === 2 && (
-                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  {openAggregatorValidationFlyout.modal === 'nlrc_licence' && (
+                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
-                  {openAggregatorValidationFlyout.modal === 3 && (
-                    <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails}/>
+                  {openAggregatorValidationFlyout.modal === 'short_code' && (
+                    <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
                 </>
               )}
@@ -593,8 +643,9 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   );
 };
 
-export const NCCLicenceVerlidationBody = ({newVasPartnersDetails}) => {
+export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
   const [fileViewer, setFileViewer] = useState(null);
+  const category_stage = "ncclicense";
   return (
     <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
@@ -602,13 +653,21 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails}) => {
        type={"text"}
        status={"pending"}
        title={"VAS Licence ID"}
-       text={newVasPartnersDetails?.vas_license_id} 
+       text={newVasPartnersDetails?.vas_license_id}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="vas_license_id"
+       category_stage={category_stage}
       />
       <AggregatorVerifier
         type={"text"}
         status={"pending"}
         title={"Issuing date"}
         text={actionDate(newVasPartnersDetails?.ncc_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
       />
 
       <AggregatorVerifier
@@ -616,13 +675,19 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails}) => {
         status={"pending"}
         title={"Expiry date"}
         text={actionDate(newVasPartnersDetails?.ncc_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
       />
       <AggregatorVerifier
         type={"file"}
         status={"pending"}
         title={"NCC VAS License document"}
         text={newVasPartnersDetails?.ncc_doc.file_name}
-        file={newVasPartnersDetails?.ncc_doc}
+        approveRejectRequest={approveRejectRequest}
+        newVasPartnersDetails={newVasPartnersDetails}
+        formData={formData}
+        setFormData={setFormData}
         setFileViewer={setFileViewer}
       />
     </div>
@@ -734,19 +799,25 @@ export const ShortCodeVerlidationBody = ({}) => {
   );
 };
 
-export const AggregatorVerifier = ({type, status, title, text, file, setFileViewer}) => {
+export const AggregatorVerifier = ({type, status, title, text, approveRejectRequest, newVasPartnersDetails, formData, setFormData, field, category_stage, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
   const [showOthersTextbox, setShowOthersTextbox] = useState(false);
-  const approveRequest = async () => {
-
-  };
+ 
   const handleApprove = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "approved",
+      feedback: title + " approved",
+      field: field,
+      approval_uuid: ""
+    });
     setShowBtn(false);
     setApprove(true)
 };
-  const handleReject = () => {''
+  const handleReject = () => {
     setShowBtn(false);
     setReject(true)
 };
@@ -765,7 +836,7 @@ export const AggregatorVerifier = ({type, status, title, text, file, setFileView
                   yestext="Yes"
                   notext="No"
                   type="approve"
-                  onYes={() => approveRequest()}
+                  onYes={() => approveRejectRequest()}
                   onNo={cancel}
                 />
               )}
@@ -774,7 +845,7 @@ export const AggregatorVerifier = ({type, status, title, text, file, setFileView
                   yestext="Reject"
                   notext="Cancel"
                   type="reject"
-                  onYes={(reason) => rejectRequest(reason)}
+                  onYes={() => approveRejectRequest()}
                   onNo={cancel}
                   othersAction={setShowOthersTextbox}
                 />
@@ -795,9 +866,9 @@ export const AggregatorVerifier = ({type, status, title, text, file, setFileView
               {type=='text' ? (
                 <h3 className="font-mtn-bold text-white">{text}</h3>
               ):(
-                <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center"
+                <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center cursor-pointer"
                 onClick={() =>
-                  setFileViewer(file?.file_path ?? NULL)
+                  setFileViewer(newVasPartnersDetails?.ncc_doc.file_path ?? NULL)
                 }
                 >
                   <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">

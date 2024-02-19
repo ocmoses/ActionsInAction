@@ -1,10 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  getInitials,
-  ellipsify,
-  capitalizeFirst,
-} from "@/app/modules/utilities";
+import {getInitials,ellipsify,capitalizeFirst,} from "@/app/modules/utilities";
 import { request_types, docPrefix } from "@/app/modules/constants";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -24,10 +20,7 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 import FileViewer from "@/app/components/modals/FileViewer";
-import {
-  GracePeriodAdminFlyOut,
-  LicenseRenewalAdminFlyout,
-} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import {GracePeriodAdminFlyOut,LicenseRenewalAdminFlyout,} from "@/app/components/dashboard/compliance/GracePeriodComponent";
 import { ShortCodeFlyOut } from "@/app/components/RequestComponent";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +39,7 @@ export default function Requests() {
     getAllLicenceRenewal,
     getAllIP,
     getAllPartnersShortCodes,
+    getAllAggregatorRequests,
   } = useAdmins();
 
   const { processing, setProcessing } = useProcessing();
@@ -94,7 +88,8 @@ export default function Requests() {
       : "Request Approval";
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const { is_previewing_doc, handleCloseModal } = useApp();
+  const { is_previewing_doc, handleCloseModal, setRouteloading } = useApp();
+  const [fetchingAggregators, setFetchingAggregators] = useState(false);
 
   const [openRevenueShareDrawer, setOpenRevenueShareDrawer] = useState(false);
   const [openChangeOrderDrawer, setOpenChangeOrderDrawer] = useState(false);
@@ -115,9 +110,6 @@ export default function Requests() {
   const [fileViewer, setFileViewer] = useState(null);
 
   const open = (request) => {
-
-    console.log("Admin can approve", approvals);
-    console.log("selectedRequest?.request_type", selectedRequest?.request_type);
 
     switch (request.request_type) {
       case request_types.REVENUE_SHARE:
@@ -159,6 +151,58 @@ export default function Requests() {
   let get_all_partner_shortcodes_response = null;
   let approve_request_response = null;
   let reject_request_response = null;
+  let get_all_aggregator_response = null;
+
+    
+  const get_ggregator_requests = async () => {
+    if (fetchingAggregators) return;
+    setFetchingAggregators(true);
+    get_all_aggregator_response = await getAllAggregatorRequests();
+    console.log('get_all_aggregator_response', get_all_aggregator_response);
+
+    for (const aggregatorRequest of get_all_aggregator_response.aggregatorRequests) {
+      if (!requests.find((request) => request.uuid == aggregatorRequest.service_uuid)) {
+        requests.push({
+          company: aggregatorRequest.vas_partner,
+          email: aggregatorRequest.vas_email,
+          request_type: request_types.AGGREGATOR,
+          request_id: aggregatorRequest.request_id,
+          created_at: aggregatorRequest.service_submitted_on,
+          approved_on: aggregatorRequest.service_approved_on,
+          rejected_on: aggregatorRequest.service_rejected_on,
+          status: aggregatorRequest.status,
+          uuid: aggregatorRequest.service_uuid,
+        });
+      }
+    }
+
+    requests.sort((a, b) =>
+      a.request_date > b.request_date
+        ? -1
+        : a.request_date < b.request_date
+        ? 1
+        : 0
+    );
+
+    if (
+      selectedRequest &&
+      selectedRequest.request_type == request_types.AGGREGATOR
+    ) {
+      setSelectedRequest(requests.find((r) => r.id == selectedRequest.id));
+    }
+
+    setRequests(requests);
+    setFilteredRequests(requests);
+
+    console.log("get_all_aggregator_response Requests", requests);
+    clearErrors();
+    setRequests(requests);
+    setFilteredRequests(requests);
+    clearErrors();
+    setFetchingAggregators(false);
+  };
+
+
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -685,6 +729,7 @@ export default function Requests() {
   };
 
   const getAllRequests = async () => {
+    
     await get_brds();
     await get_questionnaires();
     await get_revenue_share();
@@ -693,6 +738,7 @@ export default function Requests() {
     await get_license_renewal();
     await get_ips();
     await get_shortcodes();
+    await get_ggregator_requests()
   };
 
   useEffect(() => {
@@ -704,7 +750,10 @@ export default function Requests() {
   useEffect(() => {}, [filteredRequests]);
 
   const [displayShortCodeAlert, setDisplayShortCodeAlert] = useState(false);
-
+  const goToVasPartnerDetail = (uuid) => {
+    setRouteloading(true);
+    router.push(`/admin/aggregator/${uuid}`);
+  };
   return (
     <>
       <div id="approvals" className="flex flex-cols pb-12">
@@ -819,6 +868,11 @@ export default function Requests() {
                       </td>
                       {/* Action */}
                       <td>
+                        {request?.request_type ==='Aggregator' ? (
+                          <>
+                          <span onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
+                          </>
+                        ):(
                         <span
                           onClick={() => {
                             setSelectedRequest(request);
@@ -829,6 +883,8 @@ export default function Requests() {
                         >
                           Review
                         </span>
+                        )}
+                        
                       </td>
                     </tr>
                   ))}

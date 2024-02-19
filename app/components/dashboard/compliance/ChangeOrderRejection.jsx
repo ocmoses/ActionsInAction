@@ -1,6 +1,5 @@
 import usePartners from "@/hooks/usePartners";
 import {useEffect, useState} from "react";
-import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
 import useUsers from "@/hooks/useUsers";
 

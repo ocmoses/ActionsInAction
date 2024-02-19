@@ -124,24 +124,19 @@ const usePartners = () => {
   };
 
   const checkUpdateStatus = (stage) => {
-    const progress = category.profile_stage
-    console.log("PROGRESS", progress)
-    return progress[stage] && parseInt(progress[stage]) ? true : false
-  }
+    const progress = category.profile_stage;
+    console.log("PROGRESS", progress);
+    return progress[stage] && parseInt(progress[stage]) ? true : false;
+  };
 
   const skipStage = async (stageData) => {
-
-    const response = await Axios.post(
-      RemoteEndpoints.SKIPSTAGE,
-      stageData,
-      {
-        apikey: process.env.NEXT_PUBLIC_APIKEY,
-        token: states.users.token,
-        "Content-Type": "application/json",
-        Authorization: `bearer ${states.users.token}`,
-        timeout: process.env.NEXT_PUBLIC_TIMEOUT,
-      }
-    ).catch((e) => {
+    const response = await Axios.post(RemoteEndpoints.SKIPSTAGE, stageData, {
+      apikey: process.env.NEXT_PUBLIC_APIKEY,
+      token: states.users.token,
+      "Content-Type": "application/json",
+      Authorization: `bearer ${states.users.token}`,
+      timeout: process.env.NEXT_PUBLIC_TIMEOUT,
+    }).catch((e) => {
       // console.log("e", e);
       return {
         success: false,
@@ -153,13 +148,10 @@ const usePartners = () => {
 
     console.log("SKIP RESPONSE", response);
 
-    if(response?.success){
-       category.profile_stage.stage = "1";
-       
+    if (response?.success) {
+      category.profile_stage.stage = "1";
     }
-
-   
-  }
+  };
 
   const checkRegStatus = async (partner) => {
     if (!partner?.progress) return null;
@@ -304,6 +296,7 @@ const usePartners = () => {
         if (userdata.type === "new") return router.push(PageRoutes.getstarted);
         return router.push(PageRoutes.dashboard);
       }
+
       case "userinfo": {
         setProcessing(true);
         const responseUserinfo = await Axios.post(
@@ -439,7 +432,6 @@ const usePartners = () => {
     }
   };
 
- 
   const resendEmail = async (email, email_type) => {
     setProcessing(true);
 
@@ -1334,11 +1326,10 @@ const usePartners = () => {
               result?.data?.message ??
               "Something went wrong. Please check your connection and try again",
           };
-
-        }        
+        }
 
         return {
-          data
+          data,
         };
       }
       return {
@@ -1466,28 +1457,24 @@ const usePartners = () => {
   const dynamicFileUpload = async (data) => {
     try {
       setProcessing(true);
-      const response = await fetch(
-        `${RemoteEndpoints.UPLOAD_DYNAMIC_FIELD}`,
-        {
-          cache: "no-store",
-          next: { revalidate: 120 },
-          method: 'POST',
-          body: data,
-          headers: {
-            apikey: process.env.NEXT_PUBLIC_APIKEY,
-            token: states.users.token,
-            Authorization: `bearer ${states.users.token}`,
-          },
-        }
-      );
-     
-      
-      if (!response)
-      return {
-        error: "This request has no response available",
-      };
+      const response = await fetch(`${RemoteEndpoints.UPLOAD_DYNAMIC_FIELD}`, {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        method: "POST",
+        body: data,
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          token: states.users.token,
+          Authorization: `bearer ${states.users.token}`,
+        },
+      });
 
-      if (response.status === 401 ) {
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
         Logout();
         return;
       }
@@ -1499,11 +1486,11 @@ const usePartners = () => {
       setProcessing(false);
       if (result?.success) {
         const message = result.data?.message;
-        
-        console.log('Uploaded message', message);
+
+        console.log("Uploaded message", message);
 
         return {
-          message
+          message,
         };
       }
       return {
@@ -1544,11 +1531,163 @@ const usePartners = () => {
         }
       );
       setProcessing(false);
+
       const result = getPartnerContractResponse.data.data;
       return { result };
     } catch (error) {
       setProcessing(false);
       return { error };
+    }
+  };
+
+  const getVasTypes = async () => {
+    try {
+      setProcessing(true);
+      const vasTypeResponse = await axios.get(
+        `${RemoteEndpoints.GET_VAS_TYPE}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = vasTypeResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getAggregators = async (uuid) => {
+    try {
+      setProcessing(true);
+      const aggregatorResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = aggregatorResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const submitVasPartner = async (data) => {
+    try {
+      setProcessing(true);
+
+      const response = await fetch(`${RemoteEndpoints.SUBMIT_VAS_PARTNER}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          Authorization: `Bearer ${states.users.token}`,
+          token: states.users.token,
+        },
+        body: JSON.stringify(data),
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          Logout();
+          return;
+        }
+        throw new Error("Request failed with status " + response.status);
+      }
+
+      const result = await response.json();
+      setProcessing(false);
+      return { result };
+    } catch (error) {
+      return {
+        error:
+          error.message ||
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const getRejectedRequest = async (uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_REJECTED_REQUEST}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = response.data.data[0];
+      console.log("Res", result);
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const changeAggregator = async (data) => {
+    try {
+      setProcessing(true);
+
+      const response = await fetch(`${RemoteEndpoints.CHANGE_AGGREGATOR}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          Authorization: `Bearer ${states.users.token}`,
+          token: states.users.token,
+        },
+        body: JSON.stringify(data),
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          Logout();
+          return;
+        }
+        throw new Error("Request failed with status " + response.status);
+      }
+
+      const result = await response.json();
+      setProcessing(false);
+      return { result };
+    } catch (error) {
+      return {
+        error:
+          error.message ||
+          "Something went wrong. Please check your connection and try again",
+      };
     }
   };
 
@@ -1569,6 +1708,88 @@ const usePartners = () => {
       );
       setProcessing(false);
       const result = getPartnerContractValidityRemainderResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getAggregatorRequest = async () => {
+    try {
+      setProcessing(true);
+      const getAggregatorRequestResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_REQUEST}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+          params: {
+            aggregator_uuid: states.partners.partner.uuid,
+          },
+        }
+      );
+      setProcessing(false);
+      const result = getAggregatorRequestResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getAggregatorVasPartnerDetails = async (
+    aggregator_uuid,
+    vas_partner_uuid
+  ) => {
+    try {
+      setProcessing(true);
+      const getAggregatorVasPartnerDetailsResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_VAS_PARTNERS_DETAILS}/${aggregator_uuid}/${vas_partner_uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = getAggregatorVasPartnerDetailsResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getVasPartnerRequest = async (uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_VAS_PARTNER_REQUEST}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = response.data.data;
+      
       return { result };
     } catch (error) {
       setProcessing(false);
@@ -1617,7 +1838,16 @@ const usePartners = () => {
     ipFileUpload,
     getDynamicField,
     dynamicFileUpload,
-    getPartnerContractCurrentlyRunning
-  }
-}
-export default usePartners
+    getPartnerContractCurrentlyRunning,
+    getVasTypes,
+    getAggregators,
+    submitVasPartner,
+    getRejectedRequest,
+    changeAggregator,
+    getAggregatorRequest,
+    getAggregatorVasPartnerDetails,
+    getVasPartnerRequest,
+  };
+};
+
+export default usePartners;

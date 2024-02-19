@@ -30,7 +30,7 @@ import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 import PopUp, { SuccessCard } from "@/app/components/PopUps";
 
-export default function ContentOwner() {
+export default function ContentOwner({ params }) {
   const { partner, ipFileUpload } = usePartners();
 
   const { user } = useUsers();
@@ -64,6 +64,7 @@ export default function ContentOwner() {
     physical_status_of_content_provider: "null",
     license_start_date: "",
     license_end_date: "",
+    vas_partner_uuid: params,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -153,6 +154,7 @@ export default function ContentOwner() {
     );
     formData.append("agg_plus_vas_requirement", "no");
     formData.append("file", file);
+    formData.append("vas_partner_uuid", params);
 
     setSubmitting(true);
 

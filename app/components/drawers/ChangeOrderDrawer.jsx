@@ -51,10 +51,13 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
 
     const reasons = [
         "",
-        "It doesn't exist",
-        "I can see this clearly",
-        "Something else entirely",
-        "Others"
+        "Incomplete Information",
+        "Wrong document",
+        "Inconsistent Information",
+        "Invalid or Expired Document",
+        "Invalid or incorrect date",
+        "Poor Quality (Contents Not Clear)",
+        "Others",
     ];
     
     const handleChange = (e) => {
@@ -176,7 +179,7 @@ export default function ChangeOrderDrawer({request, openDrawer, closeAction, ref
         <>
             <SideDrawer request={request} openDrawer={openDrawer} closeAction={() => closeAction()}>
 
-                <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-scroll">
+                <div className="flex flex-col space-y-8 border-b h-[600px] border-white/20 pb-8 pr-4 overflow-y-auto">
 
                     <div className="flex space-x-4">
                         <p className="text-white">{request?.request_type}</p>

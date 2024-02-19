@@ -18,6 +18,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useStoreState } from "easy-peasy";
 import PopUp from "@/app/components/PopUps";
 
+ 
 function Layout({ children }) {
   let partnersData;
   if (typeof window !== "undefined") {

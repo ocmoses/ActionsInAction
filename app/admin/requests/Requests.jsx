@@ -564,7 +564,7 @@ export default function Requests() {
     setFetchingShortcodes(true);
 
     get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
-
+console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_response);
     if (get_all_partner_shortcodes_response.error) {
       setError({ error: get_all_partner_shortcodes_response.error });
       return;
@@ -584,6 +584,7 @@ export default function Requests() {
           shortcodes_not_approved: shortcode.shortcodes_not_approved,
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
+          shortcode_uuid: shortcode.shortcode_uuid,
         });
       }
     }
@@ -1139,6 +1140,7 @@ export default function Requests() {
           <ShortCodeFlyOut
             closeShortCodeFlyOut={() => setShortcodesFlyout(false)}
             selectedRequest={selectedRequest}
+            getAllRequests={getAllRequests}
           />
         )}
 

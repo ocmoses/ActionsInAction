@@ -6,6 +6,7 @@ import { filterCategory, getstages } from "@/app/modules/utilities";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import { filterPartner } from "@/app/modules/utilities";
 import RemoteEndpoints from "@/app/modules/endpoints";
+import { apikey } from "@/app/modules/constants";
 
 export default function useAdmins() {
   const { LogoutAdmin } = useLogout();
@@ -1400,6 +1401,90 @@ export default function useAdmins() {
   };
 
   /// //////////////////////////////////////////afolabi's functions Ends here
+  const getAllAggregatorRequests = async () => {
+    try {
+      setProcessing(true);
+      const response = await fetch(`${RemoteEndpoints.GET_AGGREGATOR_REQUESTS}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: apikey,
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+      const result = await response.json();
+      setProcessing(false);
+      if (result?.success) {
+        const aggregatorRequests = result?.data;
+        return { aggregatorRequests,};
+      }
+      console.log('aggregatorRequests results', result);
+    } catch (error) {
+      console.log('aggregatorRequests error', error );
+    }
+
+  };
+
+  const getSingleAggregatorVasPartnerApprovalDetails = async (service_uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_REQUEST}`,
+        {
+          headers: {
+            apikey: apikey,
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+          params: {
+            service_uuid: service_uuid,
+          },
+        }
+      );
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerApprovalDetails response', response );
+      const result = response.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerApprovalDetails error', error );
+    }
+  };
+
+
+  const getSingleAggregatorVasPartnerDetails = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_VAS_PARTNER_DETAILS}/${aggregator_uuid}/${vas_partner_uuid}`,
+        {
+          headers: {
+            apikey: apikey,
+            token: states.token,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${states.token}`,
+          },
+        }
+      );
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerDetails response', response );
+      const result = response.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      console.log('getSingleAggregatorVasPartnerApprovalDetails error', error );
+    }
+  };
+
+  
+ /// //////////////////////////////////////////afolabi's functions Ends here
+
+ 
 
   return {
     ...states,
@@ -1432,6 +1517,9 @@ export default function useAdmins() {
     addDynamicField,
     removeDynamicField,
     getDynamicFields,
-    getSinglePartnerShortcodes
+    getSinglePartnerShortcodes,
+    getAllAggregatorRequests,
+    getSingleAggregatorVasPartnerApprovalDetails,
+    getSingleAggregatorVasPartnerDetails,
   };
 }

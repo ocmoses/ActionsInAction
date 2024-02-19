@@ -1508,6 +1508,7 @@ export const request_types = {
   LICENSE_RENEWAL: "License Renewal",
   VAS_CLEARANCE: "IP Compliance",
   SHORTCODES: "Short Codes",
+  AGGREGATOR: "Aggregator",
 };
 
 export const role_types = {

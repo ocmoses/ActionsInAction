@@ -30,7 +30,7 @@ import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 import PopUp, { SuccessCard } from "@/app/components/PopUps";
 
-export default function IsAgent() {
+export default function IsAgent({ params }) {
   const { partner, ipFileUpload } = usePartners();
 
   const { user } = useUsers();
@@ -66,6 +66,7 @@ export default function IsAgent() {
     physical_status_of_content_provider: "null",
     license_start_date: "",
     license_end_date: "",
+    vas_partner_uuid: params,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -155,6 +156,7 @@ export default function IsAgent() {
     );
     formData.append("agg_plus_vas_requirement", "no");
     formData.append("file", file);
+    formData.append("vas_partner_uuid", params);
 
     setSubmitting(true);
 
@@ -321,7 +323,7 @@ export default function IsAgent() {
                 doc_id="probate_of_will_doc"
                 label="Probate of Will"
                 value={files.probate_of_will}
-                onChange={handleFormChange}
+                onChange={(e) => uploadFile("probate_of_will", e.target.value)}
                 errors={errors}
                 disabled={false}
                 style="flex-1"
@@ -353,7 +355,9 @@ export default function IsAgent() {
               doc_id="authorization_letter_doc"
               label="Authorization Letter"
               value={files.authorization_letter}
-              onChange={handleFormChange}
+              onChange={(e) =>
+                uploadFile("authorization_letter", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -421,7 +425,9 @@ export default function IsAgent() {
               doc_id="authorization_video_doc"
               label="Authorization Video"
               value={files.authorization_video}
-              onChange={handleFormChange}
+              onChange={(e) =>
+                uploadFile("authorization_video", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -450,7 +456,7 @@ export default function IsAgent() {
               doc_id="agreement_letter_doc"
               label="Agreement Letter"
               value={files.agreement_letter}
-              onChange={handleFormChange}
+              onChange={(e) => uploadFile("agreement_letter", e.target.value)}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -477,7 +483,7 @@ export default function IsAgent() {
               doc_id="content_creator_id_doc"
               label="Content creator ID"
               value={files.content_creator_id}
-              onChange={handleFormChange}
+              onChange={(e) => uploadFile("content_creator_id", e.target.value)}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -503,7 +509,9 @@ export default function IsAgent() {
               doc_id="other_content_proof_doc"
               label="Other proof of ownership"
               value={files.other_content_proof}
-              onChange={handleFormChange}
+              onChange={(e) =>
+                uploadFile("other_content_proof", e.target.value)
+              }
               errors={errors}
               disabled={false}
               style="flex-1"

@@ -110,6 +110,8 @@ export default function Requests() {
   const [fileViewer, setFileViewer] = useState(null);
 
   const open = (request) => {
+    console.log("Admin can approve", approvals);
+    console.log("selectedRequest?.request_type", selectedRequest?.request_type);
 
     switch (request.request_type) {
       case request_types.REVENUE_SHARE:
@@ -976,12 +978,14 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
           </div>
 
           <div className="flex h-full items-center px-2 w-32 ml-auto">
-            {approvals && 
-            ((selectedRequest?.request_type == request_types.BOARD_RESOLUTION && 
-            approvals.can_approve.includes("board_resolution_document")) || 
-            (selectedRequest?.request_type == request_types.SUPPLIER_QUESTION && 
-            approvals.can_approve.includes("questionnaire")) ) && 
-            selectedRequest?.status != "approved" &&
+            {approvals &&
+              ((selectedRequest?.request_type ==
+                request_types.BOARD_RESOLUTION &&
+                approvals.can_approve.includes("board_resolution_document")) ||
+                (selectedRequest?.request_type ==
+                  request_types.SUPPLIER_QUESTION &&
+                  approvals.can_approve.includes("questionnaire"))) &&
+              selectedRequest?.status != "approved" &&
               selectedRequest?.status != "rejected" && (
                 <>
                   <div

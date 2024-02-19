@@ -89,6 +89,7 @@ const useContracts = () => {
   let currentContract = null; //Is there a current contract
   const contractStatus = partner?.contract_status; //What is the user's contract status
   const userStatus = partner?.status; //What is the user's status
+  const vasPartnerStatus = partner?.vas_partner_contract_status;
   let selectedAllRequiredSignatories = false; //has all required signatories been selected
   let isASignatory = false; //Is this user a signatory for the current contract?
   let signatoryRole = null; //The user's role as a signatory
@@ -440,6 +441,7 @@ const useContracts = () => {
     currentContract,
     contractStatus,
     userStatus,
+    vasPartnerStatus,
     selectedAllRequiredSignatories,
     isASignatory,
     signatoryRole,

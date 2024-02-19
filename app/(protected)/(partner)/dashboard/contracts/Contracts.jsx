@@ -340,7 +340,7 @@ export default function Contracts() {
 
       <ContractCategoryModal />
       <AgreementModal />
-      <SelectServiceModal />
+      <SelectServiceModal vas_partner_uuid={partner?.vas_partner_uuid}/>
       <ContractSignatoriesModal />
       <AddSignatoryModal />
       <ChooseSignatoryModal />

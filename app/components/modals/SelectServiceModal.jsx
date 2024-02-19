@@ -5,7 +5,7 @@ import { useEffect, useContext, useState } from "react";
 import useErrors from "@/hooks/useErrors";
 import { ContractContext } from "../../(protected)/(partner)/dashboard/contracts/ContractProvider";
 
-export default function SelectServiceModal({ visible, closeAction, callback }) {
+export default function SelectServiceModal({ vas_partner_uuid=null }) {
   const {
     partner,
     partnerSelectService,
@@ -44,6 +44,7 @@ export default function SelectServiceModal({ visible, closeAction, callback }) {
     const data = {
       partner_uuid: `${partner.uuid}`,
       service_type: [name],
+      vas_partner_uuid: vas_partner_uuid
     };
     partner_select_service(data);
   };

@@ -439,9 +439,8 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             },
           }
         );
-
-        setDelayedExecution(true);
         successAction(formData.feedback, true);
+        getVasPartnersDetailsFunction(vasPartnersDetails.aggregator_uuid,vasPartnersDetails.vas_partner_uuid );
       } catch (err) {
         setDelayedExecution(true);
         console.log("error", err);
@@ -556,13 +555,13 @@ const [showSuccessToast, setShowSuccessToast] = useState({
               ) : (
                 <>
                   {openAggregatorValidationFlyout.modal === 'ncc_licence' && (
-                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
+                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
                   {openAggregatorValidationFlyout.modal === 'nlrc_licence' && (
-                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
+                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
                   {openAggregatorValidationFlyout.modal === 'short_code' && (
-                    <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
+                    <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
                 </>
               )}
@@ -645,7 +644,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   );
 };
 
-export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
+export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);
   const category_stage = "ncclicense";
   return (
@@ -659,6 +658,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
        formData={formData}
        setFormData={setFormData}
        field="vas_license_id"
+       complianceApprovals={complianceApprovals}
        category_stage={category_stage}
       />
       <AggregatorVerifier
@@ -669,6 +669,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         formData={formData}
         setFormData={setFormData}
         field="ncc_issue_date"
+        complianceApprovals={complianceApprovals}
         category_stage={category_stage}
       />
 
@@ -680,6 +681,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         formData={formData}
         setFormData={setFormData}
         field="ncc_expiry_date"
+        complianceApprovals={complianceApprovals}
         category_stage={category_stage}
       />
       <AggregatorVerifier
@@ -690,6 +692,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         formData={formData}
         setFormData={setFormData}
         field="ncc_doc"
+        complianceApprovals={complianceApprovals}
         category_stage={category_stage}
         newVasPartnersDetails={newVasPartnersDetails}
         setFileViewer={setFileViewer}
@@ -707,42 +710,82 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
   );
 };
 
-export const NLRCLicenceVerlidationBody = ({}) => {
-
+export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
+  const [fileViewer, setFileViewer] = useState(null);
+  const category_stage = "nlrclicense";
   return (
+    <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
+       type={"text"}
        title={"NLRC Licence type"}
-       text={"National lottery"} 
+       text={newVasPartnersDetails?.nlrc_license_type}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="nlrc_license_type"
+       complianceApprovals={complianceApprovals}
+       category_stage={category_stage}
       />
+
       <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
+       type={"text"}
        title={"NLRC Licence ID"}
-       text={"AD12345689"} 
+       text={newVasPartnersDetails?.nlrc_license_id}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="nlrc_license_id"
+       complianceApprovals={complianceApprovals}
+       category_stage={category_stage}
       />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+     <AggregatorVerifier
+        type={"text"}
         title={"Issuing date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(newVasPartnersDetails?.nlrc_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_issue_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
+      />
+
+      <AggregatorVerifier
+        type={"text"}
+        title={"Expiry date"}
+        text={actionDate(newVasPartnersDetails?.nlrc_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_expiry_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
       />
 
       <AggregatorVerifier
         type={"file"}
-        status={"pending"}
-        title={"Expiry date"}
-        text={"20 / Mar / 2022"}
-      />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
         title={"NLRC License document"}
-        text={"4433tessst7777788888 (1).pdf"}
+        text={newVasPartnersDetails?.nlrc_doc.file_name}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_doc"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
+        newVasPartnersDetails={newVasPartnersDetails}
+        setFileViewer={setFileViewer}
       />
+      
     </div>
+    {fileViewer && (
+      <FileViewer
+        id="file_viewer"
+        link={fileViewer}
+        closeAction={() => setFileViewer(null)}
+      />
+    )}
+    </>
   );
 };
 
@@ -804,7 +847,7 @@ export const ShortCodeVerlidationBody = ({}) => {
   );
 };
 
-export const AggregatorVerifier = ({type, title, text, approveRejectRequest, formData, setFormData, field, category_stage, newVasPartnersDetails, setFileViewer}) => {
+export const AggregatorVerifier = ({type, title, text, approveRejectRequest, formData, setFormData, field, complianceApprovals, category_stage, newVasPartnersDetails, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
@@ -840,6 +883,27 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
     setReject(false);
     setShowBtn(true);
   };
+
+  const [singleApproval, setSingleApproval] = useState();
+  const filteredComplianceApprovals = (complianceApprovals, field) => {
+    let filtered_compliance_approvals = [];
+    for (let approval of complianceApprovals) {
+        if (approval.field === field) {
+            filtered_compliance_approvals.push(approval);
+        }
+    }
+    
+    for (let approval of filtered_compliance_approvals) {
+      setSingleApproval(approval);
+    }
+}
+
+  useEffect(() => {
+    filteredComplianceApprovals(complianceApprovals, field);
+  }, [complianceApprovals]);
+
+
+  
   return (
     <div className={`border border-white/10 rounded-[7px] p-3 text-gray-400 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
         {(approve || reject) && (
@@ -861,6 +925,8 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
                   onYes={() => approveRejectRequest()}
                   onNo={cancel}
                   othersAction={setShowOthersTextbox}
+                  setFormData={setFormData}
+                  formData={formData}
                 />
               )}
             </>
@@ -868,12 +934,41 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
 
       <div className="flex justify-between">
         <div className="flex gap-3">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {singleApproval?.status!== "approved" && singleApproval?.status!== "rejected" && singleApproval?.status!== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2.25 3.375H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 7.125H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 10.875H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 14.625H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+        )}
+        {singleApproval?.status=== "approved" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "rejected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        
+
+
             <div className="flex flex-col">
               <span className="text-[11px]">{title}</span>
               {type=='text' ? (
@@ -881,7 +976,7 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
               ):(
                 <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center cursor-pointer"
                 onClick={() =>
-                  setFileViewer(newVasPartnersDetails?.ncc_doc.file_path ?? NULL)
+                  setFileViewer(newVasPartnersDetails?.[field]?.file_path ?? NULL)
                 }
                 >
                   <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -901,8 +996,12 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
         <div className="flex gap-3">
           {showBtn && (
             <>
+            {(singleApproval?.status!== "approved" && singleApproval?.status!== "rejected") && (
+              <>
               <RequestRejectBtn action={handleReject}/>
               <RequestApproveBtn action={handleApprove} />
+              </>
+            )}
             </>
             )}
         

@@ -12,7 +12,9 @@ export default function Confirm({
   onNo,
   type,
   feedback,
-  othersAction=null
+  othersAction=null,
+  setFormData,
+  formData
 }) {
   const [reason, setReason] = useState(null);
   const [showReason, setShowReason] = useState(false);
@@ -39,6 +41,13 @@ export default function Confirm({
     setHide(false);  
     setReason(_reason);
     setShowReason(false);
+
+    if(formData){
+      setFormData({
+        ...formData,
+        feedback: _reason.rejection_reason,
+      });
+    }
   };
   return (
     <>

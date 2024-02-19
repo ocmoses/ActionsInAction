@@ -29,7 +29,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 
-export default function VASIPDetails({ next }) {
+export default function VASIPDetails({ params, next }) {
   const { partner, ipFileUpload } = usePartners();
 
   const { user } = useUsers();
@@ -73,14 +73,6 @@ export default function VASIPDetails({ next }) {
     (data.AVL_issuing_date == "" ? today : data.AVL_issuing_date) + 739
   );
 
-  const submitAllProof = async () => {
-    if (!validate()) {
-      return;
-    }
-
-    clearErrors();
-  };
-
   const uploadFile = (file_title, file) => {
     let formData = new FormData();
     formData.append("file_title", file_title);
@@ -92,6 +84,7 @@ export default function VASIPDetails({ next }) {
     );
     formData.append("agg_plus_vas_requirement", "yes");
     formData.append("file", file);
+    formData.append("vas_partner_uuid", params);
 
     setSubmitting(true);
 
@@ -129,35 +122,6 @@ export default function VASIPDetails({ next }) {
     }
 
     return true;
-  };
-
-  const validateEntries = () => {
-    if (files.authorization_letter == "") {
-      setError({ error: "Please upload authorization letter" });
-      return false;
-    } else if (files.authorization_video == "") {
-      setError({ error: "Please upload authorization video" });
-      return false;
-    } else if (files.agreement_letter_btw_content_and_vas_partner == "") {
-      setError({ error: "Please upload agreement letter" });
-      return false;
-    } else if (files.content_creator_id_front == "") {
-      setError({ error: "Please upload creator ID" });
-      return false;
-    } else if (data.license_start_date == "") {
-      setError({ error: "Please enter start of license date" });
-      return false;
-    } else if (data.license_end_date == "") {
-      setError({ error: "Please enter end of license date" });
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleFormChange = (e) => {
-    clearErrors();
-    setData({ ...data, [e.target.id]: e.target.value });
   };
 
   return (

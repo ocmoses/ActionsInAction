@@ -248,10 +248,14 @@ export default function AggregatorIPPage({ params }) {
 
         {step == 1 && <ServiceDetail params={params} next={() => setStep(2)} />}
         {step == 2 && <Licensing />}
-        {step == 3 && <VASIPDetails next={() => setStep(4)} />}
-        {step == 4 && ownerType == owner.CONTENT_CREATOR && <ContentOwner />}
-        {step == 4 && ownerType == owner.AGENT && <IsAgent />}
-        {step == 4 && ownerType == owner.RECORD_LABEL && <IsRecordLabel />}
+        {step == 3 && <VASIPDetails params={params} next={() => setStep(4)} />}
+        {step == 4 && ownerType == owner.CONTENT_CREATOR && (
+          <ContentOwner params={params} />
+        )}
+        {step == 4 && ownerType == owner.AGENT && <IsAgent params={params} />}
+        {step == 4 && ownerType == owner.RECORD_LABEL && (
+          <IsRecordLabel params={params} />
+        )}
       </div>
 
       <Success

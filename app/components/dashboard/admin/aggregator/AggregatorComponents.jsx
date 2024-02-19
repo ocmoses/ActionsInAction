@@ -378,13 +378,16 @@ const [showSuccessToast, setShowSuccessToast] = useState({
 
   const { getSingleAggregatorVasPartnerDetails } = useAdmins();
   const [newVasPartnersDetails, setNewVasPartnersDetails] = useState();
+  const [complianceApprovals, setComplianceApprovals] = useState();
   let getVasPartnersDetailsResponse = null;
   const getVasPartnersDetailsFunction = async (aggregator_uuid,vas_partner_uuid) => {
       try {
         getVasPartnersDetailsResponse = await getSingleAggregatorVasPartnerDetails(aggregator_uuid, vas_partner_uuid);
           let get_vas_partners_details_response = getVasPartnersDetailsResponse.result.data.vas_partner[0];
           console.log('get_vas_partners_details_response',get_vas_partners_details_response);
+          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
           setNewVasPartnersDetails(get_vas_partners_details_response);
+          setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
         setDelayedExecution(true);
         setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
@@ -432,19 +435,18 @@ const [showSuccessToast, setShowSuccessToast] = useState({
           {
             headers: {
               apikey: apikey,
-              Authorization: `Bearer ${states.admin.token}`,
+              Authorization: `Bearer ${states.token}`,
             },
           }
         );
 
         setDelayedExecution(true);
-        successAction(feedback, true);
+        successAction(formData.feedback, true);
       } catch (err) {
         setDelayedExecution(true);
         console.log("error", err);
-        successAction(err.response.data.data.message, false);
+        successAction(err.response.data.message, false);
       }
-   
   };
   return (
     <>
@@ -651,7 +653,6 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier
        type={"text"}
-       status={"pending"}
        title={"VAS Licence ID"}
        text={newVasPartnersDetails?.vas_license_id}
        approveRejectRequest={approveRejectRequest}
@@ -662,7 +663,6 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
       />
       <AggregatorVerifier
         type={"text"}
-        status={"pending"}
         title={"Issuing date"}
         text={actionDate(newVasPartnersDetails?.ncc_issue_date)}
         approveRejectRequest={approveRejectRequest}
@@ -672,7 +672,6 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
 
       <AggregatorVerifier
         type={"text"}
-        status={"pending"}
         title={"Expiry date"}
         text={actionDate(newVasPartnersDetails?.ncc_expiry_date)}
         approveRejectRequest={approveRejectRequest}
@@ -681,7 +680,6 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
       />
       <AggregatorVerifier
         type={"file"}
-        status={"pending"}
         title={"NCC VAS License document"}
         text={newVasPartnersDetails?.ncc_doc.file_name}
         approveRejectRequest={approveRejectRequest}
@@ -704,6 +702,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
 };
 
 export const NLRCLicenceVerlidationBody = ({}) => {
+
   return (
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier

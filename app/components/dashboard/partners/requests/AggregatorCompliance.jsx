@@ -2599,7 +2599,6 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
           currentPanel={currentPanel}
           setCurrentPanel={setCurrentPanel}
         />
-
         <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[650px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-5">

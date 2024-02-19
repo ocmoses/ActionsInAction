@@ -1060,6 +1060,7 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
             </div>
         </div>
         <div className="flex gap-3">
+          
           {showBtn && (
             <>
             {(singleApproval?.status!== "approved" && singleApproval?.status!== "rejected") && (

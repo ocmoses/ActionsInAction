@@ -789,13 +789,9 @@ export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveReject
 };
 
 export const ShortCodeVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
+  const [fileViewer, setFileViewer] = useState(null);
+  const category_stage = "shortcode";
   const [vasPartnershortCodes, setVasPartnershortCodes] = useState(newVasPartnersDetails.shortcodes);
-   useEffect(() => {
-    console.log('newVasPartnersDetails.shortcodes', newVasPartnersDetails.shortcodes);
-    if(newVasPartnersDetails){
-      setVasPartnershortCodes(newVasPartnersDetails.shortcodes)
-    }
-  }, [newVasPartnersDetails]);
 
   return (
     <>
@@ -805,49 +801,116 @@ export const ShortCodeVerlidationBody = ({newVasPartnersDetails, approveRejectRe
       key={shortcodes.uuid}
     >
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
        type={"text"}
        title={"Short codes"}
-       text={shortcodes.shortcode.shortcodes.join(', ')} 
+       text={shortcodes.shortcode.shortcodes.join(', ')}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcodes"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"text"}
         title={"Issuing date"}
         text={actionDate(shortcodes.shortcode.shortcode_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcode_issue_date"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"text"}
         title={"Expiry date"}
         text={actionDate(shortcodes.shortcode.shortcode_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcode_expiry_date"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
        type={"file"}
        title={"Short code document"}
-       text={shortcodes.shortcode.shortcode_doc?.file_name} 
+       text={shortcodes.shortcode.shortcode_doc?.file_name}
+       approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="shortcode_doc"
+        shortcode_uuid={shortcodes.uuid}
+        file={shortcodes.shortcode.shortcode_doc?.file_path}
+        category_stage={category_stage}
+        setFileViewer={setFileViewer}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"text"}
         title={"Approved pricing shortcode"}
         text={shortcodes.shortcode_pricing.pricing_shortcodes.join(', ')}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_shortcodes"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"text"}
         title={"Pricing Issuing date"}
-        text={actionDate(shortcodes.shortcode_pricing.pricing_issue_date)} 
+        text={actionDate(shortcodes.shortcode_pricing.pricing_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_issue_date"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage} 
       />
 
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"text"}
         title={"Pricing Expiry date"}
         text={actionDate(shortcodes.shortcode_pricing.pricing_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_expiry_date"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage}
       />
       <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"file"}
         title={"NCC Pricing approval"}
-        text={shortcodes.shortcode_pricing.pricing_doc?.file_name} 
+        text={shortcodes.shortcode_pricing.pricing_doc?.file_name}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_doc"
+        shortcode_uuid={shortcodes.uuid}
+        file={shortcodes.shortcode_pricing.pricing_doc?.file_path}
+        category_stage={category_stage}
+        setFileViewer={setFileViewer} 
       />
 
     </div>
     ))}
+    {fileViewer && (
+      <FileViewer
+        id="file_viewer"
+        link={fileViewer}
+        closeAction={() => setFileViewer(null)}
+      />
+    )}
     </>
   );
 };
@@ -1015,17 +1078,33 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
   );
 };
 
-export const AggregatorVerifierForShortcodes = ({type, title, text, approveRejectRequest, formData, setFormData, field, complianceApprovals, category_stage, newVasPartnersDetails, setFileViewer}) => {
+export const AggregatorVerifierForShortcodes = ({newVasPartnersDetails, type, title, text, approveRejectRequest, formData, setFormData, field, shortcode_uuid, file, category_stage, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
   const [showOthersTextbox, setShowOthersTextbox] = useState(false);
  
   const handleApprove = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "approved",
+      feedback: title + " approved",
+      field: field+"-"+shortcode_uuid,
+      approval_uuid: ""
+    });
     setShowBtn(false);
     setApprove(true)
 };
   const handleReject = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "rejected",
+      feedback: title + " rejected",
+      field: field+"-"+shortcode_uuid,
+      approval_uuid: ""
+    });
     setShowBtn(false);
     setReject(true)
 };
@@ -1035,6 +1114,25 @@ export const AggregatorVerifierForShortcodes = ({type, title, text, approveRejec
     setReject(false);
     setShowBtn(true);
   };
+
+
+  const [singleApproval, setSingleApproval] = useState();
+  const filteredComplianceApprovals = (complianceApprovals, field) => {
+    let filtered_compliance_approvals = [];
+    for (let approval of complianceApprovals) {
+        if (approval.field === field) {
+            filtered_compliance_approvals.push(approval);
+        }
+    }
+    
+    for (let approval of filtered_compliance_approvals) {
+      setSingleApproval(approval);
+    }
+}
+
+  useEffect(() => {
+    filteredComplianceApprovals(newVasPartnersDetails.compliance_approvals, field+"-"+shortcode_uuid);
+  }, [newVasPartnersDetails]);
 
   return (
     <div className={`border border-white/10 rounded-[7px] p-3 text-gray-400 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
@@ -1065,12 +1163,40 @@ export const AggregatorVerifierForShortcodes = ({type, title, text, approveRejec
       <div className="flex justify-between">
         <div className="flex gap-3">
        
+        {singleApproval?.status!== "approved" && singleApproval?.status!== "rejected" && singleApproval?.status!== "corrected" && (
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2.25 3.375H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 7.125H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 10.875H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 14.625H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+        )}
+        {singleApproval?.status=== "approved" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "rejected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        
+
 
             <div className="flex flex-col">
               <span className="text-[11px]">{title}</span>
@@ -1078,6 +1204,9 @@ export const AggregatorVerifierForShortcodes = ({type, title, text, approveRejec
                 <h3 className="font-mtn-bold text-white">{text}</h3>
               ):(
                 <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center cursor-pointer"
+                onClick={() =>
+                  setFileViewer(file)
+                }
                 >
                   <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.8 0C10.074 0 10.337 0.113 10.526 0.312L13.726 3.74C13.902 3.926 14 4.173 14 4.429V15C14 15.552 13.552 16 13 16H1C0.448 16 0 15.552 0 15V1C0 0.448 0.448 0 1 0H9.8ZM13 5H9.5C9.224 5 9 4.776 9 4.5V1H1V15H13V5ZM4.5 12C4.22386 12 4 11.7761 4 11.5C4 11.2239 4.22386 11 4.5 11H9.5C9.77614 11 10 11.2239 10 11.5C10 11.7761 9.77614 12 9.5 12H4.5ZM4.5 9C4.22386 9 4 8.77614 4 8.5C4 8.22386 4.22386 8 4.5 8H9.5C9.77614 8 10 8.22386 10 8.5C10 8.77614 9.77614 9 9.5 9H4.5Z" fill="#999999"/>
@@ -1094,11 +1223,15 @@ export const AggregatorVerifierForShortcodes = ({type, title, text, approveRejec
             </div>
         </div>
         <div className="flex gap-3">
-          {showBtn && (
+        {showBtn && (
+            <>
+            {(singleApproval?.status!== "approved" && singleApproval?.status!== "rejected") && (
               <>
               <RequestRejectBtn action={handleReject}/>
               <RequestApproveBtn action={handleApprove} />
               </>
+            )}
+            </>
             )}
         </div>
       </div>

@@ -147,7 +147,7 @@ console.log('vas_partner_response', vas_partner_response);
 
   return (
     <>
-      <main className="w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
+      <main className="text-gray-400 w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
         {!delayedExecution ? (
           <div className="w-[100%] flex justify-center">
             <Loading style="h-[600px]" />
@@ -213,7 +213,7 @@ console.log('vas_partner_response', vas_partner_response);
 
 export const AggregatorComplianceNav = ({closeAggregatorComplianceFormFlyout, partnerDetails,}) => {
   return (
-    <header className=" flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
+    <header className="text-gray-400 flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
         onClick={closeAggregatorComplianceFormFlyout}
         className="flex justify-start items-center text-md group cursor-pointer "
@@ -281,7 +281,7 @@ export const AggregatorComplianceProgressiveNav = ({partnerDetails,currentPanel,
 
   return (
     <>
-      <nav className="w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
+      <nav className="text-gray-400 w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
         <div className="pt-[50px] w-[100%] h-auto flex justify-center">
           <div className="w-[80%] h-auto">
             <li
@@ -768,7 +768,7 @@ export const NCCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partner
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -1141,7 +1141,7 @@ export const NLRCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partne
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -1410,7 +1410,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -1516,7 +1516,7 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
   return (
     <>
     <section
-      className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}
+      className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}
     >
       <div className="mb-5 w-full flex flex-col gap-3">
         <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
@@ -1844,7 +1844,7 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
   return (
     <>
     <section
-      className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
+      className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
         nextPage ? `hidden` : `flex`
       }`}
     >
@@ -2251,7 +2251,7 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
   return (
     <>
       <section
-        className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
+        className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
           nextPage ? `flex` : `hidden`
         }`}
       >
@@ -2433,7 +2433,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
         ? shortCodes.split(",").map((number, index) => (
             <button
               key={index}
-              className="flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center"
+              className="text-gray-400 flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center"
             >
               <span className="text-white font-mtn-medium">
                 {number.trim()}
@@ -2593,7 +2593,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className=" text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}

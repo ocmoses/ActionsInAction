@@ -52,20 +52,20 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   };
 ////////////////////////////////////////////////////////////////////
 ////api/v2/admin/approved/request
-    const { getSingleAggregatorVasPartnerApprovalDetails } = useAdmins();
-    const [vasPartnersDetails, setVasPartnersDetails] = useState();
-    let getApprovedRequestResponse = null;
-    const getVasPartnersDetails = async (service_uuid) => {
-        try {
-            getApprovedRequestResponse = await getSingleAggregatorVasPartnerApprovalDetails(service_uuid);
-            let get_approved_request_response = getApprovedRequestResponse.result.data;
-          setVasPartnersDetails(get_approved_request_response);
-          setDelayedExecution(true);
-        } catch (err) {
-          console.log("error", err);
-          successAction('Network Error!', false);
-        }
-      };
+const { getSingleAggregatorVasPartnerApprovalDetails } = useAdmins();
+const [vasPartnersDetails, setVasPartnersDetails] = useState();
+let getApprovedRequestResponse = null;
+const getVasPartnersDetails = async (service_uuid) => {
+    try {
+        getApprovedRequestResponse = await getSingleAggregatorVasPartnerApprovalDetails(service_uuid);
+        let get_approved_request_response = getApprovedRequestResponse.result.data;
+      setVasPartnersDetails(get_approved_request_response);
+      setDelayedExecution(true);
+    } catch (err) {
+      console.log("error", err);
+      successAction('Network Error!', false);
+    }
+  };
   
 
 const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useState({
@@ -668,6 +668,8 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         approveRejectRequest={approveRejectRequest}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_issue_date"
+        category_stage={category_stage}
       />
 
       <AggregatorVerifier
@@ -677,15 +679,19 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         approveRejectRequest={approveRejectRequest}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_expiry_date"
+        category_stage={category_stage}
       />
       <AggregatorVerifier
         type={"file"}
         title={"NCC VAS License document"}
         text={newVasPartnersDetails?.ncc_doc.file_name}
         approveRejectRequest={approveRejectRequest}
-        newVasPartnersDetails={newVasPartnersDetails}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_doc"
+        category_stage={category_stage}
+        newVasPartnersDetails={newVasPartnersDetails}
         setFileViewer={setFileViewer}
       />
     </div>
@@ -798,7 +804,7 @@ export const ShortCodeVerlidationBody = ({}) => {
   );
 };
 
-export const AggregatorVerifier = ({type, status, title, text, approveRejectRequest, newVasPartnersDetails, formData, setFormData, field, category_stage, setFileViewer}) => {
+export const AggregatorVerifier = ({type, title, text, approveRejectRequest, formData, setFormData, field, category_stage, newVasPartnersDetails, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
@@ -817,6 +823,14 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
     setApprove(true)
 };
   const handleReject = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "rejected",
+      feedback: title + " rejected",
+      field: field,
+      approval_uuid: ""
+    });
     setShowBtn(false);
     setReject(true)
 };

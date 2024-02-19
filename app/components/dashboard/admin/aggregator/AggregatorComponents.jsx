@@ -99,7 +99,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
         </div>
       ) : (
         <>
-          <div className=" mx-auto py-12 px-16 min-h-screen w-[85%]">
+          <div className=" mx-auto py-12 px-16 min-h-screen w-[85%] text-gray-400">
             <Link href="/admin/requests">
               <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
                 <svg
@@ -206,7 +206,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
-                      modal: 2,
+                      modal: "nlrc_licence",
                       modalTitle: "NLRC License",
                     })
                   }
@@ -269,7 +269,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
-                      modal: 3,
+                      modal: "short_code",
                       modalTitle: "Short codes",
                     })
                   }
@@ -304,7 +304,7 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
     return (
       <>
         <div
-          className=" bg-white/5 w-[100%]  rounded-[10px] cursor-pointer hover:bg-white/10"
+          className=" bg-white/5 w-[100%]  rounded-[10px] cursor-pointer hover:bg-white/10  text-gray-400"
           onClick={() => openAggregatorValidationFlyout()}
         >
           <div className="p-[25px] h-[240px] flex flex-col gap-3 justify-between">
@@ -450,7 +450,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
     <>
       <section
         id="modal"
-        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]"
+        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  text-gray-400"
         onClick={(e) => {
           e.target.id == "modal" && closeOpenAggregatorValidationFlyout();
         }}
@@ -648,7 +648,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
   const category_stage = "ncclicense";
   return (
     <>
-    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
+    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier
        type={"text"}
        status={"pending"}
@@ -705,7 +705,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
 
 export const NLRCLicenceVerlidationBody = ({}) => {
   return (
-    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
+    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier
        type={"file"}
        status={"pending"}
@@ -743,7 +743,7 @@ export const NLRCLicenceVerlidationBody = ({}) => {
 
 export const ShortCodeVerlidationBody = ({}) => {
   return (
-    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3">
+    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3 text-gray-400">
       <AggregatorVerifier
        type={"file"}
        status={"pending"}
@@ -828,7 +828,7 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
     setShowBtn(true);
   };
   return (
-    <div className={`border border-white/10 rounded-[7px] p-3 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
+    <div className={`border border-white/10 rounded-[7px] p-3 text-gray-400 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
         {(approve || reject) && (
             <>
               {approve && (

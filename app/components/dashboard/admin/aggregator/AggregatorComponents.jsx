@@ -166,6 +166,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 1,
                       modal: "ncc_licence",
                       modalTitle: "VAS License",
                     })
@@ -205,6 +206,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 2,
                       modal: "nlrc_licence",
                       modalTitle: "NLRC License",
                     })
@@ -268,6 +270,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 3,
                       modal: "short_code",
                       modalTitle: "Short codes",
                     })
@@ -569,40 +572,46 @@ const [showSuccessToast, setShowSuccessToast] = useState({
 
             {/* -----start nav-------------------------------------------------------------- */}
             <div className="h-[60px] bg-black border-b border-white/10 flex justify-between items-center">
-              <div className="p-5 flex gap-3 cursor-pointer">
-                <svg
-                  width="40"
-                  height="40"
-                  viewBox="0 0 40 40"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    width="40"
-                    height="40"
-                    rx="20"
-                    fill="white"
-                    fill-opacity="0.1"
-                  />
-                  <path
-                    d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
-                    stroke="#FAFAFA"
-                    stroke-width="1.5"
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <div className="flex flex-col text-[13px]">
-                  <span className="text-[11px]">Previous</span>
-                  <h5 className="font-mtn-bold">VAS Licence</h5>
-                </div>
+              <ButtomNavigations openAggregatorValidationFlyout={openAggregatorValidationFlyout} setOpenAggregatorValidationFlyout={setOpenAggregatorValidationFlyout}/>
+            </div>
+            {/* -----start nav-------------------------------------------------------------- */}
+          </div>
+        </div>
+      </section>
+      {showSuccessToast.status && (
+            <NewSuccess
+              message={showSuccessToast.message}
+              alert={showSuccessToast.alert}
+            />
+          )}
+    </>
+  );
+};
+
+
+export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggregatorValidationFlyout}) => {
+  return (
+    <>
+    {openAggregatorValidationFlyout.stage === 1 &&(
+      <>
+              <div div className="p-5 flex gap-3 cursor-pointer">
+               
               </div>
 
-              <div className="p-5 flex gap-3 cursor-pointer">
+              <div className="p-5 flex gap-3 cursor-pointer"
+              onClick={()=>
+                setOpenAggregatorValidationFlyout({
+                  ...openAggregatorValidationFlyout,
+                  opens: true,
+                  stage: 2,
+                  modal: "nlrc_licence",
+                  modalTitle: "NLRC License",
+                })
+              }
+              >
                 <div className="flex flex-col text-[13px]">
                   <span className="text-[11px]">Next</span>
-                  <h5 className="font-mtn-bold">VAS Licence</h5>
+                  <h5 className="font-mtn-bold">NLRC License</h5>
                 </div>
                 <svg
                   width="40"
@@ -628,20 +637,149 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                   />
                 </svg>
               </div>
-            </div>
-            {/* -----start nav-------------------------------------------------------------- */}
-          </div>
-        </div>
-      </section>
-      {showSuccessToast.status && (
-            <NewSuccess
-              message={showSuccessToast.message}
-              alert={showSuccessToast.alert}
-            />
-          )}
+      </>
+    )}
+ 
+    {openAggregatorValidationFlyout.stage === 2 &&(
+          <>
+                  <div div className="p-5 flex gap-3 cursor-pointer"
+                  onClick={() =>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      stage: 1,
+                      modal: "ncc_licence",
+                      modalTitle: "VAS License",
+                    })
+                  }
+                  >
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        width="40"
+                        height="40"
+                        rx="20"
+                        fill="white"
+                        fill-opacity="0.1"
+                      />
+                      <path
+                        d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
+                        stroke="#FAFAFA"
+                        stroke-width="1.5"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Previous</span>
+                      <h5 className="font-mtn-bold">VAS Licence</h5>
+                    </div>
+                  </div>
+
+                  <div className="p-5 flex gap-3 cursor-pointer"
+                  onClick={()=>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      stage: 3,
+                      modal: "short_code",
+                      modalTitle: "Short codes",
+                    })
+                  }
+                  >
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Next</span>
+                      <h5 className="font-mtn-bold">Short codes</h5>
+                    </div>
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        width="40"
+                        height="40"
+                        rx="20"
+                        fill="white"
+                        fill-opacity="0.1"
+                      />
+                      <path
+                        d="M17.425 26.6L22.8584 21.1667C23.5 20.525 23.5 19.475 22.8584 18.8334L17.425 13.4"
+                        stroke="#FAFAFA"
+                        stroke-width="1.5"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+          </>
+     )}
+
+    {openAggregatorValidationFlyout.stage === 3 &&(
+      <>
+              <div div className="p-5 flex gap-3 cursor-pointer"
+              onClick={() =>
+                setOpenAggregatorValidationFlyout({
+                  ...openAggregatorValidationFlyout,
+                  opens: true,
+                  stage: 2,
+                  modal: "nlrc_licence",
+                  modalTitle: "NLRC License",
+                })
+              }
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    width="40"
+                    height="40"
+                    rx="20"
+                    fill="white"
+                    fill-opacity="0.1"
+                  />
+                  <path
+                    d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
+                    stroke="#FAFAFA"
+                    stroke-width="1.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div className="flex flex-col text-[13px]">
+                  <span className="text-[11px]">Previous</span>
+                  <h5 className="font-mtn-bold">NLRC License</h5>
+                </div>
+              </div>
+
+              <div className="p-5 flex gap-3 cursor-pointer">
+          
+              </div>
+      </>
+    )}
     </>
   );
 };
+
+
+
+
+
+
 
 export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);

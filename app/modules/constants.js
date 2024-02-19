@@ -27,10 +27,10 @@ export const apikey =
     : process.env.NEXT_PUBLIC_APIKEY;
 
 export const dsmUrl =
-    typeof window === "undefined"
-      ? process.env.DSM_URL
-      : process.env.NEXT_PUBLIC_DSM_URL;
-  
+  typeof window === "undefined"
+    ? process.env.DSM_URL
+    : process.env.NEXT_PUBLIC_DSM_URL;
+
 export const onboarding_type = {
   new: "Registration",
   migrated: "Migration",
@@ -1147,7 +1147,6 @@ export const approvalFields = {
     stage: "shortcode",
   },
 
-
   // indemnity: {
   indemnity_no: {
     title: "Professional indemnity insurance number",
@@ -1177,7 +1176,6 @@ export const approvalFields = {
     approval: ["SPRM", "INSU", "PMAD", "COLG"],
     stage: "indemnity",
   },
-
 
   // accountinfo: {
   audited_account_1_doc: {
@@ -1483,14 +1481,15 @@ export const roles = [
   },
 ];
 
-export const questionnaire_pending = "This partner has not submitted any questionaire";
+export const questionnaire_pending =
+  "This partner has not submitted any questionaire";
 
 export const ip_pending = "Partner has not started IP submission";
 
 export const user_statuses = {
   ACTIVE: "active",
-  APPROVED: "approved"
-}
+  APPROVED: "approved",
+};
 
 export const questionnaire_link = "https://staging-dmsthirdparty.mtn.ng/dms/partner_onboarding/Oracle----Supplier-Questionnaire_2024-02-15-03-18.docx";
 //"https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Oracle----Supplier-Questionnaire_2023-10-17-00-45.docx";
@@ -1508,23 +1507,25 @@ export const request_types = {
   CHANGE_ORDER: "Change Order",
   LICENSE_RENEWAL: "License Renewal",
   VAS_CLEARANCE: "IP Compliance",
-  SHORTCODES: "Short Codes"
-}
+  SHORTCODES: "Short Codes",
+  AGGREGATOR: "Aggregator",
+};
 
 export const role_types = {
   SUPER_ADMIN: "superAdmin",
   ADMIN: "admin",
   DIRECTOR: "director",
   WITNESS: "witness",
-  DELEGATE: "delegate"
-}
+  DELEGATE: "delegate",
+};
 
 export const role_menu_map = {
   "superAdmin": [
     "Dashboard",
     "Compliance",
     "Settings",
-    "Contracts"
+    "Contracts",
+    "Requests"
   ],
   "admin": [
     "Dashboard",
@@ -1549,15 +1550,12 @@ export const contract_statuses = {
   EXPIRED: "expired",
   ACTIVE: "active",
   UPDATE: "update",
-  EXPIRING: "expiring"
-}
+  EXPIRING: "expiring",
+};
 
 export const suspended_categories = [
   "Marketplace",
   "VAS Aggregator",
-  "Value Added Services",
+  // "Value Added Services",
   // "Rich Media Services"
-]
-
-
-
+];

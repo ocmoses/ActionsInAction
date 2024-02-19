@@ -10,6 +10,7 @@ export default function ContractStatus({ dynamicData }) {
   const {
     contractStatus,
     userStatus,
+    vasPartnerStatus,
     selectedAllRequiredSignatories,
     setAgreementModal,
     allHaveSigned,
@@ -56,7 +57,7 @@ export default function ContractStatus({ dynamicData }) {
     if (
       !contractId &&
       user.role == "superAdmin" &&
-      userStatus == user_statuses.APPROVED
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED)
     ) {
       if (selectedAllRequiredSignatories == true && !isASignatory) {
         return <div></div>;
@@ -65,13 +66,12 @@ export default function ContractStatus({ dynamicData }) {
       }
     } else if (
       contractId &&
-      userStatus == user_statuses.APPROVED &&
-      selectedAllRequiredSignatories &&
-      !hasSigned
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
+      selectedAllRequiredSignatories && !hasSigned
     ) {
       return <StartSigning />;
     } else if (
-      userStatus == user_statuses.APPROVED &&
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
       selectedAllRequiredSignatories &&
       allHaveSigned
     ) {
@@ -84,7 +84,7 @@ export default function ContractStatus({ dynamicData }) {
     if (
       !contractId &&
       user.role == "superAdmin" &&
-      userStatus == user_statuses.APPROVED
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED)
     ) {
       if (selectedAllRequiredSignatories == true && !isASignatory) {
         return <div></div>;
@@ -93,13 +93,13 @@ export default function ContractStatus({ dynamicData }) {
       }
     } else if (
       contractId &&
-      userStatus == user_statuses.APPROVED &&
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
       selectedAllRequiredSignatories &&
       !hasSigned
     ) {
       return <StartSigning />;
     } else if (
-      userStatus == user_statuses.APPROVED &&
+      (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
       selectedAllRequiredSignatories &&
       allHaveSigned
     ) {

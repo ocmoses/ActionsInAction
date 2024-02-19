@@ -4,6 +4,8 @@ import CategoryCard from "@/app/components/dashboard/CategoryCard";
 import CategoryDetail from "@/app/components/dashboard/CategoryDetail";
 import PartnerCategories from "@/app/components/dashboard/PartnerCategories";
 import PartnerAgreement from "@/app/components/dashboard/PartnerAgreement";
+import ChooseAggregatorCard from "@/app/components/dashboard/ChooseAggregatorCard";
+import ChooseAggregatorSuccessCard from "@/app/components/dashboard/ChooseAggregatorSuccessCard";
 import OnboardingLayout from "./OnboardingLayout";
 import Button from "@/app/components/form/Button";
 import useUsers from "@/hooks/useUsers";
@@ -13,10 +15,10 @@ import Portal from "@/app/components/Portal";
 import { useState, useEffect, useRef } from "react";
 import {
   Util,
-  AllowedCategories,
   filterPartner,
   filterCategory,
   getFinalApproval,
+  scrollToTop,
 } from "@/app/modules/utilities";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -24,20 +26,26 @@ import usePartners from "@/hooks/usePartners";
 import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import Image from "next/image";
-import { scrollToTop } from "@/app/modules/utilities";
 import CallToAction from "./partners/CallToAction";
 import {
   user_statuses,
   questionnaire_pending,
   ip_pending,
+  suspended_categories,
+  role_menu_map,
 } from "@/app/modules/constants";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
-
-import PopUp, { BrdUpdatesSuccess } from "@/app/components/PopUps";
+import PopUp, {
+  BrdUpdatesSuccess,
+  ChooseAggregator,
+  ChooseAggregatorSuccess,
+  ForAggregatorSuccess,
+  ChooseAggregatorFailure,
+} from "@/app/components/PopUps";
 import BrdUpdates, {
   BrdRejectedAlert,
 } from "@/app/components/dashboard/compliance/BrdUpdates";
@@ -51,11 +59,9 @@ import GracePeriodAlert, {
 import { useStoreState } from "easy-peasy";
 import axios from "axios";
 import IPCard from "@/app/components/dashboard/IPCard";
-import { suspended_categories } from "@/app/modules/constants";
 
 import { ServiceConfigurationReadyAlert } from "@/app/components/dashboard/ContractComponents";
 import { PartnerMenu } from "@/app/modules/menu";
-import { role_menu_map } from "@/app/modules/constants";
 
 export default function GetStarted({ type }) {
   const {
@@ -73,17 +79,15 @@ export default function GetStarted({ type }) {
     nextStage,
     getIPStatus,
     getPartnerContractCurrentlyRunning,
+    getVasPartnerRequest,
+    getAggregators,
+    changeAggregator,
   } = usePartners();
-  //////////////////////////////////////////////////////////////////
   const states = useStoreState((state) => state);
-
-  ////////////////////////////////////////////////////////////////
   const [FinalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
-    // console.log("this is the info on state", states)
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
-    // console.log("_finalApproval", { _finalApproval });
     setFinalApproval(_finalApproval);
   }, [partner]);
 
@@ -94,7 +98,7 @@ export default function GetStarted({ type }) {
   const [showProgress, setShowProgress] = useState(false);
   const [tmpCat, setTmpCat] = useState(null);
   const [isOnboarding, setIsOnboarding] = useState(false);
-  // const [allowedCategories, setAllowedCategories] = useState(false)
+  const [rechooseAggregator, setRechooseAggregator] = useState(true);
 
   const { setForm, setProcessing, setActiveCategory } = useProcessing();
 
@@ -205,8 +209,8 @@ export default function GetStarted({ type }) {
     const partnerActiveCat = [];
     filterPartner(partner, categoriesData);
     if (!Util.isEmpty(partner) && categoriesData?.length > 0) {
-      if (partner.categories?.length > 0) {
-        partner.categories.map((_category) => {
+      if (partner?.categories?.length > 0) {
+        partner?.categories.map((_category) => {
           const category = filterCategory(_category, partner);
           setRejectedTeam(category?.teamStatus);
           partnerActiveCat.push(category.uuid);
@@ -272,7 +276,7 @@ export default function GetStarted({ type }) {
             apikey: process.env.NEXT_PUBLIC_APIKEY,
           },
           timeout: process.TIMEOUT,
-          redirect: "follow", // manual, *follow, error
+          redirect: "follow",
           referrerPolicy: "no-referrer",
         }
       ).catch((error) => {
@@ -325,8 +329,6 @@ export default function GetStarted({ type }) {
   };
   //////////end code////////////////////////////////////////////////////////////////////////////
 
-  //////////afoo code for grace period////////////////////////////////////////////////////////////////////////////
-
   const [showGracePreriodAlert, setShowGracePreriodAlert] = useState(false);
   const [showLicenseRenewalAlert, setShowLicenseRenewalAlert] = useState(false);
   const [gracePeriod, setGracePeriod] = useState(null);
@@ -336,7 +338,6 @@ export default function GetStarted({ type }) {
   const [popUpLicenseRenewalForm, setPopUpLicenseRenewalForm] = useState(false);
   const [licenseRenewalSubmit, setLicenseRenewalSubmit] = useState(false);
 
-  ////////////partnerLicenseGracePeriodStatus function////////////////////
   const partnerLicenseGracePeriod = async () => {
     setShowGracePreriodAlert(false);
     try {
@@ -423,40 +424,110 @@ export default function GetStarted({ type }) {
     console.log("USER", user);
 
     // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
-    if (user && role_menu_map[user?.role] && role_menu_map[user?.role][0] === "Dashboard") {
-        setHasdashboard(true);
+    if (
+      user &&
+      role_menu_map[user?.role] &&
+      role_menu_map[user?.role][0] === "Dashboard"
+    ) {
+      setHasdashboard(true);
     }
 
     const location =
-        user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
-            ? PartnerMenu.find(item => item.label === role_menu_map[user?.role][0])?.route
-            : null;
-
-    // console.log("Location is: ", location);
+      user && role_menu_map[user?.role] && role_menu_map[user?.role][0]
+        ? PartnerMenu.find(
+            (item) => item.label === role_menu_map[user?.role][0]
+          )?.route
+        : null;
 
     if (location !== "/dashboard" && location != null) {
-        window.location = location;
+      window.location = location;
     }
-}, [user]);
+  }, [user]);
 
+  const [showChooseAggregator, setShowChooseAggregator] = useState(false);
+  const [showChooseAggregatorSuccess, setShowChooseAggregatorSuccess] =
+    useState(false);
+  const [showForAggregatorSuccess, setShowForAggregatorSuccess] =
+    useState(false);
+  const [selectedAggregator, setSelectedAggregator] = useState();
+  const [vasData, setVasData] = useState({
+    service_uuid: "",
+    aggregator_uuid: "",
+  });
+  const [aggregators, setAggregators] = useState([]);
+  const [aggregatorIndex, setAggregatorIndex] = useState();
+  const [showPartnerCategories, setShowPartnerCategories] = useState(true);
+  const [vasPartnerData, setVasPartnerData] = useState([]);
+  const [showChooseAggregatorFailure, setShowChooseAggregatorFailure] =
+    useState(false);
+  const [failureMsg, setFailureMsg] = useState();
 
+  const fetchVasPartnerRequest = () => {
+    getVasPartnerRequest(partner?.uuid).then((res) => {
+      if (res.result?.length > 0) {
+        setShowPartnerCategories(false);
+        setVasPartnerData(res.result);
+      }
+    });
+  };
 
+  useEffect(() => {
+    fetchVasPartnerRequest();
+  }, [partner?.uuid, showChooseAggregatorSuccess]);
 
+  useEffect(() => {
+    getAggregators(partner?.uuid).then((res) => {
+      setAggregators(res.result);
+    });
+  }, [partner?.uuid]);
+
+  const handleAggregatorSelect = (index, companyName, uuid) => {
+    setAggregatorIndex(index);
+    handleVasData("aggregator_uuid", uuid);
+    setSelectedAggregator(companyName);
+  };
+
+  const handleAggregatorSuccess = async () => {
+    setProcessing(true);
+    setShowChooseAggregator(false);
+    if (aggregatorIndex == 0) {
+      setShowForAggregatorSuccess(true);
+      return;
+    }
+    await changeAggregator(vasData).then((res) => {
+      if (res.result.success) {
+        setShowChooseAggregatorSuccess(true);
+        setRechooseAggregator(false);
+        return;
+      }
+      if (!res.result.success) {
+        setFailureMsg(res.result.message);
+        setShowChooseAggregatorFailure(true);
+      }
+      setProcessing(false);
+    });
+    setProcessing(false);
+  };
+
+  const handleVasData = (field, value) => {
+    setVasData((prevUserData) => ({
+      ...prevUserData,
+      [field]: value,
+    }));
+  };
 
   return (
     hasDashboard && (
       <>
         {isOnboarding && (
-          <>
-            <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
-              <OnboardingLayout
-                isOnboarding={isOnboarding}
-                setIsOnboarding={setIsOnboarding}
-                setTmpCat={setTmpCat}
-                scrollpage={scrollpage}
-              />
-            </div>
-          </>
+          <div className="fixed z-20 left-0 bottom-0 flex flex-col h-full w-screen bg-[#030303]">
+            <OnboardingLayout
+              isOnboarding={isOnboarding}
+              setIsOnboarding={setIsOnboarding}
+              setTmpCat={setTmpCat}
+              scrollpage={scrollpage}
+            />
+          </div>
         )}
         {!isOnboarding && (
           <div id="getstarted" ref={MainBox} className="grid grid-cols-12">
@@ -468,7 +539,6 @@ export default function GetStarted({ type }) {
                     {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
-
                 {partner?.onboarding_type === "new" && (
                   <div>
                     {!partner?.categories?.length > 0 ? (
@@ -515,7 +585,7 @@ export default function GetStarted({ type }) {
                                       className="w-12 h-12"
                                     >
                                       <path
-                                        stroke-linecap="round"
+                                        strokeLinecap="round"
                                         strokeLinejoin="round"
                                         d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
                                       />
@@ -529,7 +599,7 @@ export default function GetStarted({ type }) {
                                       className="w-6 h-6 absolute top-4 left-3"
                                     >
                                       <path
-                                        stroke-linecap="round"
+                                        strokeLinecap="round"
                                         strokeLinejoin="round"
                                         d="M3.75 9h16.5m-16.5 6.75h16.5"
                                       />
@@ -541,9 +611,9 @@ export default function GetStarted({ type }) {
                                       className="w-4 h-6 absolute top-8 right-2"
                                     >
                                       <path
-                                        fill-rule="evenodd"
+                                        fillRule="evenodd"
                                         d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
-                                        clip-rule="evenodd"
+                                        clipRule="evenodd"
                                       />
                                     </svg>
                                   </div>
@@ -650,7 +720,6 @@ export default function GetStarted({ type }) {
                     )}
                   </>
                 )}
-
                 {IPAlert &&
                   //Need to negate the condition that shows the category files
                   !(
@@ -662,14 +731,10 @@ export default function GetStarted({ type }) {
 
                     <IPCard />
                   )}
-
                 <ChangeOrderRejection />
-
                 <IPRejection />
                 <IPDynamicField />
-
                 {/* //================this is the popup==============================================================================================================*/}
-
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (
                   <>
                     {popUp && (
@@ -678,7 +743,7 @@ export default function GetStarted({ type }) {
                           <BrdUpdates
                             closePopUp={closePopUp}
                             submitBrd={submitBrd}
-                            loginPartnerID={partner.uuid}
+                            loginPartnerID={partner?.uuid}
                             token={user.token}
                           /> // If contactSubmit is true
                         ) : (
@@ -693,9 +758,7 @@ export default function GetStarted({ type }) {
                     />
                   </>
                 )}
-
                 {/*//==============================================================================================================================*/}
-
                 {/* //================this is lisense grace period and License renewal==============================================================================================================*/}
                 {showGracePreriodAlert && showLicenseRenewalAlert && (
                   <>
@@ -750,9 +813,7 @@ export default function GetStarted({ type }) {
                     />
                   </>
                 )}
-
                 {/*//==============================================================================================================================*/}
-
                 {partner?.onboarding_type === "migrated" && (
                   <>
                     {partner?.is_login === "no" ? (
@@ -828,7 +889,6 @@ export default function GetStarted({ type }) {
                     )}
                   </>
                 )}
-
                 {userStatus != user_statuses.APPROVED && partnerCategories && (
                   <PartnerCategories
                     partner={partner}
@@ -844,7 +904,6 @@ export default function GetStarted({ type }) {
                     <FormErrors success={success} align="center" />
                   </div>
                 )}
-
                 {partner?.categories?.length > 0 &&
                   !partner?.edittable &&
                   partner?.contract_status === "not_started" && (
@@ -889,8 +948,7 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-
-                {!contractStarted &&
+                {/* {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerActiveCategories?.length > 0 && (
                     <div
@@ -902,8 +960,7 @@ export default function GetStarted({ type }) {
                       to complete a selected category to enable you move to the
                       next category
                     </div>
-                  )}
-
+                  )} */}
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -957,8 +1014,8 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-
-                {!contractStarted &&
+                {showPartnerCategories &&
+                  !contractStarted &&
                   partner?.contract_status === "not_started" &&
                   !showProgress && (
                     <div className="grid lg:grid-cols-2 justify-center lg:justify-between gap-[24px] mb-16 w3-animate-opacity">
@@ -984,6 +1041,61 @@ export default function GetStarted({ type }) {
                     </div>
                   )}
               </div>
+              {rechooseAggregator &&
+                vasPartnerData.map((item) =>
+                  item.status !== "declined" ? null : (
+                    <ChooseAggregatorCard
+                      aggregator={item.aggregator}
+                      action={() => {
+                        handleVasData("service_uuid", item.service_uuid);
+                        setShowChooseAggregator(true);
+                      }}
+                      dismissAction={() => setRechooseAggregator(false)}
+                    />
+                  )
+                )}
+              {vasPartnerData.map((item) =>
+                item.status !== "in-progress" ? null : (
+                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                )
+              )}
+              {showChooseAggregator && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregator
+                    cancel={() => setShowChooseAggregator(false)}
+                    action={handleAggregatorSuccess}
+                    aggregators={aggregators}
+                    onAggregatorSelect={handleAggregatorSelect}
+                  />
+                </PopUp>
+              )}
+              {showChooseAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregatorSuccess
+                    action={() => {
+                      setShowChooseAggregatorSuccess(false);
+                      fetchVasPartnerRequest();
+                    }}
+                    selectedAggregator={selectedAggregator}
+                  />
+                </PopUp>
+              )}
+              {showForAggregatorSuccess && (
+                <PopUp closePopUp={() => {}}>
+                  <ForAggregatorSuccess
+                    action={() => setShowForAggregatorSuccess(false)}
+                    category={category}
+                  />
+                </PopUp>
+              )}
+              {failureMsg && showChooseAggregatorFailure && (
+                <PopUp closePopUp={() => {}}>
+                  <ChooseAggregatorFailure
+                    action={() => setShowChooseAggregatorFailure(false)}
+                    msg={failureMsg}
+                  />
+                </PopUp>
+              )}
               <div className="flex flex-col mt-12">
                 <h3 className="text-lg text-center lg:text-start text-white font-bold mb-8">
                   Learn how to use

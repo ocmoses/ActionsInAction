@@ -8,7 +8,20 @@ import axios from "axios";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Success from "@/app/components/toasts/Success";
 import useAdmins from "@/hooks/useAdmins";
-
+/////////////////////////////////////////////////////////////////////////////////////
+function actionDate(targetDate) {
+  const originalDate = new Date(targetDate);
+  const formattedDate = originalDate.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+  return formattedDate;
+}
+/////////////////////////////////////////////////////////////////////////////////////
 
 export default function ShortCodeAlert({displayShortCodeAlert}) {
   return (
@@ -45,24 +58,11 @@ export default function ShortCodeAlert({displayShortCodeAlert}) {
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////
-function actionDate(targetDate) {
-  const originalDate = new Date(targetDate);
-  const formattedDate = originalDate.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-  return formattedDate;
-}
-/////////////////////////////////////////////////////////////////////////////////////
+
 export const ShortCodeFlyOut = ({
   closeShortCodeFlyOut,
   selectedRequest,
-  loadAllRequest
+  getAllRequests
 }) => {
 
   const {approvals} = useAdmins();
@@ -108,7 +108,6 @@ export const ShortCodeFlyOut = ({
       } else {
         console.log("No data available in the response");
       }
-      success.successToast=false;
     } catch (error) {
       console.error("Error fetching single partner shortcode:", error);
       success.successToast=false;
@@ -131,6 +130,7 @@ export const ShortCodeFlyOut = ({
   };
   
   useEffect(() => {
+    console.log('selectedRequest', selectedRequest);
     if (singlePartnerShortcode) {
       setApprovalStatusList(approvalStatuses(singlePartnerShortcode));
     }
@@ -141,7 +141,7 @@ export const ShortCodeFlyOut = ({
     partner_uuid: selectedRequest.partner_uuid,
     shortcode: null,
     status: "",
-    shortcode_uuid: selectedRequest.uuid,
+    shortcode_uuid: selectedRequest.shortcode_uuid,
   });
 
 
@@ -170,12 +170,13 @@ export const ShortCodeFlyOut = ({
       );
       success.successMessage=response.data.data.message
       success.successToast=true;
-      loadAllRequest();
       get_single_partner_shortcode();
-      
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     } catch (err) {
       setSendAction(false);
-      success.successMessage=err.response.data.data.message
+      success.successMessage=err.response.data.message
       success.successToast=true;
     }
   };

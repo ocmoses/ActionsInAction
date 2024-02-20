@@ -382,11 +382,7 @@ export default function FilteringFlyout() {
   );
 }
 
-export const RequestFinishUpModal = ({
-  closeRequestFlyout,
-  realTimeReloadRequestFlyout,
-  partnerDetails,
-}) => {
+export const RequestFinishUpModal = ({closeRequestFlyout,realTimeReloadRequestFlyout,partnerDetails,}) => {
 
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
@@ -640,14 +636,7 @@ export const RequestFinishUpModal = ({
   );
 };
 
-export const ApproveRejectRequestModal = ({
-  closeApproveRejectRequestFlyout,
-  partnerDetails,
-  approveRequest,
-  rejectRequest,
-  successAction,
-  setRequestFlyout,
-}) => {
+export const ApproveRejectRequestModal = ({closeApproveRejectRequestFlyout,partnerDetails,approveRequest,rejectRequest,successAction,setRequestFlyout,}) => {
   const finishUp = () => {
     setRequestFlyout(true);
     closeApproveRejectRequestFlyout();

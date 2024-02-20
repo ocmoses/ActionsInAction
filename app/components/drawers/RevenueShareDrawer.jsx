@@ -20,8 +20,9 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
   const [data, setData] = useState({partner_uuid: request.uuid, exclusive_content: "no", 
                                     premium_content: "no", licensed_content: "no", 
-                                    content_provider_share: "", mtn_share: "", 
-                                    status: "approved"});
+                                    content_provider_share: "", 
+                                    technical_provider_share: null, 
+                                    mtn_share: "", status: "approved"});
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -63,6 +64,30 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
       return false;
 
     }
+
+    if(request.vas_partner_uuid){
+
+      if(data.technical_provider_share.trim() == ""){
+
+        setError({error: "Please enter a technical provider share"});
+  
+        return false;
+  
+      }else if(isNaN(parseInt(data.technical_provider_share))){
+  
+        setError({error: "Please enter a valid technical provider share"});
+  
+        return false;
+  
+      }else if(parseInt(data.technical_provider_share) >= 100){
+        
+        setError({error: "Technical provider percentage cannot be higher than 100%"});
+  
+        return false;
+  
+      }
+
+    }
     // else if(parseInt(data.content_provider_share) > 40){
       
     //   setError({error: "Content provider's share should be 40% or lower"});
@@ -95,7 +120,13 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     //   return false;
 
     // }
-    else if(parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
+    else if(!request.vas_partner_uuid && parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
+      
+      setError({error: "These percentages don't add up"});
+
+      return false;
+    }
+    else if(request.vas_partner_uuid && parseInt(data.content_provider_share) + parseInt(data.technical_provider_share) + parseInt(data.mtn_share) != 100){
       
       setError({error: "These percentages don't add up"});
 
@@ -126,7 +157,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     if (approve_request_response.message) {
       //display success
       setSuccessMessage(approve_request_response.message);
-      //set selected brd to null
+      
       setSuccessToast(true);
     } else {
       //set errors
@@ -206,7 +237,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                 {/* <span className="text-white/40">0% to 40%</span> */}
               </div> 
 
-              <div className="flex space-x-4 w-24 relative">
+              <div className="flex space-x-4 w-32 relative">
                 <TextInput
                   id="content_provider_share"
                   label=""
@@ -222,6 +253,33 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
               
             </div>
 
+            {
+              request.vas_partner_uuid && 
+
+              <div className="flex space-x-2 justify-between">
+
+                <div>
+                  <p className="text-white">Technical provider’s share</p>
+                  {/* <span className="text-white/40">0% to 40%</span> */}
+                </div> 
+
+                <div className="flex space-x-4 w-32 relative">
+                  <TextInput
+                    id="content_provider_share"
+                    label=""
+                    value={data.technical_provider_share}
+                    onChange={handleFormChange}
+                    onBlur={handleFormChange}
+                    errors={errors}
+                    disabled={false}
+                  />
+                  <p className="absolute right-2 top-2 py-3 px-2 rounded bg-white/20 text-white">%</p>
+                </div>
+
+                
+              </div>
+            }
+
             <div className="flex space-x-2 justify-between">
 
               <div>
@@ -229,7 +287,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                 {/* <span className="text-white/40">60%</span> */}
               </div> 
 
-              <div className="flex space-x-4 w-24 relative">
+              <div className="flex space-x-4 w-32 relative">
                 <TextInput
                   id="mtn_share"
                   label=""

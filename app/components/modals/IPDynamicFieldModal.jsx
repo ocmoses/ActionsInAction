@@ -126,7 +126,7 @@ export default function IPDynamicFieldModal({ dynamic, closeAction }) {
           </div>
         </div>
 
-        <div className="my-4 flex text-white flex-col h-[350px] overflow-y-scroll">
+        <div className="my-4 flex text-white flex-col h-[350px] overflow-y-auto">
           {dynamic.map((aDynamic) => (
             <div className="flex flex-col">
               <div className="my-2 flex flex-col space-y-1">

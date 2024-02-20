@@ -44,13 +44,16 @@ export default function IPDynamicField(){
 
                     if(hasDynamic(resp.data)){
                         let dynamicArray = [];
-                        if(resp.data.request_name_one && resp.data.request_type_one){
+                        if(resp.data.request_name_one && resp.data.request_type_one && 
+                                (resp.data.request_name_one_status != 'approved' && resp.data.request_name_one_status != 'submitted' )){
                             dynamicArray.push([resp.data.request_name_one, resp.data.request_type_one, "one"]);
                         }
-                        if(resp.data.request_name_two && resp.data.request_type_two){
+                        if(resp.data.request_name_two && resp.data.request_type_two && 
+                            (resp.data.request_name_two_status != 'approved' && resp.data.request_name_two_status != 'submitted')){
                             dynamicArray.push([resp.data.request_name_two, resp.data.request_type_two, "two"]);
                         }
-                        if(resp.data.request_name_three && resp.data.request_type_three){
+                        if(resp.data.request_name_three && resp.data.request_type_three && 
+                            (resp.data.request_name_three_status != 'approved' && resp.data.request_name_three_status != 'submitted' )){
                             dynamicArray.push([resp.data.request_name_three, resp.data.request_type_three, "three"]);
                         }
 

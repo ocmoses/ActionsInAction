@@ -108,7 +108,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
         </div>
       ) : (
         <>
-          <div className=" mx-auto py-12 px-16 min-h-screen w-[85%] text-gray-400">
+          <div className=" mx-auto py-12 px-16 min-h-screen text-gray-400 w-[100%] md:w-[90%] lg:w-[85%]">
             <Link href="/admin/requests">
               <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
                 <svg
@@ -142,7 +142,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                 </div>
               </div>
 
-              <div className="flex gap-10 pt-[40px] justify-between">
+              <div className="flex gap-10 pt-[40px] flex-wrap">
                 <AggregatorSelector
                   icon={
                     <svg
@@ -316,7 +316,7 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
     return (
       <>
         <div
-          className=" bg-white/5 w-[100%]  rounded-[10px] cursor-pointer hover:bg-white/10  text-gray-400"
+          className=" bg-white/5 w-[100%] rounded-[10px] cursor-pointer hover:bg-white/10  text-gray-400  md:w-[45%] lg:w-[30%]"
           onClick={() => openAggregatorValidationFlyout()}
         >
           <div className="p-[25px] h-[240px] flex flex-col gap-3 justify-between">
@@ -561,18 +561,16 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             {/* ------end title------------------------------------------------------------- */}
 
             {/* -----start body-------------------------------------------------------------- */}
-           
-            <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
-              
-              <>
-              {!delayedExecution ? (
+            {!delayedExecution ? (
                 <div className="w-[100%] flex justify-center">
                   <Loading style="h-[200px]" />
                 </div>
               ) : (
+           
                 <>
                 {tab.overview && (
-                <>
+                  <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+                
                   {openAggregatorValidationFlyout.modal === 'ncc_licence' && (
                     <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
@@ -582,10 +580,10 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                   {openAggregatorValidationFlyout.modal === 'short_code' && (
                     <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
-                </>
+               </div>
                 )}
                 {tab.activity && (
-                  <>
+                  <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
                   {complianceFeedbacks?.map((feedback) => (
                   <div className="flex gap-3 mb-8" key={feedback.id}>
                     <div className="w-[40px] h-[40px] flex rounded-full bg-gray-500 justify-center items-center text-white">
@@ -606,14 +604,10 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                     </div>
                   </div>
                   ))}
-                  </>
+                  </div>
                 )}
-                  </>
-              )}
-              </>
-              
-             
-            </div>
+                </>
+            )}
              
             {/* -----start body-------------------------------------------------------------- */}
 
@@ -821,12 +815,6 @@ export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggrega
     </>
   );
 };
-
-
-
-
-
-
 
 export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);

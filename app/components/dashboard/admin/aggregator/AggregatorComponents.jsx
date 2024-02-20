@@ -32,6 +32,7 @@ const formattedDate = date.toLocaleDateString("en-US", options);
 return formattedDate;
 }
 
+
 export default function AggregatorPage({ params,realTimePageReloader}) {
 const [delayedExecution, setDelayedExecution] = useState(false);
 //////////////////////////////////////////////////////////////////////////////
@@ -458,7 +459,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
       } catch (err) {
         setDelayedExecution(true);
         console.log("error", err);
-        successAction(err.response.data.message, false);
+        successAction(err.response.data.data.message, false);
       }
   };
   return (
@@ -818,7 +819,7 @@ export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggrega
 
 export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);
-  const category_stage = "ncclicense";
+  const category_stage = "ncclicense_vas";
   return (
     <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
@@ -884,7 +885,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
 
 export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);
-  const category_stage = "nlrclicense";
+  const category_stage = "nlrclicense_vas";
   return (
     <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
@@ -963,7 +964,7 @@ export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveReject
 
 export const ShortCodeVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
   const [fileViewer, setFileViewer] = useState(null);
-  const category_stage = "shortcode";
+  const category_stage = "shortcode_vas";
   const [vasPartnershortCodes, setVasPartnershortCodes] = useState(newVasPartnersDetails.shortcodes);
 
   return (

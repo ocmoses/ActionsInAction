@@ -21,6 +21,16 @@ function actionDate(targetDate) {
   
   return `${day} / ${month} / ${year}`;
 }
+function removeGuid(str) {
+  return str.replace(/-\b([0-9a-fA-F]{8})-([0-9a-fA-F]{4})-([0-9a-fA-F]{4})-([0-9a-fA-F]{4})-([0-9a-fA-F]{12})\b/g, '');
+}
+
+function feedBackDate(dateString){
+const date = new Date(dateString);
+const options = { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" };
+const formattedDate = date.toLocaleDateString("en-US", options);
+return formattedDate;
+}
 
 export default function AggregatorPage({ params,realTimePageReloader}) {
 const [delayedExecution, setDelayedExecution] = useState(false);
@@ -200,7 +210,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       />
                     </svg>
                   }
-                  title={"NLRC License"}
+                  title={"NLRC Permit"}
                   message={"Lottery License for gambling based services"}
                   openAggregatorValidationFlyout={() =>
                     setOpenAggregatorValidationFlyout({
@@ -208,7 +218,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       opens: true,
                       stage: 2,
                       modal: "nlrc_licence",
-                      modalTitle: "NLRC License",
+                      modalTitle: "NLRC Permit",
                     })
                   }
                 />
@@ -367,7 +377,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
     return () => clearTimeout(timeoutId);
   };
 ////////////////////////////////////////////////////////////////////
-     const [tab, setTab] = useState({
+  const [tab, setTab] = useState({
     overview: true,
     activity: false,
   });
@@ -381,6 +391,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   const { getSingleAggregatorVasPartnerDetails } = useAdmins();
   const [newVasPartnersDetails, setNewVasPartnersDetails] = useState();
   const [complianceApprovals, setComplianceApprovals] = useState();
+  const [complianceFeedbacks, setComplianceFeedbacks] = useState();
   let getVasPartnersDetailsResponse = null;
   const getVasPartnersDetailsFunction = async (aggregator_uuid,vas_partner_uuid) => {
       try {
@@ -390,6 +401,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
           console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
           setNewVasPartnersDetails(get_vas_partners_details_response);
           setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
+          setComplianceFeedbacks(get_vas_partners_details_response.compliance_feedbacks);
         setDelayedExecution(true);
         setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
@@ -453,7 +465,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
     <>
       <section
         id="modal"
-        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  text-gray-400"
+        className="text-gray-400 font-mtn w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  "
         onClick={(e) => {
           e.target.id == "modal" && closeOpenAggregatorValidationFlyout();
         }}
@@ -490,7 +502,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                         </defs>
                       </svg>
                     </div>
-                    <h2 className="text-white">
+                    <h2 className="text-white font-mtn">
                       {openAggregatorValidationFlyout.modalTitle}
                     </h2>
                   </div>
@@ -549,12 +561,17 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             {/* ------end title------------------------------------------------------------- */}
 
             {/* -----start body-------------------------------------------------------------- */}
+           
             <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+              
+              <>
               {!delayedExecution ? (
                 <div className="w-[100%] flex justify-center">
                   <Loading style="h-[200px]" />
                 </div>
               ) : (
+                <>
+                {tab.overview && (
                 <>
                   {openAggregatorValidationFlyout.modal === 'ncc_licence' && (
                     <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
@@ -566,8 +583,38 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                     <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
                 </>
+                )}
+                {tab.activity && (
+                  <>
+                  {complianceFeedbacks?.map((feedback) => (
+                  <div className="flex gap-3 mb-8" key={feedback.id}>
+                    <div className="w-[40px] h-[40px] flex rounded-full bg-gray-500 justify-center items-center text-white">
+                      {getInitials(feedback.admin_user.fullname)}
+                    </div>
+                    <div className="flex flex-col gap-0 text-[12px]">
+                        <p><span className="text-white">{feedback.admin_user.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
+                        {feedback.status==='approved' ? (
+                        <p>Status {"->"} <span className={`text-[#97CDAD]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
+                        ):(
+                          <>
+                        <p>Status {"->"} <span className={`text-[#FE6D6C]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
+                        <div className="p-1 px-3 border border-dashed border-white/20 w-[100%] rounded-[20px]">
+                          reason: <span className="text-white">{feedback.feedback}</span> 
+                        </div>
+                        </>
+                        )}
+                    </div>
+                  </div>
+                  ))}
+                  </>
+                )}
+                  </>
               )}
+              </>
+              
+             
             </div>
+             
             {/* -----start body-------------------------------------------------------------- */}
 
             {/* -----start nav-------------------------------------------------------------- */}
@@ -605,13 +652,13 @@ export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggrega
                   opens: true,
                   stage: 2,
                   modal: "nlrc_licence",
-                  modalTitle: "NLRC License",
+                  modalTitle: "NLRC Permit",
                 })
               }
               >
                 <div className="flex flex-col text-[13px]">
                   <span className="text-[11px]">Next</span>
-                  <h5 className="font-mtn-bold">NLRC License</h5>
+                  <h5 className="font-mtn-bold">NLRC Permit</h5>
                 </div>
                 <svg
                   width="40"
@@ -733,7 +780,7 @@ export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggrega
                   opens: true,
                   stage: 2,
                   modal: "nlrc_licence",
-                  modalTitle: "NLRC License",
+                  modalTitle: "NLRC Permit",
                 })
               }
               >
@@ -762,7 +809,7 @@ export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggrega
                 </svg>
                 <div className="flex flex-col text-[13px]">
                   <span className="text-[11px]">Previous</span>
-                  <h5 className="font-mtn-bold">NLRC License</h5>
+                  <h5 className="font-mtn-bold">NLRC Permit</h5>
                 </div>
               </div>
 
@@ -902,7 +949,7 @@ export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveReject
 
       <AggregatorVerifier
         type={"file"}
-        title={"NLRC License document"}
+        title={"NLRC Permit document"}
         text={newVasPartnersDetails?.nlrc_doc.file_name}
         approveRejectRequest={approveRejectRequest}
         formData={formData}

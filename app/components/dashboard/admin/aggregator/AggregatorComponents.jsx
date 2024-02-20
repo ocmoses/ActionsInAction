@@ -32,6 +32,7 @@ const formattedDate = date.toLocaleDateString("en-US", options);
 return formattedDate;
 }
 
+
 export default function AggregatorPage({ params,realTimePageReloader}) {
 const [delayedExecution, setDelayedExecution] = useState(false);
 //////////////////////////////////////////////////////////////////////////////

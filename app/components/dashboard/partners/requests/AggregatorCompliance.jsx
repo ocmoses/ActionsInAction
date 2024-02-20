@@ -21,6 +21,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import useUsers from "@/hooks/useUsers";
 import { useStoreState } from "easy-peasy";
 import { NewSuccess } from "@/app/components/toasts/Success";
+import FileViewer from "@/app/components/modals/FileViewer";
 
 function getToday() {
   const today = new Date();
@@ -2464,6 +2465,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
 
 export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,realTimeReloadRequestFlyout,}) => {
   const states = useStoreState((state) => state);
+  const [fileViewer, setFileViewer] = useState(null);
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -2647,7 +2649,11 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>VAS document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer"
+                      onClick={() =>
+                        setFileViewer(vasPartnerResponse?.ncc_doc.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2708,7 +2714,11 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>NLRC document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer"
+                      onClick={() =>
+                        setFileViewer(vasPartnerResponse?.nlrc_doc.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2783,7 +2793,11 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>Short code document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer"
+                      onClick={() =>
+                        setFileViewer(shortcodeItem.shortcode.shortcode_doc?.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2804,7 +2818,11 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>NCC pricing approval document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3"
+                      onClick={() =>
+                        setFileViewer(shortcodeItem.shortcode_pricing.pricing_doc?.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2849,7 +2867,13 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
           </div>
         </div>
       </div>
-
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
       {showSuccessToast.status && (
         <NewSuccess
           message={showSuccessToast.message}

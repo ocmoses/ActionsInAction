@@ -871,7 +871,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       </td>
                       {/* Action */}
                       <td>
-                        {request?.request_type ==='Aggregator' ? (
+                        {request?.request_type ==='Compliance' ? (
                           <>
                           <span
                           className="text-yellow-600 cursor-pointer"

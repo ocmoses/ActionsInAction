@@ -583,13 +583,19 @@ export const RequestFinishUpModal = ({closeRequestFlyout,realTimeReloadRequestFl
                       </div>
 
                       <div className="flex flex-col gap-4 justify-between items-end">
-                        <Link
-                          href={`/dashboard/ip/${partnerDetails.vas_partner_uuid}`}
-                        >
+                      {vasPartnerResponse?.percentage !== 100 ? (
                           <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-black py-2 px-3 text-[11px] text-gray-700 text-center">
                             Start
                           </div>
+                      ):(
+                        <Link
+                          href={`/dashboard/ip/${partnerDetails.vas_partner_uuid}`}
+                        >
+                          <div className=" min-w-[80px] rounded-full whitespace-nowrap group-hover:border-mtn-100 bg-mtn-500 py-2 px-3 text-[11px] text-black text-center">
+                            Start
+                          </div>
                         </Link>
+                      )}
                       </div>
                     </div>
                   </div>

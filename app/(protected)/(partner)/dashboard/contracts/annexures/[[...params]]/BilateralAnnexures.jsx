@@ -94,6 +94,8 @@ export default function BilateralAnnexures({params}){
         six: ".6",
     }
 
+    let checkindividualFields = false;
+
     const handleOnChange = (e, field) => {
         clearErrors();
         setData({...data, [field]: e.target.value});
@@ -183,7 +185,7 @@ export default function BilateralAnnexures({params}){
 
     const submitResponses = async () => {
 
-        if(user.role == 'witness'){
+        if(user.role == 'witness' || !checkindividualFields){
             router.push(`/dashboard/contracts/execution/${contract_id}`);
             return;
         }
@@ -209,27 +211,41 @@ export default function BilateralAnnexures({params}){
 
     const validateResponses = () => {
 
-        for(let i in data){
-            if(!data[i] || data[i].trim() == ""){
-                let iArray = i.split("_");
+        // console.log("Dynamic at submit", dynamicData);        
 
-                let result = "";
+        for(const field in dynamicData?.dynamic_details?.annexures){
+            console.log("field", field);
 
-                for (let index = 0; index < iArray.length; index++) {
-                    if(index == 0){
-                        result += capitalizeFirst(iArray[index]);
-                    }else if(index == 1){
-                        result += " " + numbersMap[iArray[index]];
-                    }else if(index == 2){
-                        result += numbersMap[iArray[index]];
-                    }else if(index == 3){
-                        result += numbersMap[iArray[index]];
+            if(dynamicData?.dynamic_details?.annexures[field] == "" || 
+            dynamicData?.dynamic_details?.annexures[field] == null ||
+            dynamicData?.dynamic_details?.annexures[field] == undefined){
+                checkindividualFields = true;
+                break;
+            }
+        }
+
+        if(checkindividualFields){
+            for(let i in data){
+                if(!data[i] || data[i].trim() == ""){
+                    let iArray = i.split("_");
+    
+                    let result = "";
+    
+                    for (let index = 0; index < iArray.length; index++) {
+                        if(index == 0){
+                            result += capitalizeFirst(iArray[index]);
+                        }else if(index == 1){
+                            result += " " + numbersMap[iArray[index]];
+                        }else if(index == 2){
+                            result += numbersMap[iArray[index]];
+                        }else if(index == 3){
+                            result += numbersMap[iArray[index]];
+                        }                                            
                     }
-                                        
+    
+                    setError({error: result + " has no response"});
+                    return false;
                 }
-
-                setError({error: result + " has no response"});
-                return false;
             }
         }
 
@@ -606,8 +622,15 @@ export default function BilateralAnnexures({params}){
                             {user.role != "witness" &&
                                 <>
                                     <span className="text-white w-[50px]">
-                                        <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
+                                    {
+                                        dynamicData?.dynamic_details?.annexures["annexure_c"] == 'yes' ? 
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-6 h-6">
+                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                                            </svg> :
+                                            <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
                                                 type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
+                                    }
+                                        
                                     </span>
                                     <span className="text-white/60 flex-1">
                                         By clicking this checkbox, I agree to MTN’s  <span className="text-white">Electronic Record and Signature Disclosure</span>

@@ -225,15 +225,21 @@ export default function Requests() {
 
                         <td
                           onClick={() => viewVasPartnersDetail({ eachRequest })}
-                        >{eachRequest.request_id}</td>
+                        >
+                          {eachRequest.request_id}
+                        </td>
 
                         <td
                           onClick={() => viewVasPartnersDetail({ eachRequest })}
-                        >{eachRequest.telephone}</td>
+                        >
+                          {eachRequest.telephone}
+                        </td>
 
                         <td
                           onClick={() => viewVasPartnersDetail({ eachRequest })}
-                        >{actionDate(eachRequest.service_submitted_on)}</td>
+                        >
+                          {actionDate(eachRequest.service_submitted_on)}
+                        </td>
 
                         <td
                           onClick={() => viewVasPartnersDetail({ eachRequest })}
@@ -289,7 +295,20 @@ export default function Requests() {
                                     }}
                                     className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white flex"
                                   >
-                                    Finish up (0/2)
+                                    {eachRequest.onboarding_ip_status ===
+                                    null ? (
+                                      <span>Finish up (0/2)</span>
+                                    ) : (
+                                      <>
+                                        {eachRequest.onboarding_compliance_status ===
+                                        null ? (
+                                          <span>Finish up (1/2)</span>
+                                        ) : (
+                                          <span>Finish up (2/2)</span>
+                                        )}
+                                      </>
+                                    )}
+
                                     <svg
                                       className="my-1 mx-2"
                                       width="6"

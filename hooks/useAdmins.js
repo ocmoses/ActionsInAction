@@ -1404,7 +1404,7 @@ export default function useAdmins() {
   const getAllAggregatorRequests = async () => {
     try {
       setProcessing(true);
-      const response = await fetch(`${RemoteEndpoints.GET_AGGREGATOR_REQUESTS}`,
+      const response = await fetch(`${RemoteEndpoints.ADMIN_GET_AGGREGATOR_REQUESTS}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1433,7 +1433,7 @@ export default function useAdmins() {
     try {
       setProcessing(true);
       const response = await axios.get(
-        `${RemoteEndpoints.GET_AGGREGATOR_REQUEST}`,
+        `${RemoteEndpoints.ADMIN_GET_AGGREGATOR_REQUEST}`,
         {
           headers: {
             apikey: apikey,

@@ -92,13 +92,21 @@ export default function ContractStatus({ dynamicData }) {
         return <SelectServices />;
       }
     } else if (
+        contractId &&
+        (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
+        !selectedAllRequiredSignatories
+    ) {
+        return <SelectServices />;
+    }else if (
       contractId &&
       (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
       selectedAllRequiredSignatories &&
       !hasSigned
     ) {
+
       return <StartSigning />;
-    } else if (
+
+    }  else if (
       (userStatus == user_statuses.APPROVED ||  vasPartnerStatus == user_statuses.APPROVED) &&
       selectedAllRequiredSignatories &&
       allHaveSigned

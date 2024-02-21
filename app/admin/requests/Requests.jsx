@@ -871,9 +871,11 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       </td>
                       {/* Action */}
                       <td>
-                        {request?.request_type ==='Aggregator' ? (
+                        {request?.request_type ==='Compliance' ? (
                           <>
-                          <span onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
+                          <span
+                          className="text-yellow-600 cursor-pointer"
+                          onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
                           </>
                         ):(
                         <span

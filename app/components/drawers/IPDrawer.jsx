@@ -193,6 +193,10 @@ export default function IPDrawer({
     data.reasons_for_rejection = "";
     data.status = "approved";
 
+    if(request.vas_partner_uuid){
+      data["vas_partner_uuid"] = request.vas_partner_uuid
+    }
+
     setTimeout(() => {
       approveIPDetail(data)
         .then((resp) => {
@@ -335,6 +339,10 @@ export default function IPDrawer({
     if (typedReason.trim().length > 5) {
       //talk about magikkkk numbers
       setData({ ...data, reasons_for_rejection: typedReason });
+    }
+
+    if(request.vas_partner_uuid){
+      data["vas_partner_uuid"] = request.vas_partner_uuid
     }
 
     setTimeout(() => {
@@ -983,7 +991,7 @@ export default function IPDrawer({
                     } border-white/20 flex space-x-2 items-center w-full relative`}
                   >
                     <StatusIcon field={"agg-and-vas-authorization-letter"} statusField={"status"} />
-                    <span className="text-white/80 ml-2">Agg and VAS Authorization Letter</span>
+                    <span className="text-white/80 ml-2">Agg & VAS Authorization Letter</span>
 
                     <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER} />
                   </div>
@@ -1048,7 +1056,7 @@ export default function IPDrawer({
                     } border-white/20 flex space-x-2 items-center w-full relative`}
                   >
                     <StatusIcon field={"agg-and-vas-authorization-video"} statusField={"authorization_video_status"} />
-                    <span className="text-white/80 ml-2">Agg and VAS Authorization Video</span>
+                    <span className="text-white/80 ml-2">Agg & VAS Authorization Video</span>
 
                     <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO} />
                   </div>
@@ -1113,7 +1121,7 @@ export default function IPDrawer({
                     } border-white/20 flex space-x-2 items-center w-full relative`}
                   >
                     <StatusIcon field={"agg-and-vas-agreement-letter"} statusField={"agreement_letter_status"} />
-                    <span className="text-white/80 ml-2">Agg and VAS Agreement Letter</span>
+                    <span className="text-white/80 ml-2">Agg & VAS Agreement Letter</span>
 
                     <Expand expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER} />
                   </div>
@@ -1171,14 +1179,14 @@ export default function IPDrawer({
               <div className="flex space-x-2 items-start w-full">
                 <ItemIcon />
 
-                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                <div className="flex-1 p-1 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
                   <div
                     className={`p-2  ${
                       expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && "border-b pb-4"
                     } border-white/20 flex space-x-2 items-center w-full relative`}
                   >
                     <StatusIcon field={"agg-and-vas-other-content-proof-ownership"} statusField={"other_content_proof_of_ownership_status"} />
-                    <span className="text-white/80 ml-2">Agg and VAS Additional Proof</span>
+                    <span className="text-white/80 ml-2">Agg & VAS Additional Proof</span>
 
                     <Expand expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF} />
                   </div>
@@ -1255,7 +1263,7 @@ export default function IPDrawer({
               </svg>
             </span>
 
-            <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+            <div className="flex-1 p-1 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
               <div
                 className={`p-2  ${
                   expanded == expansion.AUTHORIZATION_LETTER && "border-b pb-4"

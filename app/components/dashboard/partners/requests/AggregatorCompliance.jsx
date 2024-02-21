@@ -21,6 +21,7 @@ import { TailSpinPreloader } from "@/app/components/Icons";
 import useUsers from "@/hooks/useUsers";
 import { useStoreState } from "easy-peasy";
 import { NewSuccess } from "@/app/components/toasts/Success";
+import FileViewer from "@/app/components/modals/FileViewer";
 
 function getToday() {
   const today = new Date();
@@ -147,7 +148,7 @@ console.log('vas_partner_response', vas_partner_response);
 
   return (
     <>
-      <main className="w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
+      <main className="text-gray-400 w-screen h-screen flex items-start justify-start fixed top-0 left-0 z-[2000] bg-[#030303] animate-[slide-down-fade_1s_ease-in-out]">
         {!delayedExecution ? (
           <div className="w-[100%] flex justify-center">
             <Loading style="h-[600px]" />
@@ -213,7 +214,7 @@ console.log('vas_partner_response', vas_partner_response);
 
 export const AggregatorComplianceNav = ({closeAggregatorComplianceFormFlyout, partnerDetails,}) => {
   return (
-    <header className=" flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
+    <header className="text-gray-400 flex justify-between items-center h-[64px] px-4 pt-4 pb-2 m-0 w-screen mx-auto z-20 border-b border-b-white/20 bg-[#030303]">
       <div
         onClick={closeAggregatorComplianceFormFlyout}
         className="flex justify-start items-center text-md group cursor-pointer "
@@ -281,7 +282,7 @@ export const AggregatorComplianceProgressiveNav = ({partnerDetails,currentPanel,
 
   return (
     <>
-      <nav className="w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
+      <nav className="text-gray-400 w-[250px] h-screen absolute bg-white/5  left-0 animate-[slide-right_1s_ease-in-out]">
         <div className="pt-[50px] w-[100%] h-auto flex justify-center">
           <div className="w-[80%] h-auto">
             <li
@@ -372,7 +373,7 @@ export const AggregatorComplianceProgressiveNav = ({partnerDetails,currentPanel,
                   currentPanel.NCCLicensedetails ? "text-mtn-400" : ""
                 } `}
               >
-                NCC VAS
+                NCC VAS License
               </p>
             </li>
 
@@ -456,7 +457,7 @@ export const AggregatorComplianceProgressiveNav = ({partnerDetails,currentPanel,
                   currentPanel.NLRCLicensedetails ? "text-mtn-400" : ""
                 } `}
               >
-                NLRC Licence
+                NLRC Permit
               </p>
             </li>
 
@@ -768,7 +769,7 @@ export const NCCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partner
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -779,7 +780,7 @@ export const NCCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partner
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
               <div className="mb-5 w-full flex flex-col gap-3">
-                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
                   Your company's NCC License details
                 </h1>
                 <p>Let’s get you started, Choose a partner category</p>
@@ -1141,7 +1142,7 @@ export const NLRCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partne
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -1152,7 +1153,7 @@ export const NLRCLicensedetails = ({ closeAggregatorComplianceFormFlyout, partne
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[480px] h-auto animate-[slide-left_1s_ease-in-out]">
               <div className="mb-5 w-full flex flex-col gap-3">
-                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
                   Provide your company's NLRC License details
                 </h1>
               </div>
@@ -1410,7 +1411,7 @@ export const ShortCodeDetais = ({ closeAggregatorComplianceFormFlyout, partnerDe
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className="text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
@@ -1516,10 +1517,10 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
   return (
     <>
     <section
-      className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}
+      className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-3`}
     >
       <div className="mb-5 w-full flex flex-col gap-3">
-        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
           Provide your company's short code details
         </h1>
         <p>Check the list of your shortcodes below</p>
@@ -1844,12 +1845,12 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
   return (
     <>
     <section
-      className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
+      className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
         nextPage ? `hidden` : `flex`
       }`}
     >
       <div className="mb-5 w-full flex flex-col gap-3">
-        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+        <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
           Provide your company's short code details
         </h1>
       </div>
@@ -2251,12 +2252,12 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
   return (
     <>
       <section
-        className={`w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
+        className={`text-gray-400 w-[100%] h-auto animate-[slide-left_1s_ease-in-out]  flex-col gap-3 ${
           nextPage ? `flex` : `hidden`
         }`}
       >
         <div className="mb-5 w-full flex flex-col gap-3">
-          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+          <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
             Provide your short code pricing details
           </h1>
         </div>
@@ -2433,7 +2434,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
         ? shortCodes.split(",").map((number, index) => (
             <button
               key={index}
-              className="flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center"
+              className="text-gray-400 flex gap-3 p-1 px-2 bg-transparent border border-white/30 rounded-[7px] justify-between items-center"
             >
               <span className="text-white font-mtn-medium">
                 {number.trim()}
@@ -2464,6 +2465,7 @@ export const ShortCodesMarker = ({ shortCodes, updateShortCodes }) => {
 
 export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDetails, currentPanel, setCurrentPanel,realTimeReloadRequestFlyout,}) => {
   const states = useStoreState((state) => state);
+  const [fileViewer, setFileViewer] = useState(null);
   const [showSuccessToast, setShowSuccessToast] = useState({
     message: "",
     alert: false,
@@ -2593,26 +2595,25 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
         partnerDetails={vasPartnerResponse}
       />
 
-      <div className="absolute top-[50px] flex  h-screen w-screen justify-center">
+      <div className=" text-gray-400 absolute top-[50px] flex  h-screen w-screen justify-center">
         <AggregatorComplianceProgressiveNav
           partnerDetails={vasPartnerResponse}
           currentPanel={currentPanel}
           setCurrentPanel={setCurrentPanel}
         />
-
         <div className="w-[calc(100%-250px)] h-[100%] absolute right-0 overflow-auto pb-[100px] animate-[slide-left_1s_ease-in-out]">
           <div className="pt-[50px] w-[100%] h-auto flex justify-center">
             <div className="max-w-[650px] h-auto animate-[slide-left_1s_ease-in-out] flex flex-col gap-5">
               <div className="mb-8 w-full flex flex-col gap-3">
-                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white mtn-h1">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] text-white font-mtn">
                   Review your application
                 </h1>
               </div>
 
               <FileInputWrapper>
-                <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+                <div className="p-[12px] w-full rounded-[10px] flex justify-between font-mtn">
                   <div className="flex flex-col justify-between w-[150px] ">
-                    <h3>NCC VAS Licence</h3>
+                    <h3 className="font-mtn">NCC VAS Licence</h3>
                     <button 
                     className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full"
                     onClick={() => {
@@ -2632,23 +2633,27 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                   <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>VAS Licence ID</span>
-                      <h3 className="text-[14px] text-white">{vasPartnerResponse?.vas_license_id}</h3>
+                      <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.vas_license_id} </h3>
                     </div>
                     <div className="flex">
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>Issuing date</span>
-                        <h3 className="text-[14px] text-white">{vasPartnerResponse?.ncc_issue_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.ncc_issue_date}</h3>
                       </div>
 
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>Expiry date</span>
-                        <h3 className="text-[14px] text-white">{vasPartnerResponse?.ncc_expiry_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.ncc_expiry_date}</h3>
                       </div>
                     </div>
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>VAS document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer font-mtn"
+                      onClick={() =>
+                        setFileViewer(vasPartnerResponse?.ncc_doc.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2671,9 +2676,9 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
               </FileInputWrapper>
 
               <FileInputWrapper>
-                <div className="p-[12px] w-full rounded-[10px] flex justify-between">
+                <div className="p-[12px] w-full rounded-[10px] flex justify-between font-mtn">
                   <div className="flex flex-col justify-between w-[150px] ">
-                    <h3> NLRC VAS License</h3>
+                    <h3 className="font-mtn"> NLRC Permit</h3>
                     <button 
                     className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full"
                     onClick={() => {
@@ -2693,23 +2698,27 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                   <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span> NLRC License Number</span>
-                      <h3 className="text-[14px] text-white">{vasPartnerResponse?.nlrc_license_id}</h3>
+                      <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.nlrc_license_id}</h3>
                     </div>
                     <div className="flex">
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>Issuing date</span>
-                        <h3 className="text-[14px] text-white">{vasPartnerResponse?.nlrc_issue_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.nlrc_issue_date}</h3>
                       </div>
 
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>Expiry date</span>
-                        <h3 className="text-[14px] text-white">{vasPartnerResponse?.nlrc_expiry_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{vasPartnerResponse?.nlrc_expiry_date}</h3>
                       </div>
                     </div>
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>NLRC document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer font-mtn"
+                      onClick={() =>
+                        setFileViewer(vasPartnerResponse?.nlrc_doc.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2733,9 +2742,9 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
               {vasPartnerResponse?.shortcodes.map(shortcodeItem => (
               <FileInputWrapper>
-                <div className="p-[12px] w-full rounded-[10px] flex justify-between" key={shortcodeItem.uuid}>
+                <div className="p-[12px] w-full rounded-[10px] flex justify-between font-mtn" key={shortcodeItem.uuid}>
                   <div className="flex flex-col justify-between w-[150px] ">
-                    <h3> Short code</h3>
+                    <h3 className="font-mtn"> Short code</h3>
                     <button 
                     className="border-1 border-gray-200 text-white bg-none hover:bg-gray-800 w-[60px] text-[13px] rounded-full"
                     onClick={() => {
@@ -2755,7 +2764,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
                   <div className="flex flex-col gap-3 min-h-[100px] w-[calc(100%-150px)] ">
                   <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span> Short Codes</span>
-                      <h3 className="text-[14px] text-white">{shortcodeItem.shortcode.shortcodes.join(', ')}</h3>
+                      <h3 className="text-[14px] text-white font-mtn">{shortcodeItem.shortcode.shortcodes.join(', ')}</h3>
                     </div>
                     
                     <div className="flex">
@@ -2766,25 +2775,29 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>Short code expiry date</span>
-                        <h3 className="text-[14px] text-white">{shortcodeItem.shortcode.shortcode_expiry_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{shortcodeItem.shortcode.shortcode_expiry_date}</h3>
                       </div>
                     </div>
 
                     <div className="flex">
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>NCC pricing approval issue date</span>
-                        <h3 className="text-[14px] text-white">{shortcodeItem.shortcode_pricing.pricing_issue_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{shortcodeItem.shortcode_pricing.pricing_issue_date}</h3>
                       </div>
 
                       <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3 w-[50%]">
                         <span>NCC pricing approval expiry date</span>
-                        <h3 className="text-[14px] text-white">{shortcodeItem.shortcode_pricing.pricing_expiry_date}</h3>
+                        <h3 className="text-[14px] text-white font-mtn">{shortcodeItem.shortcode_pricing.pricing_expiry_date}</h3>
                       </div>
                     </div>
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>Short code document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 cursor-pointer font-mtn"
+                      onClick={() =>
+                        setFileViewer(shortcodeItem.shortcode.shortcode_doc?.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2805,7 +2818,11 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
                     <div className="flex flex-col text-[12px] border-b border-gray-700 pb-3">
                       <span>NCC pricing approval document</span>
-                      <h3 className="text-[14px] text-white flex gap-3">
+                      <h3 className="text-[14px] text-white flex gap-3 font-mtn"
+                      onClick={() =>
+                        setFileViewer(shortcodeItem.shortcode_pricing.pricing_doc?.file_path)
+                      }
+                      >
                         <svg
                           width="16"
                           height="16"
@@ -2850,7 +2867,13 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
           </div>
         </div>
       </div>
-
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
       {showSuccessToast.status && (
         <NewSuccess
           message={showSuccessToast.message}

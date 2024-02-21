@@ -45,6 +45,10 @@ export default function IPDrawer({
     LICENSE_PERIOD: "license_period",
     AUTHORIZATION_LETTER: "authorization_letter",
     VIDEO_FILE: "video_file",
+    AGG_AND_VAS_AUTHORIZATION_LETTER: "agg_and_vas_authorization_letter",
+    AGG_AND_VAS_AUTHORIZATION_VIDEO: "agg_and_vas_authorization_video",
+    AGG_AND_VAS_AGREEMENT_LETTER: "agg_and_vas_agreement_letter",
+    AGG_AND_VAS_ADDITIONAL_PROOF: "agg_and_vas_additional_proof",
     AGREEMENT_WITH_VAS_PARTNER: "agreement_letter_btw_content_and_vas_partner",
     AGREEMENT_WITH_AGENT: "agreement_letter_btw_content_and_agent",
     AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER:
@@ -521,6 +525,18 @@ export default function IPDrawer({
       case expansion.LICENSE_PERIOD:
         data.ip_request_type = "licensing-period";
         break;
+      case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
+        data.ip_request_type = "authorization-letter";
+        break;
+      case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
+        data.ip_request_type = "authorization-video";
+        break;
+      case expansion.AGG_AND_VAS_AGREEMENT_WITH_VAS_PARTNER:
+        data.ip_request_type = "agreement-letter-btw-content-and-vas-partner";
+        break;
+      case expansion.AGG_AND_VAS_ADDITIONAL_PROOF:
+        data.ip_request_type = "other-content-proof-of-ownership";
+        break;
       case expansion.AUTHORIZATION_LETTER:
         data.ip_request_type = "authorization-letter";
         break;
@@ -950,6 +966,275 @@ export default function IPDrawer({
               </div>
             </div>
           </div>
+
+          {
+            /* fields concerned with vas partner and aggregator */
+            request.vas_partner_uuid && 
+            (<>
+
+              {/* Agg and VAS Authorization letter */}
+              <div className="flex space-x-2 items-start w-full">
+                <ItemIcon />
+
+                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                  <div
+                    className={`p-2  ${
+                      expanded == expansion.AGG_AND_VAS_AUTHORIZATION_LETTER && "border-b pb-4"
+                    } border-white/20 flex space-x-2 items-center w-full relative`}
+                  >
+                    <StatusIcon field={"agg-and-vas-authorization-letter"} statusField={"status"} />
+                    <span className="text-white/80 ml-2">Agg and VAS Authorization Letter</span>
+
+                    <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER} />
+                  </div>
+                  {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_LETTER && (
+                    <div className="flex flex-col space-y-4 p-4">
+                      <p className="flex justify-between">
+                        <span className="text-white/60 ">Authorization letter</span>
+                        <span className="text-mtn">
+                          {request["agg-and-vas-authorization-letter"]?.authorization_letter ? (
+                            <span
+                              onClick={() =>
+                                setFileViewer(
+                                  request["agg-and-vas-authorization-letter"]?.authorization_letter
+                                )
+                              }
+                              className="text-xs flex space-x-1 items-end cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="yellow"
+                                className="w-4 h-4 cursor-pointer"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>{" "}
+                              Preview
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </p>
+
+                      {errors && errors["error"] && (
+                        <div className="mb-6">
+                          <FormErrors error={errors["error"]} />
+                        </div>
+                      )}
+
+                      <StatusActions expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER} 
+                          field={"agg-and-vas-authorization-letter"} 
+                          statusField={"status"} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Agg and VAS Authorization video */}
+               <div className="flex space-x-2 items-start w-full">
+                <ItemIcon />
+
+                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                  <div
+                    className={`p-2  ${
+                      expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO && "border-b pb-4"
+                    } border-white/20 flex space-x-2 items-center w-full relative`}
+                  >
+                    <StatusIcon field={"agg-and-vas-authorization-video"} statusField={"authorization_video_status"} />
+                    <span className="text-white/80 ml-2">Agg and VAS Authorization Video</span>
+
+                    <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO} />
+                  </div>
+                  {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO && (
+                    <div className="flex flex-col space-y-4 p-4">
+                      <p className="flex justify-between">
+                        <span className="text-white/60 ">Authorization Video</span>
+                        <span className="text-mtn">
+                          {request["agg-and-vas-authorization-video"]?.authorization_video ? (
+                            <span
+                              onClick={() =>
+                                setFileViewer(
+                                  request["agg-and-vas-authorization-video"]?.authorization_video
+                                )
+                              }
+                              className="text-xs flex space-x-1 items-end cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="yellow"
+                                className="w-4 h-4 cursor-pointer"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>{" "}
+                              Preview
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </p>
+
+                      {errors && errors["error"] && (
+                        <div className="mb-6">
+                          <FormErrors error={errors["error"]} />
+                        </div>
+                      )}
+
+                      <StatusActions expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO} 
+                          field={"agg-and-vas-authorization-video"} 
+                          statusField={"authorization_video_status"} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Agg and VAS Agreement letter */}
+              <div className="flex space-x-2 items-start w-full">
+                <ItemIcon />
+
+                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                  <div
+                    className={`p-2  ${
+                      expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER && "border-b pb-4"
+                    } border-white/20 flex space-x-2 items-center w-full relative`}
+                  >
+                    <StatusIcon field={"agg-and-vas-agreement-letter"} statusField={"agreement_letter_status"} />
+                    <span className="text-white/80 ml-2">Agg and VAS Agreement Letter</span>
+
+                    <Expand expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER} />
+                  </div>
+                  {expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER && (
+                    <div className="flex flex-col space-y-4 p-4">
+                      <p className="flex justify-between">
+                        <span className="text-white/60 ">Agreement Letter</span>
+                        <span className="text-mtn">
+                          {request["agg-and-vas-agreement-letter"]?.agreement_letter ? (
+                            <span
+                              onClick={() =>
+                                setFileViewer(
+                                  request["agg-and-vas-agreement-letter"]?.agreement_letter
+                                )
+                              }
+                              className="text-xs flex space-x-1 items-end cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="yellow"
+                                className="w-4 h-4 cursor-pointer"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>{" "}
+                              Preview
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </p>
+
+                      {errors && errors["error"] && (
+                        <div className="mb-6">
+                          <FormErrors error={errors["error"]} />
+                        </div>
+                      )}
+
+                      <StatusActions expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER} 
+                          field={"agg-and-vas-agreement-letter"} 
+                          statusField={"agreement_letter_status"} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Agg and VAS Other Content Proof */}
+              <div className="flex space-x-2 items-start w-full">
+                <ItemIcon />
+
+                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                  <div
+                    className={`p-2  ${
+                      expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && "border-b pb-4"
+                    } border-white/20 flex space-x-2 items-center w-full relative`}
+                  >
+                    <StatusIcon field={"agg-and-vas-other-content-proof-ownership"} statusField={"other_content_proof_of_ownership_status"} />
+                    <span className="text-white/80 ml-2">Agg and VAS Additional Proof</span>
+
+                    <Expand expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF} />
+                  </div>
+                  {expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && (
+                    <div className="flex flex-col space-y-4 p-4">
+                      <p className="flex justify-between">
+                        <span className="text-white/60 ">Additional Proof</span>
+                        <span className="text-mtn">
+                          {request["agg-and-vas-other-content-proof-ownership"]?.other_content_proof_of_ownership ? (
+                            <span
+                              onClick={() =>
+                                setFileViewer(
+                                  request["agg-and-vas-other-content-proof-ownership"]?.other_content_proof_of_ownership
+                                )
+                              }
+                              className="text-xs flex space-x-1 items-end cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="yellow"
+                                className="w-4 h-4 cursor-pointer"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                />
+                              </svg>{" "}
+                              Preview
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </p>
+
+                      {errors && errors["error"] && (
+                        <div className="mb-6">
+                          <FormErrors error={errors["error"]} />
+                        </div>
+                      )}
+
+                      <StatusActions expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF} 
+                          field={"agg-and-vas-other-content-proof-ownership"} 
+                          statusField={"other_content_proof_of_ownership_status"} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            
+            
+            </>)
+          }
 
           {/* Authorization letter */}
           <div className="flex space-x-2 items-start w-full">
@@ -3260,4 +3545,107 @@ export default function IPDrawer({
       </>
     );
   }
+
+  function Expand({expansion}){
+    return (
+      <span
+        className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer"
+        onClick={() => {
+          clearErrors();
+          expanded == expansion
+            ? setExpanded(null)
+            : setExpanded(expansion);
+          setData({ ...data, dynamic_field_number: null });
+        }}
+      >
+        {expanded == expansion ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="gray"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+            />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="gray"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 15.75l7.5-7.5 7.5 7.5"
+            />
+          </svg>
+        )}
+      </span>
+    )
+  }
+
+  function StatusActions({expansion, field, statusField}){
+    return (
+      <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
+          {request[field][statusField] == "approved" ||
+          approvals[expansion] == "approved" ? (
+            <Approved />
+          ) : request[field][statusField] == "rejected" ||
+            approvals[expansion] == "rejected" ? (
+            <Declined />
+          ) : (
+            ApprovalActions()
+          )}
+        </div>
+    );
+  }
+
+  function ItemIcon(){
+    return (
+      <span className="p-2 rounded-md bg-white/10 inline-flex">
+        <svg
+          className="w-6 h-6"
+          viewBox="0 0 16 15"
+          fill="gray"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M8.24751 7.11244L6.39501 8.96494C5.36751 9.99244 5.36751 11.6499 6.39501 12.6774C7.42251 13.7049 9.08001 13.7049 10.1075 12.6774L13.025 9.75994C15.0725 7.71244 15.0725 4.38244 13.025 2.33494C10.9775 0.287441 7.64751 0.287441 5.60001 2.33494L2.42001 5.51494C0.66501 7.26994 0.66501 10.1199 2.42001 11.8824"
+            stroke="gray"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+    );
+  }
+
+  function StatusIcon({field, statusField}){
+
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        fill={request[field][statusField] == "approved" ? `green` : request[field][statusField] == "rejected" ? `red`: request[field][statusField] == "corrected" ? `yellow` : `gray`}
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-6 h-6"
+      >
+        <path
+          d="M5.4375 6C5.4375 5.85082 5.49676 5.70774 5.60225 5.60225C5.70774 5.49676 5.85082 5.4375 6 5.4375H12C12.1492 5.4375 12.2923 5.49676 12.3977 5.60225C12.5032 5.70774 12.5625 5.85082 12.5625 6C12.5625 6.14918 12.5032 6.29226 12.3977 6.39775C12.2923 6.50324 12.1492 6.5625 12 6.5625H6C5.85082 6.5625 5.70774 6.50324 5.60225 6.39775C5.49676 6.29226 5.4375 6.14918 5.4375 6ZM6 9.5625H12C12.1492 9.5625 12.2923 9.50324 12.3977 9.39775C12.5032 9.29226 12.5625 9.14919 12.5625 9C12.5625 8.85082 12.5032 8.70774 12.3977 8.60225C12.2923 8.49676 12.1492 8.4375 12 8.4375H6C5.85082 8.4375 5.70774 8.49676 5.60225 8.60225C5.49676 8.70774 5.4375 8.85082 5.4375 9C5.4375 9.14919 5.49676 9.29226 5.60225 9.39775C5.70774 9.50324 5.85082 9.5625 6 9.5625ZM9 11.4375H6C5.85082 11.4375 5.70774 11.4968 5.60225 11.6023C5.49676 11.7077 5.4375 11.8508 5.4375 12C5.4375 12.1492 5.49676 12.2923 5.60225 12.3977C5.70774 12.5032 5.85082 12.5625 6 12.5625H9C9.14919 12.5625 9.29226 12.5032 9.39775 12.3977C9.50324 12.2923 9.5625 12.1492 9.5625 12C9.5625 11.8508 9.50324 11.7077 9.39775 11.6023C9.29226 11.4968 9.14919 11.4375 9 11.4375ZM17.8125 1.5V11.6897C17.8128 11.8621 17.779 12.0329 17.7131 12.1922C17.6471 12.3514 17.5502 12.4961 17.4281 12.6178L12.6178 17.4281C12.4961 17.5502 12.3514 17.6471 12.1922 17.7131C12.0329 17.779 11.8621 17.8128 11.6897 17.8125H1.5C1.1519 17.8125 0.818064 17.6742 0.571922 17.4281C0.325781 17.1819 0.1875 16.8481 0.1875 16.5V1.5C0.1875 1.1519 0.325781 0.818064 0.571922 0.571922C0.818064 0.325781 1.1519 0.1875 1.5 0.1875H16.5C16.8481 0.1875 17.1819 0.325781 17.4281 0.571922C17.6742 0.818064 17.8125 1.1519 17.8125 1.5ZM1.5 16.6875H11.4375V12C11.4375 11.8508 11.4968 11.7077 11.6023 11.6023C11.7077 11.4968 11.8508 11.4375 12 11.4375H16.6875V1.5C16.6875 1.45027 16.6677 1.40258 16.6326 1.36742C16.5974 1.33225 16.5497 1.3125 16.5 1.3125H1.5C1.45027 1.3125 1.40258 1.33225 1.36742 1.36742C1.33225 1.40258 1.3125 1.45027 1.3125 1.5V16.5C1.3125 16.5497 1.33225 16.5974 1.36742 16.6326C1.40258 16.6677 1.45027 16.6875 1.5 16.6875ZM15.8925 12.5625H12.5625V15.8925L15.8925 12.5625Z"
+          fill="#8E8E8E"
+        />
+      </svg>
+    );
+
+  }
+
 }

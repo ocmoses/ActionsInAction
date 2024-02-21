@@ -133,11 +133,11 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
             <div className="flex flex-col gap-5">
               <div className="flex gap-5">
                 <div className="w-[80px] h-[80px] flex rounded-full bg-[#421A75] justify-center items-center text-[24px] text-white">
-                 {getInitials(vasPartnersDetails?.vas_partner)}
+                 {getInitials(vasPartnersDetails?.aggregator)}
                 </div>
                 <div className="flex flex-col justify-center items-start">
                   <h1 className="text-white text-[24px] font-mtn-medium">
-                    {vasPartnersDetails?.vas_partner}
+                    {vasPartnersDetails?.aggregator}
                   </h1>
                   <p>Lagos, Nigeria</p>
                 </div>
@@ -182,6 +182,8 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "VAS License",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="ncclicense"
                 />
 
                 <AggregatorSelector
@@ -222,6 +224,8 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "NLRC Permit",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="nlrclicense"
                 />
 
                 <AggregatorSelector
@@ -286,6 +290,8 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "Short codes",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="shortcode"
                 />
               </div>
             </div>
@@ -312,7 +318,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
   );
 }
 
-export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,}) => {
+export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,vasPartnersDetails, status}) => {
 
     return (
       <>
@@ -328,7 +334,15 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
               <h3 className="text-white font-bold font-mtn">{title}</h3>
               <p className=" font-light">{message}</p>
             </div>
-            <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+            {vasPartnersDetails.request_stages[status]=== 'approved' ? (
+            <div className="w-[100px] p-1 px-2 bg-[#033B1B] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.74875 10.7475C8.50948 10.7475 10.7475 8.50948 10.7475 5.74875C10.7475 2.98802 8.50948 0.75 5.74875 0.75C2.98802 0.75 0.75 2.98802 0.75 5.74875C0.75 8.50948 2.98802 10.7475 5.74875 10.7475ZM8.58247 3.85827C8.76383 4.04292 8.76115 4.33963 8.5765 4.52099L5.39548 7.6452C5.21317 7.82425 4.92103 7.82425 4.73873 7.6452L2.921 5.85994C2.73635 5.67858 2.73367 5.38187 2.91503 5.19722C3.09639 5.01256 3.3931 5.00989 3.57775 5.19125L5.0671 6.654L7.91975 3.8523C8.1044 3.67094 8.40111 3.67361 8.58247 3.85827Z" fill="#2C9958"/>
+              </svg>
+                <span className="text-[#52BE80]">{vasPartnersDetails.request_stages[status]}</span>
+            </div>
+             ):(
+              <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
               <svg
                 width="12"
                 height="12"
@@ -340,9 +354,10 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
                   d="M9.32501 2.29489C8.44501 1.49489 7.28001 1.01489 6.00001 1.01489C3.25001 1.01489 1.01501 3.24989 1.01501 5.99989C1.01501 8.74989 3.25001 10.9849 6.00001 10.9849C7.28001 10.9849 8.44501 10.5049 9.32501 9.70489C10.345 8.79989 10.985 7.46989 10.985 5.99989C10.985 4.52989 10.345 3.19989 9.32501 2.29489ZM5.98501 8.19489C5.97501 9.01989 5.36001 9.21989 4.78501 8.98989C3.60001 8.51489 2.76501 7.35489 2.76501 5.99989C2.76501 4.64489 3.60001 3.48489 4.78501 3.00489C5.36001 2.77489 5.97501 2.97989 5.98501 3.79989V8.19489Z"
                   fill="#F3AF33"
                 />
-              </svg>
-              <span className="text-[#F3AF33]">In Progress</span>
+              </svg> 
+                <span className="text-[#F3AF33]">In Progress</span>
             </div>
+             )}
           </div>
         </div>
       </>

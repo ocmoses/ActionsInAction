@@ -165,8 +165,8 @@ export default function Requests() {
     for (const aggregatorRequest of get_all_aggregator_response.aggregatorRequests) {
       if (!requests.find((request) => request.uuid == aggregatorRequest.service_uuid)) {
         requests.push({
-          company: aggregatorRequest.vas_partner,
-          email: aggregatorRequest.vas_email,
+          company: aggregatorRequest.aggregator,
+          email: aggregatorRequest.aggregator_email,
           request_type: request_types.AGGREGATOR,
           request_id: aggregatorRequest.request_id,
           created_at: aggregatorRequest.service_submitted_on,
@@ -871,9 +871,11 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       </td>
                       {/* Action */}
                       <td>
-                        {request?.request_type ==='Aggregator' ? (
+                        {request?.request_type ==='Compliance' ? (
                           <>
-                          <span onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
+                          <span
+                          className="text-yellow-600 cursor-pointer"
+                          onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
                           </>
                         ):(
                         <span

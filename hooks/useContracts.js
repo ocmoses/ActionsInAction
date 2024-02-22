@@ -97,8 +97,12 @@ const useContracts = () => {
   let hasSigned = false; //has this user signed?
   const isPartner = partner != null; //Is this an MTN admin or a partner?
 
+  
+
   //This only works for bilateral contract
   const selected_admin_users = partner?.selected_partner_admin_users;
+  console.log("selected_admin_users==", selected_admin_users);
+  
   let signingDirector = selected_admin_users?.find(
     (user) => user.role == "director"
   );
@@ -108,6 +112,10 @@ const useContracts = () => {
   let signingWitness = selected_admin_users?.find(
     (user) => user.role == "witness"
   );
+
+  console.log("signingDirector==", signingDirector);
+  console.log("signingDelegate==", signingDelegate);
+  console.log("signingWitness==", signingWitness);
 
   //Have we selected all required signatories?
   selectedAllRequiredSignatories =

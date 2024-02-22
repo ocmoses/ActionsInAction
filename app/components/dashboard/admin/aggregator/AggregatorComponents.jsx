@@ -21,6 +21,16 @@ function actionDate(targetDate) {
   
   return `${day} / ${month} / ${year}`;
 }
+function removeGuid(str) {
+  return str.replace(/-\b([0-9a-fA-F]{8})-([0-9a-fA-F]{4})-([0-9a-fA-F]{4})-([0-9a-fA-F]{4})-([0-9a-fA-F]{12})\b/g, '');
+}
+
+function feedBackDate(dateString){
+const date = new Date(dateString);
+const options = { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" };
+const formattedDate = date.toLocaleDateString("en-US", options);
+return formattedDate;
+}
 
 
 export default function AggregatorPage({ params,realTimePageReloader}) {
@@ -52,20 +62,20 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   };
 ////////////////////////////////////////////////////////////////////
 ////api/v2/admin/approved/request
-    const { getSingleAggregatorVasPartnerApprovalDetails } = useAdmins();
-    const [vasPartnersDetails, setVasPartnersDetails] = useState();
-    let getApprovedRequestResponse = null;
-    const getVasPartnersDetails = async (service_uuid) => {
-        try {
-            getApprovedRequestResponse = await getSingleAggregatorVasPartnerApprovalDetails(service_uuid);
-            let get_approved_request_response = getApprovedRequestResponse.result.data;
-          setVasPartnersDetails(get_approved_request_response);
-          setDelayedExecution(true);
-        } catch (err) {
-          console.log("error", err);
-          successAction('Network Error!', false);
-        }
-      };
+const { getSingleAggregatorVasPartnerApprovalDetails } = useAdmins();
+const [vasPartnersDetails, setVasPartnersDetails] = useState();
+let getApprovedRequestResponse = null;
+const getVasPartnersDetails = async (service_uuid) => {
+    try {
+        getApprovedRequestResponse = await getSingleAggregatorVasPartnerApprovalDetails(service_uuid);
+        let get_approved_request_response = getApprovedRequestResponse.result.data;
+      setVasPartnersDetails(get_approved_request_response);
+      setDelayedExecution(true);
+    } catch (err) {
+      console.log("error", err);
+      successAction('Network Error!', false);
+    }
+  };
   
 
 const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useState({
@@ -99,7 +109,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
         </div>
       ) : (
         <>
-          <div className=" mx-auto py-12 px-16 min-h-screen w-[85%] text-gray-400">
+          <div className=" mx-auto py-12 px-16 min-h-screen text-gray-400 w-[100%] md:w-[90%] lg:w-[85%]">
             <Link href="/admin/requests">
               <span className="inline-flex gap-4 grow-0 items-center text-[13px] cursor-pointer text-[#999999] hover:text-white/80 mb-12">
                 <svg
@@ -123,17 +133,17 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
             <div className="flex flex-col gap-5">
               <div className="flex gap-5">
                 <div className="w-[80px] h-[80px] flex rounded-full bg-[#421A75] justify-center items-center text-[24px] text-white">
-                 {getInitials(vasPartnersDetails?.vas_partner)}
+                 {getInitials(vasPartnersDetails?.aggregator)}
                 </div>
                 <div className="flex flex-col justify-center items-start">
                   <h1 className="text-white text-[24px] font-mtn-medium">
-                    {vasPartnersDetails?.vas_partner}
+                    {vasPartnersDetails?.aggregator}
                   </h1>
                   <p>Lagos, Nigeria</p>
                 </div>
               </div>
 
-              <div className="flex gap-10 pt-[40px] justify-between">
+              <div className="flex gap-10 pt-[40px] flex-wrap">
                 <AggregatorSelector
                   icon={
                     <svg
@@ -167,10 +177,13 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 1,
                       modal: "ncc_licence",
                       modalTitle: "VAS License",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="ncclicense"
                 />
 
                 <AggregatorSelector
@@ -200,16 +213,19 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       />
                     </svg>
                   }
-                  title={"NLRC License"}
+                  title={"NLRC Permit"}
                   message={"Lottery License for gambling based services"}
                   openAggregatorValidationFlyout={() =>
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 2,
                       modal: "nlrc_licence",
-                      modalTitle: "NLRC License",
+                      modalTitle: "NLRC Permit",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="nlrclicense"
                 />
 
                 <AggregatorSelector
@@ -269,10 +285,13 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     setOpenAggregatorValidationFlyout({
                       ...openAggregatorValidationFlyout,
                       opens: true,
+                      stage: 3,
                       modal: "short_code",
                       modalTitle: "Short codes",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="shortcode"
                 />
               </div>
             </div>
@@ -299,12 +318,12 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
   );
 }
 
-export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,}) => {
+export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,vasPartnersDetails, status}) => {
 
     return (
       <>
         <div
-          className=" bg-white/5 w-[100%]  rounded-[10px] cursor-pointer hover:bg-white/10  text-gray-400"
+          className=" bg-white/5 w-[100%] rounded-[10px] cursor-pointer hover:bg-white/10  text-gray-400  md:w-[45%] lg:w-[30%]"
           onClick={() => openAggregatorValidationFlyout()}
         >
           <div className="p-[25px] h-[240px] flex flex-col gap-3 justify-between">
@@ -315,7 +334,15 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
               <h3 className="text-white font-bold font-mtn">{title}</h3>
               <p className=" font-light">{message}</p>
             </div>
-            <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+            {vasPartnersDetails.request_stages[status]=== 'approved' ? (
+            <div className="w-[100px] p-1 px-2 bg-[#033B1B] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.74875 10.7475C8.50948 10.7475 10.7475 8.50948 10.7475 5.74875C10.7475 2.98802 8.50948 0.75 5.74875 0.75C2.98802 0.75 0.75 2.98802 0.75 5.74875C0.75 8.50948 2.98802 10.7475 5.74875 10.7475ZM8.58247 3.85827C8.76383 4.04292 8.76115 4.33963 8.5765 4.52099L5.39548 7.6452C5.21317 7.82425 4.92103 7.82425 4.73873 7.6452L2.921 5.85994C2.73635 5.67858 2.73367 5.38187 2.91503 5.19722C3.09639 5.01256 3.3931 5.00989 3.57775 5.19125L5.0671 6.654L7.91975 3.8523C8.1044 3.67094 8.40111 3.67361 8.58247 3.85827Z" fill="#2C9958"/>
+              </svg>
+                <span className="text-[#52BE80]">{vasPartnersDetails.request_stages[status]}</span>
+            </div>
+             ):(
+              <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
               <svg
                 width="12"
                 height="12"
@@ -327,9 +354,10 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
                   d="M9.32501 2.29489C8.44501 1.49489 7.28001 1.01489 6.00001 1.01489C3.25001 1.01489 1.01501 3.24989 1.01501 5.99989C1.01501 8.74989 3.25001 10.9849 6.00001 10.9849C7.28001 10.9849 8.44501 10.5049 9.32501 9.70489C10.345 8.79989 10.985 7.46989 10.985 5.99989C10.985 4.52989 10.345 3.19989 9.32501 2.29489ZM5.98501 8.19489C5.97501 9.01989 5.36001 9.21989 4.78501 8.98989C3.60001 8.51489 2.76501 7.35489 2.76501 5.99989C2.76501 4.64489 3.60001 3.48489 4.78501 3.00489C5.36001 2.77489 5.97501 2.97989 5.98501 3.79989V8.19489Z"
                   fill="#F3AF33"
                 />
-              </svg>
-              <span className="text-[#F3AF33]">In Progress</span>
+              </svg> 
+                <span className="text-[#F3AF33]">In Progress</span>
             </div>
+             )}
           </div>
         </div>
       </>
@@ -365,7 +393,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
     return () => clearTimeout(timeoutId);
   };
 ////////////////////////////////////////////////////////////////////
-     const [tab, setTab] = useState({
+  const [tab, setTab] = useState({
     overview: true,
     activity: false,
   });
@@ -379,6 +407,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   const { getSingleAggregatorVasPartnerDetails } = useAdmins();
   const [newVasPartnersDetails, setNewVasPartnersDetails] = useState();
   const [complianceApprovals, setComplianceApprovals] = useState();
+  const [complianceFeedbacks, setComplianceFeedbacks] = useState();
   let getVasPartnersDetailsResponse = null;
   const getVasPartnersDetailsFunction = async (aggregator_uuid,vas_partner_uuid) => {
       try {
@@ -388,6 +417,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
           console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
           setNewVasPartnersDetails(get_vas_partners_details_response);
           setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
+          setComplianceFeedbacks(get_vas_partners_details_response.compliance_feedbacks);
         setDelayedExecution(true);
         setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
@@ -439,20 +469,19 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             },
           }
         );
-
-        setDelayedExecution(true);
         successAction(formData.feedback, true);
+        getVasPartnersDetailsFunction(vasPartnersDetails.aggregator_uuid,vasPartnersDetails.vas_partner_uuid );
       } catch (err) {
         setDelayedExecution(true);
         console.log("error", err);
-        successAction(err.response.data.message, false);
+        successAction(err.response.data.data.message, false);
       }
   };
   return (
     <>
       <section
         id="modal"
-        className="w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  text-gray-400"
+        className="text-gray-400 font-mtn w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  "
         onClick={(e) => {
           e.target.id == "modal" && closeOpenAggregatorValidationFlyout();
         }}
@@ -489,7 +518,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                         </defs>
                       </svg>
                     </div>
-                    <h2 className="text-white">
+                    <h2 className="text-white font-mtn">
                       {openAggregatorValidationFlyout.modalTitle}
                     </h2>
                   </div>
@@ -548,63 +577,98 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             {/* ------end title------------------------------------------------------------- */}
 
             {/* -----start body-------------------------------------------------------------- */}
-            <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
-              {!delayedExecution ? (
+            {!delayedExecution ? (
                 <div className="w-[100%] flex justify-center">
                   <Loading style="h-[200px]" />
                 </div>
               ) : (
+           
                 <>
+                {tab.overview && (
+                  <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+                
                   {openAggregatorValidationFlyout.modal === 'ncc_licence' && (
-                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
+                    <NCCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
                   {openAggregatorValidationFlyout.modal === 'nlrc_licence' && (
-                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
+                    <NLRCLicenceVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData} complianceApprovals={complianceApprovals}/>
                   )}
                   {openAggregatorValidationFlyout.modal === 'short_code' && (
                     <ShortCodeVerlidationBody newVasPartnersDetails={newVasPartnersDetails} approveRejectRequest={approveRejectRequest} formData={formData} setFormData={setFormData}/>
                   )}
+               </div>
+                )}
+                {tab.activity && (
+                  <div className="w-[100%] py-[40px] px-7 h-[calc(100%-170px)] top-[110px] overflow-auto">
+                  {complianceFeedbacks?.map((feedback) => (
+                  <div className="flex gap-3 mb-8" key={feedback.id}>
+                    <div className="w-[40px] h-[40px] flex rounded-full bg-gray-500 justify-center items-center text-white">
+                      {getInitials(feedback.admin_user.fullname)}
+                    </div>
+                    <div className="flex flex-col gap-0 text-[12px]">
+                        <p><span className="text-white">{feedback.admin_user.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
+                        {feedback.status==='approved' ? (
+                        <p>Status {"->"} <span className={`text-[#97CDAD]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
+                        ):(
+                          <>
+                        <p>Status {"->"} <span className={`text-[#FE6D6C]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
+                        <div className="p-1 px-3 border border-dashed border-white/20 w-[100%] rounded-[20px]">
+                          reason: <span className="text-white">{feedback.feedback}</span> 
+                        </div>
+                        </>
+                        )}
+                    </div>
+                  </div>
+                  ))}
+                  </div>
+                )}
                 </>
-              )}
-            </div>
+            )}
+             
             {/* -----start body-------------------------------------------------------------- */}
 
             {/* -----start nav-------------------------------------------------------------- */}
             <div className="h-[60px] bg-black border-b border-white/10 flex justify-between items-center">
-              <div className="p-5 flex gap-3 cursor-pointer">
-                <svg
-                  width="40"
-                  height="40"
-                  viewBox="0 0 40 40"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    width="40"
-                    height="40"
-                    rx="20"
-                    fill="white"
-                    fill-opacity="0.1"
-                  />
-                  <path
-                    d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
-                    stroke="#FAFAFA"
-                    stroke-width="1.5"
-                    stroke-miterlimit="10"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <div className="flex flex-col text-[13px]">
-                  <span className="text-[11px]">Previous</span>
-                  <h5 className="font-mtn-bold">VAS Licence</h5>
-                </div>
+              <ButtomNavigations openAggregatorValidationFlyout={openAggregatorValidationFlyout} setOpenAggregatorValidationFlyout={setOpenAggregatorValidationFlyout}/>
+            </div>
+            {/* -----start nav-------------------------------------------------------------- */}
+          </div>
+        </div>
+      </section>
+      {showSuccessToast.status && (
+            <NewSuccess
+              message={showSuccessToast.message}
+              alert={showSuccessToast.alert}
+            />
+          )}
+    </>
+  );
+};
+
+
+export const ButtomNavigations = ({openAggregatorValidationFlyout,setOpenAggregatorValidationFlyout}) => {
+  return (
+    <>
+    {openAggregatorValidationFlyout.stage === 1 &&(
+      <>
+              <div div className="p-5 flex gap-3 cursor-pointer">
+               
               </div>
 
-              <div className="p-5 flex gap-3 cursor-pointer">
+              <div className="p-5 flex gap-3 cursor-pointer"
+              onClick={()=>
+                setOpenAggregatorValidationFlyout({
+                  ...openAggregatorValidationFlyout,
+                  opens: true,
+                  stage: 2,
+                  modal: "nlrc_licence",
+                  modalTitle: "NLRC Permit",
+                })
+              }
+              >
                 <div className="flex flex-col text-[13px]">
                   <span className="text-[11px]">Next</span>
-                  <h5 className="font-mtn-bold">VAS Licence</h5>
+                  <h5 className="font-mtn-bold">NLRC Permit</h5>
                 </div>
                 <svg
                   width="40"
@@ -630,24 +694,147 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                   />
                 </svg>
               </div>
-            </div>
-            {/* -----start nav-------------------------------------------------------------- */}
-          </div>
-        </div>
-      </section>
-      {showSuccessToast.status && (
-            <NewSuccess
-              message={showSuccessToast.message}
-              alert={showSuccessToast.alert}
-            />
-          )}
+      </>
+    )}
+ 
+    {openAggregatorValidationFlyout.stage === 2 &&(
+          <>
+                  <div div className="p-5 flex gap-3 cursor-pointer"
+                  onClick={() =>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      stage: 1,
+                      modal: "ncc_licence",
+                      modalTitle: "VAS License",
+                    })
+                  }
+                  >
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        width="40"
+                        height="40"
+                        rx="20"
+                        fill="white"
+                        fill-opacity="0.1"
+                      />
+                      <path
+                        d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
+                        stroke="#FAFAFA"
+                        stroke-width="1.5"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Previous</span>
+                      <h5 className="font-mtn-bold">VAS Licence</h5>
+                    </div>
+                  </div>
+
+                  <div className="p-5 flex gap-3 cursor-pointer"
+                  onClick={()=>
+                    setOpenAggregatorValidationFlyout({
+                      ...openAggregatorValidationFlyout,
+                      opens: true,
+                      stage: 3,
+                      modal: "short_code",
+                      modalTitle: "Short codes",
+                    })
+                  }
+                  >
+                    <div className="flex flex-col text-[13px]">
+                      <span className="text-[11px]">Next</span>
+                      <h5 className="font-mtn-bold">Short codes</h5>
+                    </div>
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 40 40"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        width="40"
+                        height="40"
+                        rx="20"
+                        fill="white"
+                        fill-opacity="0.1"
+                      />
+                      <path
+                        d="M17.425 26.6L22.8584 21.1667C23.5 20.525 23.5 19.475 22.8584 18.8334L17.425 13.4"
+                        stroke="#FAFAFA"
+                        stroke-width="1.5"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+          </>
+     )}
+
+    {openAggregatorValidationFlyout.stage === 3 &&(
+      <>
+              <div div className="p-5 flex gap-3 cursor-pointer"
+              onClick={() =>
+                setOpenAggregatorValidationFlyout({
+                  ...openAggregatorValidationFlyout,
+                  opens: true,
+                  stage: 2,
+                  modal: "nlrc_licence",
+                  modalTitle: "NLRC Permit",
+                })
+              }
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    width="40"
+                    height="40"
+                    rx="20"
+                    fill="white"
+                    fill-opacity="0.1"
+                  />
+                  <path
+                    d="M22.5 26.6L17.0666 21.1667C16.425 20.525 16.425 19.475 17.0666 18.8334L22.5 13.4"
+                    stroke="#FAFAFA"
+                    stroke-width="1.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div className="flex flex-col text-[13px]">
+                  <span className="text-[11px]">Previous</span>
+                  <h5 className="font-mtn-bold">NLRC Permit</h5>
+                </div>
+              </div>
+
+              <div className="p-5 flex gap-3 cursor-pointer">
+          
+              </div>
+      </>
+    )}
     </>
   );
 };
 
-export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
+export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
   const [fileViewer, setFileViewer] = useState(null);
-  const category_stage = "ncclicense";
+  const category_stage = "ncclicense_vas";
   return (
     <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
@@ -659,6 +846,7 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
        formData={formData}
        setFormData={setFormData}
        field="vas_license_id"
+       complianceApprovals={complianceApprovals}
        category_stage={category_stage}
       />
       <AggregatorVerifier
@@ -668,6 +856,9 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         approveRejectRequest={approveRejectRequest}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_issue_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
       />
 
       <AggregatorVerifier
@@ -677,15 +868,21 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
         approveRejectRequest={approveRejectRequest}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_expiry_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
       />
       <AggregatorVerifier
         type={"file"}
         title={"NCC VAS License document"}
         text={newVasPartnersDetails?.ncc_doc.file_name}
         approveRejectRequest={approveRejectRequest}
-        newVasPartnersDetails={newVasPartnersDetails}
         formData={formData}
         setFormData={setFormData}
+        field="ncc_doc"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
+        newVasPartnersDetails={newVasPartnersDetails}
         setFileViewer={setFileViewer}
       />
     </div>
@@ -701,104 +898,213 @@ export const NCCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectR
   );
 };
 
-export const NLRCLicenceVerlidationBody = ({}) => {
-
+export const NLRCLicenceVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData, complianceApprovals}) => {
+  const [fileViewer, setFileViewer] = useState(null);
+  const category_stage = "nlrclicense_vas";
   return (
+    <>
     <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3  text-gray-400">
       <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
+       type={"text"}
        title={"NLRC Licence type"}
-       text={"National lottery"} 
+       text={newVasPartnersDetails?.nlrc_license_type}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="nlrc_license_type"
+       complianceApprovals={complianceApprovals}
+       category_stage={category_stage}
       />
+
       <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
+       type={"text"}
        title={"NLRC Licence ID"}
-       text={"AD12345689"} 
+       text={newVasPartnersDetails?.nlrc_license_id}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="nlrc_license_id"
+       complianceApprovals={complianceApprovals}
+       category_stage={category_stage}
       />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+     <AggregatorVerifier
+        type={"text"}
         title={"Issuing date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(newVasPartnersDetails?.nlrc_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_issue_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
+      />
+
+      <AggregatorVerifier
+        type={"text"}
+        title={"Expiry date"}
+        text={actionDate(newVasPartnersDetails?.nlrc_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_expiry_date"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
       />
 
       <AggregatorVerifier
         type={"file"}
-        status={"pending"}
-        title={"Expiry date"}
-        text={"20 / Mar / 2022"}
+        title={"NLRC Permit document"}
+        text={newVasPartnersDetails?.nlrc_doc.file_name}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="nlrc_doc"
+        complianceApprovals={complianceApprovals}
+        category_stage={category_stage}
+        newVasPartnersDetails={newVasPartnersDetails}
+        setFileViewer={setFileViewer}
       />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
-        title={"NLRC License document"}
-        text={"4433tessst7777788888 (1).pdf"}
-      />
+      
     </div>
+    {fileViewer && (
+      <FileViewer
+        id="file_viewer"
+        link={fileViewer}
+        closeAction={() => setFileViewer(null)}
+      />
+    )}
+    </>
   );
 };
 
-export const ShortCodeVerlidationBody = ({}) => {
+export const ShortCodeVerlidationBody = ({newVasPartnersDetails, approveRejectRequest, formData, setFormData}) => {
+  const [fileViewer, setFileViewer] = useState(null);
+  const category_stage = "shortcode_vas";
+  const [vasPartnershortCodes, setVasPartnershortCodes] = useState(newVasPartnersDetails.shortcodes);
+
   return (
-    <div className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3 text-gray-400">
-      <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
-       title={"Short code"}
-       text={"123, 3452"} 
+    <>
+    {vasPartnershortCodes?.map((shortcodes) => (
+    <div 
+      className="w-[100%] bg-black rounded-[7px] p-5 flex flex-col gap-3 text-gray-400 mb-10"
+      key={shortcodes.uuid}
+    >
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+       type={"text"}
+       title={"Short codes"}
+       text={shortcodes.shortcode.shortcodes.join(', ')}
+       approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcodes"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
-      <AggregatorVerifier
-       type={"file"}
-       status={"pending"}
-       title={"Short code document"}
-       text={"VBEC-2023-3977377_file (2).pdf"} 
-      />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+        type={"text"}
         title={"Issuing date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(shortcodes.shortcode.shortcode_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcode_issue_date"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
-
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+        type={"text"}
         title={"Expiry date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(shortcodes.shortcode.shortcode_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+       formData={formData}
+       setFormData={setFormData}
+       field="shortcode_expiry_date"
+       shortcode_uuid={shortcodes.uuid}
+       category_stage={category_stage}
       />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+       type={"file"}
+       title={"Short code document"}
+       text={shortcodes.shortcode.shortcode_doc?.file_name}
+       approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="shortcode_doc"
+        shortcode_uuid={shortcodes.uuid}
+        file={shortcodes.shortcode.shortcode_doc?.file_path}
+        category_stage={category_stage}
+        setFileViewer={setFileViewer}
+      />
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+        type={"text"}
         title={"Approved pricing shortcode"}
-        text={"123, 3452"}
+        text={shortcodes.shortcode_pricing.pricing_shortcodes.join(', ')}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_shortcodes"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage}
       />
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+        type={"text"}
         title={"Pricing Issuing date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(shortcodes.shortcode_pricing.pricing_issue_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_issue_date"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage} 
       />
 
-      <AggregatorVerifier
-        type={"file"}
-        status={"pending"}
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
+        type={"text"}
         title={"Pricing Expiry date"}
-        text={"20 / Mar / 2022"}
+        text={actionDate(shortcodes.shortcode_pricing.pricing_expiry_date)}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_expiry_date"
+        shortcode_uuid={shortcodes.uuid}
+        category_stage={category_stage}
       />
-      <AggregatorVerifier
+      <AggregatorVerifierForShortcodes
+      newVasPartnersDetails={newVasPartnersDetails}
         type={"file"}
-        status={"pending"}
         title={"NCC Pricing approval"}
-        text={"VBEC-2023-6651133_file.pdf"}
+        text={shortcodes.shortcode_pricing.pricing_doc?.file_name}
+        approveRejectRequest={approveRejectRequest}
+        formData={formData}
+        setFormData={setFormData}
+        field="pricing_doc"
+        shortcode_uuid={shortcodes.uuid}
+        file={shortcodes.shortcode_pricing.pricing_doc?.file_path}
+        category_stage={category_stage}
+        setFileViewer={setFileViewer} 
       />
 
     </div>
+    ))}
+    {fileViewer && (
+      <FileViewer
+        id="file_viewer"
+        link={fileViewer}
+        closeAction={() => setFileViewer(null)}
+      />
+    )}
+    </>
   );
 };
 
-export const AggregatorVerifier = ({type, status, title, text, approveRejectRequest, newVasPartnersDetails, formData, setFormData, field, category_stage, setFileViewer}) => {
+export const AggregatorVerifier = ({type, title, text, approveRejectRequest, formData, setFormData, field, complianceApprovals, category_stage, newVasPartnersDetails, setFileViewer}) => {
   const [showBtn, setShowBtn] = useState(true);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
@@ -817,6 +1123,14 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
     setApprove(true)
 };
   const handleReject = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "rejected",
+      feedback: title + " rejected",
+      field: field,
+      approval_uuid: ""
+    });
     setShowBtn(false);
     setReject(true)
 };
@@ -826,6 +1140,190 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
     setReject(false);
     setShowBtn(true);
   };
+
+  const [singleApproval, setSingleApproval] = useState();
+  const filteredComplianceApprovals = (complianceApprovals, field) => {
+    let filtered_compliance_approvals = [];
+    for (let approval of complianceApprovals) {
+        if (approval.field === field) {
+            filtered_compliance_approvals.push(approval);
+        }
+    }
+    
+    for (let approval of filtered_compliance_approvals) {
+      setSingleApproval(approval);
+    }
+}
+
+  useEffect(() => {
+    filteredComplianceApprovals(complianceApprovals, field);
+  }, [complianceApprovals]);
+
+  return (
+    <div className={`border border-white/10 rounded-[7px] p-3 text-gray-400 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
+        {(approve || reject) && (
+            <>
+              {approve && (
+                <Confirm
+                  yestext="Yes"
+                  notext="No"
+                  type="approve"
+                  onYes={() => approveRejectRequest()}
+                  onNo={cancel}
+                />
+              )}
+              {reject && (
+                <Confirm
+                  yestext="Reject"
+                  notext="Cancel"
+                  type="reject"
+                  onYes={() => approveRejectRequest()}
+                  onNo={cancel}
+                  othersAction={setShowOthersTextbox}
+                  setFormData={setFormData}
+                  formData={formData}
+                />
+              )}
+            </>
+          )}
+
+      <div className="flex justify-between">
+        <div className="flex gap-3">
+        {singleApproval?.status!== "approved" && singleApproval?.status!== "rejected" && singleApproval?.status!== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "approved" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "rejected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        
+
+
+            <div className="flex flex-col">
+              <span className="text-[11px]">{title}</span>
+              {type=='text' ? (
+                <h3 className="font-mtn-bold text-white">{text}</h3>
+              ):(
+                <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center cursor-pointer"
+                onClick={() =>
+                  setFileViewer(newVasPartnersDetails?.[field]?.file_path ?? NULL)
+                }
+                >
+                  <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path fill-rule="evenodd" clip-rule="evenodd" d="M9.8 0C10.074 0 10.337 0.113 10.526 0.312L13.726 3.74C13.902 3.926 14 4.173 14 4.429V15C14 15.552 13.552 16 13 16H1C0.448 16 0 15.552 0 15V1C0 0.448 0.448 0 1 0H9.8ZM13 5H9.5C9.224 5 9 4.776 9 4.5V1H1V15H13V5ZM4.5 12C4.22386 12 4 11.7761 4 11.5C4 11.2239 4.22386 11 4.5 11H9.5C9.77614 11 10 11.2239 10 11.5C10 11.7761 9.77614 12 9.5 12H4.5ZM4.5 9C4.22386 9 4 8.77614 4 8.5C4 8.22386 4.22386 8 4.5 8H9.5C9.77614 8 10 8.22386 10 8.5C10 8.77614 9.77614 9 9.5 9H4.5Z" fill="#999999"/>
+                  </svg>
+                  <span>{text}</span>
+                  <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.5 5.4999L10.6 1.3999" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M11 3.4V1H8.59998" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5" stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              )}
+              
+            </div>
+        </div>
+        <div className="flex gap-3">
+          
+          {showBtn && (
+            <>
+            {(singleApproval?.status!== "approved" && singleApproval?.status!== "rejected") && (
+              <>
+              <RequestRejectBtn action={handleReject}/>
+              <RequestApproveBtn action={handleApprove} />
+              </>
+            )}
+            </>
+            )}
+        
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+export const AggregatorVerifierForShortcodes = ({newVasPartnersDetails, type, title, text, approveRejectRequest, formData, setFormData, field, shortcode_uuid, file, category_stage, setFileViewer}) => {
+  const [showBtn, setShowBtn] = useState(true);
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
+  const [showOthersTextbox, setShowOthersTextbox] = useState(false);
+ 
+  const handleApprove = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "approved",
+      feedback: title + " approved",
+      field: field+"-"+shortcode_uuid,
+      approval_uuid: ""
+    });
+    setShowBtn(false);
+    setApprove(true)
+};
+  const handleReject = () => {
+    setFormData({
+      ...formData,
+      category_stage: category_stage,
+      status: "rejected",
+      feedback: title + " rejected",
+      field: field+"-"+shortcode_uuid,
+      approval_uuid: ""
+    });
+    setShowBtn(false);
+    setReject(true)
+};
+
+  const cancel = () => {
+    setApprove(false);
+    setReject(false);
+    setShowBtn(true);
+  };
+
+
+  const [singleApproval, setSingleApproval] = useState();
+  const filteredComplianceApprovals = (complianceApprovals, field) => {
+    let filtered_compliance_approvals = [];
+    for (let approval of complianceApprovals) {
+        if (approval.field === field) {
+            filtered_compliance_approvals.push(approval);
+        }
+    }
+    
+    for (let approval of filtered_compliance_approvals) {
+      setSingleApproval(approval);
+    }
+}
+
+  useEffect(() => {
+    filteredComplianceApprovals(newVasPartnersDetails.compliance_approvals, field+"-"+shortcode_uuid);
+  }, [newVasPartnersDetails]);
+
   return (
     <div className={`border border-white/10 rounded-[7px] p-3 text-gray-400 flex flex-col gap-5 hover:bg-[#313131] ${approve || reject ? 'bg-[#313131]' : ''}`}>
         {(approve || reject) && (
@@ -854,12 +1352,42 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
 
       <div className="flex justify-between">
         <div className="flex gap-3">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+       
+        {singleApproval?.status!== "approved" && singleApproval?.status!== "rejected" && singleApproval?.status!== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2.25 3.375H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 7.125H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 10.875H15.75" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M2.25 14.625H9.3525" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+        )}
+        {singleApproval?.status=== "approved" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#7DCEA0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "rejected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#EC7063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        {singleApproval?.status=== "corrected" && (
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.25 3.375H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 7.125H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 10.875H15.75" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.25 14.625H9.3525" stroke="#F1C40F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        )}
+        
+
+
             <div className="flex flex-col">
               <span className="text-[11px]">{title}</span>
               {type=='text' ? (
@@ -867,7 +1395,7 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
               ):(
                 <div className="font-mtn-bold text-white flex gap-2 border border-white/10 rounded-[30px] p-2 px-4 justify-center items-center cursor-pointer"
                 onClick={() =>
-                  setFileViewer(newVasPartnersDetails?.ncc_doc.file_path ?? NULL)
+                  setFileViewer(file)
                 }
                 >
                   <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -885,13 +1413,16 @@ export const AggregatorVerifier = ({type, status, title, text, approveRejectRequ
             </div>
         </div>
         <div className="flex gap-3">
-          {showBtn && (
+        {showBtn && (
             <>
+            {(singleApproval?.status!== "approved" && singleApproval?.status!== "rejected") && (
+              <>
               <RequestRejectBtn action={handleReject}/>
               <RequestApproveBtn action={handleApprove} />
+              </>
+            )}
             </>
             )}
-        
         </div>
       </div>
 

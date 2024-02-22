@@ -15,6 +15,7 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 import moment from "moment";
+import ProfileTab from "./tabs/ProfileTab";
 
 export default function Partners() {
   const { getVASPartners } = usePartners();
@@ -258,10 +259,10 @@ export default function Partners() {
                       </div>
                           
                           {/* {
-                              currentTab == tabs.CHANGE_SHORT_CODE && 
-                              <ChangeShortcode  contract_id={contract_id} action={ () => nextTab(tabs.CHANGE_SHORT_CODE)} />
-                          }
-                          {
+                              currentTab && currentTab.title == "Profile" && 
+                              <ProfileTab  partner={selectedPartner} />
+                          } */}
+                          {/*{
                               currentTab == tabs.ADD_SHORT_CODE && 
                               <AddShortcode contract_id={contract_id} action={ () => nextTab(tabs.ADD_SHORT_CODE)} />
                           }

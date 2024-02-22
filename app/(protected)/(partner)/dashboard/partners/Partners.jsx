@@ -212,7 +212,7 @@ export default function Partners() {
         
           <div id="partners_settings_modal" 
                 className="w-screen flex justify-center items-center h-screen fixed z-[999] top-0 left-0 bg-black/80"  >
-              <div id="actualModal" className={`relative border-2 border-gray-500 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[800px]`}>
+              <div id="actualModal" className={`relative border-2 border-gray-500 rounded-xl shadow-xl bg-[#111111] inline-flex flex-col w-[900px]`}>
               
                   <div className="flex">
                       
@@ -235,7 +235,7 @@ export default function Partners() {
                           </ul>
                       </div>
 
-                      <div className="relative w-[550px] h-[500px] flex flex-col mb-4">  
+                      <div className="relative w-[650px] h-[600px] flex flex-col mb-4">  
                       <div
                         className="absolute top-4 right-4 cursor-pointer"
                         onClick={() => {
@@ -258,10 +258,10 @@ export default function Partners() {
                         </svg>
                       </div>
                           
-                          {/* {
+                          {
                               currentTab && currentTab.title == "Profile" && 
                               <ProfileTab  partner={selectedPartner} />
-                          } */}
+                          }
                           {/*{
                               currentTab == tabs.ADD_SHORT_CODE && 
                               <AddShortcode contract_id={contract_id} action={ () => nextTab(tabs.ADD_SHORT_CODE)} />

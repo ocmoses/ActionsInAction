@@ -1804,6 +1804,7 @@ const usePartners = () => {
         email: "zoo@email.com",
         contract_id: "TR12341",
         contract_type: "Bilateral",
+        phone: "08123456781",
         status: "pending"
       },
       {
@@ -1811,6 +1812,7 @@ const usePartners = () => {
         email: "zoo_astra@email.com",
         contract_id: "TR12331",
         contract_type: "Bilateral",
+        phone: "08123456781",
         status: "approved"
       },
       {
@@ -1818,6 +1820,7 @@ const usePartners = () => {
         email: "company@email.com",
         contract_id: "TR12337",
         contract_type: "Tripartite",
+        phone: "08123456781",
         status: "rejected"
       }
     ];

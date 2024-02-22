@@ -1221,6 +1221,66 @@ const usePartners = () => {
     }
   };
 
+  // TODO: remove the hardcoded uuid
+  const getComplianceStatus = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      const response = await fetch(
+        `${RemoteEndpoints.GET_COMPLIANCE_STATUS.replace(
+          ":aggregator_uuid",
+          aggregator_uuid
+          // "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2"
+        ).replace(
+          ":vas_partner_uuid",
+          vas_partner_uuid
+          // "49a58cb1-a7c8-4e50-92b1-32d46a95e395"
+        )}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+      if (!response) {
+        return {
+          error: "This request has no response available",
+        };
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const data = await response.json();
+
+        console.log("SUBMITTED IP DETAILS", data);
+
+        return {
+          data,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const getIPProgressStatus = async () => {
     try {
       const response = await fetch(
@@ -1789,11 +1849,115 @@ const usePartners = () => {
       );
       setProcessing(false);
       const result = response.data.data;
-      
+
       return { result };
     } catch (error) {
       setProcessing(false);
       return { error };
+    }
+  };
+
+  const compliancePartnerCorrection = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.COMPLIANCE_PARTNER_CORRECTION}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: "POST",
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const result = await response.json();
+
+        return {
+          result,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const compliancePartnerCorrectionFileUpload = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.COMPLIANCE_PARTNER_CORRECTION_FILE_UPLOAD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: "POST",
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const result = await response.json();
+
+        return {
+          result,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     }
   };
 
@@ -1847,6 +2011,9 @@ const usePartners = () => {
     getAggregatorRequest,
     getAggregatorVasPartnerDetails,
     getVasPartnerRequest,
+    getComplianceStatus,
+    compliancePartnerCorrection,
+    compliancePartnerCorrectionFileUpload,
   };
 };
 

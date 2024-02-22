@@ -5,7 +5,6 @@ import { inputDate } from "@/app/modules/utilities";
 import FormErrors from "@/app/components/FormErrors";
 import "react-datepicker/dist/react-datepicker.css";
 
-
 function FileInput({
   id,
   label,
@@ -24,14 +23,15 @@ function FileInput({
 
   useEffect(() => {
     setStartDate(value ? new Date(value) : "");
-    
+
     //This is to remove all the annoying dark marks in date pickers
-      const watermarks = document.querySelectorAll('.react-datepicker__calendar-icon');
-      watermarks.forEach(watermark => {
-        watermark.remove();
-      });
-        
-    }, [value]);
+    const watermarks = document.querySelectorAll(
+      ".react-datepicker__calendar-icon"
+    );
+    watermarks.forEach((watermark) => {
+      watermark.remove();
+    });
+  }, [value]);
 
   const handleDateChange = (date) => {
     setStartDate(date);
@@ -40,7 +40,8 @@ function FileInput({
   return (
     <div className={margin ? margin + " " : "mb-6 "}>
       <div
-        className={"min-h-16 " + 
+        className={
+          "min-h-16 " +
           (border ? border + " " : "border-1 ") +
           (bg ? bg + " " : "bg-[#212121] ") +
           "relative w-full group  border-[#333333] rounded-[10px]"
@@ -52,7 +53,7 @@ function FileInput({
           onChange={(date) => handleDateChange(date)}
           maxDate={max}
           minDate={min}
-          className="block pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer z-50 min-h-16"
+          className="block  pl-5 pr-4 pt-6 pb-3 w-full text-xl text-gray-200 bg-transparent placeholder-transparent rounded-lg border-0 focus:ring-mtn peer min-h-16"
           placeholderText={label}
           dateFormat="dd/MM/yyyy"
           peekNextMonth
@@ -62,7 +63,7 @@ function FileInput({
           yearDropdownItemNumber={10}
           scrollableYearDropdown
           tabIndex={9999999}
-          fixedHeight
+          // fixedHeight
           onBlur={onBlur}
           disabled={disabled}
         />

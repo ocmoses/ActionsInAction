@@ -38,6 +38,7 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -732,6 +733,7 @@ export default function GetStarted({ type }) {
                     <IPCard />
                   )}
                 <ChangeOrderRejection />
+                <ComplianceRejection />
                 <IPRejection />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
@@ -1045,6 +1047,7 @@ export default function GetStarted({ type }) {
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
+                      key={item.uuid}
                       aggregator={item.aggregator}
                       action={() => {
                         handleVasData("service_uuid", item.service_uuid);

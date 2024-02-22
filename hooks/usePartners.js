@@ -1797,6 +1797,56 @@ const usePartners = () => {
     }
   };
 
+  const getVASPartners = async () => {
+    return [
+      {
+        company_name: "Zoo Communications",
+        email: "zoo@email.com",
+        contract_id: "TR12341",
+        contract_type: "Bilateral",
+        status: "pending"
+      },
+      {
+        company_name: "Astra Communications",
+        email: "zoo_astra@email.com",
+        contract_id: "TR12331",
+        contract_type: "Bilateral",
+        status: "approved"
+      },
+      {
+        company_name: "ABC Company",
+        email: "company@email.com",
+        contract_id: "TR12337",
+        contract_type: "Tripartite",
+        status: "rejected"
+      }
+    ];
+    try {
+      setProcessing(true);
+      const getAggregatorRequestResponse = await axios.get(
+        `${RemoteEndpoints.GET_AGGREGATOR_REQUEST}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+          params: {
+            aggregator_uuid: states.partners.partner.uuid,
+          },
+        }
+      );
+      setProcessing(false);
+      const result = getAggregatorRequestResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -1847,6 +1897,8 @@ const usePartners = () => {
     getAggregatorRequest,
     getAggregatorVasPartnerDetails,
     getVasPartnerRequest,
+
+    getVASPartners
   };
 };
 

@@ -141,27 +141,27 @@ export default function ContractSettings({params}) {
             </div>
           )}
 
-          <div className="w-full md:max-w-6xl mt-10 border-1 border-white/20 rounded-lg">
+          <div className="w-full md:max-w-6xl mt-10 border-1 border-white/20 rounded-2xl">
         
             <table className="table w-full transparent ">
                 <tbody>
                     {/* head */}
                     <tr className="border-b border-b-white/40 text-11 bg-white/20 ">
-                    <th>
-                        <span className="text-[13px]">Contract</span>
-                    </th>
-                    <th>
-                        <span className="text-[13px]">Status</span>
-                    </th>
-                    <th>
-                        <span className="text-[13px]">Start date</span>
-                    </th> 
-                    <th>
-                        <span className="text-[13px]">End date</span>
-                    </th> 
-                    <th>
-                        <span className="text-[13px]">Action</span>
-                    </th>                     
+                      <th>
+                          <span className="text-[13px]">Contract</span>
+                      </th>
+                      <th>
+                          <span className="text-[13px]">Status</span>
+                      </th>
+                      <th>
+                          <span className="text-[13px]">Start date</span>
+                      </th> 
+                      <th>
+                          <span className="text-[13px]">End date</span>
+                      </th> 
+                      <th>
+                          <span className="text-[13px]">Action</span>
+                      </th>                     
                     </tr>
 
                     {contracts?.map(contract => 

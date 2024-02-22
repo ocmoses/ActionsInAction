@@ -16,6 +16,7 @@ import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 import moment from "moment";
 import ProfileTab from "./tabs/ProfileTab";
+import ServicesTab from "./tabs/ServicesTab";
 
 
 export default function Partners() {
@@ -263,11 +264,11 @@ export default function Partners() {
                               currentTab && currentTab.title == "Profile" && 
                               <ProfileTab  partner={selectedPartner} />
                           }
-                          {/*{
-                              currentTab == tabs.ADD_SHORT_CODE && 
-                              <AddShortcode contract_id={contract_id} action={ () => nextTab(tabs.ADD_SHORT_CODE)} />
-                          }
                           {
+                              currentTab && currentTab.title == "Services" && 
+                              <ServicesTab partner={selectedPartner} />
+                          }
+                          {/*{
                               currentTab == tabs.ADD_VAS_LICENSE && 
                               <AddVASLicense contract_id={contract_id} action={ () => nextTab(tabs.ADD_VAS_LICENSE)} />
                           } */}

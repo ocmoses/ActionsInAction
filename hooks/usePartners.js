@@ -1805,7 +1805,42 @@ const usePartners = () => {
         contract_id: "TR12341",
         contract_type: "Bilateral",
         phone: "08123456781",
-        status: "pending"
+        status: "pending",
+        services : [
+          {
+            service_name: "Edu Digi English and Maths",
+            service_type: "Lottery",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "40%"],
+              ["MTN Nigeria", "20%"],
+              ["Base Media limited", "40%"]
+            ]
+          },
+          {
+            service_name: "NPFL Foodball quiz",
+            service_type: "Other Vas",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "20%"],
+              ["MTN Nigeria", "30%"],
+              ["Base Media limited", "50%"]
+            ]
+          },
+          {
+            service_name: "NiShodi TV SMS",
+            service_type: "Other Vas",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "20%"],
+              ["MTN Nigeria", "30%"],
+              ["Base Media limited", "50%"]
+            ]
+          }
+        ]
       },
       {
         company_name: "Astra Communications",
@@ -1813,7 +1848,31 @@ const usePartners = () => {
         contract_id: "TR12331",
         contract_type: "Bilateral",
         phone: "08123456781",
-        status: "approved"
+        status: "approved",
+        services : [
+          {
+            service_name: "Edu Digi English and Maths",
+            service_type: "Lottery",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "40%"],
+              ["MTN Nigeria", "20%"],
+              ["Base Media limited", "40%"]
+            ]
+          },
+          {
+            service_name: "NPFL Foodball quiz",
+            service_type: "Other Vas",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "20%"],
+              ["MTN Nigeria", "30%"],
+              ["Base Media limited", "50%"]
+            ]
+          }
+        ]
       },
       {
         company_name: "ABC Company",
@@ -1821,7 +1880,31 @@ const usePartners = () => {
         contract_id: "TR12337",
         contract_type: "Tripartite",
         phone: "08123456781",
-        status: "rejected"
+        status: "rejected",
+        services : [
+          {
+            service_name: "Edu Digi English and Maths",
+            service_type: "Lottery",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "40%"],
+              ["MTN Nigeria", "20%"],
+              ["Base Media limited", "40%"]
+            ]
+          },
+          {
+            service_name: "NPFL Foodball quiz",
+            service_type: "Other Vas",
+            category: "Lottery",
+            shortcode: "1234, 4567",
+            revenue_share: [
+              ["Lead aggregator limited", "20%"],
+              ["MTN Nigeria", "30%"],
+              ["Base Media limited", "50%"]
+            ]
+          }
+        ]
       }
     ];
     try {

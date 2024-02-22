@@ -59,7 +59,7 @@ export default function ProfileTab({partner}){
 
             {/* Email */}
             <div className="bg-white/10 rounded-lg p-4 px-8 flex flex-col md:flex-row w-full mt-2">
-                <div className="w-[300px] flex flex-col">
+                <div className="w-2/3 flex flex-col">
                     <span className="text-white/60">
                         Email
                     </span>
@@ -67,14 +67,11 @@ export default function ProfileTab({partner}){
                         {partner?.email}
                     </span>
                 </div>
-                <div className="flex-1 flex flex-col items-start">
-                    <p className="text-white/60">
-                        {" "}
-                    </p>
-                    <div className="flex flex-row space-x-2">
+                <div className="flex-1 flex flex-col justify-end">
+                    <div className="flex flex-row space-x-2 cursor-pointer">
                         <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
                             {"   "}
-                        <div>Copy email</div>
+                        <span className="text-sm text-mtn">Copy email</span>
                     </div>
                     
                 </div>
@@ -82,7 +79,7 @@ export default function ProfileTab({partner}){
 
             {/* Contact phone number */}
             <div className="bg-white/10 rounded-lg p-4 px-8 flex flex-col md:flex-row w-full mt-2">
-                <div className="w-[300px] flex flex-col">
+                <div className="flex flex-col w-2/3">
                     <span className="text-white/60">
                     Contact phone number
                     </span>
@@ -90,14 +87,12 @@ export default function ProfileTab({partner}){
                         {partner?.phone}
                     </span>
                 </div>
-                <div className="flex-1 flex flex-col items-start">
-                    <p className="text-white/60">
-                        {" "}
-                    </p>
-                    <div className="flex flex-row space-x-2">
+                <div className="flex-1 flex flex-col justify-end">
+                    
+                    <div className="flex flex-row space-x-2 cursor-pointer">
                         <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
                             {"   "}
-                        <div>Copy phone number</div>
+                        <span className="text-sm text-mtn">Copy phone number</span>
                     </div>
                     
                 </div>

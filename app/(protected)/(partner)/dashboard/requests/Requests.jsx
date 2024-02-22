@@ -295,12 +295,12 @@ export default function Requests() {
                                     }}
                                     className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white flex"
                                   >
-                                    {eachRequest.onboarding_ip_status ===
+                                    {eachRequest.onboarding_compliance_status ===
                                     null ? (
                                       <span>Finish up (0/2)</span>
                                     ) : (
                                       <>
-                                        {eachRequest.onboarding_compliance_status ===
+                                        {eachRequest.onboarding_ip_status ===
                                         null ? (
                                           <span>Finish up (1/2)</span>
                                         ) : (

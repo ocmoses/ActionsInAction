@@ -577,6 +577,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
           e.target.id == "modal" && realTimePageReloader();
         }}
       >
+        
         <div className="w-[500px] h-screen fixed right-0  top-0 border-l border-white/10 bg-[#111111] animate-[slide-left_1s_ease-in-out]">
           <div className="h-screen w-[100%] flex flex-col">
             {/* -----start title-------------------------------------------------------------- */}

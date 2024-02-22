@@ -8,6 +8,7 @@ import {
     getInitials,
     capitalizeFirst,
   } from "@/app/modules/utilities";
+  import Image from "next/image";
 
 
 export default function ProfileTab({partner}){

@@ -17,6 +17,7 @@ import EmptyTable from "@/app/components/EmptyTable";
 import moment from "moment";
 import ProfileTab from "./tabs/ProfileTab";
 
+
 export default function Partners() {
   const { getVASPartners } = usePartners();
   const [error, setError] = useState("");

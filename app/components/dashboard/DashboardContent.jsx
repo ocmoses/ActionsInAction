@@ -467,7 +467,7 @@ export default function GetStarted({ type }) {
     getVasPartnerRequest(partner?.uuid).then((res) => {
       if (res.result?.success && res.result?.data.length > 0) {
         setShowPartnerCategories(false);
-        setVasPartnerData(res.result);
+        setVasPartnerData(res.result.data);
       }
     });
   };

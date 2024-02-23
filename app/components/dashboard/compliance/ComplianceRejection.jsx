@@ -19,8 +19,6 @@ export default function ComplianceRejection() {
 
   const [successToast, setSuccessToast] = useState(false);
 
-  let rejectionArray = [];
-
   const formatFieldName = (field) => {
     const fieldParts = field.split("-");
     const mainField = fieldParts[0];
@@ -31,29 +29,46 @@ export default function ComplianceRejection() {
   };
 
   useEffect(() => {
-    //TODO: use the "in-progress" to check the "vas_partner_uuid" to use
-    partner?.vas_partners.length > 0 &&
-      getComplianceStatus(
-        partner?.uuid,
-        partner?.vas_partners[0]["vas_partner_uuid"]
-      ).then((resp) => {
-        if (resp.error) {
-          console.log("COMPLIANCE REJECTION ERROR", { error: resp.error });
-        } else {
-          rejectionArray = resp.data[0]["compliance_approvals"].filter(
-            (approval) => approval.status === "rejected"
-          );
+    const inProgressPartners = partner?.vas_partners.filter(
+      (vasPartner) => vasPartner.status === "corrected"
+    );
 
-          if (rejectionArray.length > 0) {
-            console.log("Rejected items:", rejectionArray);
-            setShowAlert(true);
-            setRejected(rejectionArray);
+    if (inProgressPartners.length > 0) {
+      let processedCount = 0;
+      let hasRejections = false;
+      let accumulatedRejections = [];
+
+      inProgressPartners.forEach((partn) => {
+        getComplianceStatus(partner.uuid, partn["vas_partner_uuid"]).then(
+          (resp) => {
+            processedCount++;
+
+            if (resp.error) {
+              console.log("COMPLIANCE REJECTION ERROR", { error: resp.error });
+            } else {
+              const rejectionArray = resp.data[0].compliance_approvals.filter(
+                (approval) => approval.status === "rejected"
+              );
+
+              if (rejectionArray.length > 0) {
+                hasRejections = true;
+
+                accumulatedRejections.push(...rejectionArray);
+              }
+
+              console.log("Rejection Array", rejectionArray);
+            }
+
+            // Check if all partners have been processed
+            if (processedCount === inProgressPartners.length && hasRejections) {
+              setRejected(accumulatedRejections);
+              setShowAlert(true);
+            }
           }
-
-          console.log("Rejection Array", rejectionArray);
-        }
+        );
       });
-  }, []);
+    }
+  }, [partner]);
 
   const { user } = useUsers();
 

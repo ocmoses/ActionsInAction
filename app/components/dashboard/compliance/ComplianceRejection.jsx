@@ -30,7 +30,7 @@ export default function ComplianceRejection() {
 
   useEffect(() => {
     const inProgressPartners = partner?.vas_partners.filter(
-      (vasPartner) => vasPartner.status === "corrected"
+      (vasPartner) => vasPartner.status === "in-progress"
     );
 
     if (inProgressPartners.length > 0) {

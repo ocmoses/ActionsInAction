@@ -16,7 +16,6 @@ export default function Requests() {
     realTimePageReloader();
   }, []);
   return (
-    
     <>
      {pageLoading ? (
         <div className="w-[100%] flex justify-center">

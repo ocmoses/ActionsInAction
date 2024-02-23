@@ -560,7 +560,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             },
           }
         );
-        successAction(formData.feedback, true);
+        //successAction(formData.feedback, true);
         getVasPartnersDetailsFunction(vasPartnersDetails.aggregator_uuid,vasPartnersDetails.vas_partner_uuid );
       } catch (err) {
         setDelayedExecution(true);

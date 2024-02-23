@@ -504,11 +504,12 @@ const [showSuccessToast, setShowSuccessToast] = useState({
       try {
         getVasPartnersDetailsResponse = await getSingleAggregatorVasPartnerDetails(aggregator_uuid, vas_partner_uuid);
           let get_vas_partners_details_response = getVasPartnersDetailsResponse.result.data.vas_partner[0];
-          console.log('get_vas_partners_details_response',get_vas_partners_details_response);
-          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
           setNewVasPartnersDetails(get_vas_partners_details_response);
           setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
           setComplianceFeedbacks(get_vas_partners_details_response.compliance_feedbacks);
+          console.log('get_vas_partners_details_response',get_vas_partners_details_response);
+          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
+          console.log('compliance_feedbacks', get_vas_partners_details_response.compliance_feedbacks);
         setDelayedExecution(true);
         setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
@@ -694,10 +695,10 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                   {complianceFeedbacks?.map((feedback) => (
                   <div className="flex gap-3 mb-8" key={feedback.id}>
                     <div className="w-[40px] h-[40px] flex rounded-full bg-gray-500 justify-center items-center text-white">
-                      {getInitials(feedback.admin_user.fullname)}
+                      {getInitials(feedback?.admin_user?.fullname)}
                     </div>
                     <div className="flex flex-col gap-0 text-[12px]">
-                        <p><span className="text-white">{feedback.admin_user.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
+                        <p><span className="text-white">{feedback.admin_user?.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
                         {feedback.status==='approved' ? (
                         <p>Status {"->"} <span className={`text-[#97CDAD]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
                         ):(

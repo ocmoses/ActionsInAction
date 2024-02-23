@@ -17,6 +17,7 @@ import EmptyTable from "@/app/components/EmptyTable";
 import moment from "moment";
 import ProfileTab from "./tabs/ProfileTab";
 import ServicesTab from "./tabs/ServicesTab";
+import ComplianceTab from "./tabs/ComplianceTab";
 
 
 export default function Partners() {
@@ -268,10 +269,10 @@ export default function Partners() {
                               currentTab && currentTab.title == "Services" && 
                               <ServicesTab partner={selectedPartner} />
                           }
-                          {/*{
-                              currentTab == tabs.ADD_VAS_LICENSE && 
-                              <AddVASLicense contract_id={contract_id} action={ () => nextTab(tabs.ADD_VAS_LICENSE)} />
-                          } */}
+                          {
+                              currentTab && currentTab.title == "Compliance" && 
+                              <ComplianceTab partner={selectedPartner} />
+                          }
                           
                       </div>
                   </div>

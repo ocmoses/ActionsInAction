@@ -1811,7 +1811,7 @@ const usePartners = () => {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
             category: "Lottery",
-            shortcode: "1234, 4567",
+            shortcode: "1234, 4567, 3425",
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
@@ -1840,6 +1840,26 @@ const usePartners = () => {
               ["Base Media limited", "50%"]
             ]
           }
+        ],
+        shortcodes: [
+          {
+            shortcode: "1234",
+            issue_date: "2022-02-01",
+            expiry_date: "2025-02-01",
+            status: "active"
+          },
+          {
+            shortcode: "4567",
+            issue_date: "2023-03-20",
+            expiry_date: "2024-02-10",
+            status: "expired"
+          },
+          {
+            shortcode: "3425",
+            issue_date: "2023-03-20",
+            expiry_date: "2024-02-08",
+            status: "expired"
+          }
         ]
       },
       {
@@ -1854,7 +1874,7 @@ const usePartners = () => {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
             category: "Lottery",
-            shortcode: "1234, 4567",
+            shortcode: "1234, 4567, 909",
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
@@ -1872,6 +1892,26 @@ const usePartners = () => {
               ["Base Media limited", "50%"]
             ]
           }
+        ],
+        shortcodes: [
+          {
+            shortcode: "1234",
+            issue_date: "2022-02-01",
+            expiry_date: "2025-02-01",
+            status: "active"
+          },
+          {
+            shortcode: "4567",
+            issue_date: "2023-03-20",
+            expiry_date: "2024-02-10",
+            status: "expired"
+          },
+          {
+            shortcode: "909",
+            issue_date: "2023-03-20",
+            expiry_date: "2024-02-08",
+            status: "expired"
+          }
         ]
       },
       {
@@ -1886,7 +1926,7 @@ const usePartners = () => {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
             category: "Lottery",
-            shortcode: "1234, 4567",
+            shortcode: "1234, 4567, 896",
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
@@ -1903,6 +1943,26 @@ const usePartners = () => {
               ["MTN Nigeria", "30%"],
               ["Base Media limited", "50%"]
             ]
+          }
+        ],
+        shortcodes: [
+          {
+            shortcode: "1234",
+            issue_date: "2022-02-01",
+            expiry_date: "2024-02-01",
+            status: "active"
+          },
+          {
+            shortcode: "4567",
+            issue_date: "2023-03-20",
+            expiry_date: "2024-02-10",
+            status: "expired"
+          },
+          {
+            shortcode: "896",
+            issue_date: "2023-03-20",
+            expiry_date: "2025-02-08",
+            status: "active"
           }
         ]
       }

@@ -1221,18 +1221,15 @@ const usePartners = () => {
     }
   };
 
-  // TODO: remove the hardcoded uuid
   const getComplianceStatus = async (aggregator_uuid, vas_partner_uuid) => {
     try {
       const response = await fetch(
         `${RemoteEndpoints.GET_COMPLIANCE_STATUS.replace(
           ":aggregator_uuid",
           aggregator_uuid
-          // "eaedc1b7-0d2f-43dd-bf08-35d3a01da5f2"
         ).replace(
           ":vas_partner_uuid",
           vas_partner_uuid
-          // "49a58cb1-a7c8-4e50-92b1-32d46a95e395"
         )}`,
         {
           cache: "no-store",

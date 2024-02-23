@@ -516,7 +516,6 @@ const [showSuccessToast, setShowSuccessToast] = useState({
         successAction('Network Error 1!', false);
       }
     };
-
   useEffect(() => {
    
     if (vasPartnersDetails) {

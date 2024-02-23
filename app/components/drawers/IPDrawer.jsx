@@ -126,7 +126,6 @@ export default function IPDrawer({
     "Wrong document",
     "Inconsistent Information",
     "Invalid or Expired Document",
-    "Invalid or incorrect date",
     "Poor Quality (Contents Not Clear)",
     "Others",
   ];
@@ -138,8 +137,6 @@ export default function IPDrawer({
 
   const processDynamicFields = (data) => {
     setDynamicResponse(data);
-
-    console.log("DYNAMIC SHIT", dynamicResponse)
 
     // console.log("DYNAMIC SHIT", dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one + "_status"])
 
@@ -164,19 +161,19 @@ export default function IPDrawer({
       dynamicFields.push([
         data.request_name_two,
         "two",
-        data[data.request_name_two[data.request_name_two]],
+        data[data.request_name_one[data.request_name_one]],
       ]);
     }
 
     if (
-      data.request_name_three &&
+      data.request_name_twothree &&
       (data[data.request_name_three] + "_status" == null || "approved")
     ) {
       setHasDynamicField(true);
       dynamicFields.push([
         data.request_name_three,
         "three",
-        data[data.request_name_three[data.request_name_three]],
+        data[data.request_name_one[data.request_name_one]],
       ]);
     }
 
@@ -483,14 +480,9 @@ export default function IPDrawer({
     addDynamicField(newRequest)
       .then((resp) => {
         setProgressing(false);
-        if(resp.error){
-          setError({error: resp.error});
-        }else{
-          showSuccess(resp.message);
-          setDynamicFieldName(capitalizeFirst(newRequest.request_name));
-          setCollapseAdded(true);
-        }
-        
+        showSuccess(resp.message);
+        setDynamicFieldName(capitalizeFirst(newRequest.request_name));
+        setCollapseAdded(true);
       })
       .catch((error) => setError({ error: error.response.data.message }));
   };
@@ -499,7 +491,7 @@ export default function IPDrawer({
     //call endpoint to remove dynamic field
     let data = { partner_uuid: request?.partner_uuid, request_name: fieldName };
     removeDynamicField(data)
-      .then((resp) => {console.log("REMOVE FIELD RESPONSE", resp); showSuccess(resp.message) })
+      .then((resp) => showSuccess(resp.message))
       .catch((error) => setError({ error: error.response.data.message }));
   };
 
@@ -575,7 +567,7 @@ export default function IPDrawer({
         data.ip_request_type = "means-of-identification";
         break;
       case expansion.AGENT_ID:
-        data.ip_request_type = "means-of-agent-identification";
+        data.ip_request_type = "agent-id";
         break;
       case expansion.ADDITIONAL_PROOF:
         data.ip_request_type = "other-content-proof-of-ownership";
@@ -738,7 +730,7 @@ export default function IPDrawer({
 
                         <div
                           className="text-red-500 cursor-pointer"
-                          onClick={() => deleteDynamicField(dynamicFieldName)}
+                          onClick={deleteDynamicField(dynamicFieldName)}
                         >
                           Remove
                         </div>
@@ -3025,9 +3017,7 @@ export default function IPDrawer({
                       )}
 
                       <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
-                        {!dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one] ? 
-                          <Pending /> : 
-                        dynamicResponse[dynamicResponse.request_name_one][
+                        {dynamicResponse[dynamicResponse.request_name_one][
                           dynamicResponse.request_name_one + "_status"
                         ] == "approved" ||
                         approvals[expansion.ADDITIONAL_REQUIREMENT_ONE] ==
@@ -3089,7 +3079,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[1][0]}
+                      {dynamicFields[0][0]}
                     </span>
 
                     <span
@@ -3183,9 +3173,7 @@ export default function IPDrawer({
                       )}
 
                       <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
-                        {!dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two] ? 
-                          <Pending /> :                        
-                        dynamicResponse[dynamicResponse.request_name_two][
+                        {dynamicResponse[dynamicResponse.request_name_two][
                           dynamicResponse.request_name_two + "_status"
                         ] == "approved" ||
                         approvals[expansion.ADDITIONAL_REQUIREMENT_TWO] ==
@@ -3207,7 +3195,7 @@ export default function IPDrawer({
               </div>
             )}
 
-          {/* Additional Requirement three */}
+          {/* Additional Requirement two */}
           {hasDynamicField &&
             dynamicFields.find((field) => field[1] == "three") != null && (
               <div className="flex space-x-2 items-start w-full">
@@ -3247,7 +3235,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[2][0]}
+                      {dynamicFields[0][0]}
                     </span>
 
                     <span
@@ -3340,9 +3328,7 @@ export default function IPDrawer({
                       )}
 
                       <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
-                        { !dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three] ? 
-                          <Pending /> :
-                          dynamicResponse[dynamicResponse.request_name_three][
+                        {dynamicResponse[dynamicResponse.request_name_three][
                           dynamicResponse.request_name_three + "_status"
                         ] == "approved" ||
                         approvals[expansion.ADDITIONAL_REQUIREMENT_THREE] ==
@@ -3380,10 +3366,6 @@ export default function IPDrawer({
       />
     </>
   );
-
-  function Pending(){
-    return <span className="text-sm text-gray-400">Pending</span>;
-  }
 
   function Approved() {
     return (

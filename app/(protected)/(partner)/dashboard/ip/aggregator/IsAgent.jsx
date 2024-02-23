@@ -544,7 +544,10 @@ export default function IsAgent({ params }) {
       {successToast && (
         <PopUp closePopUp={() => {}}>
           <SuccessCard
-            action={() => setSuccessToast(false)}
+            action={() => {
+              setSuccessToast(false);
+              router.push("/dashboard/requests");
+            }}
             msg={
               "We’ll review your submissions and notify your once that process is completed."
             }

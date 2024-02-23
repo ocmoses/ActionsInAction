@@ -38,6 +38,7 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -464,7 +465,7 @@ export default function GetStarted({ type }) {
 
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
-      if (res.result?.length > 0) {
+      if (res.result?.success && res.result?.data.length > 0) {
         setShowPartnerCategories(false);
         setVasPartnerData(res.result);
       }
@@ -732,6 +733,7 @@ export default function GetStarted({ type }) {
                     <IPCard />
                   )}
                 <ChangeOrderRejection />
+                <ComplianceRejection />
                 <IPRejection />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
@@ -1042,9 +1044,11 @@ export default function GetStarted({ type }) {
                   )}
               </div>
               {rechooseAggregator &&
+                vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
+                      key={item.uuid}
                       aggregator={item.aggregator}
                       action={() => {
                         handleVasData("service_uuid", item.service_uuid);
@@ -1054,11 +1058,12 @@ export default function GetStarted({ type }) {
                     />
                   )
                 )}
-              {vasPartnerData.map((item) =>
-                item.status !== "in-progress" ? null : (
-                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
-                )
-              )}
+              {vasPartnerData.length > 0 &&
+                vasPartnerData.map((item) =>
+                  item.status !== "in-progress" ? null : (
+                    <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                  )
+                )}
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator

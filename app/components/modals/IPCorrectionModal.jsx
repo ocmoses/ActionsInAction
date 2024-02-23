@@ -10,7 +10,6 @@ import FormErrors from "@/app/components/FormErrors";
 import DatePicker from "@/app/components/form/DatePicker";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
-
 export default function IPCorrectionModal({ rejected, closeAction }) {
   console.log("REJECTED ARRAY", rejected);
 
@@ -32,11 +31,10 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     }, 3000);
 
   const validateFiles = () => {
-    
     console.log("FILES", files);
 
-    if(!data.license_start_date || !data.license_end_date){
-      setError({ error: "Please fill licensing period"});
+    if (!data.license_start_date || !data.license_end_date) {
+      setError({ error: "Please fill licensing period" });
       return false;
     }
 
@@ -48,8 +46,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
       }
     }
 
-    
-
     return true;
   };
 
@@ -58,30 +54,26 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
       return;
     }
     setSubmitting(true);
-    if(rejected.includes('licensing_period')){
-
+    if (rejected.includes("licensing_period")) {
       updateLicenseInfo()
-        .then(resp => {
+        .then((resp) => {
           console.log("RESP", resp);
           setSubmitting(false);
 
-          if(resp.data){
+          if (resp.data) {
             setSuccessMessage("Updated successfully");
             setTimeout(() => {
-              
               closeAction();
 
               location.reload();
             }, 2000);
             setSuccessToast(true);
-          }else{
-            setError({error: resp.error});
+          } else {
+            setError({ error: resp.error });
           }
-        
-      })
-      .catch(error => console.log(error.response));
-    }else{      
-
+        })
+        .catch((error) => console.log(error.response));
+    } else {
       setSuccessToast(true);
       setTimeout(() => {
         setSubmitting(false);
@@ -91,7 +83,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
         location.reload();
       }, 2000);
     }
-    
   };
 
   const filesMap = {
@@ -99,7 +90,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     aggregator_and_vas_requirements: "Aggregator requirement",
     authorization_letter: "Authentication Letter",
     probate_of_will: "Probate of Will",
-    "licensing_period": "Licensing Period",
+    licensing_period: "Licensing Period",
     video_file: "Authorization Video",
     authorization_video: "Authorization Video",
     agreement_letter_btw_content_and_vas_partner: "Agreement with VAS Partner",
@@ -115,19 +106,24 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     other_content_proof_of_ownership: "Additional Proof",
   };
 
-  const [data, setData] = useState({partner_uuid: partner?.uuid, physical_status_of_content_provider: "null",
-                                      license_start_date: null, license_end_date: null});
+  const [data, setData] = useState({
+    partner_uuid: partner?.uuid,
+    physical_status_of_content_provider: "null",
+    license_start_date: null,
+    license_end_date: null,
+  });
 
   let today = new Date();
   const tomorrow = new Date().setDate(today.getDate() + 1);
   const two_years_ago = new Date().setDate(today.getDate() - 739);
-  const max_expiry = new Date().setDate((data.AVL_issuing_date == "" ? today : data.AVL_issuing_date) + 739);
-
+  const max_expiry = new Date().setDate(
+    (data.AVL_issuing_date == "" ? today : data.AVL_issuing_date) + 739
+  );
 
   const handleFormChange = (e) => {
     clearErrors();
-    setData({...data, [e.target.id]: e.target.value});
-}
+    setData({ ...data, [e.target.id]: e.target.value });
+  };
 
   const [files, setFiles] = useState({});
 
@@ -156,11 +152,11 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
           setError({ [file_title]: resp.error });
         } else {
           setFiles({ ...files, [file_title]: file_title });
-          
-          if(file_title == 'authorization_video') {
-            setFiles({ ...files, authorization_video: file_title });           
-            setFiles({ ...files, video_file: file_title });    
-            // setFiles({ ...files, video_file: file_title });         
+
+          if (file_title == "authorization_video") {
+            setFiles({ ...files, authorization_video: file_title });
+            setFiles({ ...files, video_file: file_title });
+            // setFiles({ ...files, video_file: file_title });
           }
         }
       })
@@ -179,10 +175,9 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
   }, []);
 
   const updateLicenseInfo = async () => {
-
-    if(!validateFiles()){
-        console.log("VAALIDATION FAILED");
-        return;
+    if (!validateFiles()) {
+      console.log("VAALIDATION FAILED");
+      return;
     }
 
     clearErrors();
@@ -190,67 +185,62 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     setSubmitting(true);
 
     try {
-        setSubmitting(true);
-        const response = await fetch(
-        `${RemoteEndpoints.SUBMIT_IP_DETAILS}`,
-            {
-                cache: "no-store",
-                next: { revalidate: 120 },
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    apikey: process.env.NEXT_PUBLIC_APIKEY,
-                    token: user.token,
-                    "Content-Type": "application/json",
-                    Authorization: `bearer ${user.token}`,
-                },
-            }
-        );
+      setSubmitting(true);
+      const response = await fetch(`${RemoteEndpoints.SUBMIT_IP_DETAILS}`, {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          token: user.token,
+          "Content-Type": "application/json",
+          Authorization: `bearer ${user.token}`,
+        },
+      });
 
-        if (!response)
-            return {
-                error: "This request has no response available",
-            };
-
-        if (response.status === 401 ) {
-            Logout();
-            return;
-        }
-
-        const result = await response.json();
-
-        console.log("UPDATED LICENSE PERIOD UPLOAD", result);
-
-        setSubmitting(false);
-        
-        if (result?.success) {
-            
-            const data = result?.data;
-            
-            // console.log('Submit all proofs message', message);
-
-            setSuccessMessage("Updated successfully");
-            setSuccessToast(true);
-   
-            return {
-                data
-            };
-        }
+      if (!response)
         return {
-        error:
-            result?.data?.message ??
-            "Something went wrong. Please check your connection and try again",
+          error: "This request has no response available",
         };
+
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+
+      const result = await response.json();
+
+      console.log("UPDATED LICENSE PERIOD UPLOAD", result);
+
+      setSubmitting(false);
+
+      if (result?.success) {
+        const data = result?.data;
+
+        // console.log('Submit all proofs message', message);
+
+        setSuccessMessage("Updated successfully");
+        setSuccessToast(true);
+
+        return {
+          data,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     } catch (error) {
-        console.log({ error });
-        return {
+      console.log({ error });
+      return {
         error:
-            error.message ??
-            "Something went wrong. Please check your connection and try again",
-        };
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     }
-
-}
+  };
 
   return (
     <GenericModal
@@ -315,9 +305,8 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                     disabled={false}
                     style="flex-1"
                   />
-                ) : 
-                // rejection != "service_details" &&
-                  rejection != "licensing_period" ? (
+                ) : // rejection != "service_details" &&
+                rejection != "licensing_period" ? (
                   <FileInput
                     id={rejection}
                     doc_id={`${rejection}_doc`}
@@ -331,31 +320,29 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                 ) : (
                   // Here rejection is license period
                   <div className="flex space-x-2 no-wrap items-center h-full">
+                    <DatePicker
+                      id="license_start_date"
+                      label="Start date"
+                      value={data.license_start_date}
+                      onChange={(e) => handleFormChange(e)}
+                      onBlur={(e) => handleFormChange(e)}
+                      errors={errors}
+                      min={two_years_ago}
+                      max={today}
+                      disabled={false}
+                    />
 
-                      <DatePicker
-                          id="license_start_date"
-                          label="Start date"
-                          value={data.license_start_date}
-                          onChange={(e) => handleFormChange(e)}
-                          onBlur={(e) => handleFormChange(e)}
-                          errors={errors}
-                          min={two_years_ago}
-                          max={today}
-                          disabled={false}
-                      />
-
-                      <DatePicker
-                          id="license_end_date"
-                          label="End date"
-                          value={data.license_end_date}
-                          onChange={(e) => handleFormChange(e)}
-                          onBlur={(e) => handleFormChange(e)}
-                          errors={errors}
-                          min={tomorrow}
-                          max={max_expiry}
-                          disabled={false}
-                      />
-
+                    <DatePicker
+                      id="license_end_date"
+                      label="End date"
+                      value={data.license_end_date}
+                      onChange={(e) => handleFormChange(e)}
+                      onBlur={(e) => handleFormChange(e)}
+                      errors={errors}
+                      min={tomorrow}
+                      max={max_expiry}
+                      disabled={false}
+                    />
                   </div>
                 )}
               </div>

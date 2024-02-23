@@ -465,7 +465,7 @@ export default function GetStarted({ type }) {
 
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
-      if (res.result?.length > 0) {
+      if (res.result?.success && res.result?.data.length > 0) {
         setShowPartnerCategories(false);
         setVasPartnerData(res.result);
       }
@@ -1044,6 +1044,7 @@ export default function GetStarted({ type }) {
                   )}
               </div>
               {rechooseAggregator &&
+                vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
@@ -1057,11 +1058,12 @@ export default function GetStarted({ type }) {
                     />
                   )
                 )}
-              {vasPartnerData.map((item) =>
-                item.status !== "in-progress" ? null : (
-                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
-                )
-              )}
+              {vasPartnerData.length > 0 &&
+                vasPartnerData.map((item) =>
+                  item.status !== "in-progress" ? null : (
+                    <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                  )
+                )}
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator

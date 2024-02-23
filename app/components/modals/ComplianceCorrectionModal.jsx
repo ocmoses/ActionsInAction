@@ -1,16 +1,18 @@
 import GenericModal from "./GenericModal.jsx";
-import { useEffect, useContext, useState } from "react";
+import { useState } from "react";
 import useErrors from "@/hooks/useErrors";
-import useUsers from "@/hooks/useUsers";
 import TextInput from "@/app/components/form/TextInput";
 import FileInput from "@/app/components/form/FileInput";
 import DatePicker from "@/app/components/form/DatePicker";
 import usePartners from "@/hooks/usePartners";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import FormErrors from "@/app/components/FormErrors";
-import PopUp, { SuccessCard } from "@/app/components/PopUps";
 
-export default function ComplianceCorrectionModal({ rejected, closeAction }) {
+export default function ComplianceCorrectionModal({
+  rejected,
+  closeAction,
+  successAction,
+}) {
   const {
     partner,
     compliancePartnerCorrection,
@@ -20,8 +22,6 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
   const [submitting, setSubmitting] = useState(false);
-
-  const [successToast, setSuccessToast] = useState(false);
 
   const [data, setData] = useState({
     vas_license_id: "",
@@ -55,17 +55,33 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
     setData({ ...data, [e.target.id]: e.target.value });
   };
 
+  const removeDocSuffix = (field) => {
+    return field.replace("_doc", "");
+  };
+
+  const formatFieldName = (field) => {
+    const fieldParts = field.split("-");
+    const mainField = fieldParts[0];
+    const words = mainField.split("_");
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  const fieldParts = rejected.field.split("-");
+  const mainField = fieldParts[0];
+
   const handleSubmit = async () => {
     clearErrors();
 
     const fieldValue = data[rejected.field];
 
     if (!fieldValue) {
-      setError({ error: `${rejected.field} cannot be empty` });
+      setError({ error: `${formatFieldName(rejected.field)} cannot be empty` });
       return;
     }
 
-    switch (rejected.field) {
+    switch (mainField) {
       case "vas_license_id":
       case "nlrc_license_type":
       case "nlrc_license_id":
@@ -85,7 +101,11 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
       case "nlrc_doc":
       case "shortcode_doc":
       case "pricing_doc":
-        uploadFile(rejected.field, data[rejected.field], rejected.field);
+        uploadFile(
+          removeDocSuffix(rejected.field),
+          data[rejected.field],
+          rejected.field
+        );
         break;
       default:
         break;
@@ -110,22 +130,25 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
       .then((resp) => {
         setSubmitting(false);
         if (resp.result.success) {
-          setSuccessToast(true);
+          successAction();
           closeAction();
         }
         console.log(resp);
       })
       .catch((error) => {
-        console.log(error.response), setSubmitting(false);
+        console.log(error.response);
+        setSubmitting(false);
       });
   };
 
   const uploadFile = (file_title, file, field) => {
+    const fileParts = file_title.split("-");
+    const mainFileTile = fileParts[0];
     let formData = new FormData();
     formData.append("partner_uuid", partner?.uuid);
     formData.append("vas_partner_uuid", rejected.vas_partner_uuid);
     formData.append("category_uuid", rejected.category_uuid);
-    formData.append("type_of_file", file_title);
+    formData.append("type_of_file", mainFileTile);
     formData.append("file", file);
     formData.append("category_stage", rejected.category_stage);
     formData.append("field", field);
@@ -138,8 +161,8 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
     compliancePartnerCorrectionFileUpload(formData)
       .then((resp) => {
         setSubmitting(false);
-        if (resp["vas_partner"].status === "corrected") {
-          setSuccessToast(true);
+        if (resp.result.success) {
+          successAction();
           closeAction();
         }
         console.log(resp);
@@ -159,7 +182,7 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
       <>
         <div className="flex flex-col pt-8 pb-4 relative">
           <div className="text-white text-2xl mb-4 flex-1">
-            Update {rejected.field}
+            Update {formatFieldName(rejected.field)}
           </div>
           <div
             className="absolute top-4 -right-4 cursor-pointer"
@@ -184,11 +207,11 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
             </svg>
           </div>
         </div>
-        <div className="my-4 flex text-white flex-col overflow-y-auto">
+        <div className="my-4 flex text-white flex-col">
           <div className="flex flex-col">
             <div className="my-2 flex flex-col space-y-1">
               {(() => {
-                switch (rejected.field) {
+                switch (mainField) {
                   case "vas_license_id":
                   case "nlrc_license_type":
                   case "nlrc_license_id":
@@ -197,7 +220,7 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
                     return (
                       <TextInput
                         id={rejected.field}
-                        label={rejected.field}
+                        label={formatFieldName(rejected.field)}
                         value={data[rejected.field]}
                         onChange={handleFormChange}
                         onBlur={handleFormChange}
@@ -212,14 +235,14 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
                       <div>
                         <DatePicker
                           id={rejected.field}
-                          label={rejected.field}
+                          label={formatFieldName(rejected.field)}
                           value={data.license_start_date}
                           onChange={(e) => handleFormChange(e)}
-                          onBlur={(e) => handleFormChange(e)}
                           errors={errors}
                           min={two_years_ago}
                           max={today}
                           disabled={false}
+                          disableFocusBorder={true}
                         />
                       </div>
                     );
@@ -228,19 +251,17 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
                   case "shortcode_expiry_date":
                   case "pricing_expiry_date":
                     return (
-                      <>
-                        <DatePicker
-                          id={rejected.field}
-                          label={rejected.field}
-                          value={data.license_end_date}
-                          onChange={(e) => handleFormChange(e)}
-                          onBlur={(e) => handleFormChange(e)}
-                          errors={errors}
-                          min={tomorrow}
-                          max={max_expiry}
-                          disabled={false}
-                        />
-                      </>
+                      <DatePicker
+                        id={rejected.field}
+                        label={formatFieldName(rejected.field)}
+                        value={data.license_end_date}
+                        onChange={(e) => handleFormChange(e)}
+                        errors={errors}
+                        min={tomorrow}
+                        max={max_expiry}
+                        disabled={false}
+                        disableFocusBorder={true}
+                      />
                     );
                   case "ncc_doc":
                   case "nlrc_doc":
@@ -250,10 +271,13 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
                       <FileInput
                         id={rejected.field}
                         doc_id={`${rejected.field}_doc`}
-                        label={rejected.field}
+                        label={formatFieldName(rejected.field)}
                         value={rejected.field}
                         onChange={(e) =>
-                          setData({ ...data, [rejected.field]: e.target.value })
+                          setData({
+                            ...data,
+                            [rejected.field]: e.target.value,
+                          })
                         }
                         errors={errors}
                         disabled={false}
@@ -298,16 +322,6 @@ export default function ComplianceCorrectionModal({ rejected, closeAction }) {
             </>
           )}
         </div>
-        {successToast && (
-          <PopUp closePopUp={() => {}}>
-            <SuccessCard
-              action={() => setSuccessToast(false)}
-              msg={
-                "We’ll review your updates and share an updated contract for you to sign."
-              }
-            />
-          </PopUp>
-        )}
       </>
     </GenericModal>
   );

@@ -1847,10 +1847,12 @@ const usePartners = () => {
           },
         }
       );
-      setProcessing(false);
-      const result = response.data.data;
+      if (response.status === 200) {
+        setProcessing(false);
+        const result = response.data;
 
-      return { result };
+        return { result };
+      }
     } catch (error) {
       setProcessing(false);
       return { error };
@@ -1939,7 +1941,7 @@ const usePartners = () => {
 
       setProcessing(false);
 
-      if (response?.status === 200) {
+      if (response?.status === 201) {
         const result = await response.json();
 
         return {

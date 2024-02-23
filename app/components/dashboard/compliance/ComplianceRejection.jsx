@@ -1,12 +1,10 @@
 import usePartners from "@/hooks/usePartners";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import useUsers from "@/hooks/useUsers";
 import ComplianceCorrectionModal from "@/app/components/modals/ComplianceCorrectionModal";
+import PopUp, { SuccessCard } from "@/app/components/PopUps";
 
 export default function ComplianceRejection() {
-  const router = useRouter();
-
   const { getComplianceStatus, partner } = usePartners();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -19,30 +17,42 @@ export default function ComplianceRejection() {
 
   const [expanded, setExpanded] = useState(false);
 
+  const [successToast, setSuccessToast] = useState(false);
+
   let rejectionArray = [];
 
+  const formatFieldName = (field) => {
+    const fieldParts = field.split("-");
+    const mainField = fieldParts[0];
+    const words = mainField.split("_");
+    return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   useEffect(() => {
-    //TODO: change this implementation because vas partner uuid can be more than one
-    getComplianceStatus(
-      partner.uuid,
-      partner.vas_partners[2]["vas_partner_uuid"]
-    ).then((resp) => {
-      if (resp.error) {
-        console.log("COMPLIANCE REJECTION ERROR", { error: resp.error });
-      } else {
-        rejectionArray = resp.data[0]["compliance_approvals"].filter(
-          (approval) => approval.status === "rejected"
-        );
+    //TODO: use the "in-progress" to check the "vas_partner_uuid" to use
+    partner?.vas_partners.length > 0 &&
+      getComplianceStatus(
+        partner?.uuid,
+        partner?.vas_partners[0]["vas_partner_uuid"]
+      ).then((resp) => {
+        if (resp.error) {
+          console.log("COMPLIANCE REJECTION ERROR", { error: resp.error });
+        } else {
+          rejectionArray = resp.data[0]["compliance_approvals"].filter(
+            (approval) => approval.status === "rejected"
+          );
 
-        if (rejectionArray.length > 0) {
-          console.log("Rejected items:", rejectionArray);
-          setShowAlert(true);
-          setRejected(rejectionArray);
+          if (rejectionArray.length > 0) {
+            console.log("Rejected items:", rejectionArray);
+            setShowAlert(true);
+            setRejected(rejectionArray);
+          }
+
+          console.log("Rejection Array", rejectionArray);
         }
-
-        console.log("Rejection Array", rejectionArray);
-      }
-    });
+      });
   }, []);
 
   const { user } = useUsers();
@@ -132,7 +142,9 @@ export default function ComplianceRejection() {
                       <div className="flex flex-row w-full justify-between">
                         <div className="text-gray-500 ">
                           <p>
-                            <span className="text-white">{item.field}</span>
+                            <span className="text-white">
+                              {formatFieldName(item.field)}
+                            </span>
                             <br />
                             <span className="text-white/60">
                               {item.feedback}
@@ -163,7 +175,24 @@ export default function ComplianceRejection() {
           <ComplianceCorrectionModal
             rejected={selectedRejection}
             closeAction={() => setShowModal(false)}
+            successAction={() => {
+              setSuccessToast(true);
+            }}
           />
+        )}
+
+        {successToast && (
+          <PopUp closePopUp={() => {}}>
+            <SuccessCard
+              action={() => {
+                setSuccessToast(false);
+                location.reload();
+              }}
+              msg={
+                "We’ll review your updates and share an updated contract for you to sign."
+              }
+            />
+          </PopUp>
         )}
       </>
     )

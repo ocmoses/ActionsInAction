@@ -34,7 +34,7 @@ export default function ContractCategoryModal() {
       <GenericModal
         id="contract_signatories_modal"
         width={450}
-        closeAction={() => setShowContractCategoryModal(false)}
+        closeAction={() => {setShowContractCategoryModal(false); clearErrors()}}
       >
         <>
           <div className="flex flex-col pt-8 pb-4 relative">
@@ -42,8 +42,7 @@ export default function ContractCategoryModal() {
               Who’s your technical provider
             </div>
             <p className="text-gray-400 text-md max-w-[450px]">
-              A short description of what a technical provider/partner means
-              goes here.
+              A technical service provider is a dedicated professional or company specializing in delivering expert solutions within the technology sector.
             </p>
             <div
               className="absolute top-4 -right-4 cursor-pointer"

@@ -296,7 +296,7 @@ export default function Contracts() {
                     <td>
                       <div className="flex gap-0 flex-col">
                         <span
-                          className={`text-white text-sm px-1 inline-block w-16 rounded ${
+                          className={`text-white text-sm px-1 inline-block w-20 rounded ${
                             contract.contract_status == "expired"
                               ? "bg-red-400"
                               : contract.contract_status == "pending"

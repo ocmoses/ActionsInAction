@@ -1860,7 +1860,13 @@ const usePartners = () => {
             expiry_date: "2024-02-08",
             status: "expired"
           }
-        ]
+        ],
+        vas_license: {
+            license_id: "ID-21312394",
+            issue_date: "2022-02-01",
+            expiry_date: "2025-02-01",
+            status: "active"
+        }
       },
       {
         company_name: "Astra Communications",
@@ -1912,7 +1918,13 @@ const usePartners = () => {
             expiry_date: "2024-02-08",
             status: "expired"
           }
-        ]
+        ],
+        vas_license: {
+          license_id: "ID-09754567",
+          issue_date: "2023-03-20",
+          expiry_date: "2024-02-10",
+          status: "expired"
+        }
       },
       {
         company_name: "ABC Company",
@@ -1964,7 +1976,13 @@ const usePartners = () => {
             expiry_date: "2025-02-08",
             status: "active"
           }
-        ]
+        ],
+        vas_license: {
+          license_id: "ID-09758767",
+          issue_date: "2023-03-20",
+          expiry_date: "2024-02-10",
+          status: "expired"
+        }
       }
     ];
     try {

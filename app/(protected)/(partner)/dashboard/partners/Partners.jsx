@@ -18,6 +18,7 @@ import moment from "moment";
 import ProfileTab from "./tabs/ProfileTab";
 import ServicesTab from "./tabs/ServicesTab";
 import ComplianceTab from "./tabs/ComplianceTab";
+import ContractsTab from "./tabs/ContractsTab";
 
 
 export default function Partners() {
@@ -272,6 +273,10 @@ export default function Partners() {
                           {
                               currentTab && currentTab.title == "Compliance" && 
                               <ComplianceTab partner={selectedPartner} />
+                          }
+                          {
+                              currentTab && currentTab.title == "Contracts" && 
+                              <ContractsTab partner={selectedPartner} />
                           }
                           
                       </div>

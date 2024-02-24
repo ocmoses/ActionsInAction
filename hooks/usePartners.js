@@ -1862,11 +1862,31 @@ const usePartners = () => {
           }
         ],
         vas_license: {
-            license_id: "ID-21312394",
-            issue_date: "2022-02-01",
-            expiry_date: "2025-02-01",
-            status: "active"
-        }
+          license_id: "ID-21312394",
+          issue_date: "2022-02-01",
+          expiry_date: "2025-02-01",
+          status: "active"
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }          
+        ]
       },
       {
         company_name: "Astra Communications",
@@ -1924,7 +1944,28 @@ const usePartners = () => {
           issue_date: "2023-03-20",
           expiry_date: "2024-02-10",
           status: "expired"
-        }
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }
+          
+        ]
       },
       {
         company_name: "ABC Company",
@@ -1982,7 +2023,28 @@ const usePartners = () => {
           issue_date: "2023-03-20",
           expiry_date: "2024-02-10",
           status: "expired"
-        }
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }
+          
+        ]
       }
     ];
     try {

@@ -94,7 +94,7 @@ export default function BilateralAnnexures({params}){
         six: ".6",
     }
 
-    let checkindividualFields = false;
+    const [checkindividualFields, setCheckindividualFields] = useState(true);
 
     const handleOnChange = (e, field) => {
         clearErrors();
@@ -106,7 +106,9 @@ export default function BilateralAnnexures({params}){
 
     useEffect(() => {
         get_dynamic_content(contract_id).then(resp => {
+            console.log("Dynamic Details", dynamicData);
             console.log("Dynamic shortcodes", dynamicData?.dynamic_details?.shortcodes[0]?.shortcodes);
+                       
         });
     }, []);
 
@@ -184,14 +186,16 @@ export default function BilateralAnnexures({params}){
     
 
     const submitResponses = async () => {
+        
+        if(!validateResponses()){
+            return;
+        }
 
         if(user.role == 'witness' || !checkindividualFields){
             router.push(`/dashboard/contracts/execution/${contract_id}`);
             return;
         }
-        if(!validateResponses()){
-            return;
-        }
+       
 
         clearErrors();
 
@@ -211,44 +215,37 @@ export default function BilateralAnnexures({params}){
 
     const validateResponses = () => {
 
-        // console.log("Dynamic at submit", dynamicData);        
-
-        for(const field in dynamicData?.dynamic_details?.annexures){
-            console.log("field", field);
-
-            if(dynamicData?.dynamic_details?.annexures[field] == "" || 
-            dynamicData?.dynamic_details?.annexures[field] == null ||
-            dynamicData?.dynamic_details?.annexures[field] == undefined){
-                checkindividualFields = true;
-                break;
-            }
+        // console.log("Dynamic at submit", dynamicData); 
+        
+        console.log("TO CHECK OR NOT TO CHECK", checkindividualFields);
+        
+        if(!checkindividualFields){
+            return true;
         }
+            
+        for(let i in data){
+            if(!data[i] || data[i].trim() == ""){
+                let iArray = i.split("_");
 
-        if(checkindividualFields){
-            for(let i in data){
-                if(!data[i] || data[i].trim() == ""){
-                    let iArray = i.split("_");
-    
-                    let result = "";
-    
-                    for (let index = 0; index < iArray.length; index++) {
-                        if(index == 0){
-                            result += capitalizeFirst(iArray[index]);
-                        }else if(index == 1){
-                            result += " " + numbersMap[iArray[index]];
-                        }else if(index == 2){
-                            result += numbersMap[iArray[index]];
-                        }else if(index == 3){
-                            result += numbersMap[iArray[index]];
-                        }                                            
-                    }
-    
-                    setError({error: result + " has no response"});
-                    return false;
+                let result = "";
+
+                for (let index = 0; index < iArray.length; index++) {
+                    if(index == 0){
+                        result += capitalizeFirst(iArray[index]);
+                    }else if(index == 1){
+                        result += " " + numbersMap[iArray[index]];
+                    }else if(index == 2){
+                        result += numbersMap[iArray[index]];
+                    }else if(index == 3){
+                        result += numbersMap[iArray[index]];
+                    }                                            
                 }
+
+                setError({error: result + " has no response"});
+                return false;
             }
         }
-
+        
         return true;
     }
 
@@ -263,7 +260,7 @@ export default function BilateralAnnexures({params}){
         } else {
             // console.log('dynamic_content_response', dynamic_content_response);
             setDynamicData(dynamic_content_response.data);
-            
+
             setData({...data, 
                         annexure_c: dynamicData?.dynamic_details?.annexures?.annexure_c ?? "", 
                         annexure_e_four: dynamicData?.dynamic_details?.annexures?.annexure_e_four ?? "", 
@@ -304,6 +301,20 @@ export default function BilateralAnnexures({params}){
                         annexure_h_xxii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxii ?? "", 
                         annexure_h_xxiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxiii ?? ""
                 });
+
+            for(const field in dynamic_content_response.data?.dynamic_details?.annexures){
+                console.log("field", field);
+    
+                if(dynamic_content_response.data?.dynamic_details?.annexures[field] == "" || 
+                    dynamic_content_response.data?.dynamic_details?.annexures[field] == null ||
+                    dynamic_content_response.data?.dynamic_details?.annexures[field] == undefined){
+                    setCheckindividualFields(true);
+                    break;                    
+                }else{
+                    setCheckindividualFields(false);
+                    break;
+                }
+            }
         }
     }
     
@@ -3019,7 +3030,7 @@ export default function BilateralAnnexures({params}){
 
                         }{
                             !submitting && 
-                                <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitResponses()}>Review & Submit</button>
+                                <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitResponses()}>{checkindividualFields ? "Review & Submit" : "Next" }</button>
 
                         }
                         

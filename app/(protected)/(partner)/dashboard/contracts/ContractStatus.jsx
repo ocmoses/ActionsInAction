@@ -79,7 +79,8 @@ export default function ContractStatus({ dynamicData }) {
     }
   } else if (
     contractStatus == contract_statuses.PROCESSING ||
-    contractStatus == contract_statuses.UPDATE
+    contractStatus == contract_statuses.UPDATE 
+    // || contractStatus == contract_statuses.ACTIVE
   ) {
     if (
       !contractId &&

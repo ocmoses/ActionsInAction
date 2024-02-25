@@ -43,9 +43,7 @@ export default function Profile() {
   const [successToast, setSuccessToast] = useState(false);
   const successAction = () => setTimeout(() => {
                                                   setSuccessToast(false)
-                                                }, 3000);
-
-  
+                                                }, 3000);  
 
   console.log("isSuperadmin", isSuperadmin);
   

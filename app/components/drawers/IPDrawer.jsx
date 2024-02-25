@@ -534,16 +534,16 @@ export default function IPDrawer({
         data.ip_request_type = "licensing-period";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
-        data.ip_request_type = "authorization-letter";
+        data.ip_request_type = "agg-vas-letter";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
-        data.ip_request_type = "authorization-video";
+        data.ip_request_type = "agg-vas-video";
         break;
       case expansion.AGG_AND_VAS_AGREEMENT_WITH_VAS_PARTNER:
-        data.ip_request_type = "agreement-letter-btw-content-and-vas-partner";
+        data.ip_request_type = "agg-vas-aggreement-letter";
         break;
       case expansion.AGG_AND_VAS_ADDITIONAL_PROOF:
-        data.ip_request_type = "other-content-proof-of-ownership";
+        data.ip_request_type = "agg-vas-other-proof-of-ownership";
         break;
       case expansion.AUTHORIZATION_LETTER:
         data.ip_request_type = "authorization-letter";

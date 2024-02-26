@@ -22,6 +22,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
                                     premium_content: "no", licensed_content: "no", 
                                     content_provider_share: "", 
                                     technical_provider_share: null, 
+                                    vas_partner_uuid: request.vas_partner_uuid ? request.vas_partner_uuid : null,
                                     mtn_share: "", status: "approved"});
 
   const [{ errors, setError, clearErrors }] = useErrors(null);

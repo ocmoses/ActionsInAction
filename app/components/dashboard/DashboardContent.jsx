@@ -559,7 +559,7 @@ export default function GetStarted({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED ? (
+                            {userStatus == user_statuses.APPROVED && (
                               <CallToAction
                                 style={{
                                   border: "1px solid rgba(255,255,255,.1)",
@@ -620,7 +620,8 @@ export default function GetStarted({ type }) {
                                   </div>
                                 }
                               />
-                            ) : FinalApproval.partner ? (
+                            )}
+                            {FinalApproval.partner ? (
                               // <CallToAction
                               //   message="Your contract is ready. Click here to sign"
                               //   description="Describe the event and give further instructions if needed, include a call to action"
@@ -950,19 +951,7 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {/* {!contractStarted &&
-                  partner?.contract_status === "not_started" &&
-                  partnerActiveCategories?.length > 0 && (
-                    <div
-                      id="categoryselect"
-                      className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
-                    >
-                      Dear {user.first_name}, please note that you can choose
-                      multiple service categories. However, you will be required
-                      to complete a selected category to enable you move to the
-                      next category
-                    </div>
-                  )} */}
+
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -1061,7 +1050,10 @@ export default function GetStarted({ type }) {
               {vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "in-progress" ? null : (
-                    <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                    <ChooseAggregatorSuccessCard
+                      key={item.uuid}
+                      aggregator={item.aggregator}
+                    />
                   )
                 )}
               {showChooseAggregator && (

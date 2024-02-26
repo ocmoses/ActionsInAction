@@ -1,6 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import {getInitials,ellipsify,capitalizeFirst,} from "@/app/modules/utilities";
+import {
+  getInitials,
+  ellipsify,
+  capitalizeFirst,
+} from "@/app/modules/utilities";
 import { request_types, docPrefix } from "@/app/modules/constants";
 import { TailSpinPreloader, CompanyInitial } from "@/app/components/Icons";
 import useProcessing from "@/hooks/useProcessing";
@@ -20,7 +24,10 @@ import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
 import FileViewer from "@/app/components/modals/FileViewer";
-import {GracePeriodAdminFlyOut,LicenseRenewalAdminFlyout,} from "@/app/components/dashboard/compliance/GracePeriodComponent";
+import {
+  GracePeriodAdminFlyOut,
+  LicenseRenewalAdminFlyout,
+} from "@/app/components/dashboard/compliance/GracePeriodComponent";
 import { ShortCodeFlyOut } from "@/app/components/RequestComponent";
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,8 +49,8 @@ export default function Requests() {
     getAllAggregatorRequests,
   } = useAdmins();
 
-  const { processing, setProcessing } = useProcessing();
-  const [{ errors, setError, clearErrors }] = useErrors(null);
+  const { setProcessing } = useProcessing();
+  const [{ setError, clearErrors }] = useErrors(null);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
@@ -66,8 +73,6 @@ export default function Requests() {
   });
 
   const router = useRouter();
-  const [navigation, setNavigation] = useState([]);
-  const [page, setPage] = useState(null);
 
   const [fetchingBRD, setFetchingBRD] = useState(false);
   const [brds, setBrds] = useState([]);
@@ -100,7 +105,7 @@ export default function Requests() {
   const [gracePeriodFlyout, setGracePeriodFlyout] = useState(false);
 
   const [fetchingLicenseRenewals, setFetchingLicenseRenewals] = useState(false);
-  const [licenseRenewals, setlicenseRenewals] = useState([]);
+
   const [licenseRenewalFlyout, setLicenseRenewalFlyout] = useState(false);
 
   const [fetchingShortcodes, setFetchingShortcodes] = useState(false);
@@ -137,8 +142,6 @@ export default function Requests() {
     }
   };
 
-  const [checks, setChecks] = useState({ 1: 0, 2: 0, 3: 0 });
-
   const [data, setData] = useState({
     content_provider_share: "",
     mtn_share: "",
@@ -155,15 +158,18 @@ export default function Requests() {
   let reject_request_response = null;
   let get_all_aggregator_response = null;
 
-    
   const get_ggregator_requests = async () => {
     if (fetchingAggregators) return;
     setFetchingAggregators(true);
     get_all_aggregator_response = await getAllAggregatorRequests();
-    console.log('get_all_aggregator_response', get_all_aggregator_response);
+    console.log("get_all_aggregator_response", get_all_aggregator_response);
 
     for (const aggregatorRequest of get_all_aggregator_response.aggregatorRequests) {
-      if (!requests.find((request) => request.uuid == aggregatorRequest.service_uuid)) {
+      if (
+        !requests.find(
+          (request) => request.uuid == aggregatorRequest.service_uuid
+        )
+      ) {
         requests.push({
           company: aggregatorRequest.aggregator,
           email: aggregatorRequest.aggregator_email,
@@ -203,8 +209,6 @@ export default function Requests() {
     clearErrors();
     setFetchingAggregators(false);
   };
-
-
 
   const get_brds = async (page, perPage) => {
     if (fetchingBRD) return;
@@ -326,23 +330,6 @@ export default function Requests() {
         });
       }
     }
-
-    //Added just for
-    // if (!requests.find((request) => request.uuid == "wqtyiw-wjjkeww-jwejw-khjwi")) {
-    //     requests.push({
-    //       company: "Aggregator Company",
-    //       email: "aggregator.email.com",
-    //       request_type: request_types.REVENUE_SHARE,
-    //       request_id: "RSH9871",
-    //       created_at: "2024-02-16",
-    //       status: "pending",
-    //       partner_uuid: "fgwqtyiw-wjjkeww-jwejw-khjwiu",
-    //       uuid: "wqtyiw-wjjkeww-jwejw-khjwi",
-    //       vas_partner_uuid: "bdhdf-dbnbnds-dnsdnb"
-    //     });
-    // }
-
-    
 
     requests.sort((a, b) =>
       a.request_date > b.request_date
@@ -566,7 +553,10 @@ export default function Requests() {
     setFetchingShortcodes(true);
 
     get_all_partner_shortcodes_response = await getAllPartnersShortCodes();
-console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_response);
+    console.log(
+      "get_all_partner_shortcodes_response",
+      get_all_partner_shortcodes_response
+    );
     if (get_all_partner_shortcodes_response.error) {
       setError({ error: get_all_partner_shortcodes_response.error });
       return;
@@ -732,7 +722,6 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
   };
 
   const getAllRequests = async () => {
-    
     await get_brds();
     await get_questionnaires();
     await get_revenue_share();
@@ -741,7 +730,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
     await get_license_renewal();
     await get_ips();
     await get_shortcodes();
-    await get_ggregator_requests()
+    await get_ggregator_requests();
   };
 
   useEffect(() => {
@@ -752,7 +741,6 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
 
   useEffect(() => {}, [filteredRequests]);
 
-  const [displayShortCodeAlert, setDisplayShortCodeAlert] = useState(false);
   const goToVasPartnerDetail = (uuid) => {
     setRouteloading(true);
     router.push(`/admin/aggregator/${uuid}`);
@@ -871,25 +859,25 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       </td>
                       {/* Action */}
                       <td>
-                        {request?.request_type ==='Compliance' ? (
-                          <>
+                        {request?.request_type === "Compliance" ? (
                           <span
-                          className="text-yellow-600 cursor-pointer"
-                          onClick={() => goToVasPartnerDetail(request.uuid)}>Review</span>
-                          </>
-                        ):(
-                        <span
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            open(request);
-                            console.log("selectedRequest", request);
-                          }}
-                          className="text-yellow-600 cursor-pointer"
-                        >
-                          Review
-                        </span>
+                              className="text-yellow-600 cursor-pointer"
+                              onClick={() => goToVasPartnerDetail(request.uuid)}
+                            >
+                              Review
+                            </span>
+                        ) : (
+                          <span
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              open(request);
+                              console.log("selectedRequest", request);
+                            }}
+                            className="text-yellow-600 cursor-pointer"
+                          >
+                            Review
+                          </span>
                         )}
-                        
                       </td>
                     </tr>
                   ))}
@@ -1115,7 +1103,10 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
         <IPDrawer
           request={selectedRequest}
           openDrawer={openIPDrawer}
-          closeAction={() => {setOpenIPDrawer(false); setSelectedRequest(null)} }
+          closeAction={() => {
+            setOpenIPDrawer(false);
+            setSelectedRequest(null);
+          }}
           refresh={() => get_ips()}
         />
       )}

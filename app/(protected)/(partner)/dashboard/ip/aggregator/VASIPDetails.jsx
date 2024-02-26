@@ -29,7 +29,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 
-export default function VASIPDetails({ params, next }) {
+export default function VASIPDetails({ params, next, contentOwner }) {
   const { partner, ipFileUpload } = usePartners();
 
   const { user } = useUsers();
@@ -73,10 +73,16 @@ export default function VASIPDetails({ params, next }) {
     (data.AVL_issuing_date == "" ? today : data.AVL_issuing_date) + 739
   );
 
+  const licencer_types = {
+    Content_Creator: "content_creator",
+    Agent: "agent_and_content",
+    record_label: "record_label"
+  }
+
   const uploadFile = (file_title, file) => {
     let formData = new FormData();
     formData.append("file_title", file_title);
-    formData.append("licenser_type", "content_owner");
+    formData.append("licenser_type", licencer_types[contentOwner]);
     formData.append("partner_uuid", partner?.uuid);
     formData.append(
       "partner_category_uuid",

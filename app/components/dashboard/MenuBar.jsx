@@ -27,6 +27,8 @@ export default function MenuBar({
 }) {
   const { partner, partners, partnerCategories } = usePartners();
 
+  console.log("Partners==", partners);
+
   const segments = useSelectedLayoutSegments();
   const currentPath = segments?.reverse();
   const path = `/${getPath(currentPath)}`;
@@ -149,7 +151,7 @@ export default function MenuBar({
 
           {AggregatorMenu.map((menu) =>
             
-            partner.aggregator && partner.aggregator.toLowerCase() == "yes" && (
+            partner?.aggregator && partner?.aggregator.toLowerCase() == "yes" && (
               <li key={menu.label}>
                 <Link
                   href={menu.route}

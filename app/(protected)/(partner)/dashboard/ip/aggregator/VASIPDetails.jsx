@@ -74,7 +74,7 @@ export default function VASIPDetails({ params, next, contentOwner }) {
   );
 
   const licencer_types = {
-    Content_Creator: "content_creator",
+    Content_Creator: "content_owner",
     Agent: "agent_and_content",
     record_label: "record_label"
   }

@@ -141,7 +141,7 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
                   />
                 </svg>
-                Applications
+                Requests
               </span>
             </Link>
 

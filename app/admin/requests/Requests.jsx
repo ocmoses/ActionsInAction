@@ -588,6 +588,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
           shortcode_uuid: shortcode.shortcode_uuid,
+          vas_partner_uuid:shortcode.vas_partner_uuid,
         });
       }
     }

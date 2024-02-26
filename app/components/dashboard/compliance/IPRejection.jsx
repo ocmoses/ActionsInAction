@@ -63,7 +63,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["licensing-period"].license_period_status == "rejected"){
+        if(data["licensing-period"]?.license_period_status == "rejected"){
             //add 
             if(!rejectionArray.includes("licensing_period")){
                 rejectionArray.push("licensing_period");

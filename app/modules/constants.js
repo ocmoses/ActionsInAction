@@ -1525,7 +1525,8 @@ export const role_menu_map = {
     "Compliance",
     "Settings",
     "Contracts",
-    "Requests"
+    "Requests",
+    "Partners"
   ],
   "admin": [
     "Dashboard",

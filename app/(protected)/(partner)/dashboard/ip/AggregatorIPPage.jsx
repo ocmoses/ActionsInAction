@@ -248,7 +248,7 @@ export default function AggregatorIPPage({ params }) {
 
         {step == 1 && <ServiceDetail params={params} next={() => setStep(2)} />}
         {step == 2 && <Licensing />}
-        {step == 3 && <VASIPDetails params={params} next={() => setStep(4)} />}
+        {step == 3 && <VASIPDetails params={params} next={() => setStep(4)  }contentOwner={ownerType} />}
         {step == 4 && ownerType == owner.CONTENT_CREATOR && (
           <ContentOwner params={params} />
         )}

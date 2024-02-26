@@ -2288,7 +2288,8 @@ const usePartners = () => {
     getVasPartnerRequest,
     compliancePartnerCorrection,
     compliancePartnerCorrectionFileUpload,
-    getVASPartners
+    getVASPartners,
+    getComplianceStatus
 
   };
 };

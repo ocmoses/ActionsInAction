@@ -46,12 +46,6 @@ export default function CategorySideDrawer({
           {children}
         </article>
       </section>
-      {/* <section
-        className=" w-screen h-full cursor-pointer "
-        onClick={() => {
-          setIsOpen(false)
-        }}
-      ></section> */}
     </main>
   );
 }

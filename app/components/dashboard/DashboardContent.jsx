@@ -39,6 +39,9 @@ import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
 import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
+import OnboardingStatus from "@/app/components/dashboard/OnboardingStatus";
+import ServiceLiveCard from "@/app/components/dashboard/ServiceLiveCard";
+import IPApprovedCard from "@/app/components/dashboard/IPApprovedCard";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -537,7 +540,6 @@ export default function GetStarted({ type }) {
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
                     Hello, {user.first_name}
-                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
                 {partner?.onboarding_type === "new" && (
@@ -559,7 +561,7 @@ export default function GetStarted({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED ? (
+                            {userStatus == user_statuses.APPROVED && (
                               <CallToAction
                                 style={{
                                   border: "1px solid rgba(255,255,255,.1)",
@@ -620,7 +622,8 @@ export default function GetStarted({ type }) {
                                   </div>
                                 }
                               />
-                            ) : FinalApproval.partner ? (
+                            )}
+                            {FinalApproval.partner ? (
                               // <CallToAction
                               //   message="Your contract is ready. Click here to sign"
                               //   description="Describe the event and give further instructions if needed, include a call to action"
@@ -735,6 +738,9 @@ export default function GetStarted({ type }) {
                 <ChangeOrderRejection />
                 <ComplianceRejection />
                 <IPRejection />
+                <OnboardingStatus />
+                <ServiceLiveCard />
+                <IPApprovedCard />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (
@@ -950,19 +956,7 @@ export default function GetStarted({ type }) {
                       )}
                     </div>
                   )}
-                {/* {!contractStarted &&
-                  partner?.contract_status === "not_started" &&
-                  partnerActiveCategories?.length > 0 && (
-                    <div
-                      id="categoryselect"
-                      className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
-                    >
-                      Dear {user.first_name}, please note that you can choose
-                      multiple service categories. However, you will be required
-                      to complete a selected category to enable you move to the
-                      next category
-                    </div>
-                  )} */}
+
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -1061,7 +1055,10 @@ export default function GetStarted({ type }) {
               {vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "in-progress" ? null : (
-                    <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                    <ChooseAggregatorSuccessCard
+                      key={item.uuid}
+                      aggregator={item.aggregator}
+                    />
                   )
                 )}
               {showChooseAggregator && (

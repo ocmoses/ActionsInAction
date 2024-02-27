@@ -39,6 +39,9 @@ import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
 import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
+import OnboardingStatus from "@/app/components/dashboard/OnboardingStatus";
+import ServiceLiveCard from "@/app/components/dashboard/ServiceLiveCard";
+import IPApprovedCard from "@/app/components/dashboard/IPApprovedCard";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -537,7 +540,6 @@ export default function GetStarted({ type }) {
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
                     Hello, {user.first_name}
-                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
                 {partner?.onboarding_type === "new" && (
@@ -736,6 +738,9 @@ export default function GetStarted({ type }) {
                 <ChangeOrderRejection />
                 <ComplianceRejection />
                 <IPRejection />
+                <OnboardingStatus />
+                <ServiceLiveCard />
+                <IPApprovedCard />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (

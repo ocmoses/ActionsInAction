@@ -732,7 +732,7 @@ export default function GetStarted({ type }) {
                 {IPAlert &&
                   //Need to negate the condition that shows the category files
                   (
-                    contractStarted &&
+                    !contractStarted &&
                     partner?.contract_status != "not_started" &&
                     partnerActiveCategories?.length > 0
                   ) && (

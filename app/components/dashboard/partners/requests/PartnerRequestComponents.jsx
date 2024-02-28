@@ -1112,6 +1112,7 @@ export const ApproveRejectRequestModal = ({closeApproveRejectRequestFlyout,partn
                   className="border-1 border-white/20 text-white  hover:opacity-50 p-4 py-2 rounded-full flex gap-2"
                   onClick={() => rejectRequest(partnerDetails)}
                 >
+                  
                   <svg
                     width="20"
                     height="21"

@@ -1299,7 +1299,7 @@ export const partnerApprovals = (partner, category) => {
   // console.log("CATEGORY", category);
   console.log("PARTNER", partner);
 
-  // console.log("partner?.approvalStages", partner?.approvalStages);
+   console.log("partner?.approvalStages", partner?.approvalStages);
   // console.log("category", category);
 
   const Approvals = partner?.approvalStages[category.category_uuid];

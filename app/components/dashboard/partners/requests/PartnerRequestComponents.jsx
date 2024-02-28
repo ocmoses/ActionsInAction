@@ -1155,7 +1155,20 @@ export const ApproveRejectRequestModal = ({closeApproveRejectRequestFlyout,partn
                 onClick={() => finishUp()}
                 className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white flex"
               >
-                Finish up (0/2)
+                {partnerDetails.onboarding_compliance_status ===
+                                  null ? (
+                                    <span>Finish up (0/2)</span>
+                                  ) : (
+                                    
+                                    <>
+                                      {partnerDetails.onboarding_ip_status ===
+                                      null ? (
+                                        <span>Finish up (1/2)</span>
+                                      ) : (
+                                        <span>Finish up (2/2)</span>
+                                      )}
+                                    </>
+                                  )}
                 <svg
                   className="my-1 mx-2"
                   width="6"

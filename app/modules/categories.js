@@ -43,15 +43,15 @@ export const getCategories = async (apikey) => {
     
     //This line sorts the data by showing active categories first
     // let sortedData = data.sort((a,b) => suspended_categories.includes(a.category_name) ? 1 :(suspended_categories.includes(b.category_name) ? -1 : 0));
-    let filtered = [];
-    const rms = data.find(c => c.category_name == "Rich Media Services");
-    for (const key in data) {
-      if (key != rms){
-        filtered.push(key)
-      }
-    }
+    // let filtered = [];
+    // const rms = data.find(c => c.category_name == "Rich Media Services");
+    // for (const key in data) {
+    //   if (key != rms){
+    //     filtered.push(key)
+    //   }
+    // }
     let sortedData = filtered.sort((a,b) => suspended_categories.includes(a.category_name) ? 1 :(suspended_categories.includes(b.category_name) ? -1 : 0));
-    sortedData.shift(rms);
+    // sortedData.shift(rms);
 
     
     if (success) {

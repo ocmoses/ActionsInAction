@@ -517,6 +517,14 @@ export default function GetStarted({ type }) {
     }));
   };
 
+  console.log("partnerActiveCategories==", partnerActiveCategories);
+  console.log("partner?.contract_status", partner?.contract_status);
+  console.log("showProgress==", showProgress);
+  console.log("contractStarted==", contractStarted);
+  console.log("showPartnerCategories==", showPartnerCategories);
+  console.log("partnerCategories==", partnerCategories);
+
+
   return (
     hasDashboard && (
       <>
@@ -536,7 +544,7 @@ export default function GetStarted({ type }) {
               <div className="w-full pt-[72px]">
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                    Hello, {user.first_name}
+                    Hello, {user?.first_name}
                     {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
@@ -723,9 +731,9 @@ export default function GetStarted({ type }) {
                 )}
                 {IPAlert &&
                   //Need to negate the condition that shows the category files
-                  !(
-                    !contractStarted &&
-                    partner?.contract_status === "not_started" &&
+                  (
+                    contractStarted &&
+                    partner?.contract_status != "not_started" &&
                     partnerActiveCategories?.length > 0
                   ) && (
                     // And you have not submitted the IP details

@@ -18,7 +18,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
   
   const [approving, setApproving] = useState(false);  
 
-  const [data, setData] = useState({partner_uuid: request.uuid, exclusive_content: "no", 
+  const [data, setData] = useState({partner_uuid: request.partner_uuid, exclusive_content: "no", 
                                     premium_content: "no", licensed_content: "no", 
                                     content_provider_share: "", 
                                     technical_provider_share: null, 

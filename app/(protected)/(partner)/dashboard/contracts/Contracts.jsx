@@ -45,31 +45,24 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 
 export default function Contracts() {
   const {
-    partner,
-    contractStatus,
-    userStatus,
-    selectedAllRequiredSignatories,
-    isASignatory,
-    signatoryRole,
-    allHaveSigned,
     hasSigned,
-    isPartner,
+    partner,
+    setAgreementModal,
+    setContractSignatriesModal,
     partnerGetAllContracts,
-    getAllAdminPartners,
-    submitAllSignatories,
-    downloadSignedContract,
     getContractDynamicData,
-    signingDirector,
-    signingDelegate,
-    signingWitness,
+    setAnnexuresLink,
     checkQuestionnaireStatus,
+    selectedAllRequiredSignatories
   } = useContext(ContractContext);
+
+  const [contractId, setContractId] = useState(null);
 
   const { getAllPartnerRoles } = useRoles();
 
   const { getQuestionnaireStatus } = useQuestionnaire();
 
-  console.log("context", partner);
+  console.log("HAVE SIGNED", hasSigned);
 
   const [contracts, setContracts] = useState(null);
   const { processing, setProcessing } = useProcessing();
@@ -158,6 +151,14 @@ export default function Contracts() {
     }
   };
 
+  const contract_statuses = {
+    expired : "bg-red-400",
+    active : "bg-green-400",
+    not_active : "bg-white/20",
+    pending : "bg-white/20",
+    started: "mtn-bg"
+  }
+
   useEffect(() => {
     setProcessing(false);
     clearErrors();
@@ -170,7 +171,7 @@ export default function Contracts() {
     // get_dynamic_content();
 
     partnerGetAllContracts().then((resp) => {
-      console.log("resp", resp);
+      console.log("Contract ___ resp", resp);
       let contracts = resp.contracts;
       let pages = resp.pages;
       setContracts(contracts);
@@ -296,13 +297,7 @@ export default function Contracts() {
                     <td>
                       <div className="flex gap-0 flex-col">
                         <span
-                          className={`text-white text-sm px-1 inline-block w-16 rounded ${
-                            contract.contract_status == "expired"
-                              ? "bg-red-400"
-                              : contract.contract_status == "pending"
-                              ? "bg-grey-500"
-                              : "bg-green-700"
-                          }`}
+                          className={`text-white text-sm px-1 inline-block w-20 rounded ${contract_statuses[contract.contract_status]}`}
                         >
                           {capitalizeFirst(contract.contract_status)}
                         </span>
@@ -326,30 +321,55 @@ export default function Contracts() {
 
                     <td>
                       <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="white"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-                          />
-                        </svg>{" "}
-                        <a
-                          href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(
-                            ":partner_uuid",
-                            contract.partner_uuid
-                          )
-                            .replace(":contract_id", contract.contract_id)
-                            .replace(":type", "signed")}`}
-                        >
-                          <span className="text-white text-sm">Download</span>
-                        </a>
+                        
+                        {
+                          (hasSigned && contract.contract_status == "started") ? 
+                          <span className="text-white text-sm">Signing</span> :
+                          contract.contract_status == "not_active" || (contract.contract_status == "started" && !hasSigned) ?
+                          <span
+                              onClick={() => {
+                                setAnnexuresLink(
+                                  `/dashboard/contracts/annexures/${contract.contract_id}`
+                                );
+                                setContractId(contract.contract_id);
+                                if(selectedAllRequiredSignatories){
+                                  setAgreementModal(true);
+                                }else{
+                                  setContractSignatriesModal(true);
+                                }
+                              }}
+                                
+                            >
+                              <span className="text-white text-sm">Sign Contract</span>
+                          </span>                        
+                        :
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="white"
+                              className="w-6 h-6"
+                            >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                            </svg>{" "}
+                            <a
+                              href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(
+                                ":partner_uuid",
+                                contract.partner_uuid
+                              )
+                                .replace(":contract_id", contract.contract_id)
+                                .replace(":type", "signed")}`}
+                            >
+                              <span className="text-white text-sm">Download</span>
+                            </a>
+                          </>                        
+                        }
                       </div>
                     </td>
                   </tr>

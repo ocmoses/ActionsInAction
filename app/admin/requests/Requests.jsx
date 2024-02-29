@@ -327,6 +327,7 @@ export default function Requests() {
           status: revenue_share.status ?? "pending",
           partner_uuid: revenue_share.partner_uuid,
           uuid: revenue_share.uuid,
+          vas_partner_uuid: revenue_share.vas_partner_uuid ? revenue_share.vas_partner_uuid : null,
         });
       }
     }
@@ -577,6 +578,7 @@ export default function Requests() {
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
           shortcode_uuid: shortcode.shortcode_uuid,
+          vas_partner_uuid:shortcode.vas_partner_uuid,
         });
       }
     }

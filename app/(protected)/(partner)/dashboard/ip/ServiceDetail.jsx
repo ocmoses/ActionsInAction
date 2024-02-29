@@ -188,7 +188,7 @@ export default function ServiceDetail({ params, next }) {
   return (
     <div className="flex flex-col space-y-8 w-[500px]">
       <div className="text-center flex flex-col space-y-2">
-        <h2 className="text-4xl font-mtn text-white">Your service details</h2>
+        <h2 className="text-4xl font-mtn text-white">Provide your service details</h2>
         <h4 className="text-white/60 font-mtn text-2xl">
           What services will you be offering
         </h4>

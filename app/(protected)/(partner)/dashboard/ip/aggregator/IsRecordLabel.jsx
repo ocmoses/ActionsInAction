@@ -120,7 +120,7 @@ export default function IsRecordLabel({ params }) {
   const uploadFile = (file_title, file) => {
     let formData = new FormData();
     formData.append("file_title", file_title);
-    formData.append("licenser_type", "content_owner");
+    formData.append("licenser_type", "record_label");
     formData.append("partner_uuid", partner?.uuid);
     formData.append(
       "partner_category_uuid",
@@ -284,6 +284,12 @@ export default function IsRecordLabel({ params }) {
               onChange={(e) =>
                 uploadFile("authorization_video", e.target.value)
               }
+              allowedtypes={[
+                "video/3gpp",
+                "video/mpeg",
+                "video/mp4",
+                "video/quicktime",
+              ]}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -333,7 +339,7 @@ export default function IsRecordLabel({ params }) {
               doc_id="content_creator_id_doc"
               label="Content creator ID"
               value={files.content_creator_id}
-              onChange={(e) => uploadFile("content_creator_id", e.target.value)}
+              onChange={(e) => uploadFile("content_creator_id_front", e.target.value)}
               errors={errors}
               disabled={false}
               style="flex-1"

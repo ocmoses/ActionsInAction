@@ -26,8 +26,7 @@ export default function ContractSigning({ params }) {
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const router = useRouter();
-  const [submitingContractSignatures, setSubmitingContractSignatures] =
-    useState(false);
+  const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
   const [signingModal, setSigningModal] = useState(false);
   const [signing, setSigning] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -1099,7 +1098,7 @@ export default function ContractSigning({ params }) {
           <p>
             <span className="text-white w-[50px]">1.27.</span> “Solutions”
             includes &nbsp;&nbsp;
-            {dynamicData?.dynamic_details?.service_types.map((s) => (
+            {dynamicData?.dynamic_details?.service_types?.map((s) => (
               <>
                 <span className="text-white">{s}</span>
               </>
@@ -2906,8 +2905,7 @@ export default function ContractSigning({ params }) {
                   ) ? (
                     <img
                       src={
-                        dynamicData?.dynamic_details?.signature_of_signee
-                          ?.director_or_delegate_signature
+                        dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature
                       }
                       className="h-20"
                     />
@@ -2915,8 +2913,7 @@ export default function ContractSigning({ params }) {
                     <img
                       src={
                         "data:image/png;base64," +
-                        dynamicData?.dynamic_details?.signature_of_signee
-                          ?.director_or_delegate_signature
+                        dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature
                       }
                       className="h-20"
                     />

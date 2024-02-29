@@ -80,7 +80,7 @@ export default function SelectServiceModal({ vas_partner_uuid=null }) {
       <GenericModal
         id="select_service_modal"
         width={550}
-        closeAction={() => setSelectServiceModal(false)}
+        closeAction={() => {setSelectServiceModal(false); clearErrors()}}
       >
         <>
           <div className="flex pt-8">

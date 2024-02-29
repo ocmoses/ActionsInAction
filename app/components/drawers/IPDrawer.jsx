@@ -283,6 +283,30 @@ export default function IPDrawer({
                 [expansion.ADDITIONAL_PROOF]: "approved",
               });
               break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "approved",
+              });
+              break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO]: "approved",
+              });
+              break;
+            case expansion.AGG_AND_VAS_AGREEMENT_LETTER: 
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AGREEMENT_LETTER]: "approved",
+              });
+              break;
+            case expansion.AGG_AND_VAS_ADDITIONAL_PROOF: 
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_ADDITIONAL_PROOF]: "approved",
+              });
+              break;
             case expansion.ADDITIONAL_REQUIREMENT_ONE:
               setApprovals({
                 ...approvals,
@@ -430,6 +454,30 @@ export default function IPDrawer({
                 [expansion.ADDITIONAL_PROOF]: "rejected",
               });
               break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "rejected",
+              });
+              break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO]: "rejected",
+              });
+              break;
+            case expansion.AGG_AND_VAS_AGREEMENT_LETTER: 
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_AGREEMENT_LETTER]: "rejected",
+              });
+              break;
+            case expansion.AGG_AND_VAS_ADDITIONAL_PROOF: 
+              setApprovals({
+                ...approvals,
+                [expansion.AGG_AND_VAS_ADDITIONAL_PROOF]: "rejected",
+              });
+              break;
             case expansion.ADDITIONAL_REQUIREMENT_ONE:
               setApprovals({
                 ...approvals,
@@ -523,16 +571,16 @@ export default function IPDrawer({
         data.ip_request_type = "licensing-period";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
-        data.ip_request_type = "authorization-letter";
+        data.ip_request_type = "agg-vas-letter";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
-        data.ip_request_type = "authorization-video";
+        data.ip_request_type = "agg-vas-video";
         break;
       case expansion.AGG_AND_VAS_AGREEMENT_WITH_VAS_PARTNER:
-        data.ip_request_type = "agreement-letter-btw-content-and-vas-partner";
+        data.ip_request_type = "agg-vas-aggreement-letter";
         break;
       case expansion.AGG_AND_VAS_ADDITIONAL_PROOF:
-        data.ip_request_type = "other-content-proof-of-ownership";
+        data.ip_request_type = "agg-vas-other-proof-of-ownership";
         break;
       case expansion.AUTHORIZATION_LETTER:
         data.ip_request_type = "authorization-letter";

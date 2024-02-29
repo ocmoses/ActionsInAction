@@ -1221,6 +1221,63 @@ const usePartners = () => {
     }
   };
 
+  const getComplianceStatus = async (aggregator_uuid, vas_partner_uuid) => {
+    try {
+      const response = await fetch(
+        `${RemoteEndpoints.GET_COMPLIANCE_STATUS.replace(
+          ":aggregator_uuid",
+          aggregator_uuid
+        ).replace(
+          ":vas_partner_uuid",
+          vas_partner_uuid
+        )}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            "Content-Type": "application/json",
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+      if (!response) {
+        return {
+          error: "This request has no response available",
+        };
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const data = await response.json();
+
+        console.log("SUBMITTED IP DETAILS", data);
+
+        return {
+          data,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
   const getIPProgressStatus = async () => {
     try {
       const response = await fetch(
@@ -1787,13 +1844,119 @@ const usePartners = () => {
           },
         }
       );
-      setProcessing(false);
-      const result = response.data.data;
-      
-      return { result };
+      if (response.status === 200) {
+        setProcessing(false);
+        const result = response.data;
+
+        return { result };
+      }
     } catch (error) {
       setProcessing(false);
       return { error };
+    }
+  };
+
+  const compliancePartnerCorrection = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.COMPLIANCE_PARTNER_CORRECTION}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: "POST",
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const result = await response.json();
+
+        return {
+          result,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const compliancePartnerCorrectionFileUpload = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await fetch(
+        `${RemoteEndpoints.COMPLIANCE_PARTNER_CORRECTION_FILE_UPLOAD}`,
+        {
+          cache: "no-store",
+          next: { revalidate: 120 },
+          method: "POST",
+          body: data,
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            token: states.users.token,
+            Authorization: `bearer ${states.users.token}`,
+          },
+        }
+      );
+
+      if (!response)
+        return {
+          error: "This request has no response available",
+        };
+
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 201) {
+        const result = await response.json();
+
+        return {
+          result,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     }
   };
 
@@ -1860,6 +2023,32 @@ const usePartners = () => {
             expiry_date: "2024-02-08",
             status: "expired"
           }
+        ],
+        vas_license: {
+          license_id: "ID-21312394",
+          issue_date: "2022-02-01",
+          expiry_date: "2025-02-01",
+          status: "active"
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }          
         ]
       },
       {
@@ -1912,6 +2101,33 @@ const usePartners = () => {
             expiry_date: "2024-02-08",
             status: "expired"
           }
+        ],
+        vas_license: {
+          license_id: "ID-09754567",
+          issue_date: "2023-03-20",
+          expiry_date: "2024-02-10",
+          status: "expired"
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }
+          
         ]
       },
       {
@@ -1964,6 +2180,33 @@ const usePartners = () => {
             expiry_date: "2025-02-08",
             status: "active"
           }
+        ],
+        vas_license: {
+          license_id: "ID-09758767",
+          issue_date: "2023-03-20",
+          expiry_date: "2024-02-10",
+          status: "expired"
+        },
+        contracts: [
+          {
+            contract_id: "VBE-12541182",
+            status: "active",
+            start_date: "2022-08-03",
+            end_date: "2024-08-03",
+          },
+          {
+            contract_id: "VBE-12543452",
+            status: "expired",
+            start_date: "2021-02-03",
+            end_date: "2023-08-03",
+          },
+          {
+            contract_id: "VBE-12540002",
+            status: "expired",
+            start_date: "2021-01-03",
+            end_date: "2024-02-03",
+          }
+          
         ]
       }
     ];
@@ -2043,8 +2286,11 @@ const usePartners = () => {
     getAggregatorRequest,
     getAggregatorVasPartnerDetails,
     getVasPartnerRequest,
+    compliancePartnerCorrection,
+    compliancePartnerCorrectionFileUpload,
+    getVASPartners,
+    getComplianceStatus
 
-    getVASPartners
   };
 };
 

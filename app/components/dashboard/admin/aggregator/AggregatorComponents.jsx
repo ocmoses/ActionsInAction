@@ -62,21 +62,36 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   };
 ////////////////////////////////////////////////////////////////////
 ////api/v2/admin/approved/request
-const { getSingleAggregatorVasPartnerApprovalDetails } = useAdmins();
+const { getSingleAggregatorVasPartnerApprovalDetails, getSingleAggregatorVasPartnerDetails } = useAdmins();
 const [vasPartnersDetails, setVasPartnersDetails] = useState();
 let getApprovedRequestResponse = null;
 const getVasPartnersDetails = async (service_uuid) => {
     try {
         getApprovedRequestResponse = await getSingleAggregatorVasPartnerApprovalDetails(service_uuid);
         let get_approved_request_response = getApprovedRequestResponse.result.data;
+        console.log('get_approved_request_response', get_approved_request_response);
       setVasPartnersDetails(get_approved_request_response);
-      setDelayedExecution(true);
+      getVasPartnersDetailsFunction(get_approved_request_response.aggregator_uuid,get_approved_request_response.vas_partner_uuid );
     } catch (err) {
       console.log("error", err);
       successAction('Network Error!', false);
     }
   };
-  
+
+  const [complianceApprovals, setComplianceApprovals] = useState();
+  let getVasPartnersDetailsResponse = null;
+  const getVasPartnersDetailsFunction = async (aggregator_uuid,vas_partner_uuid) => {
+      try {
+        getVasPartnersDetailsResponse = await getSingleAggregatorVasPartnerDetails(aggregator_uuid, vas_partner_uuid);
+          let get_vas_partners_details_response = getVasPartnersDetailsResponse.result.data.vas_partner[0];
+          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
+          setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
+        setDelayedExecution(true);
+      } catch (err) {
+        console.log("error", err);
+        successAction('Network Error 1!', false);
+      }
+    };
 
 const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useState({
     opens: false,
@@ -126,18 +141,18 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                     d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
                   />
                 </svg>
-                Applications
+                Requests
               </span>
             </Link>
 
             <div className="flex flex-col gap-5">
               <div className="flex gap-5">
                 <div className="w-[80px] h-[80px] flex rounded-full bg-[#421A75] justify-center items-center text-[24px] text-white">
-                 {getInitials(vasPartnersDetails?.vas_partner)}
+                 {getInitials(vasPartnersDetails?.aggregator)}
                 </div>
                 <div className="flex flex-col justify-center items-start">
                   <h1 className="text-white text-[24px] font-mtn-medium">
-                    {vasPartnersDetails?.vas_partner}
+                    {vasPartnersDetails?.aggregator}
                   </h1>
                   <p>Lagos, Nigeria</p>
                 </div>
@@ -182,6 +197,9 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "VAS License",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="ncclicense"
+                  complianceApprovals={complianceApprovals}
                 />
 
                 <AggregatorSelector
@@ -222,6 +240,9 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "NLRC Permit",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="nlrclicense"
+                  complianceApprovals={complianceApprovals}
                 />
 
                 <AggregatorSelector
@@ -286,6 +307,9 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
                       modalTitle: "Short codes",
                     })
                   }
+                  vasPartnersDetails={vasPartnersDetails}
+                  status="shortcode"
+                  complianceApprovals={complianceApprovals}
                 />
               </div>
             </div>
@@ -312,8 +336,57 @@ const [openAggregatorValidationFlyout, setOpenAggregatorValidationFlyout] = useS
   );
 }
 
-export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,}) => {
+export const AggregatorSelector = ({icon,title, message,openAggregatorValidationFlyout,vasPartnersDetails, status, complianceApprovals}) => {
+  const [count, setCount] = useState({
+    ncclicense: 0,
+    reject_ncclicense: 0,
+    nlrclicense: 0,
+    reject_nlrclicense: 0,
+    shortcode: 0,
+    reject_shortcode: 0,
+  });
+  const getcomplianceApprovalsCounts = async () => {
+    let cts=0;
 
+    let filteredRecords = complianceApprovals.filter(approval => {
+      let field = approval.field;
+      if(status==='ncclicense'){
+        return /vas_license_id|ncc_issue_date|ncc_expiry_date|ncc_doc/.test(field);
+      }
+      if(status==='nlrclicense'){
+        return /nlrc_license_type|nlrc_license_id|nlrc_issue_date|nlrc_expiry_date|nlrc_doc/.test(field);
+      }
+      if(status==='shortcode'){
+        return /shortcodes|shortcode_issue_date|shortcode_expiry_date|shortcode_doc|pricing_shortcodes|pricing_issue_date|pricing_expiry_date|pricing_doc/.test(field);
+      }
+    });
+    let sts=0;
+    let rejectedRecords = complianceApprovals.filter(approval => {
+      if(status==='ncclicense'){
+        return approval.status === "rejected" && /vas_license_id|ncc_issue_date|ncc_expiry_date|ncc_doc/.test(approval.field);
+      }
+      if(status==='nlrclicense'){
+        return approval.status === "rejected" && /nlrc_license_type|nlrc_license_id|nlrc_issue_date|nlrc_expiry_date|nlrc_doc/.test(approval.field);
+      }
+      if(status==='shortcode'){
+        return approval.status === "rejected" && /shortcodes|shortcode_issue_date|shortcode_expiry_date|shortcode_doc|pricing_shortcodes|pricing_issue_date|pricing_expiry_date|pricing_doc/.test(approval.field);
+      }
+    });
+
+    cts = filteredRecords.length;
+    sts = rejectedRecords.length;
+    console.log('count', cts);
+    console.log('status', sts);
+    setCount(prevCount => ({
+      ...prevCount,
+      [status]: cts,
+      [`reject_${status}`]: sts,
+    }));
+  };
+  useEffect(() => {
+      getcomplianceApprovalsCounts();
+  }, [complianceApprovals]);
+  
     return (
       <>
         <div
@@ -328,21 +401,54 @@ export const AggregatorSelector = ({icon,title, message,openAggregatorValidation
               <h3 className="text-white font-bold font-mtn">{title}</h3>
               <p className=" font-light">{message}</p>
             </div>
-            <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9.32501 2.29489C8.44501 1.49489 7.28001 1.01489 6.00001 1.01489C3.25001 1.01489 1.01501 3.24989 1.01501 5.99989C1.01501 8.74989 3.25001 10.9849 6.00001 10.9849C7.28001 10.9849 8.44501 10.5049 9.32501 9.70489C10.345 8.79989 10.985 7.46989 10.985 5.99989C10.985 4.52989 10.345 3.19989 9.32501 2.29489ZM5.98501 8.19489C5.97501 9.01989 5.36001 9.21989 4.78501 8.98989C3.60001 8.51489 2.76501 7.35489 2.76501 5.99989C2.76501 4.64489 3.60001 3.48489 4.78501 3.00489C5.36001 2.77489 5.97501 2.97989 5.98501 3.79989V8.19489Z"
-                  fill="#F3AF33"
-                />
+            {vasPartnersDetails && vasPartnersDetails.request_stages && vasPartnersDetails.request_stages[status]=== 'approved' ? (
+            <div className="w-[100px] p-1 px-2 bg-[#033B1B] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M5.74875 10.7475C8.50948 10.7475 10.7475 8.50948 10.7475 5.74875C10.7475 2.98802 8.50948 0.75 5.74875 0.75C2.98802 0.75 0.75 2.98802 0.75 5.74875C0.75 8.50948 2.98802 10.7475 5.74875 10.7475ZM8.58247 3.85827C8.76383 4.04292 8.76115 4.33963 8.5765 4.52099L5.39548 7.6452C5.21317 7.82425 4.92103 7.82425 4.73873 7.6452L2.921 5.85994C2.73635 5.67858 2.73367 5.38187 2.91503 5.19722C3.09639 5.01256 3.3931 5.00989 3.57775 5.19125L5.0671 6.654L7.91975 3.8523C8.1044 3.67094 8.40111 3.67361 8.58247 3.85827Z" fill="#2C9958"/>
               </svg>
-              <span className="text-[#F3AF33]">In Progress</span>
+                <span className="text-[#52BE80]">{vasPartnersDetails.request_stages[status]}</span>
             </div>
+             ):(
+              <>
+              {count[status] > 0 ? (
+                <>
+                {count[`reject_${status}`] > 0 ? (
+                  <div className="w-[100px] p-1 px-2 bg-[#361513] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.88 7.96L7.67999 2.2C7.24999 1.425 6.65499 1 5.99999 1C5.34499 1 4.74999 1.425 4.31999 2.2L1.11999 7.96C0.714989 8.695 0.669989 9.4 0.994989 9.955C1.31999 10.51 1.95999 10.815 2.79999 10.815H9.19999C10.04 10.815 10.68 10.51 11.005 9.955C11.33 9.4 11.285 8.69 10.88 7.96ZM5.62499 4.5C5.62499 4.295 5.79499 4.125 5.99999 4.125C6.20499 4.125 6.37499 4.295 6.37499 4.5V7C6.37499 7.205 6.20499 7.375 5.99999 7.375C5.79499 7.375 5.62499 7.205 5.62499 7V4.5ZM6.35499 8.855C6.32999 8.875 6.30499 8.895 6.27999 8.915C6.24999 8.935 6.21999 8.95 6.18999 8.96C6.15999 8.975 6.12999 8.985 6.09499 8.99C6.06499 8.995 6.02999 9 5.99999 9C5.96999 9 5.93499 8.995 5.89999 8.99C5.86999 8.985 5.83999 8.975 5.80999 8.96C5.77999 8.95 5.74999 8.935 5.71999 8.915C5.69499 8.895 5.66999 8.875 5.64499 8.855C5.55499 8.76 5.49999 8.63 5.49999 8.5C5.49999 8.37 5.55499 8.24 5.64499 8.145C5.66999 8.125 5.69499 8.105 5.71999 8.085C5.74999 8.065 5.77999 8.05 5.80999 8.04C5.83999 8.025 5.86999 8.015 5.89999 8.01C5.96499 7.995 6.03499 7.995 6.09499 8.01C6.12999 8.015 6.15999 8.025 6.18999 8.04C6.21999 8.05 6.24999 8.065 6.27999 8.085C6.30499 8.105 6.32999 8.125 6.35499 8.145C6.44499 8.24 6.49999 8.37 6.49999 8.5C6.49999 8.63 6.44499 8.76 6.35499 8.855Z" fill="#FE2E2D"/>
+                  </svg>
+
+                  <span className="text-[#FF9897]">{count[`reject_${status}`]} Issue(s)</span>
+                </div>
+                ):(
+                  <div className="w-[100px] p-1 px-2 bg-[#2D200A] flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.32501 2.29489C8.44501 1.49489 7.28001 1.01489 6.00001 1.01489C3.25001 1.01489 1.01501 3.24989 1.01501 5.99989C1.01501 8.74989 3.25001 10.9849 6.00001 10.9849C7.28001 10.9849 8.44501 10.5049 9.32501 9.70489C10.345 8.79989 10.985 7.46989 10.985 5.99989C10.985 4.52989 10.345 3.19989 9.32501 2.29489ZM5.98501 8.19489C5.97501 9.01989 5.36001 9.21989 4.78501 8.98989C3.60001 8.51489 2.76501 7.35489 2.76501 5.99989C2.76501 4.64489 3.60001 3.48489 4.78501 3.00489C5.36001 2.77489 5.97501 2.97989 5.98501 3.79989V8.19489Z"
+                      fill="#F3AF33"
+                    />
+                  </svg> 
+                  <span className="text-[#F3AF33]">In Progress</span>
+                </div>
+                )}
+                
+                </>
+              ):(
+                <div className="w-[100px] p-1 px-2 bg-white/20 flex gap-1 justify-center items-center rounded-[20px] text-[11px]">
+                  <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.66675 1C3.91175 1 1.66675 3.245 1.66675 6C1.66675 8.755 3.91175 11 6.66675 11C9.42175 11 11.6667 8.755 11.6667 6C11.6667 3.245 9.42175 1 6.66675 1ZM8.84175 7.785C8.77175 7.905 8.64675 7.97 8.51675 7.97C8.45175 7.97 8.38675 7.955 8.32675 7.915L6.77675 6.99C6.39175 6.76 6.10675 6.255 6.10675 5.81V3.76C6.10675 3.555 6.27675 3.385 6.48175 3.385C6.68675 3.385 6.85675 3.555 6.85675 3.76V5.81C6.85675 5.99 7.00675 6.255 7.16175 6.345L8.71175 7.27C8.89175 7.375 8.95175 7.605 8.84175 7.785Z" fill="#999999"/>
+                  </svg>
+                  <span className="text-white">Pending</span>
+                </div>
+              )}
+              </>
+             )}
           </div>
         </div>
       </>
@@ -398,11 +504,12 @@ const [showSuccessToast, setShowSuccessToast] = useState({
       try {
         getVasPartnersDetailsResponse = await getSingleAggregatorVasPartnerDetails(aggregator_uuid, vas_partner_uuid);
           let get_vas_partners_details_response = getVasPartnersDetailsResponse.result.data.vas_partner[0];
-          console.log('get_vas_partners_details_response',get_vas_partners_details_response);
-          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
           setNewVasPartnersDetails(get_vas_partners_details_response);
           setComplianceApprovals(get_vas_partners_details_response.compliance_approvals);
           setComplianceFeedbacks(get_vas_partners_details_response.compliance_feedbacks);
+          console.log('get_vas_partners_details_response',get_vas_partners_details_response);
+          console.log('compliance_approvals', get_vas_partners_details_response.compliance_approvals);
+          console.log('compliance_feedbacks', get_vas_partners_details_response.compliance_feedbacks);
         setDelayedExecution(true);
         setFormDataParams(get_vas_partners_details_response);
       } catch (err) {
@@ -410,7 +517,6 @@ const [showSuccessToast, setShowSuccessToast] = useState({
         successAction('Network Error 1!', false);
       }
     };
-
   useEffect(() => {
    
     if (vasPartnersDetails) {
@@ -454,7 +560,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
             },
           }
         );
-        successAction(formData.feedback, true);
+        //successAction(formData.feedback, true);
         getVasPartnersDetailsFunction(vasPartnersDetails.aggregator_uuid,vasPartnersDetails.vas_partner_uuid );
       } catch (err) {
         setDelayedExecution(true);
@@ -463,14 +569,16 @@ const [showSuccessToast, setShowSuccessToast] = useState({
       }
   };
   return (
+    
     <>
       <section
         id="modal"
         className="text-gray-400 font-mtn w-screen flex justify-center items-center h-screen fixed z-[1000] top-0 left-0 bg-black/80 animate-[slide-left_1s_ease-in-out]  "
         onClick={(e) => {
-          e.target.id == "modal" && closeOpenAggregatorValidationFlyout();
+          e.target.id == "modal" && realTimePageReloader();
         }}
       >
+        
         <div className="w-[500px] h-screen fixed right-0  top-0 border-l border-white/10 bg-[#111111] animate-[slide-left_1s_ease-in-out]">
           <div className="h-screen w-[100%] flex flex-col">
             {/* -----start title-------------------------------------------------------------- */}
@@ -510,7 +618,7 @@ const [showSuccessToast, setShowSuccessToast] = useState({
 
                   <button
                     className="h-[40px] w-[40px] flex justify-center bg-transparent items-center text-[18px] rounded-[100%] text-gray-100 hover:bg-white/20 transition ease-in-out delay-150"
-                    onClick={() => closeOpenAggregatorValidationFlyout()}
+                    onClick={() => realTimePageReloader()}
                   >
                     X
                   </button>
@@ -588,10 +696,10 @@ const [showSuccessToast, setShowSuccessToast] = useState({
                   {complianceFeedbacks?.map((feedback) => (
                   <div className="flex gap-3 mb-8" key={feedback.id}>
                     <div className="w-[40px] h-[40px] flex rounded-full bg-gray-500 justify-center items-center text-white">
-                      {getInitials(feedback.admin_user.fullname)}
+                      {getInitials(feedback?.admin_user?.fullname)}
                     </div>
                     <div className="flex flex-col gap-0 text-[12px]">
-                        <p><span className="text-white">{feedback.admin_user.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
+                        <p><span className="text-white">{feedback.admin_user?.fullname}</span> updated <span className="text-white">{removeGuid(feedback.field).split(/-|_/).map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span></p>
                         {feedback.status==='approved' ? (
                         <p>Status {"->"} <span className={`text-[#97CDAD]`}>{feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1).toLowerCase()}</span> - {feedBackDate(feedback.created_at)}</p>
                         ):(

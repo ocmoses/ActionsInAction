@@ -20,14 +20,14 @@ export default function ComplianceTab({partner}){
         <div className="flex flex-col p-4 py-16 overflow-y-auto">
             <p className="text-white text-3xl mb-4">Compliance</p>
             {
-                <div className="bg-black rounded-2xl mb-4 flex flex-col">
-                    <div className="text-sm uppercase text-white/60 p-4" >Shortcodes</div>
+                <div className="bg-black rounded-xl mb-4 flex flex-col">
+                    <div className="text-sm uppercase text-white/60 p-4 pb-0" >Shortcodes</div>
 
                     {
-                        partner?.shortcodes.map(shortcode => (
-                            <div className={`${'border-b'} border-white/20 p-4`}>
+                        partner?.shortcodes.map((shortcode, index) => (
+                            <div className={`${index < partner?.shortcodes.length - 1 && 'border-b'} border-white/20 py-4 mx-4 flex`}>
 
-                                <div className="flex space-x-2 items-center">
+                                <div className="flex space-x-2 items-center flex-1">
                                     <span className="w-16 h-16 rounded-full bg-white/10 flex justify-center items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clip-path="url(#clip0_11315_100854)">
@@ -50,12 +50,93 @@ export default function ComplianceTab({partner}){
                                     <span className="text-white/80">{shortcode.shortcode}</span>
                                 </div>
 
+                                <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                                    <span className="text-white/40 text-sm ">Issued</span>
+
+                                    <p className="text-white/80 text-sm">{shortcode.issue_date}</p>
+
+                                </div>
+
+                                <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                                    <span className="text-white/40 text-sm">Expires</span>
+
+                                    <p className="text-white/80 text-sm">{shortcode.expiry_date}</p>
+
+                                </div>
+
+                                <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                                    <div className={`${shortcode.status == "active" ? "bg-green-600" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
+                                        {capitalizeFirst(shortcode.status)}
+                                    </div>
+
+                                </div>
+
                             </div>
                         ))
                     }
                 </div>
                 
             }
+
+            <div className="bg-black rounded-xl flex flex-col">
+                <div className="flex justify-between items-center">
+                    <div className="text-sm uppercase text-white/60 m-4 pb-0" >VAS License</div>
+
+                    <span className="text-white text-sm px-2 py-1 flex items-center m-4
+                          border-1 border-white/20 rounded-full cursor-pointer"
+                          onClick={() => {}}>
+                        Renew License
+                    </span>
+                </div>               
+
+                {
+                    
+                    <div className={`border-white/20 pb-4 mx-4 flex`}>
+
+                        <div className="flex space-x-2 items-center flex-1">
+                            <span className="w-16 h-16 rounded-full bg-white/10 flex justify-center items-center">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.4141 16.8618H12.1255L11.6695 17.3178C11.5597 17.4277 11.4106 17.4894 11.2552 17.4894H8.74477C8.58934 17.4894 8.44031 17.4277 8.33047 17.3178L7.87449 16.8618H0.585938C0.262344 16.8618 0 17.1242 0 17.4478V18.1587C0 19.1875 0.835547 19.9998 1.84117 19.9998H18.1588C19.1877 19.9998 20 19.1643 20 18.1587V17.4478C20 17.1241 19.7377 16.8618 19.4141 16.8618Z" fill="white"/>
+                                    <path d="M11.8408 0.828613V2.59373H13.6059L11.8408 0.828613Z" fill="white"/>
+                                    <path d="M8.53197 15.8615L8.98795 16.3175H11.013L11.469 15.8615C11.5788 15.7516 11.7279 15.6898 11.8833 15.6898H18.1177V7.48933C18.1177 6.47413 17.2917 5.64819 16.2765 5.64819H15.6072V12.5935C15.6072 13.5628 14.8187 14.3513 13.8494 14.3513H6.15154C5.18228 14.3513 4.39373 13.5628 4.39373 12.5935V5.64819H3.72443C2.70924 5.64819 1.8833 6.47413 1.8833 7.48933V15.6898H8.11768C8.27307 15.6899 8.42213 15.7516 8.53197 15.8615Z" fill="white"/>
+                                    <path d="M6.15088 13.1797H13.8488C14.1724 13.1797 14.4347 12.9173 14.4347 12.5938V3.76563H11.2551C10.9315 3.76563 10.6691 3.50328 10.6691 3.17969V0H6.15088C5.82729 0 5.56494 0.262344 5.56494 0.585938V12.5938C5.56494 12.9173 5.82725 13.1797 6.15088 13.1797ZM7.4894 2.51043H8.74459C9.52064 2.53898 9.52107 3.65359 8.74459 3.6823H7.4894C6.71334 3.65371 6.71291 2.53914 7.4894 2.51043ZM7.4894 5.02082H8.74459C9.52064 5.04938 9.52107 6.16399 8.74459 6.1927H7.4894C6.71334 6.16414 6.71291 5.04957 7.4894 5.02082ZM7.4894 7.53125H12.5102C12.8338 7.53125 13.0962 7.79359 13.0962 8.11719C13.0962 8.44078 12.8338 8.70313 12.5102 8.70313H7.4894C6.71439 8.67504 6.71193 7.56031 7.4894 7.53125ZM7.4894 10.0417H12.5102C12.8338 10.0417 13.0962 10.304 13.0962 10.6276C13.0962 10.9512 12.8338 11.2136 12.5102 11.2136H7.4894C6.71439 11.1855 6.71193 10.0707 7.4894 10.0417Z" fill="white"/>
+                                </svg>
+                            </span>
+
+                            <span className="text-white/80">{partner?.vas_license?.license_code}</span>
+                        </div>
+
+                        <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                            <span className="text-white/40 text-sm ">Issued</span>
+
+                            <p className="text-white/80 text-sm">{partner?.vas_license?.issue_date}</p>
+
+                        </div>
+
+                        <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                            <span className="text-white/40 text-sm">Expires</span>
+
+                            <p className="text-white/80 text-sm">{partner?.vas_license?.expiry_date}</p>
+
+                        </div>
+
+                        <div className="flex-1 flex flex-col justify-center space-y-1">
+
+                            <div className={`${partner?.vas_license?.status == "active" ? "bg-green-600" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
+                                {capitalizeFirst(partner?.vas_license?.status)}
+                            </div>
+
+                        </div>
+
+                    </div>
+                    
+                }
+            </div>
         </div>
     )
 }

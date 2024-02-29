@@ -1,28 +1,11 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
-import {
-  getPartnerInitials,
-  filterPartner,
-  Util,
-  titleCase,
-  getInitials,
-  capitalizeFirst,
-} from "@/app/modules/utilities";
-import {
-  TailSpinPreloader,
-  CompanyLogo,
-  DialIcon,
-} from "@/app/components/Icons";
-import Success from "@/app/components/toasts/Success";
+import { useState } from "react";
+
+import { TailSpinPreloader } from "@/app/components/Icons";
 import FormErrors from "@/app/components/FormErrors";
 import useErrors from "@/hooks/useErrors";
-import useProcessing from "@/hooks/useProcessing";
-import useContracts from "@/hooks/useContracts";
 import useUsers from "@/hooks/useUsers";
-import moment from "moment";
 import usePartners from "@/hooks/usePartners";
-import TextInput from "@/app/components/form/TextInput";
-import TextAreaInput from "@/app/components/form/TextAreaInput";
 import FileInput from "@/app/components/form/FileInput";
 import DatePicker from "@/app/components/form/DatePicker";
 import RemoteEndpoints from "@/app/modules/endpoints";
@@ -39,19 +22,9 @@ export default function IsAgent({ params }) {
 
   const { Logout } = useLogout();
 
-  const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
-  const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
   const [ownerIsAlive, setOwnerIsAlive] = useState(false);
-
-  const successAction = () =>
-    setTimeout(() => {
-      setSuccessToast(false);
-      router.push("/dashboard");
-    }, 3000);
-
-  const [ownerType, setOwnerType] = useState(null);
 
   const [files, setFiles] = useState({
     authorization_letter: "",
@@ -148,7 +121,7 @@ export default function IsAgent({ params }) {
   const uploadFile = (file_title, file) => {
     let formData = new FormData();
     formData.append("file_title", file_title);
-    formData.append("licenser_type", "content_owner");
+    formData.append("licenser_type", "agent_and_content");
     formData.append("partner_uuid", partner?.uuid);
     formData.append(
       "partner_category_uuid",
@@ -174,7 +147,8 @@ export default function IsAgent({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error.response), setSubmitting(false);
+        console.log(error.response);
+        setSubmitting(false);
       });
   };
 
@@ -342,12 +316,6 @@ export default function IsAgent({ params }) {
               <p className="text-white/60 text-sm">
                 Must be based on our authorisation checklist.
               </p>
-              {/* <div className="flex space-x-2 items-base">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                              </svg>
-                              <span className="text-xs text-mtn">See letter checklist</span>
-                          </div> */}
             </div>
 
             <FileInput
@@ -415,9 +383,9 @@ export default function IsAgent({ params }) {
                 Must capture the content owner and the authorisation letter
                 being signed.
               </p>
-              <div className="flex space-x-2 items-base">
+              {/* <div className="flex space-x-2 items-base">
                 <span className="text-xs text-mtn">See video sample</span>
-              </div>
+              </div> */}
             </div>
 
             <FileInput
@@ -428,6 +396,12 @@ export default function IsAgent({ params }) {
               onChange={(e) =>
                 uploadFile("authorization_video", e.target.value)
               }
+              allowedtypes={[
+                "video/3gpp",
+                "video/mpeg",
+                "video/mp4",
+                "video/quicktime",
+              ]}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -443,12 +417,6 @@ export default function IsAgent({ params }) {
                 Aggrement between content owner and VAS partner
               </h4>
               <p className="text-white/60 text-sm"></p>
-              {/* <div className="flex space-x-2 items-base">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                              </svg>
-                              <span className="text-xs text-mtn">See agreement checklist</span>
-                          </div>                            */}
             </div>
 
             <FileInput
@@ -456,7 +424,7 @@ export default function IsAgent({ params }) {
               doc_id="agreement_letter_doc"
               label="Agreement Letter"
               value={files.agreement_letter}
-              onChange={(e) => uploadFile("agreement_letter", e.target.value)}
+              onChange={(e) => uploadFile("agreement_letter_btw_content_and_vas_partner", e.target.value)}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -483,7 +451,7 @@ export default function IsAgent({ params }) {
               doc_id="content_creator_id_doc"
               label="Content creator ID"
               value={files.content_creator_id}
-              onChange={(e) => uploadFile("content_creator_id", e.target.value)}
+              onChange={(e) => uploadFile("content_creator_id_front", e.target.value)}
               errors={errors}
               disabled={false}
               style="flex-1"
@@ -510,7 +478,7 @@ export default function IsAgent({ params }) {
               label="Other proof of ownership"
               value={files.other_content_proof}
               onChange={(e) =>
-                uploadFile("other_content_proof", e.target.value)
+                uploadFile("other_content_proof_of_ownership", e.target.value)
               }
               errors={errors}
               disabled={false}
@@ -544,7 +512,10 @@ export default function IsAgent({ params }) {
       {successToast && (
         <PopUp closePopUp={() => {}}>
           <SuccessCard
-            action={() => setSuccessToast(false)}
+            action={() => {
+              setSuccessToast(false);
+              router.push("/dashboard/requests");
+            }}
             msg={
               "We’ll review your submissions and notify your once that process is completed."
             }

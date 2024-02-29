@@ -48,7 +48,20 @@ export default function ComplianceLabel({
 
   const {fileViewer, setFileViewer} = useContext(FileViewContext);
 
+  const shortcodeFields = [
+    "shortcodes",
+    "shortcode_doc",
+    "shortcode_expiry_date",
+    "shortcode_issue_date",
+    "pricing_doc",
+    "pricing_expiry_date",
+    "pricing_issue_date",
+    "pricing_shortcodes"
+  ]
+
   console.log("CATEGORY IN LABELS", category);
+  console.log("FIELD", field);
+  console.log("CATEGORY FIELD", category[field]);
 
   console.log("FIELDS STUFF", complianceRequirements[stage]);
 
@@ -469,7 +482,8 @@ export default function ComplianceLabel({
                         ][field] === "corrected") && (
                         <div className="flex gap-3 items-center justify-end">
                           {
-                            category && category[field] != null ? (
+                            //This is nasty
+                            category && (category[field] != null || shortcodeFields.includes(field.split("-")[0])) ? (
                               <div
                                 onClick={() => Approve("reject")}
                                 className="w-[36px] h-[36px] cursor-pointer text-red-600 hover:text-red-600/50 rounded-full border-solid border-2 border-red-600 hover:border-red-600/50 flex justify-center items-center"
@@ -487,7 +501,8 @@ export default function ComplianceLabel({
                           }
 
                           {
-                            category && category[field] != null ? (
+                            //This is nasty
+                            category && (category[field] != null || shortcodeFields.includes(field.split("-")[0])) ? (
                               <div
                                 onClick={() => Approve()}
                                 className="w-[36px] h-[36px] cursor-pointer text-green-600 hover:text-green-600/50 rounded-full border-solid border-2 border-green-600 hover:border-green-600/50 flex justify-center items-center"

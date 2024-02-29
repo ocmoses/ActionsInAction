@@ -151,6 +151,10 @@ export const PartnerMenu = [
     route: "/dashboard/contracts",
   },
 
+];
+
+export const AggregatorMenu = [
+  
   {
     label: "Requests",
     icon: (
@@ -243,7 +247,7 @@ export const PartnerMenu = [
         </svg>
       </div>
     ),
-    route: "/dashboard/requests",
+    route: "/dashboard/requests"
   },
 
   {
@@ -264,9 +268,9 @@ export const PartnerMenu = [
       
       </div>
     ),
-    route: "/dashboard/partners",
+    route: "/dashboard/partners"
   },
-];
+]
 
 export const PartnerCompanySettingsMenu = [
   {

@@ -143,6 +143,7 @@ export const ShortCodeFlyOut = ({
     shortcode: null,
     status: "",
     shortcode_uuid: selectedRequest?.shortcode_uuid,
+    vas_partner_uuid: selectedRequest?.vas_partner_uuid,
   });
 
 

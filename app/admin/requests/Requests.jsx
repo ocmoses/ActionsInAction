@@ -165,8 +165,8 @@ export default function Requests() {
     for (const aggregatorRequest of get_all_aggregator_response.aggregatorRequests) {
       if (!requests.find((request) => request.uuid == aggregatorRequest.service_uuid)) {
         requests.push({
-          company: aggregatorRequest.vas_partner,
-          email: aggregatorRequest.vas_email,
+          company: aggregatorRequest.aggregator,
+          email: aggregatorRequest.aggregator_email,
           request_type: request_types.AGGREGATOR,
           request_id: aggregatorRequest.request_id,
           created_at: aggregatorRequest.service_submitted_on,
@@ -323,6 +323,7 @@ export default function Requests() {
           status: revenue_share.status ?? "pending",
           partner_uuid: revenue_share.partner_uuid,
           uuid: revenue_share.uuid,
+          vas_partner_uuid: revenue_share.vas_partner_uuid ? revenue_share.vas_partner_uuid : null,
         });
       }
     }
@@ -587,6 +588,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
           partner_uuid: shortcode.partner_uuid,
           uuid: shortcode.user_uuid,
           shortcode_uuid: shortcode.shortcode_uuid,
+          vas_partner_uuid:shortcode.vas_partner_uuid,
         });
       }
     }

@@ -18,10 +18,11 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
   
   const [approving, setApproving] = useState(false);  
 
-  const [data, setData] = useState({partner_uuid: request.uuid, exclusive_content: "no", 
+  const [data, setData] = useState({partner_uuid: request.partner_uuid, exclusive_content: "no", 
                                     premium_content: "no", licensed_content: "no", 
                                     content_provider_share: "", 
                                     technical_provider_share: null, 
+                                    vas_partner_uuid: request.vas_partner_uuid ? request.vas_partner_uuid : null,
                                     mtn_share: "", status: "approved"});
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -95,7 +96,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     //   return false;
 
     // }
-    else if(data.mtn_share.trim() == ""){
+    if(data.mtn_share.trim() == ""){
 
       setError({error: "Please enter MTN's share"});
 
@@ -120,7 +121,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
     //   return false;
 
     // }
-    else if(!request.vas_partner_uuid && parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
+    if(!request.vas_partner_uuid && parseInt(data.content_provider_share) + parseInt(data.mtn_share) != 100){
       
       setError({error: "These percentages don't add up"});
 
@@ -265,7 +266,7 @@ export default function RevenueShareDrawer({request, openDrawer, closeAction}){
 
                 <div className="flex space-x-4 w-32 relative">
                   <TextInput
-                    id="content_provider_share"
+                    id="technical_provider_share"
                     label=""
                     value={data.technical_provider_share}
                     onChange={handleFormChange}

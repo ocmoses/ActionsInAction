@@ -157,12 +157,10 @@ const RemoteEndpoints = {
   GET_PARTNER_DYNAMIC_FIELD: `${apiURL}/v2/admin/get-partner-dynamic-ip-request/:partner_uuid`,
   UPLOAD_DYNAMIC_FIELD: `${apiURL}/v2/ip/submit-into-dynamic-field`,
   APPROVE_REJECT_DYNAMIC_FIELD: `${apiURL}/v2/admin/approve-dynamic-ip-request`,
-
   GET_ALL_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/get-all-license-grace-period-request`,
   APPROVE_REJECT_LICENSE_GRACE_PERIOD_REQUEST: `${apiURL}/v2/admin/approve-reject-license-grace-period-request`,
   CHECK_PARTNER_LICENSE_EXPIRATION: `${apiURL}/v2/contract/license/check-partner-license-expiration/`,
   SUBMIT_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/contract/license/submit-license-renewal-request`,
-
   ACCEPT_BILATERAL_ANNEXURES: `${apiURL}/v2/contract/accept-or-sign-contract-annexure`,
   GET_PARTNER_LICENSE_RENEWAL_STATUS: `${apiURL}/v2/contract/license/get-partner-license-renewal-status/`,
   GET_ALL_LICENSE_RENEWAL_REQUEST: `${apiURL}/v2/admin/get-all-license-renewal-request`,
@@ -172,32 +170,34 @@ const RemoteEndpoints = {
   APPROVE_SHORTCODE_ZERO_RATING: `${apiURL}/v2/admin/approve-shortcode-zero-rating`,
   GET_PARTNER_CONTRACT_CURRENTLY_RUNNING: `${apiURL}/v2/contract/get-partner-contract-currently-running/`,
   GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
-
   PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`,
 
   // VAS
   GET_VAS_TYPE: `${apiURL}/v2/vas-partner/vas-type`,
   GET_AGGREGATOR: `${apiURL}/v2/vas-partner/aggregators`,
+  GET_ONBOARDING_STATUS: `${apiURL}/v2/vas-partner/request/onboarding/status`,
 
+  //Compliance
+  GET_COMPLIANCE_STATUS: `${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details/:aggregator_uuid/:vas_partner_uuid`,
+  COMPLIANCE_PARTNER_CORRECTION: `${apiURL}/v2/admin/compliance/partner-correction`,
+  COMPLIANCE_PARTNER_CORRECTION_FILE_UPLOAD: `${apiURL}/v2/file/compliance/partner-correction/file-upload`,
 
   ////// AGGREGATOR REQUESTS
   GET_AGGREGATOR_REQUEST: `${apiURL}/v2/aggregator/requests`,
   SUBMIT_VAS_PARTNER: `${apiURL}/v2/vas-partner/request/submit`,
   GET_VAS_PARTNER_REQUEST: `${apiURL}/v2/vas-partner/requests`,
   CHANGE_AGGREGATOR: `${apiURL}/v2/vas-partner/request/change-aggregator`,
-
-
   APPROVE_VAS_PARTNERS: `${apiURL}/v2/aggregator/request/approve`,
   REJECT_VAS_PARTNERS: `${apiURL}/v2/aggregator/request/reject`,
   VAS_PERTNER_ONBOARDING_NCCLICENSE: `${apiURL}/v2/aggregator/vas-partner-onboarding/ncclicense`,
-  GET_AGGREGATOR_VAS_PARTNERS_DETAILS:`${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details`,
+  GET_AGGREGATOR_VAS_PARTNERS_DETAILS: `${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details`,
   VAS_PERTNER_ONBOARDING_NLRCLICENSE: `${apiURL}/v2/aggregator/vas-partner-onboarding/nlrclicense`,
   VAS_PERTNER_ONBOARDING_SHORTCODES: `${apiURL}/v2/aggregator/vas-partner-onboarding/shortcode`,
   VAS_PERTNER_FINAL_CATEGORY_SUBMISSION: `${apiURL}/v2/aggregator/vas-partner-onboarding/final-category-submission`,
   VAS_PERTNER_FINAL_COMPLIANCE_SUBMISSION: `${apiURL}/v2/aggregator/vas-partner-onboarding/final-submission-for-compliance`,
-  ADMIN_GET_AGGREGATOR_REQUESTS:`${apiURL}/v2/admin/approved/requests`,
-  ADMIN_GET_AGGREGATOR_REQUEST:`${apiURL}/v2/admin/approved/request`,
-  GET_AGGREGATOR_VAS_PARTNER_DETAILS:`${apiURL}/v2/admin/vas-partner/get-vas-partner-details`,
+  ADMIN_GET_AGGREGATOR_REQUESTS: `${apiURL}/v2/admin/approved/requests`,
+  ADMIN_GET_AGGREGATOR_REQUEST: `${apiURL}/v2/admin/approved/request`,
+  GET_AGGREGATOR_VAS_PARTNER_DETAILS: `${apiURL}/v2/admin/vas-partner/get-vas-partner-details`,
   APPROVE_REJECT_AGGREGATOR_VAS_PARTNER: `${apiURL}/v2/admin/compliance/approve`,
 };
 export default RemoteEndpoints;

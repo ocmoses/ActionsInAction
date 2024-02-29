@@ -1644,11 +1644,11 @@ export default function IPDrawer({
 
                     <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
                       {request["means-of-agent-identification"]
-                        .means_of_id_status == "approved" ||
+                        .means_of_agent_id_status == "approved" ||
                       approvals[expansion.AGENT_ID] == "approved" ? (
                         <Approved />
                       ) : request["means-of-agent-identification"]
-                          .means_of_id_status == "rejected" ||
+                          .means_of_agent_id_status == "rejected" ||
                         approvals[expansion.AGENT_ID] == "rejected" ? (
                         <Declined />
                       ) : (

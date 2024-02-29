@@ -615,7 +615,7 @@ export default function IPDrawer({
         data.ip_request_type = "means-of-identification";
         break;
       case expansion.AGENT_ID:
-        data.ip_request_type = "agent-id";
+        data.ip_request_type = "means-of-agent-identification";
         break;
       case expansion.ADDITIONAL_PROOF:
         data.ip_request_type = "other-content-proof-of-ownership";

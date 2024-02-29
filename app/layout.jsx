@@ -9,8 +9,6 @@ import { cookies } from "next/headers";
 import { getCategories } from "@/app/modules/categories";
 import { apikey } from "@/app/modules/constants";
 
-import ContactUsPopUp from "@/app/components/PopUps";
-
 import "./modules/bootstrap";
 
 const getServerSession = async () => {

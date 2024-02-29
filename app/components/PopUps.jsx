@@ -265,11 +265,7 @@ export const ForAggregatorSuccess = ({ action }) => {
         </div>
       </span>
       {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
-      {/* {showToast && (
-        <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
-          Email copied!
-        </div>
-      )} */}
+      
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
@@ -335,11 +331,7 @@ export const CRBTSuccess = ({ action, category }) => {
         </div>
       </span>
       {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
-      {/* {showToast && (
-        <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 text-center">
-          Email copied!
-        </div>
-      )} */}
+     
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"

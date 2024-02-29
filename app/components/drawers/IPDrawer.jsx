@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import SideDrawer from "@/app/components/dashboard/SideDrawer";
 import useErrors from "@/hooks/useErrors";
 import useAdmins from "@/hooks/useAdmins";
@@ -28,7 +28,7 @@ export default function IPDrawer({
     getDynamicFields,
   } = useAdmins();
 
-  //Too bad I can't use approvals here. 
+  //Too bad I can't use approvals here.
   let admin_approvals = useAdmins().approvals;
 
   const ipTypes = {
@@ -36,8 +36,6 @@ export default function IPDrawer({
     AGENT_AND_CONTENT: "agent_and_content",
     RECORD_LABEL: "record_label",
   };
-
-  let ipArray = [];
 
   const expansion = {
     AGGREGATOR_AND_VAS: "aggregator-and-vas",
@@ -190,8 +188,8 @@ export default function IPDrawer({
     data.reasons_for_rejection = "";
     data.status = "approved";
 
-    if(request.vas_partner_uuid){
-      data["vas_partner_uuid"] = request.vas_partner_uuid
+    if (request.vas_partner_uuid) {
+      data["vas_partner_uuid"] = request.vas_partner_uuid;
     }
 
     setTimeout(() => {
@@ -362,8 +360,8 @@ export default function IPDrawer({
       setData({ ...data, reasons_for_rejection: typedReason });
     }
 
-    if(request.vas_partner_uuid){
-      data["vas_partner_uuid"] = request.vas_partner_uuid
+    if (request.vas_partner_uuid) {
+      data["vas_partner_uuid"] = request.vas_partner_uuid;
     }
 
     setTimeout(() => {
@@ -562,7 +560,6 @@ export default function IPDrawer({
   // 'other-content-proof-of-ownership'
 
   const setApprovalType = () => {
-    // console.log("Expanded is: ", expanded);
     switch (expanded) {
       case expansion.AGGREGATOR_AND_VAS:
         data.ip_request_type = "aggregator-and-vas";
@@ -789,153 +786,151 @@ export default function IPDrawer({
 
                 {!collapseAdded && (
                   <div className="flex-1 p-4 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-3">
-                    <>
-                      <TextInput
-                        id="request_name"
-                        label="Request name"
-                        value={newRequest.request_name}
-                        onChange={(e) => {
-                          setNewRequest({
-                            ...newRequest,
-                            request_name: e.target.value,
-                          });
-                        }}
-                        disabled={false}
-                        errors={errors}
+                    <TextInput
+                      id="request_name"
+                      label="Request name"
+                      value={newRequest.request_name}
+                      onChange={(e) => {
+                        setNewRequest({
+                          ...newRequest,
+                          request_name: e.target.value,
+                        });
+                      }}
+                      disabled={false}
+                      errors={errors}
+                    />
+
+                    <div>
+                      <p className="text-white">Choose request type</p>
+                      <p className="text-white/60 text-sm">
+                        This is the specific request category you would like the
+                        partner to upload
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col space-y-3">
+                      <div
+                        className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
+                          newRequest.pdfAllowed
+                            ? "border-mtn"
+                            : "border-white/40"
+                        }`}
+                      >
+                        <label className="text-white/60">
+                          <input
+                            onChange={(e) =>
+                              e.target.checked
+                                ? setNewRequest({
+                                    ...newRequest,
+                                    pdfAllowed: true,
+                                    request_type: "pdf",
+                                  })
+                                : setNewRequest({
+                                    ...newRequest,
+                                    pdfAllowed: false,
+                                  })
+                            }
+                            type="radio"
+                            value="pdf"
+                            name="request_type"
+                            className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
+                          />
+                          &nbsp;&nbsp;Doc (pdf, Word)
+                        </label>
+                      </div>
+                      <div
+                        className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
+                          newRequest.videoAllowed
+                            ? "border-mtn"
+                            : "border-white/40"
+                        }`}
+                      >
+                        <label className="text-white/60">
+                          <input
+                            onChange={(e) =>
+                              e.target.checked
+                                ? setNewRequest({
+                                    ...newRequest,
+                                    videoAllowed: true,
+                                    request_type: "video",
+                                  })
+                                : setNewRequest({
+                                    ...newRequest,
+                                    videoAllowed: false,
+                                  })
+                            }
+                            type="radio"
+                            value="video"
+                            name="request_type"
+                            className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
+                          />
+                          &nbsp;&nbsp;Video (Mpeg, MP4, MOV)
+                        </label>
+                      </div>
+                      <div
+                        className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
+                          newRequest.imageAllowed
+                            ? "border-mtn"
+                            : "border-white/40"
+                        }`}
+                      >
+                        <label className="text-white/60">
+                          <input
+                            onChange={(e) =>
+                              e.target.checked
+                                ? setNewRequest({
+                                    ...newRequest,
+                                    imageAllowed: true,
+                                    request_type: "image",
+                                  })
+                                : setNewRequest({
+                                    ...newRequest,
+                                    imageAllowed: false,
+                                  })
+                            }
+                            type="radio"
+                            value="image"
+                            name="request_type"
+                            className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
+                          />
+                          &nbsp;&nbsp;Image (Jpg, Png)
+                        </label>
+                      </div>
+                    </div>
+
+                    {errors && errors["error"] && (
+                      <div className="mb-6">
+                        <FormErrors error={errors["error"]} />
+                      </div>
+                    )}
+
+                    {progressing && (
+                      <TailSpinPreloader
+                        width={40}
+                        height={40}
+                        fill="#efb703"
                       />
+                    )}
 
-                      <div>
-                        <p className="text-white">Choose request type</p>
-                        <p className="text-white/60 text-sm">
-                          This is the specific request category you would like
-                          the partner to upload
-                        </p>
+                    {!progressing && (
+                      <div className="flex py-4 px-2 space-x-4 justify-end max-w-4xl">
+                        <button
+                          className="border-1 border-white/20 w-[100px] text-white hover:bg-white/40 bg-white/20 p-4 py-2 rounded-full"
+                          onClick={() => {
+                            setAddingRequest(false);
+                            clearErrors();
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className=" text-black font-bold bg-mtn w-[100px] hover:bg-mtn-800 p-4 py-2 rounded-full"
+                          onClick={() => addNewRequest()}
+                        >
+                          Add
+                        </button>
                       </div>
-
-                      <div className="flex flex-col space-y-3">
-                        <div
-                          className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
-                            newRequest.pdfAllowed
-                              ? "border-mtn"
-                              : "border-white/40"
-                          }`}
-                        >
-                          <label className="text-white/60">
-                            <input
-                              onChange={(e) =>
-                                e.target.checked
-                                  ? setNewRequest({
-                                      ...newRequest,
-                                      pdfAllowed: true,
-                                      request_type: "pdf",
-                                    })
-                                  : setNewRequest({
-                                      ...newRequest,
-                                      pdfAllowed: false,
-                                    })
-                              }
-                              type="radio"
-                              value="pdf"
-                              name="request_type"
-                              className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
-                            />
-                            &nbsp;&nbsp;Doc (pdf, Word)
-                          </label>
-                        </div>
-                        <div
-                          className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
-                            newRequest.videoAllowed
-                              ? "border-mtn"
-                              : "border-white/40"
-                          }`}
-                        >
-                          <label className="text-white/60">
-                            <input
-                              onChange={(e) =>
-                                e.target.checked
-                                  ? setNewRequest({
-                                      ...newRequest,
-                                      videoAllowed: true,
-                                      request_type: "video",
-                                    })
-                                  : setNewRequest({
-                                      ...newRequest,
-                                      videoAllowed: false,
-                                    })
-                              }
-                              type="radio"
-                              value="video"
-                              name="request_type"
-                              className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
-                            />
-                            &nbsp;&nbsp;Video (Mpeg, MP4, MOV)
-                          </label>
-                        </div>
-                        <div
-                          className={`flex space-x-2 rounded-md p-2 px-3 border-1 ${
-                            newRequest.imageAllowed
-                              ? "border-mtn"
-                              : "border-white/40"
-                          }`}
-                        >
-                          <label className="text-white/60">
-                            <input
-                              onChange={(e) =>
-                                e.target.checked
-                                  ? setNewRequest({
-                                      ...newRequest,
-                                      imageAllowed: true,
-                                      request_type: "image",
-                                    })
-                                  : setNewRequest({
-                                      ...newRequest,
-                                      imageAllowed: false,
-                                    })
-                              }
-                              type="radio"
-                              value="image"
-                              name="request_type"
-                              className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
-                            />
-                            &nbsp;&nbsp;Image (Jpg, Png)
-                          </label>
-                        </div>
-                      </div>
-
-                      {errors && errors["error"] && (
-                        <div className="mb-6">
-                          <FormErrors error={errors["error"]} />
-                        </div>
-                      )}
-
-                      {progressing && (
-                        <TailSpinPreloader
-                          width={40}
-                          height={40}
-                          fill="#efb703"
-                        />
-                      )}
-
-                      {!progressing && (
-                        <div className="flex py-4 px-2 space-x-4 justify-end max-w-4xl">
-                          <button
-                            className="border-1 border-white/20 w-[100px] text-white hover:bg-white/40 bg-white/20 p-4 py-2 rounded-full"
-                            onClick={() => {
-                              setAddingRequest(false);
-                              clearErrors();
-                            }}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className=" text-black font-bold bg-mtn w-[100px] hover:bg-mtn-800 p-4 py-2 rounded-full"
-                            onClick={() => addNewRequest()}
-                          >
-                            Add
-                          </button>
-                        </div>
-                      )}
-                    </>
+                    )}
                   </div>
                 )}
               </div>
@@ -1017,271 +1012,330 @@ export default function IPDrawer({
 
           {
             /* fields concerned with vas partner and aggregator */
-            request.vas_partner_uuid && 
-            (<>
+            request.vas_partner_uuid && (
+              <>
+                {/* Agg and VAS Authorization letter */}
+                <div className="flex space-x-2 items-start w-full">
+                  <ItemIcon />
 
-              {/* Agg and VAS Authorization letter */}
-              <div className="flex space-x-2 items-start w-full">
-                <ItemIcon />
+                  <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                    <div
+                      className={`p-2  ${
+                        expanded ==
+                          expansion.AGG_AND_VAS_AUTHORIZATION_LETTER &&
+                        "border-b pb-4"
+                      } border-white/20 flex space-x-2 items-center w-full relative`}
+                    >
+                      <StatusIcon
+                        field={"agg-and-vas-authorization-letter"}
+                        statusField={"status"}
+                      />
+                      <span className="text-white/80 ml-2">
+                        Agg & VAS Authorization Letter
+                      </span>
 
-                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                  <div
-                    className={`p-2  ${
-                      expanded == expansion.AGG_AND_VAS_AUTHORIZATION_LETTER && "border-b pb-4"
-                    } border-white/20 flex space-x-2 items-center w-full relative`}
-                  >
-                    <StatusIcon field={"agg-and-vas-authorization-letter"} statusField={"status"} />
-                    <span className="text-white/80 ml-2">Agg & VAS Authorization Letter</span>
-
-                    <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER} />
-                  </div>
-                  {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_LETTER && (
-                    <div className="flex flex-col space-y-4 p-4">
-                      <p className="flex justify-between">
-                        <span className="text-white/60 ">Authorization letter</span>
-                        <span className="text-mtn">
-                          {request["agg-and-vas-authorization-letter"]?.authorization_letter ? (
-                            <span
-                              onClick={() =>
-                                setFileViewer(
-                                  request["agg-and-vas-authorization-letter"]?.authorization_letter
-                                )
-                              }
-                              className="text-xs flex space-x-1 items-end cursor-pointer"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="yellow"
-                                className="w-4 h-4 cursor-pointer"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>{" "}
-                              Preview
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </p>
-
-                      {errors && errors["error"] && (
-                        <div className="mb-6">
-                          <FormErrors error={errors["error"]} />
-                        </div>
-                      )}
-
-                      <StatusActions expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER} 
-                          field={"agg-and-vas-authorization-letter"} 
-                          statusField={"status"} />
+                      <Expand
+                        expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER}
+                      />
                     </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Agg and VAS Authorization video */}
-               <div className="flex space-x-2 items-start w-full">
-                <ItemIcon />
-
-                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                  <div
-                    className={`p-2  ${
-                      expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO && "border-b pb-4"
-                    } border-white/20 flex space-x-2 items-center w-full relative`}
-                  >
-                    <StatusIcon field={"agg-and-vas-authorization-video"} statusField={"authorization_video_status"} />
-                    <span className="text-white/80 ml-2">Agg & VAS Authorization Video</span>
-
-                    <Expand expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO} />
-                  </div>
-                  {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO && (
-                    <div className="flex flex-col space-y-4 p-4">
-                      <p className="flex justify-between">
-                        <span className="text-white/60 ">Authorization Video</span>
-                        <span className="text-mtn">
-                          {request["agg-and-vas-authorization-video"]?.authorization_video ? (
-                            <span
-                              onClick={() =>
-                                setFileViewer(
-                                  request["agg-and-vas-authorization-video"]?.authorization_video
-                                )
-                              }
-                              className="text-xs flex space-x-1 items-end cursor-pointer"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="yellow"
-                                className="w-4 h-4 cursor-pointer"
+                    {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_LETTER && (
+                      <div className="flex flex-col space-y-4 p-4">
+                        <p className="flex justify-between">
+                          <span className="text-white/60 ">
+                            Authorization letter
+                          </span>
+                          <span className="text-mtn">
+                            {request["agg-and-vas-authorization-letter"]
+                              ?.authorization_letter ? (
+                              <span
+                                onClick={() =>
+                                  setFileViewer(
+                                    request["agg-and-vas-authorization-letter"]
+                                      ?.authorization_letter
+                                  )
+                                }
+                                className="text-xs flex space-x-1 items-end cursor-pointer"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>{" "}
-                              Preview
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </p>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="yellow"
+                                  className="w-4 h-4 cursor-pointer"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                  />
+                                </svg>{" "}
+                                Preview
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </p>
 
-                      {errors && errors["error"] && (
-                        <div className="mb-6">
-                          <FormErrors error={errors["error"]} />
-                        </div>
-                      )}
+                        {errors && errors["error"] && (
+                          <div className="mb-6">
+                            <FormErrors error={errors["error"]} />
+                          </div>
+                        )}
 
-                      <StatusActions expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO} 
-                          field={"agg-and-vas-authorization-video"} 
-                          statusField={"authorization_video_status"} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Agg and VAS Agreement letter */}
-              <div className="flex space-x-2 items-start w-full">
-                <ItemIcon />
-
-                <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                  <div
-                    className={`p-2  ${
-                      expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER && "border-b pb-4"
-                    } border-white/20 flex space-x-2 items-center w-full relative`}
-                  >
-                    <StatusIcon field={"agg-and-vas-agreement-letter"} statusField={"agreement_letter_status"} />
-                    <span className="text-white/80 ml-2">Agg & VAS Agreement Letter</span>
-
-                    <Expand expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER} />
+                        <StatusActions
+                          expansion={expansion.AGG_AND_VAS_AUTHORIZATION_LETTER}
+                          field={"agg-and-vas-authorization-letter"}
+                          statusField={"status"}
+                        />
+                      </div>
+                    )}
                   </div>
-                  {expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER && (
-                    <div className="flex flex-col space-y-4 p-4">
-                      <p className="flex justify-between">
-                        <span className="text-white/60 ">Agreement Letter</span>
-                        <span className="text-mtn">
-                          {request["agg-and-vas-agreement-letter"]?.agreement_letter ? (
-                            <span
-                              onClick={() =>
-                                setFileViewer(
-                                  request["agg-and-vas-agreement-letter"]?.agreement_letter
-                                )
-                              }
-                              className="text-xs flex space-x-1 items-end cursor-pointer"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="yellow"
-                                className="w-4 h-4 cursor-pointer"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>{" "}
-                              Preview
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </p>
-
-                      {errors && errors["error"] && (
-                        <div className="mb-6">
-                          <FormErrors error={errors["error"]} />
-                        </div>
-                      )}
-
-                      <StatusActions expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER} 
-                          field={"agg-and-vas-agreement-letter"} 
-                          statusField={"agreement_letter_status"} />
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              {/* Agg and VAS Other Content Proof */}
-              <div className="flex space-x-2 items-start w-full">
-                <ItemIcon />
+                {/* Agg and VAS Authorization video */}
+                <div className="flex space-x-2 items-start w-full">
+                  <ItemIcon />
 
-                <div className="flex-1 p-1 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
-                  <div
-                    className={`p-2  ${
-                      expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && "border-b pb-4"
-                    } border-white/20 flex space-x-2 items-center w-full relative`}
-                  >
-                    <StatusIcon field={"agg-and-vas-other-content-proof-ownership"} statusField={"other_content_proof_of_ownership_status"} />
-                    <span className="text-white/80 ml-2">Agg & VAS Additional Proof</span>
+                  <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                    <div
+                      className={`p-2  ${
+                        expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO &&
+                        "border-b pb-4"
+                      } border-white/20 flex space-x-2 items-center w-full relative`}
+                    >
+                      <StatusIcon
+                        field={"agg-and-vas-authorization-video"}
+                        statusField={"authorization_video_status"}
+                      />
+                      <span className="text-white/80 ml-2">
+                        Agg & VAS Authorization Video
+                      </span>
 
-                    <Expand expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF} />
+                      <Expand
+                        expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO}
+                      />
+                    </div>
+                    {expanded == expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO && (
+                      <div className="flex flex-col space-y-4 p-4">
+                        <p className="flex justify-between">
+                          <span className="text-white/60 ">
+                            Authorization Video
+                          </span>
+                          <span className="text-mtn">
+                            {request["agg-and-vas-authorization-video"]
+                              ?.authorization_video ? (
+                              <span
+                                onClick={() =>
+                                  setFileViewer(
+                                    request["agg-and-vas-authorization-video"]
+                                      ?.authorization_video
+                                  )
+                                }
+                                className="text-xs flex space-x-1 items-end cursor-pointer"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="yellow"
+                                  className="w-4 h-4 cursor-pointer"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                  />
+                                </svg>{" "}
+                                Preview
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </p>
+
+                        {errors && errors["error"] && (
+                          <div className="mb-6">
+                            <FormErrors error={errors["error"]} />
+                          </div>
+                        )}
+
+                        <StatusActions
+                          expansion={expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO}
+                          field={"agg-and-vas-authorization-video"}
+                          statusField={"authorization_video_status"}
+                        />
+                      </div>
+                    )}
                   </div>
-                  {expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && (
-                    <div className="flex flex-col space-y-4 p-4">
-                      <p className="flex justify-between">
-                        <span className="text-white/60 ">Additional Proof</span>
-                        <span className="text-mtn">
-                          {request["agg-and-vas-other-content-proof-ownership"]?.other_content_proof_of_ownership ? (
-                            <span
-                              onClick={() =>
-                                setFileViewer(
-                                  request["agg-and-vas-other-content-proof-ownership"]?.other_content_proof_of_ownership
-                                )
-                              }
-                              className="text-xs flex space-x-1 items-end cursor-pointer"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="yellow"
-                                className="w-4 h-4 cursor-pointer"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                                />
-                              </svg>{" "}
-                              Preview
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </p>
-
-                      {errors && errors["error"] && (
-                        <div className="mb-6">
-                          <FormErrors error={errors["error"]} />
-                        </div>
-                      )}
-
-                      <StatusActions expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF} 
-                          field={"agg-and-vas-other-content-proof-ownership"} 
-                          statusField={"other_content_proof_of_ownership_status"} />
-                    </div>
-                  )}
                 </div>
-              </div>
-            
-            
-            </>)
+
+                {/* Agg and VAS Agreement letter */}
+                <div className="flex space-x-2 items-start w-full">
+                  <ItemIcon />
+
+                  <div className="flex-1 p-2 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                    <div
+                      className={`p-2  ${
+                        expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER &&
+                        "border-b pb-4"
+                      } border-white/20 flex space-x-2 items-center w-full relative`}
+                    >
+                      <StatusIcon
+                        field={"agg-and-vas-agreement-letter"}
+                        statusField={"agreement_letter_status"}
+                      />
+                      <span className="text-white/80 ml-2">
+                        Agg & VAS Agreement Letter
+                      </span>
+
+                      <Expand
+                        expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER}
+                      />
+                    </div>
+                    {expanded == expansion.AGG_AND_VAS_AGREEMENT_LETTER && (
+                      <div className="flex flex-col space-y-4 p-4">
+                        <p className="flex justify-between">
+                          <span className="text-white/60 ">
+                            Agreement Letter
+                          </span>
+                          <span className="text-mtn">
+                            {request["agg-and-vas-agreement-letter"]
+                              ?.agreement_letter ? (
+                              <span
+                                onClick={() =>
+                                  setFileViewer(
+                                    request["agg-and-vas-agreement-letter"]
+                                      ?.agreement_letter
+                                  )
+                                }
+                                className="text-xs flex space-x-1 items-end cursor-pointer"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="yellow"
+                                  className="w-4 h-4 cursor-pointer"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                  />
+                                </svg>{" "}
+                                Preview
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </p>
+
+                        {errors && errors["error"] && (
+                          <div className="mb-6">
+                            <FormErrors error={errors["error"]} />
+                          </div>
+                        )}
+
+                        <StatusActions
+                          expansion={expansion.AGG_AND_VAS_AGREEMENT_LETTER}
+                          field={"agg-and-vas-agreement-letter"}
+                          statusField={"agreement_letter_status"}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Agg and VAS Other Content Proof */}
+                <div className="flex space-x-2 items-start w-full">
+                  <ItemIcon />
+
+                  <div className="flex-1 p-1 rounded-lg border-2 border-white/20 ml-4 flex flex-col space-y-4">
+                    <div
+                      className={`p-2  ${
+                        expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF &&
+                        "border-b pb-4"
+                      } border-white/20 flex space-x-2 items-center w-full relative`}
+                    >
+                      <StatusIcon
+                        field={"agg-and-vas-other-content-proof-ownership"}
+                        statusField={"other_content_proof_of_ownership_status"}
+                      />
+                      <span className="text-white/80 ml-2">
+                        Agg & VAS Additional Proof
+                      </span>
+
+                      <Expand
+                        expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF}
+                      />
+                    </div>
+                    {expanded == expansion.AGG_AND_VAS_ADDITIONAL_PROOF && (
+                      <div className="flex flex-col space-y-4 p-4">
+                        <p className="flex justify-between">
+                          <span className="text-white/60 ">
+                            Additional Proof
+                          </span>
+                          <span className="text-mtn">
+                            {request[
+                              "agg-and-vas-other-content-proof-ownership"
+                            ]?.other_content_proof_of_ownership ? (
+                              <span
+                                onClick={() =>
+                                  setFileViewer(
+                                    request[
+                                      "agg-and-vas-other-content-proof-ownership"
+                                    ]?.other_content_proof_of_ownership
+                                  )
+                                }
+                                className="text-xs flex space-x-1 items-end cursor-pointer"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="yellow"
+                                  className="w-4 h-4 cursor-pointer"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                                  />
+                                </svg>{" "}
+                                Preview
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </p>
+
+                        {errors && errors["error"] && (
+                          <div className="mb-6">
+                            <FormErrors error={errors["error"]} />
+                          </div>
+                        )}
+
+                        <StatusActions
+                          expansion={expansion.AGG_AND_VAS_ADDITIONAL_PROOF}
+                          field={"agg-and-vas-other-content-proof-ownership"}
+                          statusField={
+                            "other_content_proof_of_ownership_status"
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )
           }
 
           {/* Authorization letter */}
@@ -3456,8 +3510,8 @@ export default function IPDrawer({
   }
 
   function ApprovalActions() {
-    if(!admin_approvals.can_approve.includes("ip_compliance")){
-      return <></>
+    if (!admin_approvals.can_approve.includes("ip_compliance")) {
+      return <></>;
     }
 
     return declining != request ? (
@@ -3506,8 +3560,7 @@ export default function IPDrawer({
         </span>
       </>
     ) : (
-      <>
-        <div className="border-1 border-white/20 rounded-xl flex flex-col relative w-full">
+      <div className="border-1 border-white/20 rounded-xl flex flex-col relative w-full">
           <div className="m-2 -mb-4">
             <SelectInput
               id="service"
@@ -3580,19 +3633,16 @@ export default function IPDrawer({
             </div>
           </div>
         </div>
-      </>
     );
   }
 
-  function Expand({expansion}){
+  function Expand({ expansion }) {
     return (
       <span
         className="absolute right-4 px-4 py-1 hover:bg-white/10 rounded-full cursor-pointer"
         onClick={() => {
           clearErrors();
-          expanded == expansion
-            ? setExpanded(null)
-            : setExpanded(expansion);
+          expanded == expansion ? setExpanded(null) : setExpanded(expansion);
           setData({ ...data, dynamic_field_number: null });
         }}
       >
@@ -3628,26 +3678,26 @@ export default function IPDrawer({
           </svg>
         )}
       </span>
-    )
-  }
-
-  function StatusActions({expansion, field, statusField}){
-    return (
-      <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
-          {request[field][statusField] == "approved" ||
-          approvals[expansion] == "approved" ? (
-            <Approved />
-          ) : request[field][statusField] == "rejected" ||
-            approvals[expansion] == "rejected" ? (
-            <Declined />
-          ) : (
-            ApprovalActions()
-          )}
-        </div>
     );
   }
 
-  function ItemIcon(){
+  function StatusActions({ expansion, field, statusField }) {
+    return (
+      <div className="pt-4 border-t border-dashed border-white/20 flex space-x-4">
+        {request[field][statusField] == "approved" ||
+        approvals[expansion] == "approved" ? (
+          <Approved />
+        ) : request[field][statusField] == "rejected" ||
+          approvals[expansion] == "rejected" ? (
+          <Declined />
+        ) : (
+          ApprovalActions()
+        )}
+      </div>
+    );
+  }
+
+  function ItemIcon() {
     return (
       <span className="p-2 rounded-md bg-white/10 inline-flex">
         <svg
@@ -3668,12 +3718,19 @@ export default function IPDrawer({
     );
   }
 
-  function StatusIcon({field, statusField}){
-
+  function StatusIcon({ field, statusField }) {
     return (
       <svg
         viewBox="0 0 24 24"
-        fill={request[field][statusField] == "approved" ? `green` : request[field][statusField] == "rejected" ? `red`: request[field][statusField] == "corrected" ? `yellow` : `gray`}
+        fill={
+          request[field][statusField] == "approved"
+            ? `green`
+            : request[field][statusField] == "rejected"
+            ? `red`
+            : request[field][statusField] == "corrected"
+            ? `yellow`
+            : `gray`
+        }
         xmlns="http://www.w3.org/2000/svg"
         className="w-6 h-6"
       >
@@ -3683,7 +3740,5 @@ export default function IPDrawer({
         />
       </svg>
     );
-
   }
-
 }

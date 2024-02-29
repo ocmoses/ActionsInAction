@@ -1,5 +1,5 @@
 import GenericModal from "./GenericModal.jsx";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import useErrors from "@/hooks/useErrors";
 import useUsers from "@/hooks/useUsers";
 import FileInput from "@/app/components/form/FileInput";
@@ -156,12 +156,12 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
           if (file_title == "authorization_video") {
             setFiles({ ...files, authorization_video: file_title });
             setFiles({ ...files, video_file: file_title });
-            // setFiles({ ...files, video_file: file_title });
           }
         }
       })
       .catch((error) => {
-        console.log(error.response), setSubmitting(false);
+        console.log(error.response);
+        setSubmitting(false);
       });
   };
 
@@ -218,8 +218,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
       if (result?.success) {
         const data = result?.data;
 
-        // console.log('Submit all proofs message', message);
-
         setSuccessMessage("Updated successfully");
         setSuccessToast(true);
 
@@ -270,7 +268,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
               className="w-10 h-10 ml-4 hover:bg-white/20 hover:rounded-full p-2"
             >
               <path
-                stroke-linecap="round"
+                strokeLinecap="round"
                 strokeLinejoin="round"
                 d="M6 18L18 6M6 6l12 12"
               />
@@ -279,13 +277,13 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
         </div>
 
         <div className="my-4 flex text-white flex-col h-[350px] overflow-y-auto">
-          {rejected.map((rejection) => (
-            <div className="flex flex-col">
+          {rejected.map((rejection, index) => (
+            <div key={index} className="flex flex-col">
               <div className="my-2 flex flex-col space-y-1">
                 <p className="text-white font-mtn-bold">
                   {filesMap[rejection]}
                 </p>
-                {rejection == "video_file" ? (
+                {rejection == "video_file" && (
                   <FileInput
                     id="authorization_video"
                     doc_id="authorization_video_doc"
@@ -305,8 +303,8 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                     disabled={false}
                     style="flex-1"
                   />
-                ) : // rejection != "service_details" &&
-                rejection != "licensing_period" ? (
+                )}
+                {rejection != "licensing_period" ? (
                   <FileInput
                     id={rejection}
                     doc_id={`${rejection}_doc`}
@@ -318,7 +316,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                     style="flex-1"
                   />
                 ) : (
-                  // Here rejection is license period
                   <div className="flex space-x-2 no-wrap items-center h-full">
                     <DatePicker
                       id="license_start_date"

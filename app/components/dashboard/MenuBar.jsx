@@ -151,7 +151,7 @@ export default function MenuBar({
 
           {AggregatorMenu.map((menu) =>
             
-            partner?.aggregator && partner?.aggregator.toLowerCase() == "yes" && (
+            partner?.aggregator && partner?.aggregator?.toLowerCase() == "yes" && (
               <li key={menu.label}>
                 <Link
                   href={menu.route}

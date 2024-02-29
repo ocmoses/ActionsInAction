@@ -207,9 +207,10 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/checkout@v2
         with:
-          ref: prod
-          repository: gkhhgcl/helm-chart
-          token: ${{ secrets.my_pat }}
+          ref: prod          
+          #repository: gkhhgcl/helm-chart
+          repository: MTNNigeria/Helm-Charts
+          token: ${{ secrets.my_pat }
 
       - name: Update prod helm repo
         if: github.ref == 'refs/heads/main'

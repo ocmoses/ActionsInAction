@@ -292,32 +292,34 @@ export default function ServiceDetail({ params, next }) {
       </div>
     </div>
   );
+
+  function ShortCode({ value }) {
+    return (
+      <div
+        onClick={() => setServices({ ...services, shortcode_for_service: value })}
+        className={`p-4 text-white/80 w-1/3 border-2 ${
+          services.shortcode_for_service == value
+            ? "border-mtn"
+            : "border-white/20"
+        } rounded-md flex items-center justify-center cursor-pointer`}
+      >
+        {value}
+      </div>
+    );
+  }
+  
+  function Bearer({ value }) {
+    return (
+      <div
+        onClick={() => setServices({ ...services, bearer: value })}
+        className={`p-4 text-white/80 w-1/3 border-2 ${
+          services.bearer == value ? "border-mtn" : "border-white/20"
+        } rounded-md flex items-center justify-center cursor-pointer`}
+      >
+        {value}
+      </div>
+    );
+  }
+  
 }
 
-function ShortCode({ value }) {
-  return (
-    <div
-      onClick={() => setServices({ ...services, shortcode_for_service: value })}
-      className={`p-4 text-white/80 w-1/3 border-2 ${
-        services.shortcode_for_service == value
-          ? "border-mtn"
-          : "border-white/20"
-      } rounded-md flex items-center justify-center cursor-pointer`}
-    >
-      {value}
-    </div>
-  );
-}
-
-function Bearer({ value }) {
-  return (
-    <div
-      onClick={() => setServices({ ...services, bearer: value })}
-      className={`p-4 text-white/80 w-1/3 border-2 ${
-        services.bearer == value ? "border-mtn" : "border-white/20"
-      } rounded-md flex items-center justify-center cursor-pointer`}
-    >
-      {value}
-    </div>
-  );
-}

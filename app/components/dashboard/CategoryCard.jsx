@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import VASDrawer from "@/app/components/dashboard/VASDrawer";
 import useProcessing from "@/hooks/useProcessing";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import PopUp, {
   CRBTSuccess,
   ServiceNamePop,

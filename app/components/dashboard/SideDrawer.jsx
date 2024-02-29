@@ -5,8 +5,7 @@ export default function SideDrawer({request, openDrawer, closeAction, children})
   const [view, setView] = useState("overview");
 
   return (
-      <>          
-        <main
+      <main
           className={
             "fixed overflow-hidden z-10 bg-black bg-opacity-75 inset-0 transform ease-in-out " +
             (openDrawer
@@ -71,7 +70,6 @@ export default function SideDrawer({request, openDrawer, closeAction, children})
             onClick={() => closeAction()}
           ></section>
         </main>
-      </>
   );
 
 }

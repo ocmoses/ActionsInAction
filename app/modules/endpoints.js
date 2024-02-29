@@ -175,6 +175,7 @@ const RemoteEndpoints = {
   // VAS
   GET_VAS_TYPE: `${apiURL}/v2/vas-partner/vas-type`,
   GET_AGGREGATOR: `${apiURL}/v2/vas-partner/aggregators`,
+  GET_ONBOARDING_STATUS: `${apiURL}/v2/vas-partner/request/onboarding/status`,
 
   //Compliance
   GET_COMPLIANCE_STATUS: `${apiURL}/v2/aggregator/vas-partner-onboarding/get-vas-partner-onboarding-details/:aggregator_uuid/:vas_partner_uuid`,

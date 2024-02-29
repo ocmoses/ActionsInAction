@@ -299,9 +299,9 @@ export default function ContentOwner() {
                 Must capture the content owner and the authorization letter
                 being signed.
               </p>
-              <div className="flex space-x-2 items-base">
+              {/* <div className="flex space-x-2 items-base">
                 <span className="text-xs text-mtn">See video sample</span>
-              </div>
+              </div> */}
             </div>
 
             <FileInput

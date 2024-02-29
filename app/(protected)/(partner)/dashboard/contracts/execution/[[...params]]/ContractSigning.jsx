@@ -1098,7 +1098,7 @@ export default function ContractSigning({ params }) {
           <p>
             <span className="text-white w-[50px]">1.27.</span> “Solutions”
             includes &nbsp;&nbsp;
-            {dynamicData?.dynamic_details?.service_types?.map((s) => (
+            {dynamicData?.dynamic_details?.service_types.map((s) => (
               <>
                 <span className="text-white">{s}</span>
               </>

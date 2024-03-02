@@ -148,7 +148,7 @@ export default function CategoryCard({
             ? "cursor-not-allowed bg-white/10 text-white/70"
             : "cursor-pointer text-white bg-[#111111] hover:bg-white/10 hover:shadow-2xl "
         } rounded-lg`}
-        title={`${disabled ? "Coming Soon" : "Click to select"}`}
+        title={`${disabled ? "Please email us at #PartnerManagement.DS.NG@mtn.com or call 08032000674 to get started." : "Click to select"}`}
       >
         <div>
           <div className="flex justify-center items-center w-[56px] h-[56px] text-[#FFCB03] rounded-full bg-white/10">

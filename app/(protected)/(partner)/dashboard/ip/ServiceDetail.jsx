@@ -1,32 +1,14 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
-import {
-  getPartnerInitials,
-  filterPartner,
-  Util,
-  titleCase,
-  getInitials,
-  capitalizeFirst,
-} from "@/app/modules/utilities";
-import {
-  TailSpinPreloader,
-  CompanyLogo,
-  DialIcon,
-} from "@/app/components/Icons";
-import Success from "@/app/components/toasts/Success";
+import { useState, useEffect } from "react";
+
+import { TailSpinPreloader } from "@/app/components/Icons";
 import FormErrors from "@/app/components/FormErrors";
 import useErrors from "@/hooks/useErrors";
-import useProcessing from "@/hooks/useProcessing";
-import useContracts from "@/hooks/useContracts";
 import useUsers from "@/hooks/useUsers";
-import moment from "moment";
 import usePartners from "@/hooks/usePartners";
 import TextInput from "@/app/components/form/TextInput";
 import TextAreaInput from "@/app/components/form/TextAreaInput";
-import FileInput from "@/app/components/form/FileInput";
-import DatePicker from "@/app/components/form/DatePicker";
 import RemoteEndpoints from "@/app/modules/endpoints";
-
 import SelectInput from "@/app/components/form/SelectInput";
 import SelectInputOption from "@/app/components/form/SelectInputOption";
 
@@ -273,14 +255,6 @@ export default function ServiceDetail({ params, next }) {
         onBlur={(e) => handleChange(e, "purpose_service_usage")}
       />
 
-      {/* <textarea
-                    value={services.purpose_service_usage}
-                    onChange={(e) => handleChange(e, 'purpose_service_usage')}
-                    onBlur={(e) => handleChange(e, 'purpose_service_usage')}
-                    className="rounded p-4 mb-4 border-1 border-white/20 bg-white/10 text-white"
-                    rows="6"
-              ></textarea> */}
-
       <div className="flex flex-col space-y-2">
         <p className="text-white">Bearer</p>
 
@@ -322,9 +296,7 @@ export default function ServiceDetail({ params, next }) {
   function ShortCode({ value }) {
     return (
       <div
-        onClick={() =>
-          setServices({ ...services, shortcode_for_service: value })
-        }
+        onClick={() => setServices({ ...services, shortcode_for_service: value })}
         className={`p-4 text-white/80 w-1/3 border-2 ${
           services.shortcode_for_service == value
             ? "border-mtn"
@@ -335,7 +307,7 @@ export default function ServiceDetail({ params, next }) {
       </div>
     );
   }
-
+  
   function Bearer({ value }) {
     return (
       <div
@@ -348,4 +320,6 @@ export default function ServiceDetail({ params, next }) {
       </div>
     );
   }
+  
 }
+

@@ -38,7 +38,6 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
-import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -465,9 +464,9 @@ export default function GetStarted({ type }) {
 
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
-      if (res.result?.success && res.result?.data.length > 0) {
+      if (res.result?.length > 0) {
         setShowPartnerCategories(false);
-        setVasPartnerData(res.result.data);
+        setVasPartnerData(res.result);
       }
     });
   };
@@ -517,14 +516,6 @@ export default function GetStarted({ type }) {
     }));
   };
 
-  console.log("partnerActiveCategories==", partnerActiveCategories);
-  console.log("partner?.contract_status", partner?.contract_status);
-  console.log("showProgress==", showProgress);
-  console.log("contractStarted==", contractStarted);
-  console.log("showPartnerCategories==", showPartnerCategories);
-  console.log("partnerCategories==", partnerCategories);
-
-
   return (
     hasDashboard && (
       <>
@@ -544,7 +535,7 @@ export default function GetStarted({ type }) {
               <div className="w-full pt-[72px]">
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                    Hello, {user?.first_name}
+                    Hello, {user.first_name}
                     {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
@@ -731,9 +722,9 @@ export default function GetStarted({ type }) {
                 )}
                 {IPAlert &&
                   //Need to negate the condition that shows the category files
-                  (
-                    contractStarted &&
-                    partner?.contract_status != "not_started" &&
+                  !(
+                    !contractStarted &&
+                    partner?.contract_status === "not_started" &&
                     partnerActiveCategories?.length > 0
                   ) && (
                     // And you have not submitted the IP details
@@ -741,7 +732,6 @@ export default function GetStarted({ type }) {
                     <IPCard />
                   )}
                 <ChangeOrderRejection />
-                <ComplianceRejection />
                 <IPRejection />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
@@ -1052,11 +1042,9 @@ export default function GetStarted({ type }) {
                   )}
               </div>
               {rechooseAggregator &&
-                vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
-                      key={item.uuid}
                       aggregator={item.aggregator}
                       action={() => {
                         handleVasData("service_uuid", item.service_uuid);
@@ -1066,12 +1054,11 @@ export default function GetStarted({ type }) {
                     />
                   )
                 )}
-              {vasPartnerData.length > 0 &&
-                vasPartnerData.map((item) =>
-                  item.status !== "in-progress" ? null : (
-                    <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
-                  )
-                )}
+              {vasPartnerData.map((item) =>
+                item.status !== "in-progress" ? null : (
+                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
+                )
+              )}
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator

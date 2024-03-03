@@ -36,13 +36,40 @@ export default function IPRejection(){
             
         // }
 
-        if(data["aggregator-and-vas-requirements"].status == "rejected"){
+        if(data["agg-and-vas-authorization-letter"].status == "rejected"){
             //add
-            if(rejectionArray.includes("aggregator_and_vas_requirements")){
-                rejectionArray.push("aggregator_and_vas_requirements");
+            if(rejectionArray.includes("agg-and-vas-authorization-letter")){
+                rejectionArray.push("agg-and-vas-authorization-letter");
                 result = false;
             }
             
+        }
+
+        if(data["agg-and-vas-authorization-video"].authorization_video_status == "rejected"){
+          //add
+          if(rejectionArray.includes("agg-and-vas-authorization-video")){
+              rejectionArray.push("agg-and-vas-authorization-video");
+              result = false;
+          }
+          
+        }
+
+        if(data["agg-and-vas-agreement-letter"].agreement_letter_status == "rejected"){
+          //add
+          if(rejectionArray.includes("agg-and-vas-agreement-letter")){
+              rejectionArray.push("agg-and-vas-agreement-letter");
+              result = false;
+          }
+          
+        }
+
+        if(data["agg-and-vas-other-content-proof-ownership"].other_content_proof_of_ownership_status == "rejected"){
+          //add
+          if(rejectionArray.includes("agg-and-vas-other-content-proof-ownership")){
+              rejectionArray.push("agg-and-vas-other-content-proof-ownership");
+              result = false;
+          }
+          
         }
 
         if(data["probate-of-will"]?.probate_of_will_status == "rejected"){
@@ -63,7 +90,7 @@ export default function IPRejection(){
             
         }
 
-        if(data["licensing-period"]?.license_period_status == "rejected"){
+        if(data["licensing-period"].license_period_status == "rejected"){
             //add 
             if(!rejectionArray.includes("licensing_period")){
                 rejectionArray.push("licensing_period");

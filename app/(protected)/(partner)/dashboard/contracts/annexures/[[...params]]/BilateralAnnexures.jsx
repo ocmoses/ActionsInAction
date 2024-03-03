@@ -106,8 +106,6 @@ export default function BilateralAnnexures({params}){
 
     useEffect(() => {
         get_dynamic_content(contract_id).then(resp => {
-            console.log("DYNAMIC DATA RESPONSE", resp);
-            setDynamicData(resp.data);
             console.log("Dynamic Details", dynamicData);
             console.log("Dynamic shortcodes", dynamicData?.dynamic_details?.shortcodes[0]?.shortcodes);
                        
@@ -387,58 +385,26 @@ export default function BilateralAnnexures({params}){
                         <h4 className="text-lg text-center text-white/60 w-full mb-4">Revenue Share Model</h4>
 
                         {/* Table here */}
-                        {
-                            dynamicData?.vas_partner_uuid && 
-
-                            <div className="border-1 border-white/20 rounded-md w-full">
-                                <div className="w-full">
-                                    <div className="flex border border-white/20">
-                                        <span className="text-white w-1/3 border-r border-white/40 p-2">Service</span>
-                                        <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to service provider</span>
-                                        <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to technical provider</span>
-                                        <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
-                                    </div>
-                                    <div className="flex border border-white/20">
-                                        
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types ? dynamicData?.dynamic_details?.service_types[0] : ""}</span>
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.technical_provider_share}</span>
-                                        <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
-                                    </div>
-                                    {/* <div className="flex border border-white/20">
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">Gold Standard VAS services</span>
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">40%</span>
-                                        <span className="text-white/60 w-1/3 p-2">60%</span>
-                                    </div> */}
+                        <div className="border-1 border-white/20 rounded-md w-full">
+                            <div className="w-full">
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/3 border-r border-white/40 p-2">Service</span>
+                                    <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to service provider</span>
+                                    <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
                                 </div>
-                            </div>
-
-                        }
-                        {
-                            !dynamicData?.vas_partner_uuid &&
-
-                            <div className="border-1 border-white/20 rounded-md w-full">
-                                <div className="w-full">
-                                    <div className="flex border border-white/20">
-                                        <span className="text-white w-1/3 border-r border-white/40 p-2">Service</span>
-                                        <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to service provider</span>
-                                        <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
-                                    </div>
-                                    <div className="flex border border-white/20">
-                                        
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types ? dynamicData?.dynamic_details?.service_types[0] : ""}</span>
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
-                                        <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
-                                    </div>
-                                    {/* <div className="flex border border-white/20">
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">Gold Standard VAS services</span>
-                                        <span className="text-white/60 w-1/3 border-r border-white/40 p-2">40%</span>
-                                        <span className="text-white/60 w-1/3 p-2">60%</span>
-                                    </div> */}
+                                <div className="flex border border-white/20">
+                                    
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types[0]}</span>
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
+                                    <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
                                 </div>
+                                {/* <div className="flex border border-white/20">
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">Gold Standard VAS services</span>
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">40%</span>
+                                    <span className="text-white/60 w-1/3 p-2">60%</span>
+                                </div> */}
                             </div>
-                        }
-                        
+                        </div>
 
                         <div className="mt-8 w-full flex space-x-2">
 
@@ -668,7 +634,7 @@ export default function BilateralAnnexures({params}){
                                 <>
                                     <span className="text-white w-[50px]">
                                     {
-                                        dynamicData?.dynamic_details?.annexures?.annexure_c == 'yes' ? 
+                                        dynamicData?.dynamic_details?.annexures["annexure_c"] == 'yes' ? 
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-6 h-6">
                                                 <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
                                             </svg> :
@@ -3078,4 +3044,3 @@ export default function BilateralAnnexures({params}){
 
     
 }
-

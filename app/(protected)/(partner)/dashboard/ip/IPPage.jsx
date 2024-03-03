@@ -1,18 +1,12 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
-import {
-  TailSpinPreloader,
-  CompanyLogo,
-  DialIcon,
-} from "@/app/components/Icons";
-import useErrors from "@/hooks/useErrors";
-import useProcessing from "@/hooks/useProcessing";
+import { useState, useEffect } from "react";
+
 import usePartners from "@/hooks/usePartners";
 import AggregatorIPPage from "./AggregatorIPPage";
 import NonAggregatorIPPage from "./NonAggregatorIPPage";
 
 export default function IPPage({ params }) {
-  const { partner, partnerCategories } = usePartners();
+  const { partner } = usePartners();
 
   const [isAggregator, setIsAggregator] = useState(false);
 

@@ -305,9 +305,9 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Video showing signing</h4>
                             <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <span className="text-xs text-mtn">See video sample</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput

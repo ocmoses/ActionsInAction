@@ -154,7 +154,10 @@ export default function ComplianceRejection() {
                 ) : (
                   <>
                     {rejected.map((item, index) => (
-                      <div className="flex flex-row w-full justify-between">
+                      <div
+                        key={item.uuid}
+                        className="flex flex-row w-full justify-between"
+                      >
                         <div className="text-gray-500 ">
                           <p>
                             <span className="text-white">

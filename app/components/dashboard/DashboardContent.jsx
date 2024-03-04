@@ -535,8 +535,7 @@ export default function GetStarted({ type }) {
               <div className="w-full pt-[72px]">
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
-                    Hello, {user.first_name}
-                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
+                    Hello, {user?.first_name}
                   </h2>
                 )}
                 {partner?.onboarding_type === "new" && (
@@ -544,7 +543,7 @@ export default function GetStarted({ type }) {
                     {!partner?.categories?.length > 0 ? (
                       <>
                         <p className="mb-12 text-[#999999] max-w-[500px]">
-                          Welcome to the MTN Partner Portal, {user.first_name}!
+                          Welcome to the MTN Partner Portal!
                           Explore advanced analytics, reporting, and dedicated
                           support to grow your business today.
                         </p>

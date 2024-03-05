@@ -172,6 +172,12 @@ const RemoteEndpoints = {
   GET_PARTNER_CONTRACT_VALIDITY_REMAINDER: `${apiURL}/v2/contract/get-partner-contract-validity-remainder/`,
   PREVIEW_FILE: `${apiURL}/v2/file/preview-file?file=:file`,
 
+  //Downloads
+  DOWNLOAD_QUESTIONNAIRE: `${apiURL}/v2/file/download-questionnaire`,
+  DOWNLOAD_CODE_OF_CONDUCT: `${apiURL}/v2/file/download-code-of-conduct`,
+  DOWNLOAD_UNSIGNED_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/not_signed`,
+  DOWNLOAD_SIGNED_CONTRACT: `${apiURL}/v2/contract/download-contract-pdf/:partner_uuid/:contract_id/signed`,
+
   // VAS
   GET_VAS_TYPE: `${apiURL}/v2/vas-partner/vas-type`,
   GET_AGGREGATOR: `${apiURL}/v2/vas-partner/aggregators`,

@@ -188,7 +188,7 @@ export default function ServiceDetail({ params, next }) {
   return (
     <div className="flex flex-col space-y-8 w-[500px]">
       <div className="text-center flex flex-col space-y-2">
-        <h2 className="text-4xl font-mtn text-white">Your service details</h2>
+        <h2 className="text-4xl font-mtn text-white">Provide your service details</h2>
         <h4 className="text-white/60 font-mtn text-2xl">
           What services will you be offering
         </h4>
@@ -292,32 +292,34 @@ export default function ServiceDetail({ params, next }) {
       </div>
     </div>
   );
+
+  function ShortCode({ value }) {
+    return (
+      <div
+        onClick={() => setServices({ ...services, shortcode_for_service: value })}
+        className={`p-4 text-white/80 w-1/3 border-2 ${
+          services.shortcode_for_service == value
+            ? "border-mtn"
+            : "border-white/20"
+        } rounded-md flex items-center justify-center cursor-pointer`}
+      >
+        {value}
+      </div>
+    );
+  }
+  
+  function Bearer({ value }) {
+    return (
+      <div
+        onClick={() => setServices({ ...services, bearer: value })}
+        className={`p-4 text-white/80 w-1/3 border-2 ${
+          services.bearer == value ? "border-mtn" : "border-white/20"
+        } rounded-md flex items-center justify-center cursor-pointer`}
+      >
+        {value}
+      </div>
+    );
+  }
+  
 }
 
-function ShortCode({ value }) {
-  return (
-    <div
-      onClick={() => setServices({ ...services, shortcode_for_service: value })}
-      className={`p-4 text-white/80 w-1/3 border-2 ${
-        services.shortcode_for_service == value
-          ? "border-mtn"
-          : "border-white/20"
-      } rounded-md flex items-center justify-center cursor-pointer`}
-    >
-      {value}
-    </div>
-  );
-}
-
-function Bearer({ value }) {
-  return (
-    <div
-      onClick={() => setServices({ ...services, bearer: value })}
-      className={`p-4 text-white/80 w-1/3 border-2 ${
-        services.bearer == value ? "border-mtn" : "border-white/20"
-      } rounded-md flex items-center justify-center cursor-pointer`}
-    >
-      {value}
-    </div>
-  );
-}

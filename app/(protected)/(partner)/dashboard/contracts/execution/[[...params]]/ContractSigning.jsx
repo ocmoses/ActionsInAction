@@ -12,9 +12,13 @@ import moment from "moment";
 import Success from "@/app/components/toasts/Success";
 import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
+import useFileDownload from "@/hooks/useFileDownload";
+
 
 export default function ContractSigning({ params }) {
   const contract_id = params.params[0];
+
+  const {downloadUnsignedContract} = useFileDownload();
 
   const {
     partner,
@@ -487,9 +491,8 @@ export default function ContractSigning({ params }) {
       </div>
 
       <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
-        <a
-          href={`${process.env.NEXT_PUBLIC_APIURI}/v2/contract/download-contract-pdf/${partner.uuid}/${contract_id}/not_signed`}
-          target="_blank"
+        <span
+          onClick={() => downloadUnsignedContract(partner?.uuid, contract_id)}
           className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex"
         >
           <svg
@@ -507,7 +510,7 @@ export default function ContractSigning({ params }) {
             />
           </svg>
           &nbsp;Download
-        </a>
+        </span>
       </div>
 
       <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">

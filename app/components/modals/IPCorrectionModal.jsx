@@ -25,10 +25,19 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     "Corrections submitted successfully"
   );
   const [successToast, setSuccessToast] = useState(false);
+  
   const successAction = () =>
     setTimeout(() => {
       setSuccessToast(false);
-    }, 3000);
+  }, 3000);
+
+    
+  const [data, setData] = useState({
+    partner_uuid: partner?.uuid,
+    physical_status_of_content_provider: "null",
+    license_start_date: null,
+    license_end_date: null,
+  });
 
   const validateFiles = () => {
     console.log("FILES", files);
@@ -106,12 +115,6 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     other_content_proof_of_ownership: "Additional Proof",
   };
 
-  const [data, setData] = useState({
-    partner_uuid: partner?.uuid,
-    physical_status_of_content_provider: "null",
-    license_start_date: null,
-    license_end_date: null,
-  });
 
   let today = new Date();
   const tomorrow = new Date().setDate(today.getDate() + 1);

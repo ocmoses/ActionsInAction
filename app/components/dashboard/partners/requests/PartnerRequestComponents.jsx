@@ -775,6 +775,7 @@ export const RequestFinishUpModal = ({realTimePageReloader, closeRequestFlyout,r
       successAction('Network Error!', false);
     }
   };
+  
   useEffect(() => {
     get_aggregator_vas_partner_details();
   }, []);

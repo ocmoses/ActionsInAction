@@ -11,7 +11,7 @@ import FileInput from "../form/FileInput";
 import Success from "@/app/components/toasts/Success";
 import FormErrors from "@/app/components/FormErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
-import {previewFile} from "@/hooks/useFileViewer";
+import useFileDownload from "@/hooks/useFileDownload";
 
 /**
  * 
@@ -23,6 +23,8 @@ import {previewFile} from "@/hooks/useFileViewer";
 export default function QuestionnaireModal({hide, action, rejectionReason=null}){
 
   // console.log("rejectionReason:", rejectionReason);
+
+  const {downloadQuestionnaire, downloadCodeOfConduct} = useFileDownload();
     
   const [uploading, setUploading] = useState(false);
   const [data, setData] = useState({questionairre_doc: null});
@@ -123,7 +125,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                         (<div className="flex space-x-4">
                             <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                                 <p className="text-gray-400">Download</p>
-                                <a href={questionnaire_link} className="font-mtn text-md text-yellow-500 text-center underline">Download Supplier Questionairre</a>
+                                <span onClick={() => downloadQuestionnaire()} className="cursor-pointer font-mtn text-md text-yellow-500 text-center underline">Download Supplier Questionairre</span>
                             </div>
                             <div className="border-1 border-gray-500 rounded-xl p-4 flex flex-col items-center space-y-6">
                                 <p className="text-gray-400">Upload</p>
@@ -158,7 +160,7 @@ export default function QuestionnaireModal({hide, action, rejectionReason=null})
                     
                         <input onChange={(e) => {e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false); clearErrors();}} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 mt-4 ml-4" />
                         <p className="text-gray-400 text-sm mt-4">
-                        By clicking "Submit and continue" I agree that I’ve read and understood <a href="https://dms.mtnnigeria.net/dms/PARTNER_ONBOARDING/Supplier-Code-of-Conduct-(3)_2023-10-31-04-04.pdf" target="_blank" className="text-white underline">MTN Supplier Code of Conduct.</a>. and agree to it.
+                        By clicking "Submit and continue" I agree that I’ve read and understood <span onClick={() => downloadCodeOfConduct()} target="_blank" className="text-white underline cursor-pointer">MTN Supplier Code of Conduct.</span>. and agree to it.
                         </p>
 
                     </div>

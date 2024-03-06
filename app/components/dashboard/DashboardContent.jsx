@@ -12,7 +12,7 @@ import useUsers from "@/hooks/useUsers";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Axios from "@/app/modules/axios";
 import Portal from "@/app/components/Portal";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   Util,
   filterPartner,
@@ -63,12 +63,18 @@ import IPCard from "@/app/components/dashboard/IPCard";
 import { ServiceConfigurationReadyAlert } from "@/app/components/dashboard/ContractComponents";
 import { PartnerMenu } from "@/app/modules/menu";
 
-export default function GetStarted({ type }) {
+import {ContractContext} from "@/app/(protected)/(partner)/dashboard/contracts/ContractProvider";
+                              
+export default function DashboardContent({ type }) {
   const {
     session: { user },
   } = useUsers();
 
-  console.log(user);
+  console.log("useContext(ContractContext)", useContext(ContractContext));
+
+  const {hasContractToSign} = useContext(ContractContext);
+  console.log("HasContractToSign", hasContractToSign);
+
   const {
     partner,
     category,
@@ -558,7 +564,7 @@ export default function GetStarted({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED ? (
+                            {userStatus == user_statuses.APPROVED && hasContractToSign ? (
                               <CallToAction
                                 style={{
                                   border: "1px solid rgba(255,255,255,.1)",

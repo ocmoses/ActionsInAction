@@ -53,7 +53,8 @@ export default function Contracts() {
     getContractDynamicData,
     setAnnexuresLink,
     checkQuestionnaireStatus,
-    selectedAllRequiredSignatories
+    selectedAllRequiredSignatories,
+    hasContractToSign
   } = useContext(ContractContext);
 
   const [contractId, setContractId] = useState(null);
@@ -172,6 +173,8 @@ export default function Contracts() {
 
     partnerGetAllContracts().then((resp) => {
       console.log("Contract ___ resp", resp);
+
+      console.log("HASCONTRACTTO sign", hasContractToSign);
       let contracts = resp.contracts;
       let pages = resp.pages;
       setContracts(contracts);

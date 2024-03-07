@@ -86,6 +86,8 @@ const useContracts = () => {
 
   const [annexuresLink, setAnnexuresLink] = useState("");
 
+  const [hasContractToSign, setHasContractToSign] = useState(false);
+
   let currentContract = null; //Is there a current contract
   const contractStatus = partner?.contract_status; //What is the user's contract status
   const userStatus = partner?.status; //What is the user's status
@@ -186,7 +188,7 @@ const useContracts = () => {
 
       setProcessing(false);
       if (result?.success) {
-        const contracts = result.data?.contracts;
+        const contracts = result.data?.contracts;       
 
         return {
           contracts,
@@ -243,6 +245,13 @@ const useContracts = () => {
       if (result?.success) {
         const contracts = result.data?.contracts;
         contracts.forEach((c) => (c.status = c.contract_status));
+
+        console.log("All CONTRACTS", contracts);
+
+        let contractToSign = contracts.find(c => c.contract_id != null && c.contract_id != "null" && 
+                        c.contract_status == "not_active" || (c.contract_status == "started" && !hasSigned));
+
+        setHasContractToSign(contractToSign != null && contractToSign != undefined);
 
         return {
           contracts,
@@ -510,6 +519,8 @@ const useContracts = () => {
 
     annexuresLink,
     setAnnexuresLink,
+
+    hasContractToSign
   };
 };
 

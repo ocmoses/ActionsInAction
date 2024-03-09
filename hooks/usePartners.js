@@ -1960,6 +1960,83 @@ const usePartners = () => {
     }
   };
 
+  const getOnboardingStat = async ({ data }) => {
+    try {
+      const response = await fetch(`${RemoteEndpoints.GET_ONBOARDING_STATUS}`, {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        body: JSON.stringify(data),
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          token: states.users.token,
+          "Content-Type": "application/json",
+          Authorization: `bearer ${states.users.token}`,
+        },
+      });
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+      if (!response) {
+        return {
+          error: "This request has no response available",
+        };
+      }
+
+      setProcessing(false);
+
+      if (response?.status === 200) {
+        const data = await response.json();
+
+        return {
+          data,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
+    }
+  };
+
+  const getOnboardingStatus = async (uuid) => {
+    try {
+      setProcessing(true);
+      const response = await axios.get(
+        `${RemoteEndpoints.GET_ONBOARDING_STATUS}`,
+        {
+          params: {
+            vas_partner_uuid: uuid,
+          },
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        setProcessing(false);
+        const result = response.data;
+
+        return { result };
+      }
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
   const getVASPartners = async () => {
     return [
       {
@@ -2288,6 +2365,7 @@ const usePartners = () => {
     getVasPartnerRequest,
     compliancePartnerCorrection,
     compliancePartnerCorrectionFileUpload,
+    getOnboardingStatus,
     getVASPartners,
     getComplianceStatus
 

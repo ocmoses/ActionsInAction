@@ -8,7 +8,7 @@ import FormErrors from "@/app/components/FormErrors";
 import useLogout from "@/hooks/useLogout";
 import useProcessing from "@/hooks/useProcessing";
 import usePartners from "@/hooks/usePartners";
-import { TailSpinPreloader } from "@/app/components/Icons";
+import { TailSpinPreloader, Loading } from "@/app/components/Icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RemoteEndPoints, {
@@ -52,7 +52,7 @@ function Login({ params }) {
   const [notVerified, setNotVerified] = useState(null);
 
   ///////afoo///////////////////////////////////////////////////////////
-  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState();
+  const [getPartnerLoginOtp, setGetPartnerLoginOtp] = useState(null);
   const [sessionItems, setSessionItems] = useState();
   /////////////////////////////////////////////////////////////////////
 
@@ -156,6 +156,11 @@ function Login({ params }) {
 
   return (
     <>
+    {getPartnerLoginOtp===null &&(
+       <div className="w-[100%] flex justify-center">
+       <Loading style="h-[400px]" />
+     </div>
+    )}
       {getPartnerLoginOtp === false && (
         <form method="POST" onSubmit={handleLogin}>
           <div className="w3-animate-opacity pb-20 pt-[15vh] w-full max-w-[407px]">

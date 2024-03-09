@@ -265,7 +265,7 @@ export const ForAggregatorSuccess = ({ action }) => {
         </div>
       </span>
       {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
-      
+
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
@@ -331,7 +331,7 @@ export const CRBTSuccess = ({ action, category }) => {
         </div>
       </span>
       {showToast && <NewSuccess message={"Email copied!"} alert={true} />}
-     
+
       <div className="flex gap-2 justify-center mt-10">
         <button
           className=" text-black bg-mtn  hover:bg-mtn-800 p-8 py-2 rounded-full"
@@ -387,7 +387,7 @@ export const ServiceNamePop = ({ action, cancel, onTextChange }) => {
       <div className="w-full">
         <TextInput
           id="servicename"
-          label="Service name"
+          label="Enter your service name"
           onChange={handleInputChange}
         />
       </div>

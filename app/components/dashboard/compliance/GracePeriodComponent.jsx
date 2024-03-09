@@ -19,15 +19,20 @@ import Success from "@/app/components/toasts/Success";
 import Link from "next/link";
 import { PageRoutes } from "@/app/modules/menu";
 import TextInput from "@/app/components/form/TextInput";
+import useAdmins from "@/hooks/useAdmins";
 
 export default function GracePeriodAlert({
-  gracePeriodStatus,
-  licenseRenewalStatus,
+  gracePeriod,
+  licenseRenewal,
   openGracePeriodForm,
   popUpLicenseRenewalForm,
+  closeAlert,
 }) {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
+
+  const [gracePeriodStatus, setGracePeriodStatus] = useState(null);
+  const [licenseRenewalStatus, setLicenseRenewalStatus] = useState(null);
   const [licenseValidityDaysLeft, setLicenseValidityDaysLeft] = useState();
   const [loading, setLoading] = useState(false);
   ////////////licenseValidityRemainder function////////////////////
@@ -46,25 +51,35 @@ export default function GracePeriodAlert({
       if (
         "license_validity_days" in licenseValidityRemainderResponse.data.data
       ) {
-        const licenseValidityDaysLeft =
+        const validityDaysLeft =
           licenseValidityRemainderResponse.data.data.license_validity_days;
-        setLicenseValidityDaysLeft(licenseValidityDaysLeft);
+        setLicenseValidityDaysLeft(validityDaysLeft);
       }
+
+      console.log("validityDaysLeft", validityDaysLeft);
       setLoading(false);
     } catch (error) {
-      setError({
-        dashboard:
-          "Something went wrong. Please check your connection and try again",
-      });
+      console.log("validityDaysLeft error");
       setLoading(false);
     }
   };
   ////////////end licenseValidityRemainder function////////////////////
 
   useEffect(() => {
+    if ("status" in gracePeriod) {
+      setGracePeriodStatus(gracePeriod.status);
+    } else {
+      setGracePeriodStatus("none");
+    }
+
+    if ("status" in licenseRenewal) {
+      setLicenseRenewalStatus(licenseRenewal.status);
+    } else {
+      setLicenseRenewalStatus("none");
+    }
+
     licenseValidityRemainder();
-  }, []);
-  
+  }, [gracePeriod, licenseRenewal]);
 
   return (
     <>
@@ -73,7 +88,7 @@ export default function GracePeriodAlert({
       ) : (
         <>
           {licenseRenewalStatus == "none" &&
-          licenseValidityDaysLeft > 0 &&
+          licenseValidityDaysLeft >= 1 &&
           licenseValidityDaysLeft <= 60 ? (
             <>
               {gracePeriodStatus != "approved" ? (
@@ -107,134 +122,19 @@ export default function GracePeriodAlert({
                                     Your licence renewal proof was rejected
                                   </span>
                                   <br />
-                                  Reason: The document you submitted doesn’t
-                                  show enough proof of progress.
+                                  Reason: {gracePeriod.reasons_for_rejection}.
                                 </p>
                               ) : (
                                 <p>
                                   <span className="text-white">
                                     Your license expires in{" "}
-                                    {licenseValidityDaysLeft} days
+                                    {licenseValidityDaysLeft} days{" "}
+                                    {licenseRenewalStatus}
                                   </span>
                                   <br />
                                   Upload your renewed license to avoid service
                                   distruption. If your renewal is still in
                                   progress, apply for an extension.
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex gap-2 flex-wrap">
-                              <button
-                                onClick={() => openGracePeriodForm()}
-                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                              >
-                                Extend Expiration
-                              </button>
-                              <button
-                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                                onClick={() => popUpLicenseRenewalForm()}
-                              >
-                                Upload new license
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
-                  <div className="p-[24px] ">
-                    <div className="flex flex-row gap-3">
-                      <div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="30"
-                          height="30"
-                          viewBox="0 0 30 30"
-                          fill="none"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
-                            fill="#24A06B"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex flex-col gap-3">
-                        <div className="text-gray-500 ">
-                          <p>
-                            <span className="text-white">
-                              Your expiry period has been extended
-                            </span>
-                            <br />
-                            We’ve reviewed your renewal proof and have extended
-                            your expiry period by 30days
-                          </p>
-                        </div>
-                        <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
-                            Got It!
-                          </button>
-                          <button
-                            className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
-                            onClick={() => popUpLicenseRenewalForm()}
-                          >
-                            Renew Your License
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              {licenseRenewalStatus != "approved" ? (
-                <>
-                  {licenseRenewalStatus == "not_approved" ||
-                  licenseRenewalStatus == "corrected" ? (
-                    <></>
-                  ) : (
-                    <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
-                      <div className="p-[24px] ">
-                        <div className="flex flex-row gap-3">
-                          <div>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="30"
-                              height="30"
-                              viewBox="0 0 30 30"
-                              fill="none"
-                            >
-                              <path
-                                d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
-                                fill="#E44A34"
-                              />
-                            </svg>
-                          </div>
-                          <div className="flex flex-col gap-3">
-                            <div className="text-gray-500 ">
-                              {licenseRenewalStatus == "rejected" ? (
-                                <p>
-                                  <span className="text-white">
-                                    Your licence renewal proof was rejected
-                                  </span>
-                                  <br />
-                                  Reason: The document you submitted doesn’t
-                                  show enough proof of your licence.
-                                </p>
-                              ) : (
-                                <p>
-                                  <span className="text-white">
-                                    Your license has expired. {licenseValidityDaysLeft}
-                                  </span>
-                                  <br />
-                                  Upload your renewed license to avoid service
-                                  distruption.
                                 </p>
                               )}
                             </div>
@@ -284,6 +184,125 @@ export default function GracePeriodAlert({
                         <div className="text-gray-500 ">
                           <p>
                             <span className="text-white">
+                              Your expiry period has been extended
+                            </span>
+                            <br />
+                            We've reviewed your renewal proof and have extended
+                            your expiry period by 30 working days
+                          </p>
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <button
+                            onClick={() => closeAlert()}
+                            className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                          >
+                            Got It!
+                          </button>
+                          <button
+                            className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                            onClick={() => popUpLicenseRenewalForm()}
+                          >
+                            Renew Your License
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {licenseRenewalStatus != "approved" ? (
+                <>
+                  {licenseRenewalStatus == "rejected" ||
+                  licenseRenewalStatus == "expired" ? (
+                    <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+                      <div className="p-[24px] ">
+                        <div className="flex flex-row gap-3">
+                          <div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="30"
+                              height="30"
+                              viewBox="0 0 30 30"
+                              fill="none"
+                            >
+                              <path
+                                d="M15 27.5C8.1125 27.5 2.5 21.8875 2.5 15C2.5 8.1125 8.1125 2.5 15 2.5C21.8875 2.5 27.5 8.1125 27.5 15C27.5 21.8875 21.8875 27.5 15 27.5ZM14.0625 20C14.0625 20.5125 14.4875 20.9375 15 20.9375C15.5125 20.9375 15.9375 20.5125 15.9375 20V13.75C15.9375 13.2375 15.5125 12.8125 15 12.8125C14.4875 12.8125 14.0625 13.2375 14.0625 13.75V20ZM16.15 9.525C16.0875 9.3625 16 9.2375 15.8875 9.1125C15.7625 9 15.625 8.9125 15.475 8.85C15.325 8.7875 15.1625 8.75 15 8.75C14.8375 8.75 14.675 8.7875 14.525 8.85C14.375 8.9125 14.2375 9 14.1125 9.1125C14 9.2375 13.9125 9.3625 13.85 9.525C13.7875 9.675 13.75 9.8375 13.75 10C13.75 10.1625 13.7875 10.325 13.85 10.475C13.9125 10.625 14 10.7625 14.1125 10.8875C14.2375 11 14.375 11.0875 14.525 11.15C14.825 11.275 15.175 11.275 15.475 11.15C15.625 11.0875 15.7625 11 15.8875 10.8875C16 10.7625 16.0875 10.625 16.15 10.475C16.2125 10.325 16.25 10.1625 16.25 10C16.25 9.8375 16.2125 9.675 16.15 9.525Z"
+                                fill="#E44A34"
+                              />
+                            </svg>
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            <div className="text-gray-500 ">
+                              {licenseRenewalStatus == "rejected" ? (
+                                <p>
+                                  <span className="text-white">
+                                    Your licence renewal proof was rejected
+                                  </span>
+                                  <br />
+                                  Reason: {licenseRenewal.reasons_for_rejection}
+                                </p>
+                              ) : (
+                                <p>
+                                  <span className="text-white">
+                                    Your license has expired.
+                                  </span>
+                                  <br />
+                                  Upload your renewed license to avoid service
+                                  distruption.
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              {licenseValidityDaysLeft > 0 && (
+                                <button
+                                  onClick={() => openGracePeriodForm()}
+                                  className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                >
+                                  Extend Expiration
+                                </button>
+                              )}
+                              <button
+                                className="h-[40px] w-[200px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                                onClick={() => popUpLicenseRenewalForm()}
+                              >
+                                Upload new license
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+                  <div className="p-[24px] ">
+                    <div className="flex flex-row gap-3">
+                      <div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 30 30"
+                          fill="none"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
+                            fill="#24A06B"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <div className="text-gray-500 ">
+                          <p>
+                            <span className="text-white">
                               Your license renewal successful
                             </span>
                             <br />
@@ -292,7 +311,10 @@ export default function GracePeriodAlert({
                           </p>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <button className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30">
+                          <button
+                            onClick={() => closeAlert()}
+                            className="h-[40px] w-[100px] text-white border border-white/10 rounded-[20px] float-left hover:border-white/30"
+                          >
                             Got It!
                           </button>
                         </div>
@@ -309,10 +331,7 @@ export default function GracePeriodAlert({
   );
 }
 
-export const GracePeriodExtensionForm = ({
-  closePopUp,
-  submitGracePeriod,
-}) => {
+export const GracePeriodExtensionForm = ({ closePopUp, submitGracePeriod }) => {
   const { partner } = usePartners();
   const states = useStoreState((state) => state);
 
@@ -578,8 +597,7 @@ export const LicenseValidityTopAlert = ({
 }) => {
   const states = useStoreState((state) => state);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [validity, setValidity] = useState(false);
-
+  const [validity, setValidity] = useState(null);
 
   ////////////CHECK_PARTNER_LICENSE_EXPIRATION function////////////////////
   const checkPartnerLicenseExpiration = async () => {
@@ -593,25 +611,34 @@ export const LicenseValidityTopAlert = ({
           },
         }
       );
+
       const response = checkPartnerLicenseExpirationResponse.data.data;
+
+      console.log(
+        "Partner Validity Expiration",
+        checkPartnerLicenseExpirationResponse
+      );
+
       const license_validity = response.license_validity;
       if (license_validity == "not_expired") {
         setValidity(false);
-      } else {
+      } else if (license_validity == "expired") {
         setValidity(true);
+      } else {
+        setValidity(null);
       }
     } catch (error) {
       setErrorMessage("Something went wrong while trying to license validity");
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     checkPartnerLicenseExpiration();
   }, [licenseValidityDaysLeft]);
 
   return (
     <>
-      {licenseValidityDaysLeft <= 60 && (
+      {licenseValidityDaysLeft <= 60 && validity != null && (
         <>
           {errorMessage && (
             <p className="text-red-500 text-sm font-italic">{errorMessage}</p>
@@ -637,9 +664,16 @@ export const LicenseValidityTopAlert = ({
                 </svg>
                 <p className="text-white flex gap-2">
                   {!validity ? (
-                    <span>
-                      Your License expires in {licenseValidityDaysLeft} days.
-                    </span>
+                    <>
+                      {licenseValidityDaysLeft > 1 ? (
+                        <span>
+                          Your License expires in {licenseValidityDaysLeft}{" "}
+                          days.
+                        </span>
+                      ) : (
+                        <span>Your License expires today.</span>
+                      )}
+                    </>
                   ) : (
                     <span>Your License has expired</span>
                   )}{" "}
@@ -659,9 +693,9 @@ export const LicenseValidityTopAlert = ({
                     <path
                       d="M3.125 10H16.875M16.875 10L11.25 4.375M16.875 10L11.25 15.625"
                       stroke="white"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </p>
@@ -1060,6 +1094,7 @@ export const GracePeriodAdminFlyOut = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1226,9 +1261,9 @@ export const GracePeriodAdminFlyOut = ({
                   <path
                     d="M9.24751 9.11244L7.39501 10.9649C6.36751 11.9924 6.36751 13.6499 7.39501 14.6774C8.42251 15.7049 10.08 15.7049 11.1075 14.6774L14.025 11.7599C16.0725 9.71244 16.0725 6.38244 14.025 4.33494C11.9775 2.28744 8.64751 2.28744 6.60001 4.33494L3.42001 7.51494C1.66501 9.26994 1.66501 12.1199 3.42001 13.8824"
                     stroke="#888888"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -1260,7 +1295,7 @@ export const GracePeriodAdminFlyOut = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setFileViewer(selectedRequest?.file_path)
+                      setFileViewer(selectedRequest?.file_path);
                     }}
                     title="Open"
                   >
@@ -1274,28 +1309,29 @@ export const GracePeriodAdminFlyOut = ({
                       <path
                         d="M6.5 5.4999L10.6 1.3999"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M11 3.4V1H8.59998"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("license_grace_period") &&                 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!declineGracePeriodDoc ? (
@@ -1364,10 +1400,10 @@ export const GracePeriodAdminFlyOut = ({
                               <form>
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>It’s doesn’t exist</p>
+                                    <p>Incomplete Information</p>
                                     <input
                                       type="radio"
-                                      value="It’s doesn’t exist"
+                                      value="Incomplete Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1377,10 +1413,10 @@ export const GracePeriodAdminFlyOut = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>I can’t see this clearly</p>
+                                    <p>Incorrect Information</p>
                                     <input
                                       type="radio"
-                                      value="I can’t see this clearly"
+                                      value="Incorrect Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1390,10 +1426,36 @@ export const GracePeriodAdminFlyOut = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>Something else entirely</p>
+                                    <p>Inconsistent Information</p>
                                     <input
                                       type="radio"
-                                      value="Something else entirely"
+                                      value="Inconsistent Information"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Invalid or Expired Document</p>
+                                    <input
+                                      type="radio"
+                                      value="Invalid or Expired Document"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Poor Quality (Contents Not Clear)</p>
+                                    <input
+                                      type="radio"
+                                      value="Poor Quality (Contents Not Clear)"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1520,11 +1582,13 @@ export const GracePeriodAdminFlyOut = ({
         </div>
       </main>
 
-
-
-            { fileViewer && 
-                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-            }
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
 
       <Success
         message={successMessage}
@@ -1540,6 +1604,7 @@ export const LicenseRenewalAdminFlyout = ({
   selectedRequest,
   successAction,
 }) => {
+  const {approvals} = useAdmins();
   const states = useStoreState((state) => state);
   const [tab, setTab] = useState({
     overview: true,
@@ -1706,9 +1771,9 @@ export const LicenseRenewalAdminFlyout = ({
                   <path
                     d="M9.24751 9.11244L7.39501 10.9649C6.36751 11.9924 6.36751 13.6499 7.39501 14.6774C8.42251 15.7049 10.08 15.7049 11.1075 14.6774L14.025 11.7599C16.0725 9.71244 16.0725 6.38244 14.025 4.33494C11.9775 2.28744 8.64751 2.28744 6.60001 4.33494L3.42001 7.51494C1.66501 9.26994 1.66501 12.1199 3.42001 13.8824"
                     stroke="#888888"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -1740,7 +1805,7 @@ export const LicenseRenewalAdminFlyout = ({
                   <button
                     className="h-[20px] w-[20px] flex justify-center items-center text-[18px]"
                     onClick={() => {
-                      setFileViewer(selectedRequest?.file_path)
+                      setFileViewer(selectedRequest?.file_path);
                     }}
                     title="Open"
                   >
@@ -1754,28 +1819,29 @@ export const LicenseRenewalAdminFlyout = ({
                       <path
                         d="M6.5 5.4999L10.6 1.3999"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M11 3.4V1H8.59998"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M5.5 1H4.5C2 1 1 2 1 4.5V7.5C1 10 2 11 4.5 11H7.5C10 11 11 10 11 7.5V6.5"
                         stroke="#E4B809"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </button>
                 </div>
-                {selectedRequest.status != "approved" &&
+                {approvals.can_approve.includes("licence_renewal") && 
+                selectedRequest.status != "approved" &&
                   selectedRequest.status != "rejected" && (
                     <>
                       {!decline ? (
@@ -1844,10 +1910,10 @@ export const LicenseRenewalAdminFlyout = ({
                               <form>
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>It’s doesn’t exist</p>
+                                    <p>Incomplete Information</p>
                                     <input
                                       type="radio"
-                                      value="It’s doesn’t exist"
+                                      value="Incomplete Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1857,10 +1923,10 @@ export const LicenseRenewalAdminFlyout = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>I can’t see this clearly</p>
+                                    <p>Incorrect Information</p>
                                     <input
                                       type="radio"
-                                      value="I can’t see this clearly"
+                                      value="Incorrect Information"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -1870,10 +1936,36 @@ export const LicenseRenewalAdminFlyout = ({
 
                                 <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
                                   <label className="flex justify-between cursor-pointer">
-                                    <p>Something else entirely</p>
+                                    <p>Inconsistent Information</p>
                                     <input
                                       type="radio"
-                                      value="Something else entirely"
+                                      value="Inconsistent Information"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Invalid or Expired Document</p>
+                                    <input
+                                      type="radio"
+                                      value="Invalid or Expired Document"
+                                      name="rejection_reason"
+                                      onChange={handleChange}
+                                      className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
+                                    />
+                                  </label>
+                                </div>
+
+                                <div className="p-2 hover:bg-white/10 cursor-pointer rounded-[3px] transition ease-in-out delay-150">
+                                  <label className="flex justify-between cursor-pointer">
+                                    <p>Poor Quality (Contents Not Clear)</p>
+                                    <input
+                                      type="radio"
+                                      value="Poor Quality (Contents Not Clear)"
                                       name="rejection_reason"
                                       onChange={handleChange}
                                       className="h-4 w-4 bg-black/40 cursor-pointer outline-none appearance-none"
@@ -2000,9 +2092,13 @@ export const LicenseRenewalAdminFlyout = ({
         </div>
       </main>
 
-      { fileViewer && 
-                <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
-            }
+      {fileViewer && (
+        <FileViewer
+          id="file_viewer"
+          link={fileViewer}
+          closeAction={() => setFileViewer(null)}
+        />
+      )}
 
       <Success
         message={successMessage}

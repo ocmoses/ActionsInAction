@@ -1,6 +1,10 @@
 import moment from "moment";
 
-export default function RejectionReasons({ title, field, approvals, onclick }) {
+export default function RejectionReasons({ title, field, approvals, onclick, categoryField }) {
+
+  console.log("APPROVALS IN REJECTION REASONS", approvals);
+  console.log("FIELD IN REJECTION REASONS", field);
+
   const fielddata = approvals?.counts?.rejections[field].sort((s1, s2) =>
     s1.created_at > s2.created_at ? -1 : s1.created_at < s2.created_at ? 1 : 0
   );
@@ -28,7 +32,10 @@ export default function RejectionReasons({ title, field, approvals, onclick }) {
             onClick={onclick}
             className="inline-flex mt-3 grow-0 cursor-pointer hover:bg-white/20 text-[12px] text-white rounded-full px-[12px] border border-white/80 py-1"
           >
-            Update {title}
+            {
+              categoryField ? (`Update ${title}`) : (`Provide ${title}`)
+            }
+            
           </div>
         </div>
       </div>

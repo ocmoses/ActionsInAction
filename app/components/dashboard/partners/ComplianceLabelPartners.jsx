@@ -16,7 +16,9 @@ import { COUNTRIES } from "@/app/modules/countries";
 import { STATES } from "@/app/modules/states";
 import Portal from "@/app/components/Portal";
 import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import {FileViewContext} from "@/app/providers/FileViewProvider";
+
 
 export default function ComplianceLabelPartners({
   field,
@@ -25,6 +27,11 @@ export default function ComplianceLabelPartners({
   category_shortcode,
   type,
 }) {
+
+  console.log("CATEGORY FIELD", category[field]);
+
+  const [provided, setProvided] = useState(true);
+
   const { previewFiles } = useApp();
   const { partner, activeApproval } = usePartners();
 
@@ -35,15 +42,21 @@ export default function ComplianceLabelPartners({
   const [ApprovalStage, setApprovalStage] = useState(null);
   const [Approvals, setApproval] = useState(null);
 
+  const {fileViewer, setFileViewer} = useContext(FileViewContext);
+
   // console.log("Approvals: ", Approvals);
 
   // console.log({ type })
   // console.log({ field })
-  console.log("category in compliance label: ",  category);
+  // console.log("category in compliance label: ",  category);
   // console.log({ category_shortcode })
 
   const updateField = () => {
     let field_value = category[field];
+
+    if(!field_value){
+      setProvided(false);
+    }
     if (category_shortcode) {
       switch (type) {
         case "shortcodes":
@@ -124,7 +137,7 @@ export default function ComplianceLabelPartners({
   
 
   return (
-    <>
+    <>    
       <div
         className={`w-full p-3 border border-[#212121] rounded-[8px] ${
           activeApproval === field && " rounded-xl bg-[#313131]"
@@ -224,7 +237,7 @@ export default function ComplianceLabelPartners({
                       {type === "file" && category[field]?.file_path && (
                         <span
                           onClick={() =>
-                            previewFiles(category[field]?.file_path ?? "")
+                            setFileViewer(category[field]?.file_path ?? NULL)
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"
                         >
@@ -245,9 +258,9 @@ export default function ComplianceLabelPartners({
                       {type === "shortcode_doc" && (
                         <span
                           onClick={() =>
-                            previewFiles(
+                            setFileViewer(
                               category_shortcode.shortcode?.shortcode_doc
-                                ?.file_path ?? ""
+                                ?.file_path ?? NULL
                             )
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"
@@ -289,9 +302,9 @@ export default function ComplianceLabelPartners({
                       {type === "pricing_doc" && (
                         <span
                           onClick={() =>
-                            previewFiles(
+                            setFileViewer(
                               category_shortcode.shortcode_pricing?.pricing_doc
-                                ?.file_path ?? ""
+                                ?.file_path ?? NULL
                             )
                           }
                           className="text-white/80 text-[14px] font-bold cursor-pointer"
@@ -357,6 +370,7 @@ export default function ComplianceLabelPartners({
                     field={field}
                     approvals={Approvals}
                     onclick={updateField}
+                    categoryField={category[field]}
                   />
                 )}
             </>
@@ -364,7 +378,7 @@ export default function ComplianceLabelPartners({
       </div>
       {showModal && (
         <Portal>
-          <ComplianceFieldEditModal setShowModal={setShowModal} data={data} />
+          <ComplianceFieldEditModal setShowModal={setShowModal} data={data} provided={provided} />
         </Portal>
       )}
     </>

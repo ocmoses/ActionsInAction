@@ -74,6 +74,7 @@ export default function LoginOtp(props) {
   useEffect(() => {
     sessionStorage.setItem("auth0Data", JSON.stringify(null));
   }, []);
+
   const acceptOtp = async (e) => {
     e.preventDefault();
     const otp = formData.otp;
@@ -93,23 +94,28 @@ export default function LoginOtp(props) {
             },
           }
         );
-        //console.log("The response on Auth0 Authentication is ",response);
+       // console.log("The response on Auth0 Authentication is ",response);
 
         if ("access_token" in response.data.authZero) {
           sessionStorage.setItem(
             "auth0Data",
             JSON.stringify(response.data.authZero)
           );
+          sessionStorage.setItem(
+            "partnersData",
+            JSON.stringify(response.data.data.partners)
+          );
           //setErrorMessage("Correct OTP");
           props.logInWithAuthZero();
         } else {
-          setErrorMessage(response.data.authZero.error_description);
+          console.log('accept OTP Response 1', response)
+          setErrorMessage("Invalid OTP.");
           setSendAction(false);
         }
       }
     } catch (err) {
+      setErrorMessage("Network Error.");
       setSendAction(false);
-      console.log(setErrorMessage, err);
     }
   };
 

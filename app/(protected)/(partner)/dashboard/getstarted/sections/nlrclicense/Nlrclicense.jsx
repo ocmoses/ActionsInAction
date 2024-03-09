@@ -7,6 +7,7 @@ import DatePicker from "@/app/components/form/DatePicker";
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
 import RegisterStepHeader from "@/app/components/RegisterStepHeader";
 import ButtonNext from "@/app/components/form/ButtonNext";
+import SkipButton from "@/app/components/form/SkipButton";
 import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import usePartners from "@/hooks/usePartners";
@@ -33,6 +34,7 @@ function NlrcLicense() {
     registerPartner,
     updatePartner,
     checkUpdateStatus,
+    skipStage,
     nextStage,
   } = usePartners();
   const { min_start_date, max_end_date, yesterday, tomorrow } =
@@ -151,6 +153,7 @@ function NlrcLicense() {
     // if (NextStage === "review") return moveToNextForm(["review", true])
     // return moveToNextForm([NextStage])
   };
+
   const handleFormChange = (e) => {
     removeError(e.target.id);
     setData((prevState) => ({
@@ -271,7 +274,7 @@ function NlrcLicense() {
             {/* {processing ? (
               <TailSpinPreloader width={40} height={40} fill="#efb703" />
             ) : ( */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 justify-between">
                 {/* <ButtonPrev
                   onClick={() => moveToPrevForm("nlrclicense")}
                   type="button"
@@ -283,6 +286,16 @@ function NlrcLicense() {
                   type="submit"
                   label={checkUpdateStatus("nlrclicense") ? "Update" : "Next"}
                 />
+                <SkipButton 
+                  action={() => skipStage({onboarding_stage: "nlrclicense",
+                                            partner_uuid: partner?.uuid,
+                                            category_uuid: category.category_uuid}) ? 
+                  
+                                          setForm("shortcode") : 
+                                          
+                                          {}
+                  }
+                  />
               </div>
             {/* )} */}
           </div>

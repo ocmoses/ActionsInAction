@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useEffect } from 'react';
-
+import { dsmUrl } from "@/app/modules/constants";
 export default function RegistrationForm() {
   const auth0Data = JSON.parse(sessionStorage.getItem("auth0Data"));
   const submitFormOnLoad = () => {
@@ -15,9 +15,10 @@ export default function RegistrationForm() {
   return (
     <>
     <div className='fixed w-[100%] h-[100%] bg-white z-[5000] top-0 left-0'></div>
+    
     <form
       id="submitService"
-      action="https://smdev.mtn.com.ng/DSDP/PartnerPortalLoginApi"
+      action={dsmUrl}
       method="POST"
       target='dsmiframe'
     >

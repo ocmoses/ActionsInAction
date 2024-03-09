@@ -1,56 +1,26 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
-import { TailSpinPreloader, CompanyLogo, DialIcon } from "@/app/components/Icons";
-import useErrors from "@/hooks/useErrors";
-import useProcessing from "@/hooks/useProcessing";
+import { useState, useEffect } from "react";
+
 import usePartners from "@/hooks/usePartners";
 import AggregatorIPPage from "./AggregatorIPPage";
 import NonAggregatorIPPage from "./NonAggregatorIPPage";
 
-
-
-export default function IPPage() {
-
-    const {
-        partner,
-        partnerCategories,
-    } = usePartners();
-
-  // console.log("Partner", partner);
+export default function IPPage({ params }) {
+  const { partner } = usePartners();
 
   const [isAggregator, setIsAggregator] = useState(false);
 
   useEffect(() => {
-
-    for (const category in partnerCategories){
-        if(category.category_name == "VAS Aggregator"){
-            setIsAggregator(true);
-            break;
-        }
+    if (partner.aggregator == "Yes") {
+      setIsAggregator(true);
     }
-
   }, []);
-   
-    
+
   return (
-
     <>
+      {isAggregator && <AggregatorIPPage params={params} />}
 
-        {
-            isAggregator && 
-            <AggregatorIPPage />
-        }
-
-        {
-            !isAggregator && 
-            <NonAggregatorIPPage />
-        }
-
+      {!isAggregator && <NonAggregatorIPPage />}
     </>
-
-    
   );
-
-
-
 }

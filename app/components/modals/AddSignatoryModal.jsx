@@ -115,6 +115,8 @@ export default function AddSignatoryModal() {
           
         });
 
+        formData.append("user_mode", "contract");
+
         if (creatingPartner) return;
         setCreatingPartner(true);
         let create_partner_response = await createPartner(formData);

@@ -5,7 +5,6 @@ import useErrors from "@/hooks/useErrors";
 import FormErrors from "@/app/components/FormErrors";
 import usePartners from "@/hooks/usePartners";
 import { CircleOkCheckmarkIcon } from "@/app/components/Icons";
-import { TailSpinPreloader } from "@/app/components/Icons";
 import { useEffect, useState } from "react";
 import { Util } from "@/app/modules/utilities";
 
@@ -43,12 +42,6 @@ export default function CategoryDetail({
         setNewCategory(newcategory);
         updatePartner(result?.data?.partner);
         newcategory.profile_stage.category = "1";
-        // setCurrentCategory(newcategory, partner)
-        // const { nextstage: NextStage } = nextStage(newcategory, partner)
-        // console.log({ NextStage })
-        // setForm(NextStage)
-        // setIsOnboarding(true)
-        // return setIsOpen(false)
       }
     }
     setError({
@@ -57,11 +50,11 @@ export default function CategoryDetail({
     });
   };
   useEffect(() => {
-   setProcessing(false);
+    setProcessing(false);
     if (!Util.isEmpty(new_category)) {
       setCurrentCategory(new_category, partner);
       const { nextstage: NextStage } = nextStage(new_category, partner);
-      // console.log({ NextStage })
+
       setForm(NextStage);
       setIsOnboarding(true);
       return setIsOpen(false);
@@ -100,7 +93,6 @@ export default function CategoryDetail({
               <h3 className="text-white text-lg font-bold">Get started</h3>
               <p className="text-md text-[#999999]">
                 For regulatory compliance, we'll require the following
-                For regulatory compliance, we'll require the following
                 informations from our{" "}
                 {category.category_code === "AGR" ? (
                   <>aggregators</>
@@ -134,14 +126,16 @@ export default function CategoryDetail({
             </div>
           </div>
           <div className="">
-            {processing ? (
-              <TailSpinPreloader width={40} height={40} fill="#efb703" />
-            ) : (
+            {
+              // processing ? (
+              //   <TailSpinPreloader width={40} height={40} fill="#efb703" />
+              // ) : (
               <Button
                 onClick={() => selectCategory(category)}
                 label={`Get started`}
               />
-            )}
+              // )
+            }
           </div>
         </div>
       </div>

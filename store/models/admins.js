@@ -22,6 +22,7 @@ const admins = {
   partner: null,
   Stages: null,
   activeStage: null,
+  approvals: null,
 
   clear: action((state) => {
     state.admins = null;
@@ -35,6 +36,7 @@ const admins = {
     state.partner = null;
     state.Stages = null;
     state.activeStage = null;
+    state.approvals = null;
   }),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
   isLoggedIn: computed((state) => state.session?.status === "authenticated"),
@@ -46,6 +48,9 @@ const admins = {
   }),
   setApproving: action((state, status) => {
     state.approving = status ?? false;
+  }),
+  setApprovals: action((state, approvals) => {
+    state.approvals = approvals ?? null;
   }),
   setToken: action((state, token) => {
     state.token = token;

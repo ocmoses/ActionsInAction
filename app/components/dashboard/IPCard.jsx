@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import usePartner from "@/hooks/usePartners";
+import usePartners from "@/hooks/usePartners";
 import { useEffect, useState } from "react";
 import useErrors from "@/hooks/useErrors";
 import useUsers from "@/hooks/useUsers";
@@ -9,9 +9,11 @@ export default function IPCard(){
 
     const router = useRouter();
 
-    const {getIPProgressStatus} = usePartner();
+    const {getIPProgressStatus, partner} = usePartners();
 
-    const [percentage, setPercentage] = useState(0);
+    console.log("PARTNER IN IP CARD", partner);
+
+    const [percentage, setPercentage] = useState(100);
 
     const [{ errors, setError, clearErrors }] = useErrors(null);
 
@@ -33,7 +35,7 @@ export default function IPCard(){
 
     return (
         <>{
-            percentage < 100 && user.role == "superAdmin" &&
+            percentage < 100 && user?.role == "superAdmin" && partner?.categories.length > 0 && 
             <div className="w-6xl rounded-xl border-1 border-white/20 mt-8 bg-white/10">
                 <div className="flex justify-between p-6 border-b border-white/20">
                     <span className="text-white/80 text-md">Things to do</span>

@@ -88,7 +88,10 @@ export default function Reports() {
             },
           }
         );
-        console.log("partnerListResponse.data.data", partnerListResponse.data.data)
+        console.log(
+          "partnerListResponse.data.data",
+          partnerListResponse.data.data
+        );
         setSearchedData(partnerListResponse.data.data);
         setLoadingPartnerList(false);
       } catch (error) {
@@ -567,7 +570,6 @@ export default function Reports() {
                     />
                   </div>
 
-
                   <button
                     className="h-[35px] w-[130px] py-[8px] px-[15px] items-center  text-white text-[12px] rounded-full hover:bg-gray-500 cursor-pointer border-1 border-white/10"
                     onClick={() => setDownloadModal(!downloadModal)}
@@ -576,13 +578,13 @@ export default function Reports() {
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="currentColor"
                       className="w-[14px]  inline-block mr-1"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
                       />
                     </svg>
@@ -619,8 +621,11 @@ export default function Reports() {
                 </tr>
 
                 {filteredData.slice(0, 5).map((partner, index) => (
-                  <tr className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150">
-                    <td key={index}>
+                  <tr
+                    className="border-b border-b-white/40 text-11 hover:bg-white/5 cursor-pointer transition ease-in-out delay-150"
+                    key={partner.uuid}
+                  >
+                    <td>
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -641,7 +646,7 @@ export default function Reports() {
                     </td>
                     <td>
                       <div className="flex flex-row">
-                      {partner.category
+                        {partner.category
                           .split(",")
                           .map((name) => name.trim())
                           .map((name, index) => (
@@ -652,36 +657,8 @@ export default function Reports() {
                             >
                               <span>{getPartnerInitials(name)} </span>
                             </div>
-                          ))} 
-                     
-                      
-                        
- {/*
-                          {partner.category.map((name, index) => (
-                          <div
-                            key={index}
-                            title={name}
-                            className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px] ml-[-8px]"
-                          >
-                            <span>{getPartnerInitials(name)} </span>
-                          </div>
-                        ))}  
-                         
-                     <div
-                          title={partner.category}
-                          className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#6DCCB1] text-[#030303] text-[12px]"
-                        >
-                          <span>{getPartnerInitials(partner.category)}</span>
-                        </div>
+                          ))}
 
-                       
-                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#79AAD9] text-[#030303] text-[12px] ml-[-8px]">
-                          <span>R</span>
-                        </div>
-                        <div className="flex justify-center items-center rounded-full w-8 h-8 border-1 border-[#030303] bg-[#CCC] text-[#030303] text-[12px] ml-[-8px]">
-                          <span>+1</span>
-                        </div>
-                        */}
                       </div>
                     </td>
                     <td>
@@ -730,13 +707,13 @@ export default function Reports() {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="currentColor"
                         className="w-10 h-10 hover:bg-gray-700 hover:rounded-full p-2"
                       >
                         <path
                           strokeLinecap="round"
-                          stroke-linejoin="round"
+                          strokeLinejoin="round"
                           d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
                         />
                       </svg>
@@ -762,7 +739,7 @@ export default function Reports() {
                 <td> Status </td>
               </tr>
               {pagedData.map((partner, index) => (
-                <tr key={index}>
+                <tr key={partner.uuid}>
                   <td> {partner.company} </td>
                   <td> {partner.email} </td>
                   <td> {partner.category} </td>

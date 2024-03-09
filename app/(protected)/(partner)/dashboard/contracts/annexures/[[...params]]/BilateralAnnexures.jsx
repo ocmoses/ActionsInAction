@@ -12,6 +12,7 @@ import moment from "moment";
 import Success from "@/app/components/toasts/Success";
 import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
+import AnnexureH from "../AnnexureH";
 
 export default function BilateralAnnexures({params}){
     
@@ -39,15 +40,61 @@ export default function BilateralAnnexures({params}){
     const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: contract_id, 
 
                                         annexure_c: "", 
-
                                         annexure_e_four: "", annexure_e_five_a: "",
                                         annexure_e_five_b: "", annexure_e_five_c: "", 
                                         annexure_e_five_d: "", annexure_e_five_e: "", 
                                         annexure_e_five_f: "", annexure_e_five_g: "",
                                         annexure_e_five_h: "", annexure_e_five_i: "",
                                         annexure_e_six_a: "", annexure_e_six_b: "",
-                                        annexure_e_six_c: "", annexure_e_six_d: ""                                    
+                                        annexure_e_six_c: "", annexure_e_six_d: "",
+                                        annexure_h: "", annexure_h_ii: "" , annexure_h_iii: "" ,
+                                        annexure_h_iv: "",  annexure_h_v: "", annexure_h_vi: "" ,
+                                        annexure_h_vii: "", annexure_h_viii: "", annexure_h_ix: "",
+                                        annexure_h_x: "", annexure_h_xi: "", annexure_h_xii: "",
+                                        annexure_h_xiii: "", annexure_h_xiv: "", annexure_h_xv: "",
+                                        annexure_h_xvi: "", annexure_h_xvii: "", annexure_h_xviii: "",
+                                        annexure_h_xix: "", annexure_h_xx: "", annexure_h_xxi: "",
+                                        annexure_h_xxii: "", annexure_h_xxiii: ""                                
                                     });
+
+    const numbersMap = {
+        a: "A",
+        b: "B",
+        c: "C",
+        d: "D",
+        e: "E",
+        f: "F",
+        g: "G",
+        h: "H",
+        i: "I",
+        ii: ".2",
+        iii: ".3",
+        iv: ".4",
+        v: ".5",
+        vi: ".6",
+        vii: ".7",
+        viii: ".8",
+        ix: ".9",
+        x: ".10",
+        xi: ".11",
+        xii: ".12",
+        xiii: ".13",
+        xiv: ".14",
+        xv: ".15",
+        xvi: ".16",
+        xvii: ".17",
+        xviii: ".18",
+        xix: ".19",
+        xx: ".20",
+        xxi: ".21",
+        xxii: ".22",
+        xxiii: ".23",
+        four: ".4",
+        five: ".5",
+        six: ".6",
+    }
+
+    const [checkindividualFields, setCheckindividualFields] = useState(true);
 
     const handleOnChange = (e, field) => {
         clearErrors();
@@ -59,7 +106,9 @@ export default function BilateralAnnexures({params}){
 
     useEffect(() => {
         get_dynamic_content(contract_id).then(resp => {
+            console.log("Dynamic Details", dynamicData);
             console.log("Dynamic shortcodes", dynamicData?.dynamic_details?.shortcodes[0]?.shortcodes);
+                       
         });
     }, []);
 
@@ -118,16 +167,35 @@ export default function BilateralAnnexures({params}){
       
     }, []);
 
+    useEffect(() => {
+        const href = location.href;
+        if(href.includes("#")){
+            let urlArray = href.split("#");
+
+            if(urlArray.length == 2){
+                const id = urlArray[1];
+
+                const elem = document.querySelector("#" + id);
+
+                elem.scrollIntoView();
+            }
+        }
+
+    }, []);
+
     
 
     const submitResponses = async () => {
-
-        if(user.role != 'superAdmin'){
-            router.push(`/dashboard/contracts/execution/${contract_id}`);
-        }
+        
         if(!validateResponses()){
             return;
         }
+
+        if(user.role == 'witness' || !checkindividualFields){
+            router.push(`/dashboard/contracts/execution/${contract_id}`);
+            return;
+        }
+       
 
         clearErrors();
 
@@ -138,6 +206,7 @@ export default function BilateralAnnexures({params}){
         if(response.error){
             setError({error: response.error});
         }else{
+            setSuccessDisplay(true);
             router.push(`/dashboard/contracts/execution/${contract_id}`);
         }
 
@@ -146,14 +215,37 @@ export default function BilateralAnnexures({params}){
 
     const validateResponses = () => {
 
-
+        // console.log("Dynamic at submit", dynamicData); 
+        
+        console.log("TO CHECK OR NOT TO CHECK", checkindividualFields);
+        
+        if(!checkindividualFields){
+            return true;
+        }
+            
         for(let i in data){
-            if(data[i].trim() == ""){
-                setError({error: i.split("_").join(" ") + " has no response"});
+            if(!data[i] || data[i].trim() == ""){
+                let iArray = i.split("_");
+
+                let result = "";
+
+                for (let index = 0; index < iArray.length; index++) {
+                    if(index == 0){
+                        result += capitalizeFirst(iArray[index]);
+                    }else if(index == 1){
+                        result += " " + numbersMap[iArray[index]];
+                    }else if(index == 2){
+                        result += numbersMap[iArray[index]];
+                    }else if(index == 3){
+                        result += numbersMap[iArray[index]];
+                    }                                            
+                }
+
+                setError({error: result + " has no response"});
                 return false;
             }
         }
-
+        
         return true;
     }
 
@@ -167,7 +259,62 @@ export default function BilateralAnnexures({params}){
             setError({ error: dynamic_content_response.error })
         } else {
             // console.log('dynamic_content_response', dynamic_content_response);
-            setDynamicData(dynamic_content_response.data);                
+            setDynamicData(dynamic_content_response.data);
+
+            setData({...data, 
+                        annexure_c: dynamicData?.dynamic_details?.annexures?.annexure_c ?? "", 
+                        annexure_e_four: dynamicData?.dynamic_details?.annexures?.annexure_e_four ?? "", 
+                        annexure_e_five_a: dynamicData?.dynamic_details?.annexures?.annexure_e_five_a ?? "",
+                        annexure_e_five_b: dynamicData?.dynamic_details?.annexures?.annexure_e_five_b ?? "", 
+                        annexure_e_five_c: dynamicData?.dynamic_details?.annexures?.annexure_e_five_c ?? "", 
+                        annexure_e_five_d: dynamicData?.dynamic_details?.annexures?.annexure_e_five_d ?? "", 
+                        annexure_e_five_e: dynamicData?.dynamic_details?.annexures?.annexure_e_five_e ?? "", 
+                        annexure_e_five_f: dynamicData?.dynamic_details?.annexures?.annexure_e_five_f ?? "", 
+                        annexure_e_five_g: dynamicData?.dynamic_details?.annexures?.annexure_e_five_g ?? "",
+                        annexure_e_five_h: dynamicData?.dynamic_details?.annexures?.annexure_e_five_h ?? "", 
+                        annexure_e_five_i: dynamicData?.dynamic_details?.annexures?.annexure_e_five_i ?? "",
+                        annexure_e_six_a: dynamicData?.dynamic_details?.annexures?.annexure_e_six_a ?? "", 
+                        annexure_e_six_b: dynamicData?.dynamic_details?.annexures?.annexure_e_six_b ?? "",
+                        annexure_e_six_c: dynamicData?.dynamic_details?.annexures?.annexure_e_six_c ?? "", 
+                        annexure_e_six_d: dynamicData?.dynamic_details?.annexures?.annexure_e_six_d ?? "",
+                        annexure_h: dynamicData?.dynamic_details?.annexures?.annexure_h ?? "", 
+                        annexure_h_ii: dynamicData?.dynamic_details?.annexures?.annexure_h_ii ?? "" , 
+                        annexure_h_iii: dynamicData?.dynamic_details?.annexures?.annexure_h_iii ?? "" ,
+                        annexure_h_iv: dynamicData?.dynamic_details?.annexures?.annexure_h_iv ?? "",  
+                        annexure_h_v: dynamicData?.dynamic_details?.annexures?.annexure_h_v ?? "", 
+                        annexure_h_vi: dynamicData?.dynamic_details?.annexures?.annexure_h_vi ?? "" ,
+                        annexure_h_vii: dynamicData?.dynamic_details?.annexures?.annexure_h_vii ?? "",                     
+                        annexure_h_viii: dynamicData?.dynamic_details?.annexures?.annexure_h_viii ?? "", 
+                        annexure_h_ix: dynamicData?.dynamic_details?.annexures?.annexure_h_ix ?? "",
+                        annexure_h_x: dynamicData?.dynamic_details?.annexures?.annexure_h_x ?? "", 
+                        annexure_h_xi: dynamicData?.dynamic_details?.annexures?.annexure_h_xi ?? "", 
+                        annexure_h_xii: dynamicData?.dynamic_details?.annexures?.annexure_h_xii ?? "",
+                        annexure_h_xiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xiii ?? "", 
+                        annexure_h_xiv: dynamicData?.dynamic_details?.annexures?.annexure_h_xiv ?? "", 
+                        annexure_h_xv: dynamicData?.dynamic_details?.annexures?.annexure_h_xv ?? "",
+                        annexure_h_xvi: dynamicData?.dynamic_details?.annexures?.annexure_h_xvi ?? "", 
+                        annexure_h_xvii: dynamicData?.dynamic_details?.annexures?.annexure_h_xvii ?? "", 
+                        annexure_h_xviii: dynamicData?.dynamic_details?.annexures?.annexure_h_xviii ?? "",
+                        annexure_h_xix: dynamicData?.dynamic_details?.annexures?.annexure_h_xix ?? "", 
+                        annexure_h_xx: dynamicData?.dynamic_details?.annexures?.annexure_h_xx ?? "", 
+                        annexure_h_xxi: dynamicData?.dynamic_details?.annexures?.annexure_h_xxi ?? "",
+                        annexure_h_xxii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxii ?? "", 
+                        annexure_h_xxiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxiii ?? ""
+                });
+
+            for(const field in dynamic_content_response.data?.dynamic_details?.annexures){
+                console.log("field", field);
+    
+                if(dynamic_content_response.data?.dynamic_details?.annexures[field] == "" || 
+                    dynamic_content_response.data?.dynamic_details?.annexures[field] == null ||
+                    dynamic_content_response.data?.dynamic_details?.annexures[field] == undefined){
+                    setCheckindividualFields(true);
+                    break;                    
+                }else{
+                    setCheckindividualFields(false);
+                    break;
+                }
+            }
         }
     }
     
@@ -246,15 +393,16 @@ export default function BilateralAnnexures({params}){
                                     <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
                                 </div>
                                 <div className="flex border border-white/20">
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">dOlly Media Services</span>
-                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">30%</span>
-                                    <span className="text-white/60 w-1/3 p-2">70%</span>
+                                    
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types[0]}</span>
+                                    <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
+                                    <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
                                 </div>
-                                <div className="flex border border-white/20">
+                                {/* <div className="flex border border-white/20">
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">Gold Standard VAS services</span>
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">40%</span>
                                     <span className="text-white/60 w-1/3 p-2">60%</span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 
@@ -359,7 +507,7 @@ export default function BilateralAnnexures({params}){
                                             <div className="flex border border-white/20">
                                                 <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{index + 1}</span>
                                                 <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{shortcode}</span>
-                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">-</span>
+                                                <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.purpose_service_usage}</span>
                                                 <span className="text-white/60 w-1/3 p-2">SMS</span>
                                             </div>
                                         )
@@ -482,14 +630,25 @@ export default function BilateralAnnexures({params}){
                         </div>
 
                         <div className="absolute bottom-0 left-0 mt-8 w-full flex space-x-2 bg-black/40 py-4 px-8">
-
-                            <span className="text-white w-[50px]">
-                                <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
-                                        type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
-                            </span>
-                            <span className="text-white/60 flex-1">
-                                By clicking this checkbox, I agree to MTN’s <span className="text-white">Electronic Record and Signature Disclosure</span>
-                            </span>                                        
+                            {user.role != "witness" &&
+                                <>
+                                    <span className="text-white w-[50px]">
+                                    {
+                                        dynamicData?.dynamic_details?.annexures["annexure_c"] == 'yes' ? 
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-6 h-6">
+                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                                            </svg> :
+                                            <input onChange={(e) => e.target.checked ? setData({...data, annexure_c: "yes"}) : setData({...data, annexure_c: ""})} 
+                                                type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
+                                    }
+                                        
+                                    </span>
+                                    <span className="text-white/60 flex-1">
+                                        By clicking this checkbox, I agree to MTN’s  <span className="text-white">Electronic Record and Signature Disclosure</span>
+                                    </span>   
+                                </>
+                            }
+                                                                 
                         </div>
 
                         
@@ -779,8 +938,15 @@ export default function BilateralAnnexures({params}){
                                     The Service Provider is required to integrate their relevant software, applications, equipment and products into the MTN security infrastructure as per applicable best industry practice at no additional cost. This includes identity management, authentication, authorization, compliance assessment and log monitoring integration points.
                                     </span>
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                                                 
+                                        {
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_four || user.role == "witness" ? 
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_four : 
+                                            (<>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_four")} name="annexure_e_four" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>
+                                            </>)
+                                        }
+                                                                                                         
                                     </div>
                                 </div>
                             </div>
@@ -819,8 +985,16 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                          
+                                        {
+                                            
+                                                dynamicData?.dynamic_details?.annexures?.annexure_e_five_a || user.role == "witness" ? 
+                                                dynamicData?.dynamic_details?.annexures?.annexure_e_five_a : 
+                                                (<>
+                                                    <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                    <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_a")} name="annexure_e_five_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                                </>)
+                                        }
+                                                               
                                     </div>
                                 </div>
 
@@ -833,8 +1007,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_b || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_b : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_b")} name="annexure_e_five_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>        
+                                        </>)
+                                    }                       
                                     </div>
                                 </div>
 
@@ -847,8 +1027,15 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                         
+                                        {
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_five_c || user.role == "witness" ? 
+                                            dynamicData?.dynamic_details?.annexures?.annexure_e_five_c : 
+                                            (<>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                                <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_c")} name="annexure_e_five_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>          
+                                            </>)
+                                        }
+                                          
                                     </div>
                                 </div>
 
@@ -861,8 +1048,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_d || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_d : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_d")} name="annexure_e_five_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -875,8 +1068,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_e || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_e : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_e")} name="annexure_e_five_e" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                                
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -889,8 +1088,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_f || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_f : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_f")} name="annexure_e_five_f" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                            
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -903,8 +1108,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_g || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_g : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_g")} name="annexure_e_five_g" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -917,8 +1128,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_h || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_h : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_h")} name="annexure_e_five_h" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                              
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -930,8 +1147,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
                                     
                                     <div className="text-white w-1/5 border-r border-white/40 p-2 flex space-x-2 justify-center items-center">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_i || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_five_i : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_five_i")} name="annexure_e_five_i" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                               
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -987,8 +1210,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_a || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_a : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_a")} name="annexure_e_six_a" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1013,8 +1242,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                        
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_b || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_b : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_b")} name="annexure_e_six_b" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>                        
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1039,8 +1274,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_c || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_c : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_c")} name="annexure_e_six_c" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -1065,8 +1306,14 @@ export default function BilateralAnnexures({params}){
                                     </div>
 
                                     <div className="text-white w-1/4 border-r border-white/40 p-2 flex justify-center items-center space-x-2">
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
-                                        <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                    {
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_d || user.role == "witness" ? 
+                                        dynamicData?.dynamic_details?.annexures?.annexure_e_six_d : 
+                                        (<>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="yes" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> Yes</label>
+                                            <label><input onChange={(e) => handleOnChange(e, "annexure_e_six_d")} name="annexure_e_six_d" type="radio" value="no" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" /> No</label>   
+                                        </>)
+                                    }
                                     </div>
                                 </div>
 
@@ -2326,6 +2573,445 @@ export default function BilateralAnnexures({params}){
                             </span>
                                 
                         </div>
+
+                        <div className="mt-12 w-full flex space-x-2">
+
+                            <span className="text-white  flex-1">
+                            ANNEXURE A TO THE DATA PROCESSING SCHEDULE– DETAILS OF THE PROCESSING
+                            </span>
+                                    
+                        </div>
+
+                        <p className="text-lg text-white/60 w-full mb-4">
+                            This Annexure forms part of this Data Processing Schedule and must be completed and initialed by the parties.
+                        </p>
+
+                        <div className="border-1 border-white/20 rounded-md w-full">
+                            <div className="w-full">
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Name of Controller</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">MTN Nigeria</span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Name of Processor</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Categories of Data Subjects whose Personal Data is Processed by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Categories of Personal Data Processed by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Sensitive Personal Data Processed (if applicable) by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Categories of Children’s Personal Data Processed by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Nature of the Processing by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Purpose(s) for which the Personal Data is Processed by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Duration of Processing by the Processor in terms of the Agreement</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">For Sub-Processors engaged by the Processor in terms of the Agreement (specify the subject matter, nature and duration of the Processing by Sub-Processor)</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2"></span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Processor’s Local Data Protection Officer</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">Name:
+                                        <br />Email address:
+                                        <br />Mobile Number:
+                                        <br />Work Telephone Number:
+                                    </span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Controller’s Local Data Protection Officer</span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">Name: Oluwatoyin Araromi
+                                        <br />Email address: DPONigeria@mtn.com
+                                    </span>                                
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2 font-bpld">Details and competent Supervisory Authorities applicable to the Processing Activities </span>
+                                    <span className="text-white w-1/2 border-r border-white/40 p-2">Name: <strong>Nigerian Data Protection Bureau</strong>
+                                        <br />Country: Nigeria	
+                                        <br />Contact Details:
+                                    </span>                                
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div className="mt-12 w-full flex space-x-2">
+
+                            <span className="text-white  flex-1">
+                            ANNEXURE B TO THE DATA PROCESSING SCHEDULE– MINIMUM TECHNICAL AND ORGANISATIONAL MEASURES
+                            </span>
+                                    
+                        </div>
+
+                        <p className="text-lg text-white/60 w-full mb-4">
+                            The Processor agrees and warrants that it has implemented and shall maintain the following minimum Technical and Organisational Security Measures to ensure the security of Personal Data:
+                        </p>
+
+                        <div className="border-1 border-white/20 rounded-md w-full">
+                            <div className="w-full">
+                                <div className="flex border border-white/20 text-center align-center">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">No.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 text-xs">Implemented at Effective Date</span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 text-xs">To be implemented by date specified </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 text-xs">Not required to be implemented, unless agreed otherwise </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">1.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures of Pseudonymisation and/or encryption of personal data at rest (during storage) and in transit. Provided that, in case of Pseudonymisation, the additional information for attributing the Personal Data to a specific Data Subject shall, where possible, remain under the exclusive control of the Controller.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">2.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring ongoing confidentiality, integrity, availability and resilience of processing systems and services</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">3.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring the ability to restore the availability and access to personal data in a timely manner in the event of a physical or technical incident</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">4.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Processes for regularly testing, assessing and evaluating the effectiveness of technical and organisational measures in order to ensure the security of the processing</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_iv" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">5.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for logical access control to ensure that only authorised individuals have access to business applications, systems, networks and computing devices that contain personal data</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_v" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+                                
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">6.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring physical access controls are in place and physical security of locations at which personal data are processed </span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vi" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">7.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to regularly backup and perform tests to restore personal data</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_vii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">8.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to perform risk assessments and security assessments to identify vulnerabilities and remediate those vulnerabilities</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_viii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">9.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to perform and review logging on systems that process personal information to ensure event logs are monitored, reviewed and exceptions/anomalies are reported and addressed</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_ix" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">10.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to analyse, detect and prevent threats on systems that process Personal Data with the use of intrusion prevention/detection technologies</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_x" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">11.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for detecting, identifying, communicating/notifying, documenting, analysing and responding to incidents</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xi" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">12.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to keep track of incidents via an incident register where all incidents are reported</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">13.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to ensure effective malware protection software is installed, configured, and maintained</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">14.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures to apply information leakage protection mechanisms to systems and networks that process, store or transmit personal data</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xiv" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">15.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring that effective IT security governance and management processes are maintained</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xv" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">16.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Maintaining certification/assurance of processes and products to confirm that minimum controls are effectively designed and implemented</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvi" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">17.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">If transfers to Sub-Processors are performed, specific Technical and Organisational Measures to be taken by the Sub-Processors are defined and reviewed</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xvii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">18.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Description of the specific Technical and Organisational Measures to be taken by the Processor to be able to provide assistance to the Controller in the event of an incident involving personal data.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xviii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">19.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring system configuration, including default configuration.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xix" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">20.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for certification / assurance of processes and products.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xx" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">21.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring data minimization, data quality, limited data retention.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxi" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">22.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for ensuring accountability for data privacy and information security.</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                                <div className="flex border border-white/20">
+                                    <span className="text-white w-1/12 border-r border-white/40 p-2 font-bpld">23.</span>
+                                    <span className="text-white w-5/12 border-r border-white/40 p-2">Measures for allowing effective data destruction and data erasure</span>    
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2">                                        
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="a" action={handleOnChange} />                                        
+                                    </span>
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="b" action={handleOnChange} />
+                                    </span>                                
+                                    <span className="text-white w-2/12 border-r border-white/40 p-2 ">
+                                        <AnnexureH dynamicData={dynamicData} name="annexure_h_xxiii" value="c" action={handleOnChange} />
+                                    </span>                               
+                                </div>
+
+                            </div>
+                        </div>
                         
 
                         
@@ -2344,16 +3030,17 @@ export default function BilateralAnnexures({params}){
 
                         }{
                             !submitting && 
-                                <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitResponses()}>Review & Submit</button>
+                                <button className=" text-black font-bold bg-mtn w-200 hover:bg-mtn-800 p-8 py-4 rounded-full" onClick={() => submitResponses()}>{checkindividualFields ? "Review & Submit" : "Next" }</button>
 
                         }
                         
                     </div>
 
-                    <Success message="Annexures signed successfully" visible={successDisplay} action={() => setTimeout(() => {}, 3000)} />      
+                    <Success message="Annexures signed successfully" visible={successDisplay} action={() => setTimeout(() => {router.push("/dashboard/contracts/execution/" + contract_id)}, 2000)} />      
 
                 </div>
 
-           </>
-}
+        </>
 
+    
+}

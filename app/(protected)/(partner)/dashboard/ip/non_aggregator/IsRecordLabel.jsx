@@ -52,7 +52,7 @@ export default function IsRecordLabel(){
     
     const [files, setFiles] = useState({
                                         authorization_letter: "",
-                                        authorisation_video: "",                                         
+                                        authorization_video: "",                                         
                                         agreement_letter_btw_content_and_vas_partner: "",
                                         agreement_letter_btw_record_label_and_vas_partner: "",
                                         agreement_letter_btw_content_and_music_composer: "",
@@ -121,17 +121,20 @@ export default function IsRecordLabel(){
             setSubmitting(false);
             
             if (result?.success) {
-                
-                const message = result.data?.message;
-                
-                console.log('Submit all proofs message', message);
 
                 setSuccessMessage("Submitted successfully");
                 setSuccessToast(true);
+                
+                // const message = result.data?.message;
+                
+                // console.log('Submit all proofs message', message);
+
+                // setSuccessMessage("Submitted successfully");
+                // setSuccessToast(true);
        
-                return {
-                    message
-                };
+                // return {
+                //     message
+                // };
             }
             return {
             error:
@@ -150,12 +153,10 @@ export default function IsRecordLabel(){
     }
 
     const uploadFile = (file_title, file) => {
-
-        setFiles({...files, [file_title]: file_title});
         
         let formData = new FormData();
         formData.append("file_title", file_title);
-        formData.append("licenser_type", "agent_and_content");
+        formData.append("licenser_type", "record_label");
         formData.append("partner_uuid", partner?.uuid);
         formData.append("partner_category_uuid", partner?.categories[0]?.category_uuid);
         formData.append("agg_plus_vas_requirement", "no");
@@ -166,8 +167,17 @@ export default function IsRecordLabel(){
         clearErrors();
 
         ipFileUpload(formData)
-            .then(resp => {console.log(resp.message), setSubmitting(false)})
-            .catch(error => {console.log(error.response), setSubmitting(false)});    
+            .then(resp => {
+                console.log(resp.message);
+                console.log(resp.message);
+                setSubmitting(false);
+                if(resp.error){
+                    setError({[file_title]: resp.error});
+                }else{
+                    setFiles({...files, [file_title]: file_title});
+                }
+            })
+            .catch(error => {console.log(error.response), setSubmitting(false)});      
     }
 
     const validateEntries = () => {
@@ -176,7 +186,7 @@ export default function IsRecordLabel(){
             setError({error: "Please upload authorization letter"}); 
             return false;  
         }
-        else if(files.authorisation_video == ""){
+        else if(files.authorization_video == ""){
             setError({error: "Please upload authorization video"});  
             return false; 
         }else if(files.agreement_letter_btw_content_and_vas_partner == ""){
@@ -228,12 +238,12 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Authorisation letter from content owner to MTN</h4>
                             <p className="text-white/60 text-sm">Must be based on our authorisation checklist.</p>
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">See letter checklist</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         <FileInput
@@ -295,20 +305,20 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Video showing signing</h4>
                             <p className="text-white/60 text-sm">Must capture the content owner and the authorisation letter being signed.</p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <span className="text-xs text-mtn">See video sample</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput
                             id="authorization_video"
-                            doc_id="authorisation_video_doc"
+                            doc_id="authorization_video_doc"
                             label="Authorization Video"
                             value={files.authorization_video}
                             onChange={(e) => uploadFile("authorization_video", e.target.value)}
                             allowedtypes={["video/3gpp", "video/mpeg","video/mp4", "video/quicktime"]}
                             errors={errors}
-                            maxSize={100 * 1024 * 1024}
+                            maxSize={40 * 1024 * 1024}
                             disabled={false}
                             style="flex-1"
                         />
@@ -322,12 +332,12 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Agreement between content creator and [record label/producer]</h4>
                             <p className="text-white/60 text-sm">If the content creator is the producer, please indicate in the authorisation later</p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">Get the checklist</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput
@@ -350,12 +360,12 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Agreement between content creator and [song/music composer]</h4>
                             <p className="text-white/60 text-sm"></p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">See agreement checklist</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput
@@ -378,12 +388,12 @@ export default function IsRecordLabel(){
                         <div className="w-[250px] flex flex-col space-y-2">
                             <h4 className="font-mtn text-white text-md">Agreement between content creator and [agent]</h4>
                             <p className="text-white/60 text-sm">This is the short code associated with your service.</p> 
-                            <div className="flex space-x-2 items-base">
+                            {/* <div className="flex space-x-2 items-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="orange" className="w-4 h-4">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                                 <span className="text-xs text-mtn">Get the checklist</span>
-                            </div>                           
+                            </div>                            */}
                         </div>
 
                         <FileInput
@@ -498,6 +508,8 @@ export default function IsRecordLabel(){
 
 
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
         </>
     )
 

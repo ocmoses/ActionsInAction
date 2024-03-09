@@ -13,7 +13,7 @@ import useProcessing from "@/hooks/useProcessing";
 import FormErrors from "@/app/components/FormErrors";
 import axios from "axios";
 import { NextEndPoints } from "@/app/modules/endpoints";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Util } from "@/utils/utility";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { forms, company_type, questionnaire_pending } from "@/app/modules/constants";
@@ -69,6 +69,9 @@ function Compliance() {
   const { title, subtitle, hand, fields } = forms["compliance"];
   const [{ errors, setError, removeError, clearErrors }] = useErrors(data);
   const [isMasterData, setIsMasterData] = useState(false);
+
+  // const {fileViewer, setFileViewer} = useContext(FileViewContext);
+
   useEffect(() => {
     setProcessing(false);
     if (category) {
@@ -454,225 +457,227 @@ function Compliance() {
   };
 
   return (
-    <div
-      id="onboardingform"
-      className="w3-animate-opacity pb-20 w-full max-w-[550px]"
-    >
-      <form method="POST" onSubmit={handleSubmit}>
-        <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
-        <div className="mb-6">
-          {errors && <FormErrors error={errors["compliance"]} />}
-        </div>
-        <SelectInput
-          id="company_type"
-          label="Company type"
-          disabled={
-            isMasterData ||
-            checkingTIN ||
-            checkingCAC ||
-            partner?.contract_status !== "not_started"
-          }
-          value={data.company_type}
-          onChange={(e) => {
-            handleFormChange(e);
-            onChangeCompanyType(e.target.value);
-            Validate("company_type");
-          }}
-          errors={errors}
-          margin="mb-1"
-        >
-          <SelectInputOption value="" label="" />
-          {company_type.map((ct) => (
-            <SelectInputOption
-              key={ct.value}
-              value={ct.value}
-              label={ct.label}
-            />
-          ))}
-        </SelectInput>
-        <p className="mb-6 mx-0 text-[14px] text-[#999999]">
-          Select your company type to continue
-        </p>
-        {data.company_type && (
-          <>
-            <div className="md:grid md:grid-cols-2 md:gap-4">
-              <div className="relative ">
-                <TextInput
-                  id="tin_no"
-                  label="Tax identification number"
-                  disabled={
-                    isMasterData ||
-                    checkingTIN ||
-                    checkingCAC ||
-                    partner?.contract_status !== "not_started"
-                  }
-                  value={data.tin_no}
-                  onChange={handleFormChange}
-                  onBlur={(e) => {
-                    // Hidden for now
-                    // if(process.env.NODE_ENV == 'production'){
-                    //   verifyTIN(e.target.value);
-                    //   Validate("tin_no");
-                    // }
-                    
-                  }}
-                  errors={errors}
-                  margin="mb-1"
-                />
-                {errors?.tin_no && (
-                  <div className="mb-1">
-                    <span
-                      onClick={() => Retry("tin")}
-                      className="cursor-pointer text-white text-[13px] my-3 inline-flex px-4 py-1 rounded-full border border-white/20 border-white/50 by-transparent hover:bg-white/20"
-                    >
-                      Retry
-                    </span>
-                  </div>
-                )}
-                <div className="mb-6">
-                  <p className="mb-0 mx-0 text-[12px] text-[#999999]">
-                    TIN number must include an hyphen ("-"). <br />
-                    E.g. 12345678-0001
-                  </p>
-                  {checkingTIN && (
-                    <p className="mt-3 mb-0 mx-0 px-0 pt-2 text-white text-[12px] flex justify-start gap-3 items-center">
-                      <TailSpinPreloader
-                        width={24}
-                        height={24}
-                        fill="#efb703"
-                      />{" "}
-                      Verifying your TIN...
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="relative ">
-                <TextInput
-                  id="rc_no"
-                  label="RC Number"
-                  disabled={
-                    isMasterData ||
-                    !data.tin_no ||
-                    checkingTIN ||
-                    checkingCAC ||
-                    partner?.contract_status !== "not_started"
-                  }
-                  value={data.rc_no}
-                  onChange={handleFormChange}
-                  onBlur={(e) => {
-                    // Suspending this for now
-                    // if(process.env.NODE_ENV == 'production'){
-                    //   verifyCAC();
-                    // }
-                    
-                  }}
-                  errors={errors}
-                  margin="mb-1"
-                />
-                {errors?.rc_no && (
-                  <div className="mb-1">
-                    <span
-                      onClick={() => Retry("cac")}
-                      className="cursor-pointer text-white text-[13px] my-3 inline-flex px-4 py-1 rounded-full border border-white/20 border-white/50 by-transparent hover:bg-white/20"
-                    >
-                      Retry
-                    </span>
-                  </div>
-                )}
-                <div className="mb-6">
-                  <p className="mb-0 mx-0 text-[12px] text-[#999999]">
-                    RC number must include "RC". <br />
-                    E.g. RC1234567
-                  </p>
-                  {checkingCAC && (
-                    <p className="mt-3 mb-0 mx-0 px-0 pt-2 text-white text-[12px] flex justify-start gap-3 items-center">
-                      <TailSpinPreloader
-                        width={24}
-                        height={24}
-                        fill="#efb703"
-                      />{" "}
-                      Verifying your CAC...
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
-              (process.env.NODE_ENV != 'production')) && ( 
-              <>*/}
-                <FileInputWrapper>
-                  <FileInput
-                    id="tin_file"
-                    doc_id="tin_doc"
-                    label="TIN Document"
-                    value={data.tin_doc}
-                    onChange={handleFormChange}
-                    errors={errors}
+    <>        
+      <div
+        id="onboardingform"
+        className="w3-animate-opacity pb-20 w-full max-w-[550px]"
+      >
+        <form method="POST" onSubmit={handleSubmit}>
+          <RegisterStepHeader title={title} subtitle={subtitle} hand={hand} />
+          <div className="mb-6">
+            {errors && <FormErrors error={errors["compliance"]} />}
+          </div>
+          <SelectInput
+            id="company_type"
+            label="Company type"
+            disabled={
+              isMasterData ||
+              checkingTIN ||
+              checkingCAC ||
+              partner?.contract_status !== "not_started"
+            }
+            value={data.company_type}
+            onChange={(e) => {
+              handleFormChange(e);
+              onChangeCompanyType(e.target.value);
+              Validate("company_type");
+            }}
+            errors={errors}
+            margin="mb-1"
+          >
+            <SelectInputOption value="" label="" />
+            {company_type.map((ct) => (
+              <SelectInputOption
+                key={ct.value}
+                value={ct.value}
+                label={ct.label}
+              />
+            ))}
+          </SelectInput>
+          <p className="mb-6 mx-0 text-[14px] text-[#999999]">
+            Select your company type to continue
+          </p>
+          {data.company_type && (
+            <>
+              <div className="md:grid md:grid-cols-2 md:gap-4">
+                <div className="relative ">
+                  <TextInput
+                    id="tin_no"
+                    label="Tax identification number"
                     disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
+                      isMasterData ||
+                      checkingTIN ||
+                      checkingCAC ||
+                      partner?.contract_status !== "not_started"
                     }
-                  />
-                  <FileInput
-                    id="memart_file"
-                    doc_id="memart_doc"
-                    label="Memart certificate"
-                    value={data.memart_doc}
+                    value={data.tin_no}
                     onChange={handleFormChange}
+                    onBlur={(e) => {
+                      // Hidden for now
+                      // if(process.env.NODE_ENV == 'production'){
+                      //   verifyTIN(e.target.value);
+                      //   Validate("tin_no");
+                      // }
+                      
+                    }}
                     errors={errors}
-                    disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
-                    }
+                    margin="mb-1"
                   />
-                  <FileInput
-                    id="cac_file"
-                    doc_id="cac_doc"
-                    label="CAC Registration Certificate"
-                    value={data.cac_doc}
-                    onChange={handleFormChange}
-                    errors={errors}
-                    disabled={
-                      isMasterData || partner?.contract_status !== "not_started"
-                    }
-                  />
-                </FileInputWrapper>
-                {!isMasterData &&
-                  partner?.contract_status === "not_started" && (
-                    <div className="mt-6">
-                      {/* {processing ? (
-                        <TailSpinPreloader
-                          width={40}
-                          height={40}
-                          fill="#efb703"
-                        />
-                      ) : ( */}
-                        <div className="flex items-center gap-4">
-                          {/* <ButtonPrev
-                          onClick={() => moveToPrevForm("compliance")}
-                          type="button"
-                          label="Back"
-                          outline="yes"
-                          outlinecolor="border-white"
-                        /> */}
-                          <ButtonNext
-                            type="submit"
-                            label={
-                              checkUpdateStatus("compliance")
-                                ? "Update"
-                                : "Next"
-                            }
-                          />
-                        </div>
-                      {/* )} */}
+                  {errors?.tin_no && (
+                    <div className="mb-1">
+                      <span
+                        onClick={() => Retry("tin")}
+                        className="cursor-pointer text-white text-[13px] my-3 inline-flex px-4 py-1 rounded-full border border-white/20 border-white/50 by-transparent hover:bg-white/20"
+                      >
+                        Retry
+                      </span>
                     </div>
                   )}
+                  <div className="mb-6">
+                    <p className="mb-0 mx-0 text-[12px] text-[#999999]">
+                      TIN number must include an hyphen ("-"). <br />
+                      E.g. 12345678-0001
+                    </p>
+                    {checkingTIN && (
+                      <p className="mt-3 mb-0 mx-0 px-0 pt-2 text-white text-[12px] flex justify-start gap-3 items-center">
+                        <TailSpinPreloader
+                          width={24}
+                          height={24}
+                          fill="#efb703"
+                        />{" "}
+                        Verifying your TIN...
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="relative ">
+                  <TextInput
+                    id="rc_no"
+                    label="RC Number"
+                    disabled={
+                      isMasterData ||
+                      !data.tin_no ||
+                      checkingTIN ||
+                      checkingCAC ||
+                      partner?.contract_status !== "not_started"
+                    }
+                    value={data.rc_no}
+                    onChange={handleFormChange}
+                    onBlur={(e) => {
+                      // Suspending this for now
+                      // if(process.env.NODE_ENV == 'production'){
+                      //   verifyCAC();
+                      // }
+                      
+                    }}
+                    errors={errors}
+                    margin="mb-1"
+                  />
+                  {errors?.rc_no && (
+                    <div className="mb-1">
+                      <span
+                        onClick={() => Retry("cac")}
+                        className="cursor-pointer text-white text-[13px] my-3 inline-flex px-4 py-1 rounded-full border border-white/20 border-white/50 by-transparent hover:bg-white/20"
+                      >
+                        Retry
+                      </span>
+                    </div>
+                  )}
+                  <div className="mb-6">
+                    <p className="mb-0 mx-0 text-[12px] text-[#999999]">
+                      RC number must include "RC". <br />
+                      E.g. RC1234567
+                    </p>
+                    {checkingCAC && (
+                      <p className="mt-3 mb-0 mx-0 px-0 pt-2 text-white text-[12px] flex justify-start gap-3 items-center">
+                        <TailSpinPreloader
+                          width={24}
+                          height={24}
+                          fill="#efb703"
+                        />{" "}
+                        Verifying your CAC...
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {/* {((process.env.NODE_ENV == 'production' && data.valid_tin === "yes" && data.valid_cac === "yes") || 
+                (process.env.NODE_ENV != 'production')) && ( 
+                <>*/}
+                  <FileInputWrapper>
+                    <FileInput
+                      id="tin_file"
+                      doc_id="tin_doc"
+                      label="TIN Document"
+                      value={data.tin_doc}
+                      onChange={handleFormChange}
+                      errors={errors}
+                      disabled={
+                        isMasterData || partner?.contract_status !== "not_started"
+                      }
+                    />
+                    <FileInput
+                      id="memart_file"
+                      doc_id="memart_doc"
+                      label="Memart certificate"
+                      value={data.memart_doc}
+                      onChange={handleFormChange}
+                      errors={errors}
+                      disabled={
+                        isMasterData || partner?.contract_status !== "not_started"
+                      }
+                    />
+                    <FileInput
+                      id="cac_file"
+                      doc_id="cac_doc"
+                      label="CAC Registration Certificate"
+                      value={data.cac_doc}
+                      onChange={handleFormChange}
+                      errors={errors}
+                      disabled={
+                        isMasterData || partner?.contract_status !== "not_started"
+                      }
+                    />
+                  </FileInputWrapper>
+                  {!isMasterData &&
+                    partner?.contract_status === "not_started" && (
+                      <div className="mt-6">
+                        {/* {processing ? (
+                          <TailSpinPreloader
+                            width={40}
+                            height={40}
+                            fill="#efb703"
+                          />
+                        ) : ( */}
+                          <div className="flex items-center gap-4">
+                            {/* <ButtonPrev
+                            onClick={() => moveToPrevForm("compliance")}
+                            type="button"
+                            label="Back"
+                            outline="yes"
+                            outlinecolor="border-white"
+                          /> */}
+                            <ButtonNext
+                              type="submit"
+                              label={
+                                checkUpdateStatus("compliance")
+                                  ? "Update"
+                                  : "Next"
+                              }
+                            />
+                          </div>
+                        {/* )} */}
+                      </div>
+                    )}
+                
+                {/*</>
+              )}  */}
               
-              {/*</>
-             )}  */}
-            
-          </>
-        )}
-      </form>
-    </div>
+            </>
+          )}
+        </form>
+      </div>
+    </>
   );
 }
 

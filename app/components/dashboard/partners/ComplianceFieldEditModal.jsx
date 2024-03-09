@@ -7,7 +7,7 @@ import Country from "@/app/components/dashboard/partners/fields/Country";
 import CompanyType from "@/app/components/dashboard/partners/fields/CompanyType";
 import Shortcodes from "@/app/components/dashboard/partners/fields/Shortcodes";
 
-export default function ComplianceFieldEditModal({ setShowModal, data }) {
+export default function ComplianceFieldEditModal({ setShowModal, data, provided }) {
   let type_of_file = "";
   switch (data.type) {
     case "shortcode_doc":
@@ -32,8 +32,12 @@ export default function ComplianceFieldEditModal({ setShowModal, data }) {
           <div className="relative w-full max-w-[496px] mx-auto bg-[#111111] border border-[#333333]  py-[48px] px-[48px]  pb-[24px] rounded-md shadow-lg">
             {data.category_stage in complianceRequirements && (
               <span className="text-[24px] leading-[32px] m-0 text-white">
-                Update{" "}
-                {complianceRequirements[data.category_stage][data.field]?.title}
+                {
+                  provided ? 
+                    (`Update ${complianceRequirements[data.category_stage][data.field]?.title}`) : 
+                    (`Provide ${complianceRequirements[data.category_stage][data.field]?.title}`)
+                }
+                
               </span>
             )}
             {data.type === "text" && (

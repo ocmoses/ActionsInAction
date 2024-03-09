@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import {useState, useRef, useEffect, useCallback} from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import TextInput from "@/app/components/form/TextInput";
 import useErrors from "@/hooks/useErrors";
 import { TailSpinPreloader } from "@/app/components/Icons";
@@ -12,1920 +12,2665 @@ import moment from "moment";
 import Success from "@/app/components/toasts/Success";
 import { capitalizeFirst } from "@/app/modules/utilities";
 import useProcessing from "@/hooks/useProcessing";
+import useFileDownload from "@/hooks/useFileDownload";
 
 
+export default function ContractSigning({ params }) {
+  const contract_id = params.params[0];
 
-export default function ContractSigning({params}){
+  const {downloadUnsignedContract} = useFileDownload();
 
-    const contract_id = params.params[0];
+  const {
+    partner,
+    signBilateralContract,
+    getContractDynamicData,
+    getContractBeingSigned,
+  } = usePartners();
+  const { user, refreshSession } = useUsers();
+  const { processing, setProcessing } = useProcessing();
+  const [{ errors, setError, clearErrors }] = useErrors(null);
+  const router = useRouter();
+  const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
+  const [signingModal, setSigningModal] = useState(false);
+  const [signing, setSigning] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [activeSigningTab, setActiveSigningTab] = useState({
+    selectStyle: true,
+    upload: false,
+  });
+  const [disableActiveButton, setDisableActiveButton] = useState(true);
+  let [data, setData] = useState({
+    partner_uuid: partner.uuid,
+    contract_type: "Bilateral VAS",
+    contract_id: contract_id,
+    company_name: partner.company_name,
+    click_wrap: "yes",
+    signatory: "",
+    signature: "",
+  });
 
-    const {
-        partner,
-        signBilateralContract,
-        getContractDynamicData,
-        getContractBeingSigned
-      } = usePartners();
-    const {
-        user,
-        refreshSession
-     } = useUsers();
-    const { processing, setProcessing } = useProcessing(); 
-    const [{ errors, setError, clearErrors }] = useErrors(null);
-    const router = useRouter();
-    const [submitingContractSignatures, setSubmitingContractSignatures] = useState(false);
-    const [signingModal, setSigningModal] = useState(false);
-    const [signing, setSigning] = useState(false);
-    const [successModal, setSuccessModal] = useState(false);
-    const [activeSigningTab, setActiveSigningTab] = useState({selectStyle: true, upload:false});
-    const [disableActiveButton, setDisableActiveButton] = useState(true);
-    let [data, setData] = useState({partner_uuid: partner.uuid, contract_type: "Bilateral VAS", contract_id: contract_id,
-                                        company_name: partner.company_name, click_wrap: "yes", signatory: "", signature: ""});
+  const [successDisplay, setSuccessDisplay] = useState(false);
 
-    const [successDisplay, setSuccessDisplay] = useState(false);    
+  const [clearCanvas, setClearCanvas] = useState(false);
 
-  
-    const [clearCanvas, setClearCanvas] = useState(false);
+  const canvas = useRef(null);
+  const [drawing, setDrawing] = useState(false);
+  const [position, setPosition] = useState(null);
+  const [canvasWidth, canvasHeight] = [350, 120];
 
-    const canvas = useRef(null);
-    const [drawing, setDrawing] = useState(false);
-    const [position, setPosition] = useState(null);
-    const [canvasWidth, canvasHeight] = [350, 120];
+  const [dynamicData, setDynamicData] = useState(null);
+  const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
 
-    const [dynamicData, setDynamicData] = useState(null);
-    const [gettingDynamicContent, setGettingDynamicContent] = useState(false);
+  const [directorOrDelegate, setDirectorOrDelegate] = useState(null);
+  const [witness, setWitness] = useState(null);
+  const [signee, setSignee] = useState(null);
 
-    const [directorOrDelegate, setDirectorOrDelegate] = useState(null);
-    const [witness, setWitness] = useState(null);
-    const [signee, setSignee] = useState(null);
+  const [signatoryRole, setSignatoryRole] = useState("");
+  const [haveSigned, setHaveSigned] = useState(false);
+  const [directorOrDelegateSigned, setDirectorOrDelegateSigned] =
+    useState(false);
+  const [witnessSigned, setWitnessSigned] = useState(false);
 
-    const [signatoryRole, setSignatoryRole] = useState("");    
-    const [haveSigned, setHaveSigned] = useState(false);
-    const [directorOrDelegateSigned, setDirectorOrDelegateSigned] = useState(false);
-    const [witnessSigned, setWitnessSigned] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(false);
+  const [reset, setReset] = useState(Date.now());
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-    const [uploadedFile, setUploadedFile] = useState(false);    
-    const [reset, setReset] = useState(Date.now());
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
+  let selected_admin_users = partner.selected_partner_admin_users;
 
-    let selected_admin_users = partner.selected_partner_admin_users;
+  console.log("selected_admin_users", selected_admin_users);
+  console.log("user: ", user);
+  console.log("partner: ", partner);
+  // console.log("useUsers()", useUsers());
+  // console.log("usePartners()", usePartners());
 
-    console.log("selected_admin_users", selected_admin_users);
-    console.log("user: ", user);
-    console.log("partner: ", partner);
-    // console.log("useUsers()", useUsers());
-    // console.log("usePartners()", usePartners());
+  let dynamic_content_response = null;
+  let sign_bilateral_contract_response = null;
 
-    
-    let dynamic_content_response = null;
-    let sign_bilateral_contract_response = null;
+  const [fixed, setFixed] = useState(false);
+  const [focused, setFocused] = useState("annexureA");
 
-    const [fixed, setFixed] = useState(false);  
-    const [focused, setFocused] = useState("annexureA"); 
-    
+  const onDown = useCallback((event) => {
+    const coordinates = getCoordinates(event);
+    if (coordinates) {
+      setPosition(coordinates);
+      setDrawing(true);
+    }
+  }, []);
 
-    const onDown = useCallback((event) => {
-        
-        const coordinates = getCoordinates(event)
-        if (coordinates) {
-          setPosition(coordinates)
-          setDrawing(true)
-        }
-    }, [])
+  const onUp = useCallback(() => {
+    setDrawing(false);
+    setPosition(null);
+  }, []);
 
-    const onUp = useCallback(() => {
-    setDrawing(false)
-    setPosition(null)
-    }, [])
-
-    const getCoordinates = (event) => {
-        if (!canvas.current) {
-            return null
-        }
-
-        const x = event.pageX || event.touches[0].pageX
-        const y = event.pageY || event.touches[0].pageY
-
-        return {
-            x: x - canvas.current.offsetLeft,
-            y: y - canvas.current.offsetTop
-        }
+  const getCoordinates = (event) => {
+    if (!canvas.current) {
+      return null;
     }
 
-    const onMove = useCallback(
-        (event) => {
-            if (drawing) {
-                const newPosition = getCoordinates(event)
-                if (position && newPosition) {
-                    drawLine(position, newPosition)
-                    setPosition(newPosition)
-                }
-            }
-        },
-        [drawing, position]
-    )
+    const x = event.pageX || event.touches[0].pageX;
+    const y = event.pageY || event.touches[0].pageY;
 
-    const drawLine = (originalPosition, newPosition) => {
-        
-        if (!canvas.current) {
-            return null
+    return {
+      x: x - canvas.current.offsetLeft,
+      y: y - canvas.current.offsetTop,
+    };
+  };
+
+  const onMove = useCallback(
+    (event) => {
+      if (drawing) {
+        const newPosition = getCoordinates(event);
+        if (position && newPosition) {
+          drawLine(position, newPosition);
+          setPosition(newPosition);
         }
+      }
+    },
+    [drawing, position]
+  );
 
-        const context = canvas.current.getContext('2d')
-
-        if (context) {
-            context.strokeStyle = 'black'
-            context.lineJoin = 'round'
-            context.lineWidth = 3
-
-            context.beginPath()
-            context.moveTo(originalPosition.x, originalPosition.y)
-            context.lineTo(newPosition.x, newPosition.y)
-            context.closePath()
-
-            context.stroke()
-        //   handleDraw(context.getImageData(0, 0, width, height))
-        }
-    }
-    
-    const imageBase64 =  ()  => {
-      const newCanvas = canvas.current;
-      let image = newCanvas.toDataURL("image/png").replace('data:', '').replace(/^.+,/, '');
-      console.log("newCanvas.toDataURL(image/png);", image);
-      
-      return image;
+  const drawLine = (originalPosition, newPosition) => {
+    if (!canvas.current) {
+      return null;
     }
 
-    const clear = (context) => {
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
+    const context = canvas.current.getContext("2d");
+
+    if (context) {
+      context.strokeStyle = "black";
+      context.lineJoin = "round";
+      context.lineWidth = 3;
+
+      context.beginPath();
+      context.moveTo(originalPosition.x, originalPosition.y);
+      context.lineTo(newPosition.x, newPosition.y);
+      context.closePath();
+
+      context.stroke();
+      //   handleDraw(context.getImageData(0, 0, width, height))
+    }
+  };
+
+  const imageBase64 = () => {
+    const newCanvas = canvas.current;
+    let image = newCanvas
+      .toDataURL("image/png")
+      .replace("data:", "")
+      .replace(/^.+,/, "");
+    console.log("newCanvas.toDataURL(image/png);", image);
+
+    return image;
+  };
+
+  const clear = (context) => {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+  };
+
+  const signContract = () => {
+    //
+    if (activeSigningTab.selectStyle) {
+      // console.log("This is running...");
+      //convert canvas content to base64
+      const imageSignature = imageBase64();
+      data = { ...data, signature: imageSignature };
     }
 
-    const signContract = () => {
-        //        
-        if(activeSigningTab.selectStyle){
-            // console.log("This is running...");
-            //convert canvas content to base64   
-            const imageSignature = imageBase64();  
-            data = {...data, signature: imageSignature};
-        }
+    console.log("data is now", data);
 
-        console.log('data is now', data);
+    sign_bilateral_contract(data);
 
-        sign_bilateral_contract(data);
+    //sign contract
+  };
 
-        //sign contract
-
+  const get_dynamic_content = async (contract_id) => {
+    if (gettingDynamicContent) return;
+    setGettingDynamicContent(true);
+    dynamic_content_response = await getContractDynamicData(contract_id);
+    setGettingDynamicContent(false);
+    console.log("dynamic_content_response", dynamic_content_response);
+    if (dynamic_content_response.error) {
+      setError({ error: dynamic_content_response.error });
+    } else {
+      console.log(
+        "dynamic_content_response in contract signing",
+        dynamic_content_response
+      );
+      setDynamicData(dynamic_content_response.data);
     }
+  };
 
-    const get_dynamic_content = async (contract_id) => {
-        if (gettingDynamicContent) return;
-        setGettingDynamicContent(true);
-        dynamic_content_response = await getContractDynamicData(contract_id);
-        setGettingDynamicContent(false);
-        console.log('dynamic_content_response', dynamic_content_response);
-        if (dynamic_content_response.error) {
-            setError({ error: dynamic_content_response.error })
-        } else {
-            console.log('dynamic_content_response in contract signing', dynamic_content_response);
-            setDynamicData(dynamic_content_response.data);                
-        }
+  const sign_bilateral_contract = async (data) => {
+    if (signing) return;
+    setSigning(true);
+    sign_bilateral_contract_response = await signBilateralContract(data);
+    setSigning(false);
+    // console.log('sign_bilateral_contract_response', sign_bilateral_contract_response);
+    if (sign_bilateral_contract_response.error)
+      setError({ error: sign_bilateral_contract_response.error });
+    else {
+      // console.log('partner_select_service_response', partner_select_service_response);
+      // setContractModal(false);
+      setSigningModal(false);
+      //Do some stuff
+      setSuccessDisplay(true);
+      if (signatoryRole == "director" || signatoryRole == "delegate") {
+        setDirectorOrDelegateSigned(true);
+      } else {
+        setWitnessSigned(true);
+      }
+
+      refreshSession();
+
+      setDynamicData({
+        ...dynamicData,
+        signature_of_signee: [
+          { director_or_delegate_signature: data.signature },
+        ],
+      });
     }
+  };
 
-    const sign_bilateral_contract = async (data) => {
-        if (signing) return;
-        setSigning(true);
-        sign_bilateral_contract_response = await signBilateralContract(data);
-        setSigning(false);
-        // console.log('sign_bilateral_contract_response', sign_bilateral_contract_response);
-        if (sign_bilateral_contract_response.error) setError({ error: sign_bilateral_contract_response.error })
-        else {
-            // console.log('partner_select_service_response', partner_select_service_response);
-            // setContractModal(false); 
-            setSigningModal(false);
-            //Do some stuff    
-            setSuccessDisplay(true);
-            if(signatoryRole == 'director' || signatoryRole == 'delegate'){
-                setDirectorOrDelegateSigned(true);
-            }else{
-                setWitnessSigned(true);
-            }
+  const convertFile = (e) => {
+    // Get a reference to the file
+    const file = e.target.files[0];
 
-            refreshSession();
-            
-            setDynamicData({...dynamicData, signature_of_signee : [{director_or_delegate_signature: data.signature}] });
-            
-        }
+    // Encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Use a regex to remove data url part
+      const base64String = reader.result
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+
+      // console.log('base64String', base64String);
+      setData({ ...data, signature: base64String });
+      // Logs wL2dvYWwgbW9yZ...
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const showSigningWindow = (role) => {
+    clearErrors();
+    setData({ ...data, signatory: role });
+    setSigningModal(true), window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  console.log("signatoryRole", signatoryRole);
+
+  useEffect(() => {
+    setProcessing(false);
+    get_dynamic_content(contract_id ?? null);
+
+    setSignatoryRole(
+      selected_admin_users.find((u) => u.email == user.email)?.role
+    );
+    setHaveSigned(
+      selected_admin_users.find((u) => u.email == user.email)
+        ?.has_user_signed != "no"
+    );
+
+    let directorOrDelegate = selected_admin_users.find(
+      (u) => u.role == "director" || u.role == "delegate"
+    );
+    let witness = selected_admin_users.find((u) => u.role == "witness");
+
+    setDirectorOrDelegate(directorOrDelegate);
+    setWitness(witness);
+
+    let signee =
+      (signatoryRole == "director" || signatoryRole == "delegate") &&
+      directorOrDelegate
+        ? `${capitalizeFirst(directorOrDelegate.firstname)} ${capitalizeFirst(
+            directorOrDelegate.lastname
+          )}`
+        : (signatoryRole == "director" || signatoryRole == "delegate") &&
+          !directorOrDelegate
+        ? `${capitalizeFirst(user.first_name)} ${capitalizeFirst(
+            user.last_name
+          )}`
+        : signatoryRole == "witness" && witness
+        ? `${capitalizeFirst(witness.firstname)} ${capitalizeFirst(
+            witness.lastname
+          )}`
+        : "";
+
+    setSignee(signee);
+
+    console.log("directorOrDelegate", directorOrDelegate);
+    console.log("witness", witness);
+
+    setDirectorOrDelegateSigned(
+      directorOrDelegate && directorOrDelegate.has_user_signed != "no"
+        ? true
+        : false
+    );
+    setWitnessSigned(
+      selected_admin_users.find((u) => u.role == "witness")
+        ? selected_admin_users.find((u) => u.role == "witness")
+            .has_user_signed != "no"
+        : false
+    );
+
+    if (canvas.current) {
+      const context = canvas.current.getContext("2d");
+
+      clear(context);
+
+      // context.fillStyle = 'pink';
+      // context.fillRect(0,0, 20, 30);
+    }
+    //
+
+    let threshold = 80;
+
+    const focus = function () {
+      let scrollY = window.scrollY;
+
+      if (scrollY >= threshold) {
+        setFixed(true);
+      } else {
+        setFixed(false);
+      }
     };
 
-    const convertFile = (e) => {
-        // Get a reference to the file
-        const file = e.target.files[0];
+    window.addEventListener("scroll", focus);
+    window.onload = focus;
+  }, [signingModal, clearCanvas]);
 
-        // Encode the file using the FileReader API
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            // Use a regex to remove data url part
-            const base64String = reader.result
-                .replace('data:', '')
-                .replace(/^.+,/, '');
-
-            // console.log('base64String', base64String);
-            setData({...data, signature:base64String});
-            // Logs wL2dvYWwgbW9yZ...
-        };
-        reader.readAsDataURL(file);
-    };
-
-    const showSigningWindow = (role) => {
-        clearErrors();
-        setData({...data, "signatory": role}); 
-        setSigningModal(true), 
-        window.scrollTo({top:0, behavior: "smooth"});
-    }
-
-    console.log("signatoryRole", signatoryRole);
-
-    useEffect(() => {
-      setProcessing(false);
-        get_dynamic_content(contract_id ?? null);
-
-        setSignatoryRole(selected_admin_users.find(u => u.email == user.email)?.role);
-        setHaveSigned(selected_admin_users.find(u => u.email == user.email)?.has_user_signed != 'no');
-        
-        let directorOrDelegate = selected_admin_users.find(u => u.role == "director" || u.role == "delegate");
-        let witness = selected_admin_users.find(u => u.role == "witness");
-
-        setDirectorOrDelegate(directorOrDelegate);
-        setWitness(witness);
-
-        let signee = (signatoryRole == 'director' || signatoryRole == 'delegate') && directorOrDelegate ? 
-                        `${capitalizeFirst(directorOrDelegate.firstname)} ${capitalizeFirst(directorOrDelegate.lastname)}` :
-                        (signatoryRole == 'director' || signatoryRole == 'delegate') && !directorOrDelegate ? 
-                        `${capitalizeFirst(user.first_name)} ${capitalizeFirst(user.last_name)}` :
-                        signatoryRole == 'witness' && witness ? 
-                        `${capitalizeFirst(witness.firstname)} ${capitalizeFirst(witness.lastname)}` :
-                        "";
-
-        setSignee(signee);
-
-        console.log("directorOrDelegate", directorOrDelegate);
-        console.log("witness", witness);
-
-        setDirectorOrDelegateSigned(directorOrDelegate && directorOrDelegate.has_user_signed != 'no' ?  true : false);
-        setWitnessSigned(selected_admin_users.find(u => u.role == 'witness') ? selected_admin_users.find(u => u.role == 'witness').has_user_signed != 'no' : false);
-        
-        if (canvas.current) {
-            const context = canvas.current.getContext('2d');
-
-            clear(context);
-
-            // context.fillStyle = 'pink';
-            // context.fillRect(0,0, 20, 30);
-            
+  return (
+    <div className="flex flex-col justify-center items-center pt-8 relative">
+      {/* Floating side nav */}
+      <div
+        className={`${
+          fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"
+        } z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}
+      >
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-a`
+            )
           }
-        //
-         
-        let threshold = 80;
-
-        const focus = function(){
-
-            let scrollY = window.scrollY;
-
-            if(scrollY >= threshold){
-                setFixed(true);
-            }else{
-                setFixed(false);
-            }
-            
-        };
-
-        window.addEventListener("scroll", focus);
-        window.onload = focus;
-    }, [signingModal, clearCanvas]);
-    
-
-    return <>
-                <div className="flex flex-col justify-center items-center pt-8 relative">
-
-                    {/* Floating side nav */}
-                    <div className={`${fixed ? "fixed top-0 left-[60px]" : "absolute top-0 left-0"} z-10  flex-col space-y-2 p-2 hidden md:flex bg-black rounded-md`}>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-a`)}>
-                            <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>1</span>
-                            <span className={`text-white/40`}>Annexure A</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-b`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>2</span>
-                            <span className={`text-white/40`}>Annexure B</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-c`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>3</span>
-                            <span className={`text-white/40`}>Annexure C</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-d`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>4</span>
-                            <span className={`text-white/40`}>Annexure D</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
-                            <span className={`text-white/40`}>Annexure E</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-f`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
-                            <span className={`text-white/40`}>Annexure F</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-g`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
-                            <span className={`text-white/40`}>Annexure G</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-h`)}>
-                             <span className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}>5</span>
-                            <span className={`text-white/40`}>Annexure H</span>
-                        </div>
-
-                        <div className="flex space-x-2 items-center cursor-pointer" onClick={() => router.push(`/dashboard/contracts/annexures/${contract_id}#annexure-e`)}>
-                             <span className={`flex w-6 h-6 text-white bg-mtn rounded-full justify-center items-center`}>6</span>
-                            <span className={`text-white`}>Main Contract</span>
-                        </div>
-
-                    </div>
-
-                    <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
-                        <a href={`${process.env.NEXT_PUBLIC_APIURI}/v2/contract/download-contract-pdf/${partner.uuid}/${contract_id}/not_signed`} target="_blank"
-                            className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-4 h-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>&nbsp;Download
-                        </a>
-                    </div>
-
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">
-                        <p className="text-white">
-                        AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN NIGERIA COMMUNICATIONS PLC<br />
-                        (RC No. 395010)
-                        <br /><br/>
-                        AND
-                        <br /><br/>
-                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}&nbsp;
-                        (RC No. {dynamicData?.dynamic_details?.rc_no?.toUpperCase()})
-                        </p>
-                    </div>
-
-                    <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl md:w-[900px]">
-                        
-                        <h2 className="font-mtn text-white w-full">Table of contents</h2>
-                        
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">1</span>
-                            <span className="text-white/60 flex-1">
-                            Definitions
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">2</span>
-                            <span className="text-white/60 flex-1">
-                            Interpretations
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">3</span>
-                            <span className="text-white/60 flex-1">
-                            Commencement and Duration
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">4</span>
-                            <span className="text-white/60 flex-1">
-                            Obligations of the Service Provider
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">5</span>
-                            <span className="text-white/60 flex-1">
-                            Obligations of MTN
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">6</span>
-                            <span className="text-white/60 flex-1">
-                            Revenue Share
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">7</span>
-                            <span className="text-white/60 flex-1">
-                            Payment and Tax Deductions
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">8</span>
-                            <span className="text-white/60 flex-1">
-                            Taxes and Tax Exemption Certificates
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">9</span>
-                            <span className="text-white/60 flex-1">
-                            Information and Data Protection 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">10</span>
-                            <span className="text-white/60 flex-1">
-                            Conflict of Interest 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">11</span>
-                            <span className="text-white/60 flex-1">
-                            Representations, Warranties and Covenants 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">12</span>
-                            <span className="text-white/60 flex-1">
-                            Confidentiality 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">13</span>
-                            <span className="text-white/60 flex-1">
-                            Intellectual Property Rights 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">14</span>
-                            <span className="text-white/60 flex-1">
-                            Right of Audit 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">15</span>
-                            <span className="text-white/60 flex-1">
-                            Sub-Service Providers 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">16</span>
-                            <span className="text-white/60 flex-1">
-                            Assignment of Agreement 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">17</span>
-                            <span className="text-white/60 flex-1">
-                            Amendment/Variation/ Waiver 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">18</span>
-                            <span className="text-white/60 flex-1">
-                            Severability 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">19</span>
-                            <span className="text-white/60 flex-1">
-                            Release and Indemnity 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">20</span>
-                            <span className="text-white/60 flex-1">
-                            Limitation of Liability 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">21</span>
-                            <span className="text-white/60 flex-1">
-                            Conditions Precedent to Obligations of MTN 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">22</span>
-                            <span className="text-white/60 flex-1">
-                            Set Off  
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">23</span>
-                            <span className="text-white/60 flex-1">
-                            Termination 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">24</span>
-                            <span className="text-white/60 flex-1">
-                            Inducements, Fraud and Anti-Corruption 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">25</span>
-                            <span className="text-white/60 flex-1">
-                            Force Majeure 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">26</span>
-                            <span className="text-white/60 flex-1">
-                            Governing Law and Dispute Resolution 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">27</span>
-                            <span className="text-white/60 flex-1">
-                            Entire Agreement 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">28</span>
-                            <span className="text-white/60 flex-1">
-                            Partnership 
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">29</span>
-                            <span className="text-white/60 flex-1">
-                            Notices 
-                            </span>
-                                    
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 md:max-w-4xl md:w-[900px]">
-
-                        
-                        <p><span className="text-white">THIS AGREEMENT</span> is made on this {dynamicData?.dynamic_details?.date_of_contract}.<br /><br /></p>
-
-                        <p><span className="text-white">BETWEEN</span><br /><br /></p>
-
-                        <p><span className="text-white">MTN NIGERIA COMMUNICATIONS PLC</span>, a public limited liability company incorporated under the laws of the Federal Republic of Nigeria, having its principal office at MTN Plaza, Falomo Roundabout, Ikoyi, Lagos (hereinafter referred to as “MTN” or “Disclosing Party”, which expression shall where the context so admits include its successors-in-title and assigns), of the one part;<br /><br /></p>
-
-                        <p><span className="text-white">AND</span><br /><br /></p>
-
-                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal<br />
-                        Republic of Nigeria, having its principal place of business at {dynamicData?.dynamic_details?.company_address} (hereinafter referred to as the “Receiving Party”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part.<br /><br />
-
-                        <p><span className="text-white">AND</span><br /><br /></p>
-
-                        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private limited liability company incorporated under the laws of the Federal Republic of Nigeria with RC No. [.], and having its registered office at [address], (hereinafter referred to as the “Service Provider”, which expression shall where the context so admits include its successors- in-title and assigns) of the other part. <br /><br />
-
-                        Both <p><span className="text-white">MTN</span> and the <span className="text-white">Receiving Party</span> are hereinafter jointly referred to as the “Parties” and individually as the “Party”.</p>
-
-                    </div>                    
-                    
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-                        <p>
-                        <p><span className="text-white">Whereas:</span></p>
-                        </p>
-
-                        
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            I.	</span>
-                            <span className="text-white/60 flex-1">
-                           MTN is an Information Communications Technology (ICT) Company licensed by the Nigerian Communications Commission (NCC) under the unified licence scheme to provide amongst other services, digital mobile cellular telephony and data services in Nigeria.
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            II.	</span>
-                            <span className="text-white/60 flex-1">
-                           The Service Provider is a digital content company engaged in the business of providing diverse telecoms value added services with emphasis on lifestyle and entertainment.
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            III. </span>
-                            <span className="text-white/60 flex-1">
-                           The Service Provider has offered to make available to MTN subscribers, value added services for information and lifestyle (“the Services”).
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            IV.	</span>
-                            <span className="text-white/60 flex-1">
-                           The Parties have agreed that the Service Provider shall provide the Services, leveraging on MTN’s network to drive uptake of the service by MTN subscribers.
-                            </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            V.	</span>
-                            <span className="text-white/60 flex-1">
-                           The Parties have agreed to execute this Agreement in accordance with the terms and conditions agreed hereunder.
-                            </span>
-                                    
-                        </div>
-
-                        <p>
-                        <p><span className="text-white">THE PARTIES AGREE AS FOLLOWS:</span></p>
-                        </p>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.	</span><p><span className="text-white">DEFINITIONS</span></p>
-                                    
-                        </div>
-
-                        
-                        <div className="text-white">
-
-                           In this Agreement, the following terms shall have the meanings as set out hereunder:
-                        
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.1</span>
-                            <span className="text-white/60 flex-1">
-                           <p><span className="text-white">“Acceptable Percentage”</span> means five percent (5%);</p>
-                            
-                        </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.2.</span>
-                            <span className="text-white/60 flex-1">
-                           <p><span className="text-white">"Agreement"</span> means the Agreement for the provision of Value Added Services, between MTN and the Service Provider including the appendices and Annexures hereto and any other document (or parts thereof) specified by MTN or supplied in this Agreement;</p>
-                            
-                        </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.3.</span>
-                            <span className="text-white/60 flex-1">
-                           <p><span className="text-white">“AOL”</span> means Annual Operating Levy representing two-point five percent (2.5%) or any other percentage of Revenue due to either of the Parties as prescribed by the Nigerian Communications Commission;</p>
-                            
-                        </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.4.</span>
-                            <span className="text-white/60 flex-1">
-                           <p><span className="text-white">“Anti-Corruption Laws”</span> means the applicable Nigerian laws and regulations including but not limited to the Corrupt Practices and Other Related Offences Act, 2004; Economic and Financial Crimes Commission (Establishment) Act, 2004; Money Laundering Prohibition Act, 2022. Criminal Code; and any other Applicable Law.</p>
-                            
-                        </span>
-                                    
-                        </div>
-
-                        <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.5.</span>
-                            <span className="text-white/60 flex-1">
-                           <p><span className="text-white">“Business Days”</span> means any day of the week other than Saturdays, Sundays or public holidays declared by the Federal Government of Nigeria from time to time;</p>
-                            
-                        </span>
-                                    
-                        </div>                        
-
-                        <br />
-                        
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.6. </span>
-                           <p><p><span className="text-white">“Confidential Information”</span> means all information designated as such by either Party in writing and all other information which relates to the business, affairs, properties, assets, trading practices, Goods, Services, developments, trade secrets, know-how, personnel, customers, MTN Subscribers and Service Providers of either Party which may reasonably be regarded as the confidential information of the disclosing Party;</p></p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.7. </span>
-                           <p><span className="text-white">“Content Owner”</span> means the owner of the intellectual Property in the value-added services offered under this Agreement;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.8. </span>
-                           <p><span className="text-white">“Customer Data”</span> means all information held by MTN and the Service Provider whether transmitted by the MTN Subscribers or otherwise stored by either MTN or the Service Provider and includes Personal Data;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.9. </span>
-                           <p><span className="text-white">“Effective Date”</span> means {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")};</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.10. </span>
-                           “Force Majeure Event” means an event beyond the control of a Party including but not limited to war, rebellion, sabotage, riots, epidemic, floods, fire, national strikes, explosion, civil commotion, insurrection, computer hacking, computer crashing, and Acts of (i) God, (ii) nature, (iii) government or (iv) regulatory authority; in the case of the latter (iii) and (iv) such acts being extremely unusual and not reasonably foreseeable;
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.11. </span>
-                           “Intellectual Property” or “Intellectual Property Rights” means copyright, patents, inventions, trademarks, service marks, logos, design rights (whether registerable or otherwise), applications for any of the foregoing, database rights, domain names, trade or business names, and other similar rights or obligations whether registerable or not;
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.12. </span>
-                           “Material Breach” means a fundamental breach of this Agreement that is significant enough to impede MTN’s ability to obtain the services anticipated under this Agreement or significant enough to impede the continued performance of the services by the Service Providers, and shall include non-payment of the Revenue Share by MTN and the failure of the Service Provider to maintain a full and valid VAS Licence;
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.13. </span>
-                           <p><span className="text-white">“Month”</span> means calendar month;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.14. </span>
-                           <p><span className="text-white">“MTN Network”</span> means the telecommunications network of MTN;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.15. </span>
-                           <p><span className="text-white">“MTN Property”</span> means any property, other than real property, issued or made available to the Service Provider by MTN in connection with this Agreement;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.16. </span>
-                           <p><span className="text-white">“MTN Subscriber(s)”</span> means target customers for the use of the Service;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.17. </span>
-                           <p><span className="text-white">“Net Revenue”</span> means the amount generated from the Services less deduction of all Taxes, levies and regulatory fees;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.18. </span>
-                           <p><span className="text-white">“NITDA”</span> means National Information Technology Development Agency;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.19. </span>
-                           <p><span className="text-white">”NCC”</span> means Nigerian Communications Commission;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.20. </span>
-                           <p><span className="text-white">“Party”</span> means a Party to this Agreement and “Parties” shall be construed accordingly;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.21. </span>
-                           <p><span className="text-white">“Personal Data”</span> means any personally identifiable information and data pertaining to MTNs Subscriber or customer who can be identified from those data or from other information in possession or likely to be in possession of MTN;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.22. </span>
-                           <p><span className="text-white">“Revenue”</span> means the gross amount generated from the Services to be provided under this Agreement;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.23. </span>
-                           <p><span className="text-white">“Revenue Share”</span> means the percentage of Net Revenue received by MTN to be paid to the Service Provider in accordance with the model set out in Annexure A (Revenue Share Model);</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.24. </span>
-                           <p><span className="text-white">“Services”</span> means the value-added services to be provided by the Service Provider which shall include information, lifestyle and any other value-added services to be agreed in writing by the Parties, as provided in clause 4;</p>
-                                    
-                        </div>
-                            <br />
-
-                            
-                        </div>
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.25. </span>
-                           <p><span className="text-white">“Platform”</span> means that part of MTN’s network that enables the Service to be accessed by MTN Subscribers being MTN’s subscription management infrastructure;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                            1.26. </span>
-                           <p><span className="text-white">“Short Code”</span> means the short code numbers approved by NCC to be utilized for the delivery of SMS. The Short code shall have a two-way status that will enable the SMS platform receive messages from MTN Subscribers as well as transmit SMS to MTN Subscribers for the purposes of accessing the Services;</p>
-                                    
-                        </div>
-
-                            <p>
-                            <span className="text-white w-[50px]">
-                            1.27.</span>	“Solutions” includes &nbsp;&nbsp;
-                            {
-                                dynamicData?.dynamic_details?.service_types.map(s => <>
-                                <span className="text-white">{s}</span>
-                                </>)
-                            }
-                            </p>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.28. </span>
-                           <p><span className="text-white">“SMS”</span> means the short message/text service(s) carried on the MTN Network and enabling MTN Subscribers to access the Services;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.29. </span>
-                           <p><span className="text-white">“SMS Logs”</span> means a list of SMS transactions captured by MTN systems as a result of MTN Subscribers entries to the Short code;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.30. </span>
-                           <p><span className="text-white">“Staff”</span> means all persons employed by the Service Provider to perform the Services together with the Service Provider's servants, agents and sub-Service Providers engaged in the performance of this Agreement;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.31. </span>
-                           <p><span className="text-white">“System”</span> means the System operated by the Service Provider and MTN (as applicable) for the purposes of the Services to be provided hereunder;</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.32. </span>
-                           <p><span className="text-white">“Taxes”</span> means all taxes including but not limited to income tax, withholding tax, value added tax, stamp duties, tariffs, fiscal charges and other dues or any similar tax-related charges or levies of whatsoever nature imposed, levied or assessed by any governmental authority within Nigeria in accordance with present or future laws and/or regulations in Nigeria.</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.33. </span>
-                           <p><span className="text-white">“USSD”</span> means Unstructured Supplementary Service Data; and</p>
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        1.34. </span>
-                           <p><span className="text-white">“VAS Licence”</span> means the Value-Added Services Licence issued by the NCC to the Service Provider authorising the Service Provider to provide the Services to the MTN subscribers under this Agreement.</p>
-                                    
-                        </div>
-                        </div>
-
-                        <p>
-                        2.	<p><span className="text-white">INTERPRETATIONS</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <p>
-                            The interpretation and construction of this Agreement shall be subject to the following provisions:
-                            </p>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        2.1. </span>
-                           References to singular includes plural and vice versa while references to any gender includes reference to other gender(s) and vice versa; and references to any person shall include natural persons, partnerships, firms, incorporated bodies and all other legal persons of whatever kind and however constituted;
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        2.2. </span>
-                           Headings are included in this Agreement for ease of reference only and shall not affect the interpretation or construction of this Agreement; and
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        2.3. </span>
-                           The Annexures to this Agreement form an integral part hereof and terms defined in this Agreement shall bear, unless the context otherwise requires, the same meaning in such Annexure.
-                                    
-                        </div>
-                        </div>
-
-                        <p>
-                        3.	<p><span className="text-white">COMMENCEMENT AND DURATION</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        3.1. </span>
-                           This Agreement shall commence on the Effective Date and remain in force for a period of {moment(dynamicData?.term_of_contract).format("DD/MM/YYYY")}, unless earlier terminated by either of the Parties in accordance with the terms of this Agreement.
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        3.2. </span>
-                           Notwithstanding the Effective Date, this Agreement and all the obligations, representations, covenants, and undertakings that have been exchanged by the Parties shall not take effect until the MTN Intellectual Property (IP) Team has confirmed receipt in writing of a validly existing license, assignments, and/or authorisations to use any third-party owned IP assets and/or rights from the Service Provider.
-                                    
-                        </div>
-                        </div>
-
-                        
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <p>
-                        4.	<p><span className="text-white">OBLIGATIONS OF THE SERVICE PROVIDER</span></p>
-                        </p>
-
-                        <p>
-                        The Service Provider undertakes to perform its obligations in addition to any other ancillary duties that may arise as a result of its contractual obligations under this Agreement in accordance with the following terms:
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.1. </span>
-                           The Service Provider shall ensure that its organisation and staff are fully compliant with NCC’s legal and regulatory framework (and with the requirement of other applicable regulatory bodies), including but not limited to financial obligations, permits licenses, guidelines and directives; and shall obtain, and maintain the requisite licences, approvals and permits including but not be limited to a valid VAS Licence.
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.2. </span>
-                           The Service Provider shall provide adequate training or information guidelines to equip MTN staff with the know-how and technical knowledge to deal with call queries received from MTN Subscribers in respect of the Services.
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.3. </span>
-                           ,
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.4. </span>
-                           The Service Providers shall ensure that the active Short codes and Services as contained in Annexure B shall run on MTN’s Network for the duration of this Agreement and that it shall not send prepaid specific information to post-paid MTN Subscribers and vice versa.
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.5. </span>
-                           In the event that MTN removes or suspends the distribution of a specific content, MTN shall notify the Service Provider in writing (e-mail sufficient) and the removal or suspension shall be carried out by the Service Provider without undue delay.
-                                    
-                        </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.6. </span>
-                           The Service Provider shall be bound by the standard terms and conditions applicable to MTN Value Added Service partners and all the annexures below:
-                                    
-                        </div>
-
-                            <div className="flex flex-col space-y-4 py-8">
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-a`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center">
-                                    <span className="text-white/60">Annexure A	-	</span>Revenue Share Model
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-b`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure B	-	</span>Active Short Code
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-c`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure C	-	</span>Confidentiality and Non-Disclosure Agreement
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-d`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure D	-	</span>Protective Clauses
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-e`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure E	-	</span>Information Data and Cyber Security Annex
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-f`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure F	-	</span>Schedule of Infractions and Sanctions
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-g`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure G	-	</span>MTN Business Continuity Management Policy
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                                <a href={`/dashboard/contracts/annexures/${contract_id}#annexure-h`} className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center">
-                                    <span className="text-white/60">Annexure H	-	</span>Data Protection Schedule
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="w-4 h-4 ml-auto">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </a>
-                            </div>
-
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        4.7. </span>
-                           Notwithstanding any other remedies which MTN may have either in law or in equity, any occurrence of the infractions in Annexure F shall be treated as a Material Breach of this Agreement
-                                    
-                        </div>
-                        </div>
-
-                        <p>
-                        5.	<p><span className="text-white">OBLIGATIONS OF MTN </span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <p>
-                            MTN shall perform the following obligations under this Agreement:
-                            </p>
-
-                            <p>
-                            5.1.	MTN shall provide access to its Network and/or such other technology or Platform to enable the Service Provider to provide the Services. <br />
-                            5.2.	Short codes configured for specific events shall be activated and deactivated, in accordance with extant laws and regulations.
-                            </p>
-                        </div>
-
-                        <p>
-                        6.	<p><span className="text-white">REVENUE SHARE </span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        6.1. </span>
-                           MTN shall pay the Service Provider for the Services according to the Revenue Share Model in Annexure A. The Revenue share models are calculated and paid out based on the Net Revenue. In determining the Net Revenue payable to the Service Provider, MTN shall deduct and remit all applicable Taxes and regulatory fees from the Service Provider’s own share of the Revenue.
-                                    
-                        </div>
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        6.2. </span>
-                           The Parties agree that the Net Revenue payable to the Service Provider shall be inclusive of stamp duties. The Parties agree that the Service Provider shall bear the stamp duty cost and shall be responsible for the stamping of this Agreement with the relevant tax authority. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        6.3. </span>
-                           MTN reserves the right to change and implement new Revenue sharing provisions upon giving thirty (30) days prior written notice to the Service Provider. <br /> <br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        6.4. </span>
-                           The Service Provider shall be liable to deduct and remit AOL at the applicable rate to NCC from the Service Provider’s share of the Revenue.  <br /><br />
-                                    
-                        </div>
-                        </div>
-
-                        <p>
-                        7.	<p><span className="text-white">PAYMENT AND TAX DEDUCTIONS</span></p>
-                        </p>
-
-                        <p>
-                        7.1. Payment shall be made by MTN within thirty (30) days from receipt of an undisputed invoice from the Service Provider, subject to regulatory approvals and in accordance with the Revenue Share set out under Annexure A of this Agreement and the payment terms below:
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        7.1. </span>
-                           1.	MTN shall forward its generated logs to the Service Provider not later than the 3rd of every month and the Service Provider shall within twenty (20) Business Days from receipt of the said logs, revert with an invoice to MTN based on the logs.
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        7.1. </span>
-                           2.	In the event of any dispute on the logs, the Service Provider shall within twenty (20) Business Days from receipt of the logs, notify MTN of such disputed which shall be investigated by MTN within three (3) Business Days of such notification.
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        7.1. </span>
-                           3.	Invoices shall be subject to MTN internal payment authorization process, must be on the Service Provider’s letterhead, reference MTN’s log number(s), reflect the Service Provider’s account details
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        7.1. </span>
-                           4.	All the Service Provider‘s billings, invoices and payments shall be in Naira.
-                                    
-                        </div>
-                        </div>
-
-                        <p>
-                        7.2. MTN shall within seven (7) Business Days of the discovery of any error on the submitted invoice notify the Service Provider of the error. Invoices with errors shall be returned for correction and payment shall be due thirty (30) Business Days after the corrected invoice is received by MTN.
-                        </p>
-
-                        <p>
-                        7.3. If MTN disputes any amount, MTN shall within thirty (30) days of receipt of the invoice, notify the Contractor of the details of the dispute. MTN shall be entitled to withhold payment of the difference between the amount invoiced and that payable and such dispute shall be referred to independent auditors nominated and agreed upon by the Parties. The auditors shall act as experts and not as arbitrators and their decision shall be final and binding on the Parties.  The costs of the auditors in resolving the dispute shall be borne by the Party found to have incorrectly disputed the amounts payable to the Service Provider.
-                        </p>
-
-                        <p>
-                        7.4. The Parties agree that pending the resolution of any dispute as to any amount payable by MTN to the Service Provider, the Parties shall continue to observe and perform their respective obligations to one another under this Agreement; and
-                        </p>
-
-                        <p>
-                        8.	<p><span className="text-white">TAXES AND TAX EXEMPTION CERTIFICATES </span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        8.1. </span>
-                           Each Party shall bear its Tax obligations. Where a party bears Tax obligations on behalf of the other Party, the Party shall be entitled to recover from the Service Provider any such sums and all costs incurred in connection therewith. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        8.2. </span>
-                           Where, under the provisions of any applicable laws, regulations or directives, MTN is required to deduct any amount or Tax, MTN shall deduct the amount or rate from any amount payable to the Service Provider, in accordance with the provisions of the relevant laws or regulations. Particularly, MTN having been appointed an agent of the Federal Inland Revenue Service (FIRS) for the collection and remittance of Value Added Tax (VAT) shall deduct VAT at the point of payment from any amount payable to the Service Provider. The Service Provider acknowledges that it shall be its responsibility to obtain the withholding credit notes from the FIRS Tax promax platform. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        8.3. </span>
-                           Where the Service Provider claims to be exempted from any statutory deductions, it shall inform MTN and provide any necessary documentation to support its case, including a certificate of exemption from the relevant authority.
-                                    
-                        </div>
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <p>
-                        9.	<p><span className="text-white">INFORMATION AND DATA PROTECTION</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.1. </span>
-                           The Service Provider shall respectively make or obtain throughout the term all necessary registrations or filings and notifications which it is obliged to obtain and maintain pursuant to applicable data protection laws, corporate security policies, procedures, standards. For the avoidance of doubt, the Service Provider shall comply with the Nigerian Data Privacy Regulations (NDPR) and other laws or regulations as may be released from time to time. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.2. </span>
-                           In performing the Work, the Service Provider shall respect the fact that MTN shall exclusively determine the purposes of the processing of MTN data and the Service Provider shall not possess or exercise control of the purposes of such processing but shall process in accordance with MTN’s written instructions and in accordance with the terms of this Agreement. In performing the activities contemplated under this Agreement, the Service Provider shall comply with the requirements of a processor applicable to it under data protection laws, regulations and all related legislations and MTN shall comply with the requirements of a controller applicable to it under data protection laws. For the avoidance of doubt, the Parties agrees unequivocally that any customer’s data arising out of or in connection with this Agreement, its subject matter or formation shall be solely owned by MTN. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.3. </span>
-                           In processing MTN data, the Service Provider agrees as part of its provision of the Work to comply with the requests of MTN as related to any obligations of MTN under applicable data protection laws, regulation, corporate security policies, procedures, standards, etc, associated with any duties MTN may have as a controller of data under data protection laws. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.4. </span>
-                           The Service Provider shall not, and it shall ensure that its personnel shall not: <br /><br />
-                                    
-                        </div>
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.4.1.</span>
-                           process MTN data in any manner or for any purpose other than as set out in, or in accordance with, this Agreement; or <br />
-                                    
-                        </div>
-                                <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.4.2.</span>
-                           breach or contravene, or cause MTN to breach or contravene, the provisions of this clause.
-                                    
-                        </div>
-                            </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.5. </span>
-                           Any breach by the Service Provider of its obligations set out in this clause 9, shall be deemed to be a material breach of this Agreement and shall entitle MTN to terminate this Agreement in accordance with the provisions herein. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.6. </span>
-                           The Service Provider shall supply on request from MTN, all relevant information including audit reports, remediation plan as required by MTN to assess and confirm the Service Provider’s compliance with its obligations in this clause 9. This information shall be provided promptly to MTN and in any event within five (5) Business Days of request at no additional cost. <br /><br />
-                                    
-                        </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.7. </span>
-                           In respect of personal information processed in connection with this Agreement, the Service Provider shall: <br /><br />
-                                    
-                        </div>
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                <p>    
-                                9.7.1.	act only on instructions from MTN regarding the processing of that personal information, and ensure that appropriate technical and organisational measures shall be taken against unauthorised or unlawful processing of the personal information and against accidental loss or destruction of, or damage to, the personal information;
-                                </p>
-                                <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.7.2.</span>
-                           from time to time comply with any reasonable request made by MTN to ensure compliance with the measures mentioned in clause 9.4;
-                                    
-                        </div>
-                                <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.7.3.</span>
-                           take the measures mentioned in clause 9.4 and having regard to the state of technological development and the cost of implementing the measures, so as to ensure a level of security appropriate to: (i) the harm that may result from breach of those measures; and (ii) the nature of the personal information to be protected; and
-                                    
-                        </div>
-                                <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.7.4.</span>
-                           take reasonable steps to ensure the reliability of any of its personnel who have access to the Personal Information. <br /><br />
-                                    
-                        </div>
-                            </div>
-                            <div className="mt-4 w-full flex space-x-2">
-
-                            <span className="text-white w-[50px]">
-                        9.8. </span>
-                           The Service Provider hereby indemnifies and holds MTN harmless from and against all losses which MTN may incur or suffer pursuant to any and all claims arising as a result of, or to the extent caused by a breach by the Service Provider of its obligations under this clause. <br /><br />
-                                    
-                        </div>
-                            </div>
-
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            9.9.	The Service Provider shall take all precautions necessary to preserve the integrity of MTN data and to prevent any unauthorised access, corruption or loss of MTN data in its possession or under its control or that of the Service Provider’s Personnel. <br /><br />
-
-                            9.10.	The Service Provider shall not without MTN’s consent, store or transfer any MTN data including but not limited to information relating to its subscriber(s) or personnel outside the location where any of the Service is to be provided. <br /><br />
-
-                            9.11.	Each party shall ensure full compliance with the NITDA Nigerian Data Protection Regulation and any other regulation in force and accepts liability for any breach of such regulation. It shall also ensure: <br /><br />
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                9.11.1.	that Customer Data is not hosted out of the territory of the Federal Republic of Nigeria or obtain NITDA’s approval to host the data where there is no alternative to hosting within the territory of the Federal Republic of Nigeria; <br /><br />
-
-                                9.11.2.	that prior to entering of this Agreement, it discloses any record of data breach and subsequent to this Agreement discloses any data breach to MTN including Customer Data;
-                                <br /><br />
-
-                                9.11.3.	procure consent of MTN’s Subscribers prior to marketing or provision of the Services or transfer of the Customer Data and ensure that they have a right to withdraw their consent;
-                                <br /><br />
-
-                                9.11.4.	that the MTN’s Subscribers giving consent for the Services have the legal capacity to give the consent;
-                                <br /><br />
-
-                                9.11.5.	provide a copy of its privacy policy in a manner accessible to MTN’s Subscribers. <br /><br />
-
-                                9.11.6.	Each party shall take appropriate, technical, and organizational measures to prevent the loss, damage, unauthorized use, or unauthorized destruction of, and unlawful access to data provided.
-                                <br /><br />
-
-                                9.11.7.	Each party shall take appropriate steps to identify all internal and external risks posed to data under their possession or control and establish and maintain safeguards against any risks identified. <br /><br />
-                            </div>
-
-                            9.12.	Each Party agrees to comply with and maintain adequate measures to ensure that it complies with the provisions and obligations contained under this clause 9.  <br /><br />
-
-                            9.13.	Personal data acquired from both parties shall only be used solely for the purposes of this Agreement and for no other purpose.  <br /><br />
-
-                            9.14.	Nothing in this Agreement shall oblige the Service Provider to disclose any information to the public if it is of the view that to do so would be a breach of this Agreement.  <br /><br />
-
-                            9.15.	A breach of the terms of this clause shall constitute a material breach under this Agreement entitling the aggrieved party to terminate this Agreement. <br /><br />
-
-                            9.16.	<p><span className="text-white"><em>Retention of data records:</em></span> MTN will, retain and use Service Provider’s Personal Information, for as long as it is necessary to maintain the relationship with respect to this transaction and comply with legal and business obligations, resolution of disputes and enforcement of this Agreement. <br /><br /></p>
-
-                            9.17.	MTN, in the implementation of its obligations under this Agreement shall collect personal information of the Service Provider and shall transfer such information to a third-party processor. In performing the activities contemplated under this Agreement, the Service Provider consents to MTN transferring its personal information to such third party with whom MTN has a valid contract, which provide adequate provisions to ensure the protection of the Service Providers personal information. MTN shall comply with the requirements of a data controller and shall ensure that the third-party processor complies with applicable data protection laws, regulations and all related legislations. <br /><br />
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            9.18.	The Service Provider acknowledges that its personal information may be transferred to a jurisdiction outside of Nigeria and the Service Provider shall consent to such transfer, provided that MTN shall take every effort to ensure that the cross border transfer complies with Nigerian Data Protection Law.  <br /><br />
-
-                            9.19.	For more information on our privacy policy and how we manage your data, please refer to https://www.mtnonline.com/about-us/who-we-are/about-us/privacy-and-data-protection-policy/
-                                <br />
-
-                            9.20.	<p><span className="text-white">Incidence Response:</span> <br /><br /></p>
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                9.20.1.	The Service Provider shall at no additional cost to MTN maintain a data breach incident point of contact for liaison with MTN’s Data Protection team. <br /><br />
-
-                                9.20.2.	The Service Provider shall inform MTN of any data breach or suspicion thereof, as soon as technically possible, no later than forty-eight (48) hours after occurrence or suspicion thereof. The Service Provider shall take all steps to mitigate and contain or avoid such breach to prevent it from reoccurring. <br /><br />
-
-                                9.20.3.	The Service Provider shall inform MTN’ of the breaches, cooperate with any supervisory authorities, or law enforcement and ensure that acknowledgement of notification is received from MTN. <br /><br />
-
-                                9.20.4.	The Service Provider is required to provide MTN with updates on progress in resolving any incident until it has been fully mitigated or resolved, or until MTN is satisfied with the results in the form of a report provided by Service Provider . <br /><br />
-
-                                9.20.5.	The Service Provider is required to provide MTN with a Root Cause Analysis (RCA) report on all incidents within twenty four (24) hours of closure of the incident, or within forty eight (48) hours of request from MTN. The RCA must at a minimum provide details of what went wrong, rectification/ remediation actions taken, and controls implemented to prevent reoccurrence of the incident. <br />
-                            </div>
-
-                            9.21.	Compliance with MTN’s Right to Audit <br />
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                9.21.1.	The Service Provider shall at no additional cost to MTN, required to provide MTN on an annual basis with a data protection attestation such as NDPR or an equivalent. Where Service Provider is unable to provide the above, MTN reserves the right to select auditors to perform a full system and process audit including data protection in accordance with the audit provisions contained in the Agreement. <br /><br />
-
-                                9.21.2.	The Service Provider may be required to at their own cost and at no additional cost to MTN, perform a re-assessment of the remedial actions taken, and provide the results in form of a report to MTN within a mutually agreed time frame. <br /> <br />
-                            </div>
-
-                            9.22.	Each party shall ensure that their internal auditors, consultants, and personnel that are allowed access to any Confidential Information are bound by same confidential obligations as contained in this Agreement <br />
-                        </div>
-
-                        <p>
-                        10.	CONFLICT OF INTEREST
-                        </p>
-
-                        <p>
-                        The Service Provider shall take appropriate steps to ensure that neither it nor its Staff is placed in a position where there is or may be an actual, potential or perceived conflict,  between the interests of the Service Provider and MTN The Service Provider shall disclose to MTN full particulars of any such conflict of interest, which may arise including any additional information necessary to fully assess and address such conflict of interest and shall maintain high ethical standards at all times. The Service Provider shall accept any reasonable conflict mitigation strategy employed by the MTN, including but not limited to the use of an independent subservice provider(s) to perform the portion of the Service that gives rise to the actual or potential conflict.
-                        </p>
-
-                        <p>
-                        11.	<p><span className="text-white">REPRESENTATIONS, WARRANTIES AND COVENANTS</span></p>
-                        </p>
-
-                    </div> 
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            11.1.	The Service Provider warrants and represents that it: <br /> <br />
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                11.1.1.	Has the full capacity, authority, all necessary licences, permits, authorizations, consents to enter into and perform this Agreement and the provision of the Service shall not infringe on any third party’s intellectual property rights  <br /> <br />
-                                11.1.2.	this Agreement is executed by a duly authorised representative of the Service Provider. <br /><br />
-                                11.1.3.	it is solely liable for and shall pay to the relevant collecting society or any licencing authority, all due rates that may be due from time to time. <br /><br />
-                                11.1.4.	Is not in default in the payment of any due and payable Taxes or in the filing, registration or recording of any document or under any legal or statutory obligation or requirement which default might have a material adverse effect on its business, assets or financial condition or its ability to observe or perform its obligations under this Agreement. <br /> <br />
-                                11.1.5.	Shall provide the Services through the designated Short codes provided by MTN and shall not impinge on any of MTN’s licence obligations or on MTN’s current policies on spam and the use of Short codes which policy shall be provided to the Service Provider upon request. <br /> <br />
-                                11.1.6.	Shall be responsible for any delays, delivery system failures, or any other loss or damage resulting from the transfer of data over communications networks and facilities, including the MTN network, and shall be responsible for any limitations, delays and other problems inherent in the use of such communications facilities. <br /> <br />
-                            </div>
-
-                            11.2.	The Service Provider covenants not to approach any MTN subscribers directly for the purposes of marketing or selling them the Services or similar services for the duration of this Agreement, and in respect of any MTN Subscriber for the duration of such MTN Subscriber’s contract with MTN for the Service, and for a period of eighteen (18) months thereafter, without obtaining MTN’s prior written permission. <br /><br />
-
-                            11.3.	The Service Provider guarantees the authenticity, accuracy, and integrity of all representations provided to MTN and undertakes to pay MTN for all extra costs occasioned by any discrepancies, errors or omissions therein. <br /><br />
-
-                            11.4.	The Service Provider warrants that MTN and MTN Subscriber’s use of the Services under this Agreement will be uninterrupted and error-free and/or will meet MTN Subscribers’ or any End-User’s requirements; <br /><br />
-
-                            11.5.	The Service Provider warrants that its agents, sub-Service Providers, staff and connected persons shall not use the Short codes provided by MTN under this Agreement for any other purpose(s) other than for the Services. <br /><br />
-
-                            11.6.	The Service Provider covenants that it shall streamline all outgoing SMS messages to comply with the NCC guidelines and directives; including but not limited to restricting same to only informative, educative, reward loyalty schemes and must exclude all lotteries. <br />
-                        </div>
-
-                        <p>
-                        12.	<p><span className="text-white">CONFIDENTIALITY</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            12.1.	In accordance with the provisions of the Confidentiality and Non-Disclosure Agreement in Annexure C of this Agreement, the information provided by or accessed from MTN pursuant to the provisions of this Agreement shall remain the property of MTN and are confidential.  The Service Provider shall not, without the prior written consent of MTN, use the information provided by MTN in furtherance hereof except for the implementation of this Agreement. The Service Provider shall ensure that third parties, its staff and sub-Service Providers who are necessarily given access to Confidential Information, trade secrets or any new technology developed or acquired in performing the Services, keep the information confidential. <br /><br />
-
-                            12.2.	if required by Law or valid regulatory process, the Service Provider may disclose Confidential Information, with prior written notice to MTN and shall reasonably cooperate with MTN to maintain the confidentiality of such Confidential Information.  <br /><br />
-
-                            12.3.	The provisions of this clause shall survive the termination of this Agreement for a period of one (1) year from the date of the termination of this Agreement. <br />
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <p>
-                        13.	<p><span className="text-white">INTELLECTUAL PROPERTY RIGHTS</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            13.1.	The entire right, title and interest in and to all Intellectual Property shall be and remain vested with the Party who owns or controls such Intellectual Property, and nothing in this Agreement grants or purports to grant or shall be interpreted to imply the granting of any right, title or interest of whatever nature to a Party in the background Intellectual Property of the other Party otherwise than as explicitly provided for in this Agreement. All Intellectual Property subsequently created by Parties in connection with this Agreement shall vest in MTN. <br /><br />
-
-                            13.2.	Parties shall obtain written consent before using the trademarks and brands of the other party and shall comply with the brand guidelines, and any other terms and conditions of the consent. <br /><br />
-
-                            13.3.	The Indemnified Party shall notify the other Parties in writing of any Service Provider IPR Claim of which the Indemnified Party has received express written notice <br /><br />
-
-                            13.4.	The Service Provider shall procure that its insurers (as relevant) shall, keep MTN updated at all times on all progress and developments relating to the Service Provider IPR Claim and any counterclaim. <br /><br />
-
-                            13.5.	The Service Provider shall indemnify MTN, including its directors, officers, agents, employees, affiliates, independent Service Provider and sub-service provider to the fullest extent, for any incidental, indirect, special or consequential damages, or any loss of use, goodwill, revenue or profit, by any person, entity or organisation, including, without limitation, MTN or its affiliates, claimed or resulting from such claims. <br /><br />
-
-                            13.6.	e Service Provider undertakes that it is unaware of any third-party copyright, trademark, patent or other IPRs that would be infringed by the use of the Licence by MTN. If MTN is charged with infringement of a third party’s patent, trademark, copyright or other intellectual property rights as a result of the use of the Licence, The Service Provider will, at no expense to MTN, a) take the place of MTN against such charge, claim or suit;  b) apply its best efforts to procure for MTN the right to continue the use of the Service, to the extent that this is legally permissible; or c) apply its best efforts to modify the Service so to cease, desist and cure the infringement, provided that such modification can be done without substantially impairing its functionality or performance of the Service provided to MTN. <br />
-                        </div>
-
-                        <p>
-                        14.	<p><span className="text-white">RIGHT OF AUDIT </span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            14.1.	MTN shall have the right to audit the Service Provider’s performance of the Services under this Agreement. The Service Provider shall arrange for MTN to have access to the premises and to all locations and documentation relevant to the Services. The Service Provider shall make available appropriate employees to assist MTN in the performance of its audit.  <br /><br />
-
-                            14.2.	The Service Provider warrants to MTN that it has or will upon the coming into effect of this Agreement undertake a Systems audit to ensure adequate controls, safeguards, security and effective internal controls to protect the integrity of the information of MTN. <br /><br />
-
-                            14.3.	The Service Provider undertakes that the systems audit shall be carried out in accordance with the International Standard on Auditing (ISA) 402 – (Audit Considerations Relating to Entities Using Service Organisations) or such other similar internationally recognized systems auditing standard. <br /><br />
-
-                            14.4.	MTN shall reserve the right to appoint an independent auditor to conduct a systems audit of the Service Provider as it may require in its absolute discretion notwithstanding that the Service Provider has confirmed to MTN that it has conducted a Systems audit. <br /><br />
-
-                            14.5.	The Service Provider shall establish and maintain a reasonable accounting system that enables MTN readily identify the Service Provider’s assets, expenses, costs of goods, and use of funds. MTN and its authorized representatives shall have the unrestricted right to audit, examine, and to make copies of, or extracts from all financial and related records (in whatever form they may be kept, whether written, electronic, or other) relating to or pertaining to this Agreement kept by or under the control of the Service Provider, including, but not limited to those kept by the Service Provider, its employees, agents, assigns, successors, and sub-Service Providers. Such records shall include, but not be limited to, accounting records, deposit slips, bank statements, all paid vouchers including those for out‐of‐pocket expenses, other reimbursement supported by invoices, original estimates, written policies and procedures and other correspondence.
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-
-                            14.6.	The Service Provider undertakes to permit MTN to conduct such other audits of its operations and processes as may be applicable or relevant to the performance of the Service Provider’s obligations under this Agreement. Such further audits shall be carried out under terms to be decided upon by MTN at its sole discretion. Provided however that the Service Provider may make specific requests to MTN for the exclusion of any information with respect to which the Service Provider has been placed under an obligation of confidentiality.  <br />
-                        </div>
-
-                        <p>
-                        15.	SUB-SERVICE PROVIDERS
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            15.1.	Neither Party shall subcontract all or any part of its obligations under this Agreement without the other Parties’ prior written approval, unless such sub-contracting is made towards an affiliate company. In the latter case, the subcontracting Party shall inform the other Parties. Where approval is granted, each Party shall bind every subservice Provider to the terms of this Agreement but shall remain responsible to the others for any obligations which are performed by subservice Providers as if such obligations were performed by the Party.  <br /><br />
-
-                            15.2.	No provision whatsoever of this Agreement will be deemed to create a contractual relationship between MTN and the subservice Provider, nor between MTN and employees of the Service Providers or any subservice Provider.   <br /><br />
-                        </div>
-
-                        <p>
-                        16.	ASSIGNMENT OF AGREEMENT
-                        </p>
-
-                        <p>
-                        The Service Provider shall not be entitled to cede its rights or delegate its obligations under this Agreement in whole or in part whether voluntarily or by operation of law, without the prior written consent of MTN, provided such consent shall not be unreasonably withheld; provided, however, that a Party shall be entitled to assign this Agreement to its Affiliates (where “Affiliate” means any entity that directly or indirectly controls or is controlled by, or is under common control with, a Party, upon written notification of such assignment to the other Parties.
-                        </p>
-
-                        <p>
-                        17.	AMENDMENTS/VARIATION/WAIVER
-                        </p>
-
-                        <p>
-                        No amendments, interpretation, or waiver of any of the provisions of this Agreement shall be effective unless reduced into writing and signed by duly authorized representatives of the Parties. Failure or delay on the part of a Party to exercise any right, power or privilege shall not operate as a waiver of such right, power or privilege.
-                        </p>
-
-                        <p>
-                        18.	SEVERABILITY
-                        </p>
-
-                        <p>
-                        If any provision of this Agreement is held to be invalid or unenforceable, such provision shall be severed and the remainder of the provisions shall remain in full force and effect as if this Agreement has been executed with the invalid provision eliminated.  If any provision of this Agreement is so found to be invalid or unenforceable but would be valid or enforceable if some part of the provision were deleted, the provision in question shall apply with such modification as may be necessary to make it valid.
-                        </p>
-
-                        <p>
-                        19.	RELEASE AND INDEMNITY
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            19.1.	The Service Provider shall be liable for and hereby indemnifies MTN against any liability, direct loss, claim and/or proceedings whatsoever, arising under any statute or at common law, in respect of any personal injury or death of any person howsoever arising pursuant to or during the implementation of this Agreement; provided that such injury or death is due to the negligent act or omission of the Service Provider, its servants, agents, personnel and/or key personnel or subservice provider, or a breach by the Service Provider  of any of the provisions of this Agreement. <br /><br />
-
-                            19.2.	The Service Provider shall be liable for and hereby indemnifies MTN  against any expense, liability, direct loss, claim and/or proceedings in respect of any loss, injury or damage whatsoever to any property (movable or immovable) insofar as such loss, injury or damage arises out of or pursuant to the implementation of this Agreement; provided such loss, injury or damage arises out of any negligent act or omission by the Service Provider, its servants, agents or subservice provider, or any breach by the Service Provider of the provisions of this Agreement. <br /><br />
-                        </div>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            19.3.	The Service Provider indemnifies MTN to the fullest extent for any breach of its obligations, representations and warranties contained in this Agreement; including but not limited to claims by any regulatory authority arising from a breach of the obligations of the Service Provider in obtaining the requisite licenses and/or third party claims for infringement of Intellectual Property Rights  in respect to the operation of the Services or use of the Confidential Information by the Service Provider contrary to the terms of this Agreement. <br /><br />
-                        </div>
-
-                        <p>
-                        20.	LIMITATION OF LIABILITY
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            20.1.	Neither Party limits its liability for: <br /><br />
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                a.	Loss of property; <br />
-                                b.	Loss of data provided by a Party;  <br />
-                                c.	A claim of infringement of Intellectual Property of a Party or a third party;  <br />
-                                d.	Confidential Information disclosed by a Party in accordance with the Confidentiality and Non-Disclosure Agreement in Annexure C;  <br />
-                                e.	Negligence of a Party resulting in a loss incurred by the other Party;  <br />
-                                f.	Death or personal injury caused by its negligence, or that of its employees, agents or subService Providers provided such death or injury is not caused by the acts, omission or negligence of the other Party; or   <br />
-                                g.	fraud by it or its employees. <br /><br />
-                            </div>
-
-                            20.2.	Except as may be specifically provided in this Agreement, neither Party shall be liable to the other for any type of special, indirect and/or Consequential Losses or damages arising under statutory or common law, including but not limited to loss of profits, loss of business opportunities, loss of income, loss of use, loss of goodwill, loss of revenue or related third party claims.  <br />
-                        </div>
-
-                        <p>
-                        21.	<p><span className="text-white">CONDITIONS PRECEDENT TO OBLIGATIONS OF MTN</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            21.1.	The Service Provider hereby agrees and acknowledges that: <br />
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                21.1.1.	the conclusion of copyright agreement(s) (or any other agreement whatsoever called) with the respective collecting societies, licencing authorities and artists after a due and diligent copyright clearance exercise shall be a condition precedent to uploading any   ringtones, caller tunez, wallpapers, videos and or any other content or value added service to be provided pursuant to this Agreement; <br /><br />
-
-                                21.1.2.	MTN shall be provided a copy of such copyright agreement(s) for its review and concurrence; <br /><br />
-
-                                21.1.3.	all copyright agreements with respective collecting societies, licencing authorities and artists and copyrights owners shall include the clauses expressed in and referred to as Protective Clauses in Annexure D to this agreement; <br /><br />
-
-                                21.1.4.	MTN reserves the right to modify the Protective Clauses at anytime provided that such modification shall be communicated to the Service Provider in writing; <br /><br />
-
-                                21.1.5.	It shall ensure a verbatim inclusion of any modification to the Protective Clauses in all copyright agreements used for the provision of service under this agreement within sixty (60) days of being advised by MTN of such modification; and  <br /><br />
-
-                                21.1.6.	MTN reserves the right to suspend the publication of contents provided by the Service Provider in the event that the Protective Clauses in Annexure D are not included in the Copyright Agreements used for the provision of the Service under this Agreement.  <br /><br />
-                            </div>
-
-                            21.2.	The Service Provider further agrees and acknowledges that: <br />
-                        </div>
-
-                       
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                21.2.1.	MTN is not in the business of distributing or selling the Services including musical works. MTN only offers its network and or platform for the use by the Service Provider to upload non-infringing content including musical works that have been permitted by the owners of copyright in the said contents; and <br /><br />
-
-                                21.2.2.	The permission granted by MTN to the Service Provider to deploy the Services or any other content on its platform is limited only to the uploading of non-infringing works, that is, any content that has been authorized by the owner of the copyright in the content. <br /><br />
-
-                                21.2.3.	The Service Provider undertakes to clear the copyright to the content it uploads by obtaining the permission and/ or consent of the owner of the said copyrighted work in any content it uploads on the MTN platform. <br /><br />
-                            </div>
-
-                        </div>
-
-                        <p>
-                        22.	<p><span className="text-white">SET OFF</span></p>
-                        </p>
-
-                        <p>
-                        MTN shall have the right to set off any loss, damage, liability or claim, which it may have against the Service Provider against payment it, may owe the Service Provider.
-                        </p>
-
-                        <p>
-                        23.	<p><span className="text-white">TERMINATION</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            23.1.	Either Party may terminate: <br /><br />
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                a.	by giving thirty (30) days prior written notice (in the case of MTN seeking to terminate) and ninety (90) days prior written notice (in the case of the Service Provider seeking to terminate) to the other Party; <br />
-                                b.	by notice in writing to the other Party in the event of a provisional or final liquidation (otherwise than for the purpose of reconstruction or merger) or under provisional or final receivership or judicial management; or insolvency
-                            </div>
-                            <br /><br />
-
-                            23.2.	MTN may terminate: <br /><br />
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                a.	With notice, if the Service Provider fails to take steps reasonably satisfactory to MTN to remedy a breach within five (5) days of receiving a notice from MTN specifying the nature of the breach and calling for it to be remedied. <br />
-                                b.	without notice if the Service Provider commits a material breach (which impedes the delivery or receipt of the Services). <br />
-                                c.	without notice if the Service Provider is guilty of any criminal offence which in MTN’s opinion affects the Service Provider’s Work in terms of this Agreement.  <br />
-                                d.	without notice if the Service Provider is in persistent breach of any of the provisions of this Agreement (a breach that occurs more than two (2) times during the term of this Agreement).
-                            </div>
-                            <br /><br />
-
-                            23.3.	This Agreement shall immediately terminate, without notice, where the Service Provider loses or does not renew the licence, permit or authority to provide the Services or where extant provision/regulatory requirements invalidate the transaction under this Agreement. <br /><br />
-
-                            4.	Upon termination: <br /><br />
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                a.	Except as otherwise expressly provided herein, all rights and obligations contained herein shall cease, without prejudice to the rights and obligations relating to the period prior to such termination and any continuing obligations or liabilities under this Agreement or at Law. <br />
-                                b.	Either Party shall return to the other Party all documents, property and information, acquired by the Party in the course of implementing this Agreement or destroy, and give a signed, written undertaking to the other Party that it has so destroyed, all information and documentation relating to this Agreement, which exists in any format.
-                            </div>
-                            <br /><br />
-
-                            23.5.	MTN shall upon termination of this Agreement, deactivate all Short Codes configured and activated for the Services on the MTN Network. <br /><br />
-
-                            23.6.	In the event of a withdrawal or suspension of the VAS Licence by the NCC at any time, the Service Provider shall be obliged to immediately inform MTN, and MTN shall be at liberty to immediately terminate this Agreement. <br />
-                        </div>
-
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <p>
-                        24.	<p><span className="text-white">INDUCEMENTS, FRAUD AND ANTI-CORRUPTION</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            24.1.	The Service Provider hereby undertakes that they will comply with all Anti-Corruption Laws and any other applicable law.  <br /><br />
-
-                            24.2.	The Service Provider shall not offer any person any gift or consideration as an inducement or reward for doing or not doing any act in relation to this or any other Agreement. All cases of inducement involving an MTN employee or other third party,  should be reported by calling the MTN “tip-offs anonymous line +23408031230141 (toll free) and/or MTN Internal Fraud Hotline Number (+23408032005500) or by sending an email to MTNNFraudManagement@mtn.com. The Service Provider may also log on to www.tip-offs.com web site and make an anonymous report. <br /><br />
-
-                            24.3.	The Service Provider further warrants that: it or any of its associated parties have not been found guilty, by any court or to the best of its knowledge been investigated for any criminal activities prior to the date of this Agreement. Where the Service Provider has been investigated as aforementioned, the Service Provider has disclosed such fact before the Effective Date of this Agreement. MTN may terminate this Agreement with immediate effect upon written notice-as of right and without any legal implication; if during the term of this Agreement, the Service Provider is suspected or convicted of any criminal offence even if not connected to this Agreement. <br /><br />
-
-                            24.4.	To the extent permitted by the Applicable Laws, the Service Provider shall indemnify MTN, MTN Directors and officers, against any losses, liabilities, damages, costs (including legal fees) and expenses incurred by or awarded as a result of any breach of this clause and the entire Agreement. Furthermore, any breach of this clause by the Service Provider or by the Service Provider’s or its associated parties (whether with or without the knowledge of the Service Provider shall entitle MTN to terminate this Agreement in addition to other remedies available to MTN at law  <br /><br />
-                        </div>
-
-                        <p>
-                        25.	<p><span className="text-white">FORCE MAJEURE</span></p>
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <p>
-                            25.1.	The Parties shall not be liable for loss or damage arising out of any delay or failure of performance caused by a Force Majeure Event. However, the time within which the Service Provider is required to perform any act under this Agreement shall be extended where the delay in the performance of the act is due to any of the Force Majeure. In this regard, the Service Provider shall:
-                            </p>
-
-                            <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                                25.1.1.	Notify MTN promptly of the occurrence of the event resulting in the delay; <br /><br />
-
-                                25.1.2.	Use its best endeavours to abate the delay, as far as possible; and <br /><br />
-
-                                25.1.3.	Perform the act delayed immediately after the abatement of the unavoidable delay unless MTN had instructed it not to perform same, or the act delayed is no longer necessary in the opinion of MTN given changed circumstances.  In the latter case, the Service Provider shall, immediately after the abatement of the delay, confirm from MTN the necessity or otherwise of performing the delayed act.
-                            </div>
-
-                            <p>
-                            25.2.	If the event constituting the force majeure continues for a period of sixty (60) days, then MTN shall be entitled to terminate this Agreement by giving two (2) weeks’ notice in writing to the Service Provider.
-                            </p>
-                        </div>
-
-                        <p>
-                        26.	<p><span className="text-white"> GOVERNING LAW AND DISPUTE RESOLUTION</span></p>
-                        </p>
-
-                        <p>
-                        This Agreement shall be governed by and construed in accordance with the Laws of the Federal Republic of Nigeria. In the event of a dispute or difference between the Parties in connection with or in relation to this Agreement or its performance, construction or interpretation, the party alleging the dispute shall provide a written notice, giving particulars of the Dispute (the Notice of Dispute) to the other Party. Dispute resolution shall be by negotiation, followed by mediation if unresolved and litigation in it remains unresolved.
-                        </p>
-
-                        <p>
-                        27.	<p><span className="text-white">ENTIRE AGREEMENT</span></p>
-                        </p>
-
-                        <p>
-                        This Agreement contains all the entire agreement reached by the Parties with regard to the subject matter of this Agreement and the Parties waive the right to rely on any other terms not contained in this Agreement.
-                        </p>
-
-                        <p>
-                        28.	<p><span className="text-white">PARTNERSHIP</span></p>
-                        </p>
-
-                    </div>
-
-                    <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
-                        
-
-                        <p>
-                        Nothing in this Agreement shall be construed as creating a partnership, an employment relationship or a relationship of principal and agent between MTN and the Service Provider. For the provision of the Services under this Agreement, the Service Provider shall be strictly an independent Service Provider.
-                        </p>
-
-                        <p>
-                        29.	<p><span className="text-white">NOTICES</span></p>
-                        </p>
-
-                        <p>
-                        29.1.	Any written notice in connection with this Agreement shall be addressed to the address provided in this Agreement and shall be addressed to
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            <p>
-                            In the case of MTN to:
-                            </p>
-
-                                Attention: 	Chief Digital Officer <br />
-                                Cc:		GM, Corporate Transactions
-                            <br /><br />
-
-                            <p>
-                            In the case of the Service Provider to:
-                            </p>
-                                Attention: Chief Executive Officer
-                        </div>
-
-                        <p>
-                        29.2.	A Party may change that Party's address, by prior notice in writing to the other Party:
-                        </p>
-
-                        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
-                            29.2.1.	If any notice is to be sent by mail, it shall be sent by prepaid registered mail and shall then be deemed to have been received five (5) days after the date of posting until and unless the contrary is proved. <br />
-
-                            29.2.2.	If any notice is delivered by hand, it will be deemed to have been received on proof of the date of delivery.
-                        </div>
-
-                        <p>
-                        <p><span className="text-white">IN WITNESS WHEREOF</span>, the Parties have duly executed two original copies of this Agreement as of the day and year first written above.</p>
-                        </p>
-{/* 
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            1
+          </span>
+          <span className={`text-white/40`}>Annexure A</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-b`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            2
+          </span>
+          <span className={`text-white/40`}>Annexure B</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-c`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            3
+          </span>
+          <span className={`text-white/40`}>Annexure C</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-d`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            4
+          </span>
+          <span className={`text-white/40`}>Annexure D</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-e`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            5
+          </span>
+          <span className={`text-white/40`}>Annexure E</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-f`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            5
+          </span>
+          <span className={`text-white/40`}>Annexure F</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-g`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            5
+          </span>
+          <span className={`text-white/40`}>Annexure G</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-h`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-white/40 rounded-full justify-center items-center`}
+          >
+            5
+          </span>
+          <span className={`text-white/40`}>Annexure H</span>
+        </div>
+
+        <div
+          className="flex space-x-2 items-center cursor-pointer"
+          onClick={() =>
+            router.push(
+              `/dashboard/contracts/annexures/${contract_id}#annexure-e`
+            )
+          }
+        >
+          <span
+            className={`flex w-6 h-6 text-white bg-mtn rounded-full justify-center items-center`}
+          >
+            6
+          </span>
+          <span className={`text-white`}>Main Contract</span>
+        </div>
+      </div>
+
+      <div className="mb-4 rounded-xl pt-8 text-white w-[848px]">
+        <span
+          onClick={() => downloadUnsignedContract(partner?.uuid, contract_id)}
+          className="text-black font-bold rounded-full py-2 px-6 bg-yellow-600 text-sm cursor-pointer whitespace-nowrap hover:text-white float-right ml-auto inline-flex"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="black"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+            />
+          </svg>
+          &nbsp;Download
+        </span>
+      </div>
+
+      <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl">
+        <p className="text-white">
+          AGREEMENT FOR THE PROVISION OF VALUE-ADDED SERVICES BETWEEN MTN
+          NIGERIA COMMUNICATIONS PLC
+          <br />
+          (RC No. 395010)
+          <br />
+          <br />
+          AND
+          <br />
+          <br />
+          {dynamicData?.dynamic_details?.company_name?.toUpperCase()}&nbsp; (RC
+          No. {dynamicData?.dynamic_details?.rc_no?.toUpperCase()})
+        </p>
+      </div>
+
+      <div className="border-2 mb-8 border-white/20 p-8 rounded-xl flex flex-col pt-8 text-white md:max-w-4xl md:w-[900px]">
+        <h2 className="font-mtn text-white w-full">Table of contents</h2>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1</span>
+          <span className="text-white/60 flex-1">Definitions</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">2</span>
+          <span className="text-white/60 flex-1">Interpretations</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">3</span>
+          <span className="text-white/60 flex-1">
+            Commencement and Duration
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">4</span>
+          <span className="text-white/60 flex-1">
+            Obligations of the Service Provider
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">5</span>
+          <span className="text-white/60 flex-1">Obligations of MTN</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">6</span>
+          <span className="text-white/60 flex-1">Revenue Share</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">7</span>
+          <span className="text-white/60 flex-1">
+            Payment and Tax Deductions
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">8</span>
+          <span className="text-white/60 flex-1">
+            Taxes and Tax Exemption Certificates
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">9</span>
+          <span className="text-white/60 flex-1">
+            Information and Data Protection
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">10</span>
+          <span className="text-white/60 flex-1">Conflict of Interest</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">11</span>
+          <span className="text-white/60 flex-1">
+            Representations, Warranties and Covenants
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">12</span>
+          <span className="text-white/60 flex-1">Confidentiality</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">13</span>
+          <span className="text-white/60 flex-1">
+            Intellectual Property Rights
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">14</span>
+          <span className="text-white/60 flex-1">Right of Audit</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">15</span>
+          <span className="text-white/60 flex-1">Sub-Service Providers</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">16</span>
+          <span className="text-white/60 flex-1">Assignment of Agreement</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">17</span>
+          <span className="text-white/60 flex-1">
+            Amendment/Variation/ Waiver
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">18</span>
+          <span className="text-white/60 flex-1">Severability</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">19</span>
+          <span className="text-white/60 flex-1">Release and Indemnity</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">20</span>
+          <span className="text-white/60 flex-1">Limitation of Liability</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">21</span>
+          <span className="text-white/60 flex-1">
+            Conditions Precedent to Obligations of MTN
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">22</span>
+          <span className="text-white/60 flex-1">Set Off </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">23</span>
+          <span className="text-white/60 flex-1">Termination</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">24</span>
+          <span className="text-white/60 flex-1">
+            Inducements, Fraud and Anti-Corruption
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">25</span>
+          <span className="text-white/60 flex-1">Force Majeure</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">26</span>
+          <span className="text-white/60 flex-1">
+            Governing Law and Dispute Resolution
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">27</span>
+          <span className="text-white/60 flex-1">Entire Agreement</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">28</span>
+          <span className="text-white/60 flex-1">Partnership</span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">29</span>
+          <span className="text-white/60 flex-1">Notices</span>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 md:max-w-4xl md:w-[900px]">
+        <p>
+          <span className="text-white">THIS AGREEMENT</span> is made on this{" "}
+          {dynamicData?.dynamic_details?.date_of_contract}.<br />
+          <br />
+        </p>
+        <p>
+          <span className="text-white">BETWEEN</span>
+          <br />
+          <br />
+        </p>
+        <p>
+          <span className="text-white">MTN NIGERIA COMMUNICATIONS PLC</span>, a
+          public limited liability company incorporated under the laws of the
+          Federal Republic of Nigeria, having its principal office at MTN Plaza,
+          Falomo Roundabout, Ikoyi, Lagos (hereinafter referred to as “MTN” or
+          “Disclosing Party”, which expression shall where the context so admits
+          include its successors-in-title and assigns), of the one part;
+          <br />
+          <br />
+        </p>
+        <p>
+          <span className="text-white">AND</span>
+          <br />
+          <br />
+        </p>
+        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private
+        limited liability company incorporated under the laws of the Federal
+        <br />
+        Republic of Nigeria, having its principal place of business at{" "}
+        {dynamicData?.dynamic_details?.company_address} (hereinafter referred to
+        as the “Receiving Party”, which expression shall where the context so
+        admits include its successors- in-title and assigns) of the other part.
+        <br />
+        <br />
+        <p>
+          <span className="text-white">AND</span>
+          <br />
+          <br />
+        </p>
+        {dynamicData?.dynamic_details?.company_name?.toUpperCase()}, a private
+        limited liability company incorporated under the laws of the Federal
+        Republic of Nigeria with RC No. [.], and having its registered office at
+        [address], (hereinafter referred to as the “Service Provider”, which
+        expression shall where the context so admits include its successors-
+        in-title and assigns) of the other part. 
+        <br />
+        <br />
+        Both{" "}
+        <p>
+          <span className="text-white">MTN</span> and the{" "}
+          <span className="text-white">Receiving Party</span> are hereinafter
+          jointly referred to as the “Parties” and individually as the “Party”.
+        </p>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          <p>
+            <span className="text-white">Whereas:</span>
+          </p>
+        </p>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">I. </span>
+          <span className="text-white/60 flex-1">
+            MTN is an Information Communications Technology (ICT) Company
+            licensed by the Nigerian Communications Commission (NCC) under the
+            unified licence scheme to provide amongst other services, digital
+            mobile cellular telephony and data services in Nigeria.
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">II. </span>
+          <span className="text-white/60 flex-1">
+            The Service Provider is a digital content company engaged in the
+            business of providing diverse telecoms value added services with
+            emphasis on lifestyle and entertainment.
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">III. </span>
+          <span className="text-white/60 flex-1">
+            The Service Provider has offered to make available to MTN
+            subscribers, value added services for information and lifestyle
+            (“the Services”).
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">IV. </span>
+          <span className="text-white/60 flex-1">
+            The Parties have agreed that the Service Provider shall provide the
+            Services, leveraging on MTN’s network to drive uptake of the service
+            by MTN subscribers.
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">V. </span>
+          <span className="text-white/60 flex-1">
+            The Parties have agreed to execute this Agreement in accordance with
+            the terms and conditions agreed hereunder.
+          </span>
+        </div>
+
+        <p>
+          <p>
+            <span className="text-white">THE PARTIES AGREE AS FOLLOWS:</span>
+          </p>
+        </p>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1. </span>
+          <p>
+            <span className="text-white">DEFINITIONS</span>
+          </p>
+        </div>
+
+        <div className="text-white">
+          In this Agreement, the following terms shall have the meanings as set
+          out hereunder:
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1.1</span>
+          <span className="text-white/60 flex-1">
+            <p>
+              <span className="text-white">“Acceptable Percentage”</span> means
+              five percent (5%);
+            </p>
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1.2.</span>
+          <span className="text-white/60 flex-1">
+            <p>
+              <span className="text-white">"Agreement"</span> means the
+              Agreement for the provision of Value Added Services, between MTN
+              and the Service Provider including the appendices and Annexures
+              hereto and any other document (or parts thereof) specified by MTN
+              or supplied in this Agreement;
+            </p>
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1.3.</span>
+          <span className="text-white/60 flex-1">
+            <p>
+              <span className="text-white">“AOL”</span> means Annual Operating
+              Levy representing two-point five percent (2.5%) or any other
+              percentage of Revenue due to either of the Parties as prescribed
+              by the Nigerian Communications Commission;
+            </p>
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1.4.</span>
+          <span className="text-white/60 flex-1">
+            <p>
+              <span className="text-white">“Anti-Corruption Laws”</span> means
+              the applicable Nigerian laws and regulations including but not
+              limited to the Corrupt Practices and Other Related Offences Act,
+              2004; Economic and Financial Crimes Commission (Establishment)
+              Act, 2004; Money Laundering Prohibition Act, 2022. Criminal Code;
+              and any other Applicable Law.
+            </p>
+          </span>
+        </div>
+
+        <div className="mt-4 w-full flex space-x-2">
+          <span className="text-white w-[50px]">1.5.</span>
+          <span className="text-white/60 flex-1">
+            <p>
+              <span className="text-white">“Business Days”</span> means any day
+              of the week other than Saturdays, Sundays or public holidays
+              declared by the Federal Government of Nigeria from time to time;
+            </p>
+          </span>
+        </div>
+
+        <br />
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.6. </span>
+            <p>
+              <p>
+                <span className="text-white">“Confidential Information”</span>{" "}
+                means all information designated as such by either Party in
+                writing and all other information which relates to the business,
+                affairs, properties, assets, trading practices, Goods, Services,
+                developments, trade secrets, know-how, personnel, customers, MTN
+                Subscribers and Service Providers of either Party which may
+                reasonably be regarded as the confidential information of the
+                disclosing Party;
+              </p>
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.7. </span>
+            <p>
+              <span className="text-white">“Content Owner”</span> means the
+              owner of the intellectual Property in the value-added services
+              offered under this Agreement;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.8. </span>
+            <p>
+              <span className="text-white">“Customer Data”</span> means all
+              information held by MTN and the Service Provider whether
+              transmitted by the MTN Subscribers or otherwise stored by either
+              MTN or the Service Provider and includes Personal Data;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.9. </span>
+            <p>
+              <span className="text-white">“Effective Date”</span> means{" "}
+              {moment(dynamicData?.date_of_contract).format("DD/MM/YYYY")};
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.10. </span>
+            “Force Majeure Event” means an event beyond the control of a Party
+            including but not limited to war, rebellion, sabotage, riots,
+            epidemic, floods, fire, national strikes, explosion, civil
+            commotion, insurrection, computer hacking, computer crashing, and
+            Acts of (i) God, (ii) nature, (iii) government or (iv) regulatory
+            authority; in the case of the latter (iii) and (iv) such acts being
+            extremely unusual and not reasonably foreseeable;
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.11. </span>
+            “Intellectual Property” or “Intellectual Property Rights” means
+            copyright, patents, inventions, trademarks, service marks, logos,
+            design rights (whether registerable or otherwise), applications for
+            any of the foregoing, database rights, domain names, trade or
+            business names, and other similar rights or obligations whether
+            registerable or not;
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.12. </span>
+            “Material Breach” means a fundamental breach of this Agreement that
+            is significant enough to impede MTN’s ability to obtain the services
+            anticipated under this Agreement or significant enough to impede the
+            continued performance of the services by the Service Providers, and
+            shall include non-payment of the Revenue Share by MTN and the
+            failure of the Service Provider to maintain a full and valid VAS
+            Licence;
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.13. </span>
+            <p>
+              <span className="text-white">“Month”</span> means calendar month;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.14. </span>
+            <p>
+              <span className="text-white">“MTN Network”</span> means the
+              telecommunications network of MTN;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.15. </span>
+            <p>
+              <span className="text-white">“MTN Property”</span> means any
+              property, other than real property, issued or made available to
+              the Service Provider by MTN in connection with this Agreement;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.16. </span>
+            <p>
+              <span className="text-white">“MTN Subscriber(s)”</span> means
+              target customers for the use of the Service;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.17. </span>
+            <p>
+              <span className="text-white">“Net Revenue”</span> means the amount
+              generated from the Services less deduction of all Taxes, levies
+              and regulatory fees;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.18. </span>
+            <p>
+              <span className="text-white">“NITDA”</span> means National
+              Information Technology Development Agency;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.19. </span>
+            <p>
+              <span className="text-white">”NCC”</span> means Nigerian
+              Communications Commission;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.20. </span>
+            <p>
+              <span className="text-white">“Party”</span> means a Party to this
+              Agreement and “Parties” shall be construed accordingly;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.21. </span>
+            <p>
+              <span className="text-white">“Personal Data”</span> means any
+              personally identifiable information and data pertaining to MTNs
+              Subscriber or customer who can be identified from those data or
+              from other information in possession or likely to be in possession
+              of MTN;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.22. </span>
+            <p>
+              <span className="text-white">“Revenue”</span> means the gross
+              amount generated from the Services to be provided under this
+              Agreement;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.23. </span>
+            <p>
+              <span className="text-white">“Revenue Share”</span> means the
+              percentage of Net Revenue received by MTN to be paid to the
+              Service Provider in accordance with the model set out in Annexure
+              A (Revenue Share Model);
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.24. </span>
+            <p>
+              <span className="text-white">“Services”</span> means the
+              value-added services to be provided by the Service Provider which
+              shall include information, lifestyle and any other value-added
+              services to be agreed in writing by the Parties, as provided in
+              clause 4;
+            </p>
+          </div>
+          <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.25. </span>
+            <p>
+              <span className="text-white">“Platform”</span> means that part of
+              MTN’s network that enables the Service to be accessed by MTN
+              Subscribers being MTN’s subscription management infrastructure;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.26. </span>
+            <p>
+              <span className="text-white">“Short Code”</span> means the short
+              code numbers approved by NCC to be utilized for the delivery of
+              SMS. The Short code shall have a two-way status that will enable
+              the SMS platform receive messages from MTN Subscribers as well as
+              transmit SMS to MTN Subscribers for the purposes of accessing the
+              Services;
+            </p>
+          </div>
+
+          <p>
+            <span className="text-white w-[50px]">1.27.</span> “Solutions”
+            includes &nbsp;&nbsp;
+            {dynamicData?.dynamic_details?.service_types.map((s) => (
+              <>
+                <span className="text-white">{s}</span>
+              </>
+            ))}
+          </p>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.28. </span>
+            <p>
+              <span className="text-white">“SMS”</span> means the short
+              message/text service(s) carried on the MTN Network and enabling
+              MTN Subscribers to access the Services;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.29. </span>
+            <p>
+              <span className="text-white">“SMS Logs”</span> means a list of SMS
+              transactions captured by MTN systems as a result of MTN
+              Subscribers entries to the Short code;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.30. </span>
+            <p>
+              <span className="text-white">“Staff”</span> means all persons
+              employed by the Service Provider to perform the Services together
+              with the Service Provider's servants, agents and sub-Service
+              Providers engaged in the performance of this Agreement;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.31. </span>
+            <p>
+              <span className="text-white">“System”</span> means the System
+              operated by the Service Provider and MTN (as applicable) for the
+              purposes of the Services to be provided hereunder;
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.32. </span>
+            <p>
+              <span className="text-white">“Taxes”</span> means all taxes
+              including but not limited to income tax, withholding tax, value
+              added tax, stamp duties, tariffs, fiscal charges and other dues or
+              any similar tax-related charges or levies of whatsoever nature
+              imposed, levied or assessed by any governmental authority within
+              Nigeria in accordance with present or future laws and/or
+              regulations in Nigeria.
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.33. </span>
+            <p>
+              <span className="text-white">“USSD”</span> means Unstructured
+              Supplementary Service Data; and
+            </p>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">1.34. </span>
+            <p>
+              <span className="text-white">“VAS Licence”</span> means the
+              Value-Added Services Licence issued by the NCC to the Service
+              Provider authorising the Service Provider to provide the Services
+              to the MTN subscribers under this Agreement.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          2.{" "}
+          <p>
+            <span className="text-white">INTERPRETATIONS</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <p>
+            The interpretation and construction of this Agreement shall be
+            subject to the following provisions:
+          </p>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">2.1. </span>
+            References to singular includes plural and vice versa while
+            references to any gender includes reference to other gender(s) and
+            vice versa; and references to any person shall include natural
+            persons, partnerships, firms, incorporated bodies and all other
+            legal persons of whatever kind and however constituted;
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">2.2. </span>
+            Headings are included in this Agreement for ease of reference only
+            and shall not affect the interpretation or construction of this
+            Agreement; and
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">2.3. </span>
+            The Annexures to this Agreement form an integral part hereof and
+            terms defined in this Agreement shall bear, unless the context
+            otherwise requires, the same meaning in such Annexure.
+          </div>
+        </div>
+
+        <p>
+          3.{" "}
+          <p>
+            <span className="text-white">COMMENCEMENT AND DURATION</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">3.1. </span>
+            This Agreement shall commence on the Effective Date and remain in
+            force for a period of{" "}
+            {moment(dynamicData?.term_of_contract).format("DD/MM/YYYY")}, unless
+            earlier terminated by either of the Parties in accordance with the
+            terms of this Agreement.
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">3.2. </span>
+            Notwithstanding the Effective Date, this Agreement and all the
+            obligations, representations, covenants, and undertakings that have
+            been exchanged by the Parties shall not take effect until the MTN
+            Intellectual Property (IP) Team has confirmed receipt in writing of
+            a validly existing license, assignments, and/or authorisations to
+            use any third-party owned IP assets and/or rights from the Service
+            Provider.
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          4.{" "}
+          <p>
+            <span className="text-white">
+              OBLIGATIONS OF THE SERVICE PROVIDER
+            </span>
+          </p>
+        </p>
+
+        <p>
+          The Service Provider undertakes to perform its obligations in addition
+          to any other ancillary duties that may arise as a result of its
+          contractual obligations under this Agreement in accordance with the
+          following terms:
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.1. </span>
+            The Service Provider shall ensure that its organisation and staff
+            are fully compliant with NCC’s legal and regulatory framework (and
+            with the requirement of other applicable regulatory bodies),
+            including but not limited to financial obligations, permits
+            licenses, guidelines and directives; and shall obtain, and maintain
+            the requisite licences, approvals and permits including but not be
+            limited to a valid VAS Licence.
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.2. </span>
+            The Service Provider shall provide adequate training or information
+            guidelines to equip MTN staff with the know-how and technical
+            knowledge to deal with call queries received from MTN Subscribers in
+            respect of the Services.
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.3. </span>,
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.4. </span>
+            The Service Providers shall ensure that the active Short codes and
+            Services as contained in Annexure B shall run on MTN’s Network for
+            the duration of this Agreement and that it shall not send prepaid
+            specific information to post-paid MTN Subscribers and vice versa.
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.5. </span>
+            In the event that MTN removes or suspends the distribution of a
+            specific content, MTN shall notify the Service Provider in writing
+            (e-mail sufficient) and the removal or suspension shall be carried
+            out by the Service Provider without undue delay.
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.6. </span>
+            The Service Provider shall be bound by the standard terms and
+            conditions applicable to MTN Value Added Service partners and all
+            the annexures below:
+          </div>
+
+          <div className="flex flex-col space-y-4 py-8">
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-a`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20 flex items-center"
+            >
+              <span className="text-white/60">Annexure A - </span>Revenue Share
+              Model
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-b`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure B - </span>Active Short
+              Code
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-c`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure C - </span>
+              Confidentiality and Non-Disclosure Agreement
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-d`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure D - </span>Protective
+              Clauses
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-e`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure E - </span>Information
+              Data and Cyber Security Annex
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-f`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure F - </span>Schedule of
+              Infractions and Sanctions
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-g`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure G - </span>MTN Business
+              Continuity Management Policy
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+            <a
+              href={`/dashboard/contracts/annexures/${contract_id}#annexure-h`}
+              className="text-white flex-1 border-1 p-4 border-white/20 bg-white/10 rounded ml-[60px] cursor-pointer hover:bg-white/20  flex items-center"
+            >
+              <span className="text-white/60">Annexure H - </span>Data
+              Protection Schedule
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="yellow"
+                className="w-4 h-4 ml-auto"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </a>
+          </div>
+
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">4.7. </span>
+            Notwithstanding any other remedies which MTN may have either in law
+            or in equity, any occurrence of the infractions in Annexure F shall
+            be treated as a Material Breach of this Agreement
+          </div>
+        </div>
+
+        <p>
+          5.{" "}
+          <p>
+            <span className="text-white">OBLIGATIONS OF MTN </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <p>
+            MTN shall perform the following obligations under this Agreement:
+          </p>
+
+          <p>
+            5.1. MTN shall provide access to its Network and/or such other
+            technology or Platform to enable the Service Provider to provide the
+            Services. <br />
+            5.2. Short codes configured for specific events shall be activated
+            and deactivated, in accordance with extant laws and regulations.
+          </p>
+        </div>
+
+        <p>
+          6.{" "}
+          <p>
+            <span className="text-white">REVENUE SHARE </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">6.1. </span>
+            MTN shall pay the Service Provider for the Services according to the
+            Revenue Share Model in Annexure A. The Revenue share models are
+            calculated and paid out based on the Net Revenue. In determining the
+            Net Revenue payable to the Service Provider, MTN shall deduct and
+            remit all applicable Taxes and regulatory fees from the Service
+            Provider’s own share of the Revenue.
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">6.2. </span>
+            The Parties agree that the Net Revenue payable to the Service
+            Provider shall be inclusive of stamp duties. The Parties agree that
+            the Service Provider shall bear the stamp duty cost and shall be
+            responsible for the stamping of this Agreement with the relevant tax
+            authority. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">6.3. </span>
+            MTN reserves the right to change and implement new Revenue sharing
+            provisions upon giving thirty (30) days prior written notice to the
+            Service Provider. <br /> <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">6.4. </span>
+            The Service Provider shall be liable to deduct and remit AOL at the
+            applicable rate to NCC from the Service Provider’s share of the
+            Revenue. <br />
+            <br />
+          </div>
+        </div>
+
+        <p>
+          7.{" "}
+          <p>
+            <span className="text-white">PAYMENT AND TAX DEDUCTIONS</span>
+          </p>
+        </p>
+
+        <p>
+          7.1. Payment shall be made by MTN within thirty (30) days from receipt
+          of an undisputed invoice from the Service Provider, subject to
+          regulatory approvals and in accordance with the Revenue Share set out
+          under Annexure A of this Agreement and the payment terms below:
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">7.1. </span>
+            1. MTN shall forward its generated logs to the Service Provider not
+            later than the 3rd of every month and the Service Provider shall
+            within twenty (20) Business Days from receipt of the said logs,
+            revert with an invoice to MTN based on the logs.
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">7.1. </span>
+            2. In the event of any dispute on the logs, the Service Provider
+            shall within twenty (20) Business Days from receipt of the logs,
+            notify MTN of such disputed which shall be investigated by MTN
+            within three (3) Business Days of such notification.
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">7.1. </span>
+            3. Invoices shall be subject to MTN internal payment authorization
+            process, must be on the Service Provider’s letterhead, reference
+            MTN’s log number(s), reflect the Service Provider’s account details
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">7.1. </span>
+            4. All the Service Provider‘s billings, invoices and payments shall
+            be in Naira.
+          </div>
+        </div>
+
+        <p>
+          7.2. MTN shall within seven (7) Business Days of the discovery of any
+          error on the submitted invoice notify the Service Provider of the
+          error. Invoices with errors shall be returned for correction and
+          payment shall be due thirty (30) Business Days after the corrected
+          invoice is received by MTN.
+        </p>
+
+        <p>
+          7.3. If MTN disputes any amount, MTN shall within thirty (30) days of
+          receipt of the invoice, notify the Contractor of the details of the
+          dispute. MTN shall be entitled to withhold payment of the difference
+          between the amount invoiced and that payable and such dispute shall be
+          referred to independent auditors nominated and agreed upon by the
+          Parties. The auditors shall act as experts and not as arbitrators and
+          their decision shall be final and binding on the Parties. The costs of
+          the auditors in resolving the dispute shall be borne by the Party
+          found to have incorrectly disputed the amounts payable to the Service
+          Provider.
+        </p>
+
+        <p>
+          7.4. The Parties agree that pending the resolution of any dispute as
+          to any amount payable by MTN to the Service Provider, the Parties
+          shall continue to observe and perform their respective obligations to
+          one another under this Agreement; and
+        </p>
+
+        <p>
+          8.{" "}
+          <p>
+            <span className="text-white">
+              TAXES AND TAX EXEMPTION CERTIFICATES{" "}
+            </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">8.1. </span>
+            Each Party shall bear its Tax obligations. Where a party bears Tax
+            obligations on behalf of the other Party, the Party shall be
+            entitled to recover from the Service Provider any such sums and all
+            costs incurred in connection therewith. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">8.2. </span>
+            Where, under the provisions of any applicable laws, regulations or
+            directives, MTN is required to deduct any amount or Tax, MTN shall
+            deduct the amount or rate from any amount payable to the Service
+            Provider, in accordance with the provisions of the relevant laws or
+            regulations. Particularly, MTN having been appointed an agent of the
+            Federal Inland Revenue Service (FIRS) for the collection and
+            remittance of Value Added Tax (VAT) shall deduct VAT at the point of
+            payment from any amount payable to the Service Provider. The Service
+            Provider acknowledges that it shall be its responsibility to obtain
+            the withholding credit notes from the FIRS Tax promax platform.{" "}
+            <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">8.3. </span>
+            Where the Service Provider claims to be exempted from any statutory
+            deductions, it shall inform MTN and provide any necessary
+            documentation to support its case, including a certificate of
+            exemption from the relevant authority.
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          9.{" "}
+          <p>
+            <span className="text-white">INFORMATION AND DATA PROTECTION</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.1. </span>
+            The Service Provider shall respectively make or obtain throughout
+            the term all necessary registrations or filings and notifications
+            which it is obliged to obtain and maintain pursuant to applicable
+            data protection laws, corporate security policies, procedures,
+            standards. For the avoidance of doubt, the Service Provider shall
+            comply with the Nigerian Data Privacy Regulations (NDPR) and other
+            laws or regulations as may be released from time to time. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.2. </span>
+            In performing the Work, the Service Provider shall respect the fact
+            that MTN shall exclusively determine the purposes of the processing
+            of MTN data and the Service Provider shall not possess or exercise
+            control of the purposes of such processing but shall process in
+            accordance with MTN’s written instructions and in accordance with
+            the terms of this Agreement. In performing the activities
+            contemplated under this Agreement, the Service Provider shall comply
+            with the requirements of a processor applicable to it under data
+            protection laws, regulations and all related legislations and MTN
+            shall comply with the requirements of a controller applicable to it
+            under data protection laws. For the avoidance of doubt, the Parties
+            agrees unequivocally that any customer’s data arising out of or in
+            connection with this Agreement, its subject matter or formation
+            shall be solely owned by MTN. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.3. </span>
+            In processing MTN data, the Service Provider agrees as part of its
+            provision of the Work to comply with the requests of MTN as related
+            to any obligations of MTN under applicable data protection laws,
+            regulation, corporate security policies, procedures, standards, etc,
+            associated with any duties MTN may have as a controller of data
+            under data protection laws. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.4. </span>
+            The Service Provider shall not, and it shall ensure that its
+            personnel shall not: <br />
+            <br />
+          </div>
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            <div className="mt-4 w-full flex space-x-2">
+              <span className="text-white w-[50px]">9.4.1.</span>
+              process MTN data in any manner or for any purpose other than as
+              set out in, or in accordance with, this Agreement; or <br />
+            </div>
+            <div className="mt-4 w-full flex space-x-2">
+              <span className="text-white w-[50px]">9.4.2.</span>
+              breach or contravene, or cause MTN to breach or contravene, the
+              provisions of this clause.
+            </div>
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.5. </span>
+            Any breach by the Service Provider of its obligations set out in
+            this clause 9, shall be deemed to be a material breach of this
+            Agreement and shall entitle MTN to terminate this Agreement in
+            accordance with the provisions herein. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.6. </span>
+            The Service Provider shall supply on request from MTN, all relevant
+            information including audit reports, remediation plan as required by
+            MTN to assess and confirm the Service Provider’s compliance with its
+            obligations in this clause 9. This information shall be provided
+            promptly to MTN and in any event within five (5) Business Days of
+            request at no additional cost. <br />
+            <br />
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.7. </span>
+            In respect of personal information processed in connection with this
+            Agreement, the Service Provider shall: <br />
+            <br />
+          </div>
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            <p>
+              9.7.1. act only on instructions from MTN regarding the processing
+              of that personal information, and ensure that appropriate
+              technical and organisational measures shall be taken against
+              unauthorised or unlawful processing of the personal information
+              and against accidental loss or destruction of, or damage to, the
+              personal information;
+            </p>
+            <div className="mt-4 w-full flex space-x-2">
+              <span className="text-white w-[50px]">9.7.2.</span>
+              from time to time comply with any reasonable request made by MTN
+              to ensure compliance with the measures mentioned in clause 9.4;
+            </div>
+            <div className="mt-4 w-full flex space-x-2">
+              <span className="text-white w-[50px]">9.7.3.</span>
+              take the measures mentioned in clause 9.4 and having regard to the
+              state of technological development and the cost of implementing
+              the measures, so as to ensure a level of security appropriate to:
+              (i) the harm that may result from breach of those measures; and
+              (ii) the nature of the personal information to be protected; and
+            </div>
+            <div className="mt-4 w-full flex space-x-2">
+              <span className="text-white w-[50px]">9.7.4.</span>
+              take reasonable steps to ensure the reliability of any of its
+              personnel who have access to the Personal Information. <br />
+              <br />
+            </div>
+          </div>
+          <div className="mt-4 w-full flex space-x-2">
+            <span className="text-white w-[50px]">9.8. </span>
+            The Service Provider hereby indemnifies and holds MTN harmless from
+            and against all losses which MTN may incur or suffer pursuant to any
+            and all claims arising as a result of, or to the extent caused by a
+            breach by the Service Provider of its obligations under this clause.{" "}
+            <br />
+            <br />
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          9.9. The Service Provider shall take all precautions necessary to
+          preserve the integrity of MTN data and to prevent any unauthorised
+          access, corruption or loss of MTN data in its possession or under its
+          control or that of the Service Provider’s Personnel. <br />
+          <br />
+          9.10. The Service Provider shall not without MTN’s consent, store or
+          transfer any MTN data including but not limited to information
+          relating to its subscriber(s) or personnel outside the location where
+          any of the Service is to be provided. <br />
+          <br />
+          9.11. Each party shall ensure full compliance with the NITDA Nigerian
+          Data Protection Regulation and any other regulation in force and
+          accepts liability for any breach of such regulation. It shall also
+          ensure: <br />
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            9.11.1. that Customer Data is not hosted out of the territory of the
+            Federal Republic of Nigeria or obtain NITDA’s approval to host the
+            data where there is no alternative to hosting within the territory
+            of the Federal Republic of Nigeria; <br />
+            <br />
+            9.11.2. that prior to entering of this Agreement, it discloses any
+            record of data breach and subsequent to this Agreement discloses any
+            data breach to MTN including Customer Data;
+            <br />
+            <br />
+            9.11.3. procure consent of MTN’s Subscribers prior to marketing or
+            provision of the Services or transfer of the Customer Data and
+            ensure that they have a right to withdraw their consent;
+            <br />
+            <br />
+            9.11.4. that the MTN’s Subscribers giving consent for the Services
+            have the legal capacity to give the consent;
+            <br />
+            <br />
+            9.11.5. provide a copy of its privacy policy in a manner accessible
+            to MTN’s Subscribers. <br />
+            <br />
+            9.11.6. Each party shall take appropriate, technical, and
+            organizational measures to prevent the loss, damage, unauthorized
+            use, or unauthorized destruction of, and unlawful access to data
+            provided.
+            <br />
+            <br />
+            9.11.7. Each party shall take appropriate steps to identify all
+            internal and external risks posed to data under their possession or
+            control and establish and maintain safeguards against any risks
+            identified. <br />
+            <br />
+          </div>
+          9.12. Each Party agrees to comply with and maintain adequate measures
+          to ensure that it complies with the provisions and obligations
+          contained under this clause 9. <br />
+          <br />
+          9.13. Personal data acquired from both parties shall only be used
+          solely for the purposes of this Agreement and for no other purpose.{" "}
+          <br />
+          <br />
+          9.14. Nothing in this Agreement shall oblige the Service Provider to
+          disclose any information to the public if it is of the view that to do
+          so would be a breach of this Agreement. <br />
+          <br />
+          9.15. A breach of the terms of this clause shall constitute a material
+          breach under this Agreement entitling the aggrieved party to terminate
+          this Agreement. <br />
+          <br />
+          9.16.{" "}
+          <p>
+            <span className="text-white">
+              <em>Retention of data records:</em>
+            </span>{" "}
+            MTN will, retain and use Service Provider’s Personal Information,
+            for as long as it is necessary to maintain the relationship with
+            respect to this transaction and comply with legal and business
+            obligations, resolution of disputes and enforcement of this
+            Agreement. <br />
+            <br />
+          </p>
+          9.17. MTN, in the implementation of its obligations under this
+          Agreement shall collect personal information of the Service Provider
+          and shall transfer such information to a third-party processor. In
+          performing the activities contemplated under this Agreement, the
+          Service Provider consents to MTN transferring its personal information
+          to such third party with whom MTN has a valid contract, which provide
+          adequate provisions to ensure the protection of the Service Providers
+          personal information. MTN shall comply with the requirements of a data
+          controller and shall ensure that the third-party processor complies
+          with applicable data protection laws, regulations and all related
+          legislations. <br />
+          <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          9.18. The Service Provider acknowledges that its personal information
+          may be transferred to a jurisdiction outside of Nigeria and the
+          Service Provider shall consent to such transfer, provided that MTN
+          shall take every effort to ensure that the cross border transfer
+          complies with Nigerian Data Protection Law. <br />
+          <br />
+          9.19. For more information on our privacy policy and how we manage
+          your data, please refer to
+          https://www.mtnonline.com/about-us/who-we-are/about-us/privacy-and-data-protection-policy/
+          <br />
+          9.20.{" "}
+          <p>
+            <span className="text-white">Incidence Response:</span> <br />
+            <br />
+          </p>
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            9.20.1. The Service Provider shall at no additional cost to MTN
+            maintain a data breach incident point of contact for liaison with
+            MTN’s Data Protection team. <br />
+            <br />
+            9.20.2. The Service Provider shall inform MTN of any data breach or
+            suspicion thereof, as soon as technically possible, no later than
+            forty-eight (48) hours after occurrence or suspicion thereof. The
+            Service Provider shall take all steps to mitigate and contain or
+            avoid such breach to prevent it from reoccurring. <br />
+            <br />
+            9.20.3. The Service Provider shall inform MTN’ of the breaches,
+            cooperate with any supervisory authorities, or law enforcement and
+            ensure that acknowledgement of notification is received from MTN.{" "}
+            <br />
+            <br />
+            9.20.4. The Service Provider is required to provide MTN with updates
+            on progress in resolving any incident until it has been fully
+            mitigated or resolved, or until MTN is satisfied with the results in
+            the form of a report provided by Service Provider . <br />
+            <br />
+            9.20.5. The Service Provider is required to provide MTN with a Root
+            Cause Analysis (RCA) report on all incidents within twenty four (24)
+            hours of closure of the incident, or within forty eight (48) hours
+            of request from MTN. The RCA must at a minimum provide details of
+            what went wrong, rectification/ remediation actions taken, and
+            controls implemented to prevent reoccurrence of the incident. <br />
+          </div>
+          9.21. Compliance with MTN’s Right to Audit <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            9.21.1. The Service Provider shall at no additional cost to MTN,
+            required to provide MTN on an annual basis with a data protection
+            attestation such as NDPR or an equivalent. Where Service Provider is
+            unable to provide the above, MTN reserves the right to select
+            auditors to perform a full system and process audit including data
+            protection in accordance with the audit provisions contained in the
+            Agreement. <br />
+            <br />
+            9.21.2. The Service Provider may be required to at their own cost
+            and at no additional cost to MTN, perform a re-assessment of the
+            remedial actions taken, and provide the results in form of a report
+            to MTN within a mutually agreed time frame. <br /> <br />
+          </div>
+          9.22. Each party shall ensure that their internal auditors,
+          consultants, and personnel that are allowed access to any Confidential
+          Information are bound by same confidential obligations as contained in
+          this Agreement <br />
+        </div>
+
+        <p>10. CONFLICT OF INTEREST</p>
+
+        <p>
+          The Service Provider shall take appropriate steps to ensure that
+          neither it nor its Staff is placed in a position where there is or may
+          be an actual, potential or perceived conflict, between the interests
+          of the Service Provider and MTN The Service Provider shall disclose to
+          MTN full particulars of any such conflict of interest, which may arise
+          including any additional information necessary to fully assess and
+          address such conflict of interest and shall maintain high ethical
+          standards at all times. The Service Provider shall accept any
+          reasonable conflict mitigation strategy employed by the MTN, including
+          but not limited to the use of an independent subservice provider(s) to
+          perform the portion of the Service that gives rise to the actual or
+          potential conflict.
+        </p>
+
+        <p>
+          11.{" "}
+          <p>
+            <span className="text-white">
+              REPRESENTATIONS, WARRANTIES AND COVENANTS
+            </span>
+          </p>
+        </p>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          11.1. The Service Provider warrants and represents that it: <br />{" "}
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            11.1.1. Has the full capacity, authority, all necessary licences,
+            permits, authorizations, consents to enter into and perform this
+            Agreement and the provision of the Service shall not infringe on any
+            third party’s intellectual property rights <br /> <br />
+            11.1.2. this Agreement is executed by a duly authorised
+            representative of the Service Provider. <br />
+            <br />
+            11.1.3. it is solely liable for and shall pay to the relevant
+            collecting society or any licencing authority, all due rates that
+            may be due from time to time. <br />
+            <br />
+            11.1.4. Is not in default in the payment of any due and payable
+            Taxes or in the filing, registration or recording of any document or
+            under any legal or statutory obligation or requirement which default
+            might have a material adverse effect on its business, assets or
+            financial condition or its ability to observe or perform its
+            obligations under this Agreement. <br /> <br />
+            11.1.5. Shall provide the Services through the designated Short
+            codes provided by MTN and shall not impinge on any of MTN’s licence
+            obligations or on MTN’s current policies on spam and the use of
+            Short codes which policy shall be provided to the Service Provider
+            upon request. <br /> <br />
+            11.1.6. Shall be responsible for any delays, delivery system
+            failures, or any other loss or damage resulting from the transfer of
+            data over communications networks and facilities, including the MTN
+            network, and shall be responsible for any limitations, delays and
+            other problems inherent in the use of such communications
+            facilities. <br /> <br />
+          </div>
+          11.2. The Service Provider covenants not to approach any MTN
+          subscribers directly for the purposes of marketing or selling them the
+          Services or similar services for the duration of this Agreement, and
+          in respect of any MTN Subscriber for the duration of such MTN
+          Subscriber’s contract with MTN for the Service, and for a period of
+          eighteen (18) months thereafter, without obtaining MTN’s prior written
+          permission. <br />
+          <br />
+          11.3. The Service Provider guarantees the authenticity, accuracy, and
+          integrity of all representations provided to MTN and undertakes to pay
+          MTN for all extra costs occasioned by any discrepancies, errors or
+          omissions therein. <br />
+          <br />
+          11.4. The Service Provider warrants that MTN and MTN Subscriber’s use
+          of the Services under this Agreement will be uninterrupted and
+          error-free and/or will meet MTN Subscribers’ or any End-User’s
+          requirements; <br />
+          <br />
+          11.5. The Service Provider warrants that its agents, sub-Service
+          Providers, staff and connected persons shall not use the Short codes
+          provided by MTN under this Agreement for any other purpose(s) other
+          than for the Services. <br />
+          <br />
+          11.6. The Service Provider covenants that it shall streamline all
+          outgoing SMS messages to comply with the NCC guidelines and
+          directives; including but not limited to restricting same to only
+          informative, educative, reward loyalty schemes and must exclude all
+          lotteries. <br />
+        </div>
+
+        <p>
+          12.{" "}
+          <p>
+            <span className="text-white">CONFIDENTIALITY</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          12.1. In accordance with the provisions of the Confidentiality and
+          Non-Disclosure Agreement in Annexure C of this Agreement, the
+          information provided by or accessed from MTN pursuant to the
+          provisions of this Agreement shall remain the property of MTN and are
+          confidential. The Service Provider shall not, without the prior
+          written consent of MTN, use the information provided by MTN in
+          furtherance hereof except for the implementation of this Agreement.
+          The Service Provider shall ensure that third parties, its staff and
+          sub-Service Providers who are necessarily given access to Confidential
+          Information, trade secrets or any new technology developed or acquired
+          in performing the Services, keep the information confidential. <br />
+          <br />
+          12.2. if required by Law or valid regulatory process, the Service
+          Provider may disclose Confidential Information, with prior written
+          notice to MTN and shall reasonably cooperate with MTN to maintain the
+          confidentiality of such Confidential Information. <br />
+          <br />
+          12.3. The provisions of this clause shall survive the termination of
+          this Agreement for a period of one (1) year from the date of the
+          termination of this Agreement. <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          13.{" "}
+          <p>
+            <span className="text-white">INTELLECTUAL PROPERTY RIGHTS</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          13.1. The entire right, title and interest in and to all Intellectual
+          Property shall be and remain vested with the Party who owns or
+          controls such Intellectual Property, and nothing in this Agreement
+          grants or purports to grant or shall be interpreted to imply the
+          granting of any right, title or interest of whatever nature to a Party
+          in the background Intellectual Property of the other Party otherwise
+          than as explicitly provided for in this Agreement. All Intellectual
+          Property subsequently created by Parties in connection with this
+          Agreement shall vest in MTN. <br />
+          <br />
+          13.2. Parties shall obtain written consent before using the trademarks
+          and brands of the other party and shall comply with the brand
+          guidelines, and any other terms and conditions of the consent. <br />
+          <br />
+          13.3. The Indemnified Party shall notify the other Parties in writing
+          of any Service Provider IPR Claim of which the Indemnified Party has
+          received express written notice <br />
+          <br />
+          13.4. The Service Provider shall procure that its insurers (as
+          relevant) shall, keep MTN updated at all times on all progress and
+          developments relating to the Service Provider IPR Claim and any
+          counterclaim. <br />
+          <br />
+          13.5. The Service Provider shall indemnify MTN, including its
+          directors, officers, agents, employees, affiliates, independent
+          Service Provider and sub-service provider to the fullest extent, for
+          any incidental, indirect, special or consequential damages, or any
+          loss of use, goodwill, revenue or profit, by any person, entity or
+          organisation, including, without limitation, MTN or its affiliates,
+          claimed or resulting from such claims. <br />
+          <br />
+          13.6. e Service Provider undertakes that it is unaware of any
+          third-party copyright, trademark, patent or other IPRs that would be
+          infringed by the use of the Licence by MTN. If MTN is charged with
+          infringement of a third party’s patent, trademark, copyright or other
+          intellectual property rights as a result of the use of the Licence,
+          The Service Provider will, at no expense to MTN, a) take the place of
+          MTN against such charge, claim or suit; b) apply its best efforts to
+          procure for MTN the right to continue the use of the Service, to the
+          extent that this is legally permissible; or c) apply its best efforts
+          to modify the Service so to cease, desist and cure the infringement,
+          provided that such modification can be done without substantially
+          impairing its functionality or performance of the Service provided to
+          MTN. <br />
+        </div>
+
+        <p>
+          14.{" "}
+          <p>
+            <span className="text-white">RIGHT OF AUDIT </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          14.1. MTN shall have the right to audit the Service Provider’s
+          performance of the Services under this Agreement. The Service Provider
+          shall arrange for MTN to have access to the premises and to all
+          locations and documentation relevant to the Services. The Service
+          Provider shall make available appropriate employees to assist MTN in
+          the performance of its audit. <br />
+          <br />
+          14.2. The Service Provider warrants to MTN that it has or will upon
+          the coming into effect of this Agreement undertake a Systems audit to
+          ensure adequate controls, safeguards, security and effective internal
+          controls to protect the integrity of the information of MTN. <br />
+          <br />
+          14.3. The Service Provider undertakes that the systems audit shall be
+          carried out in accordance with the International Standard on Auditing
+          (ISA) 402 – (Audit Considerations Relating to Entities Using Service
+          Organisations) or such other similar internationally recognized
+          systems auditing standard. <br />
+          <br />
+          14.4. MTN shall reserve the right to appoint an independent auditor to
+          conduct a systems audit of the Service Provider as it may require in
+          its absolute discretion notwithstanding that the Service Provider has
+          confirmed to MTN that it has conducted a Systems audit. <br />
+          <br />
+          14.5. The Service Provider shall establish and maintain a reasonable
+          accounting system that enables MTN readily identify the Service
+          Provider’s assets, expenses, costs of goods, and use of funds. MTN and
+          its authorized representatives shall have the unrestricted right to
+          audit, examine, and to make copies of, or extracts from all financial
+          and related records (in whatever form they may be kept, whether
+          written, electronic, or other) relating to or pertaining to this
+          Agreement kept by or under the control of the Service Provider,
+          including, but not limited to those kept by the Service Provider, its
+          employees, agents, assigns, successors, and sub-Service Providers.
+          Such records shall include, but not be limited to, accounting records,
+          deposit slips, bank statements, all paid vouchers including those for
+          out‐of‐pocket expenses, other reimbursement supported by invoices,
+          original estimates, written policies and procedures and other
+          correspondence.
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          14.6. The Service Provider undertakes to permit MTN to conduct such
+          other audits of its operations and processes as may be applicable or
+          relevant to the performance of the Service Provider’s obligations
+          under this Agreement. Such further audits shall be carried out under
+          terms to be decided upon by MTN at its sole discretion. Provided
+          however that the Service Provider may make specific requests to MTN
+          for the exclusion of any information with respect to which the Service
+          Provider has been placed under an obligation of confidentiality.{" "}
+          <br />
+        </div>
+
+        <p>15. SUB-SERVICE PROVIDERS</p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          15.1. Neither Party shall subcontract all or any part of its
+          obligations under this Agreement without the other Parties’ prior
+          written approval, unless such sub-contracting is made towards an
+          affiliate company. In the latter case, the subcontracting Party shall
+          inform the other Parties. Where approval is granted, each Party shall
+          bind every subservice Provider to the terms of this Agreement but
+          shall remain responsible to the others for any obligations which are
+          performed by subservice Providers as if such obligations were
+          performed by the Party. <br />
+          <br />
+          15.2. No provision whatsoever of this Agreement will be deemed to
+          create a contractual relationship between MTN and the subservice
+          Provider, nor between MTN and employees of the Service Providers or
+          any subservice Provider. <br />
+          <br />
+        </div>
+
+        <p>16. ASSIGNMENT OF AGREEMENT</p>
+
+        <p>
+          The Service Provider shall not be entitled to cede its rights or
+          delegate its obligations under this Agreement in whole or in part
+          whether voluntarily or by operation of law, without the prior written
+          consent of MTN, provided such consent shall not be unreasonably
+          withheld; provided, however, that a Party shall be entitled to assign
+          this Agreement to its Affiliates (where “Affiliate” means any entity
+          that directly or indirectly controls or is controlled by, or is under
+          common control with, a Party, upon written notification of such
+          assignment to the other Parties.
+        </p>
+
+        <p>17. AMENDMENTS/VARIATION/WAIVER</p>
+
+        <p>
+          No amendments, interpretation, or waiver of any of the provisions of
+          this Agreement shall be effective unless reduced into writing and
+          signed by duly authorized representatives of the Parties. Failure or
+          delay on the part of a Party to exercise any right, power or privilege
+          shall not operate as a waiver of such right, power or privilege.
+        </p>
+
+        <p>18. SEVERABILITY</p>
+
+        <p>
+          If any provision of this Agreement is held to be invalid or
+          unenforceable, such provision shall be severed and the remainder of
+          the provisions shall remain in full force and effect as if this
+          Agreement has been executed with the invalid provision eliminated. If
+          any provision of this Agreement is so found to be invalid or
+          unenforceable but would be valid or enforceable if some part of the
+          provision were deleted, the provision in question shall apply with
+          such modification as may be necessary to make it valid.
+        </p>
+
+        <p>19. RELEASE AND INDEMNITY</p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          19.1. The Service Provider shall be liable for and hereby indemnifies
+          MTN against any liability, direct loss, claim and/or proceedings
+          whatsoever, arising under any statute or at common law, in respect of
+          any personal injury or death of any person howsoever arising pursuant
+          to or during the implementation of this Agreement; provided that such
+          injury or death is due to the negligent act or omission of the Service
+          Provider, its servants, agents, personnel and/or key personnel or
+          subservice provider, or a breach by the Service Provider of any of the
+          provisions of this Agreement. <br />
+          <br />
+          19.2. The Service Provider shall be liable for and hereby indemnifies
+          MTN against any expense, liability, direct loss, claim and/or
+          proceedings in respect of any loss, injury or damage whatsoever to any
+          property (movable or immovable) insofar as such loss, injury or damage
+          arises out of or pursuant to the implementation of this Agreement;
+          provided such loss, injury or damage arises out of any negligent act
+          or omission by the Service Provider, its servants, agents or
+          subservice provider, or any breach by the Service Provider of the
+          provisions of this Agreement. <br />
+          <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          19.3. The Service Provider indemnifies MTN to the fullest extent for
+          any breach of its obligations, representations and warranties
+          contained in this Agreement; including but not limited to claims by
+          any regulatory authority arising from a breach of the obligations of
+          the Service Provider in obtaining the requisite licenses and/or third
+          party claims for infringement of Intellectual Property Rights in
+          respect to the operation of the Services or use of the Confidential
+          Information by the Service Provider contrary to the terms of this
+          Agreement. <br />
+          <br />
+        </div>
+
+        <p>20. LIMITATION OF LIABILITY</p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          20.1. Neither Party limits its liability for: <br />
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            a. Loss of property; <br />
+            b. Loss of data provided by a Party; <br />
+            c. A claim of infringement of Intellectual Property of a Party or a
+            third party; <br />
+            d. Confidential Information disclosed by a Party in accordance with
+            the Confidentiality and Non-Disclosure Agreement in Annexure C;{" "}
+            <br />
+            e. Negligence of a Party resulting in a loss incurred by the other
+            Party; <br />
+            f. Death or personal injury caused by its negligence, or that of its
+            employees, agents or subService Providers provided such death or
+            injury is not caused by the acts, omission or negligence of the
+            other Party; or <br />
+            g. fraud by it or its employees. <br />
+            <br />
+          </div>
+          20.2. Except as may be specifically provided in this Agreement,
+          neither Party shall be liable to the other for any type of special,
+          indirect and/or Consequential Losses or damages arising under
+          statutory or common law, including but not limited to loss of profits,
+          loss of business opportunities, loss of income, loss of use, loss of
+          goodwill, loss of revenue or related third party claims. <br />
+        </div>
+
+        <p>
+          21.{" "}
+          <p>
+            <span className="text-white">
+              CONDITIONS PRECEDENT TO OBLIGATIONS OF MTN
+            </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          21.1. The Service Provider hereby agrees and acknowledges that: <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            21.1.1. the conclusion of copyright agreement(s) (or any other
+            agreement whatsoever called) with the respective collecting
+            societies, licencing authorities and artists after a due and
+            diligent copyright clearance exercise shall be a condition precedent
+            to uploading any ringtones, caller tunez, wallpapers, videos and or
+            any other content or value added service to be provided pursuant to
+            this Agreement; <br />
+            <br />
+            21.1.2. MTN shall be provided a copy of such copyright agreement(s)
+            for its review and concurrence; <br />
+            <br />
+            21.1.3. all copyright agreements with respective collecting
+            societies, licencing authorities and artists and copyrights owners
+            shall include the clauses expressed in and referred to as Protective
+            Clauses in Annexure D to this agreement; <br />
+            <br />
+            21.1.4. MTN reserves the right to modify the Protective Clauses at
+            anytime provided that such modification shall be communicated to the
+            Service Provider in writing; <br />
+            <br />
+            21.1.5. It shall ensure a verbatim inclusion of any modification to
+            the Protective Clauses in all copyright agreements used for the
+            provision of service under this agreement within sixty (60) days of
+            being advised by MTN of such modification; and <br />
+            <br />
+            21.1.6. MTN reserves the right to suspend the publication of
+            contents provided by the Service Provider in the event that the
+            Protective Clauses in Annexure D are not included in the Copyright
+            Agreements used for the provision of the Service under this
+            Agreement. <br />
+            <br />
+          </div>
+          21.2. The Service Provider further agrees and acknowledges that:{" "}
+          <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            21.2.1. MTN is not in the business of distributing or selling the
+            Services including musical works. MTN only offers its network and or
+            platform for the use by the Service Provider to upload
+            non-infringing content including musical works that have been
+            permitted by the owners of copyright in the said contents; and{" "}
+            <br />
+            <br />
+            21.2.2. The permission granted by MTN to the Service Provider to
+            deploy the Services or any other content on its platform is limited
+            only to the uploading of non-infringing works, that is, any content
+            that has been authorized by the owner of the copyright in the
+            content. <br />
+            <br />
+            21.2.3. The Service Provider undertakes to clear the copyright to
+            the content it uploads by obtaining the permission and/ or consent
+            of the owner of the said copyrighted work in any content it uploads
+            on the MTN platform. <br />
+            <br />
+          </div>
+        </div>
+
+        <p>
+          22.{" "}
+          <p>
+            <span className="text-white">SET OFF</span>
+          </p>
+        </p>
+
+        <p>
+          MTN shall have the right to set off any loss, damage, liability or
+          claim, which it may have against the Service Provider against payment
+          it, may owe the Service Provider.
+        </p>
+
+        <p>
+          23.{" "}
+          <p>
+            <span className="text-white">TERMINATION</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          23.1. Either Party may terminate: <br />
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            a. by giving thirty (30) days prior written notice (in the case of
+            MTN seeking to terminate) and ninety (90) days prior written notice
+            (in the case of the Service Provider seeking to terminate) to the
+            other Party; <br />
+            b. by notice in writing to the other Party in the event of a
+            provisional or final liquidation (otherwise than for the purpose of
+            reconstruction or merger) or under provisional or final receivership
+            or judicial management; or insolvency
+          </div>
+          <br />
+          <br />
+          23.2. MTN may terminate: <br />
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            a. With notice, if the Service Provider fails to take steps
+            reasonably satisfactory to MTN to remedy a breach within five (5)
+            days of receiving a notice from MTN specifying the nature of the
+            breach and calling for it to be remedied. <br />
+            b. without notice if the Service Provider commits a material breach
+            (which impedes the delivery or receipt of the Services). <br />
+            c. without notice if the Service Provider is guilty of any criminal
+            offence which in MTN’s opinion affects the Service Provider’s Work
+            in terms of this Agreement. <br />
+            d. without notice if the Service Provider is in persistent breach of
+            any of the provisions of this Agreement (a breach that occurs more
+            than two (2) times during the term of this Agreement).
+          </div>
+          <br />
+          <br />
+          23.3. This Agreement shall immediately terminate, without notice,
+          where the Service Provider loses or does not renew the licence, permit
+          or authority to provide the Services or where extant
+          provision/regulatory requirements invalidate the transaction under
+          this Agreement. <br />
+          <br />
+          4. Upon termination: <br />
+          <br />
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            a. Except as otherwise expressly provided herein, all rights and
+            obligations contained herein shall cease, without prejudice to the
+            rights and obligations relating to the period prior to such
+            termination and any continuing obligations or liabilities under this
+            Agreement or at Law. <br />
+            b. Either Party shall return to the other Party all documents,
+            property and information, acquired by the Party in the course of
+            implementing this Agreement or destroy, and give a signed, written
+            undertaking to the other Party that it has so destroyed, all
+            information and documentation relating to this Agreement, which
+            exists in any format.
+          </div>
+          <br />
+          <br />
+          23.5. MTN shall upon termination of this Agreement, deactivate all
+          Short Codes configured and activated for the Services on the MTN
+          Network. <br />
+          <br />
+          23.6. In the event of a withdrawal or suspension of the VAS Licence by
+          the NCC at any time, the Service Provider shall be obliged to
+          immediately inform MTN, and MTN shall be at liberty to immediately
+          terminate this Agreement. <br />
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          24.{" "}
+          <p>
+            <span className="text-white">
+              INDUCEMENTS, FRAUD AND ANTI-CORRUPTION
+            </span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          24.1. The Service Provider hereby undertakes that they will comply
+          with all Anti-Corruption Laws and any other applicable law. <br />
+          <br />
+          24.2. The Service Provider shall not offer any person any gift or
+          consideration as an inducement or reward for doing or not doing any
+          act in relation to this or any other Agreement. All cases of
+          inducement involving an MTN employee or other third party, should be
+          reported by calling the MTN “tip-offs anonymous line +23408031230141
+          (toll free) and/or MTN Internal Fraud Hotline Number (+23408032005500)
+          or by sending an email to MTNNFraudManagement@mtn.com. The Service
+          Provider may also log on to www.tip-offs.com web site and make an
+          anonymous report. <br />
+          <br />
+          24.3. The Service Provider further warrants that: it or any of its
+          associated parties have not been found guilty, by any court or to the
+          best of its knowledge been investigated for any criminal activities
+          prior to the date of this Agreement. Where the Service Provider has
+          been investigated as aforementioned, the Service Provider has
+          disclosed such fact before the Effective Date of this Agreement. MTN
+          may terminate this Agreement with immediate effect upon written
+          notice-as of right and without any legal implication; if during the
+          term of this Agreement, the Service Provider is suspected or convicted
+          of any criminal offence even if not connected to this Agreement.{" "}
+          <br />
+          <br />
+          24.4. To the extent permitted by the Applicable Laws, the Service
+          Provider shall indemnify MTN, MTN Directors and officers, against any
+          losses, liabilities, damages, costs (including legal fees) and
+          expenses incurred by or awarded as a result of any breach of this
+          clause and the entire Agreement. Furthermore, any breach of this
+          clause by the Service Provider or by the Service Provider’s or its
+          associated parties (whether with or without the knowledge of the
+          Service Provider shall entitle MTN to terminate this Agreement in
+          addition to other remedies available to MTN at law <br />
+          <br />
+        </div>
+
+        <p>
+          25.{" "}
+          <p>
+            <span className="text-white">FORCE MAJEURE</span>
+          </p>
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <p>
+            25.1. The Parties shall not be liable for loss or damage arising out
+            of any delay or failure of performance caused by a Force Majeure
+            Event. However, the time within which the Service Provider is
+            required to perform any act under this Agreement shall be extended
+            where the delay in the performance of the act is due to any of the
+            Force Majeure. In this regard, the Service Provider shall:
+          </p>
+
+          <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+            25.1.1. Notify MTN promptly of the occurrence of the event resulting
+            in the delay; <br />
+            <br />
+            25.1.2. Use its best endeavours to abate the delay, as far as
+            possible; and <br />
+            <br />
+            25.1.3. Perform the act delayed immediately after the abatement of
+            the unavoidable delay unless MTN had instructed it not to perform
+            same, or the act delayed is no longer necessary in the opinion of
+            MTN given changed circumstances. In the latter case, the Service
+            Provider shall, immediately after the abatement of the delay,
+            confirm from MTN the necessity or otherwise of performing the
+            delayed act.
+          </div>
+
+          <p>
+            25.2. If the event constituting the force majeure continues for a
+            period of sixty (60) days, then MTN shall be entitled to terminate
+            this Agreement by giving two (2) weeks’ notice in writing to the
+            Service Provider.
+          </p>
+        </div>
+
+        <p>
+          26.{" "}
+          <p>
+            <span className="text-white">
+              {" "}
+              GOVERNING LAW AND DISPUTE RESOLUTION
+            </span>
+          </p>
+        </p>
+
+        <p>
+          This Agreement shall be governed by and construed in accordance with
+          the Laws of the Federal Republic of Nigeria. In the event of a dispute
+          or difference between the Parties in connection with or in relation to
+          this Agreement or its performance, construction or interpretation, the
+          party alleging the dispute shall provide a written notice, giving
+          particulars of the Dispute (the Notice of Dispute) to the other Party.
+          Dispute resolution shall be by negotiation, followed by mediation if
+          unresolved and litigation in it remains unresolved.
+        </p>
+
+        <p>
+          27.{" "}
+          <p>
+            <span className="text-white">ENTIRE AGREEMENT</span>
+          </p>
+        </p>
+
+        <p>
+          This Agreement contains all the entire agreement reached by the
+          Parties with regard to the subject matter of this Agreement and the
+          Parties waive the right to rely on any other terms not contained in
+          this Agreement.
+        </p>
+
+        <p>
+          28.{" "}
+          <p>
+            <span className="text-white">PARTNERSHIP</span>
+          </p>
+        </p>
+      </div>
+
+      <div className="mb-8 rounded-xl flex flex-col pt-8 text-white/60 max-w-4xl space-y-4">
+        <p>
+          Nothing in this Agreement shall be construed as creating a
+          partnership, an employment relationship or a relationship of principal
+          and agent between MTN and the Service Provider. For the provision of
+          the Services under this Agreement, the Service Provider shall be
+          strictly an independent Service Provider.
+        </p>
+
+        <p>
+          29.{" "}
+          <p>
+            <span className="text-white">NOTICES</span>
+          </p>
+        </p>
+
+        <p>
+          29.1. Any written notice in connection with this Agreement shall be
+          addressed to the address provided in this Agreement and shall be
+          addressed to
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          <p>In the case of MTN to:</p>
+          Attention: Chief Digital Officer <br />
+          Cc: GM, Corporate Transactions
+          <br />
+          <br />
+          <p>In the case of the Service Provider to:</p>
+          Attention: Chief Executive Officer
+        </div>
+
+        <p>
+          29.2. A Party may change that Party's address, by prior notice in
+          writing to the other Party:
+        </p>
+
+        <div classname="mb-4 rounded-xl flex flex-col pt-4 text-white/60 max-w-4xl space-y-4">
+          29.2.1. If any notice is to be sent by mail, it shall be sent by
+          prepaid registered mail and shall then be deemed to have been received
+          five (5) days after the date of posting until and unless the contrary
+          is proved. <br />
+          29.2.2. If any notice is delivered by hand, it will be deemed to have
+          been received on proof of the date of delivery.
+        </div>
+
+        <p>
+          <p>
+            <span className="text-white">IN WITNESS WHEREOF</span>, the Parties
+            have duly executed two original copies of this Agreement as of the
+            day and year first written above.
+          </p>
+        </p>
+        {/* 
                         <table border="0">
                             <tr>
 
@@ -2048,363 +2793,692 @@ export default function ContractSigning({params}){
                                 </tr>
                             </table>
                         </div> */}
+      </div>
 
+      <div className="max-w-4xl px-0 my-4">
+        <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
+        {signatoryRole &&
+          (signatoryRole == "director" || signatoryRole == "delegate") &&
+          !haveSigned && (
+            <div className="flex ">
+              <div className="w-10 flex mr-4">
+                <input
+                  onChange={(e) =>
+                    e.target.checked
+                      ? setAcceptedTerms(true)
+                      : setAcceptedTerms(false)
+                  }
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
+                />
+              </div>
+              <div className="flex">
+                <span className="text-gray-300">
+                  By selecting this checkbox, I agree to MTN's
+                </span>
+                &nbsp;
+                <span className="text-white">
+                  Electronic Record and Signature Disclosure.
+                </span>
+              </div>
+            </div>
+          )}
+        {signatoryRole &&
+          signatoryRole == "witness" &&
+          directorOrDelegateSigned &&
+          !haveSigned && (
+            <div className="flex ">
+              <div className="w-10 flex mr-4">
+                <input
+                  onChange={(e) =>
+                    e.target.checked
+                      ? setAcceptedTerms(true)
+                      : setAcceptedTerms(false)
+                  }
+                  type="checkbox"
+                  className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
+                />
+              </div>
+              <div className="flex">
+                <span className="text-gray-300">
+                  By selecting this checkbox, I agree to MTN's
+                </span>
+                &nbsp;
+                <span className="text-white">
+                  Electronic Record and Signature Disclosure.
+                </span>
+              </div>
+            </div>
+          )}
+
+        <div className="rounded-xl bg-white p-4 w-full mt-4">
+          <div className="flex space-x-4 my-4">
+            <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
+              {(!directorOrDelegateSigned &&
+                (signatoryRole == undefined || signatoryRole == null)) ||
+                (!directorOrDelegateSigned && signatoryRole == "witness" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="gray"
+                    className="w-16 h-16 mt-8"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ))}
+              <h1 className="text-gray-600 text-center text-xl font-bold mt-8">
+                Director's signature
+              </h1>
+
+              {!directorOrDelegateSigned &&
+                (signatoryRole == undefined || signatoryRole == null) && (
+                  <p className="text-gray-600 text-center mt-8">
+                    Once a director/delegate signs, their signature will appear
+                    here.
+                  </p>
+                )}
+              {!directorOrDelegateSigned && signatoryRole == "witness" && (
+                <p className="text-gray-600 text-center mt-8">
+                  Once a director/delegate signs, their signature will appear
+                  here.
+                </p>
+              )}
+              {!directorOrDelegateSigned &&
+                acceptedTerms &&
+                (signatoryRole == "director" ||
+                  signatoryRole == "delegate") && (
+                  <div
+                    className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer"
+                    onClick={() => showSigningWindow(signatoryRole)}
+                  >
+                    Click to Sign here
+                  </div>
+                )}
+
+              {directorOrDelegateSigned && (
+                <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
+                  {dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature?.includes(
+                    "data:image/png;base64,"
+                  ) ? (
+                    <img
+                      src={
+                        dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature
+                      }
+                      className="h-20"
+                    />
+                  ) : (
+                    <img
+                      src={
+                        "data:image/png;base64," +
+                        dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature
+                      }
+                      className="h-20"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="px-4 w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center">
+              {signatoryRole != "witness" && !witnessSigned && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="gray"
+                  className="w-16 h-16 mt-10"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+
+              <h1 className="text-gray-600 text-center text-xl font-bold p-4 mt-6">
+                Witness's Signature
+              </h1>
+
+              {signatoryRole != "witness" && !witnessSigned && (
+                <p className="text-gray-600 text-center">
+                  Once a witness signs, their signature will appear here. The
+                  witness will be able to sign once the director has signed
+                </p>
+              )}
+              {signatoryRole == "witness" &&
+                !witnessSigned &&
+                acceptedTerms && (
+                  <div
+                    className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer"
+                    onClick={() => showSigningWindow(signatoryRole)}
+                  >
+                    Click to Sign here
+                  </div>
+                )}
+              {witnessSigned && (
+                <div className="flex flex-col text-gray-600 items-center justify-center w-full h-32">
+                  {dynamicData?.dynamic_details?.signature_of_signee?.witness_signature?.includes(
+                    "data:image/png;base64,"
+                  ) ? (
+                    <img
+                      src={
+                        dynamicData?.dynamic_details?.signature_of_signee
+                          ?.witness_signature
+                      }
+                      className="h-20"
+                    />
+                  ) : (
+                    <img
+                      src={
+                        "data:image/png;base64," +
+                        dynamicData?.dynamic_details?.signature_of_signee
+                          ?.witness_signature
+                      }
+                      className="h-20"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex space-x-4 my-4">
+            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="gray"
+                className="w-16 h-16"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <h1 className="text-gray-600 text-center text-xl font-bold p-4">
+                MTN's Signature
+              </h1>
+              <p className="text-gray-600 text-center">
+                Once every party has signed, the signed contract from MTN will
+                appear here
+              </p>
+            </div>
+
+            <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="gray"
+                className="w-16 h-16"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <h1 className="text-gray-600 text-center text-xl font-bold p-4">
+                MTN's Signature
+              </h1>
+              <p className="text-gray-600 text-center">
+                Once every party has signed, the signed contract from MTN will
+                appear here
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {!submitingContractSignatures && (
+        <div className="flex py-4 px-2 space-x-4 justify-end max-w-4xl">
+          <button
+            className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+            onClick={() => {
+              location = "/dashboard/compliance";
+            }}
+          >
+            Back
+          </button>
+          <button
+            className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+            onClick={() => {
+              location = "/dashboard/contracts";
+            }}
+          >
+            Finish
+          </button>
+        </div>
+      )}
+      {submitingContractSignatures && (
+        <div className="flex px-4">
+          <TailSpinPreloader width={40} height={40} fill="#efb703" />
+        </div>
+      )}
+
+      {signingModal && (
+        <div
+          id="signing_modal"
+          className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80"
+        >
+          {/* onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}> */}
+          <div
+            id="actualModal"
+            className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[550px] pb-4"
+          >
+            <div className="flex pt-8 pb-4">
+              <div className="text-white text-2xl mb-4 flex-1">
+                Adopt a Signature
+              </div>
+            </div>
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
+              </div>
+            )}
+
+            <TextInput
+              id="fullname"
+              label="Full name"
+              value={signee && signee}
+              onChange={(e) => {}}
+              readonly
+              disabled
+              errors={errors}
+            />
+
+            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+              <ul
+                className="flex flex-wrap -mb-px text-sm font-medium text-center"
+                id="myTab"
+                data-tabs-toggle="#myTabContent"
+                role="tablist"
+              >
+                <li
+                  className="mr-2"
+                  role="presentation"
+                  onClick={() => {
+                    if (!activeSigningTab.selectStyle)
+                      setActiveSigningTab({ upload: false, selectStyle: true });
+                  }}
+                >
+                  <button
+                    className={`inline-block p-4 border-b-2 ${
+                      activeSigningTab.selectStyle
+                        ? "border-yellow-600"
+                        : "border-transparent"
+                    } rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${
+                      activeSigningTab.selectStyle
+                        ? "text-yellow-500"
+                        : "text-white"
+                    }`}
+                    id="style-tab"
+                    data-tabs-target="#style"
+                    type="button"
+                    role="tab"
+                    aria-controls="style"
+                    aria-selected="false"
+                  >
+                    Select style
+                  </button>
+                </li>
+                <li
+                  className="mr-2"
+                  role="presentation"
+                  onClick={() => {
+                    if (!activeSigningTab.upload)
+                      setActiveSigningTab({ upload: true, selectStyle: false });
+                  }}
+                >
+                  <button
+                    className={`inline-block p-4 border-b-2 ${
+                      activeSigningTab.upload
+                        ? "border-yellow-600"
+                        : "border-transparent"
+                    } rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${
+                      activeSigningTab.upload ? "text-yellow-500" : "text-white"
+                    }`}
+                    id="upload-tab"
+                    data-tabs-target="#upload"
+                    type="button"
+                    role="tab"
+                    aria-controls="upload"
+                    aria-selected="false"
+                  >
+                    Upload
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div id="myTabContent">
+              {/* First tab */}
+              <div
+                className={`${
+                  activeSigningTab.selectStyle ? "block" : "hidden"
+                } p-4 rounded-xl  dark:bg-gray-800`}
+                id="style"
+                role="tabpanel"
+                aria-labelledby="style-tab"
+              >
+                <div className="mb-4 rounded-xl bg-white/20 flex flex-col p-4 space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-200">Preview</span>
+
+                    <span
+                      className="cursor-pointer text-yellow-500"
+                      onClick={() => setClearCanvas(!clearCanvas)}
+                    >
+                      Clear
+                    </span>
+                  </div>
+
+                  <div className="rounded-xl bg-white border-1 border-dashed border-gray-200 flex p-2 w-full space-x-4 items-center justify-center">
+                    <canvas
+                      ref={canvas}
+                      onMouseDown={onDown}
+                      onTouchStart={onDown}
+                      onMouseUp={onUp}
+                      onTouchEnd={onUp}
+                      onMouseLeave={onUp}
+                      onMouseMove={onMove}
+                      onTouchMove={onMove}
+                      width={canvasWidth}
+                      height={canvasHeight}
+                      id="signature_canvas"
+                      className="border-1 border-gray-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex m-4">
+                  <div className="w-12 flex justify-end mr-4">
+                    <input
+                      onChange={(e) =>
+                        e.target.checked
+                          ? setDisableActiveButton(false)
+                          : setDisableActiveButton(true)
+                      }
+                      type="checkbox"
+                      className="h-8 w-8 rounded-lg bg-black/40"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-gray-500">
+                      By selecting Adopt and sign, I agree that the signature
+                      and initials will be the electronic representation of my
+                      signature and initials for all purposes when I (or my
+                      agent) use them on documents, including legallyy binding
+                      contracts - just same as pen-and-paper signature or
+                      initial
+                    </p>
+                  </div>
+                </div>
+                <div className="">
+                  {!signing && (
+                    <div className="flex py-4 px-2 space-x-4 justify-end">
+                      <button
+                        className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+                        onClick={() => {
+                          setDisableActiveButton(true);
+                          setSigningModal(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold"
+                        disabled={disableActiveButton}
+                        onClick={async () => signContract()}
+                      >
+                        Adopt Sign
+                      </button>
+                    </div>
+                  )}
+                  {signing && (
+                    <div className="flex px-4">
+                      <TailSpinPreloader
+                        width={40}
+                        height={40}
+                        fill="#efb703"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Second tab */}
+              <div
+                className={`${
+                  activeSigningTab.upload ? "block" : "hidden"
+                } p-4 rounded-xl  dark:bg-gray-800`}
+                id="upload"
+                role="tabpanel"
+                aria-labelledby="upload-tab"
+              >
+                <div className="mb-4 rounded-lg bg-white/20 flex p-2">
+                  <div className="rounded-lg bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
+                    <div className="w-16 h-16 bg-white/20 flex items-center justify-center rounded-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="white"
+                        className="w-8 h-8"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z"
+                          clip-rule="evenodd"
+                        />
+                        <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                      </svg>
                     </div>
 
-                    <div className="max-w-4xl px-0 my-4">
-                        <h1 className="text-white text-2xl font-bold mb-4">Signatures</h1>
-                        {
-                            signatoryRole && 
-                            (signatoryRole == 'director' || signatoryRole == 'delegate') && 
-                            !haveSigned &&
-                            (<div className="flex ">
-                                <div className="w-10 flex mr-4">
-                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
-                                </div>
-                                <div className="flex">
-                                    <span className="text-gray-300">By selecting this checkbox, I agree to MTN's</span> <span className="text-white">Electronic Record and Signature Disclosure.</span>
-                                </div>
-                            </div>)
-                        }
-                        {
-                            signatoryRole && signatoryRole == 'witness' && 
-                            directorOrDelegateSigned && 
-                            !haveSigned &&
-                            (<div className="flex ">
-                                <div className="w-10 flex mr-4">
-                                    <input onChange={(e) => e.target.checked ? setAcceptedTerms(true) : setAcceptedTerms(false)} type="checkbox" className="h-6 w-6 rounded-lg bg-black/40 focus:ring-mtn focus:border-2 text-mtn" />
-                                </div>
-                                <div>
-                                    <p className="text-gray-300">By selecting this checkbox, I agree to MTN's <p><span className="text-white">Electronic Record and Signature Disclosure.</span></p></p>
-                                </div>
-                            </div>)
-                        }
+                    <div className="flex flex-col flex-1 space-y-1 justify-center">
+                      <p className="text-gray-500 text-sm">Upload</p>
+                      <p className="text-white text-md">Your signature (PNG)</p>
+                      <p className="text-gray-500 text-sm">
+                        Drag and drop here or
+                      </p>
+                    </div>
 
-                        <div className="rounded-xl bg-white p-4 w-full mt-4">
-
-                            <div className="flex space-x-4 my-4">
-
-                                <div className="p-4 w-1/2 h-80 bg-white/10 hover:bg-white/20  rounded-xl border-1 border-gray-500 flex flex-col items-center">
-                                    { (!directorOrDelegateSigned && 
-                                        (signatoryRole == undefined || signatoryRole == null)) || 
-                                        (!directorOrDelegateSigned && 
-                                        signatoryRole == 'witness') &&
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-8">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    }
-                                    <h1 className="text-gray-600 text-center text-xl font-bold mt-8">Director's signature</h1>
-
-                                    {  
-                                        !directorOrDelegateSigned && 
-                                        (signatoryRole == undefined || signatoryRole == null) &&
-                                            <p className="text-gray-600 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
-                                    
-                                    }
-                                    {
-                                        !directorOrDelegateSigned && 
-                                        signatoryRole == 'witness' &&
-                                        <p className="text-gray-600 text-center mt-8">Once a director/delegate signs, their signature will appear here.</p>
-                                    }
-                                    {
-                                        !directorOrDelegateSigned && acceptedTerms &&
-                                        (signatoryRole == 'director' || signatoryRole == 'delegate') &&
-                                        <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                                onClick={() => showSigningWindow(signatoryRole)}>
-                                            Click to Sign here
-                                        </div>
-                                    }
-                                    
-                                    {
-                                        directorOrDelegateSigned &&
-                                        <div className="flex flex-col text-white items-center justify-center w-full h-32 mt-8">
-                                            {
-                                                dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature} className="h-20" />)
-
-                                            }
-                                        </div>
-                                    }
-                                    
-                                </div>
-
-                                <div className="px-4 w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center">
-
-                                    { signatoryRole != "witness" && !witnessSigned && 
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16 mt-10">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    }
-
-                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4 mt-6">Witness's Signature</h1>
-                                    
-                                    {                                      
-                                        signatoryRole != 'witness' && !witnessSigned &&  
-                                            <p className="text-gray-600 text-center">Once a witness signs, their signature will appear here. The witness will be able to sign once the director has signed</p>
-                                    
-                                    }
-                                    {
-                                        signatoryRole == 'witness' && !witnessSigned && acceptedTerms &&                                   
-                                        <div className="border-4 text-yellow-500 mouseover:flex border-yellow-500 w-full h-32 mt-8 flex justify-center items-center cursor-pointer" 
-                                                onClick={() => showSigningWindow(signatoryRole)}>
-                                            Click to Sign here
-                                        </div>
-                                    }
-                                    {
-                                        witnessSigned &&
-                                        <div className="flex flex-col text-gray-600 items-center justify-center w-full h-32">
-                                            {
-                                                dynamicData?.dynamic_details?.signature_of_signee?.witness_signature?.includes("data:image/png;base64,") ?  
-                                                (<img src={dynamicData?.dynamic_details?.signature_of_signee?.witness_signature} className="h-20" />) :
-                                                (<img src={"data:image/png;base64," + dynamicData?.dynamic_details?.signature_of_signee?.witness_signature} className="h-20" />)
-
-                                            }
-                                            
-                                        </div>
-                                    }
-                                </div>
-
-                            </div>
-
-                            <div className="flex space-x-4 my-4">
-
-                                <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-
-                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4">MTN's Signature</h1>
-                                    <p className="text-gray-600 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
-
-                                </div>
-
-                                <div className="w-1/2 h-80 bg-white/10 rounded-xl border-1 border-dashed hover:bg-white/20 border-gray-500 flex flex-col space-y-4 items-center justify-center p-2">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="gray" className="w-16 h-16">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-
-                                    <h1 className="text-gray-600 text-center text-xl font-bold p-4">MTN's Signature</h1>
-                                    <p className="text-gray-600 text-center">Once every party has signed, the signed contract from MTN will appear here</p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        
-
-                    </div>     
-
-                    {!submitingContractSignatures &&
-                        <div className="flex py-4 px-2 space-x-4 justify-end max-w-4xl">
-                            <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {location = "/dashboard/compliance"}}>Back</button>
-                            <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {location = "/dashboard/contracts"}}>Finish</button>
-                        </div>
-                    }
-                    {submitingContractSignatures &&
-                        <div className="flex px-4">
-                            <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                        </div>
-                    }  
-
-                    {signingModal && 
-                        <div id="signing_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" > 
-                        {/* onClick={(e) => {if(e.target.id == "signing_modal") {setSigningModal(false);}}}> */}
-                            <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[550px] pb-4">
-                                <div className="flex pt-8 pb-4">
-                                    <div className="text-white text-2xl mb-4 flex-1">Adopt a Signature</div>                                
-                                </div>
-
-                                {errors && errors["error"] && (
-                                    <div className="mb-6">
-                                        <FormErrors error={errors["error"]} />
-                                    </div>
-                                )}
-
-                                <TextInput
-                                    id="fullname"
-                                    label="Full name"
-                                    value={signee && signee}
-                                    onChange={(e) => {}
-                                    }
-                                    readonly
-                                    disabled
-                                    errors={errors}
-                                />
-                                
-                                <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-                                    <ul className="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
-                                        <li className="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.selectStyle) setActiveSigningTab({upload: false, selectStyle: true})}}>
-                                            <button className={`inline-block p-4 border-b-2 ${activeSigningTab.selectStyle ? 'border-yellow-600' : 'border-transparent'} rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${activeSigningTab.selectStyle ? 'text-yellow-500' : 'text-white'}`} id="style-tab" data-tabs-target="#style" type="button" role="tab" aria-controls="style" aria-selected="false">Select style</button>
-                                        </li>
-                                        <li className="mr-2" role="presentation" onClick={() => {if(!activeSigningTab.upload) setActiveSigningTab({upload: true, selectStyle: false})}}>
-                                            <button className={`inline-block p-4 border-b-2 ${activeSigningTab.upload ? 'border-yellow-600' : 'border-transparent'} rounded-t-lg hover:text-yellow-600 hover:border-text-600 dark:hover:text-yellow-600 ${activeSigningTab.upload ? 'text-yellow-500' : 'text-white'}`} id="upload-tab" data-tabs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="false">Upload</button>
-                                        </li>
-                                    </ul>
-                                </div>
-
-
-                                <div id="myTabContent">
-                                    {/* First tab */}
-                                    <div className={`${activeSigningTab.selectStyle ? 'block' : 'hidden'} p-4 rounded-xl  dark:bg-gray-800`} id="style" role="tabpanel" aria-labelledby="style-tab">
-                                        <div className="mb-4 rounded-xl bg-white/20 flex flex-col p-4 space-y-4">    
-
-                                            <div className="flex justify-between">
-
-                                                <span className="text-gray-200">Preview</span>
-
-                                                <span className="cursor-pointer text-yellow-500" onClick={() => setClearCanvas(!clearCanvas)}>Clear</span>
-
-                                            </div>          
-
-                                            <div className="rounded-xl bg-white border-1 border-dashed border-gray-200 flex p-2 w-full space-x-4 items-center justify-center">
-
-                                                <canvas
-                                                    ref={canvas}
-                                                    onMouseDown={onDown}
-                                                    onTouchStart={onDown}
-                                                    onMouseUp={onUp}
-                                                    onTouchEnd={onUp}
-                                                    onMouseLeave={onUp}
-                                                    onMouseMove={onMove}
-                                                    onTouchMove={onMove}
-                                                    width={canvasWidth}
-                                                    height={canvasHeight}
-                                                    id="signature_canvas"
-                                                    className="border-1 border-gray-500"
-                                                />
-                                                
-                                            </div>    
-                                                                                 
-
-                                        </div>
-                                        <div className="flex m-4">
-                                            <div className="w-12 flex justify-end mr-4">
-                                                <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-500">By selecting Adopt and sign, I agree that the signature and initials will be the electronic representation of my signature and initials for all purposes when I (or my agent) use them on documents, including legallyy binding contracts - just same as pen-and-paper signature or initial</p>
-                                            </div>
-                                        </div> 
-                                        <div className="">
-                                            {!signing &&
-                                                <div className="flex py-4 px-2 space-x-4 justify-end">
-                                                    <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setDisableActiveButton(true); setSigningModal(false);}}>Cancel</button>
-                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={async () => signContract()}>Adopt Sign</button>
-                                                </div>
-                                            }
-                                            {signing &&
-                                                <div className="flex px-4">
-                                                <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                                                </div>
-                                            }
-                                        </div> 
-                                    </div>
-
-                                    {/* Second tab */}
-                                    <div className={`${activeSigningTab.upload ? 'block' : 'hidden'} p-4 rounded-xl  dark:bg-gray-800`} id="upload" role="tabpanel" aria-labelledby="upload-tab">
-                                        
-                                        <div className="mb-4 rounded-lg bg-white/20 flex p-2">              
-
-                                            <div className="rounded-lg bg-black border-1 border-dashed border-gray-200 flex p-4 w-full space-x-4 items-center">
-
-                                                <div className="w-16 h-16 bg-white/20 flex items-center justify-center rounded-full">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-8 h-8">
-                                                    <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
-                                                    <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
-                                                </svg>
-
-                                                </div>
-
-                                                <div className="flex flex-col flex-1 space-y-1 justify-center">                
-                                                    <p className="text-gray-500 text-sm">Upload</p>
-                                                    <p className="text-white text-md">Your signature</p>
-                                                    <p className="text-gray-500 text-sm">Drag and drop here or</p>
-                                                </div>
-
-                                                <div className="flex flex-col justify-end space-between items-end space-y-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 justify-end">
-                                                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    {
-                                                        uploadedFile ? 
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" onClick={() => {setReset(Date.now()); setUploadedFile(false); }}>
-                                                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clipRule="evenodd" />
-                                                        </svg>
-                                                        :
-                                                        <button className="border-1 border-white rounded-full py-1 px-4 text-white" onClick={() => document.querySelector("#uploaded_signature").click()}>Choose file</button>
-                                                    }
-                                                    <input type="file" className="opacity-0 w-1 h-1" id="uploaded_signature" accept=".png" onChange={(e) => {convertFile(e); setUploadedFile(true)}}/>                   
-                                                </div>
-
-                                            </div>          
-                                            
-                                        </div>
-
-                                        <div className="flex m-4">
-                                            <div className="w-12 flex justify-end mr-4">
-                                                <input onChange={(e) => e.target.checked ? setDisableActiveButton(false) : setDisableActiveButton(true)} type="checkbox" className="h-8 w-8 rounded-lg bg-black/40"  />                                            
-                                            </div>
-                                            <div>
-                                                <p className="text-gray-500">By clicking this checkbox I agree that the user I've entered is a delegate of the Company and is authorized to sign this contract on behalf of the company</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="">
-                                            {!signing &&
-                                                <div className="flex py-4 px-2 space-x-4 justify-end">
-                                                    <button className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"  onClick={() => {setDisableActiveButton(true); setSigningModal(false);}}>Cancel</button>
-                                                    <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold" disabled={disableActiveButton} onClick={() => {signContract()}}>Adopt Sign</button>
-                                                </div>
-                                            }
-                                            {signing &&
-                                                <div className="flex px-4">
-                                                <TailSpinPreloader width={40} height={40} fill="#efb703" />
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                    }  
-
-                    {      
-                        successModal && 
-                        <div id="success_modal" className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80" onClick={(e) => {if(e.target.id == "success_modal") {setSuccessModal(false);}}}>
-                            <div id="actualModal" className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4">
-                                
-                                <div className="flex pt-8 pb-4 justify-center items-center">
-                                <div className="flex justify-center items-center w-12 h-12 rounded-full bg-green-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
-                                    <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" />
-                                    </svg>  
-                                </div>              
-                                </div>
-                                
-                                <div className="flex pt-8 pb-4 flex-col space-y-4">
-                                    <p className="text-white text-2xl mb-4 flex-1 text-center">You've finished signing</p>  
-                                    <p className="text-gray-500 text-md mb-4 flex-1 text-center">You'll receive an email copy once everyone has signed</p>              
-                                </div>
-
-                                <div className="">              
-                                    <div className="flex py-4 px-2 space-x-4 justify-center">
-                                        <button className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full" onClick={() => {setSuccessModal(false); router.back()}}>Continue</button>
-                                    </div>              
-                                </div>
-
-                            </div>
-                        </div>        
-                    }  
-
-                    <Success message="Contract signed successfully" visible={successDisplay} action={() => setTimeout(() => {setSuccessDisplay(false); location.reload()}, 3000)} />      
-
+                    <div className="flex flex-col justify-end space-between items-end space-y-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-6 h-6 justify-end"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      {uploadedFile ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-6 h-6"
+                          onClick={() => {
+                            setReset(Date.now());
+                            setUploadedFile(false);
+                          }}
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <button
+                          className="border-1 border-white rounded-full py-1 px-4 text-white"
+                          onClick={() =>
+                            document
+                              .querySelector("#uploaded_signature")
+                              .click()
+                          }
+                        >
+                          Choose file
+                        </button>
+                      )}
+                      <input
+                        type="file"
+                        className="opacity-0 w-1 h-1"
+                        id="uploaded_signature"
+                        accept=".png"
+                        onChange={(e) => {
+                          convertFile(e);
+                          setUploadedFile(true);
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-           </>
-}
+                <div className="flex m-4">
+                  <div className="w-12 flex justify-end mr-4">
+                    <input
+                      onChange={(e) =>
+                        e.target.checked
+                          ? setDisableActiveButton(false)
+                          : setDisableActiveButton(true)
+                      }
+                      type="checkbox"
+                      className="h-8 w-8 rounded-lg bg-black/40"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-gray-500">
+                      By clicking this checkbox I agree that the user I've
+                      entered is a delegate of the Company and is authorized to
+                      sign this contract on behalf of the company
+                    </p>
+                  </div>
+                </div>
 
+                <div className="">
+                  {!signing && (
+                    <div className="flex py-4 px-2 space-x-4 justify-end">
+                      <button
+                        className="border-1 border-gray-200 w-200 text-white hover:bg-gray-800 p-4 py-2 rounded-full"
+                        onClick={() => {
+                          setDisableActiveButton(true);
+                          setSigningModal(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold"
+                        disabled={disableActiveButton}
+                        onClick={() => {
+                          signContract();
+                        }}
+                      >
+                        Adopt Sign
+                      </button>
+                    </div>
+                  )}
+                  {signing && (
+                    <div className="flex px-4">
+                      <TailSpinPreloader
+                        width={40}
+                        height={40}
+                        fill="#efb703"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {successModal && (
+        <div
+          id="success_modal"
+          className="w-screen flex justify-center items-center h-screen fixed z-10 top-0 left-0 bg-black/80"
+          onClick={(e) => {
+            if (e.target.id == "success_modal") {
+              setSuccessModal(false);
+            }
+          }}
+        >
+          <div
+            id="actualModal"
+            className="px-10 border-2 border-gray-500 rounded-xl shadow-xl  bg-[#111111] inline-flex flex-col w-[450px] pb-4"
+          >
+            <div className="flex pt-8 pb-4 justify-center items-center">
+              <div className="flex justify-center items-center w-12 h-12 rounded-full bg-green-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-10 h-10"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="flex pt-8 pb-4 flex-col space-y-4">
+              <p className="text-white text-2xl mb-4 flex-1 text-center">
+                You've finished signing
+              </p>
+              <p className="text-gray-500 text-md mb-4 flex-1 text-center">
+                You'll receive an email copy once everyone has signed
+              </p>
+            </div>
+
+            <div className="">
+              <div className="flex py-4 px-2 space-x-4 justify-center">
+                <button
+                  className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+                  onClick={() => {
+                    setSuccessModal(false);
+                    router.back();
+                  }}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Success
+        message="Contract signed successfully"
+        visible={successDisplay}
+        action={() =>
+          setTimeout(() => {
+            setSuccessDisplay(false);
+            location.reload();
+          }, 3000)
+        }
+      />
+    </div>
+  );
+}

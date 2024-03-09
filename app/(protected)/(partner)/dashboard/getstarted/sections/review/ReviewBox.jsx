@@ -12,6 +12,7 @@ import ShortcodeReview from "./ShortcodeReview";
 import FilePreviewModal from "@/app/components/FilePreviewModal";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import { useState, useEffect } from "react";
+import FileViewer from "@/app/components/modals/FileViewer";
 
 export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
   const { setForm, moveToNextForm, setProcessing } = useProcessing();
@@ -124,11 +125,18 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
     moveToNextForm([section, true]);
     scrollToTop("onboardinglayout");
   };
+
+  const [fileViewer, setFileViewer] = useState(null);
+
   return (
     <>
       {showModal && (
         <FilePreviewModal filePath={filePath} closeModal={handleCloseModal} />
       )}
+
+      { fileViewer && 
+          <FileViewer id="file_viewer" link={fileViewer} closeAction={() => setFileViewer(null)} />
+      }
 
       {errors && (
         <div className="mb-6">
@@ -277,9 +285,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
-                          complianceCategory?.cac_doc?.file_path ?? null
-                        )
+                        setFileViewer(complianceCategory?.cac_doc?.file_path ?? null)
                       }
                       className="text-white text-[14px] flex items-center gap-3 cursor-pointer"
                     >
@@ -302,7 +308,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           complianceCategory?.memart_doc?.file_path ?? null
                         )
                       }
@@ -327,7 +333,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           complianceCategory?.tin_doc?.file_path ?? null
                         )
                       }
@@ -401,7 +407,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           ncclicenseCategory?.ncc_doc?.file_path ?? null
                         )
                       }
@@ -474,7 +480,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           nlrclicenseCategory?.nlrc_doc?.file_path ?? null
                         )
                       }
@@ -509,7 +515,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
               <div className="md:col-span-3">
                 <ShortcodeReview
                   shortcode={shortcodeCategory?.shortcodes}
-                  PreviewFile={PreviewFile}
+                  PreviewFile={setFileViewer}
                 />
               </div>
             )}
@@ -568,7 +574,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           indemnityCategory?.indemnity_doc?.file_path ?? null
                         )
                       }
@@ -608,7 +614,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           accountinfoCategory?.audited_account_1_doc
                             ?.file_path ?? null
                         )
@@ -634,7 +640,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           accountinfoCategory?.audited_account_2_doc
                             ?.file_path ?? null
                         )
@@ -660,7 +666,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           accountinfoCategory?.audited_account_3_doc
                             ?.file_path ?? null
                         )
@@ -686,7 +692,7 @@ export default function ReviewBox({ setIsOnboarding, setTmpCat }) {
                     </div>
                     <div
                       onClick={() =>
-                        PreviewFile(
+                        setFileViewer(
                           accountinfoCategory?.job_evidence_doc?.file_path ??
                             null
                         )

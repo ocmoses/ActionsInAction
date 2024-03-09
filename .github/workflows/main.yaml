@@ -207,7 +207,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/checkout@v2
         with:
-          ref: prod
+          ref: prod          
           #repository: gkhhgcl/helm-chart
           repository: MTNNigeria/Helm-Charts
           token: ${{ secrets.my_pat }}

@@ -13,6 +13,7 @@ import FilterTag, {PartnerFilterCheck, PartnerFilterTitle,} from "@/app/componen
 import {getInitials,ellipsify,capitalizeFirst,} from "@/app/modules/utilities";
 import {CompanyInitial, TailSpinPreloader,RequestApproveBtn,RequestRejectBtn,} from "@/app/components/Icons";
 import FileInputWrapper from "@/app/components/form/FileInputWrapper";
+
 import AggregatorComplianceModal from "@/app/components/dashboard/partners/requests/AggregatorCompliance";
 import IntelectualPropertiesModal from "@/app/components/dashboard/partners/requests/IntelectualPropertiesDetail";
 import RemoteEndpoints from "@/app/modules/endpoints";

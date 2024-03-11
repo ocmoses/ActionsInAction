@@ -853,7 +853,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       <td>
                         <div>
                           {moment(request.created_at ?? moment()).format(
-                            "MMM YYYY"
+                            "DD MMM YYYY"
                           )}
                         </div>
                       </td>

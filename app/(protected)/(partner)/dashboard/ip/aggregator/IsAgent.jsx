@@ -261,7 +261,7 @@ export default function IsAgent({ params }) {
                 )}
                 <h4 className="text-white font-mtn text-sm">Deceased</h4>
                 <p className="text-white/60 font-mtn text-sm">
-                  Content creator is alive and active
+                  Content creator is dead
                 </p>
               </div>
             </div>

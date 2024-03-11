@@ -41,7 +41,8 @@ import ContractCategoryModal from "@/app/components/modals/ContractCategoryModal
 import ContractStatus from "./ContractStatus";
 
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
-import RemoteEndpoints from "@/app/modules/endpoints";
+
+import useFileDownload from "@/hooks/useFileDownload";
 
 export default function Contracts() {
   const {
@@ -54,14 +55,17 @@ export default function Contracts() {
     setAnnexuresLink,
     checkQuestionnaireStatus,
     selectedAllRequiredSignatories,
-    hasContractToSign
+    hasContractToSign,
+    setContract,
+    contract,
+    setShowContractCategoryModal
   } = useContext(ContractContext);
-
-  const [contractId, setContractId] = useState(null);
 
   const { getAllPartnerRoles } = useRoles();
 
   const { getQuestionnaireStatus } = useQuestionnaire();
+
+  const {downloadSignedContract} = useFileDownload();
 
   console.log("HAVE SIGNED", hasSigned);
 
@@ -70,6 +74,8 @@ export default function Contracts() {
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
   const users = useStoreState((state) => state.users);
+
+  const [currentContract, setCurrentContract] = useState(null);
 
   if (!partner) {
     location.reload();
@@ -243,10 +249,10 @@ export default function Contracts() {
               )}
             </>
           )}
-          {user.role == "superAdmin" && !questionnaireAlert && (
+          {user.role == "superAdmin" && !questionnaireAlert && currentContract && (
             <ContractStatus dynamicData={dynamicData} />
           )}
-          {user.role != "superAdmin" && (
+          {user.role != "superAdmin" && currentContract && (
             <ContractStatus dynamicData={dynamicData} />
           )}
 
@@ -285,15 +291,24 @@ export default function Contracts() {
                   </th>
                 </tr>
 
-                {pagedContracts?.map((contract) => (
-                  <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
+                {pagedContracts?.map((contract) => (contract.contract_id != "null" && contract.contract_id != null && 
+                  <tr onClick={() => {
+                      if(currentContract == contract){
+                        setContract(null);
+                        setCurrentContract(null)
+                      }else{
+                        setContract(contract);
+                        setCurrentContract(contract)
+                      }
+                    }} 
+                      className={`border-b border-b-white/10 cursor-pointer bg-transparent ${currentContract == contract && 'bg-white/10'}`}>
                     {/* Company */}
                     <td>
                       <div className="flex flex-col">
                         <div className=" text-white">
                           {contract.contract_id}
                         </div>
-                        <span className="text-sm">abscdagah.io</span>
+                        <span className="text-sm">{contract.email ?? ""}</span>
                       </div>
                     </td>
                     {/* Contract status */}
@@ -328,17 +343,19 @@ export default function Contracts() {
                         {
                           (hasSigned && contract.contract_status == "started") ? 
                           <span className="text-white text-sm">Signing</span> :
-                          contract.contract_status == "not_active" || (contract.contract_status == "started" && !hasSigned) ?
+                          contract.contract_status == "not_active" || (contract.contract_status == "started" && !hasSigned) || (contract.contract_status == "processing" && !hasSigned)?
                           <span
                               onClick={() => {
                                 setAnnexuresLink(
                                   `/dashboard/contracts/annexures/${contract.contract_id}`
                                 );
-                                setContractId(contract.contract_id);
+                                setContract(contract);
                                 if(selectedAllRequiredSignatories){
                                   setAgreementModal(true);
-                                }else{
+                                }else if(contract.vas_partner_uuid){
                                   setContractSignatriesModal(true);
+                                }else{
+                                  setShowContractCategoryModal(true);
                                 }
                               }}
                                 
@@ -361,16 +378,11 @@ export default function Contracts() {
                               d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
                             />
                             </svg>{" "}
-                            <a
-                              href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(
-                                ":partner_uuid",
-                                contract.partner_uuid
-                              )
-                                .replace(":contract_id", contract.contract_id)
-                                .replace(":type", "signed")}`}
+                            <span
+                              onClick={() => downloadSignedContract(partner?.uuid, contract.contract_id)}
                             >
                               <span className="text-white text-sm">Download</span>
-                            </a>
+                            </span>
                           </>                        
                         }
                       </div>

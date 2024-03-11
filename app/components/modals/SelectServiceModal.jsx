@@ -12,8 +12,8 @@ export default function SelectServiceModal({ vas_partner_uuid=null }) {
     getAllServices,
     selectServiceModal,
     setSelectServiceModal,
-    contractSignatriesModal,
     setContractSignatriesModal,
+    contract
   } = useContext(ContractContext);
 
   const [allServices, setAllServices] = useState([]);
@@ -44,7 +44,8 @@ export default function SelectServiceModal({ vas_partner_uuid=null }) {
     const data = {
       partner_uuid: `${partner.uuid}`,
       service_type: [name],
-      vas_partner_uuid: vas_partner_uuid
+      vas_partner_uuid: vas_partner_uuid,
+      contract_id: contract.contract_id
     };
     partner_select_service(data);
   };

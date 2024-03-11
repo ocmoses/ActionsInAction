@@ -88,7 +88,8 @@ const useContracts = () => {
 
   const [hasContractToSign, setHasContractToSign] = useState(false);
 
-  let currentContract = null; //Is there a current contract
+  const [contract, setContract] = useState(null);
+
   const contractStatus = partner?.contract_status; //What is the user's contract status
   const userStatus = partner?.status; //What is the user's status
   const vasPartnerStatus = partner?.vas_partner_contract_status;
@@ -455,7 +456,7 @@ const useContracts = () => {
     isSuperadmin,
     getAllContracts,
     ...usePartners(),
-    currentContract,
+    contract,
     contractStatus,
     userStatus,
     vasPartnerStatus,
@@ -520,7 +521,9 @@ const useContracts = () => {
     annexuresLink,
     setAnnexuresLink,
 
-    hasContractToSign
+    hasContractToSign,
+    contract,
+    setContract
   };
 };
 

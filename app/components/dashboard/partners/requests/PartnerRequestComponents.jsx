@@ -798,7 +798,7 @@ export const RequestFinishUpModal = ({realTimePageReloader, closeRequestFlyout,r
             className="mt-[-20px]"
           />
           <div className="py-8 px-8 flex flex-col gap-4 min-w-full">
-            <div className="text-center">
+            <div className="text-center text-white/60">
               <h2 className=" text-[#FFF] font-bold text-[20px]">
                 {partnerDetails.service_name}
               </h2>
@@ -846,7 +846,7 @@ export const RequestFinishUpModal = ({realTimePageReloader, closeRequestFlyout,r
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-4 justify-between items-end">
+                      <div className="flex flex-col gap-4 justify-between items-end" >
                         {vasPartnerResponse?.percentage !== 100 ? (
                           <button
                             onClick={() =>

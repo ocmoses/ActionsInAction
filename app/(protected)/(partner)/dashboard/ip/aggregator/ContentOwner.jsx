@@ -91,11 +91,10 @@ export default function ContentOwner({ params }) {
       setSubmitting(false);
 
       if (result?.success) {
-        const message = result.data?.message;
+        const message = result.data?.message ?? "Submitted successfully";
 
         console.log("Submit all proofs message", message);
 
-        setSuccessMessage("Submitted successfully");
         setSuccessToast(true);
 
         return {

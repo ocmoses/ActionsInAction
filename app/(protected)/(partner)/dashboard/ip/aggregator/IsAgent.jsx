@@ -12,6 +12,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 import PopUp, { SuccessCard } from "@/app/components/PopUps";
+import Success from "@/app/components/toasts/Success";
 
 export default function IsAgent({ params }) {
   const { partner, ipFileUpload } = usePartners();
@@ -92,11 +93,10 @@ export default function IsAgent({ params }) {
       setSubmitting(false);
 
       if (result?.success) {
-        const message = result.data?.message;
+        const message = result.data?.message ?? "Submitted successfully";
 
         console.log("Submit all proofs message", message);
 
-        setSuccessMessage("Submitted successfully");
         setSuccessToast(true);
 
         return {
@@ -261,7 +261,7 @@ export default function IsAgent({ params }) {
                 )}
                 <h4 className="text-white font-mtn text-sm">Deceased</h4>
                 <p className="text-white/60 font-mtn text-sm">
-                  Content creator is alive and active
+                  Content creator is dead
                 </p>
               </div>
             </div>
@@ -509,6 +509,7 @@ export default function IsAgent({ params }) {
           )}
         </div>
       </div>
+
       {successToast && (
         <PopUp closePopUp={() => {}}>
           <SuccessCard

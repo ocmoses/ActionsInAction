@@ -42,10 +42,6 @@ import ComplianceRejection from "@/app/components/dashboard/compliance/Complianc
 import OnboardingStatus from "@/app/components/dashboard/OnboardingStatus";
 import ServiceLiveCard from "@/app/components/dashboard/ServiceLiveCard";
 import IPApprovedCard from "@/app/components/dashboard/IPApprovedCard";
-import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
-import OnboardingStatus from "@/app/components/dashboard/OnboardingStatus";
-import ServiceLiveCard from "@/app/components/dashboard/ServiceLiveCard";
-import IPApprovedCard from "@/app/components/dashboard/IPApprovedCard";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -481,9 +477,7 @@ export default function DashboardContent({ type }) {
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
       if (res.result?.success && res.result?.data.length > 0) {
-      if (res.result?.success && res.result?.data.length > 0) {
         setShowPartnerCategories(false);
-        setVasPartnerData(res.result.data);
         setVasPartnerData(res.result.data);
       }
     });
@@ -580,7 +574,6 @@ export default function DashboardContent({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED && hasContractToSign && (
                             {userStatus == user_statuses.APPROVED && hasContractToSign && (
                               <CallToAction
                                 style={{
@@ -1066,11 +1059,9 @@ export default function DashboardContent({ type }) {
               </div>
               {rechooseAggregator &&
                 vasPartnerData.length > 0 &&
-                vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
-                      key={item.uuid}
                       key={item.uuid}
                       aggregator={item.aggregator}
                       action={() => {

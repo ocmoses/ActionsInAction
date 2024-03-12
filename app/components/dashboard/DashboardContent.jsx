@@ -38,6 +38,10 @@ import useQuestionnaire from "@/hooks/useQuestionnaire";
 import QuestionnaireModal from "@/app/components/modals/QuestionnaireModal";
 import ChangeOrderRejection from "@/app/components/dashboard/compliance/ChangeOrderRejection";
 import IPRejection from "@/app/components/dashboard/compliance/IPRejection";
+import ComplianceRejection from "@/app/components/dashboard/compliance/ComplianceRejection";
+import OnboardingStatus from "@/app/components/dashboard/OnboardingStatus";
+import ServiceLiveCard from "@/app/components/dashboard/ServiceLiveCard";
+import IPApprovedCard from "@/app/components/dashboard/IPApprovedCard";
 import IPDynamicField from "@/app/components/dashboard/compliance/IPDynamicField";
 import PopUp, {
   BrdUpdatesSuccess,
@@ -90,7 +94,7 @@ export default function DashboardContent({ type }) {
     changeAggregator,
   } = usePartners();
   const states = useStoreState((state) => state);
-  const [FinalApproval, setFinalApproval] = useState(false);
+  const [finalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
@@ -124,11 +128,11 @@ export default function DashboardContent({ type }) {
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
-  const [IPAlert, setIPAlert] = useState(false);
+  const [iPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
-  const [hasDashboard, setHasdashboard] = useState(false);
+  const [hasDashboard, setHasDashboard] = useState(false);
 
   useEffect(() => {
     setProcessing(false);
@@ -437,7 +441,7 @@ export default function DashboardContent({ type }) {
       role_menu_map[user?.role] &&
       role_menu_map[user?.role][0] === "Dashboard"
     ) {
-      setHasdashboard(true);
+      setHasDashboard(true);
     }
 
     const location =
@@ -472,9 +476,9 @@ export default function DashboardContent({ type }) {
 
   const fetchVasPartnerRequest = () => {
     getVasPartnerRequest(partner?.uuid).then((res) => {
-      if (res.result?.length > 0) {
+      if (res.result?.success && res.result?.data.length > 0) {
         setShowPartnerCategories(false);
-        setVasPartnerData(res.result);
+        setVasPartnerData(res.result.data);
       }
     });
   };
@@ -549,7 +553,6 @@ export default function DashboardContent({ type }) {
                 {user?.first_name && (
                   <h2 className="text-4xl mb-6 font-bold text-white text-center md:text-start">
                     Hello, {user.first_name}
-                    {/* <span className="text-white text-sm">This is a visible comment</span> */}
                   </h2>
                 )}
                 {partner?.onboarding_type === "new" && (
@@ -632,7 +635,8 @@ export default function DashboardContent({ type }) {
                                   </div>
                                 }
                               />
-                            ) : FinalApproval.partner ? (
+                            )}
+                            {finalApproval.partner ? (
                               // <CallToAction
                               //   message="Your contract is ready. Click here to sign"
                               //   description="Describe the event and give further instructions if needed, include a call to action"
@@ -733,7 +737,7 @@ export default function DashboardContent({ type }) {
                     )}
                   </>
                 )}
-                {IPAlert &&
+                {iPAlert &&
                   //Need to negate the condition that shows the category files
                   !(
                     !contractStarted &&
@@ -744,8 +748,13 @@ export default function DashboardContent({ type }) {
 
                     <IPCard />
                   )}
+                {/* // elijah-dev changes */}
                 <ChangeOrderRejection />
+                <ComplianceRejection />
                 <IPRejection />
+                <OnboardingStatus />
+                <ServiceLiveCard />
+                <IPApprovedCard />
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (
@@ -846,7 +855,7 @@ export default function DashboardContent({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {FinalApproval.partner ? (
+                            {finalApproval.partner ? (
                               <CallToAction
                                 message="Your contract is ready. Click here to sign"
                                 description="Describe the event and give further instructions if needed, include a call to action"
@@ -909,7 +918,7 @@ export default function DashboardContent({ type }) {
                     type={type}
                     onclick={continueRegistration}
                     categories={categoriesData}
-                    finalApproval={FinalApproval}
+                    finalApproval={finalApproval}
                   />
                 )}
                 {success && (
@@ -961,19 +970,7 @@ export default function DashboardContent({ type }) {
                       )}
                     </div>
                   )}
-                {/* {!contractStarted &&
-                  partner?.contract_status === "not_started" &&
-                  partnerActiveCategories?.length > 0 && (
-                    <div
-                      id="categoryselect"
-                      className="flex max-w-lg text-center text-[#999999] mt-16 mb-6 mx-auto"
-                    >
-                      Dear {user.first_name}, please note that you can choose
-                      multiple service categories. However, you will be required
-                      to complete a selected category to enable you move to the
-                      next category
-                    </div>
-                  )} */}
+
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -1055,9 +1052,11 @@ export default function DashboardContent({ type }) {
                   )}
               </div>
               {rechooseAggregator &&
+                vasPartnerData.length > 0 &&
                 vasPartnerData.map((item) =>
                   item.status !== "declined" ? null : (
                     <ChooseAggregatorCard
+                      key={item.uuid}
                       aggregator={item.aggregator}
                       action={() => {
                         handleVasData("service_uuid", item.service_uuid);
@@ -1067,11 +1066,15 @@ export default function DashboardContent({ type }) {
                     />
                   )
                 )}
-              {vasPartnerData.map((item) =>
-                item.status !== "in-progress" ? null : (
-                  <ChooseAggregatorSuccessCard aggregator={item.aggregator} />
-                )
-              )}
+              {vasPartnerData.length > 0 &&
+                vasPartnerData.map((item) =>
+                  item.status !== "in-progress" ? null : (
+                    <ChooseAggregatorSuccessCard
+                      key={item.uuid}
+                      aggregator={item.aggregator}
+                    />
+                  )
+                )}
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator

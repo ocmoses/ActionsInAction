@@ -203,6 +203,8 @@ export default function DashboardContent({ type }) {
       });
   };
 
+  
+
   useEffect(() => {
     check();
   }, []);
@@ -525,6 +527,11 @@ export default function DashboardContent({ type }) {
       [field]: value,
     }));
   };
+
+  // console.log("SHOW_PARTNER_CAT", showPartnerCategories);
+  // console.log("CONTRACT_STARTED", !contractStarted); 
+  console.log("PARTNER CONTRACT STATUS", partner?.contract_status);
+    // !showProgress)
 
   return (
     hasDashboard && (

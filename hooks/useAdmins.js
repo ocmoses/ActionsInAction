@@ -1046,10 +1046,11 @@ export default function useAdmins() {
     }
   }
 
-  const addDynamicField = async (data) => {
+  const addDynamicField = async (data, vas_partner_uuid) => {
+    
     try {
       setProcessing(true);
-      const response = await fetch(`${RemoteEndpoints.ADD_DYNAMIC_FIELD}`, {
+      const response = await fetch(`${vas_partner_uuid ? RemoteEndpoints.ADD_DYNAMIC_FIELD + "?vas_partner_uuid=" + vas_partner_uuid : RemoteEndpoints.ADD_DYNAMIC_FIELD}`, {
         cache: "no-store",
         next: { revalidate: 120 },
         method: "POST",
@@ -1142,12 +1143,14 @@ export default function useAdmins() {
     }
   };
 
-  const getDynamicFields = async (partner_uuid) => {    
+  const getDynamicFields = async (partner_uuid, vas_partner_uuid) => {    
     
     try {
       setProcessing(true);
       const response = await fetch(
-        `${RemoteEndpoints.GET_PARTNER_DYNAMIC_FIELD.replace(':partner_uuid', partner_uuid)}`,
+        !vas_partner_uuid ? 
+        RemoteEndpoints.GET_PARTNER_DYNAMIC_FIELD.replace(':partner_uuid', partner_uuid) :
+        RemoteEndpoints.GET_PARTNER_DYNAMIC_FIELD.replace(':partner_uuid', partner_uuid) + "?vas_partner_uuid=" + vas_partner_uuid,
         {
           cache: "no-store",
           next: { revalidate: 120 },

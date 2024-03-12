@@ -164,7 +164,7 @@ export default function IPDrawer({
     }
 
     if (
-      data.request_name_twothree &&
+      data.request_name_three &&
       (data[data.request_name_three] + "_status" == null || "approved")
     ) {
       setHasDynamicField(true);
@@ -200,6 +200,26 @@ export default function IPDrawer({
             ? setError({ error: resp.error })
             : showSuccess(resp.message);
           switch (expanded) {
+            case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "approved",
+                });
+            break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO]: "approved",
+                });
+            break;
+            case expansion.AGG_AND_VAS_AGREEMENT_LETTER: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "approved",
+                });
+            break;
+            case expansion.AGG_AND_VAS_ADDITIONAL_PROOF: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_ADDITIONAL_PROOF]: "approved",
+                });
+                break;
             case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER:
               setApprovals({
                 ...approvals,
@@ -348,6 +368,26 @@ export default function IPDrawer({
             ? setError({ error: resp.error })
             : showSuccess("Rejected successfully");
           switch (expanded) {
+            case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "rejected",
+                });
+            break;
+            case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO]: "rejected",
+                });
+            break;
+            case expansion.AGG_AND_VAS_AGREEMENT_LETTER: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_AUTHORIZATION_LETTER]: "rejected",
+                });
+            break;
+            case expansion.AGG_AND_VAS_ADDITIONAL_PROOF: setApprovals({
+                  ...approvals,
+                  [expansion.AGG_AND_VAS_ADDITIONAL_PROOF]: "rejected",
+                });
+                break;
             case expansion.AGREEMENT_BETWEEN_AGENT_AND_VAS_PARTNER:
               setApprovals({
                 ...approvals,
@@ -475,12 +515,19 @@ export default function IPDrawer({
 
     setProgressing(true);
 
-    addDynamicField(newRequest)
+    addDynamicField(newRequest, request?.vas_partner_uuid)
       .then((resp) => {
+
         setProgressing(false);
-        showSuccess(resp.message);
-        setDynamicFieldName(capitalizeFirst(newRequest.request_name));
-        setCollapseAdded(true);
+
+        if(resp.message){
+          showSuccess(resp.message);
+          setDynamicFieldName(capitalizeFirst(newRequest.request_name));
+          setCollapseAdded(true);
+        }else{
+          setError({error: resp.error})
+        }        
+        
       })
       .catch((error) => setError({ error: error.response.data.message }));
   };
@@ -523,16 +570,16 @@ export default function IPDrawer({
         data.ip_request_type = "licensing-period";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_LETTER:
-        data.ip_request_type = "authorization-letter";
+        data.ip_request_type = "agg-vas-letter";
         break;
       case expansion.AGG_AND_VAS_AUTHORIZATION_VIDEO:
-        data.ip_request_type = "authorization-video";
+        data.ip_request_type = "agg-vas-video";
         break;
-      case expansion.AGG_AND_VAS_AGREEMENT_WITH_VAS_PARTNER:
-        data.ip_request_type = "agreement-letter-btw-content-and-vas-partner";
+      case expansion.AGG_AND_VAS_AGREEMENT_LETTER:
+        data.ip_request_type = "agg-vas-aggreement-letter";
         break;
       case expansion.AGG_AND_VAS_ADDITIONAL_PROOF:
-        data.ip_request_type = "other-content-proof-of-ownership";
+        data.ip_request_type = "agg-vas-other-proof-of-ownership";
         break;
       case expansion.AUTHORIZATION_LETTER:
         data.ip_request_type = "authorization-letter";
@@ -564,7 +611,7 @@ export default function IPDrawer({
         data.ip_request_type = "means-of-identification";
         break;
       case expansion.AGENT_ID:
-        data.ip_request_type = "agent-id";
+        data.ip_request_type = "means-of-agent-identification";
         break;
       case expansion.ADDITIONAL_PROOF:
         data.ip_request_type = "other-content-proof-of-ownership";
@@ -584,7 +631,7 @@ export default function IPDrawer({
   };
 
   useEffect(() => {
-    getDynamicFields(request?.partner_uuid)
+    getDynamicFields(request?.partner_uuid, request?.vas_partner_uuid)
       .then((resp) => {
         processDynamicFields(resp.data);
       })
@@ -3133,7 +3180,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[0][0]}
+                      {dynamicFields[1][0]}
                     </span>
 
                     <span
@@ -3249,7 +3296,7 @@ export default function IPDrawer({
               </div>
             )}
 
-          {/* Additional Requirement two */}
+          {/* Additional Requirement three */}
           {hasDynamicField &&
             dynamicFields.find((field) => field[1] == "three") != null && (
               <div className="flex space-x-2 items-start w-full">
@@ -3289,7 +3336,7 @@ export default function IPDrawer({
                       />
                     </svg>
                     <span className="text-white/80 ml-2">
-                      {dynamicFields[0][0]}
+                      {dynamicFields[2][0]}
                     </span>
 
                     <span
@@ -3464,6 +3511,14 @@ export default function IPDrawer({
   function ApprovalActions() {
     if (!admin_approvals.can_approve.includes("ip_compliance")) {
       return <></>;
+    }
+
+    if(expanded == expansion.ADDITIONAL_REQUIREMENT_ONE && !dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_three]){
+      return <span className="text-white/60 italic">Pending</span>;
+    }else if(expanded == expansion.ADDITIONAL_REQUIREMENT_TWO && !dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two]){
+      return <span className="text-white/60 italic">Pending</span>;
+    }else if(expanded == expansion.ADDITIONAL_REQUIREMENT_THREE && !dynamicResponse[dynamicResponse.request_name_three][dynamicResponse.request_name_three]){
+      return <span className="text-white/60 italic">Pending</span>;
     }
 
     return declining != request ? (

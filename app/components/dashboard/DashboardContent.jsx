@@ -574,7 +574,7 @@ export default function DashboardContent({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED && hasContractToSign ? (
+                            {userStatus == user_statuses.APPROVED && hasContractToSign && (
                               <CallToAction
                                 style={{
                                   border: "1px solid rgba(255,255,255,.1)",

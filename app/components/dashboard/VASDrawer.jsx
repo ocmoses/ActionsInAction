@@ -1,10 +1,9 @@
-"use client";
-
 import Image from "next/image";
 import useAdmins from "@/hooks/useAdmins";
 import Button from "@/app/components/form/Button";
 import { useState, useEffect } from "react";
 import usePartners from "@/hooks/usePartners";
+import { TailSpinPreloader } from "@/app/components/Icons";
 
 const Card = ({ title, subtitle, checked, onChange }) => {
   return (
@@ -35,6 +34,7 @@ export default function VASDrawer({
   const { getVasTypes } = usePartners();
   const [selectedCard, setSelectedCard] = useState(null);
   const [vasTypes, setVasTypes] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   const handleCardSelect = (type, uuid, index) => {
     setSelectedCard(index);
@@ -48,10 +48,15 @@ export default function VASDrawer({
   };
 
   useEffect(() => {
-    getVasTypes().then((res) => {
-      setVasTypes(res.result);
-    });
-  }, []);
+    setShowLoading(true);
+    getVasTypes()
+      .then((res) => {
+        setVasTypes(res.result);
+      })
+      .then(() => {
+        setShowLoading(false);
+      });
+  }, [category]);
 
   const isButtonDisabled = selectedCard === null;
 
@@ -120,22 +125,32 @@ export default function VASDrawer({
                     </span>
 
                     <div>
-                      {vasTypes
-                        ?.slice()
-                        .sort((a, b) =>
-                          a.type === "CRBT" ? 1 : b.type === "CRBT" ? -1 : 0
-                        )
-                        .map((type, index) => (
-                          <Card
-                            key={type.uuid}
-                            title={type.type}
-                            subtitle={type.descr}
-                            checked={selectedCard === index}
-                            onChange={() =>
-                              handleCardSelect(type.type, type.uuid, index)
-                            }
+                      {showLoading ? (
+                        <div className="h-full flex justify-center items-center mt-4 mb-4">
+                          <TailSpinPreloader
+                            width={50}
+                            height={50}
+                            fill="#efb703"
                           />
-                        ))}
+                        </div>
+                      ) : (
+                        vasTypes
+                          ?.slice()
+                          .sort((a, b) =>
+                            a.type === "CRBT" ? 1 : b.type === "CRBT" ? -1 : 0
+                          )
+                          .map((type, index) => (
+                            <Card
+                              key={type.uuid}
+                              title={type.type}
+                              subtitle={type.descr}
+                              checked={selectedCard === index}
+                              onChange={() =>
+                                handleCardSelect(type.type, type.uuid, index)
+                              }
+                            />
+                          ))
+                      )}
                     </div>
                   </div>
                   <div>

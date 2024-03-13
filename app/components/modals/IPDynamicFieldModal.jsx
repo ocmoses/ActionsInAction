@@ -8,7 +8,7 @@ import Success from "@/app/components/toasts/Success";
 import { TailSpinPreloader } from "@/app/components/Icons";
 import FormErrors from "@/app/components/FormErrors";
 
-export default function IPDynamicFieldModal({ dynamic, closeAction }) {
+export default function IPDynamicFieldModal({ dynamic, closeAction, vas_partner_uuid=null }) {
   console.log("Dynamic ARRAY", dynamic);
 
   const { partner, dynamicFileUpload } = usePartners();
@@ -66,6 +66,10 @@ export default function IPDynamicFieldModal({ dynamic, closeAction }) {
     formData.append("partner_uuid", partner?.uuid);
     formData.append("dynamic_field_number", number);
     formData.append("file", file);
+
+    if(vas_partner_uuid){
+      formData.append("vas_partner_uuid", vas_partner_uuid);
+    }
 
     setSubmitting(true);
 

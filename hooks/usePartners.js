@@ -1155,13 +1155,14 @@ const usePartners = () => {
     }
   };
 
-  const getIPStatus = async () => {
+  const getIPStatus = async (vas_partner_uuid) => {
+
+    const endpoint = RemoteEndpoints.GET_IP_STATUS.replace(":partner_uuid", states.partners.partner.uuid) + (vas_partner_uuid ? "?vas_partner_uuid=" + vas_partner_uuid : "");
+    // console.log("ENDPOINT", endpoint);
+
     try {
       const response = await fetch(
-        `${RemoteEndpoints.GET_IP_STATUS.replace(
-          ":partner_uuid",
-          states.partners.partner.uuid
-        )}`,
+        endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1330,13 +1331,13 @@ const usePartners = () => {
     }
   };
 
-  const getDynamicField = async () => {
+  const getDynamicField = async (vas_partner_uuid) => {
+
+    const endpoint = RemoteEndpoints.CHECK_FOR_DYNAMIC_FIELD.replace(":partner_uuid", states.partners.partner.uuid) + (vas_partner_uuid ? "?vas_partner_uuid=" + vas_partner_uuid : "");
+    // console.log("ENDPOINT", endpoint);
     try {
       const response = await fetch(
-        `${RemoteEndpoints.CHECK_FOR_DYNAMIC_FIELD.replace(
-          ":partner_uuid",
-          states.partners.partner.uuid
-        )}`,
+        endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },

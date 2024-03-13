@@ -107,13 +107,13 @@ const useContracts = () => {
   console.log("selected_admin_users==", selected_admin_users);
   
   let signingDirector = selected_admin_users?.find(
-    (user) => user.role == "director"
+    (user) => user.role == "director" && user.contract_id == contract?.contract_id
   );
   let signingDelegate = selected_admin_users?.find(
-    (user) => user.role == "delegate"
+    (user) => user.role == "delegate" && user.contract_id == contract?.contract_id
   );
   let signingWitness = selected_admin_users?.find(
-    (user) => user.role == "witness"
+    (user) => user.role == "witness" && user.contract_id == contract?.contract_id
   );
 
   console.log("signingDirector==", signingDirector);
@@ -320,7 +320,7 @@ const useContracts = () => {
   };
 
   const submit_signatories = async (signatories) => {
-    let data = { email: [] };
+    let data = { email: [], contract_id: contract?.contract_id };
 
     console.log("signatories", signatories);
 

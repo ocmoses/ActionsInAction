@@ -348,6 +348,7 @@ export default function IPDrawer({
       data.reasons_for_rejection.trim().length == 0
     ) {
       setError({ error: "You must select or enter a rejection reason" });
+      setApproving(false);
       return;
     }
 
@@ -775,7 +776,7 @@ export default function IPDrawer({
 
                         <div
                           className="text-red-500 cursor-pointer"
-                          onClick={deleteDynamicField(dynamicFieldName)}
+                          onClick={() => deleteDynamicField(dynamicFieldName)}
                         >
                           Remove
                         </div>
@@ -3515,7 +3516,7 @@ export default function IPDrawer({
       return <></>;
     }
 
-    if(expanded == expansion.ADDITIONAL_REQUIREMENT_ONE && !dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_three]){
+    if(expanded == expansion.ADDITIONAL_REQUIREMENT_ONE && !dynamicResponse[dynamicResponse.request_name_one][dynamicResponse.request_name_one]){
       return <span className="text-white/60 italic">Pending</span>;
     }else if(expanded == expansion.ADDITIONAL_REQUIREMENT_TWO && !dynamicResponse[dynamicResponse.request_name_two][dynamicResponse.request_name_two]){
       return <span className="text-white/60 italic">Pending</span>;

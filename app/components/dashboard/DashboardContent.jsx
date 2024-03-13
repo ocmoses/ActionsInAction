@@ -433,7 +433,7 @@ export default function DashboardContent({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    console.log("USER", user);
+    console.log("PARTNER DASHBOARD", partner);
 
     // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
     if (

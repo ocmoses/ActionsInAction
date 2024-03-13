@@ -353,11 +353,12 @@ export default function IPDrawer({
 
     if (typedReason.trim().length > 5) {
       //talk about magikkkk numbers
-      setData({ ...data, reasons_for_rejection: typedReason });
+      data.reasons_for_rejection = typedReason;;
+      // setData({ ...data, reasons_for_rejection: typedReason });
     }
 
     if (request.vas_partner_uuid) {
-      data["vas_partner_uuid"] = request.vas_partner_uuid;
+      data["vas_partner_uuid"] = request?.vas_partner_uuid;
     }
 
     setTimeout(() => {
@@ -2353,7 +2354,7 @@ export default function IPDrawer({
 
           {/* If this is an agent */}
           {/* Agreement btw content creator and agent */}
-          {request.licenser_type == ipTypes.AGENT_AND_CONTENT && (
+          {request.licenser_type == ipTypes.AGENT_AND_CONTENT && !request?.vas_partner_uuid && (
             <div className="flex space-x-2 items-start w-full">
               <span className="p-2 rounded-md bg-white/10 inline-flex">
                 <svg
@@ -2508,6 +2509,7 @@ export default function IPDrawer({
                   </div>
                 )}
               </div>
+              
             </div>
           )}
 

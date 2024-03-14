@@ -367,6 +367,7 @@ export default function Contracts() {
                               onClick={() => {
                                
                               selectContract(contract);
+                              forceRender();
                               if(selectedAllRequiredSignatories){
                                 setAgreementModal(true);
                               }else if(contract.vas_partner_uuid){

@@ -69,11 +69,15 @@ export default function Contracts() {
 
   console.log("HAVE SIGNED", hasSigned);
 
+  const [count, setCount] = useState(0);
+
   const [contracts, setContracts] = useState(null);
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
   const users = useStoreState((state) => state.users);
+
+  const [, forceRender] = useState({});
 
   const [currentContract, setCurrentContract] = useState(null);
 
@@ -103,6 +107,17 @@ export default function Contracts() {
   });
 
   const router = useRouter();
+
+  const selectContract = async (contract) => {
+    
+    setAnnexuresLink(
+      `/dashboard/contracts/annexures/${contract.contract_id}`
+    );
+    setContract(contract);
+    
+    return true;
+    
+  }
 
   const { user, role, refreshSession } = useUsers();
 
@@ -195,6 +210,10 @@ export default function Contracts() {
       checkQuestionnaireStatus();
     }
   }, []);
+
+  useEffect(() => {
+    
+  }, [contract]);
 
   return (
     <>
@@ -346,18 +365,18 @@ export default function Contracts() {
                           contract.contract_status == "not_active" || (contract.contract_status == "started" && !hasSigned) || (contract.contract_status == "processing" && !hasSigned)?
                           <span
                               onClick={() => {
-                                setAnnexuresLink(
-                                  `/dashboard/contracts/annexures/${contract.contract_id}`
-                                );
-                                setContract(contract);
-                                if(selectedAllRequiredSignatories){
-                                  setAgreementModal(true);
-                                }else if(contract.vas_partner_uuid){
-                                  setContractSignatriesModal(true);
-                                }else{
-                                  setShowContractCategoryModal(true);
-                                }
-                              }}
+                               
+                              selectContract(contract);
+                              if(selectedAllRequiredSignatories){
+                                setAgreementModal(true);
+                              }else if(contract.vas_partner_uuid){
+                                setContractSignatriesModal(true);
+                              }else{
+                                setShowContractCategoryModal(true);
+                              } 
+                                                               
+                              }
+                            }
                                 
                             >
                               <span className="text-white text-sm">Sign Contract</span>

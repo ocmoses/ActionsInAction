@@ -266,14 +266,14 @@ export default function ContractSigning({ params }) {
       selected_admin_users.find((u) => u.email == user.email)?.role
     );
     setHaveSigned(
-      selected_admin_users.find((u) => u.email == user.email)
+      selected_admin_users.find((u) => u.email == user.email && user.contract_id == contract_id)
         ?.has_user_signed != "no"
     );
 
     let directorOrDelegate = selected_admin_users.find(
-      (u) => u.role == "director" || u.role == "delegate"
+      (u) => (u.role == "director" || u.role == "delegate") && u.contract_id == contract_id
     );
-    let witness = selected_admin_users.find((u) => u.role == "witness");
+    let witness = selected_admin_users.find((u) => u.role == "witness" && u.contract_id == contract_id);
 
     setDirectorOrDelegate(directorOrDelegate);
     setWitness(witness);

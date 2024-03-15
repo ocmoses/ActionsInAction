@@ -18,6 +18,8 @@ import useFileDownload from "@/hooks/useFileDownload";
 export default function ContractSigning({ params }) {
   const contract_id = params.params[0];
 
+  // console.log("CONTRACT ID", contract_id);
+
   const {downloadUnsignedContract} = useFileDownload();
 
   const {
@@ -80,7 +82,7 @@ export default function ContractSigning({ params }) {
   console.log("selected_admin_users", selected_admin_users);
   console.log("user: ", user);
   console.log("partner: ", partner);
-  // console.log("useUsers()", useUsers());
+  // console.log("ME MYSELF", selected_admin_users.find(u => u.email == user.email && u.contract_id == contract_id));
   // console.log("usePartners()", usePartners());
 
   let dynamic_content_response = null;
@@ -262,12 +264,13 @@ export default function ContractSigning({ params }) {
     get_dynamic_content(contract_id ?? null);
 
     setSignatoryRole(
-      selected_admin_users.find((u) => u.email == user.email)?.role
+      selected_admin_users.find(u => u.email == user.email && u.contract_id == contract_id)?.role
     );
     setHaveSigned(
-      selected_admin_users.find((u) => u.email == user.email && user.contract_id == contract_id)
-        ?.has_user_signed != "no"
+      selected_admin_users.find(u => u.email == user.email && u.contract_id == contract_id)?.has_user_signed == "yes"
     );
+
+    console.log("MYSELF: ", selected_admin_users.find((u) => u.email == user.email && u.contract_id == contract_id));
 
     let directorOrDelegate = selected_admin_users.find(
       (u) => (u.role == "director" || u.role == "delegate") && u.contract_id == contract_id
@@ -298,16 +301,18 @@ export default function ContractSigning({ params }) {
 
     console.log("directorOrDelegate", directorOrDelegate);
     console.log("witness", witness);
+    console.log("have signed", haveSigned);
 
     setDirectorOrDelegateSigned(
       directorOrDelegate && directorOrDelegate.has_user_signed != "no"
         ? true
         : false
     );
+    console.log("directorOrDelegateSigned", directorOrDelegateSigned);
     setWitnessSigned(
-      selected_admin_users.find((u) => u.role == "witness")
-        ? selected_admin_users.find((u) => u.role == "witness")
-            .has_user_signed != "no"
+      selected_admin_users.find((u) => u.role == "witness" && u.contract_id == contract_id)
+        ? selected_admin_users.find((u) => u.role == "witness"  && u.contract_id == contract_id)
+            .has_user_signed == "yes"
         : false
     );
 
@@ -335,7 +340,7 @@ export default function ContractSigning({ params }) {
 
     window.addEventListener("scroll", focus);
     window.onload = focus;
-  }, [signingModal, clearCanvas]);
+  }, [signingModal, clearCanvas, directorOrDelegate]);
 
   return (
     <div className="flex flex-col justify-center items-center pt-8 relative">

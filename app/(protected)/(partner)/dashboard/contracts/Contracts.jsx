@@ -370,9 +370,9 @@ export default function Contracts() {
                               forceRender();
                               if(selectedAllRequiredSignatories){
                                 setAgreementModal(true);
-                              }else if(contract.vas_partner_uuid){
+                              }else if(user?.role == role_types.SUPER_ADMIN && contract.vas_partner_uuid){
                                 setContractSignatriesModal(true);
-                              }else{
+                              }else if(user?.role == role_types.SUPER_ADMIN){
                                 setShowContractCategoryModal(true);
                               } 
                                                                

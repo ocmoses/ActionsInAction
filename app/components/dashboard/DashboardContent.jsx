@@ -749,9 +749,14 @@ export default function DashboardContent({ type }) {
                     <IPCard />
                   )}
                 {/* // elijah-dev changes */}
+                {/* // elijah-dev changes */}
                 <ChangeOrderRejection />
                 <ComplianceRejection />
+                <ComplianceRejection />
                 <IPRejection />
+                <OnboardingStatus />
+                <ServiceLiveCard />
+                <IPApprovedCard />
                 <OnboardingStatus />
                 <ServiceLiveCard />
                 <IPApprovedCard />
@@ -971,6 +976,7 @@ export default function DashboardContent({ type }) {
                     </div>
                   )}
 
+
                 {!contractStarted &&
                   partner?.contract_status === "not_started" &&
                   partnerCategories?.length > 0 &&
@@ -1063,6 +1069,15 @@ export default function DashboardContent({ type }) {
                         setShowChooseAggregator(true);
                       }}
                       dismissAction={() => setRechooseAggregator(false)}
+                    />
+                  )
+                )}
+              {vasPartnerData.length > 0 &&
+                vasPartnerData.map((item) =>
+                  item.status !== "in-progress" ? null : (
+                    <ChooseAggregatorSuccessCard
+                      key={item.uuid}
+                      aggregator={item.aggregator}
                     />
                   )
                 )}

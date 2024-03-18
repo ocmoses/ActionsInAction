@@ -387,7 +387,7 @@ export const ServiceNamePop = ({ action, cancel, onTextChange }) => {
       <div className="w-full">
         <TextInput
           id="servicename"
-          label="Service name"
+          label="Enter your service name"
           onChange={handleInputChange}
         />
       </div>

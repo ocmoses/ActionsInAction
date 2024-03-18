@@ -7,7 +7,6 @@ export default function IPRejection() {
   const { getIPStatus, partner } = usePartners();
 
   const [showAlert, setShowAlert] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
 
   const [rejected, setRejected] = useState([]);
@@ -17,8 +16,17 @@ export default function IPRejection() {
   let rejectionArray = [];
 
   const allApproved = (data) => {
+    
     let result = true;
 
+    // if(data["service-details"].status == "rejected"){
+    //     //add
+    //     if(!rejectionArray.includes("service_details")){
+    //         rejectionArray.push("service_details");
+    //         result = false;
+    //     }
+
+    // }
     // if(data["service-details"].status == "rejected"){
     //     //add
     //     if(!rejectionArray.includes("service_details")){
@@ -53,6 +61,15 @@ export default function IPRejection() {
         result = false;
       }
     }
+    if (
+      data["authorization-letter"]?.authorization_letter_status == "rejected"
+    ) {
+      //add
+      if (!rejectionArray.includes("authorization_letter")) {
+        rejectionArray.push("authorization_letter");
+        result = false;
+      }
+    }
 
     if (data["licensing-period"]?.license_period_status == "rejected") {
       //add
@@ -61,7 +78,21 @@ export default function IPRejection() {
         result = false;
       }
     }
+    if (data["licensing-period"]?.license_period_status == "rejected") {
+      //add
+      if (!rejectionArray.includes("licensing_period")) {
+        rejectionArray.push("licensing_period");
+        result = false;
+      }
+    }
 
+    if (data["video-file"]?.authorization_video_status == "rejected") {
+      //add
+      if (!rejectionArray.includes("video_file")) {
+        rejectionArray.push("video_file");
+        result = false;
+      }
+    }
     if (data["video-file"]?.authorization_video_status == "rejected") {
       //add
       if (!rejectionArray.includes("video_file")) {
@@ -155,7 +186,24 @@ export default function IPRejection() {
         result = false;
       }
     }
+    if (data["means-of-identification"]?.means_of_id_status == "rejected") {
+      //add
+      if (!rejectionArray.includes("content_creator_id_front")) {
+        rejectionArray.push("content_creator_id_front");
+        result = false;
+      }
+    }
 
+    if (
+      data["means-of-agent-identification"]?.means_of_agent_id_status ==
+      "rejected"
+    ) {
+      //add
+      if (!rejectionArray.includes("agent_id_front")) {
+        rejectionArray.push("agent_id_front");
+        result = false;
+      }
+    }
     if (
       data["means-of-agent-identification"]?.means_of_agent_id_status ==
       "rejected"

@@ -4,13 +4,15 @@ import useUsers from "@/hooks/useUsers";
 import IPCorrectionModal from "@/app/components/modals/IPCorrectionModal";
 
 export default function IPRejection() {
-  const { getIPStatus } = usePartners();
+  const { getIPStatus, partner } = usePartners();
 
   const [showAlert, setShowAlert] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
   const [rejected, setRejected] = useState([]);
+
+  const [vasPartnerUuid, setVasPartnerUuid] = useState(null);
 
   let rejectionArray = [];
 
@@ -26,7 +28,7 @@ export default function IPRejection() {
 
     // }
 
-    if (data["aggregator-and-vas-requirements"].status == "rejected") {
+    if (data["aggregator-and-vas-requirements"]?.status == "rejected") {
       //add
       if (rejectionArray.includes("aggregator_and_vas_requirements")) {
         rejectionArray.push("aggregator_and_vas_requirements");
@@ -69,8 +71,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-content-and-vas-partner"]
-        ?.agreement_letter_content_and_vas_partner_status == "rejected"
+      data["agreement-letter-btw-content-and-vas-partner"]?.agreement_letter_content_and_vas_partner_status == "rejected"
     ) {
       //add
       if (
@@ -82,8 +83,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-content-and-agent"]
-        ?.agreement_letter_content_and_agent_status == "rejected"
+      data["agreement-letter-btw-content-and-agent"]?.agreement_letter_content_and_agent_status == "rejected"
     ) {
       //add
       if (!rejectionArray.includes("agreement_letter_btw_content_and_agent")) {
@@ -93,8 +93,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-agent-and-vas-partner"]
-        ?.agreement_letter_agent_and_vas_partner_status == "rejected"
+      data["agreement-letter-btw-agent-and-vas-partner"]?.agreement_letter_agent_and_vas_partner_status == "rejected"
     ) {
       //add
       if (
@@ -106,8 +105,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-content-and-record-label"]
-        ?.agreement_letter_content_and_record_label_status == "rejected"
+      data["agreement-letter-btw-content-and-record-label"]?.agreement_letter_content_and_record_label_status == "rejected"
     ) {
       //add
       if (
@@ -121,8 +119,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-content-and-music-composer"]
-        ?.agreement_letter_content_and_music_composer_status == "rejected"
+      data["agreement-letter-btw-content-and-music-composer"]?.agreement_letter_content_and_music_composer_status == "rejected"
     ) {
       //add
       if (
@@ -136,8 +133,7 @@ export default function IPRejection() {
     }
 
     if (
-      data["agreement-letter-btw-record-label-and-vas-partner"]
-        ?.agreement_letter_record_label_and_vas_partner_status == "rejected"
+      data["agreement-letter-btw-record-label-and-vas-partner"]?.agreement_letter_record_label_and_vas_partner_status == "rejected"
     ) {
       //add
       if (
@@ -184,21 +180,61 @@ export default function IPRejection() {
     return result;
   };
 
-  useEffect(() => {
-    getIPStatus().then((resp) => {
-      if (resp.error) {
-        console.log("IP REJECTION ERROR", { error: resp.error });
-      } else {
-        console.log("REJECTION ARRAY", rejectionArray);
+  const getRejectedIPs = async () => {
 
-        if (!allApproved(resp.data)) {
-          setRejected(rejectionArray);
-          setShowAlert(true);
+    const vasPartners = partner?.vas_partners;
+
+    setVasPartnerUuid(null);
+    
+    if(vasPartners && vasPartners.length > 0){
+        
+        for (const vPartner of vasPartners) {
+            
+            if(showAlert){
+                return;
+            }
+            
+            getIPStatus(vPartner.vas_partner_uuid).then((resp) => {
+                if (resp.error) {
+                  console.log("IP REJECTION ERROR", { error: resp.error });
+                } else {                  
+          
+                  if (!allApproved(resp.data)) {
+                    setRejected(rejectionArray);
+                    setVasPartnerUuid(vPartner.vas_partner_uuid);
+                    setShowAlert(true);                                       
+                  }
+          
+                  console.log("REJECTION ARRAY", rejectionArray);
+                }
+            });
         }
 
-        console.log("Rejection Array", rejectionArray);
-      }
-    });
+        if(showAlert){
+            return;
+        }
+
+        getIPStatus().then((resp) => {
+            if (resp.error) {
+              console.log("IP REJECTION ERROR", { error: resp.error });
+            } else {
+              
+      
+              if (!allApproved(resp.data) && !showAlert) {
+                setRejected(rejectionArray);
+                setShowAlert(true);                                       
+              }
+      
+              console.log("REJECTION ARRAY", rejectionArray);
+            }
+        });
+
+    }
+    
+  }
+
+  useEffect(() => {
+    getRejectedIPs();
   }, []);
 
   const { user } = useUsers();
@@ -253,6 +289,7 @@ export default function IPRejection() {
           <IPCorrectionModal
             rejected={rejected}
             closeAction={() => setShowModal(false)}
+            vas_partner_uuid={vasPartnerUuid}
           />
         )}
       </>

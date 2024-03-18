@@ -216,7 +216,7 @@ export const ForAggregatorSuccess = ({ action }) => {
 
   const handleCopyEmail = () => {
     navigator.clipboard
-      .writeText("VASDigitalProposals@mtn.com")
+      .writeText("#PartnerManagement.DS.NG@mtn.com")
       .then(() => {
         setCopySuccess(true);
         setShowToast(true);
@@ -252,7 +252,7 @@ export const ForAggregatorSuccess = ({ action }) => {
       </h2>
       <p className=" text-gray-400 m-[auto]">
         Interested in becoming an MTN aggregator? Please contact
-        VASDigitalProposals@mtn.com
+        #PartnerManagement.DS.NG@mtn.com
       </p>
       <span
         className=" text-mtn-500 my-5 cursor-pointer"
@@ -284,7 +284,7 @@ export const CRBTSuccess = ({ action, category }) => {
 
   const handleCopyEmail = () => {
     navigator.clipboard
-      .writeText("VASHUB.NG@mtn.com")
+      .writeText("#VASHUB.NG@mtn.com")
       .then(() => {
         setCopySuccess(true);
         setShowToast(true);
@@ -318,7 +318,7 @@ export const CRBTSuccess = ({ action, category }) => {
 
       <p className=" text-gray-400 m-[auto]">
         Interested in becoming a CRBT VAS partner? Please contact
-        VASHUB.NG@mtn.com
+        #VASHUB.NG@mtn.com
       </p>
       <span
         className=" text-mtn-500 my-5 cursor-pointer"
@@ -531,16 +531,19 @@ export const ChooseAggregator = ({
 
       <div className="flex flex-row space-x-1">
         <p className="text-[12px] text-white">
-          We require VAS partners to register with existing MTN aggregators.
+          We need VAS partners to register with MTN aggregators. Kindly search
+          and select an aggregator to assist with your onboarding. If you're an
+          aggregator, click the "I'm an aggregator" button below. Feel free to
+          contact us at #PartnerManagement.DS.NG@mtn.com for any inquiries.
         </p>
-        <p className="text-[12px] text-mtn">
+        {/* <p className="text-[12px] text-mtn">
           <a href="mailto:VASDigitalProposals@mtn.com">Learn more.</a>
-        </p>
+        </p> */}
       </div>
       <div className="w-full mt-4">
         <TextInput
           id="choosenAggregator"
-          label="Search partners"
+          label="Search aggregators"
           value={searchQuery}
           onChange={handleSearch}
         />
@@ -595,7 +598,7 @@ export const ChooseAggregator = ({
             onClick={action}
             disabled={isButtonDisabled}
           >
-            Create
+            Select
           </button>
         </div>
       </div>

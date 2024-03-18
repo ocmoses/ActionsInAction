@@ -12,7 +12,7 @@ import useUsers from "@/hooks/useUsers";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import Axios from "@/app/modules/axios";
 import Portal from "@/app/components/Portal";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   Util,
   filterPartner,
@@ -67,12 +67,18 @@ import IPCard from "@/app/components/dashboard/IPCard";
 import { ServiceConfigurationReadyAlert } from "@/app/components/dashboard/ContractComponents";
 import { PartnerMenu } from "@/app/modules/menu";
 
-export default function GetStarted({ type }) {
+import {ContractContext} from "@/app/(protected)/(partner)/dashboard/contracts/ContractProvider";
+                              
+export default function DashboardContent({ type }) {
   const {
     session: { user },
   } = useUsers();
 
-  console.log(user);
+  console.log("useContext(ContractContext)", useContext(ContractContext));
+
+  const {hasContractToSign} = useContext(ContractContext);
+  console.log("HasContractToSign", hasContractToSign);
+
   const {
     partner,
     category,
@@ -88,7 +94,7 @@ export default function GetStarted({ type }) {
     changeAggregator,
   } = usePartners();
   const states = useStoreState((state) => state);
-  const [FinalApproval, setFinalApproval] = useState(false);
+  const [finalApproval, setFinalApproval] = useState(false);
   useEffect(() => {
     setProcessing(false);
     const _finalApproval = getFinalApproval(partner);
@@ -122,11 +128,11 @@ export default function GetStarted({ type }) {
   const [toFillQuestionnaire, setToFillQuestionnaire] = useState(false);
 
   const [questionnaireAlert, setQuestionnaireAlert] = useState(false);
-  const [IPAlert, setIPAlert] = useState(false);
+  const [iPAlert, setIPAlert] = useState(false);
   const [showQuestionare, setShowQuestionare] = useState(false);
   const [rejectionReason, setRejectionReason] = useState(null);
 
-  const [hasDashboard, setHasdashboard] = useState(false);
+  const [hasDashboard, setHasDashboard] = useState(false);
 
   useEffect(() => {
     setProcessing(false);
@@ -196,6 +202,8 @@ export default function GetStarted({ type }) {
         setError({ error: error.message });
       });
   };
+
+  
 
   useEffect(() => {
     check();
@@ -425,7 +433,7 @@ export default function GetStarted({ type }) {
   //////////end code////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    console.log("USER", user);
+    console.log("PARTNER DASHBOARD", partner);
 
     // Check if user, role_menu_map[user?.role], and role_menu_map[user?.role][0] exist before accessing their properties
     if (
@@ -433,7 +441,7 @@ export default function GetStarted({ type }) {
       role_menu_map[user?.role] &&
       role_menu_map[user?.role][0] === "Dashboard"
     ) {
-      setHasdashboard(true);
+      setHasDashboard(true);
     }
 
     const location =
@@ -520,6 +528,11 @@ export default function GetStarted({ type }) {
     }));
   };
 
+  // console.log("SHOW_PARTNER_CAT", showPartnerCategories);
+  // console.log("CONTRACT_STARTED", !contractStarted); 
+  console.log("PARTNER CONTRACT STATUS", partner?.contract_status);
+    // !showProgress)
+
   return (
     hasDashboard && (
       <>
@@ -561,7 +574,7 @@ export default function GetStarted({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {userStatus == user_statuses.APPROVED && (
+                            {userStatus == user_statuses.APPROVED && hasContractToSign && (
                               <CallToAction
                                 style={{
                                   border: "1px solid rgba(255,255,255,.1)",
@@ -623,7 +636,7 @@ export default function GetStarted({ type }) {
                                 }
                               />
                             )}
-                            {FinalApproval.partner ? (
+                            {finalApproval.partner ? (
                               // <CallToAction
                               //   message="Your contract is ready. Click here to sign"
                               //   description="Describe the event and give further instructions if needed, include a call to action"
@@ -724,7 +737,7 @@ export default function GetStarted({ type }) {
                     )}
                   </>
                 )}
-                {IPAlert &&
+                {iPAlert &&
                   //Need to negate the condition that shows the category files
                   !(
                     !contractStarted &&
@@ -842,7 +855,7 @@ export default function GetStarted({ type }) {
                           "Complete your setup to get started!"
                         ) : (
                           <>
-                            {FinalApproval.partner ? (
+                            {finalApproval.partner ? (
                               <CallToAction
                                 message="Your contract is ready. Click here to sign"
                                 description="Describe the event and give further instructions if needed, include a call to action"
@@ -905,7 +918,7 @@ export default function GetStarted({ type }) {
                     type={type}
                     onclick={continueRegistration}
                     categories={categoriesData}
-                    finalApproval={FinalApproval}
+                    finalApproval={finalApproval}
                   />
                 )}
                 {success && (

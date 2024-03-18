@@ -38,7 +38,6 @@ export default function BilateralAnnexures({params}){
     const [focused, setFocused] = useState("annexureA"); 
     const [submitting, setSubmitting] = useState(false);
     const [data, setData] = useState({partner_uuid: partner?.uuid, contract_id: contract_id, 
-
                                         annexure_c: "", 
                                         annexure_e_four: "", annexure_e_five_a: "",
                                         annexure_e_five_b: "", annexure_e_five_c: "", 
@@ -195,7 +194,10 @@ export default function BilateralAnnexures({params}){
             router.push(`/dashboard/contracts/execution/${contract_id}`);
             return;
         }
-       
+
+        if(dynamicData?.vas_partner_uuid){
+            data.vas_partner_uuid = dynamicData?.vas_partner_uuid;
+        }       
 
         clearErrors();
 
@@ -262,44 +264,44 @@ export default function BilateralAnnexures({params}){
             setDynamicData(dynamic_content_response.data);
 
             setData({...data, 
-                        annexure_c: dynamicData?.dynamic_details?.annexures?.annexure_c ?? "", 
-                        annexure_e_four: dynamicData?.dynamic_details?.annexures?.annexure_e_four ?? "", 
-                        annexure_e_five_a: dynamicData?.dynamic_details?.annexures?.annexure_e_five_a ?? "",
-                        annexure_e_five_b: dynamicData?.dynamic_details?.annexures?.annexure_e_five_b ?? "", 
-                        annexure_e_five_c: dynamicData?.dynamic_details?.annexures?.annexure_e_five_c ?? "", 
-                        annexure_e_five_d: dynamicData?.dynamic_details?.annexures?.annexure_e_five_d ?? "", 
-                        annexure_e_five_e: dynamicData?.dynamic_details?.annexures?.annexure_e_five_e ?? "", 
-                        annexure_e_five_f: dynamicData?.dynamic_details?.annexures?.annexure_e_five_f ?? "", 
-                        annexure_e_five_g: dynamicData?.dynamic_details?.annexures?.annexure_e_five_g ?? "",
-                        annexure_e_five_h: dynamicData?.dynamic_details?.annexures?.annexure_e_five_h ?? "", 
-                        annexure_e_five_i: dynamicData?.dynamic_details?.annexures?.annexure_e_five_i ?? "",
-                        annexure_e_six_a: dynamicData?.dynamic_details?.annexures?.annexure_e_six_a ?? "", 
-                        annexure_e_six_b: dynamicData?.dynamic_details?.annexures?.annexure_e_six_b ?? "",
-                        annexure_e_six_c: dynamicData?.dynamic_details?.annexures?.annexure_e_six_c ?? "", 
-                        annexure_e_six_d: dynamicData?.dynamic_details?.annexures?.annexure_e_six_d ?? "",
-                        annexure_h: dynamicData?.dynamic_details?.annexures?.annexure_h ?? "", 
-                        annexure_h_ii: dynamicData?.dynamic_details?.annexures?.annexure_h_ii ?? "" , 
-                        annexure_h_iii: dynamicData?.dynamic_details?.annexures?.annexure_h_iii ?? "" ,
-                        annexure_h_iv: dynamicData?.dynamic_details?.annexures?.annexure_h_iv ?? "",  
-                        annexure_h_v: dynamicData?.dynamic_details?.annexures?.annexure_h_v ?? "", 
-                        annexure_h_vi: dynamicData?.dynamic_details?.annexures?.annexure_h_vi ?? "" ,
-                        annexure_h_vii: dynamicData?.dynamic_details?.annexures?.annexure_h_vii ?? "",                     
-                        annexure_h_viii: dynamicData?.dynamic_details?.annexures?.annexure_h_viii ?? "", 
-                        annexure_h_ix: dynamicData?.dynamic_details?.annexures?.annexure_h_ix ?? "",
-                        annexure_h_x: dynamicData?.dynamic_details?.annexures?.annexure_h_x ?? "", 
-                        annexure_h_xi: dynamicData?.dynamic_details?.annexures?.annexure_h_xi ?? "", 
-                        annexure_h_xii: dynamicData?.dynamic_details?.annexures?.annexure_h_xii ?? "",
-                        annexure_h_xiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xiii ?? "", 
-                        annexure_h_xiv: dynamicData?.dynamic_details?.annexures?.annexure_h_xiv ?? "", 
-                        annexure_h_xv: dynamicData?.dynamic_details?.annexures?.annexure_h_xv ?? "",
-                        annexure_h_xvi: dynamicData?.dynamic_details?.annexures?.annexure_h_xvi ?? "", 
-                        annexure_h_xvii: dynamicData?.dynamic_details?.annexures?.annexure_h_xvii ?? "", 
-                        annexure_h_xviii: dynamicData?.dynamic_details?.annexures?.annexure_h_xviii ?? "",
-                        annexure_h_xix: dynamicData?.dynamic_details?.annexures?.annexure_h_xix ?? "", 
-                        annexure_h_xx: dynamicData?.dynamic_details?.annexures?.annexure_h_xx ?? "", 
-                        annexure_h_xxi: dynamicData?.dynamic_details?.annexures?.annexure_h_xxi ?? "",
-                        annexure_h_xxii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxii ?? "", 
-                        annexure_h_xxiii: dynamicData?.dynamic_details?.annexures?.annexure_h_xxiii ?? ""
+                        annexure_c: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_c ?? "", 
+                        annexure_e_four: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_four ?? "", 
+                        annexure_e_five_a: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_a ?? "",
+                        annexure_e_five_b: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_b ?? "", 
+                        annexure_e_five_c: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_c ?? "", 
+                        annexure_e_five_d: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_d ?? "", 
+                        annexure_e_five_e: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_e ?? "", 
+                        annexure_e_five_f: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_f ?? "", 
+                        annexure_e_five_g: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_g ?? "",
+                        annexure_e_five_h: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_h ?? "", 
+                        annexure_e_five_i: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_five_i ?? "",
+                        annexure_e_six_a: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_six_a ?? "", 
+                        annexure_e_six_b: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_six_b ?? "",
+                        annexure_e_six_c: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_six_c ?? "", 
+                        annexure_e_six_d: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_e_six_d ?? "",
+                        annexure_h: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h ?? "", 
+                        annexure_h_ii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_ii ?? "" , 
+                        annexure_h_iii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_iii ?? "" ,
+                        annexure_h_iv: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_iv ?? "",  
+                        annexure_h_v: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_v ?? "", 
+                        annexure_h_vi: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_vi ?? "" ,
+                        annexure_h_vii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_vii ?? "",                     
+                        annexure_h_viii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_viii ?? "", 
+                        annexure_h_ix: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_ix ?? "",
+                        annexure_h_x: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_x ?? "", 
+                        annexure_h_xi: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xi ?? "", 
+                        annexure_h_xii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xii ?? "",
+                        annexure_h_xiii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xiii ?? "", 
+                        annexure_h_xiv: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xiv ?? "", 
+                        annexure_h_xv: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xv ?? "",
+                        annexure_h_xvi: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xvi ?? "", 
+                        annexure_h_xvii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xvii ?? "", 
+                        annexure_h_xviii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xviii ?? "",
+                        annexure_h_xix: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xix ?? "", 
+                        annexure_h_xx: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xx ?? "", 
+                        annexure_h_xxi: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xxi ?? "",
+                        annexure_h_xxii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xxii ?? "", 
+                        annexure_h_xxiii: dynamic_content_response.data?.dynamic_details?.annexures?.annexure_h_xxiii ?? ""
                 });
 
             for(const field in dynamic_content_response.data?.dynamic_details?.annexures){
@@ -385,17 +387,26 @@ export default function BilateralAnnexures({params}){
                         <h4 className="text-lg text-center text-white/60 w-full mb-4">Revenue Share Model</h4>
 
                         {/* Table here */}
+                        {
+
+                        }
                         <div className="border-1 border-white/20 rounded-md w-full">
                             <div className="w-full">
                                 <div className="flex border border-white/20">
                                     <span className="text-white w-1/3 border-r border-white/40 p-2">Service</span>
                                     <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to service provider</span>
+                                    {
+                                        dynamicData?.vas_partner_uuid && <span className="text-white w-1/3 border-r border-white/40 p-2">Revenue share to technical provider</span>
+                                    }
                                     <span className="text-white w-1/3 p-2">Revenue share to MTN</span>
                                 </div>
                                 <div className="flex border border-white/20">
                                     
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.service_types[0]}</span>
                                     <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.content_provider_share}</span>
+                                    {
+                                        dynamicData?.vas_partner_uuid && <span className="text-white/60 w-1/3 border-r border-white/40 p-2">{dynamicData?.dynamic_details?.revenue_share?.technical_provider_share}</span>
+                                    }
                                     <span className="text-white/60 w-1/3 p-2">{dynamicData?.dynamic_details?.revenue_share?.mtn_share}</span>
                                 </div>
                                 {/* <div className="flex border border-white/20">

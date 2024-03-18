@@ -91,11 +91,10 @@ export default function IsRecordLabel({ params }) {
       setSubmitting(false);
 
       if (response.status === 200) {
-        const message = result.data?.message;
+        const message = result.data?.message ?? "Submitted successfully";
 
         console.log("Submit all proofs message", message);
 
-        setSuccessMessage("Submitted successfully");
         setSuccessToast(true);
 
         return {

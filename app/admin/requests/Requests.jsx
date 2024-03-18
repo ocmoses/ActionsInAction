@@ -162,7 +162,7 @@ export default function Requests() {
     get_all_aggregator_response = await getAllAggregatorRequests();
     console.log('get_all_aggregator_response', get_all_aggregator_response);
 
-    for (const aggregatorRequest of get_all_aggregator_response.aggregatorRequests) {
+    for (const aggregatorRequest of get_all_aggregator_response?.aggregatorRequests) {
       if (!requests.find((request) => request.uuid == aggregatorRequest.service_uuid)) {
         requests.push({
           company: aggregatorRequest.aggregator,
@@ -853,7 +853,7 @@ console.log('get_all_partner_shortcodes_response', get_all_partner_shortcodes_re
                       <td>
                         <div>
                           {moment(request.created_at ?? moment()).format(
-                            "MMM YYYY"
+                            "DD MMM YYYY"
                           )}
                         </div>
                       </td>

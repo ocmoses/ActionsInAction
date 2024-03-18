@@ -126,7 +126,7 @@ const RemoteEndpoints = {
 
   //service integration
   DSM_ENDPOINT: `/dashboard/dsm`,
-
+  PARTNER_SERVICE_INTEGRATION_STATUS_DETAILS: `${apiURL}/v2/contract/get-partner-contracts/`,
   //Grace Period
   PARTNER_LICENSE_VALIDITY_REMAINDER: `${apiURL}/v2/contract/license/get-license-validity-remainder/`,
   PARTNER_LICENSE_GRACE_PERIOD_STATUS: `${apiURL}/v2/contract/license/get-partner-license-grace-period-status/`,

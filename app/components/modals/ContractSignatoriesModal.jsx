@@ -40,83 +40,6 @@ export default function ContractSignatoriesModal() {
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
 
-  const create_partner = async (data) => {
-    // console.log('create_data', data);
-
-    let formData = new FormData();
-
-    // console.log("Object.keys(data)", Object.keys(data));
-
-    Object.keys(data).forEach((element) => {
-      formData.append(element, data[element]);
-    });
-
-    if (creatingPartner) return;
-    setCreatingPartner(true);
-    create_partner_response = await createPartner(formData);
-
-    if (create_partner_response.error)
-      setError({ error: create_partner_response.error });
-    else {
-      console.log("create_partner_response", create_partner_response);
-
-      if (
-        data.role ==
-        partnerRoles.find((role) => role.role_name == "director").uuid
-      ) {
-        setSignatories({
-          ...signatories,
-          director: {
-            email: data.email,
-            firstname: data.firstname,
-            lastname: data.lastname,
-          },
-        });
-      } else if (
-        data.role ==
-        partnerRoles.find((role) => role.role_name == "delegate").uuid
-      ) {
-        setSignatories({
-          ...signatories,
-          delegate: {
-            email: data.email,
-            firstname: data.firstname,
-            lastname: data.lastname,
-          },
-        });
-      } else if (
-        data.role ==
-        partnerRoles.find((role) => role.role_name == "witness").uuid
-      ) {
-        setSignatories({
-          ...signatories,
-          witness: {
-            email: data.email,
-            firstname: data.firstname,
-            lastname: data.lastname,
-          },
-        });
-      }
-    }
-
-    setData({
-      partner_uuid: partner.uuid,
-      phone: "000000000",
-      firstname: "",
-      lastname: "",
-      email: "",
-      role: "",
-    });
-
-    setCreatingPartner(false);
-    setAddDirectorModal(false);
-    setAddDelegateModal(false);
-    setAddWitnessModal(false);
-    setContractSignatriesModal(true);
-    setDisableActiveButton(true);
-    // setNavigation(all_AdminRoles.navigation);
-  };
-
   const showAddSignatoryModal = (role) => {
     resetData();
     setNewSignatoryRole(role);
@@ -270,9 +193,12 @@ export default function ContractSignatoriesModal() {
                   ) : (
                     <span
                       className="underline text-white text-xs cursor-pointer"
-                      onClick={() => {}}
+                      onClick={() => setSignatories({
+                                  ...signatories, director: null
+                                })
+                              }
                     >
-                      Edit
+                      Cancel
                     </span>
                   ))}
               </div>
@@ -372,9 +298,12 @@ export default function ContractSignatoriesModal() {
                   ) : (
                     <span
                       className="underline text-white text-xs cursor-pointer"
-                      onClick={() => {}}
+                      onClick={() => setSignatories({
+                                  ...signatories, delegate: null
+                                })
+                              }
                     >
-                      Edit
+                      Cancel
                     </span>
                   ))}
               </div>
@@ -459,9 +388,12 @@ export default function ContractSignatoriesModal() {
                 ) : (
                   <span
                     className="underline text-white text-xs cursor-pointer"
-                    onClick={() => {}}
+                    onClick={() => setSignatories({
+                                ...signatories, witness: null
+                              })
+                            }
                   >
-                    Edit
+                    Cancel
                   </span>
                 )}
               </div>

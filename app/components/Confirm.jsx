@@ -42,12 +42,12 @@ export default function Confirm({
     setReason(_reason);
     setShowReason(false);
 
-    // if(formData){
-    //   setFormData({
-    //     ...formData,
-    //     feedback: _reason.rejection_reason,
-    //   });
-    // }
+    if(formData){
+      setFormData({
+        ...formData,
+        feedback: _reason.rejection_reason,
+      });
+    }
   };
   return (
     <>

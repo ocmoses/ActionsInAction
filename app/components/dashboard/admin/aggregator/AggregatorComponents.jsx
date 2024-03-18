@@ -537,6 +537,10 @@ const [showSuccessToast, setShowSuccessToast] = useState({
   };
  
   const approveRejectRequest = async () => {
+    const formData_feedback = formData.feedback;
+    if(formData_feedback===null){
+      successAction('Select the reason for rejection', false);
+    }else{
       try {
         const formDataToSend = new FormData();
         formDataToSend.append("partner_uuid", formData.partner_uuid);
@@ -567,6 +571,8 @@ const [showSuccessToast, setShowSuccessToast] = useState({
         console.log("error", err);
         successAction(err.response.data.data.message, false);
       }
+    }
+      
   };
   return (
     
@@ -1220,7 +1226,7 @@ export const AggregatorVerifier = ({type, title, text, approveRejectRequest, for
       ...formData,
       category_stage: category_stage,
       status: "rejected",
-      feedback: title + " rejected",
+      feedback: null,
       field: field,
       approval_uuid: ""
     });
@@ -1384,7 +1390,7 @@ export const AggregatorVerifierForShortcodes = ({newVasPartnersDetails, type, ti
       ...formData,
       category_stage: category_stage,
       status: "rejected",
-      feedback: title + " rejected",
+      feedback: null,
       field: field+"-"+shortcode_uuid,
       approval_uuid: ""
     });

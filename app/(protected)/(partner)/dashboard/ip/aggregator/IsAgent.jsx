@@ -12,6 +12,7 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import { useRouter } from "next/navigation";
 import useLogout from "@/hooks/useLogout";
 import PopUp, { SuccessCard } from "@/app/components/PopUps";
+import Success from "@/app/components/toasts/Success";
 
 export default function IsAgent({ params }) {
   const { partner, ipFileUpload } = usePartners();
@@ -92,11 +93,10 @@ export default function IsAgent({ params }) {
       setSubmitting(false);
 
       if (result?.success) {
-        const message = result.data?.message;
+        const message = result.data?.message ?? "Submitted successfully";
 
         console.log("Submit all proofs message", message);
 
-        setSuccessMessage("Submitted successfully");
         setSuccessToast(true);
 
         return {
@@ -261,7 +261,7 @@ export default function IsAgent({ params }) {
                 )}
                 <h4 className="text-white font-mtn text-sm">Deceased</h4>
                 <p className="text-white/60 font-mtn text-sm">
-                  Content creator is alive and active
+                  Content creator is dead
                 </p>
               </div>
             </div>
@@ -458,9 +458,35 @@ export default function IsAgent({ params }) {
             />
           </div>
 
+          
           <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
             <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
-              7
+                7
+            </span> 
+            <div className="w-[250px] flex flex-col space-y-2">
+                <h4 className="font-mtn text-white text-md">Agent’s ID</h4>
+                <p className="text-white/60 text-sm">Submit a valid means of identification for the Agent. E.g International passport, driver’s license, voter’s card</p> 
+                <div className="flex space-x-2 items-base">
+                    
+                </div>                           
+            </div>
+
+            <FileInput
+                id="agent_id_front"
+                doc_id="content_creator_id_doc"
+                label="Agent's ID"
+                value={files.agent_id_front}
+                onChange={(e) => uploadFile("agent_id_front", e.target.value)}
+                errors={errors}
+                disabled={false}
+                style="flex-1"
+            />
+            
+          </div>
+
+          <div className="border-1 border-white/20 rounded-xl p-4 w-full flex flex-nowrap space-x-4 ">
+            <span className="border-2 w-10 h-10 rounded-full flex justify-center items-center text-white/80  bg-black border-white/20 ">
+              8
             </span>
             <div className="w-[250px] flex flex-col space-y-2">
               <h4 className="font-mtn text-white text-md">
@@ -509,6 +535,7 @@ export default function IsAgent({ params }) {
           )}
         </div>
       </div>
+
       {successToast && (
         <PopUp closePopUp={() => {}}>
           <SuccessCard

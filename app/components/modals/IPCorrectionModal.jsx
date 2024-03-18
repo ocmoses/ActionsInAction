@@ -10,7 +10,8 @@ import FormErrors from "@/app/components/FormErrors";
 import DatePicker from "@/app/components/form/DatePicker";
 import RemoteEndpoints from "@/app/modules/endpoints";
 
-export default function IPCorrectionModal({ rejected, closeAction }) {
+export default function IPCorrectionModal({ rejected, closeAction, vas_partner_uuid=null }) {
+  
   console.log("REJECTED ARRAY", rejected);
 
   const { partner, ipFileUpload } = usePartners();
@@ -42,7 +43,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
   const validateFiles = () => {
     console.log("FILES", files);
 
-    if (!data.license_start_date || !data.license_end_date) {
+    if (rejected.includes('licensing_period') && (!data.license_start_date || !data.license_end_date)) {
       setError({ error: "Please fill licensing period" });
       return false;
     }
@@ -64,7 +65,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     }
     setSubmitting(true);
     if (rejected.includes("licensing_period")) {
-      updateLicenseInfo()
+      updateLicenseInfo(vas_partner_uuid)
         .then((resp) => {
           console.log("RESP", resp);
           setSubmitting(false);
@@ -141,6 +142,10 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     );
     formData.append("agg_plus_vas_requirement", "no");
     formData.append("file", file);
+    
+    if(vas_partner_uuid){
+      formData.append("vas_partner_uuid", vas_partner_uuid);
+    }
 
     setSubmitting(true);
 
@@ -177,7 +182,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     }
   }, []);
 
-  const updateLicenseInfo = async () => {
+  const updateLicenseInfo = async (vas_partner_uuid) => {
     if (!validateFiles()) {
       console.log("VAALIDATION FAILED");
       return;
@@ -186,6 +191,10 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
     clearErrors();
 
     setSubmitting(true);
+
+    if(vas_partner_uuid){
+      data.vas_partner_uuid = vas_partner_uuid;
+    }
 
     try {
       setSubmitting(true);
@@ -286,7 +295,7 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                 <p className="text-white font-mtn-bold">
                   {filesMap[rejection]}
                 </p>
-                {rejection == "video_file" && (
+                {rejection == "video_file" ? (
                   <FileInput
                     id="authorization_video"
                     doc_id="authorization_video_doc"
@@ -306,8 +315,8 @@ export default function IPCorrectionModal({ rejected, closeAction }) {
                     disabled={false}
                     style="flex-1"
                   />
-                )}
-                {rejection != "licensing_period" ? (
+                ) : 
+                rejection != "licensing_period" ? (
                   <FileInput
                     id={rejection}
                     doc_id={`${rejection}_doc`}

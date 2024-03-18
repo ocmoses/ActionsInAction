@@ -210,6 +210,29 @@ const useContracts = () => {
     }
   };
 
+  const hasSelectedRequiredSignatories = (contract) => {
+    //This only works for bilateral contract
+    const selected_admin_users = partner?.selected_partner_admin_users;
+    console.log("selected_admin_users==", selected_admin_users);
+    
+    let signingDirector = selected_admin_users?.find(
+      (user) => user.role == "director" && user.contract_id == contract?.contract_id
+    );
+    let signingDelegate = selected_admin_users?.find(
+      (user) => user.role == "delegate" && user.contract_id == contract?.contract_id
+    );
+    let signingWitness = selected_admin_users?.find(
+      (user) => user.role == "witness" && user.contract_id == contract?.contract_id
+    );
+
+    console.log("signingDirector==", signingDirector);
+    console.log("signingDelegate==", signingDelegate);
+    console.log("signingWitness==", signingWitness);
+
+    //Have we selected all required signatories?
+    return (signingDirector || signingDelegate) && signingWitness;
+  }
+
   const partnerGetAllContracts = async (page, perPage) => {
     try {
       setProcessing(true);
@@ -461,6 +484,7 @@ const useContracts = () => {
     userStatus,
     vasPartnerStatus,
     selectedAllRequiredSignatories,
+    hasSelectedRequiredSignatories,
     isASignatory,
     signatoryRole,
     allHaveSigned,

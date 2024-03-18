@@ -54,7 +54,7 @@ export default function Contracts() {
     getContractDynamicData,
     setAnnexuresLink,
     checkQuestionnaireStatus,
-    selectedAllRequiredSignatories,
+    hasSelectedRequiredSignatories,
     hasContractToSign,
     setContract,
     contract,
@@ -367,8 +367,7 @@ export default function Contracts() {
                               onClick={() => {
                                
                               selectContract(contract);
-                              forceRender();
-                              if(selectedAllRequiredSignatories){
+                              if(hasSelectedRequiredSignatories(contract)){
                                 setAgreementModal(true);
                               }else if(user?.role == role_types.SUPER_ADMIN && contract.vas_partner_uuid){
                                 setContractSignatriesModal(true);

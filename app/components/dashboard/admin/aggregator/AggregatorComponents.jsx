@@ -1438,13 +1438,15 @@ export const AggregatorVerifierForShortcodes = ({newVasPartnersDetails, type, ti
               )}
               {reject && (
                 <Confirm
-                  yestext="Reject"
-                  notext="Cancel"
-                  type="reject"
-                  onYes={() => approveRejectRequest()}
-                  onNo={cancel}
-                  othersAction={setShowOthersTextbox}
-                />
+                yestext="Reject"
+                notext="Cancel"
+                type="reject"
+                onYes={() => approveRejectRequest()}
+                onNo={cancel}
+                othersAction={setShowOthersTextbox}
+                setFormData={setFormData}
+                formData={formData}
+              />
               )}
             </>
           )}

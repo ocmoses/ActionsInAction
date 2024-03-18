@@ -3256,7 +3256,7 @@ export default function ContractSigning({ params }) {
                           if(drawn){
                             signContract();
                           }else{
-                            setError("Please sign.")
+                            setError({error: "Please sign."})
                           } 
                         }
                       }

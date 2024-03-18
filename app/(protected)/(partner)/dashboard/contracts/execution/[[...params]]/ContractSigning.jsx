@@ -91,6 +91,7 @@ export default function ContractSigning({ params }) {
 
   const [fixed, setFixed] = useState(false);
   const [focused, setFocused] = useState("annexureA");
+  const [drawn, setDrawn] = useState(false);
 
   const onDown = useCallback((event) => {
     const coordinates = getCoordinates(event);
@@ -126,6 +127,7 @@ export default function ContractSigning({ params }) {
         if (position && newPosition) {
           drawLine(position, newPosition);
           setPosition(newPosition);
+          setDrawn(true);
         }
       }
     },
@@ -167,6 +169,7 @@ export default function ContractSigning({ params }) {
 
   const clear = (context) => {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
+    setDrawn(false);
   };
 
   const signContract = () => {
@@ -3249,7 +3252,14 @@ export default function ContractSigning({ params }) {
                       <button
                         className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full font-bold"
                         disabled={disableActiveButton}
-                        onClick={async () => signContract()}
+                        onClick={async () => {
+                          if(drawn){
+                            signContract();
+                          }else{
+                            setError("Please sign.")
+                          } 
+                        }
+                      }
                       >
                         Adopt Sign
                       </button>

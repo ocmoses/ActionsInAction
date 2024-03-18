@@ -752,14 +752,10 @@ export default function DashboardContent({ type }) {
                 {/* // elijah-dev changes */}
                 <ChangeOrderRejection />
                 <ComplianceRejection />
-                <ComplianceRejection />
                 <IPRejection />
                 <OnboardingStatus />
                 <ServiceLiveCard />
-                <IPApprovedCard />
-                <OnboardingStatus />
-                <ServiceLiveCard />
-                <IPApprovedCard />
+                <IPApprovedCard />                
                 <IPDynamicField />
                 {/* //================this is the popup==============================================================================================================*/}
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (

@@ -18,6 +18,7 @@ export default function ContractCategoryModal() {
   const {
     showContractCategoryModal,
     setShowContractCategoryModal,
+    setContractSignatriesModal,
     setSelectServiceModal,
   } = useContext(ContractContext);
 
@@ -217,7 +218,7 @@ export default function ContractCategoryModal() {
                 if (selected) {
                   clearErrors();
                   setShowContractCategoryModal(false);
-                  setSelectServiceModal(true);
+                  setContractSignatriesModal(true);
                 } else {
                   setError({ error: "PLease select your contract type" });
                 }

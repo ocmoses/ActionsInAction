@@ -11,12 +11,15 @@ export default function IPDynamicField(){
     const router = useRouter();
 
     const {
-        getDynamicField
+        getDynamicField,
+        partner
     } = usePartners();
 
     const [showAlert, setShowAlert] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
+
+    const [vasPartnerUuid, setVasPartnerUuid] = useState(null);
 
     const [dynamic, setDynamic] = useState([]);
 
@@ -32,7 +35,59 @@ export default function IPDynamicField(){
 
     }
 
-    useEffect(() => {
+    const getAllDynamicFields = async () => {
+
+        const vasPartners = partner?.vas_partners;
+
+        setVasPartnerUuid(null);
+
+        if(vasPartners && vasPartners.length > 0){
+        
+            for (const vPartner of vasPartners) {
+                
+                if(showAlert){
+                    return;
+                }
+
+                getDynamicField(vPartner.vas_partner_uuid)
+                    .then(resp => {
+
+                        if(resp.error){
+                            console.log("ERROR", {error: resp.error});
+                        }else{
+
+                            console.log("Dynamic ARRAY DATA", resp.data)
+
+                            if(hasDynamic(resp.data)){
+                                setVasPartnerUuid(vPartner.vas_partner_uuid);
+                                let dynamicArray = [];
+                                if(resp.data.request_name_one && resp.data.request_type_one && 
+                                        (resp.data.request_name_one_status != 'approved' && resp.data.request_name_one_status != 'submitted' )){
+                                    dynamicArray.push([resp.data.request_name_one, resp.data.request_type_one, "one"]);
+                                }
+                                if(resp.data.request_name_two && resp.data.request_type_two && 
+                                    (resp.data.request_name_two_status != 'approved' && resp.data.request_name_two_status != 'submitted')){
+                                    dynamicArray.push([resp.data.request_name_two, resp.data.request_type_two, "two"]);
+                                }
+                                if(resp.data.request_name_three && resp.data.request_type_three && 
+                                    (resp.data.request_name_three_status != 'approved' && resp.data.request_name_three_status != 'submitted' )){
+                                    dynamicArray.push([resp.data.request_name_three, resp.data.request_type_three, "three"]);
+                                }
+
+                                setDynamic(dynamicArray);
+                                setShowAlert(true);
+                            }
+
+                        }
+
+                    });
+            }
+        }
+
+        if(showAlert){
+            return;
+        }
+
         getDynamicField()
             .then(resp => {
 
@@ -64,6 +119,11 @@ export default function IPDynamicField(){
                 }
 
             });
+
+    }
+
+    useEffect(() => {
+        getAllDynamicFields();
     }, []);
 
     const {user} = useUsers();
@@ -114,7 +174,7 @@ export default function IPDynamicField(){
             </div>
             {
                 showModal && 
-                <IPDynamicFieldModal dynamic={dynamic} closeAction={() => setShowModal(false)} />
+                <IPDynamicFieldModal dynamic={dynamic} closeAction={() => setShowModal(false)} vas_partner_uuid={vasPartnerUuid} />
             }
            
         </>

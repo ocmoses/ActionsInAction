@@ -1771,9 +1771,25 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
   };
 
   const viewNextPage = async () => {
+
+    if(formData.temp_shortcodes.trim() != ''){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        shortcodes: prevFormData.shortcodes
+          ? `${prevFormData.shortcodes}, ${prevFormData.temp_shortcodes}`
+          : prevFormData.temp_shortcodes,
+        pricing_shortcodes: prevFormData.pricing_shortcodes
+          ? `${prevFormData.pricing_shortcodes}, ${prevFormData.temp_shortcodes}`
+          : prevFormData.temp_shortcodes,
+        temp_shortcodes: "", // Clear temp_shortcodes after appending to shortcodes
+      }));
+      return;
+    }
+
     const shortcodes = formData.shortcodes;
     const shortcode_issue_date = formData.shortcode_issue_date;
     const shortcode_expiry_date = formData.shortcode_expiry_date;
+    
 
     if (shortcodes === "") {
       successAction('Provide Your ShortCodes To Continue!', false);
@@ -2104,6 +2120,7 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
         formDataToSend.append("vas_category_uuid", formData.vas_category_uuid);
         formDataToSend.append("uuid", formData.shortcode_uuid);
 
+
         // Append shortcode object
         formDataToSend.append(
           "shortcodes[0][shortcode][shortcode_issue_date]",
@@ -2123,7 +2140,7 @@ export const ShortCodesPricingDoc = ({ partnerDetails, currentPanel, setCurrentP
         );
 
         // Convert comma-separated shortcodes to an array and append each shortcode
-        formData.shortcodes.split(", ").forEach((code, index) => {
+        formData.shortcodes.split(",").forEach((code, index) => {
           formDataToSend.append(
             `shortcodes[0][shortcode][shortcodes][${index}]`,
             code.trim()

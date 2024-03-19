@@ -86,7 +86,10 @@ const useContracts = () => {
 
   const [annexuresLink, setAnnexuresLink] = useState("");
 
-  let currentContract = null; //Is there a current contract
+  const [hasContractToSign, setHasContractToSign] = useState(false);
+
+  const [contract, setContract] = useState(null);
+
   const contractStatus = partner?.contract_status; //What is the user's contract status
   const userStatus = partner?.status; //What is the user's status
   const vasPartnerStatus = partner?.vas_partner_contract_status;
@@ -104,13 +107,13 @@ const useContracts = () => {
   console.log("selected_admin_users==", selected_admin_users);
   
   let signingDirector = selected_admin_users?.find(
-    (user) => user.role == "director"
+    (user) => user.role == "director" && user.contract_id == contract?.contract_id
   );
   let signingDelegate = selected_admin_users?.find(
-    (user) => user.role == "delegate"
+    (user) => user.role == "delegate" && user.contract_id == contract?.contract_id
   );
   let signingWitness = selected_admin_users?.find(
-    (user) => user.role == "witness"
+    (user) => user.role == "witness" && user.contract_id == contract?.contract_id
   );
 
   console.log("signingDirector==", signingDirector);
@@ -186,7 +189,7 @@ const useContracts = () => {
 
       setProcessing(false);
       if (result?.success) {
-        const contracts = result.data?.contracts;
+        const contracts = result.data?.contracts;       
 
         return {
           contracts,
@@ -243,6 +246,13 @@ const useContracts = () => {
       if (result?.success) {
         const contracts = result.data?.contracts;
         contracts.forEach((c) => (c.status = c.contract_status));
+
+        console.log("All CONTRACTS", contracts);
+
+        let contractToSign = contracts.find(c => c.contract_id != null && c.contract_id != "null" && 
+                        c.contract_status == "not_active" || (c.contract_status == "started" && !hasSigned));
+
+        setHasContractToSign(contractToSign != null && contractToSign != undefined);
 
         return {
           contracts,
@@ -310,7 +320,7 @@ const useContracts = () => {
   };
 
   const submit_signatories = async (signatories) => {
-    let data = { email: [] };
+    let data = { email: [], contract_id: contract?.contract_id };
 
     console.log("signatories", signatories);
 
@@ -446,7 +456,7 @@ const useContracts = () => {
     isSuperadmin,
     getAllContracts,
     ...usePartners(),
-    currentContract,
+    contract,
     contractStatus,
     userStatus,
     vasPartnerStatus,
@@ -510,6 +520,10 @@ const useContracts = () => {
 
     annexuresLink,
     setAnnexuresLink,
+
+    hasContractToSign,
+    contract,
+    setContract
   };
 };
 

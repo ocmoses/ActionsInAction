@@ -126,7 +126,7 @@ const usePartners = () => {
   const checkUpdateStatus = (stage) => {
     const progress = category.profile_stage;
     console.log("PROGRESS", progress);
-    return progress[stage] && parseInt(progress[stage]) ? true : false;
+    return !!(progress[stage] && parseInt(progress[stage]));
   };
 
   const skipStage = async (stageData) => {
@@ -137,7 +137,6 @@ const usePartners = () => {
       Authorization: `bearer ${states.users.token}`,
       timeout: process.env.NEXT_PUBLIC_TIMEOUT,
     }).catch((e) => {
-      // console.log("e", e);
       return {
         success: false,
         error: `${e.message}. Please check your connection`,
@@ -764,11 +763,6 @@ const usePartners = () => {
           error: "This request has no response available",
         };
 
-      // if (response.status === 400 || response.status === 401) {
-      //   Logout();
-      //   return;
-      // }
-
       const result = await response.json();
 
       setProcessing(false);
@@ -1161,13 +1155,14 @@ const usePartners = () => {
     }
   };
 
-  const getIPStatus = async () => {
+  const getIPStatus = async (vas_partner_uuid) => {
+
+    const endpoint = RemoteEndpoints.GET_IP_STATUS.replace(":partner_uuid", states.partners.partner.uuid) + (vas_partner_uuid ? "?vas_partner_uuid=" + vas_partner_uuid : "");
+    // console.log("ENDPOINT", endpoint);
+
     try {
       const response = await fetch(
-        `${RemoteEndpoints.GET_IP_STATUS.replace(
-          ":partner_uuid",
-          states.partners.partner.uuid
-        )}`,
+        endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1227,10 +1222,7 @@ const usePartners = () => {
         `${RemoteEndpoints.GET_COMPLIANCE_STATUS.replace(
           ":aggregator_uuid",
           aggregator_uuid
-        ).replace(
-          ":vas_partner_uuid",
-          vas_partner_uuid
-        )}`,
+        ).replace(":vas_partner_uuid", vas_partner_uuid)}`,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1339,13 +1331,13 @@ const usePartners = () => {
     }
   };
 
-  const getDynamicField = async () => {
+  const getDynamicField = async (vas_partner_uuid) => {
+
+    const endpoint = RemoteEndpoints.CHECK_FOR_DYNAMIC_FIELD.replace(":partner_uuid", states.partners.partner.uuid) + (vas_partner_uuid ? "?vas_partner_uuid=" + vas_partner_uuid : "");
+    // console.log("ENDPOINT", endpoint);
     try {
       const response = await fetch(
-        `${RemoteEndpoints.CHECK_FOR_DYNAMIC_FIELD.replace(
-          ":partner_uuid",
-          states.partners.partner.uuid
-        )}`,
+        endpoint,
         {
           cache: "no-store",
           next: { revalidate: 120 },
@@ -1590,6 +1582,30 @@ const usePartners = () => {
       setProcessing(false);
 
       const result = getPartnerContractResponse.data.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
+  const getPartnerserviceIntegrationStatusDetails = async () => {
+    try {
+      setProcessing(true);
+      const getPartnerserviceIntegrationStatusDetailsResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_SERVICE_INTEGRATION_STATUS_DETAILS}${states.partners.partner.uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = getPartnerserviceIntegrationStatusDetailsResponse.data;
       return { result };
     } catch (error) {
       setProcessing(false);
@@ -2046,7 +2062,7 @@ const usePartners = () => {
         contract_type: "Bilateral",
         phone: "08123456781",
         status: "pending",
-        services : [
+        services: [
           {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
@@ -2055,8 +2071,8 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"]
-            ]
+              ["Base Media limited", "40%"],
+            ],
           },
           {
             service_name: "NPFL Foodball quiz",
@@ -2066,8 +2082,8 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "20%"],
               ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"]
-            ]
+              ["Base Media limited", "50%"],
+            ],
           },
           {
             service_name: "NiShodi TV SMS",
@@ -2077,35 +2093,35 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "20%"],
               ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"]
-            ]
-          }
+              ["Base Media limited", "50%"],
+            ],
+          },
         ],
         shortcodes: [
           {
             shortcode: "1234",
             issue_date: "2022-02-01",
             expiry_date: "2025-02-01",
-            status: "active"
+            status: "active",
           },
           {
             shortcode: "4567",
             issue_date: "2023-03-20",
             expiry_date: "2024-02-10",
-            status: "expired"
+            status: "expired",
           },
           {
             shortcode: "3425",
             issue_date: "2023-03-20",
             expiry_date: "2024-02-08",
-            status: "expired"
-          }
+            status: "expired",
+          },
         ],
         vas_license: {
           license_id: "ID-21312394",
           issue_date: "2022-02-01",
           expiry_date: "2025-02-01",
-          status: "active"
+          status: "active",
         },
         contracts: [
           {
@@ -2125,8 +2141,8 @@ const usePartners = () => {
             status: "expired",
             start_date: "2021-01-03",
             end_date: "2024-02-03",
-          }          
-        ]
+          },
+        ],
       },
       {
         company_name: "Astra Communications",
@@ -2135,7 +2151,7 @@ const usePartners = () => {
         contract_type: "Bilateral",
         phone: "08123456781",
         status: "approved",
-        services : [
+        services: [
           {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
@@ -2144,8 +2160,8 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"]
-            ]
+              ["Base Media limited", "40%"],
+            ],
           },
           {
             service_name: "NPFL Foodball quiz",
@@ -2155,35 +2171,35 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "20%"],
               ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"]
-            ]
-          }
+              ["Base Media limited", "50%"],
+            ],
+          },
         ],
         shortcodes: [
           {
             shortcode: "1234",
             issue_date: "2022-02-01",
             expiry_date: "2025-02-01",
-            status: "active"
+            status: "active",
           },
           {
             shortcode: "4567",
             issue_date: "2023-03-20",
             expiry_date: "2024-02-10",
-            status: "expired"
+            status: "expired",
           },
           {
             shortcode: "909",
             issue_date: "2023-03-20",
             expiry_date: "2024-02-08",
-            status: "expired"
-          }
+            status: "expired",
+          },
         ],
         vas_license: {
           license_id: "ID-09754567",
           issue_date: "2023-03-20",
           expiry_date: "2024-02-10",
-          status: "expired"
+          status: "expired",
         },
         contracts: [
           {
@@ -2203,9 +2219,8 @@ const usePartners = () => {
             status: "expired",
             start_date: "2021-01-03",
             end_date: "2024-02-03",
-          }
-          
-        ]
+          },
+        ],
       },
       {
         company_name: "ABC Company",
@@ -2214,7 +2229,7 @@ const usePartners = () => {
         contract_type: "Tripartite",
         phone: "08123456781",
         status: "rejected",
-        services : [
+        services: [
           {
             service_name: "Edu Digi English and Maths",
             service_type: "Lottery",
@@ -2223,8 +2238,8 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "40%"],
               ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"]
-            ]
+              ["Base Media limited", "40%"],
+            ],
           },
           {
             service_name: "NPFL Foodball quiz",
@@ -2234,35 +2249,35 @@ const usePartners = () => {
             revenue_share: [
               ["Lead aggregator limited", "20%"],
               ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"]
-            ]
-          }
+              ["Base Media limited", "50%"],
+            ],
+          },
         ],
         shortcodes: [
           {
             shortcode: "1234",
             issue_date: "2022-02-01",
             expiry_date: "2024-02-01",
-            status: "active"
+            status: "active",
           },
           {
             shortcode: "4567",
             issue_date: "2023-03-20",
             expiry_date: "2024-02-10",
-            status: "expired"
+            status: "expired",
           },
           {
             shortcode: "896",
             issue_date: "2023-03-20",
             expiry_date: "2025-02-08",
-            status: "active"
-          }
+            status: "active",
+          },
         ],
         vas_license: {
           license_id: "ID-09758767",
           issue_date: "2023-03-20",
           expiry_date: "2024-02-10",
-          status: "expired"
+          status: "expired",
         },
         contracts: [
           {
@@ -2282,10 +2297,9 @@ const usePartners = () => {
             status: "expired",
             start_date: "2021-01-03",
             end_date: "2024-02-03",
-          }
-          
-        ]
-      }
+          },
+        ],
+      },
     ];
     try {
       setProcessing(true);
@@ -2355,6 +2369,7 @@ const usePartners = () => {
     getDynamicField,
     dynamicFileUpload,
     getPartnerContractCurrentlyRunning,
+    getPartnerserviceIntegrationStatusDetails,
     getVasTypes,
     getAggregators,
     submitVasPartner,
@@ -2367,8 +2382,7 @@ const usePartners = () => {
     compliancePartnerCorrectionFileUpload,
     getOnboardingStatus,
     getVASPartners,
-    getComplianceStatus
-
+    getComplianceStatus,
   };
 };
 

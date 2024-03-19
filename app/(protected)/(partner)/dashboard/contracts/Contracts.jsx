@@ -67,7 +67,7 @@ export default function Contracts() {
 
   const {downloadSignedContract} = useFileDownload();
 
-  console.log("HAVE SIGNED", hasSigned);
+  // console.log("HAVE SIGNED", hasSigned);
 
   const [count, setCount] = useState(0);
 
@@ -76,8 +76,6 @@ export default function Contracts() {
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
   const users = useStoreState((state) => state.users);
-
-  const [, forceRender] = useState({});
 
   const [currentContract, setCurrentContract] = useState(null);
 

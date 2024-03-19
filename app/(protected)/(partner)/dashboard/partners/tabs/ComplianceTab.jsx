@@ -16,6 +16,10 @@ export default function ComplianceTab({partner}){
 
     const [currentService, setCurrentService] = useState(null);
 
+    const cleanShortcodes = (shortcodes) => {
+        return shortcodes.replace("[\"", "").replace("\"]", "").split("\",\"").join(",") + "";
+    }
+
     return (
         <div className="flex flex-col p-4 py-16 overflow-y-auto">
             <p className="text-white text-3xl mb-4">Compliance</p>
@@ -24,10 +28,10 @@ export default function ComplianceTab({partner}){
                     <div className="text-sm uppercase text-white/60 p-4 pb-0" >Shortcodes</div>
 
                     {
-                        partner?.shortcodes.map((shortcode, index) => (
-                            <div className={`${index < partner?.shortcodes.length - 1 && 'border-b'} border-white/20 py-4 mx-4 flex`}>
+                        partner?.compliance?.shortcodes.map((shortcode, index) => (
+                            <div className={`${index < partner?.compliance?.shortcodes.length - 1 && 'border-b'} border-white/20 py-4 mx-4 flex space-x-4`}>
 
-                                <div className="flex space-x-2 items-center flex-1">
+                                <div className="flex space-x-2 items-center flex-1 w-[200px]">
                                     <span className="w-16 h-16 rounded-full bg-white/10 flex justify-center items-center">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clip-path="url(#clip0_11315_100854)">
@@ -47,14 +51,14 @@ export default function ComplianceTab({partner}){
                                         </svg>
                                     </span>
 
-                                    <span className="text-white/80">{shortcode.shortcode}</span>
+                                    <span className="text-white/80 text-sm">{cleanShortcodes(shortcode.shortcodes)}</span>
                                 </div>
 
                                 <div className="flex-1 flex flex-col justify-center space-y-1">
 
                                     <span className="text-white/40 text-sm ">Issued</span>
 
-                                    <p className="text-white/80 text-sm">{shortcode.issue_date}</p>
+                                    <p className="text-white/80 text-sm">{shortcode.shortcode_issue_date}</p>
 
                                 </div>
 
@@ -62,14 +66,14 @@ export default function ComplianceTab({partner}){
 
                                     <span className="text-white/40 text-sm">Expires</span>
 
-                                    <p className="text-white/80 text-sm">{shortcode.expiry_date}</p>
+                                    <p className="text-white/80 text-sm">{shortcode.shortcode_expiry_date}</p>
 
                                 </div>
 
                                 <div className="flex-1 flex flex-col justify-center space-y-1">
 
-                                    <div className={`${shortcode.status == "active" ? "bg-green-600" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
-                                        {capitalizeFirst(shortcode.status)}
+                                    <div className={`${shortcode.status == "active" ? "bg-green-600" : shortcode.status == null ? "bg-yellow-400" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
+                                        {capitalizeFirst(shortcode.shortcodes_status ?? "Pending")}
                                     </div>
 
                                 </div>

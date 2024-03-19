@@ -9,18 +9,31 @@ import {
     capitalizeFirst,
   } from "@/app/modules/utilities";
   import Image from "next/image";
-  import {useState} from "react";
+  import {useEffect, useState} from "react";
 
 
 export default function ServicesTab({partner}){
 
+    const [services, setServices] = useState([]);
+
     const [currentService, setCurrentService] = useState(null);
+
+    const cleanShortcodes = (shortcodes) => {
+        return shortcodes.replace("[\"", "").replace("\"]", "").split("\",\"").join(",") + "";
+    }
+
+    useEffect(() => {
+        if(partner.service){
+            setServices([...services, partner.service]);
+        } 
+        
+    }, []);
 
     return (
         <div className="flex flex-col p-4 py-16 overflow-y-auto">
-            <p className="text-white text-3xl mb-4">Services ({partner?.services.length})</p>
+            <p className="text-white text-3xl mb-4">Services ({services.length})</p>
             {
-                partner?.services.map((service, index) => (
+                services.map((service, index) => (
                     <div className="bg-black rounded-2xl mb-4">
                         <div className="rounded bg-black p-4 flex items-center">
                             <span className="w-8 h-8 rounded-full border-1 border-white/40 flex justify-center items-center text-white text-sm">
@@ -56,14 +69,22 @@ export default function ServicesTab({partner}){
 
                                     <div className="border-b border-white/20 py-4 flex">
                                         <div className="text-sm uppercase text-white/60 min-w-[200px]" >Shortcode</div>
-                                        <span className="bg-white/10 rounded py-1 px-2 text-sm text-white">{service.shortcode}</span>
+                                        <div className="flex flex-col space-y-1">
+                                            {
+                                                partner.compliance?.shortcodes.map(shortcode => (
+                                                    <span className="bg-white/10 rounded py-1 px-2 text-sm text-white">{cleanShortcodes(shortcode.shortcodes)}</span>
+                                                ))
+                                            }
+                                            
+                                        </div>
+                                        
                                     </div>
 
                                     <div className="py-4 flex">
                                         <div className="text-sm uppercase text-white/60 min-w-[200px]" >Revenue Share</div>
                                         <div className="flex flex-col space-y-2">
                                             {
-                                                service.revenue_share.map(rv => (
+                                                service.revenue_share && service.revenue_share.map(rv => (
                                                     <p className=""><span className="text-sm text-white">{rv[1]}</span> - <span className="text-sm text-white/60">{rv[0]}</span></p>
                                                 ))
                                             }

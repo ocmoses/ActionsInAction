@@ -13,6 +13,7 @@ import SelectInput from "@/app/components/form/SelectInput";
 import SelectInputOption from "@/app/components/form/SelectInputOption";
 
 export default function ServiceDetail({ params, next }) {
+
   const { partner, getAllServices, getAllShortcodes } = usePartners();
 
   const { user } = useUsers();
@@ -24,12 +25,16 @@ export default function ServiceDetail({ params, next }) {
   const [submitting, setSubmitting] = useState(false);
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
+  
+  const [fetchingServiceType, setFetchingServiceType] = useState(false);
+
+  const [serviceTypeList, setServiceTypeList] = useState(null);
 
   useEffect(() => {
-    getAllServices().then((resp) =>
+    getAllServices(params).then((resp) =>
       resp.error
         ? setError({ error: resp.error })
-        : setServiceTypes(resp.service_types)
+        : setServiceTypeList(resp.service_types)
     );
 
     getAllShortcodes().then((resp) =>
@@ -37,7 +42,7 @@ export default function ServiceDetail({ params, next }) {
         ? setError({ error: resp.error })
         : setShortcodes(resp.shortcodes)
     );
-  }, []);
+  }, [params]);
 
   const [services, setServices] = useState({
     service_type: "",
@@ -162,8 +167,6 @@ export default function ServiceDetail({ params, next }) {
     { value: "ussd", title: "USSD" },
   ];
 
-  const [fetchingServiceType, setFetchingServiceType] = useState(false);
-  const [serviceTypeList, setServiceTypeList] = useState(null);
   const fetchServiceType = async () => {
     try {
       setFetchingServiceType(true);

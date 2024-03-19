@@ -572,10 +572,11 @@ const usePartners = () => {
     }
   };
 
-  const getAllServices = async () => {
+  const getAllServices = async (vas_partner_uuid) => {
+    const endpoint = RemoteEndpoints.GET_SERVICES + (vas_partner_uuid ? "?vas_partner_uuid=" + vas_partner_uuid : ""); 
     try {
       setProcessing(true);
-      const response = await fetch(`${RemoteEndpoints.GET_SERVICES}`, {
+      const response = await fetch(endpoint, {
         cache: "no-store",
         next: { revalidate: 120 },
         headers: {
@@ -597,6 +598,9 @@ const usePartners = () => {
       }
 
       const result = await response.json();
+
+      console.log("RESULT IN SERVICE: ", result);
+      
       setProcessing(false);
       if (result?.success) {
         const service_types = result?.data["service-types"];
@@ -2054,276 +2058,297 @@ const usePartners = () => {
   };
 
   const getVASPartners = async () => {
-    return [
-      {
-        company_name: "Zoo Communications",
-        email: "zoo@email.com",
-        contract_id: "TR12341",
-        contract_type: "Bilateral",
-        phone: "08123456781",
-        status: "pending",
-        services: [
-          {
-            service_name: "Edu Digi English and Maths",
-            service_type: "Lottery",
-            category: "Lottery",
-            shortcode: "1234, 4567, 3425",
-            revenue_share: [
-              ["Lead aggregator limited", "40%"],
-              ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"],
-            ],
-          },
-          {
-            service_name: "NPFL Foodball quiz",
-            service_type: "Other Vas",
-            category: "Lottery",
-            shortcode: "1234, 4567",
-            revenue_share: [
-              ["Lead aggregator limited", "20%"],
-              ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"],
-            ],
-          },
-          {
-            service_name: "NiShodi TV SMS",
-            service_type: "Other Vas",
-            category: "Lottery",
-            shortcode: "1234, 4567",
-            revenue_share: [
-              ["Lead aggregator limited", "20%"],
-              ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"],
-            ],
-          },
-        ],
-        shortcodes: [
-          {
-            shortcode: "1234",
-            issue_date: "2022-02-01",
-            expiry_date: "2025-02-01",
-            status: "active",
-          },
-          {
-            shortcode: "4567",
-            issue_date: "2023-03-20",
-            expiry_date: "2024-02-10",
-            status: "expired",
-          },
-          {
-            shortcode: "3425",
-            issue_date: "2023-03-20",
-            expiry_date: "2024-02-08",
-            status: "expired",
-          },
-        ],
-        vas_license: {
-          license_id: "ID-21312394",
-          issue_date: "2022-02-01",
-          expiry_date: "2025-02-01",
-          status: "active",
-        },
-        contracts: [
-          {
-            contract_id: "VBE-12541182",
-            status: "active",
-            start_date: "2022-08-03",
-            end_date: "2024-08-03",
-          },
-          {
-            contract_id: "VBE-12543452",
-            status: "expired",
-            start_date: "2021-02-03",
-            end_date: "2023-08-03",
-          },
-          {
-            contract_id: "VBE-12540002",
-            status: "expired",
-            start_date: "2021-01-03",
-            end_date: "2024-02-03",
-          },
-        ],
-      },
-      {
-        company_name: "Astra Communications",
-        email: "zoo_astra@email.com",
-        contract_id: "TR12331",
-        contract_type: "Bilateral",
-        phone: "08123456781",
-        status: "approved",
-        services: [
-          {
-            service_name: "Edu Digi English and Maths",
-            service_type: "Lottery",
-            category: "Lottery",
-            shortcode: "1234, 4567, 909",
-            revenue_share: [
-              ["Lead aggregator limited", "40%"],
-              ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"],
-            ],
-          },
-          {
-            service_name: "NPFL Foodball quiz",
-            service_type: "Other Vas",
-            category: "Lottery",
-            shortcode: "1234, 4567",
-            revenue_share: [
-              ["Lead aggregator limited", "20%"],
-              ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"],
-            ],
-          },
-        ],
-        shortcodes: [
-          {
-            shortcode: "1234",
-            issue_date: "2022-02-01",
-            expiry_date: "2025-02-01",
-            status: "active",
-          },
-          {
-            shortcode: "4567",
-            issue_date: "2023-03-20",
-            expiry_date: "2024-02-10",
-            status: "expired",
-          },
-          {
-            shortcode: "909",
-            issue_date: "2023-03-20",
-            expiry_date: "2024-02-08",
-            status: "expired",
-          },
-        ],
-        vas_license: {
-          license_id: "ID-09754567",
-          issue_date: "2023-03-20",
-          expiry_date: "2024-02-10",
-          status: "expired",
-        },
-        contracts: [
-          {
-            contract_id: "VBE-12541182",
-            status: "active",
-            start_date: "2022-08-03",
-            end_date: "2024-08-03",
-          },
-          {
-            contract_id: "VBE-12543452",
-            status: "expired",
-            start_date: "2021-02-03",
-            end_date: "2023-08-03",
-          },
-          {
-            contract_id: "VBE-12540002",
-            status: "expired",
-            start_date: "2021-01-03",
-            end_date: "2024-02-03",
-          },
-        ],
-      },
-      {
-        company_name: "ABC Company",
-        email: "company@email.com",
-        contract_id: "TR12337",
-        contract_type: "Tripartite",
-        phone: "08123456781",
-        status: "rejected",
-        services: [
-          {
-            service_name: "Edu Digi English and Maths",
-            service_type: "Lottery",
-            category: "Lottery",
-            shortcode: "1234, 4567, 896",
-            revenue_share: [
-              ["Lead aggregator limited", "40%"],
-              ["MTN Nigeria", "20%"],
-              ["Base Media limited", "40%"],
-            ],
-          },
-          {
-            service_name: "NPFL Foodball quiz",
-            service_type: "Other Vas",
-            category: "Lottery",
-            shortcode: "1234, 4567",
-            revenue_share: [
-              ["Lead aggregator limited", "20%"],
-              ["MTN Nigeria", "30%"],
-              ["Base Media limited", "50%"],
-            ],
-          },
-        ],
-        shortcodes: [
-          {
-            shortcode: "1234",
-            issue_date: "2022-02-01",
-            expiry_date: "2024-02-01",
-            status: "active",
-          },
-          {
-            shortcode: "4567",
-            issue_date: "2023-03-20",
-            expiry_date: "2024-02-10",
-            status: "expired",
-          },
-          {
-            shortcode: "896",
-            issue_date: "2023-03-20",
-            expiry_date: "2025-02-08",
-            status: "active",
-          },
-        ],
-        vas_license: {
-          license_id: "ID-09758767",
-          issue_date: "2023-03-20",
-          expiry_date: "2024-02-10",
-          status: "expired",
-        },
-        contracts: [
-          {
-            contract_id: "VBE-12541182",
-            status: "active",
-            start_date: "2022-08-03",
-            end_date: "2024-08-03",
-          },
-          {
-            contract_id: "VBE-12543452",
-            status: "expired",
-            start_date: "2021-02-03",
-            end_date: "2023-08-03",
-          },
-          {
-            contract_id: "VBE-12540002",
-            status: "expired",
-            start_date: "2021-01-03",
-            end_date: "2024-02-03",
-          },
-        ],
-      },
-    ];
+    // return [
+    //   {
+    //     company_name: "Zoo Communications",
+    //     email: "zoo@email.com",
+    //     contract_id: "TR12341",
+    //     contract_type: "Bilateral",
+    //     phone: "08123456781",
+    //     status: "pending",
+    //     services: [
+    //       {
+    //         service_name: "Edu Digi English and Maths",
+    //         service_type: "Lottery",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567, 3425",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "40%"],
+    //           ["MTN Nigeria", "20%"],
+    //           ["Base Media limited", "40%"],
+    //         ],
+    //       },
+    //       {
+    //         service_name: "NPFL Foodball quiz",
+    //         service_type: "Other Vas",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "20%"],
+    //           ["MTN Nigeria", "30%"],
+    //           ["Base Media limited", "50%"],
+    //         ],
+    //       },
+    //       {
+    //         service_name: "NiShodi TV SMS",
+    //         service_type: "Other Vas",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "20%"],
+    //           ["MTN Nigeria", "30%"],
+    //           ["Base Media limited", "50%"],
+    //         ],
+    //       },
+    //     ],
+    //     shortcodes: [
+    //       {
+    //         shortcode: "1234",
+    //         issue_date: "2022-02-01",
+    //         expiry_date: "2025-02-01",
+    //         status: "active",
+    //       },
+    //       {
+    //         shortcode: "4567",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2024-02-10",
+    //         status: "expired",
+    //       },
+    //       {
+    //         shortcode: "3425",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2024-02-08",
+    //         status: "expired",
+    //       },
+    //     ],
+    //     vas_license: {
+    //       license_id: "ID-21312394",
+    //       issue_date: "2022-02-01",
+    //       expiry_date: "2025-02-01",
+    //       status: "active",
+    //     },
+    //     contracts: [
+    //       {
+    //         contract_id: "VBE-12541182",
+    //         status: "active",
+    //         start_date: "2022-08-03",
+    //         end_date: "2024-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12543452",
+    //         status: "expired",
+    //         start_date: "2021-02-03",
+    //         end_date: "2023-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12540002",
+    //         status: "expired",
+    //         start_date: "2021-01-03",
+    //         end_date: "2024-02-03",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     company_name: "Astra Communications",
+    //     email: "zoo_astra@email.com",
+    //     contract_id: "TR12331",
+    //     contract_type: "Bilateral",
+    //     phone: "08123456781",
+    //     status: "approved",
+    //     services: [
+    //       {
+    //         service_name: "Edu Digi English and Maths",
+    //         service_type: "Lottery",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567, 909",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "40%"],
+    //           ["MTN Nigeria", "20%"],
+    //           ["Base Media limited", "40%"],
+    //         ],
+    //       },
+    //       {
+    //         service_name: "NPFL Foodball quiz",
+    //         service_type: "Other Vas",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "20%"],
+    //           ["MTN Nigeria", "30%"],
+    //           ["Base Media limited", "50%"],
+    //         ],
+    //       },
+    //     ],
+    //     shortcodes: [
+    //       {
+    //         shortcode: "1234",
+    //         issue_date: "2022-02-01",
+    //         expiry_date: "2025-02-01",
+    //         status: "active",
+    //       },
+    //       {
+    //         shortcode: "4567",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2024-02-10",
+    //         status: "expired",
+    //       },
+    //       {
+    //         shortcode: "909",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2024-02-08",
+    //         status: "expired",
+    //       },
+    //     ],
+    //     vas_license: {
+    //       license_id: "ID-09754567",
+    //       issue_date: "2023-03-20",
+    //       expiry_date: "2024-02-10",
+    //       status: "expired",
+    //     },
+    //     contracts: [
+    //       {
+    //         contract_id: "VBE-12541182",
+    //         status: "active",
+    //         start_date: "2022-08-03",
+    //         end_date: "2024-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12543452",
+    //         status: "expired",
+    //         start_date: "2021-02-03",
+    //         end_date: "2023-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12540002",
+    //         status: "expired",
+    //         start_date: "2021-01-03",
+    //         end_date: "2024-02-03",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     company_name: "ABC Company",
+    //     email: "company@email.com",
+    //     contract_id: "TR12337",
+    //     contract_type: "Tripartite",
+    //     phone: "08123456781",
+    //     status: "rejected",
+    //     services: [
+    //       {
+    //         service_name: "Edu Digi English and Maths",
+    //         service_type: "Lottery",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567, 896",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "40%"],
+    //           ["MTN Nigeria", "20%"],
+    //           ["Base Media limited", "40%"],
+    //         ],
+    //       },
+    //       {
+    //         service_name: "NPFL Foodball quiz",
+    //         service_type: "Other Vas",
+    //         category: "Lottery",
+    //         shortcode: "1234, 4567",
+    //         revenue_share: [
+    //           ["Lead aggregator limited", "20%"],
+    //           ["MTN Nigeria", "30%"],
+    //           ["Base Media limited", "50%"],
+    //         ],
+    //       },
+    //     ],
+    //     shortcodes: [
+    //       {
+    //         shortcode: "1234",
+    //         issue_date: "2022-02-01",
+    //         expiry_date: "2024-02-01",
+    //         status: "active",
+    //       },
+    //       {
+    //         shortcode: "4567",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2024-02-10",
+    //         status: "expired",
+    //       },
+    //       {
+    //         shortcode: "896",
+    //         issue_date: "2023-03-20",
+    //         expiry_date: "2025-02-08",
+    //         status: "active",
+    //       },
+    //     ],
+    //     vas_license: {
+    //       license_id: "ID-09758767",
+    //       issue_date: "2023-03-20",
+    //       expiry_date: "2024-02-10",
+    //       status: "expired",
+    //     },
+    //     contracts: [
+    //       {
+    //         contract_id: "VBE-12541182",
+    //         status: "active",
+    //         start_date: "2022-08-03",
+    //         end_date: "2024-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12543452",
+    //         status: "expired",
+    //         start_date: "2021-02-03",
+    //         end_date: "2023-08-03",
+    //       },
+    //       {
+    //         contract_id: "VBE-12540002",
+    //         status: "expired",
+    //         start_date: "2021-01-03",
+    //         end_date: "2024-02-03",
+    //       },
+    //     ],
+    //   },
+    // ];
+    let endpoint = `${RemoteEndpoints.AGGREGATOR_GET_VAS_PARTNERS.replace(":partner_uuid", states.partners.partner.uuid)}`;
+    console.log("ENDPOINT++", endpoint);
     try {
-      setProcessing(true);
-      const getAggregatorRequestResponse = await axios.get(
-        `${RemoteEndpoints.GET_AGGREGATOR_REQUEST}`,
-        {
-          headers: {
-            cache: "no-store",
-            next: { revalidate: 120 },
-            apikey: process.env.NEXT_PUBLIC_APIKEY,
-            Authorization: `Bearer ${states.users.token}`,
-            "Content-Type": "application/json",
-          },
-          params: {
-            aggregator_uuid: states.partners.partner.uuid,
-          },
-        }
-      );
+      const response = await fetch(endpoint, {
+        cache: "no-store",
+        next: { revalidate: 120 },
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_APIKEY,
+          token: states.users.token,
+          "Content-Type": "application/json",
+          Authorization: `bearer ${states.users.token}`,
+        },
+      });
+      if (response.status === 401) {
+        Logout();
+        return;
+      }
+      if (!response) {
+        return {
+          error: "This request has no response available",
+        };
+      }
+
       setProcessing(false);
-      const result = getAggregatorRequestResponse.data;
-      return { result };
+
+      if (response?.status === 200) {
+        const result = await response.json();
+
+        return {
+          data: result?.data,
+        };
+      }
+      return {
+        error:
+          result?.data?.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     } catch (error) {
-      setProcessing(false);
-      return { error };
+      console.log({ error });
+      return {
+        error:
+          error.message ??
+          "Something went wrong. Please check your connection and try again",
+      };
     }
   };
 

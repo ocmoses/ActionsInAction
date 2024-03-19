@@ -205,5 +205,7 @@ const RemoteEndpoints = {
   ADMIN_GET_AGGREGATOR_REQUEST: `${apiURL}/v2/admin/approved/request`,
   GET_AGGREGATOR_VAS_PARTNER_DETAILS: `${apiURL}/v2/admin/vas-partner/get-vas-partner-details`,
   APPROVE_REJECT_AGGREGATOR_VAS_PARTNER: `${apiURL}/v2/admin/compliance/approve`,
+
+  AGGREGATOR_GET_VAS_PARTNERS: `${apiURL}/v2/aggregator/aggregator-vas-partners/:partner_uuid`
 };
 export default RemoteEndpoints;

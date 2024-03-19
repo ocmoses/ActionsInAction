@@ -1077,24 +1077,7 @@ export default function DashboardContent({ type }) {
                     />
                   )
                 )}
-              {vasPartnerData.length > 0 &&
-                vasPartnerData.map((item) =>
-                  item.status !== "in-progress" ? null : (
-                    <ChooseAggregatorSuccessCard
-                      key={item.uuid}
-                      aggregator={item.aggregator}
-                    />
-                  )
-                )}
-              {vasPartnerData.length > 0 &&
-                vasPartnerData.map((item) =>
-                  item.status !== "in-progress" ? null : (
-                    <ChooseAggregatorSuccessCard
-                      key={item.uuid}
-                      aggregator={item.aggregator}
-                    />
-                  )
-                )}
+              
               {showChooseAggregator && (
                 <PopUp closePopUp={() => {}}>
                   <ChooseAggregator

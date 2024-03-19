@@ -1589,6 +1589,30 @@ const usePartners = () => {
     }
   };
 
+  const getPartnerserviceIntegrationStatusDetails = async () => {
+    try {
+      setProcessing(true);
+      const getPartnerserviceIntegrationStatusDetailsResponse = await axios.get(
+        `${RemoteEndpoints.PARTNER_SERVICE_INTEGRATION_STATUS_DETAILS}${states.partners.partner.uuid}`,
+        {
+          headers: {
+            cache: "no-store",
+            next: { revalidate: 120 },
+            apikey: process.env.NEXT_PUBLIC_APIKEY,
+            Authorization: `Bearer ${states.users.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProcessing(false);
+      const result = getPartnerserviceIntegrationStatusDetailsResponse.data;
+      return { result };
+    } catch (error) {
+      setProcessing(false);
+      return { error };
+    }
+  };
+
   const getVasTypes = async () => {
     try {
       setProcessing(true);
@@ -2345,6 +2369,7 @@ const usePartners = () => {
     getDynamicField,
     dynamicFileUpload,
     getPartnerContractCurrentlyRunning,
+    getPartnerserviceIntegrationStatusDetails,
     getVasTypes,
     getAggregators,
     submitVasPartner,

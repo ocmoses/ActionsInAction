@@ -94,7 +94,7 @@ export default function ServiceConfigurationButton({ open }) {
 }
 
 export const ServiceConfigurationReadyAlert = () => {
-  const { getPartnerContractCurrentlyRunning } = usePartners();
+  const { getPartnerContractCurrentlyRunning, getPartnerserviceIntegrationStatusDetails } = usePartners();
   const [openConfigurationReadyAlert, setOpenConfigurationReadyAlert] =
     useState(false);
   ////////////getPartnerContract function////////////////////
@@ -103,7 +103,8 @@ export const ServiceConfigurationReadyAlert = () => {
     getPartnerContractCurrentlyRunning()
       .then((response) => {
         if ("contract_id" in response.result) {
-          setOpenConfigurationReadyAlert(true);
+          
+          partnerserviceIntegrationStatusDetails();
         } else {
           setOpenConfigurationReadyAlert(false);
         }
@@ -113,6 +114,28 @@ export const ServiceConfigurationReadyAlert = () => {
         setOpenConfigurationReadyAlert(false);
       });
   };
+
+  const partnerserviceIntegrationStatusDetails = async () => {
+    try {
+      const response = await getPartnerserviceIntegrationStatusDetails();
+      console.log("getPartnerserviceIntegrationStatusDetails Response: ", response);
+      const hasEmptyContractStatus = response.result.data.contracts.some(contract => !contract.contract_status);
+      if (hasEmptyContractStatus) {
+        setOpenConfigurationReadyAlert(true);
+      } else {
+        setOpenConfigurationReadyAlert(false);
+      }
+    } catch (error) {
+      console.log("partnerserviceIntegrationStatusDetails error: ", error);
+      setOpenConfigurationReadyAlert(false);
+      // Handle retry logic here
+      // For example, you can use exponential backoff to retry after a delay
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
+      // Retry the function call
+      await partnerserviceIntegrationStatusDetails();
+    }
+  };
+
   useEffect(() => {
     getServiceConfigurationReadyAlert();
   }, []);

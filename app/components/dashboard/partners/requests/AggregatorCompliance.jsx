@@ -1527,7 +1527,7 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
       </div>
       {vasPartnerResponse?.shortcodes.map(shortcodeItem => (
       <FileInputWrapper>
-        <div className="flex justify-between p-3 items-center" key={shortcodeItem.uuid}>
+        <div className="flex justify-between p-3 items-center" key={shortcodeItem?.uuid}>
           <div className="flex gap-3 items-center">
             <div className="h-[40px] w-[40px] rounded-full bg-black flex items-center justify-center ">
               <svg
@@ -1585,7 +1585,7 @@ export const ShortCodesList = ({partnerDetails, currentPanel, setCurrentPanel, s
             className="border border-white/20 text-white/20 text-[11px] py-1 px-2 rounded-full w-[50px]"
             onClick={() => {
               setGetShortCodeList(false);
-              setShortCodeUuid(shortcodeItem.uuid);
+              setShortCodeUuid(shortcodeItem?.uuid);
             }}
             >
               Edit
@@ -1844,7 +1844,7 @@ export const ShortCodesDoc = ({ partnerDetails, formData, setFormData, nextPage,
  
    setFormData((prevFormData) => ({
     ...prevFormData,
-    shortcode_uuid: eachShortCodeDetails[0].uuid,
+    shortcode_uuid: eachShortCodeDetails[0]?.uuid,
     shortcodes: eachShortCodeDetails[0].shortcode.shortcodes.join(', '),
     shortcode_issue_date: eachShortCodeDetails[0].shortcode.shortcode_issue_date,
     shortcode_expiry_date: eachShortCodeDetails[0].shortcode.shortcode_expiry_date,
@@ -2759,7 +2759,7 @@ export const ReviewAndSubmit = ({closeAggregatorComplianceFormFlyout, partnerDet
 
               {vasPartnerResponse?.shortcodes.map(shortcodeItem => (
               <FileInputWrapper>
-                <div className="p-[12px] w-full rounded-[10px] flex justify-between font-mtn" key={shortcodeItem.uuid}>
+                <div className="p-[12px] w-full rounded-[10px] flex justify-between font-mtn" key={shortcodeItem?.uuid}>
                   <div className="flex flex-col justify-between w-[150px] ">
                     <h3 className="font-mtn"> Short code</h3>
                     <button 

@@ -12,6 +12,9 @@ import IsAgent from "./aggregator/IsAgent";
 import IsRecordLabel from "./aggregator/IsRecordLabel";
 
 export default function AggregatorIPPage({ params }) {
+
+  console.log("AGGREGATOR PARAMS", params);
+
   const { getAllServices, getAllShortcodes } = usePartners();
 
   const [{ errors, setError, clearErrors }] = useErrors(null);
@@ -69,7 +72,7 @@ export default function AggregatorIPPage({ params }) {
   };
 
   useEffect(() => {
-    getAllServices().then((resp) =>
+    getAllServices(params).then((resp) =>
       resp.error
         ? setError({ error: resp.error })
         : setServices(resp.service_types)

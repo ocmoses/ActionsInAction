@@ -75,9 +75,10 @@ export default function Partners() {
   useEffect(() => {
     getVASPartners()
       .then(resp => {
+        console.log("VAS PARTNERS==", resp);
           setPartners(resp);
           setFilteredPartners(resp);
-          setPagedPartners(resp);
+          setPagedPartners(resp); 
       })
       .catch(error => {})
   }, []);

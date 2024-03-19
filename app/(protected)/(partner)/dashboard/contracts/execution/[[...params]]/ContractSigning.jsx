@@ -80,6 +80,8 @@ export default function ContractSigning({ params }) {
 
   let selected_admin_users = partner.selected_partner_admin_users;
 
+  const role = user?.role;
+
   console.log("selected_admin_users", selected_admin_users);
   console.log("user: ", user);
   console.log("partner: ", partner);
@@ -3063,14 +3065,35 @@ export default function ContractSigning({ params }) {
           >
             Back
           </button>
-          <button
-            className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
-            onClick={() => {
-              location = "/dashboard/contracts";
-            }}
-          >
-            Finish
-          </button>
+          {
+            (role.toLowerCase() == 'superadmin' || role.toLowerCase() == 'delegate' || role.toLowerCase() == 'director') && 
+            dynamicData?.dynamic_details?.signature_of_signee?.director_or_delegate_signature && 
+            (
+              <button
+                className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+                onClick={() => {
+                  location = "/dashboard/contracts";
+                }}
+              >
+                Finish
+              </button>
+            )
+          }
+          {
+            role.toLowerCase() == 'witness' && 
+            dynamicData?.dynamic_details?.signature_of_signee?.witness_signature && 
+            (
+              <button
+                className=" text-black bg-mtn w-200 hover:bg-mtn-800 p-4 py-2 rounded-full"
+                onClick={() => {
+                  location = "/dashboard/contracts";
+                }}
+              >
+                Finish
+              </button>
+            )
+          }
+          
         </div>
       )}
       {submitingContractSignatures && (

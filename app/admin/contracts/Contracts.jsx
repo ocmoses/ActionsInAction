@@ -12,6 +12,8 @@ import RemoteEndpoints from "@/app/modules/endpoints";
 import Filter from "@/app/components/Filter";
 import TablePager from "@/app/components/TablePager";
 import EmptyTable from "@/app/components/EmptyTable";
+import useAdmins from "@/hooks/useAdmins";
+import useFileDownload from "@/hooks/useFileDownload";
 
 export default function Contracts() {
   const { getAllContracts } = useContracts();
@@ -19,7 +21,7 @@ export default function Contracts() {
   const { processing, setProcessing } = useProcessing();
   const [{ errors, setError, clearErrors }] = useErrors(null);
   const [selectedBrd, setSelectedBrd] = useState(null);
-
+  const {admin} = useAdmins();
   const [successMessage, setSuccessMessage] = useState("");
   const [successToast, setSuccessToast] = useState(false);
   const successAction = () =>
@@ -34,7 +36,7 @@ export default function Contracts() {
 
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
-
+  const {downloadSignedContract} = useFileDownload();
   const [filteredContracts, setFilteredContracts] = useState([]);
   const [pagedContracts, setPagedContracts] = useState([]);
 
@@ -60,7 +62,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {filteredContracts?.length}
+                {filteredContracts?.filter(contract => contract.contract_id != "null" && contract.contract_id != null)?.length}
               </span>
             </div>
           </div>
@@ -123,10 +125,10 @@ export default function Contracts() {
                     <td>
                       <div className="flex gap-0 flex-col">
                         <span
-                          className={`text-white text-sm px-1 inline-block w-16 rounded ${
+                          className={`text-white text-sm px-1 inline-block ${contract.contract_status == "not_active" ? 'w-20' : 'w-16'} rounded ${
                             contract.contract_status == "expired"
                               ? "bg-red-400"
-                              : contract.contract_status == "pending"
+                              : contract.contract_status == "pending" || contract.contract_status == "not_active"
                               ? "bg-grey-500"
                               : "bg-green-700"
                           }`}
@@ -143,18 +145,16 @@ export default function Contracts() {
                         </span>
                       </div>
                     </td>
+                    {/* Contract start date */}
                     <td>
                       <div>
-                        {moment(contract.created_at ?? moment()).format(
-                          "DD/MM/YYYY"
-                        )}
+                        {contract.contract_issued ? moment(contract.contract_issued).format("DD/MM/YYYY") : "-"}
                       </div>
                     </td>
+                    {/* Contract expiration */}
                     <td>
                       <div>
-                        {moment(
-                          contract.contract_expiration ?? moment()
-                        ).format("DD/MM/YYYY")}
+                        {contract.contract_expiration ? moment(contract.contract_expiration).format("DD/MM/YYYY") : "-"}
                       </div>
                     </td>
 
@@ -174,17 +174,11 @@ export default function Contracts() {
                             d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
                           />
                         </svg>{" "}
-                        <a
-                          href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(
-                            ":partner_uuid",
-                            contract.partner_uuid
-                          )
-                            .replace(":contract_id", contract.contract_id)
-                            .replace(":type", "signed")}`}
-                          target="_blank"
+                        <span
+                          onClick={() => downloadSignedContract(admin?.uuid, contract.contract_id)}
                         >
                           <span className="text-white text-sm">Download</span>
-                        </a>
+                        </span>
                       </div>
                     </td>
                   </tr>

@@ -223,7 +223,7 @@ export default function Contracts() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Contracts</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {filteredContracts?.length}
+                {filteredContracts?.filter(contract => contract.contract_id != "null" && contract.contract_id != null)?.length}
               </span>
             </div>
           </div>
@@ -341,18 +341,16 @@ export default function Contracts() {
                         {/* <span className="text-gray-500">Value added services</span> */}
                       </div>
                     </td>
+                    {/* Contract start date */}
                     <td>
                       <div>
-                        {moment(contract.created_at ?? moment()).format(
-                          "DD/MM/YYYY"
-                        )}
+                        {contract.contract_issued ? moment(contract.contract_issued).format("DD/MM/YYYY") : "-"}
                       </div>
                     </td>
+                    {/* Contract expiration */}
                     <td>
                       <div>
-                        {moment(contract.due_date ?? moment()).format(
-                          "DD/MM/YYYY"
-                        )}
+                        {contract.contract_expiration ? moment(contract.contract_expiration).format("DD/MM/YYYY") : "-"}
                       </div>
                     </td>
 

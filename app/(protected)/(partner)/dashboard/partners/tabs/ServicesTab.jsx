@@ -24,7 +24,7 @@ export default function ServicesTab({partner}){
 
     useEffect(() => {
         if(partner.service){
-            setServices([...services, partner.service]);
+            setServices(partner.service);
         } 
         
     }, []);
@@ -40,7 +40,7 @@ export default function ServicesTab({partner}){
                                 {index + 1}
                             </span>
                             <span className="text-white/80 ml-4">{service.service_name}</span>
-                            <span className="bg-white/10 rounded py-1 px-2 text-sm ml-auto text-white">{service.service_type}</span>
+                            <span className="bg-white/10 rounded py-1 px-2 text-sm ml-auto text-white">{service.category}</span>
                             <span className="cursor-pointer mx-4">
                             {
                                     currentService != service ? (
@@ -64,7 +64,7 @@ export default function ServicesTab({partner}){
 
                                     <div className="border-b border-white/20 py-4 flex">
                                         <div className="text-sm uppercase text-white/60 min-w-[200px]" >Category</div>
-                                        <span className="bg-white/10 rounded py-1 px-2 text-sm text-white">{service.service_type}</span>
+                                        <span className="bg-white/10 rounded py-1 px-2 text-sm text-white">{service.category}</span>
                                     </div>
 
                                     <div className="border-b border-white/20 py-4 flex">
@@ -84,11 +84,20 @@ export default function ServicesTab({partner}){
                                         <div className="text-sm uppercase text-white/60 min-w-[200px]" >Revenue Share</div>
                                         <div className="flex flex-col space-y-2">
                                             {
-                                                service.revenue_share && service.revenue_share.map(rv => (
-                                                    <p className=""><span className="text-sm text-white">{rv[1]}</span> - <span className="text-sm text-white/60">{rv[0]}</span></p>
-                                                ))
+                                                service.revenue_share && service.revenue_share.content_provider_share && (
+                                                    <p className=""><span className="text-sm text-white">Content Provider Share</span> - <span className="text-sm text-white/60">{service.revenue_share.content_provider_share}</span></p>
+                                                )
                                             }
-                                            
+                                            {
+                                                service.revenue_share && service.revenue_share.technical_provider_share && (
+                                                    <p className=""><span className="text-sm text-white">Technical Provider Share</span> - <span className="text-sm text-white/60">{service.revenue_share.technical_provider_share}</span></p>
+                                                )
+                                            }
+                                             {
+                                                service.revenue_share && service.revenue_share.mtn_share && (
+                                                    <p className=""><span className="text-sm text-white">MTN Share</span> - <span className="text-sm text-white/60">{service.revenue_share.mtn_share}</span></p>
+                                                )
+                                            }
                                         </div>
                                         
                                     </div>

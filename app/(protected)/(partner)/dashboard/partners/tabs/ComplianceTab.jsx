@@ -52,7 +52,7 @@ export default function ComplianceTab({partner}){
                                     <span className="text-white/80 text-sm">{cleanShortcodes(shortcode.shortcodes)}</span>
                                 </div>
 
-                                <div className="flex-1 flex flex-col justify-center space-y-1">
+                                <div className="flex-1 flex flex-col justify-center space-y-1 ml-10">
 
                                     <span className="text-white/40 text-sm ">Issued</span>
 
@@ -84,7 +84,7 @@ export default function ComplianceTab({partner}){
             }
 
             {
-                partner.vas_license && (
+                partner.compliance?.vas_license_id && (
                     <div className="bg-black rounded-xl flex flex-col">
                         <div className="flex justify-between items-center">
                             <div className="text-sm uppercase text-white/60 m-4 pb-0" >VAS License</div>
@@ -110,14 +110,14 @@ export default function ComplianceTab({partner}){
                                         </svg>
                                     </span>
 
-                                    <span className="text-white/80">{partner?.vas_license?.license_code}</span>
+                                    <span className="text-white/80">{partner.compliance?.vas_license_id}</span>
                                 </div>
 
-                                <div className="flex-1 flex flex-col justify-center space-y-1">
+                                <div className="flex-1 flex flex-col justify-center space-y-1 ml-10">
 
                                     <span className="text-white/40 text-sm ">Issued</span>
 
-                                    <p className="text-white/80 text-sm">{partner?.vas_license?.issue_date}</p>
+                                    <p className="text-white/80 text-sm">{partner.compliance?.ncc_issue_date}</p>
 
                                 </div>
 
@@ -125,14 +125,14 @@ export default function ComplianceTab({partner}){
 
                                     <span className="text-white/40 text-sm">Expires</span>
 
-                                    <p className="text-white/80 text-sm">{partner?.vas_license?.expiry_date}</p>
+                                    <p className="text-white/80 text-sm">{partner.compliance?.ncc_expiry_date}</p>
 
                                 </div>
 
                                 <div className="flex-1 flex flex-col justify-center space-y-1">
 
-                                    <div className={`${partner?.vas_license?.status == "active" ? "bg-green-600" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
-                                        {capitalizeFirst(partner?.vas_license?.status)}
+                                    <div className={`${partner.compliance?.ncc_license_status == "approved" ? "bg-green-600" : (partner.compliance?.ncc_license_status == null || partner.compliance?.ncc_license_status == "pending") ? "bg-mtn" : "bg-red-400" } ml-auto rounded px-2 py-1 text-xs text-white w-[64px]`}>
+                                        {capitalizeFirst(partner.compliiance?.ncc_license_status ?? "pending")}
                                     </div>
 
                                 </div>

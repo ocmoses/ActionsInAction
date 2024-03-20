@@ -8,17 +8,23 @@ import {
     getInitials,
     capitalizeFirst,
   } from "@/app/modules/utilities";
-  import Image from "next/image";
+import Image from "next/image";
+import {useState} from "react";
+import Success from "@/app/components/toasts/Success";
 
 
 export default function ProfileTab({partner}){
+
+    const [successMessage, setSuccessMessage] = useState("Copied successfully!");
+    const [successToast, setSuccessToast] = useState(false);
+    const successAction = () => setTimeout(() => {setSuccessToast(false);},
+                                                     1000);
 
     const handleCopy = (value) => {
         navigator.clipboard
         .writeText(value)
         .then(() => {
-            setCopySuccess(true);
-            setShowToast(true);
+            setSuccessToast(true);
             setTimeout(() => {
                 setShowToast(false);
                 }, 3000);
@@ -32,10 +38,10 @@ export default function ProfileTab({partner}){
         <div className="flex flex-col p-4 py-6">
             <div className="flex justify-between items-center">
                 <div className="flex gap-4 space-x-2 font-bold items-center justify-start text-white text-center">
-                    <CompanyLogo initials={getInitials(partner?.company_name).toUpperCase()} />
+                    <CompanyLogo initials={getInitials(partner?.profile.company_name).toUpperCase()} />
                     <div className="flex flex-col h-full space-y-2 items-start">
-                        <p className="font-bold text-white text-2xl">{partner?.company_name}.</p>
-                        <span className="text-white/40 text-md">{partner?.company_type ?? "Limited Liability Company"}</span>
+                        <p className="font-bold text-white text-2xl">{partner?.profile.company_name}.</p>
+                        <span className="text-white/40 text-md">{partner?.profile.company_type ?? "Limited Liability Company"}</span>
                     </div>
                 </div>            
             </div>
@@ -47,7 +53,7 @@ export default function ProfileTab({partner}){
                         Company name
                     </span>
                     <span className="text-white">
-                        {partner?.company_name}
+                        {partner?.profile.company_name}
                     </span>
                 </div>
                 <div className="flex-1 flex items-start">
@@ -64,10 +70,11 @@ export default function ProfileTab({partner}){
                         Email
                     </span>
                     <span className="text-white">
-                        {partner?.email}
+                        {partner?.profile.email}
                     </span>
                 </div>
-                <div className="flex-1 flex flex-col justify-end">
+                <div className="flex-1 flex flex-col justify-end" 
+                        onClick={() => handleCopy(partner?.profile.email)}>
                     <div className="flex flex-row space-x-2 cursor-pointer">
                         <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
                             {"   "}
@@ -84,10 +91,11 @@ export default function ProfileTab({partner}){
                     Contact phone number
                     </span>
                     <span className=" text-white">
-                        {partner?.phone}
+                        {partner?.profile.phone}
                     </span>
                 </div>
-                <div className="flex-1 flex flex-col justify-end">
+                <div className="flex-1 flex flex-col justify-end" 
+                    onClick={() => handleCopy(partner?.profile.phone)}>
                     
                     <div className="flex flex-row space-x-2 cursor-pointer">
                         <Image src="/assets/icons/copy.svg" alt="" width={15} height={15} />
@@ -97,6 +105,8 @@ export default function ProfileTab({partner}){
                     
                 </div>
             </div>
+
+            <Success message={successMessage} visible={successToast} action={successAction} />
         </div>
     )
 }

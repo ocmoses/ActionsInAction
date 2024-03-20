@@ -10,20 +10,27 @@ import {
 import moment from "moment";
 import RemoteEndpoints from "@/app/modules/endpoints";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
+import useFileDownload from "@/hooks/useFileDownload";
 
 
 export default function ContractsTab({partner}) {
   
   const router = useRouter();
 
-  useEffect(() => {
+  const [contracts, setContracts] = useState([]);
 
+  useEffect(() => {
+    if(partner.contract){
+        setContracts(partner.contract);
+    } 
   }, []);
+
+  const {downloadSignedContract} = useFileDownload();
 
 
   return (
 
-    <div className="flex flex-col p-4 py-16 overflow-y-auto">
+    <div className="flex flex-col p-4 py-16 overflow-y-auto text-xs">
         <p className="text-white text-3xl mb-4">Contracts</p>
         <div className="w-full md:max-w-6xl mt-10 border-1 border-white/20 rounded-[16px]">
             <table className="table w-full transparent ">
@@ -50,7 +57,7 @@ export default function ContractsTab({partner}) {
                   </th>
                 </tr>
 
-                {partner?.contracts.map((contract) => (
+                {contracts && contracts.map((contract) => (
                   <tr className="border-b border-b-white/10 cursor-pointer bg-transparent">
                     {/* Company */}
                     <td>
@@ -58,7 +65,7 @@ export default function ContractsTab({partner}) {
                         <div className=" text-white">
                           {contract.contract_id}
                         </div>
-                        <span className="text-sm">{partner?.email}</span>
+                        <span className="text-sm">{partner?.profile.email}</span>
                       </div>
                     </td>
                     {/* Contract status */}
@@ -66,43 +73,38 @@ export default function ContractsTab({partner}) {
                       <div className="flex gap-0 flex-col">
                         <span
                           className={`text-white text-sm px-1 inline-block w-20 rounded ${
-                            contract.status == "expired"
+                            contract.contract_status == "expired"
                               ? "bg-red-400"
-                              : contract.status == "pending"
+                              : contract.contract_status == "pending"
                               ? "bg-grey-500"
                               : "bg-green-700"
                           }`}
                         >
-                          {capitalizeFirst(contract.status)}
+                          {capitalizeFirst(contract.contract_status)}
                         </span>
                         {/* <span className="text-gray-500">Value added services</span> */}
                       </div>
                     </td>
                     <td>
                       <div>
-                        {moment(contract.created_at ?? moment()).format(
+                        {contract.contract_issued ? moment(contract.contract_issued).format(
                           "DD/MM/YYYY"
-                        )}
+                        ) : "-"}
                       </div>
                     </td>
                     <td>
                       <div>
-                        {moment(contract.due_date ?? moment()).format(
+                        {contract.contract_expiration ? moment(contract.contract_expiration).format(
                           "DD/MM/YYYY"
-                        )}
+                        ) : "-"}
                       </div>
                     </td>
 
                     <td>
                       <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
                         
-                        <a
-                          href={`${RemoteEndpoints.DOWNLOAD_CONTRACT.replace(
-                            ":partner_uuid",
-                            partner?.uuid
-                          )
-                            .replace(":contract_id",  contract.contract_id)
-                            .replace(":type", "signed")}`}
+                        <span
+                          onClick={() => downloadSignedContract(partner?.uuid, contract.contract_id)}   
                         >
                           <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +120,7 @@ export default function ContractsTab({partner}) {
                             d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
                           />
                         </svg>
-                        </a>
+                        </span>
                       </div>
                     </td>
 

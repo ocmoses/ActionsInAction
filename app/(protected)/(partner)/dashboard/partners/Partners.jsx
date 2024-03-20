@@ -19,13 +19,13 @@ import ProfileTab from "./tabs/ProfileTab";
 import ServicesTab from "./tabs/ServicesTab";
 import ComplianceTab from "./tabs/ComplianceTab";
 import ContractsTab from "./tabs/ContractsTab";
-
+import FormErrors from "@/app/components/FormErrors";
+import useErrors from "@/hooks/useErrors";
 
 export default function Partners() {
   const { getVASPartners } = usePartners();
-  const [error, setError] = useState("");
   const [selectedPartner, setSelectedPartner] = useState(null);
-
+  const [{ errors, setError, clearErrors }] = useErrors(null);
   const [partners, setPartners] = useState([]);
   const [filteredPartners, setFilteredPartners] = useState([]);
   const [pagedPartners, setPagedPartners] = useState([]);
@@ -76,11 +76,16 @@ export default function Partners() {
     getVASPartners()
       .then(resp => {
         console.log("VAS PARTNERS==", resp);
-          setPartners(resp);
-          setFilteredPartners(resp);
-          setPagedPartners(resp); 
+        if(resp.data){
+          setPartners(resp.data);
+          setFilteredPartners(resp.data);
+          setPagedPartners(resp.data); 
+        }else if(resp.error){
+          setError({error: resp.error})
+        }
+          
       })
-      .catch(error => {})
+      .catch(error => {setError({error: error})})
   }, []);
 
 
@@ -99,7 +104,7 @@ export default function Partners() {
             <div className="flex gap-2 items-start text-4xl font-bold text-white text-center md:text-start">
               <h2>Partners</h2>
               <span className=" font-extralight text-[15px] flex items-center justify-center bg-white/20 h-6 w-6 px-4 py-3 rounded-md">
-                {partners?.length}
+                {partners && partners?.length}
               </span>
             </div>
           </div>
@@ -111,6 +116,12 @@ export default function Partners() {
               keysArray={["contract", "contract_id", "contract_type"]}
               statusArray={["active", "suspended", "pending", "expired"]}
             />
+
+            {errors && errors["error"] && (
+              <div className="mb-6">
+                <FormErrors error={errors["error"]} />
+              </div>
+            )}
 
             <div className="w-full md:max-w-6xl mt-10 border-1 border-white/20 rounded-[16px]">
               <table className="table w-full transparent ">
@@ -134,7 +145,7 @@ export default function Partners() {
                     </th>
                   </tr>
 
-                  {pagedPartners?.map((partner) => (
+                  {pagedPartners && pagedPartners?.map((partner) => (
                     <tr 
                       onClick={() => {setSelectedPartner(partner)}}
                       className="border-b border-b-white/10 cursor-pointer bg-transparent hover:bg-white/10 group">
@@ -142,25 +153,25 @@ export default function Partners() {
                       <td>
                         <div className="flex">
                           <div className="flex justify-center items-center rounded-full w-10 h-10 bg-mtn text-white text-[12px] mr-2">
-                            <span>{getPartnerInitials(partner?.company_name)}</span>
+                            <span>{getPartnerInitials(partner.profile.company_name)}</span>
                           </div>
                           <div className="flex flex-col">
                             <div className=" text-white">
                               {partner?.company_name}
                             </div>
-                            <span className="text-sm">{partner?.email}</span>
+                            <span className="text-sm">{partner.profile.email}</span>
                           </div>                          
                         </div>
                       </td>
 
                       <td>
                         <div>
-                          {partner?.contract_id}
+                          {partner.contract ? partner.contract[0].contract_id : "-"}
                         </div>
                       </td>
                       <td>
                         <div>
-                          {partner?.contract_type}
+                        {partner.contract ? partner.contract[0].contract_type : "-"}
                         </div>
                       </td>
 
@@ -189,8 +200,8 @@ export default function Partners() {
                         </div>
                       </td> */}
                       
-                      <td>
-                        <div className="items-center space-x-2 cursor-pointer px-4 py-2 hidden group-hover:inline-flex">
+                      <td className="min-w-[75px]">
+                        <div className="items-center space-x-2 cursor-pointer px-4 py-2 hidden group-hover:inline-flex w-[75px]">
                           
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />

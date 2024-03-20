@@ -97,6 +97,10 @@ export default function IPCorrectionModal({ rejected, closeAction, vas_partner_u
 
   const filesMap = {
     // "service_details": "Service details",
+    agg_and_vas_authorization_letter: "Agg & VAS Authorization Letter",
+    agg_and_vas_authorization_video: "Agg & VAS Authorization Video",
+    agg_and_vas_agreement_letter: "Agg & VAS Agreement Letter",
+    agg_and_vas_other_content_proof_ownership: "Agg & VAS Other Proof",
     aggregator_and_vas_requirements: "Aggregator requirement",
     authorization_letter: "Authentication Letter",
     probate_of_will: "Probate of Will",

@@ -104,7 +104,7 @@ export default function ContractsTab({partner}) {
                       <div className="inline-flex items-center space-x-2 cursor-pointer rounded-full hover:bg-white/10 px-4 py-2">
                         
                         <span
-                          onClick={() => downloadSignedContract(partner.partner_uuid, contract.contract_id)}   
+                          onClick={() => downloadSignedContract(partner?.aggregator_uuid, contract.contract_id)}   
                         >
                           <svg
                           xmlns="http://www.w3.org/2000/svg"

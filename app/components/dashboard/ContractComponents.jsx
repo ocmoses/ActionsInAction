@@ -94,16 +94,20 @@ export default function ServiceConfigurationButton({ open }) {
 }
 
 export const ServiceConfigurationReadyAlert = () => {
-  const { getPartnerContractCurrentlyRunning, getPartnerserviceIntegrationStatusDetails } = usePartners();
+  const {
+    getPartnerContractCurrentlyRunning,
+    getPartnerserviceIntegrationStatusDetails,
+  } = usePartners();
   const [openConfigurationReadyAlert, setOpenConfigurationReadyAlert] =
     useState(false);
-  ////////////getPartnerContract function////////////////////
+  const [showPending, setShowPending] = useState(false);
+  const [showApprove, setShowApprove] = useState(false);
+
   const getServiceConfigurationReadyAlert = async () => {
     setOpenConfigurationReadyAlert(false);
     getPartnerContractCurrentlyRunning()
       .then((response) => {
         if ("contract_id" in response.result) {
-          
           partnerserviceIntegrationStatusDetails();
         } else {
           setOpenConfigurationReadyAlert(false);
@@ -118,8 +122,28 @@ export const ServiceConfigurationReadyAlert = () => {
   const partnerserviceIntegrationStatusDetails = async () => {
     try {
       const response = await getPartnerserviceIntegrationStatusDetails();
-      console.log("getPartnerserviceIntegrationStatusDetails Response: ", response);
-      const hasEmptyContractStatus = response.result.data.contracts.some(contract => !contract.contract_status);
+      console.log(
+        "getPartnerserviceIntegrationStatusDetails Response: ",
+        response
+      );
+      const hasEmptyContractStatus = response.result.data.contracts.some(
+        (contract) => !contract.contract_status
+      );
+      if (
+        response.result.data.contracts.some(
+          (contract) => contract.contract_status
+        ) == "active" ||
+        "pending"
+      ) {
+        setShowPending(true);
+      }
+      if (
+        response.result.data.contracts.some(
+          (contract) => contract.contract_status
+        ) == "live"
+      ) {
+        setShowApprove(true);
+      }
       if (hasEmptyContractStatus) {
         setOpenConfigurationReadyAlert(true);
       } else {
@@ -130,7 +154,7 @@ export const ServiceConfigurationReadyAlert = () => {
       setOpenConfigurationReadyAlert(false);
       // Handle retry logic here
       // For example, you can use exponential backoff to retry after a delay
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds
       // Retry the function call
       await partnerserviceIntegrationStatusDetails();
     }
@@ -210,6 +234,94 @@ export const ServiceConfigurationReadyAlert = () => {
                   >
                     Open Service Integration
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showPending && (
+        <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+          <div className="p-[24px] ">
+            <div className="flex flex-row gap-3">
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 30 30"
+                  fill="none"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
+                    fill="#24A06B"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="text-gray-500 ">
+                  <p>
+                    <span className="text-white">
+                      Service Integration in review!
+                    </span>
+                    <br />
+                    Your service is undergoing review
+                  </p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2 justify-center mt-10">
+                    <button
+                      className=" hover:bg-mtn-800 p-8 py-2 rounded-full border"
+                      onClick={() => setShowPending(false)}
+                    >
+                      Got-It!
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showApprove && (
+        <div className="min-h-[100px] bg-[#111111] border border-white/10 rounded-xl mt-16">
+          <div className="p-[24px] ">
+            <div className="flex flex-row gap-3">
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 30 30"
+                  fill="none"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.3719 26.8687C21.2737 26.8687 26.8687 21.2737 26.8687 14.3719C26.8687 7.47004 21.2737 1.875 14.3719 1.875C7.47004 1.875 1.875 7.47004 1.875 14.3719C1.875 21.2737 7.47004 26.8687 14.3719 26.8687ZM21.4562 9.64567C21.9096 10.1073 21.9029 10.8491 21.4412 11.3025L13.4887 19.113C13.0329 19.5606 12.3026 19.5606 11.8468 19.113L7.3025 14.6498C6.84087 14.1965 6.83418 13.4547 7.28757 12.993C7.74097 12.5314 8.48274 12.5247 8.94438 12.9781L12.6678 16.635L19.7994 9.63074C20.261 9.17735 21.0028 9.18403 21.4562 9.64567Z"
+                    fill="#24A06B"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="text-gray-500 ">
+                  <p>
+                    <span className="text-white">Service Approved!</span>
+                    <br />
+                    Your service has been approved and published live!
+                  </p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2 justify-center mt-10">
+                    <button
+                      className=" hover:bg-mtn-800 p-8 py-2 rounded-full border"
+                      onClick={() => setShowApprove(false)}
+                    >
+                      Got-It!
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

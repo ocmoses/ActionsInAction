@@ -129,21 +129,29 @@ export const ServiceConfigurationReadyAlert = () => {
       const hasEmptyContractStatus = response.result.data.contracts.some(
         (contract) => !contract.contract_status
       );
-      if (
-        response.result.data.contracts.some(
-          (contract) => contract.contract_status
-        ) == "active" ||
-        "pending"
-      ) {
-        setShowPending(true);
-      }
-      if (
-        response.result.data.contracts.some(
-          (contract) => contract.contract_status
-        ) == "live"
-      ) {
+      const hasLiveContract = response.result.data.contracts.some(
+        (contract) => contract.service_status === "live"
+      );
+
+      const hasActiveOrPendingContract = response.result.data.contracts.some(
+        (contract) =>
+          contract.service_status === "active" ||
+          contract.service_status === "pending"
+      );
+
+      if (hasLiveContract) {
         setShowApprove(true);
       }
+
+      if (hasActiveOrPendingContract) {
+        setShowPending(true);
+      }
+
+      if (hasLiveContract && hasActiveOrPendingContract) {
+        setShowApprove(true);
+        setShowPending(true);
+      }
+
       if (hasEmptyContractStatus) {
         setOpenConfigurationReadyAlert(true);
       } else {

@@ -153,7 +153,23 @@ export default function IPDynamicFieldModal({ dynamic, closeAction, vas_partner_
                     disabled={false}
                     style="flex-1"
                   />
-                ) : (
+                ) : aDynamic[1] == "image" ? (
+                  <FileInput
+                    id="dynamic_field"
+                    doc_id={`${"dynamic_field"}_doc`}
+                    label={aDynamic[0]}
+                    value={files[aDynamic[2]]}
+                    onChange={(e) => uploadFile(aDynamic[2], e.target.value)}
+                    allowedtypes={[
+                      "image/png",
+                      "image/jpeg",
+                      "image/jpg"
+                    ]}
+                    errors={errors}
+                    disabled={false}
+                    style="flex-1"
+                  />
+                ):(
                   <FileInput
                     id="dynamic_field"
                     doc_id={`${"dynamic_field"}_doc`}

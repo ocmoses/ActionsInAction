@@ -48,6 +48,8 @@ export default function IPCorrectionModal({ rejected, closeAction, vas_partner_u
       return false;
     }
 
+    console.log("FILES AFTER UPLOAD: ", files);
+
     for (const i in files) {
       if (files[i] == "") {
         console.log("The i we are looking for", i);
@@ -137,14 +139,21 @@ export default function IPCorrectionModal({ rejected, closeAction, vas_partner_u
 
   const uploadFile = (file_title, file) => {
     let formData = new FormData();
-    formData.append("file_title", file_title);
+    
     formData.append("licenser_type", "content_owner");
     formData.append("partner_uuid", partner?.uuid);
     formData.append(
       "partner_category_uuid",
       partner?.categories[0]?.category_uuid
     );
-    formData.append("agg_plus_vas_requirement", "no");
+    if(file_title.startsWith("agg_and_vas_")){
+      formData.append("agg_plus_vas_requirement", "yes");
+      formData.append("file_title", file_title.replace("agg_and_vas_", ""));
+    }else{
+      formData.append("agg_plus_vas_requirement", "no");
+      formData.append("file_title", file_title);
+    }
+    
     formData.append("file", file);
     
     if(vas_partner_uuid){
@@ -164,6 +173,10 @@ export default function IPCorrectionModal({ rejected, closeAction, vas_partner_u
           setError({ [file_title]: resp.error });
         } else {
           setFiles({ ...files, [file_title]: file_title });
+
+          if(file_title == "agg_and_vas_authorization_video"){
+            setFiles({ ...files, agg_and_vas_authorization_video: "agg_and_vas_authorization_video" });
+          }
 
           if (file_title == "authorization_video") {
             setFiles({ ...files, authorization_video: file_title });
@@ -299,14 +312,14 @@ export default function IPCorrectionModal({ rejected, closeAction, vas_partner_u
                 <p className="text-white font-mtn-bold">
                   {filesMap[rejection]}
                 </p>
-                {rejection == "video_file" ? (
+                {(rejection == "video_file" || rejection == "agg_and_vas_authorization_video") ? (
                   <FileInput
                     id="authorization_video"
                     doc_id="authorization_video_doc"
                     label="Authorization Video"
-                    value={files.authorization_video}
+                    value={rejection == 'video_file' ? files.authorization_video : files.agg_and_vas_authorization_video}
                     onChange={(e) =>
-                      uploadFile("authorization_video", e.target.value)
+                      uploadFile(rejection == "video_file" ? "authorization_video" : "agg_and_vas_authorization_video", e.target.value)
                     }
                     allowedtypes={[
                       "video/3gpp",

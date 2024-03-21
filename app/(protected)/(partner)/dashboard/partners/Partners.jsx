@@ -166,12 +166,12 @@ export default function Partners() {
 
                       <td>
                         <div>
-                          {partner.contract ? partner.contract[0].contract_id : "-"}
+                          {partner.contract ? partner.contract[0]?.contract_id : "-"}
                         </div>
                       </td>
                       <td>
                         <div>
-                        {partner.contract ? partner.contract[0].contract_type : "-"}
+                        {partner.contract ? partner.contract[0]?.contract_type : "-"}
                         </div>
                       </td>
 

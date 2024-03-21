@@ -29,8 +29,8 @@ export default function IPRejection() {
 
     if(data["agg-and-vas-authorization-letter"].status == "rejected"){
       //add
-      if(rejectionArray.includes("agg-and-vas-authorization-letter")){
-          rejectionArray.push("agg-and-vas-authorization-letter");
+      if(!rejectionArray.includes("agg_and_vas_authorization_letter")){
+          rejectionArray.push("agg_and_vas_authorization_letter");
           result = false;
       }
       
@@ -38,8 +38,8 @@ export default function IPRejection() {
 
     if(data["agg-and-vas-authorization-video"].authorization_video_status == "rejected"){
       //add
-      if(rejectionArray.includes("agg-and-vas-authorization-video")){
-          rejectionArray.push("agg-and-vas-authorization-video");
+      if(!rejectionArray.includes("agg_and_vas_authorization_video")){
+          rejectionArray.push("agg_and_vas_authorization_video");
           result = false;
       }
       
@@ -47,8 +47,8 @@ export default function IPRejection() {
 
     if(data["agg-and-vas-agreement-letter"].agreement_letter_status == "rejected"){
       //add
-      if(rejectionArray.includes("agg-and-vas-agreement-letter")){
-          rejectionArray.push("agg-and-vas-agreement-letter");
+      if(!rejectionArray.includes("agg_and_vas_agreement_letter")){
+          rejectionArray.push("agg_and_vas_agreement_letter");
           result = false;
       }
       
@@ -56,8 +56,8 @@ export default function IPRejection() {
 
     if(data["agg-and-vas-other-content-proof-ownership"].other_content_proof_of_ownership_status == "rejected"){
       //add
-      if(rejectionArray.includes("agg-and-vas-other-content-proof-ownership")){
-          rejectionArray.push("agg-and-vas-other-content-proof-ownership");
+      if(!rejectionArray.includes("agg_and_vas_other_content_proof_ownership")){
+          rejectionArray.push("agg_and_vas_other_content_proof_ownership");
           result = false;
       }
       

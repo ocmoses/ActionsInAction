@@ -836,7 +836,7 @@ export default function IPDrawer({
                             name="request_type"
                             className="h-5 w-5 rounded-md bg-black/40 focus:ring-mtn focus:border-2 text-mtn"
                           />
-                          &nbsp;&nbsp;Doc (pdf, Word)
+                          &nbsp;&nbsp;Doc (PDF)
                         </label>
                       </div>
                       <div

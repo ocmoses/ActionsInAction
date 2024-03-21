@@ -1190,7 +1190,7 @@ const usePartners = () => {
 
       const result = await response.json();
 
-      console.log("SUBMITTED IP DETAILS", result);
+      console.log("SUBMITTED IP DETAILS: " + vas_partner_uuid, result);
 
       setProcessing(false);
 

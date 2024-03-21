@@ -28,6 +28,7 @@ function actionDate(targetDate) {
   });
   return formattedDate;
 }
+
 /////////////////////////////////////////////////////////////////////////////////////
 export default function RequestPage({realTimePageReloader}) {
   const { getAggregatorRequest } = usePartners();

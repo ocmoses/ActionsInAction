@@ -7,6 +7,8 @@ export default function FormErrors({ error, success, align }) {
     "Unexpected token '<', \"<html><hea\"... is not valid JSON",
     "response.json is not a function",
     "Cannot read properties of undefined (reading 'shortcodes')",
+    "redirect is not defined",
+    "Cannot read properties of null (reading 'uuid')"
   ];
   return (
     !hide.includes(error) && (

@@ -27,7 +27,7 @@ export default function ComplianceTab({partner}){
 
                     {
                         partner?.compliance?.shortcodes.map((shortcode, index) => (
-                            <div className={`${index < partner?.compliance?.shortcodes.length - 1 && 'border-b'} border-white/20 py-4 mx-4 flex space-x-4`}>
+                            <div className={`${index < partner?.compliance?.shortcodes.length - 1 && 'border-b'} border-white/20 py-4 mx-4 flex justify-between`}>
 
                                 <div className="flex space-x-2 items-center flex-1 w-[200px]">
                                     <span className="w-16 h-16 rounded-full bg-white/10 flex justify-center items-center">
@@ -87,7 +87,7 @@ export default function ComplianceTab({partner}){
                 partner.compliance?.vas_license_id && (
                     <div className="bg-black rounded-xl flex flex-col">
                         <div className="flex justify-between items-center">
-                            <div className="text-sm uppercase text-white/60 m-4 pb-0" >VAS License</div>
+                            <div className="text-sm uppercase text-white/60 m-4 pb-0" >NCC VAS License</div>
 
                             <span className="text-white text-sm px-2 py-1 flex items-center m-4
                                 border-1 border-white/20 rounded-full cursor-pointer"
@@ -98,7 +98,7 @@ export default function ComplianceTab({partner}){
 
                         {
                             
-                            <div className={`border-white/20 pb-4 mx-4 flex`}>
+                            <div className={`border-white/20 pb-4 mx-4 flex justify-between`}>
 
                                 <div className="flex space-x-2 items-center flex-1">
                                     <span className="w-16 h-16 rounded-full bg-white/10 flex justify-center items-center">

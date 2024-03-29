@@ -5,7 +5,8 @@ import {
   filterPartner,
   Util,
   titleCase,
-  capitalizeFirst
+  capitalizeFirst,
+  ellipsify
 } from "@/app/modules/utilities";
 import moment from "moment";
 import RemoteEndpoints from "@/app/modules/endpoints";
@@ -65,7 +66,7 @@ export default function ContractsTab({partner}) {
                         <div className=" text-white">
                           {contract.contract_id}
                         </div>
-                        <span className="text-sm">{partner?.profile.email}</span>
+                        <span className="text-sm">{ellipsify(partner?.profile.email, 15)}</span>
                       </div>
                     </td>
                     {/* Contract status */}

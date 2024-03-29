@@ -63,6 +63,40 @@ export default function ProfileTab({partner}){
                 </div>
             </div>
 
+            {/* Address */}
+            <div className="bg-white/10 rounded-lg p-4 px-8 flex flex-col md:flex-row w-full mt-4">
+                <div className="w-[300px] flex flex-col">
+                    <span className="text-white/60">
+                        Company address
+                    </span>
+                    <span className="text-white">
+                        {partner?.profile.address ?? "-"}
+                    </span>
+                </div>
+                <div className="flex-1 flex items-start">
+                    <p className="text-white/60">
+                        {/* {partner?.company_name} */}
+                    </p>
+                </div>
+            </div>
+
+            {/* Company contact person */}
+            <div className="bg-white/10 rounded-lg p-4 px-8 flex flex-col md:flex-row w-full mt-4">
+                <div className="w-[300px] flex flex-col">
+                    <span className="text-white/60">
+                        Contact person
+                    </span>
+                    <span className="text-white">
+                        {partner?.profile.contact_person ?? "-"}
+                    </span>
+                </div>
+                <div className="flex-1 flex items-start">
+                    <p className="text-white/60">
+                        {/* {partner?.company_name} */}
+                    </p>
+                </div>
+            </div>
+
             {/* Email */}
             <div className="bg-white/10 rounded-lg p-4 px-8 flex flex-col md:flex-row w-full mt-2">
                 <div className="w-2/3 flex flex-col">

@@ -2352,6 +2352,27 @@ const usePartners = () => {
     }
   };
 
+
+  const getExistingPartnerTodo = async () => {
+    return [
+      {
+        name: "VAS Licence",
+        id: "1234578",
+        company: "Zoo Xander Corp"
+      },
+      {
+        name: "Contract",
+        id: "VMX-25627627878",
+        company: "American Corporation"
+      },
+      {
+        name: "Contract",
+        id: "REX-767478878",
+        company: "Beta Zoo Communications LTD"
+      }
+    ]
+  }
+
   return {
     ...states.partners,
     ...actions.partners,
@@ -2408,6 +2429,7 @@ const usePartners = () => {
     getOnboardingStatus,
     getVASPartners,
     getComplianceStatus,
+    getExistingPartnerTodo
   };
 };
 

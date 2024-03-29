@@ -68,6 +68,8 @@ import { ServiceConfigurationReadyAlert } from "@/app/components/dashboard/Contr
 import { PartnerMenu } from "@/app/modules/menu";
 
 import {ContractContext} from "@/app/(protected)/(partner)/dashboard/contracts/ContractProvider";
+
+import ExistingPartnerInfo from "@/app/components/statusinfo/ExistingPartnerInfo";
                               
 export default function DashboardContent({ type }) {
   const {
@@ -756,6 +758,7 @@ export default function DashboardContent({ type }) {
                 <ServiceLiveCard />
                 <IPApprovedCard />             
                 <IPDynamicField />
+                <ExistingPartnerInfo />
                 {/* //================this is the popup==============================================================================================================*/}
                 {rejectedTeam?.rejected?.length > 0 && brdComplains && (
                   <>

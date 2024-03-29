@@ -1,5 +1,9 @@
 import DashboardContent from "@/app/components/dashboard/DashboardContent";
+import ProfileProvider from "@/app/(protected)/(partner)/dashboard/settings/company/profile/ProfileProvider";
+
 
 export default function GetStarted() {  
-  return <DashboardContent type="dashboard" />;
+  return (<ProfileProvider>
+            <DashboardContent type="dashboard" />
+          </ProfileProvider>);
 }
